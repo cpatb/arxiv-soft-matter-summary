@@ -1,0 +1,16 @@
+# LaTeX build artifacts (regenerable)
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.toc
+*.bbl
+*.blg
+*.Notes.bib
+*Notes.bib
+
+# Python
+__pycache__/
+*.pyc
