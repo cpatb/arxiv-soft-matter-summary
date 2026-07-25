@@ -1,0 +1,17 @@
+FoamFile { version 2.0; format ascii; class dictionary; object sampleAxis; }
+type sets;
+libs (sampling);
+interpolationScheme cellPoint;
+setFormat raw;
+fields (U);
+sets
+(
+    axisLine
+    {
+        type    uniform;
+        axis    x;
+        start   (0 3e-05 0);
+        end     (0.02 3e-05 0);
+        nPoints 300;
+    }
+);

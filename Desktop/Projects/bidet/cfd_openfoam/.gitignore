@@ -1,0 +1,9 @@
+# CFD run artifacts (bulky, regenerable). Keep scripts + fitted results + csv + figure.
+case_*/0/
+case_*/[1-9]*/
+case_*/processor*/
+case_*/postProcessing/
+case_*/constant/polyMesh/
+case_*/log.*
+case_*/*.foam
+sweep_console.log

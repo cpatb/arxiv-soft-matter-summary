@@ -1,0 +1,208 @@
+{
+  "description": "CFD-fitted turbulent wall-shear closure (Phares form): (tau_w/rho V0^2) Re_d^0.5 = C_P (r/d)^-n_t, fit over developed wall-jet band r/d in [2,20]. Axisymmetric simpleFoam + k-omega SST.",
+  "nominal": {
+    "Re_d": 10000.0,
+    "H_over_d": 6.0,
+    "C_P": 1.3518,
+    "n_t": 1.9023,
+    "r2": 0.9968,
+    "tau_at_15mm_Pa": 5.866,
+    "yplus_median": 0.781
+  },
+  "grid_independence": {
+    "base": {
+      "n_t": 1.9023,
+      "C_P": 1.3518,
+      "tau15": 5.866
+    },
+    "refined_x2": {
+      "n_t": 1.9119,
+      "C_P": 1.5178,
+      "tau15": 6.245
+    },
+    "rel_change": {
+      "n_t": 0.005056675085707063,
+      "C_P": 0.1228265858821802,
+      "tau15": 0.06462229728267643
+    }
+  },
+  "freejet_validation": {
+    "Hd20_B": 6.33,
+    "Hd60_B": 10.63,
+    "target": "5-6 (Hussein-Capp-George 1994)",
+    "note": "H/d=20 validates; H/d=60 over-predicts due to domain confinement/entrainment"
+  },
+  "standoff_Re10000": {
+    "1": {
+      "C_P": 3.3292,
+      "n_t": 2.26,
+      "r2": 0.9979,
+      "tau15": 5.572
+    },
+    "6": {
+      "C_P": 1.3518,
+      "n_t": 1.9023,
+      "r2": 0.9968,
+      "tau15": 5.866
+    },
+    "20": {
+      "C_P": 0.3,
+      "n_t": 1.2552,
+      "r2": 0.941,
+      "tau15": 6.763
+    },
+    "60": {
+      "C_P": 0.0402,
+      "n_t": 0.5439,
+      "r2": 0.7676,
+      "tau15": 6.155
+    }
+  },
+  "Re_dependence_Hd6": {
+    "3000": {
+      "C_P": 1.1888,
+      "n_t": 2.0075
+    },
+    "10000": {
+      "C_P": 1.3518,
+      "n_t": 1.9023
+    },
+    "30000": {
+      "C_P": 1.6324,
+      "n_t": 1.8449
+    }
+  },
+  "reliability_note": "Single power-law fit is excellent for H/d<=6 (r2>0.997), good at H/d=20 (r2~0.94), poor at H/d=60 (r2 0.47-0.79) -- do not use H/d=60.",
+  "all_cases": [
+    {
+      "Re_d": 10000.0,
+      "H_over_d": 1.0,
+      "refine": 1.0,
+      "C_P": 3.3292,
+      "n_t": 2.26,
+      "r2": 0.9979,
+      "tau_at_15mm_Pa": 5.572,
+      "yplus_median": 0.168
+    },
+    {
+      "Re_d": 10000.0,
+      "H_over_d": 20.0,
+      "refine": 1.0,
+      "C_P": 0.3,
+      "n_t": 1.2552,
+      "r2": 0.941,
+      "tau_at_15mm_Pa": 6.763,
+      "yplus_median": 1.287
+    },
+    {
+      "Re_d": 10000.0,
+      "H_over_d": 6.0,
+      "refine": 1.0,
+      "C_P": 1.3518,
+      "n_t": 1.9023,
+      "r2": 0.9968,
+      "tau_at_15mm_Pa": 5.866,
+      "yplus_median": 0.781
+    },
+    {
+      "Re_d": 10000.0,
+      "H_over_d": 60.0,
+      "refine": 1.0,
+      "C_P": 0.0402,
+      "n_t": 0.5439,
+      "r2": 0.7676,
+      "tau_at_15mm_Pa": 6.155,
+      "yplus_median": 2.266
+    },
+    {
+      "Re_d": 10000.0,
+      "H_over_d": 6.0,
+      "refine": 2.0,
+      "C_P": 1.5178,
+      "n_t": 1.9119,
+      "r2": 0.9928,
+      "tau_at_15mm_Pa": 6.245,
+      "yplus_median": 0.415
+    },
+    {
+      "Re_d": 30000.0,
+      "H_over_d": 1.0,
+      "refine": 1.0,
+      "C_P": 4.1034,
+      "n_t": 2.1725,
+      "r2": 0.998,
+      "tau_at_15mm_Pa": 45.582,
+      "yplus_median": 0.435
+    },
+    {
+      "Re_d": 30000.0,
+      "H_over_d": 20.0,
+      "refine": 1.0,
+      "C_P": 0.3736,
+      "n_t": 1.2302,
+      "r2": 0.9306,
+      "tau_at_15mm_Pa": 46.423,
+      "yplus_median": 3.219
+    },
+    {
+      "Re_d": 30000.0,
+      "H_over_d": 6.0,
+      "refine": 1.0,
+      "C_P": 1.6324,
+      "n_t": 1.8449,
+      "r2": 0.9969,
+      "tau_at_15mm_Pa": 43.142,
+      "yplus_median": 2.024
+    },
+    {
+      "Re_d": 30000.0,
+      "H_over_d": 60.0,
+      "refine": 1.0,
+      "C_P": 0.0316,
+      "n_t": 0.3162,
+      "r2": 0.4708,
+      "tau_at_15mm_Pa": 45.918,
+      "yplus_median": 5.308
+    },
+    {
+      "Re_d": 3000.0,
+      "H_over_d": 1.0,
+      "refine": 1.0,
+      "C_P": 2.8295,
+      "n_t": 2.4184,
+      "r2": 0.9969,
+      "tau_at_15mm_Pa": 0.5,
+      "yplus_median": 0.058
+    },
+    {
+      "Re_d": 3000.0,
+      "H_over_d": 20.0,
+      "refine": 1.0,
+      "C_P": 0.3011,
+      "n_t": 1.3695,
+      "r2": 0.9471,
+      "tau_at_15mm_Pa": 0.818,
+      "yplus_median": 0.491
+    },
+    {
+      "Re_d": 3000.0,
+      "H_over_d": 6.0,
+      "refine": 1.0,
+      "C_P": 1.1888,
+      "n_t": 2.0075,
+      "r2": 0.9976,
+      "tau_at_15mm_Pa": 0.64,
+      "yplus_median": 0.283
+    },
+    {
+      "Re_d": 3000.0,
+      "H_over_d": 60.0,
+      "refine": 1.0,
+      "C_P": 0.0388,
+      "n_t": 0.6088,
+      "r2": 0.791,
+      "tau_at_15mm_Pa": 0.809,
+      "yplus_median": 0.871
+    }
+  ]
+}
