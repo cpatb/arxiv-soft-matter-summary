@@ -180,6 +180,20 @@ def calibrate_turbulent(nt, commercial, r_max, tau_c):
     return Closure(C_tau=C_P, p=p, n=nt, label=f"turbulent (r^-{nt:g}, calibrated)")
 
 
+def cfd_closure(C_P, n_t, label=None):
+    """
+    Turbulent closure built DIRECTLY from CFD-fitted Phares coefficients -- no
+    commercial-point calibration. The axisymmetric simpleFoam/k-omega-SST solve
+    (cfd_openfoam/) fits, over the developed wall-jet band,
+        (tau_w / rho V0^2) Re_d^{1/2} = C_P (r/d)^{-n_t},
+    which is the model's common form with C_tau = C_P, p = -1/2, n = n_t. This is
+    the honest resolution of the review blocker: C_P and n_t are COMPUTED, not
+    calibrated to the single commercial datum.
+    """
+    return Closure(C_tau=C_P, p=-0.5, n=n_t,
+                   label=label or f"turbulent (CFD-fitted, r^-{n_t:g})")
+
+
 # ---- oscillation: principled uniformity factor from the sinusoidal dwell law ----
 def kappa_sinusoid():
     """

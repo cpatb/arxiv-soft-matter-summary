@@ -1,31 +1,41 @@
 {
-  "laminar": {
-    "d_mm": 0.8013997648865236,
-    "Q_Lmin": 0.21536096805723187,
-    "Re_d": 10334.63055912173
+  "closure_source": "CFD",
+  "cfd_closure": {
+    "C_P": 1.3518,
+    "n_t": 1.9023,
+    "r2": 0.9968
   },
-  "turbulent": {
-    "d_mm": 0.006006829750348054,
-    "Q_Lmin": 1.209927142556065e-05,
-    "Re_d": 77.46242140485118,
-    "C_P": 1.2335656492051317
+  "tau_w_rmax_commercial": {
+    "laminar_Pa": 18.87446890744875,
+    "cfd_fit_Pa": 9.079933576476227,
+    "cfd_direct_Pa": 5.866,
+    "tau_c_Pa": 5.0,
+    "note": "CFD tau_w(r_max) ~ tau_c => commercial nozzle near-optimal"
   },
   "pressure_exp": {
     "laminar": -3.9095139109657776e-16,
-    "turbulent": -2.227272727272715
+    "cfd_turbulent": -0.5696712543678223
   },
-  "standoff_ratio_6to60": {
-    "laminar": 0.010000000000000002,
-    "turbulent": 18.47849797422291
+  "standoff_lever": {
+    "finding": "WEAK -- CFD overturns the paper's 4.6x claim",
+    "flow_span_Hd_1_to_20": 1.1378513255509692,
+    "tau_w_rmax_vs_Hd_Re1e4": {
+      "1": 5.572,
+      "6": 5.866,
+      "20": 6.763,
+      "60": 6.155
+    },
+    "laminar_wrong_ratio_60_over_6": 0.010000000000000007,
+    "caveat": "single-phase CFD; jet breakup at large H not modelled"
   },
   "oblique_43": {
     "laminar": 1.3673274610985953,
-    "turbulent": 5.50963621367272
+    "cfd_turbulent": 1.9528904982782302
   },
-  "kappa": 0.6366197723675814,
-  "r_c_mm": 6.735990964653828,
-  "osc_save": {
-    "laminar": 0.6163366696286599,
-    "turbulent": 0.33125719453245095
+  "oscillation": {
+    "kappa": 0.6366197723675814,
+    "r_c_mm": 6.735990964653828,
+    "save_laminar": 0.6163366696286599,
+    "save_cfd": 0.5175864958589179
   }
 }

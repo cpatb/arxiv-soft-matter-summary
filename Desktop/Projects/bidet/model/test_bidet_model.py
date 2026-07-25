@@ -1,9 +1,16 @@
-"""Validation of bidet_model.py — analytic limits, paper cross-check, monotonicity."""
+"""Validation of bidet_model.py — analytic limits, paper cross-check, monotonicity,
+and the CFD-fitted turbulent closure (Stage 2)."""
+import os, json
 import numpy as np
 from bidet_model import (LAMINAR, laminar_tauII_direct, optimum, calibrate_turbulent,
-                         film_tau_numeric, kappa_sinusoid, V0_from_dP, flow_rate, CD)
+                         cfd_closure, film_tau_numeric, kappa_sinusoid, V0_from_dP,
+                         flow_rate, CD, NU)
 
 NOM = dict(dP=0.07e6, r_max=0.015, tau_c=5.0)
+
+_CFD_PATH = os.path.join(os.path.dirname(__file__), "..", "cfd_openfoam", "cfd_fit_summary.json")
+def _cfd():
+    return json.load(open(_CFD_PATH))
 
 
 def test_common_form_matches_paper_tauII():
@@ -56,6 +63,47 @@ def test_standoff_sign_laminar_wrong_turbulent_right():
     ql_close = optimum(LAMINAR, dP=0.07e6, r_max=0.015, tau_c=5.0, H=6 * 0.8e-3)["Q"]
     ql_far = optimum(LAMINAR, dP=0.07e6, r_max=0.015, tau_c=5.0, H=60e-3)["Q"]
     assert ql_far < ql_close, "laminar Region II gives the (unphysical) wrong standoff sign"
+
+
+def test_cfd_closure_form():
+    """cfd_closure encodes the Phares form: C_tau=C_P, p=-1/2, n=n_t."""
+    cl = cfd_closure(1.35, 1.90)
+    assert cl.C_tau == 1.35 and cl.p == -0.5 and cl.n == 1.90
+
+
+def test_cfd_summary_exists_and_sane():
+    j = _cfd()
+    n = j["nominal"]
+    # computed exponent is far from laminar 5 (reversal holds) but not the assumed 1.05
+    assert 1.5 < n["n_t"] < 2.3, f"CFD n_t={n['n_t']} outside expected computed range"
+    assert n["r2"] > 0.99, "nominal power-law fit must be good"
+    assert n["C_P"] > 0
+
+
+def test_cfd_pressure_exponent_in_range():
+    """Q* ~ dP^pexp with the CFD closure: weak negative, ~ -0.4..-0.7 (CFD-derived)."""
+    cl = cfd_closure(_cfd()["nominal"]["C_P"], _cfd()["nominal"]["n_t"])
+    dPs = np.array([0.05, 0.07, 0.10, 0.15]) * 1e6
+    q = np.array([optimum(cl, dP=p, r_max=0.015, tau_c=5.0)["Q"] for p in dPs])
+    pexp = np.polyfit(np.log(dPs), np.log(q), 1)[0]
+    assert -0.75 < pexp < -0.40, f"CFD pressure exponent {pexp:.3f} outside CFD-derived range"
+
+
+def test_cfd_standoff_lever_is_weak():
+    """CORRECTED finding: CFD tau_w(r_max) is nearly standoff-independent, so the
+    flow to clean r_max varies <~1.3x over H/d 1-20 -- NOT the paper's 4.6x lever."""
+    so = _cfd()["standoff_Re10000"]
+    tau = [so[k]["tau15"] for k in ("1", "6", "20")]   # reliable-fit standoffs
+    mult = [(so["6"]["tau15"] / t) ** (1 / 1.5) for t in tau]
+    span = max(mult) / min(mult)
+    assert span < 1.3, f"CFD standoff flow span {span:.2f} should be weak (<1.3), got strong"
+
+
+def test_cfd_tau_rmax_corroborates_tau_c():
+    """Independent CFD tau_w(r_max) at the commercial point is within 2x of the
+    assumed tau_c=5 Pa -> the commercial-datum calibration is corroborated, not circular."""
+    tau_cfd = _cfd()["nominal"]["tau_at_15mm_Pa"]
+    assert 0.5 * 5.0 < tau_cfd < 2.0 * 5.0, f"CFD tau_w(r_max)={tau_cfd} not near tau_c=5"
 
 
 def test_kappa_value():
