@@ -13,11 +13,14 @@ set -e
 
 echo "############ 1. CFD validation (ABL, grid independence, convergence)"
 cd P3_CFD
+# Non-fatal: a validation failure must be REPORTED, not allowed to abort the
+# run before the results it is meant to qualify have been produced.
 python3 validate_cfd.py \
     --empty cases/dir_090_abl \
     --fine cases/dir_090 \
     --coarse cases/dir_090_coarse \
-    --out-json cfd_validation.json 2>&1 | tail -45
+    --out-json cfd_validation.json 2>&1 | tail -45 || \
+    echo "!! CFD VALIDATION STEP FAILED -- continuing, see above"
 
 echo
 echo "############ 2. sample the averaged fields to flow_fields.npz"
@@ -31,7 +34,7 @@ cd ../P4_Coupling
 # Launch grid over the playing surface (OSM polygon x[-31,47], y[-10,15]).
 python3 monte_carlo.py \
     --field ../P3_CFD/flow_fields.npz \
-    --launch-grid -25 40 13 -8 12 10 \
+    --launch-grid -25 40 13 -5 5 10 \
     --headings 90 210 270 \
     --throws right_backhand right_forehand hammer \
     --throw-bearings 0 60 120 180 240 300 \
@@ -52,7 +55,8 @@ echo "############ 5. hypothesis check"
 python3 check_hypotheses.py \
     --Q Q.npz --fields ../P3_CFD/flow_fields.npz \
     --landings ../P4_Coupling/landing_stats.npz \
-    --out-json hypothesis_check.json 2>&1 | tail -40
+    --out-json hypothesis_check.json 2>&1 | tail -40 || \
+    echo "!! HYPOTHESIS CHECK FAILED -- continuing"
 
 echo
 echo "############ 6. figures"
