@@ -518,19 +518,36 @@ that band is resolved by roughly twelve 0.5 m cells inside the refinement box,
 which is the relevant configuration, but a dedicated refined empty-fetch case
 would be the cleaner test and is left as follow-on work.
 
-\paragraph{(b) Grid independence.} Two meshes differing \emph{only} in the
-disc-altitude refinement level (2.0 $\times$ 0.50 m against 4.0 $\times$ 1.0 m,
-a factor of two in the region we report) were compared at five stations over
-the playing surface. The worst disc-band mean-velocity difference is
-\GridDiff\% of the local speed, or \GridDiffUref\% of the reference speed
-$u_{\text{ref}} = \Uref$ m\,s$^{-1}$ (\GridVerdict).
+\paragraph{(b) Grid independence --- \textbf{not achieved}.} Two meshes
+differing \emph{only} in the disc-altitude refinement level (2.0 $\times$ 0.50 m
+against 4.0 $\times$ 1.0 m, a factor of two in the region we report) were
+compared at five stations over the playing surface, both after time averaging.
+The worst disc-band mean-velocity difference is \GridDiff\% of the local
+speed, or \GridDiffUref\% of the reference speed
+$u_{\text{ref}} = \Uref$ m\,s$^{-1}$. \textbf{This does not meet the 10\%
+criterion the study set itself, and we report it as a failure rather than
+relaxing the criterion after the fact.}
 
-Both measures are quoted deliberately. The field turns out to be heavily
-sheltered, with disc-altitude speeds of a few tenths of a metre per second in
-places, so a purely relative criterion is punishing there: a 0.3 m\,s$^{-1}$
-absolute difference is a few per cent of $u_{\text{ref}}$ but can be a large
-fraction of the local speed. Neither number should be read as a clean pass, and
-\S\ref{sec:limits} states the consequence.
+Both normalisations are quoted because they say different things. In absolute
+terms the two meshes differ by 0.15--0.51 m\,s$^{-1}$ at disc altitude. Against
+a 5 m\,s$^{-1}$ reference that is 3--10\%; against local speeds of
+0.4--1.9 m\,s$^{-1}$ it is 8--57\%. The field is deeply sheltered, so a
+relative criterion is extremely demanding there --- but that is precisely the
+regime the paper is about, so the demanding measure is the honest one.
+
+What survives this and what does not:
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item \textbf{Robust:} the \emph{magnitude} of the sheltering. Both meshes
+    put mean disc-altitude speed near 1 m\,s$^{-1}$ against a 5 m\,s$^{-1}$
+    reference, and both do so for every direction computed. The qualitative
+    conclusion --- that this field sits in deep shelter --- is not a
+    discretisation artefact.
+  \item \textbf{Not robust:} the spatial detail of $Q$ \emph{within} the
+    field. Point-to-point contrasts at the 10--50\% level cannot be
+    distinguished from discretisation error, so the maps in
+    \S\ref{sec:results} should be read for their gross structure only, and
+    no ranking of individual launch positions is claimed.
+\end{itemize}
 
 \paragraph{(c) Convergence, and why the residual criterion is the wrong test.}
 Steady SIMPLE does not reach a fixed point on this geometry. The playing surface
@@ -543,10 +560,14 @@ residual has stopped falling for a physical reason rather than a numerical one.
 
 We therefore assess convergence on the quantity we actually report. Velocity
 probes at disc altitude over the field oscillate by \ConvFine\% peak-to-peak
-over the last fifth of the run on the production mesh. Because a single iterate
-is an arbitrary phase of that cycle, all reported fields are \textbf{time
-averages} of $\mathbf{U}$, $k$ and $\omega$ over a further 800 iterations after
-the cycle is established, not final iterates.
+on the production mesh and \ConvCoarse\% on the coarse mesh, with no
+downward trend. Because a single iterate is an arbitrary phase of that cycle,
+all reported fields are \textbf{time averages} of $\mathbf{U}$, $k$ and
+$\omega$ over a further 800 iterations after the cycle is established, not
+final iterates. Those percentages should be read as the amplitude of a physical
+oscillation that steady RANS cannot represent, not as a residual that more
+iterations would remove --- and as a floor on the uncertainty of any single
+reported velocity.
 
 \section{Expected results / placeholder findings}
 
