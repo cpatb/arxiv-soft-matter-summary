@@ -55,6 +55,31 @@
 \author{charlie\\\small affiliation TBD}
 \date{Draft v0.1 \ $\cdot$\ \today}
 
+% ---------------------------------------------------------------------------
+% Quantitative results are GENERATED from the pipeline artifacts by
+% P5_Synthesis/make_results_tex.py and pulled in here as macros, so that no
+% number in this paper is transcribed by hand. If the file is absent the
+% document still compiles, with every such number rendered as a visible
+% placeholder rather than silently vanishing.
+% ---------------------------------------------------------------------------
+\IfFileExists{SeanEarl_DiscFlight/P5_Synthesis/results_generated.tex}{%
+  \input{SeanEarl_DiscFlight/P5_Synthesis/results_generated}%
+}{%
+  \newcommand{\MISSINGNUM}{\textbf{\color{red}[no data]}}%
+  \newcommand{\ABLdrift}{\MISSINGNUM}\newcommand{\ABLverdict}{\MISSINGNUM}%
+  \newcommand{\GridDiff}{\MISSINGNUM}\newcommand{\GridDiffUref}{\MISSINGNUM}%
+  \newcommand{\GridVerdict}{\MISSINGNUM}\newcommand{\ConvFine}{\MISSINGNUM}%
+  \newcommand{\ConvCoarse}{\MISSINGNUM}\newcommand{\Uref}{\MISSINGNUM}%
+  \newcommand{\Ndirections}{\MISSINGNUM}\newcommand{\DirectionList}{\MISSINGNUM}%
+  \newcommand{\NtotalThrows}{\MISSINGNUM}\newcommand{\NthrowsPerCell}{\MISSINGNUM}%
+  \newcommand{\NlaunchPoints}{\MISSINGNUM}\newcommand{\NbearingsList}{\MISSINGNUM}%
+  \newcommand{\TargetRadius}{\MISSINGNUM}\newcommand{\TargetRange}{\MISSINGNUM}%
+  \newcommand{\QbestHeading}{\MISSINGNUM}\newcommand{\QworstHeading}{\MISSINGNUM}%
+  \newcommand{\QbestMean}{\MISSINGNUM}\newcommand{\QworstMean}{\MISSINGNUM}%
+  \newcommand{\QbestWorstRatio}{\MISSINGNUM}\newcommand{\BlockedMean}{\MISSINGNUM}%
+  \newcommand{\QbyHeadingTable}{\MISSINGNUM}\newcommand{\SRbyThrowTable}{\MISSINGNUM}%
+}
+
 \begin{document}
 \maketitle
 
