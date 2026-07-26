@@ -61,17 +61,22 @@ def test_uniform_wind_is_galilean_equivalent(U):
     that the wind enters the aerodynamics correctly and only through the
     relative velocity. A sign error or a missed wind term in the moment
     calculation would break it immediately.
+
+    The invariant is exact, so it is tested at a tight integration tolerance:
+    the two runs follow different adaptive step sequences, and at the default
+    rtol=1e-5 they differ by ~1e-6 m purely from discretisation, which would
+    mask nothing but would make the assertion tolerance meaningless.
     """
     U = np.asarray(U, dtype=float)
     r0, v0, q0, w0 = right_handed_backhand(release_alpha_deg=8.0, roll_deg=0.0)
+    tight = dict(rtol=1e-10, atol=1e-12, compute_diag=False, t_max=8.0)
 
-    with_wind = d6.simulate(r0, v0, q0, w0,
-                            wind=d6.uniform_wind(U), t_max=8.0)
-    shifted = d6.simulate(r0, v0 - U, q0, w0, wind=d6.still_air, t_max=8.0)
+    with_wind = d6.simulate(r0, v0, q0, w0, wind=d6.uniform_wind(U), **tight)
+    shifted = d6.simulate(r0, v0 - U, q0, w0, wind=d6.still_air, **tight)
 
-    assert np.isclose(with_wind.flight_time, shifted.flight_time, rtol=1e-6)
+    assert np.isclose(with_wind.flight_time, shifted.flight_time, rtol=1e-9)
     expected = shifted.r[-1] + U * shifted.flight_time
-    np.testing.assert_allclose(with_wind.r[-1], expected, atol=1e-6)
+    np.testing.assert_allclose(with_wind.r[-1], expected, atol=1e-8)
 
 
 def test_still_air_wind_callable_is_a_noop():
@@ -253,3 +258,56 @@ def test_drag_is_minimised_at_the_zero_lift_angle():
     assert cf.CD(a0) < cf.CD(a0 + 5 * DEG)
     assert cf.CD(a0) < cf.CD(a0 - 5 * DEG)
     assert np.isclose(cf.CL(a0), 0.0, atol=1e-12), "alpha0 must be zero-lift"
+
+
+def test_landing_point_is_tolerance_converged():
+    """The landing point must not depend on integrator tolerance.
+
+    Guards the DOP853/rtol=1e-5 defaults chosen for speed: if a future change
+    made the RHS stiff or discontinuous, the loose tolerance would start to
+    matter and this test would catch it before the Monte Carlo results drifted.
+    """
+    r0, v0, q0, w0 = right_handed_backhand()
+    ref = d6.simulate(r0, v0, q0, w0, rtol=1e-9, atol=1e-11,
+                      compute_diag=False)
+    for rtol, atol, tol_m in ((1e-5, 1e-7, 1e-3), (1e-4, 1e-6, 1e-2)):
+        res = d6.simulate(r0, v0, q0, w0, rtol=rtol, atol=atol,
+                          compute_diag=False)
+        err = np.linalg.norm(res.r[-1, :2] - ref.r[-1, :2])
+        assert err < tol_m, f"rtol={rtol}: landing moved {err:.2e} m"
+
+
+def test_integrator_methods_agree():
+    """LSODA and DOP853 must land in the same place."""
+    r0, v0, q0, w0 = right_handed_backhand()
+    a = d6.simulate(r0, v0, q0, w0, method="LSODA", rtol=1e-8, atol=1e-10,
+                    compute_diag=False)
+    b = d6.simulate(r0, v0, q0, w0, method="DOP853", rtol=1e-8, atol=1e-10,
+                    compute_diag=False)
+    np.testing.assert_allclose(a.r[-1], b.r[-1], atol=1e-4)
+
+
+def test_fast_interpolation_matches_the_spline():
+    """The np.interp speed path must reproduce the CubicSpline it replaces."""
+    cf = TabulatedCoefficients()
+    assert cf.max_fast_path_error() < 1e-6
+
+
+def test_crr_bilinear_matches_scipy():
+    """The hand-rolled CRr bilinear must match RegularGridInterpolator."""
+    cf = TabulatedCoefficients()
+    rng = np.random.default_rng(7)
+    for _ in range(500):
+        a = rng.uniform(-0.0873, 0.5236)
+        v = rng.uniform(0.0, 2.0)
+        assert np.isclose(cf._crr_bilinear(v, a), float(cf._crr((v, a))),
+                          atol=1e-12)
+
+
+def test_compute_diag_false_does_not_change_the_trajectory():
+    """Skipping diagnostics is a pure optimisation."""
+    r0, v0, q0, w0 = right_handed_backhand()
+    a = d6.simulate(r0, v0, q0, w0, compute_diag=True)
+    b = d6.simulate(r0, v0, q0, w0, compute_diag=False)
+    np.testing.assert_allclose(a.r[-1], b.r[-1], atol=1e-12)
+    assert len(b.diag) == 1 and "alpha_deg" in b.diag[-1]

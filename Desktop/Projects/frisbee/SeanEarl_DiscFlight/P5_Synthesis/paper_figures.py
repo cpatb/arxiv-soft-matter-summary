@@ -81,7 +81,10 @@ def fig3_cfd_snapshots(outdir: Path, fields_npz: str | None):
                       color="white", density=0.7, linewidth=0.6)
         ax.set_title(f"$\\theta_{{wind}} = {h}^\\circ$, |U| at 2 m AGL")
         ax.set_aspect("equal")
+        ax.set_xlabel("x (East), m")
+        ax.set_ylabel("y (North), m")
         plt.colorbar(cf, ax=ax, label="|U| (m/s)")
+    fig.tight_layout()
     fig.savefig(outdir / "fig3_cfd_snapshots.png", dpi=200, bbox_inches="tight")
 
 
@@ -92,18 +95,30 @@ def fig4_throwability(outdir: Path, Q_npz: str | None):
         return
     d = np.load(Q_npz)
     Q = d["Q"]; x = d["x"]; y = d["y"]; h = d["headings"]
-    best_h = h[np.argmax(Q.mean(axis=(0, 1)))]
-    worst_h = h[np.argmin(Q.mean(axis=(0, 1)))]
+    mean_by_heading = np.nanmean(Q, axis=(0, 1))
+    best_h = h[np.nanargmax(mean_by_heading)]
+    worst_h = h[np.nanargmin(mean_by_heading)]
     XX, YY = np.meshgrid(x, y, indexing="ij")
+
+    # Scale the colour range to the data. Q is a product of three penalties, so
+    # realistic values sit well below 1; a fixed 0-1 scale renders every map as
+    # a uniform dark patch and hides the spatial gradient that is the result.
+    vmax = float(np.nanmax(Q))
+    vmax = 1.0 if not np.isfinite(vmax) or vmax <= 0 else vmax
+
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(10, 4))
-    for ax, hh in zip((a1, a2), (best_h, worst_h)):
+    for ax, hh, lbl in ((a1, best_h, "best"), (a2, worst_h, "worst")):
         ih = int(np.argmin(np.abs(h - hh)))
-        cf = ax.contourf(XX, YY, Q[..., ih], levels=np.linspace(0, 1, 11),
-                          cmap="viridis", vmin=0, vmax=1)
-        ax.set_title(f"$\\theta_{{wind}} = {int(hh)}^\\circ$")
+        cf = ax.contourf(XX, YY, Q[..., ih], levels=np.linspace(0, vmax, 11),
+                         cmap="viridis", vmin=0, vmax=vmax)
+        ax.set_title(f"{lbl}: $\\theta_{{wind}} = {int(hh)}^\\circ$ "
+                     f"($\\bar{{Q}}$ = {mean_by_heading[ih]:.3f})")
         ax.set_aspect("equal")
+        ax.set_xlabel("x (East), m")
+        ax.set_ylabel("y (North), m")
         plt.colorbar(cf, ax=ax, label="Q")
     fig.suptitle("Throwability metric at best (left) vs. worst (right) wind heading")
+    fig.tight_layout()
     fig.savefig(outdir / "fig4_throwability.png", dpi=200, bbox_inches="tight")
 
 

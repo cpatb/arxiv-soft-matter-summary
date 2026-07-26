@@ -352,6 +352,42 @@ class TabulatedCoefficients:
         )
         self.n_clamped = 0
 
+        # --- Fast evaluation path -----------------------------------------
+        # The integrator calls CL/CD/CM once per RHS evaluation, several
+        # thousand times per throw and millions of times per Monte Carlo
+        # sweep. A scipy spline call on a scalar is dominated by Python
+        # overhead, so we pre-sample each spline onto a dense uniform grid and
+        # use np.interp, which is a tight C loop.
+        #
+        # This is a pure speed optimisation and must not change results:
+        # `max_fast_path_error()` measures the deviation from the spline and is
+        # asserted in the test suite. At this grid spacing (2e-4 rad, ~0.01 deg)
+        # the linear-vs-cubic error is ~1e-8 in coefficient units, six orders of
+        # magnitude below the ~1e-2 scatter of the underlying wind-tunnel data.
+        self._grid = np.linspace(self._alpha_lo, self._alpha_hi, 4001)
+        self._cl_tab = self._cl(self._grid)
+        self._cd_tab = self._cd(self._grid)
+        self._cm_tab = self._cm(self._grid)
+
+        # Ascending copies of the CRr grid for the hand-rolled bilinear lookup
+        # in `CR_tabulated` (same reason: RegularGridInterpolator is too slow
+        # to call once per RHS evaluation). Identical arithmetic, checked in
+        # the test suite against the scipy interpolator.
+        self._advr_asc = _PC_CRR_ADVR[::-1].copy()
+        self._crr_asc = _PC_CRR[::-1, :].copy()
+        self._crr_alpha = _PC_CRR_ALPHA.copy()
+
+    def max_fast_path_error(self, n: int = 20001) -> float:
+        """Largest |np.interp - CubicSpline| over the tabulated range."""
+        a = np.linspace(self._alpha_lo, self._alpha_hi, n)
+        err = 0.0
+        for tab, spline in ((self._cl_tab, self._cl),
+                            (self._cd_tab, self._cd),
+                            (self._cm_tab, self._cm)):
+            err = max(err, float(np.max(np.abs(
+                np.interp(a, self._grid, tab) - spline(a)))))
+        return err
+
     def _clamp(self, alpha: float) -> float:
         if alpha < self._alpha_lo:
             self.n_clamped += 1
@@ -367,13 +403,14 @@ class TabulatedCoefficients:
         return -0.05236
 
     def CL(self, alpha: float) -> float:
-        return float(self._cl(self._clamp(alpha)))
+        return float(np.interp(self._clamp(alpha), self._grid, self._cl_tab))
 
     def CD(self, alpha: float) -> float:
-        return float(self._cd(self._clamp(alpha)))
+        return float(np.interp(self._clamp(alpha), self._grid, self._cd_tab))
 
     def CM(self, alpha: float, q: float) -> float:
-        return float(self._cm(self._clamp(alpha))) + self.CMq * q
+        cm = float(np.interp(self._clamp(alpha), self._grid, self._cm_tab))
+        return cm + self.CMq * q
 
     def CR(self, p: float, r: float, d: float, g: float = G_HUMMEL,
            V: float = None) -> float:
@@ -390,10 +427,36 @@ class TabulatedCoefficients:
                      V: float) -> float:
         """CRr interpolated on (alpha, advance ratio), plus roll damping."""
         advr = abs(d * r / (2.0 * V)) if V > 1e-6 else 0.0
-        advr = min(advr, float(_PC_CRR_ADVR[0]))
-        crr = float(self._crr((advr, self._clamp(alpha))))
+        crr = self._crr_bilinear(advr, self._clamp(alpha))
         # Table is for positive spin; the moment reverses with spin direction.
         return np.sign(r) * crr + self.CRp * p
+
+    def _crr_bilinear(self, advr: float, alpha: float) -> float:
+        """Bilinear lookup on the CRr(AdvR, alpha) table, clamped at the edges.
+
+        Clamping rather than extrapolating is deliberate: the table stops at
+        AdvR = 2 and alpha = 30 deg, and a linear extrapolation of a
+        near-plateau surface would invent a large rolling moment exactly in the
+        high-alpha regime where the model is already least trustworthy.
+        """
+        av, al = self._advr_asc, self._crr_alpha
+        advr = min(max(advr, av[0]), av[-1])
+        alpha = min(max(alpha, al[0]), al[-1])
+
+        i = int(np.searchsorted(av, advr))
+        i = min(max(i, 1), len(av) - 1)
+        j = int(np.searchsorted(al, alpha))
+        j = min(max(j, 1), len(al) - 1)
+
+        t = (advr - av[i - 1]) / (av[i] - av[i - 1])
+        s = (alpha - al[j - 1]) / (al[j] - al[j - 1])
+        C = self._crr_asc
+        return float(
+            (1 - t) * (1 - s) * C[i - 1, j - 1]
+            + (1 - t) * s * C[i - 1, j]
+            + t * (1 - s) * C[i, j - 1]
+            + t * s * C[i, j]
+        )
 
     def spin_down_moment(self, r: float) -> float:
         return self.CNr * r
