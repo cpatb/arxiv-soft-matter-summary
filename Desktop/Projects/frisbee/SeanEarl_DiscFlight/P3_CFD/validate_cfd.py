@@ -56,7 +56,8 @@ sets
 """
 
 
-def sample_profiles(case: Path, stations, z_max=120.0, n_z=120):
+def sample_profiles(case: Path, stations, z_max=120.0, n_z=120,
+                    z_min=0.5):
     """Sample vertical profiles at the given (x, y) stations."""
     blocks = []
     for i, (sx, sy) in enumerate(stations):
@@ -64,7 +65,7 @@ def sample_profiles(case: Path, stations, z_max=120.0, n_z=120):
     {{
         type    uniform;
         axis    z;
-        start   ({sx} {sy} 0.5);
+        start   ({sx} {sy} {z_min});
         end     ({sx} {sy} {z_max});
         nPoints {n_z};
     }}""")
@@ -82,9 +83,15 @@ def sample_profiles(case: Path, stations, z_max=120.0, n_z=120):
     tdir = sorted(base.glob("*"), key=lambda p: float(p.name))[-1]
     out = []
     for i in range(len(stations)):
-        aU = np.loadtxt(sorted(tdir.glob(f"prof{i}_U.xy"))[0])
-        ak = np.loadtxt(sorted(tdir.glob(f"prof{i}_k.xy"))[0])
-        out.append(dict(z=aU[:, 2], U=aU[:, 3:6], k=ak[:, 3]))
+        # OpenFOAM merges all requested fields into ONE file whose name lists
+        # them alphabetically, e.g. prof0_k_omega_U.xy with columns
+        #   z, k, omega, Ux, Uy, Uz
+        # for a `uniform` set on axis z.
+        cands = sorted(tdir.glob(f"prof{i}_*.xy"))
+        if not cands:
+            raise SystemExit(f"no profile file prof{i}_*.xy in {tdir}")
+        a = np.loadtxt(cands[0])
+        out.append(dict(z=a[:, 0], k=a[:, 1], U=a[:, 3:6]))
     return out
 
 
@@ -95,39 +102,62 @@ def richards_hoxey(z, u_star, z0):
 def test_abl_homogeneity(case: Path, outdir: Path):
     info = json.loads((case / "case_info.json").read_text())
     u_star, z0 = info["u_star"], info["z0_inlet"]
+    z0g = info.get("z0_ground", z0)
     dom = info["domain"]
+    dz1 = info.get("first_dz", 4.0)
 
-    # Fetches measured from the inlet.
+    # The solution only exists at cell centres; with wall functions the first
+    # cell centre is at dz1/2 and anything sampled below it is an interpolation
+    # toward the no-slip wall value, not a physical profile. Evaluate from the
+    # second cell centre upward.
+    z_eval_lo = max(1.5 * dz1, Z_DISC[0])
+    z_eval_hi = 100.0
+
     x0 = dom["xmin"]
     fetches = [50.0, 300.0, 600.0, 900.0, 1400.0]
     stations = [(x0 + f, 0.0) for f in fetches]
-    profs = sample_profiles(case, stations)
+    profs = sample_profiles(case, stations, z_min=0.5 * dz1)
 
     print("\n" + "=" * 74)
     print("(a) ABL HORIZONTAL HOMOGENEITY  (Hargreaves & Wright 2007)")
     print("=" * 74)
-    print(f"  empty domain, z0 = {z0} m, u* = {u_star:.4f} m/s")
-    print(f"  {'fetch':>8s} {'max |dU|/U':>12s} {'max |dk|/k':>12s}   "
-          f"(over z = {Z_DISC[0]}-{Z_DISC[1]} m)")
+    print(f"  empty domain, inlet z0 = {z0} m, ground z0 = {z0g} m, "
+          f"u* = {u_star:.4f} m/s")
+    print(f"  evaluation band z = {z_eval_lo:.1f}-{z_eval_hi:.0f} m "
+          f"(first cell centre is at {0.5*dz1:.1f} m)")
+    if not np.isclose(z0, z0g):
+        print("  ** NOTE: inlet and ground roughness DIFFER, so the profile is")
+        print("     physically supposed to evolve here. The streamwise-drift")
+        print("     column below then measures the intended roughness")
+        print("     transition, not numerical error. Re-run with")
+        print("     --z0-ground equal to the inlet z0 for a clean test. **")
 
     k_ref = u_star ** 2 / np.sqrt(CMU)
+    ref = profs[0]                       # near-inlet profile
+    Uref_prof = np.linalg.norm(ref["U"], axis=1)
+
+    print(f"\n  {'fetch':>8s} {'drift vs inlet':>15s} {'vs analytic':>13s} "
+          f"{'k drift':>10s}")
     rows = []
     worst = 0.0
     for f, p in zip(fetches, profs):
-        band = (p["z"] >= Z_DISC[0]) & (p["z"] <= Z_DISC[1])
+        band = (p["z"] >= z_eval_lo) & (p["z"] <= z_eval_hi)
         Umag = np.linalg.norm(p["U"], axis=1)
-        Uref = richards_hoxey(p["z"], u_star, z0)
+        Uana = richards_hoxey(p["z"], u_star, z0)
         with np.errstate(divide="ignore", invalid="ignore"):
-            dU = np.abs(Umag - Uref) / np.maximum(Uref, 1e-9)
+            d_stream = np.abs(Umag - Uref_prof) / np.maximum(Uref_prof, 1e-9)
+            d_ana = np.abs(Umag - Uana) / np.maximum(Uana, 1e-9)
             dk = np.abs(p["k"] - k_ref) / k_ref
-        mU, mk = float(np.nanmax(dU[band])), float(np.nanmax(dk[band]))
-        worst = max(worst, mU)
-        rows.append((f, p, mU, mk))
-        print(f"  {f:7.0f}m {100*mU:11.1f}% {100*mk:11.1f}%")
+        ms = float(np.nanmax(d_stream[band]))
+        ma = float(np.nanmax(d_ana[band]))
+        mk = float(np.nanmax(dk[band]))
+        worst = max(worst, ms)
+        rows.append((f, p, ms, ma, mk))
+        print(f"  {f:7.0f}m {100*ms:14.1f}% {100*ma:12.1f}% {100*mk:9.1f}%")
 
     verdict = "PASS" if worst < 0.10 else ("MARGINAL" if worst < 0.20
                                            else "FAIL")
-    print(f"  -> worst velocity deviation {100*worst:.1f}%  [{verdict}]")
+    print(f"\n  -> worst streamwise drift {100*worst:.1f}%  [{verdict}]")
     print("     (Hargreaves & Wright report a few % for a well-posed setup;")
     print("      >10% means the inlet/wall-function pair is inconsistent.)")
 
@@ -139,25 +169,95 @@ def test_abl_homogeneity(case: Path, outdir: Path):
     zz = np.linspace(0.5, 120, 300)
     ax[0].plot(richards_hoxey(zz, u_star, z0), zz, "k--", lw=2,
                label="Richards-Hoxey (analytic)")
-    for f, p, _, _ in rows:
+    for f, p, _, _, _ in rows:
         ax[0].plot(np.linalg.norm(p["U"], axis=1), p["z"], lw=1,
                    label=f"fetch {f:.0f} m")
         ax[1].plot(p["k"], p["z"], lw=1, label=f"fetch {f:.0f} m")
     ax[1].axvline(k_ref, color="k", ls="--", lw=2, label="$u_*^2/\\sqrt{C_\\mu}$")
     for a, xl in zip(ax, ["|U| (m/s)", "k (m$^2$/s$^2$)"]):
-        a.axhspan(Z_DISC[0], Z_DISC[1], color="tab:orange", alpha=0.15)
+        a.axhspan(z_eval_lo, z_eval_hi, color="tab:green", alpha=0.10)
+        a.axhspan(Z_DISC[0], Z_DISC[1], color="tab:orange", alpha=0.20)
         a.set_xlabel(xl); a.set_ylabel("z (m)"); a.set_ylim(0, 120)
         a.grid(alpha=0.3); a.legend(fontsize=7)
     fig.suptitle("ABL horizontal homogeneity over an empty fetch\n"
-                 f"worst deviation in the disc band: {100*worst:.1f}% "
-                 f"[{verdict}]")
+                 f"worst streamwise drift: {100*worst:.1f}% [{verdict}]  "
+                 f"(orange = disc band, green = evaluation band)")
     fig.tight_layout()
     fig.savefig(outdir / "validation_abl_homogeneity.png", dpi=150)
     plt.close(fig)
     print(f"  [figure: {outdir/'validation_abl_homogeneity.png'}]")
     return dict(test="abl_homogeneity", worst_dU=worst, verdict=verdict,
-                fetches=fetches,
-                per_fetch=[dict(fetch=f, dU=a, dk=b) for f, _, a, b in rows])
+                fetches=fetches, z0_inlet=z0, z0_ground=z0g,
+                eval_band=[z_eval_lo, z_eval_hi],
+                per_fetch=[dict(fetch=f, drift_vs_inlet=a, vs_analytic=b,
+                                k_drift=c) for f, _, a, b, c in rows])
+
+
+def test_convergence(case: Path):
+    """Assess convergence from disc-altitude probes, not from residuals.
+
+    Steady RANS of a real urban geometry does not drive residuals to 1e-4: the
+    physical flow is unsteady (separating shear layers, vortex shedding off
+    building corners), so SIMPLE settles into a limit cycle and the residuals
+    plateau. Declaring such a run "unconverged" on the residual criterion alone
+    is misleading, and so is quoting a residual target the run never met.
+
+    What matters for this paper is whether the QUANTITY WE REPORT has stopped
+    changing. We monitor velocity probes at disc altitude over the field and
+    measure the drift of the last 20% of the run relative to its mean, plus the
+    peak-to-peak oscillation over that window.
+    """
+    import numpy as np
+    base = case / "postProcessing" / "fieldAverageProbe"
+    tdirs = sorted(base.glob("*"), key=lambda p: float(p.name)) if base.exists() else []
+    if not tdirs:
+        return None
+    ufile = None
+    for td in tdirs:
+        cands = sorted(td.glob("U"))
+        if cands:
+            ufile = cands[0]
+    if ufile is None:
+        return None
+
+    rows = []
+    for line in ufile.read_text().splitlines():
+        if line.startswith("#"):
+            continue
+        nums = line.replace("(", " ").replace(")", " ").split()
+        if len(nums) >= 4:
+            rows.append([float(v) for v in nums])
+    if len(rows) < 20:
+        return None
+    a = np.array(rows)
+    t = a[:, 0]
+    n_probes = (a.shape[1] - 1) // 3
+
+    print("\n" + "=" * 74)
+    print("(c) CONVERGENCE OF THE REPORTED QUANTITY (disc-altitude probes)")
+    print("=" * 74)
+    print(f"  {case.name}: {len(t)} samples to iteration {t[-1]:.0f}")
+    print(f"  {'probe':>7s} {'mean |U|':>10s} {'drift':>9s} {'pk-pk':>9s}")
+
+    tail = t >= t[-1] - 0.2 * (t[-1] - t[0])
+    worst = 0.0
+    per = []
+    for i in range(n_probes):
+        U = a[:, 1 + 3 * i: 4 + 3 * i]
+        mag = np.linalg.norm(U, axis=1)
+        m = float(mag[tail].mean())
+        drift = abs(float(mag[tail][-1] - mag[tail][0])) / max(m, 1e-9)
+        pk = float(mag[tail].max() - mag[tail].min()) / max(m, 1e-9)
+        worst = max(worst, pk)
+        per.append(dict(probe=i, mean=m, drift=drift, pk_pk=pk))
+        print(f"  {i:7d} {m:9.3f}  {100*drift:7.2f}% {100*pk:7.2f}%")
+
+    verdict = "PASS" if worst < 0.02 else ("MARGINAL" if worst < 0.05
+                                           else "FAIL")
+    print(f"  -> worst peak-to-peak over the last 20% of the run: "
+          f"{100*worst:.2f}%  [{verdict}]")
+    return dict(test="convergence", case=case.name, worst_pk_pk=worst,
+                verdict=verdict, probes=per)
 
 
 def test_grid_independence(fine: Path, coarse: Path, outdir: Path):
@@ -239,6 +339,12 @@ def main():
         results.append(test_abl_homogeneity(Path(args.empty), outdir))
     else:
         print(f"skipping ABL test: {args.empty} not found")
+
+    for c in (args.fine, args.coarse):
+        if Path(c).exists():
+            r = test_convergence(Path(c))
+            if r:
+                results.append(r)
 
     if Path(args.fine).exists() and Path(args.coarse).exists():
         results.append(test_grid_independence(Path(args.fine),

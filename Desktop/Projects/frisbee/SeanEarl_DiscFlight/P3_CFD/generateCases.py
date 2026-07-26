@@ -154,6 +154,12 @@ def main():
     ap.add_argument("--resolution", choices=list(RESOLUTIONS),
                     default="medium")
     ap.add_argument("--tag", default="", help="suffix for case dir names")
+    ap.add_argument("--z0-ground", type=float, default=None,
+                    help="override the ground roughness. Set it equal to the "
+                         "inlet z0 for a Hargreaves & Wright homogeneity test: "
+                         "with mismatched roughness the profile is SUPPOSED to "
+                         "evolve, so the test would measure the intended "
+                         "roughness transition rather than numerical error.")
     ap.add_argument("--empty", action="store_true",
                     help="omit the buildings entirely: an empty-fetch case for "
                          "the Hargreaves & Wright (2007) ABL-recovery test")
@@ -201,6 +207,7 @@ def main():
         rotate_stl(stl, case / "constant" / "triSurface" / "seanEarl.stl", phi)
 
         z0i = inlet_z0(theta)
+        z0g = Z0_GROUND if args.z0_ground is None else args.z0_ground
         us, kk, om = abl_reference(args.u_ref, args.z_ref, z0i)
 
         subs = {
@@ -211,7 +218,7 @@ def main():
             "@@ZRATIO@@": f"{z_last_over_first:.4f}",
             "@@ZFIRST@@": f"{res['dz1']:.2f}",
             "@@UREF@@": f"{args.u_ref:g}", "@@ZREF@@": f"{args.z_ref:g}",
-            "@@Z0_INLET@@": f"{z0i:g}", "@@Z0_GROUND@@": f"{Z0_GROUND:g}",
+            "@@Z0_INLET@@": f"{z0i:g}", "@@Z0_GROUND@@": f"{z0g:g}",
             "@@KINIT@@": f"{kk:.5g}", "@@OMEGAINIT@@": f"{om:.5g}",
             "@@ENDTIME@@": str(args.end_time),
             "@@WRITEINTERVAL@@": str(max(args.end_time // 2, 100)),
@@ -258,7 +265,7 @@ def main():
             geometry_rotation_deg=math.degrees(phi),
             empty_fetch=bool(args.empty),
             u_ref=args.u_ref, z_ref=args.z_ref,
-            z0_inlet=z0i, z0_ground=Z0_GROUND,
+            z0_inlet=z0i, z0_ground=z0g,
             u_star=us, k_inlet_ref=kk, omega_inlet_ref=om,
             domain=dict(xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax,
                         zmin=zmin, zmax=zmax),
