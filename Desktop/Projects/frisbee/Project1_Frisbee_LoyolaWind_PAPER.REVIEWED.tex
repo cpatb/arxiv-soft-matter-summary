@@ -80,6 +80,18 @@
   \newcommand{\QbestWorstRatio}{\MISSINGNUM}\newcommand{\BlockedMean}{\MISSINGNUM}%
   \newcommand{\QbyHeadingTable}{\MISSINGNUM}\newcommand{\SRbyThrowTable}{\MISSINGNUM}%
 }
+\IfFileExists{SeanEarl_DiscFlight/P5_Synthesis/vertical_generated.tex}{%
+  \input{SeanEarl_DiscFlight/P5_Synthesis/vertical_generated}%
+}{%
+  \newcommand{\VertUratioRange}{\MISSINGNUM}\newcommand{\VertSigRatioRange}{\MISSINGNUM}%
+  \newcommand{\VertTIpitchRange}{\MISSINGNUM}\newcommand{\VertTIcontrol}{\MISSINGNUM}%
+  \newcommand{\VertSigGrowthSix}{\MISSINGNUM}\newcommand{\VertSigGrowthTen}{\MISSINGNUM}%
+  \newcommand{\VertSigGrowthTwenty}{\MISSINGNUM}\newcommand{\VertLintRange}{\MISSINGNUM}%
+  \newcommand{\VertTLrange}{\MISSINGNUM}\newcommand{\VertTLratioRange}{\MISSINGNUM}%
+  \newcommand{\VertNeddyRange}{\MISSINGNUM}%
+  \newcommand{\VertShearBandHNineZero}{\MISSINGNUM}\newcommand{\VertShearBandHTwoOneZero}{\MISSINGNUM}%
+}
+
 
 \begin{document}
 \maketitle
@@ -750,6 +762,105 @@ from discretisation error.}
 \label{fig:Q}
 \end{figure}
 
+\subsection{Vertical structure: how high can you safely throw?}
+\label{sec:vertical}
+
+Everything above uses the solution on horizontal planes at disc altitude. The
+solution is fully three-dimensional, however, and the question a thrower
+actually asks is not only \emph{where} to stand but \emph{how high} to release.
+We therefore re-sampled the same converged fields over $z = 0.5$--$100$~m and
+examined the vertical structure over the playing surface
+(Fig.~\ref{fig:vertprofiles}). Building interiors are masked with a full
+three-dimensional fluid mask: the plan-view mask used for the disc band is
+correct there, where every building spans the whole $1$--$6$~m stack, but it
+would wrongly discard good free-stream flow above roof level.
+
+\paragraph{Shelter is not protection.}
+The empty-fetch case of \S\ref{sec:cfdvalid} doubles as a no-buildings
+counterfactual: the identical inflow profile over identical ground, without the
+campus. Comparing the two at $2$~m over the pitch separates what the buildings
+took away from what they added. They removed mean wind, cutting it to
+\VertUratioRange{} of the unobstructed value. They did not remove the
+fluctuation. Measured as $\sigma_u = \sqrt{2k/3}$, the buildings left it at
+\VertSigRatioRange{} of the control --- that is, in two of the three directions
+they \emph{increased} it by about half. Turbulence intensity over the pitch is
+\VertTIpitchRange{} against \VertTIcontrol{} for the same wind over open fetch,
+a factor of two to three.
+
+This distinction matters because the two components are not equally damaging.
+A steady crosswind is a \emph{bias}: it displaces every throw the same way, and
+a thrower who has watched one throw can aim off it. A fluctuation is a
+\emph{variance}: it differs from throw to throw, is not visible at release, and
+cannot be aimed off. Sean Earl Field converts the correctable component into
+the uncorrectable one. A pitch that feels calm to someone standing on it is not
+necessarily a pitch on which a disc goes where it was aimed.
+
+\paragraph{Throwing low wins twice.}
+Two independent properties of the profile both favour a low release, and they
+compound. First, the fluctuation grows with height: relative to $2$~m,
+$\sigma_u$ is $\times$\VertSigGrowthSix{} at $6$~m, $\times$\VertSigGrowthTen{}
+at $10$~m and $\times$\VertSigGrowthTwenty{} at $20$~m, in \emph{every}
+computed direction. Second, so does the eddy size. The turbulence integral
+length $L = \sigma_u k/\varepsilon$ is \VertLintRange{}~m across the disc band
+and grows roughly as $L \sim z$ above it, the familiar surface-layer scaling.
+Larger eddies are worse for a given $\sigma_u$, because a disc crossing them
+samples \emph{fewer} independent disturbances and so benefits from less
+cancellation along its path. Air near the ground is not merely calmer; it is
+calmer and more forgiving.
+
+\paragraph{The hazard is aloft, and the disc band sits beneath it.}
+Fig.~\ref{fig:vertslice} shows why. Under easterly inflow the Campus Towers
+separating shear layer appears as a band of $\mathrm{TI} \approx 0.8$--$1.0$
+spanning $z \approx 15$--$50$~m directly over the playing surface, peaking at
+$\mathrm{TI} = 0.86$ at the $44.8$~m roof height. The disc band lies underneath
+it, in the comparatively quiet recirculating flow the tower shelters. A throw
+that stays low remains in that quiet layer; a throw lofted into the shear layer
+--- a high hammer, a skied huck --- enters flow whose fluctuation is roughly
+three times stronger. The practical advice follows directly from the flow
+structure rather than from folklore.
+
+\paragraph{Which regime is this?}
+Whether turbulence acts as a per-throw bias or as true buffeting depends on how
+the eddy scales compare with the flight scales. For a canonical $25$~m backhand
+($T_f \approx 2.5$~s, $L_f = 25$~m), the disc band gives an eddy turnover time
+$T_L = k/\varepsilon = \VertTLrange{}$~s, so
+$T_L/T_f = \VertTLratioRange{}$: the eddies barely evolve during a throw and the
+disc effectively flies through a \emph{frozen} field. At the same time
+$N_{\text{eddy}} = L_f/L = \VertNeddyRange{}$, so it crosses about four
+independent eddies on the way. Note also that the disc's airspeed
+($10$--$14$~m\,s$^{-1}$) exceeds the local mean wind by nearly an order of
+magnitude: it is the disc, not the wind, that sweeps through the turbulence.
+This is Taylor's frozen-turbulence hypothesis with the projectile supplying the
+advection velocity, and it predicts partial averaging --- landing scatter
+scaling as $\sigma_u T_f / \sqrt{N_{\text{eddy}}}$ rather than the full
+quasi-steady $\sigma_u T_f$.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig5_vertical_profiles.png}
+\caption{Pitch-averaged vertical profiles of mean speed, velocity fluctuation
+$\sigma_u$, turbulence intensity and vertical shear, for the three computed
+inflow directions, with the no-buildings control (dashed) and the disc band
+shaded. The buildings roughly halve the mean speed while leaving or raising
+$\sigma_u$. Note also that the sheltered profiles are \emph{less} sheared near
+the ground than the open-fetch control: shelter flattens the profile, so
+vertical shear is not the disc-specific hazard one might expect.}
+\label{fig:vertprofiles}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{fig6_centreline_slice.png}
+\caption{Vertical slice along the pitch centreline under easterly inflow
+($\theta_{\text{wind}} = 90^\circ$, wind from the right), showing mean speed
+(top) and turbulence intensity (bottom). Buildings are masked in grey, the
+playing surface is outlined in white and the disc band is shaded. The Campus
+Towers wake covers the whole pitch, and the high-turbulence shear layer capping
+it sits at $z \approx 15$--$50$~m --- above, not within, the band a disc
+occupies.}
+\label{fig:vertslice}
+\end{figure}
+
 \subsection{The hypotheses, tested}
 
 The draft made three falsifiable predictions. Two are supported, two of the
@@ -829,6 +940,45 @@ geometry would have attributed a genuine west-to-east gradient to entirely the
 wrong mechanism --- and would have got the sign argument backwards without
 noticing, because the gradient's \emph{existence} agrees with the hypothesis
 even though its \emph{direction} refutes the stated mechanism.
+
+\paragraph{Shelter is not protection, and that is the transferable claim.}
+The counterfactual of \S\ref{sec:vertical} sharpens the point above into
+something that should hold well beyond this site. The buildings cut mean wind
+over the pitch to \VertUratioRange{} of its unobstructed value while leaving
+$\sigma_u$ at \VertSigRatioRange{} of the control --- raising it outright in two
+of three directions --- so turbulence intensity runs \VertTIpitchRange{} against
+\VertTIcontrol{} over open fetch. Shelter did not remove the disturbance; it
+changed its character, from a bias a thrower can aim off into a variance they
+cannot.
+
+We think this reframes what "a sheltered pitch" means for projectile sports.
+Urban wind engineering has a mature criterion tradition --- Lawson, NEN 8100,
+the COST~732 framework --- but it is built around \emph{pedestrian} comfort and
+safety, which is a mean-speed-and-exceedance question for a person standing
+still. A thrown object is a different problem: it integrates the flow along a
+path for a couple of seconds, so it is the fluctuation on that path, not the
+mean at chest height, that decides where it lands. There is at present no
+accepted playability criterion for a sports field, and the results here suggest
+one is needed, because the two criteria can rank the same site oppositely.
+
+The dimensionless framing of \S\ref{sec:vertical} is what makes this portable.
+Placing an object in $(T_L/T_f,\; L_f/L)$ space predicts its sensitivity without
+re-running anything: slow, short-flight objects (a shuttlecock, a hovering
+delivery UAV) sit deep in the frozen-field regime with little path averaging and
+should be worst affected; fast, long-flight objects (a driven golf ball) sample
+many eddies and average more of the disturbance away. A disc sits between, at
+$T_L/T_f = \VertTLratioRange{}$ and $N_{\text{eddy}} = \VertNeddyRange{}$. The
+recipe --- site CFD, integral scales at operating altitude, object flight
+scales, dimensionless ratio --- is object-agnostic.
+
+\paragraph{A null result worth recording.} We expected vertical shear to be the
+disc-specific hazard, since a rolling moment on a gyroscope precesses into a
+heading change a quarter-period later, and a ballistic point-mass model would
+miss that entirely. The data do not support it: shelter \emph{flattens} the
+profile, and disc-band shear over the pitch (\VertShearBandHNineZero{} to
+\VertShearBandHTwoOneZero{}~s$^{-1}$) is well below the open-fetch control's
+near-ground values. The uncorrectable error here is carried by $\sigma_u$, not
+by $\partial U/\partial z$. We record this so the next study need not chase it.
 
 \paragraph{What the coupling buys, and what it does not.} The 6-DOF coupling is
 the methodological contribution and it works: \NtotalThrows{} trajectories were

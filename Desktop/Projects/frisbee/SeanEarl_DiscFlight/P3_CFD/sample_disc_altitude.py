@@ -233,6 +233,14 @@ def main():
         # nearest-neighbour-filled wind. Collapsed over z because the buildings
         # here are far taller than the 6 m sampling band.
         out[f"dir_{theta:03d}__solid"] = (~valid).any(axis=2)
+        # Full 3-D fluid mask, BEFORE the nearest-neighbour fill. The plan-view
+        # `solid` above is a safe conservative mask for the 1-6 m disc band,
+        # where every building spans the whole stack, but it is wrong for a
+        # sampling stack that reaches above roof level: over a 45 m tower the
+        # points at z = 60 m are perfectly good free-stream flow. Any analysis
+        # of vertical structure must mask on this, or it will read
+        # nearest-neighbour fill inside the building as if it were a wake.
+        out[f"dir_{theta:03d}__valid3d"] = valid
         headings.append(theta)
         meta[str(theta)] = dict(info, unresolved_fraction=frac,
                                 time_averaged=bool(use_mean))

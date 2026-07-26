@@ -36,7 +36,8 @@ from coefficients import DEFAULT_COEFFS, ULTRASTAR  # noqa: E402
 from trajectories import sample_release             # noqa: E402
 
 from cfd_field import StubField, CFDField           # noqa: E402
-from synthetic_turbulence import CorrelatedGusts, wind_with_gusts  # noqa: E402
+from synthetic_turbulence import (CorrelatedGusts, wind_with_gusts,  # noqa: E402
+                                  wind_mean_only)
 
 # Canonical scoring target, per the manuscript: a 25 m throw is "delivered" if
 # it lands within 3 m of the intended target point.
@@ -57,6 +58,7 @@ def sweep_one_launch_point(
     t_max: float = 8.0,
     target_range_m: float = TARGET_RANGE_M,
     target_radius_m: float = TARGET_RADIUS_M,
+    use_gusts: bool = True,
 ):
     """Aggregated landing statistics for one (launch, heading, throw, bearing).
 
@@ -81,7 +83,9 @@ def sweep_one_launch_point(
         # is a deterministic function of (r, t) during the integration. The
         # integral time scale comes from k/eps at the launch point.
         gusts = CorrelatedGusts(field, rng, t_max=t_max, ref_pos=launch)
-        wind = wind_with_gusts(field, gusts)
+        # NB: the gust realization is drawn either way so the two arms of the
+        # paired experiment consume the same random numbers (see wind_mean_only).
+        wind = (wind_with_gusts if use_gusts else wind_mean_only)(field, gusts)
 
         r0, v0, q0, w0 = sample_release(
             throw_type=throw_type,
@@ -174,13 +178,13 @@ def _get_field(field_path, heading):
 def _run_cell(task):
     """Worker entry point: run one cell and return its summary scalars."""
     (idx, launch, heading, throw, bearing, n_throws, field_path,
-     seed_entropy, t_max) = task
+     seed_entropy, t_max, use_gusts) = task
     field = _get_field(field_path, heading)
     seed = np.random.SeedSequence(entropy=seed_entropy, spawn_key=tuple(idx))
     stats = sweep_one_launch_point(
         launch=launch, heading_deg=heading, throw_type=throw,
         bearing_deg=bearing, n_throws=n_throws, field=field,
-        seed=seed, t_max=t_max,
+        seed=seed, t_max=t_max, use_gusts=use_gusts,
     )
     return idx, (stats["mean"], stats["cov"], stats["ellipse_axes"],
                  stats["success_rate"], stats["alpha_landing_mean"],
@@ -211,6 +215,11 @@ def main():
     ap.add_argument("--seed", type=int, default=20260725)
     ap.add_argument("--jobs", type=int, default=0,
                     help="worker processes (0 = cpu_count-2)")
+    ap.add_argument("--no-gusts", action="store_true",
+                    help="use the RANS mean flow only, suppressing the "
+                         "synthetic gust field. The counterfactual arm of a "
+                         "paired experiment: release draws are unchanged, so "
+                         "the scatter difference isolates turbulence.")
     ap.add_argument("--out", default="landing_stats.npz")
     args = ap.parse_args()
 
@@ -239,6 +248,7 @@ def main():
                             (float(x_l), float(y_l), args.launch_z),
                             int(h), throw, float(bear), args.n_throws,
                             args.field, args.seed, 8.0,
+                            not args.no_gusts,
                         ))
 
     n_jobs = args.jobs or max(1, (os.cpu_count() or 2) - 2)
@@ -296,6 +306,7 @@ def main():
         target_range_m=TARGET_RANGE_M,
         target_radius_m=TARGET_RADIUS_M,
         field_source=str(args.field),
+        gusts_enabled=bool(not args.no_gusts),
         coeff_set=DEFAULT_COEFFS.name,
     )
     print(f"wrote {args.out}")

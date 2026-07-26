@@ -280,3 +280,32 @@ def wind_with_gusts(field, gust_gen):
     def _w(r, t):
         return np.asarray(field.U(r, t)) + np.asarray(gust_gen(r, t))
     return _w
+
+
+def wind_mean_only(field, gust_gen):
+    """`wind(r, t)` using the RANS mean ONLY, with the gusts suppressed.
+
+    The counterfactual half of a paired experiment: identical site, identical
+    mean flow, identical release-parameter draws, zero fluctuation. Comparing
+    landing scatter against `wind_with_gusts` isolates the part of the scatter
+    caused by turbulence from the part caused by the mean flow and by flight
+    time alone -- a disc released higher flies longer and would disperse more
+    even in perfectly still air.
+
+    `gust_gen` is accepted and deliberately ignored. The caller must still
+    CONSTRUCT it, because building a gust realization consumes random numbers;
+    dropping that draw would desynchronise the RNG stream and the two arms
+    would no longer share release conditions, destroying the pairing.
+    """
+    del gust_gen
+
+    fused = getattr(field, "U_and_k", None)
+    if fused is not None:
+        def _w(r, t):
+            U, _ = fused(r, t)
+            return U
+        return _w
+
+    def _w(r, t):
+        return np.asarray(field.U(r, t))
+    return _w
