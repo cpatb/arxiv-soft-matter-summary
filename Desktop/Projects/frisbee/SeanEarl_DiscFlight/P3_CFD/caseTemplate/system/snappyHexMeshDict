@@ -1,0 +1,96 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; object snappyHexMeshDict; }
+
+castellatedMesh true;
+snap            true;
+addLayers       true;
+
+geometry
+{
+    seanEarl
+    {
+        type triSurfaceMesh;
+        file "seanEarl.stl";
+        regions
+        {
+            ground    { name groundSurf;    }
+            buildings { name buildingsSurf; }
+            trees     { name treesSurf;     }
+        }
+    }
+    refinementBox
+    {
+        type box;
+        min (-150 -150 0);
+        max ( 150  150 40);
+    }
+}
+
+castellatedMeshControls
+{
+    maxLocalCells       2000000;
+    maxGlobalCells      12000000;
+    minRefinementCells  10;
+    nCellsBetweenLevels 3;
+    resolveFeatureAngle 30;
+    allowFreeStandingZoneFaces true;
+
+    features
+    (
+        { file "seanEarl.eMesh"; level 2; }
+    );
+
+    refinementSurfaces
+    {
+        seanEarl
+        {
+            level (1 2);
+            regions
+            {
+                groundSurf    { level (1 2); patchInfo { type wall; } }
+                buildingsSurf { level (2 3); patchInfo { type wall; } }
+                treesSurf     { level (1 2); patchInfo { type wall; } }
+            }
+        }
+    }
+
+    refinementRegions
+    {
+        refinementBox { mode inside; levels ((1.0 2)); }
+    }
+
+    locationInMesh (0 0 5);
+    insidePoint    (0 0 5);
+}
+
+snapControls
+{
+    nSmoothPatch        3;
+    tolerance           2.0;
+    nSolveIter          30;
+    nRelaxIter          5;
+}
+
+addLayersControls
+{
+    relativeSizes       true;
+    layers
+    {
+        "buildingsSurf|groundSurf"
+        {
+            nSurfaceLayers 3;
+        }
+    }
+    expansionRatio      1.3;
+    finalLayerThickness 0.5;
+    minThickness        0.1;
+}
+
+meshQualityControls
+{
+    #include "meshQualityDict"
+}
+
+writeFlags ( scalarLevels );
+
+mergeTolerance 1e-6;

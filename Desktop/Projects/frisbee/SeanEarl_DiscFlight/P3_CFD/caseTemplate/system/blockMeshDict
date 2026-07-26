@@ -1,0 +1,65 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; object blockMeshDict; }
+
+scale 1;
+
+// Domain: 500 x 500 m horizontal, 0-80 m vertical, origin = field center
+xMin -250;  xMax 250;
+yMin -250;  yMax 250;
+zMin    0;  zMax  80;
+
+// Background cell size 4 m  -> 125 x 125 x 20
+nx 125; ny 125; nz 20;
+
+vertices
+(
+    ($xMin $yMin $zMin)
+    ($xMax $yMin $zMin)
+    ($xMax $yMax $zMin)
+    ($xMin $yMax $zMin)
+    ($xMin $yMin $zMax)
+    ($xMax $yMin $zMax)
+    ($xMax $yMax $zMax)
+    ($xMin $yMax $zMax)
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) ($nx $ny $nz) simpleGrading (1 1 1)
+);
+
+edges ();
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces ( (0 4 7 3) );    // west face -- patched by generateCases.py
+    }
+    outlet
+    {
+        type patch;
+        faces ( (1 2 6 5) );    // east face
+    }
+    north
+    {
+        type patch;
+        faces ( (3 7 6 2) );
+    }
+    south
+    {
+        type patch;
+        faces ( (0 1 5 4) );
+    }
+    top
+    {
+        type patch;
+        faces ( (4 5 6 7) );
+    }
+    ground
+    {
+        type wall;
+        faces ( (0 3 2 1) );
+    }
+);

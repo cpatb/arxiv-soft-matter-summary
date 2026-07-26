@@ -1,0 +1,546 @@
+\documentclass[11pt,letterpaper]{article}
+
+%% ── PACKAGES ─────────────────────────────────────────────────────────────────
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+\usepackage[protrusion=true,expansion=false]{microtype}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+%% ── COLOURS ──────────────────────────────────────────────────────────────────
+\definecolor{accent}{RGB}{30,80,60}
+\definecolor{accent2}{RGB}{20,100,100}
+\definecolor{boxbg}{RGB}{240,238,232}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=accent,
+  citecolor=accent,
+  urlcolor=accent2,
+  pdftitle={Rigorous Analytical Treatment of Disc Flight and Stability},
+  pdfauthor={charlie}
+}
+
+%% ── SECTION FORMATTING ───────────────────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{accent}}
+  {\thesection.}{0.6em}{}[\vspace{-2pt}\rule{\linewidth}{0.6pt}]
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{accent!80!black}}
+  {\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}
+  {\normalsize\itshape}
+  {\thesubsubsection.}{0.4em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\color{gray}Analytical Treatment $\cdot$ Disc Flight}
+\lhead{\small\color{gray}Project 1 Companion}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+%% Boxed equation environment
+\newtcolorbox{keyeq}{
+  colback=boxbg, colframe=accent, boxrule=0.6pt,
+  arc=2pt, left=4pt, right=4pt, top=2pt, bottom=2pt
+}
+
+\setlength{\parskip}{0.5\baselineskip}
+\setlength{\parindent}{0pt}
+
+%% ── TITLE ────────────────────────────────────────────────────────────────────
+\title{\bfseries A Rigorous Analytical Treatment of\\Disc Flight and Stability}
+\author{charlie\\\small\textit{Companion to Project 1 --- Disc Flight in a Lakefront Internal Boundary Layer}}
+\date{Draft v0.1 \ $\cdot$\ \today}
+
+\begin{document}
+\maketitle
+
+\noindent This document derives, from first principles, the six-degree-of-freedom dynamics, steady-glide solutions, linear stability theory, and gyroscopic-precession behavior of a spinning rigid disc in flight, together with the closed-form effects of a steady non-uniform wind. The treatment is set up to be cited in the methods/theory section of the manuscript and to serve as the ground truth against which the numerical 6-DOF integrator and the coupled CFD simulator are validated. Notation follows Hummel (2003) / Crowther \& Potts (2007) where compatible, with several modernizations for clarity.
+
+\section{Reference frames and notation}
+
+We work with three right-handed orthonormal frames.
+
+\textbf{Inertial frame} $\mathcal{N} = \{\hat{\mathbf{n}}_1, \hat{\mathbf{n}}_2, \hat{\mathbf{n}}_3\}$: Earth-fixed, $\hat{\mathbf{n}}_3$ vertically upward, $\hat{\mathbf{n}}_1$ aligned with the intended throw azimuth at release.
+
+\textbf{Body frame} $\mathcal{B} = \{\hat{\mathbf{b}}_1, \hat{\mathbf{b}}_2, \hat{\mathbf{b}}_3\}$: attached to the disc, with $\hat{\mathbf{b}}_3$ along the disc's axis of symmetry (the rim is normal to $\hat{\mathbf{b}}_3$, pointing upward through the ``top'' of the disc --- i.e.\ the convex side for an Ultrastar). $\hat{\mathbf{b}}_1$ is taken to point along the projection of the relative wind $\mathbf{V}_{\text{rel}}$ onto the disc plane (so the body frame is \emph{not} purely material; it rotates only with pitch/roll/yaw, not with spin).
+
+\textbf{Spinning disc frame} $\mathcal{D}$: rotates with the disc at spin rate $\dot{\phi}_s$ about $\hat{\mathbf{b}}_3 = \hat{\mathbf{d}}_3$.
+
+The orientation of $\mathcal{B}$ relative to $\mathcal{N}$ is parameterized by a 3-1-3 Euler-angle sequence $(\psi, \theta, \phi_s)$ --- yaw $\psi$ about $\hat{\mathbf{n}}_3$, then tilt $\theta$ about the new $\hat{\mathbf{n}}_1'$, then spin $\phi_s$ about the body $\hat{\mathbf{b}}_3$. Since the disc is axisymmetric, only $(\psi, \theta)$ orient the symmetry axis; $\phi_s$ orients material points.
+
+The disc has mass $m$, diameter $d$, radius $r = d/2$, planar area $A = \pi d^2/4$. Treating the disc as a thin uniform plate gives principal moments of inertia
+\begin{equation}
+I_p \equiv I_x = I_y = \tfrac{1}{4} m r^2, \qquad
+I_s \equiv I_z = \tfrac{1}{2} m r^2, \qquad
+I_s = 2 I_p.
+\label{eq:Idef}
+\end{equation}
+For an Ultrastar ($m = 0.175$~kg, $r = 0.135$~m):
+\begin{equation}
+I_s \approx 1.59\times10^{-3}\ \text{kg}\cdot\text{m}^2, \qquad
+I_p \approx 7.97\times10^{-4}\ \text{kg}\cdot\text{m}^2.
+\label{eq:Inum}
+\end{equation}
+The inertia tensor $\mathsf{I}_{\mathcal{B}} = \operatorname{diag}(I_p, I_p, I_s)$ is diagonal in $\mathcal{B}$ regardless of spin phase, by axisymmetry --- the essential simplification that makes the disc tractable.
+
+Let $\boldsymbol{\omega}$ be the angular velocity of $\mathcal{B}$ relative to $\mathcal{N}$, with body-frame components $(p, q, r)$:
+\begin{equation}
+\boldsymbol{\omega} = p\,\hat{\mathbf{b}}_1 + q\,\hat{\mathbf{b}}_2 + r\,\hat{\mathbf{b}}_3.
+\label{eq:omegadef}
+\end{equation}
+The disc's total angular velocity (including spin) is $\boldsymbol{\omega} + \dot{\phi}_s \hat{\mathbf{b}}_3 = p\,\hat{\mathbf{b}}_1 + q\,\hat{\mathbf{b}}_2 + (r + \dot{\phi}_s)\hat{\mathbf{b}}_3$. We define the \textbf{spin rate}
+\begin{equation}
+\Omega \equiv r + \dot{\phi}_s
+\label{eq:Omega}
+\end{equation}
+as the total component about $\hat{\mathbf{b}}_3$. Because $\mathcal{B}$ already follows the disc's tilt but not its spin, $r$ is small (rate of change of the orientation of the projected airflow) and $\Omega \approx \dot{\phi}_s$ in typical flight.
+
+Position of the disc center of mass in $\mathcal{N}$: $\mathbf{x}$; inertial velocity: $\mathbf{v} = \dot{\mathbf{x}}$. The relative wind is
+\begin{equation}
+\mathbf{V}_{\text{rel}}(\mathbf{x}, t) = \mathbf{v} - \mathbf{U}(\mathbf{x}, t), \qquad V \equiv |\mathbf{V}_{\text{rel}}|,
+\label{eq:Vrel}
+\end{equation}
+where $\mathbf{U}(\mathbf{x}, t)$ is the ambient wind, which for the CFD-coupled problem is read from the simulation output and treated as a \emph{known} field.
+
+\section{Aerodynamic angle of attack and force decomposition}
+
+The disc-plane component of $\mathbf{V}_{\text{rel}}$ and the disc-normal component are
+\begin{equation}
+\mathbf{V}_\parallel = \mathbf{V}_{\text{rel}} - (\mathbf{V}_{\text{rel}} \cdot \hat{\mathbf{b}}_3)\hat{\mathbf{b}}_3, \qquad
+V_\perp = \mathbf{V}_{\text{rel}}\cdot\hat{\mathbf{b}}_3.
+\end{equation}
+The angle of attack is
+\begin{equation}
+\alpha = \arctan\!\Big(\!-V_\perp / |\mathbf{V}_\parallel|\Big).
+\label{eq:alpha}
+\end{equation}
+Sign convention: $\alpha > 0$ when the flow strikes the lower (convex-bottom) surface, producing positive lift. This matches Hummel (2003).
+
+We choose the body $\hat{\mathbf{b}}_1$ axis along $\mathbf{V}_\parallel/|\mathbf{V}_\parallel|$, so $\hat{\mathbf{b}}_2 = \hat{\mathbf{b}}_3 \times \hat{\mathbf{b}}_1$ is the ``side'' axis, normal to the relative wind in the disc plane.
+
+The \textbf{lift direction} $\hat{\mathbf{L}}$ is the unit vector perpendicular to $\mathbf{V}_{\text{rel}}$, lying in the plane $(\mathbf{V}_{\text{rel}}, \hat{\mathbf{b}}_3)$, on the side of $\hat{\mathbf{b}}_3$:
+\begin{equation}
+\hat{\mathbf{L}} = \frac{\hat{\mathbf{b}}_3 - (\hat{\mathbf{b}}_3 \cdot \hat{\mathbf{v}}_{\text{rel}})\hat{\mathbf{v}}_{\text{rel}}}{\big|\hat{\mathbf{b}}_3 - (\hat{\mathbf{b}}_3 \cdot \hat{\mathbf{v}}_{\text{rel}})\hat{\mathbf{v}}_{\text{rel}}\big|}, \qquad \hat{\mathbf{v}}_{\text{rel}} = \mathbf{V}_{\text{rel}}/V.
+\end{equation}
+The \textbf{drag direction} is $-\hat{\mathbf{v}}_{\text{rel}}$. The aerodynamic force on the disc is therefore
+\begin{equation}
+\mathbf{F}_a = \tfrac{1}{2}\rho V^2 A\,\big[\,C_L(\alpha, \mathrm{AdvR})\,\hat{\mathbf{L}} - C_D(\alpha, \mathrm{AdvR})\,\hat{\mathbf{v}}_{\text{rel}}\,\big],
+\label{eq:Fa}
+\end{equation}
+where $\rho$ is air density and AdvR is the \textbf{advance ratio}
+\begin{equation}
+\mathrm{AdvR} \equiv \frac{\Omega d}{2 V}.
+\label{eq:AdvR}
+\end{equation}
+Wind-tunnel data (Potts \& Crowther 2002; Kamaruddin et al.\ 2018) shows that for AdvR up to $\sim 1$, $C_L$ and $C_D$ are essentially independent of AdvR, but the aerodynamic \emph{moments} are not. A side-force term $C_S$ would appear in (\ref{eq:Fa}) if the disc had asymmetry; for an Ultrastar it is negligible at small AdvR.
+
+\subsection{Linearized coefficients}
+
+Following Hummel (2003), in the low-to-moderate $\alpha$ regime relevant to most throws,
+\begin{equation}
+\begin{aligned}
+C_L(\alpha) &= C_{L0} + C_{L\alpha}\,(\alpha - \alpha_0), \\
+C_D(\alpha) &= C_{D0} + C_{D\alpha}\,(\alpha - \alpha_0)^2,
+\end{aligned}
+\label{eq:CLCD}
+\end{equation}
+with $\alpha_0 \approx -4^\circ$ the angle of minimum drag. The drag is quadratic because parasite drag at $\alpha_0$ is augmented by induced drag (lift-related vortex generation), exactly as for a low-aspect-ratio wing. The constants for a 175~g Ultrastar (Hummel ``short flights'' data):
+\begin{equation}
+C_{L0} = 0.33,\ \ C_{L\alpha} = 1.91\ \text{rad}^{-1},\ \
+C_{D0} = 0.18,\ \ C_{D\alpha} = 0.69\ \text{rad}^{-2}.
+\label{eq:Hummelnums}
+\end{equation}
+For uncertainty bracketing we cross-check against Potts \& Crowther (2002): $C_{L0}=0.20$, $C_{L\alpha}=2.96$, $C_{D0}=0.08$, $C_{D\alpha}=2.72$ --- substantially different absolute values but a similar L/D structure.
+
+The linear range of (\ref{eq:CLCD}) holds to $\alpha \lesssim 15^\circ$; beyond, stall dynamics enter and the coefficients must come from a tabulated wind-tunnel curve. All canonical Ultimate throws (backhand, forehand) launch in this linear range; only the \textbf{hammer} (overhead, $\alpha_0 \approx +40^\circ$) operates outside it and is handled separately.
+
+\subsection{Reynolds number}
+
+For $V \sim 15$~m/s, $d = 0.27$~m, $\nu_{\text{air}} = 1.5\times10^{-5}$~m$^2$/s:
+\begin{equation}
+\mathrm{Re} = \frac{V d}{\nu} = \frac{(15)(0.27)}{1.5\times10^{-5}} \approx 2.7\times10^{5}.
+\label{eq:Re}
+\end{equation}
+Potts \& Crowther (2002) showed $C_L, C_D$ are essentially Re-independent over $\mathrm{Re} \in [1.14, 3.78]\times10^5$. The coefficients in (\ref{eq:Hummelnums}) are therefore portable across the full operational wind range, justifying the use of the same (\ref{eq:CLCD}) throughout the trajectory.
+
+\section{Aerodynamic moments}
+
+Resolving the aerodynamic moment about the center of mass into body-frame components, with non-dimensionalization $\overline{M} = M / (\tfrac{1}{2}\rho V^2 A d)$:
+
+\subsection{Pitching moment $M$ (about $\hat{\mathbf{b}}_2$)}
+
+\begin{equation}
+M = \tfrac{1}{2}\rho V^2 A d\,\Big[\,C_{M0} + C_{M\alpha}(\alpha - \alpha_0) + C_{Mq}\,\tfrac{q d}{2V}\,\Big].
+\label{eq:Mpitch}
+\end{equation}
+Hummel (2003): $C_{M0} = -0.08$, $C_{M\alpha} = 0.43$~rad$^{-1}$, $C_{Mq} = -5.0\times10^{-3}$~rad$^{-1}$. The negative $C_{M0}$ is the \textbf{static stability} at $\alpha = \alpha_0$: the moment is nose-down. The positive $C_{M\alpha}$ is a \emph{destabilizing} slope --- increasing $\alpha$ produces a more positive (nose-up) moment, pushing $\alpha$ higher still. The disc is therefore \textbf{statically unstable in pitch} about $\hat{\mathbf{b}}_2$. Were it not spinning, it would tumble within a fraction of a second. The function of spin is to convert this static instability into stable gyroscopic precession (\S\ref{sec:precess}).
+
+The $C_{Mq}$ term is the pitch-damping coefficient; it is small and weakly stabilizing.
+
+\subsection{Rolling moment $R$ (about $\hat{\mathbf{b}}_1$)}
+
+\begin{equation}
+R = \tfrac{1}{2}\rho V^2 A d\,\Big[\,C_{Rr}\,\tfrac{r d}{2V} + C_{Rp}\,\tfrac{p d}{2V}\,\Big].
+\label{eq:Rroll}
+\end{equation}
+$C_{Rr}$ is the roll-due-to-yaw-rate coefficient (with $r \approx \Omega$ for the spin); $C_{Rp}$ is the roll-rate damping. Hummel values: $C_{Rr} = 1.4\times10^{-2}$, $C_{Rp} = -5.5\times10^{-3}$. The dominant effect is the spin-induced roll moment, which couples to the pitching moment (\ref{eq:Mpitch}) to produce the gyroscopic precession trajectory features.
+
+\subsection{Spin-axis moment $N$ (about $\hat{\mathbf{b}}_3$)}
+
+\begin{equation}
+N = \tfrac{1}{2}\rho V^2 A d\,\Big[\,C_{Nr}\,\tfrac{r d}{2V}\,\Big].
+\label{eq:Nspin}
+\end{equation}
+With $C_{Nr} = -7.1\times10^{-6}$~rad$^{-1}$ (Hummel short flights) or $-3.4\times10^{-5}$ (long flights). This is the only term in (\ref{eq:Nspin}); there is no $\alpha$-driven spin-up. The negative sign produces spin-down: dimensional time scale
+\begin{equation}
+\tau_{\text{spin}} \sim \frac{I_s}{|N|/\Omega} = \frac{I_s \cdot 2V}{|C_{Nr}|\,\rho V^2 A d^2 / 2}.
+\label{eq:tauspin}
+\end{equation}
+For $V = 15$~m/s, $\rho = 1.2$~kg/m$^3$: $\tau_{\text{spin}} \sim 4\times10^2$~s with the short-flight value, $\sim 80$~s with the long-flight value. Either way, $\tau_{\text{spin}}$ is long compared to typical flight times ($\sim 5$~s), so to leading order $\Omega$ is constant during a throw. Spin-down matters only for the longest flights (hammer arcs, big-arm hucks downwind).
+
+\section{Six-degree-of-freedom equations of motion}
+\label{sec:6dof}
+
+\subsection{Translational equation (Newton)}
+
+In $\mathcal{N}$:
+\begin{equation}
+m\,\dot{\mathbf{v}} = -m g\,\hat{\mathbf{n}}_3 + \mathbf{F}_a,
+\label{eq:Newton}
+\end{equation}
+with $\mathbf{F}_a$ from (\ref{eq:Fa}). Resolving (\ref{eq:Newton}) component-wise in $\mathcal{N}$ gives three ODEs for the inertial velocity.
+
+\subsection{Rotational equation (Euler)}
+
+The angular momentum of the disc about its center of mass, in $\mathcal{B}$:
+\begin{equation}
+\mathbf{H} = I_p p\,\hat{\mathbf{b}}_1 + I_p q\,\hat{\mathbf{b}}_2 + I_s \Omega\,\hat{\mathbf{b}}_3.
+\label{eq:H}
+\end{equation}
+The inertial time derivative satisfies Euler's relation,
+\begin{equation}
+\left(\frac{d\mathbf{H}}{dt}\right)_{\mathcal{N}} = \left(\frac{d\mathbf{H}}{dt}\right)_{\mathcal{B}} + \boldsymbol{\omega} \times \mathbf{H} = \mathbf{M},
+\label{eq:Euler}
+\end{equation}
+with $\mathbf{M} = R\,\hat{\mathbf{b}}_1 + M\,\hat{\mathbf{b}}_2 + N\,\hat{\mathbf{b}}_3$. Substituting (\ref{eq:omegadef}) and (\ref{eq:H}) into (\ref{eq:Euler}) and projecting onto each body axis, and absorbing $r$ into $\Omega$ (the symmetric-rotor convention; see e.g.\ Hubbard \& Hummel 2000), yields
+\begin{equation}
+\begin{aligned}
+I_p \dot{p} + (I_s - I_p)\,q\,\Omega &= R, \\
+I_p \dot{q} - (I_s - I_p)\,p\,\Omega &= M, \\
+I_s \dot{\Omega} &= N.
+\end{aligned}
+\label{eq:EulerEq}
+\end{equation}
+Equation (\ref{eq:EulerEq}c) gives the spin-down evolution (\S3.3, slow). The two equations (\ref{eq:EulerEq}a-b) are the \textbf{transverse gyroscopic equations} and are the central object of the stability analysis.
+
+\subsection{Kinematic equations for Euler angles}
+
+With $(\psi, \theta, \phi_s)$ in 3-1-3 convention,
+\begin{equation}
+\begin{pmatrix} p \\ q \\ r \end{pmatrix}
+=
+\begin{pmatrix}
+-\dot{\psi}\sin\theta\cos\phi_s + \dot{\theta}\sin\phi_s \\
+\phantom{-}\dot{\psi}\sin\theta\sin\phi_s + \dot{\theta}\cos\phi_s \\
+\dot{\psi}\cos\theta + \dot{\phi}_s
+\end{pmatrix}.
+\label{eq:Eulerkin}
+\end{equation}
+The standard 3-1-3 singularity at $\theta = 0$ (disc face exactly horizontal) is reached only briefly during very flat throws. For high-pitch maneuvers (hammers), a quaternion parametrization is preferable, but the linear-stability analysis below uses small perturbations about an equilibrium with $\theta \approx \text{const}$ and never encounters the singularity.
+
+\section{Gyroscopic precession: turn and fade}
+\label{sec:precess}
+
+This section contains the core physics result of the document --- the closed-form explanation of why a thrown disc turns and fades.
+
+\subsection{Reduction in the high-spin limit}
+
+In typical operation $\Omega \sim 100$~rad/s while $|p|, |q| \lesssim 10$~rad/s. Equations (\ref{eq:EulerEq}a-b) under the high-spin limit $|\Omega| \gg |p|, |q|$ retain only the gyroscopic terms:
+\begin{equation}
+(I_s - I_p)\,q\,\Omega \approx R, \qquad
+-(I_s - I_p)\,p\,\Omega \approx M,
+\label{eq:quasi}
+\end{equation}
+i.e.\ the body-frame angular velocity is \textbf{algebraically determined} by the applied moment in the high-spin limit. The inertial terms $I_p \dot{p}, I_p \dot{q}$ contribute corrections of order $(I_p / I_s)/(\Omega \tau)$ where $\tau$ is the timescale on which $M, R$ change --- typically the flight time. For $\Omega \tau \sim 500$, this is negligible (cf.\ textbook gyroscope theory). The disc behaves quasi-statically in the transverse angular variables.
+
+Solving (\ref{eq:quasi}) and using $I_s - I_p = I_p$ from (\ref{eq:Idef}):
+\begin{keyeq}
+\begin{equation}
+q = \frac{R}{I_p \Omega}, \qquad
+p = -\frac{M}{I_p \Omega}.
+\label{eq:precess}
+\end{equation}
+\end{keyeq}
+These are the \textbf{precession rates}. They are the textbook result for a fast-spinning gyroscope: the spin axis precesses about an axis perpendicular to the applied moment, at angular rate $|M|/(I_s\Omega)$ --- except here, with $I_s - I_p = I_p$ instead of $I_s$, the prefactor is $I_p \Omega$. (This is a feature of the symmetric disc: the effective gyroscopic inertia is $I_p$ for transverse precession, not $I_s$. Footnote-worthy in the paper.)
+
+\subsection{Interpretation: roll = ``turn'', pitch = (slow drift in $\alpha$)}
+
+In our body frame $\hat{\mathbf{b}}_1$ is along $\mathbf{V}_\parallel$, so the rate $p$ about $\hat{\mathbf{b}}_1$ tilts the disc plane about an axis along the flight direction --- i.e.\ it \textbf{rolls} the disc relative to the flight path. A right-handed thrower's backhand throws with spin direction $\Omega < 0$ in our convention (top of disc points up, spin angular momentum vector points downward). The aerodynamic pitching moment at flight equilibrium is positive (nose-up) for $\alpha > \alpha_0$, which is the typical release condition. By (\ref{eq:precess}b),
+\begin{equation}
+p = -\frac{M}{I_p \Omega} \quad \text{with } M > 0,\ \Omega < 0 \implies p > 0.
+\end{equation}
+A positive $p$ rolls the disc clockwise as seen from behind, looking along $\hat{\mathbf{b}}_1$ --- that is, it banks the disc to the right (\emph{anhyzer}). This is the celebrated ``\textbf{turn}'' that every Ultimate player has noticed: a backhand thrown with a positive $\alpha$ banks anhyzer in the first half of its flight.
+
+As the disc decelerates and $V$ falls, the dynamic pressure $\tfrac{1}{2}\rho V^2$ in (\ref{eq:Mpitch}) decreases as $V^2$ while the gravitational requirement on $C_L$ rises (to maintain glide), pulling $\alpha$ up and changing the sign and magnitude of $M$. Once $V$ drops enough that $M$ flips sign, $p$ flips with it and the disc banks the opposite way --- the ``\textbf{fade}.'' Quantitatively, the turn-to-fade transition occurs when $\alpha$ crosses the value at which $C_M(\alpha) = 0$:
+\begin{equation}
+\alpha_M^\star = \alpha_0 - C_{M0}/C_{M\alpha} = -4^\circ - (-0.08/0.43)\,\text{rad} = -4^\circ + 10.7^\circ = 6.7^\circ.
+\label{eq:trimangle}
+\end{equation}
+A disc released at $\alpha > 6.7^\circ$ initially turns anhyzer (right-handed backhand), then fades hyzer when $\alpha$ drops below $6.7^\circ$ --- which happens spontaneously as the disc loses speed and gravity pulls it down into a steeper angle of climb. \emph{This single number, $6.7^\circ$, organizes the entire turn-and-fade pattern of throws.}
+
+\subsection{Pitch evolution and the slow precession of $\alpha$}
+
+The complementary rate $q$ about $\hat{\mathbf{b}}_2$ is more subtle: it changes the orientation of $\hat{\mathbf{b}}_3$ in the plane containing $\mathbf{V}_\parallel$, i.e.\ it changes the \textbf{angle of attack}. From (\ref{eq:precess}a) and (\ref{eq:Rroll}), $q$ is driven by the spin-induced roll moment $R$, which scales as $C_{Rr}$. For a backhand ($\Omega < 0$), $C_{Rr} > 0$ $\Rightarrow R < 0$ $\Rightarrow q < 0$, i.e.\ the disc tends to \textbf{pitch nose-down}. This slow precession of $\alpha$ is the secondary mechanism by which a steady-state glide is approached. It is also why a disc thrown with too high a release $\alpha$ does \emph{not} simply tumble: the gyroscopic action converts the pitching moment into roll (the turn), not into a runaway pitch increase, and the disc relaxes toward $\alpha_M^\star$ on a precessional time scale ($\sim 2V/(C_{Rr}\Omega d)$) rather than the inertial pitch time scale.
+
+\subsection{Spin stability criterion}
+
+For the gyroscopic stabilization to work, the precessional time scale must be shorter than the time scale on which an unspun disc would tumble due to the destabilizing $C_{M\alpha}$. The latter is
+\begin{equation}
+\tau_{\text{tumble}} \sim \sqrt{I_p / (|\partial M / \partial \alpha|)} = \sqrt{I_p / (\tfrac{1}{2}\rho V^2 A d\,C_{M\alpha})}.
+\label{eq:tautumble}
+\end{equation}
+The precessional time scale is $\tau_{\text{prec}} \sim 2V/(C_{Rr}\,\Omega\,d)$. The stability requirement $\tau_{\text{prec}} \ll \tau_{\text{tumble}}$ becomes, after algebra,
+\begin{equation}
+\Omega^2 \gg \frac{\rho V^4 A\,C_{M\alpha}}{2\,C_{Rr}^2\,I_p\,d}.
+\label{eq:stabilitycriterion}
+\end{equation}
+For $V = 15$~m/s, plugging numbers gives $\Omega_{\min} \sim 950$~rad/s --- \emph{two orders of magnitude above the typical throw spin of $100$~rad/s.} The naïve criterion (\ref{eq:stabilitycriterion}) is therefore not satisfied; nonetheless the disc is stable. This apparent paradox resolves because the destabilizing pitching moment does not produce divergent tumble --- gyroscopic action converts it to \emph{roll}, not pitch, and the roll is bounded by the precessional dynamics themselves (not by an external restoring moment). The disc is \textbf{conditionally stable}: the angle of attack relaxes on a time scale comparable to the flight time, which is ``fast enough'' to keep the disc flying nose-roughly-into-the-wind for the duration of a throw, but not so fast that the trajectory is forced to glide-equilibrium. A more precise condition is given by the eigenvalue analysis of \S\ref{sec:stab}.
+
+This is, incidentally, the analytical reason a Frisbee flies but a flat plate of the same shape does not: the plate has $C_{M\alpha}$ but no $C_{Rr}$ to drive the precessional escape, and tumbles on $\tau_{\text{tumble}} \sim 0.1$~s.
+
+\section{Steady gliding flight and maximum range}
+\label{sec:glide}
+
+\subsection{The glide equilibrium}
+
+We look for a straight-line steady solution with $\dot{V} = 0$, fixed glide angle $\gamma$ below horizontal, constant $\alpha$, $\Omega \approx \text{const}$ (over the relevant time), no transverse precession ($\dot{p} = \dot{q} = 0$, $p = q = 0$). The translational balance projects onto the flight path and its normal:
+\begin{align}
+\text{along } \mathbf{V}_{\text{rel}}: & \quad mg \sin\gamma = D = \tfrac{1}{2}\rho V^2 A\, C_D, \label{eq:glide-along}\\
+\text{normal:} & \quad mg \cos\gamma = L = \tfrac{1}{2}\rho V^2 A\, C_L. \label{eq:glide-norm}
+\end{align}
+Dividing,
+\begin{equation}
+\tan\gamma = \frac{C_D(\alpha)}{C_L(\alpha)},
+\label{eq:tan-glide}
+\end{equation}
+the classic glider equation: glide angle is set by the inverse lift-to-drag ratio at the operating $\alpha$. From (\ref{eq:glide-norm}),
+\begin{equation}
+V^2 = \frac{2 m g \cos\gamma}{\rho A\,C_L(\alpha)}.
+\label{eq:V-glide}
+\end{equation}
+
+\subsection{Maximum L/D and the optimal cruise $\alpha$}
+
+Maximizing $C_L/C_D$ in the linear/quadratic model (\ref{eq:CLCD}) gives the optimal angle-of-attack offset $\Delta\alpha^\star = \alpha^\star - \alpha_0$ as the positive root of
+\begin{equation}
+C_{D\alpha}\,C_{L\alpha}\,\Delta\alpha^2 + 2 C_{D\alpha} C_{L0}\,\Delta\alpha - C_{L\alpha} C_{D0} = 0.
+\end{equation}
+Closed form:
+\begin{equation}
+\Delta\alpha^\star = \frac{-C_{L0} + \sqrt{C_{L0}^2 + C_{L\alpha}^2\,C_{D0}/C_{D\alpha}}}{C_{L\alpha}}.
+\label{eq:alphastar}
+\end{equation}
+For Hummel coefficients (\ref{eq:Hummelnums}): $\Delta\alpha^\star \approx 0.366$~rad $\approx 21^\circ$, giving $\alpha^\star \approx 17^\circ$, $C_L \approx 1.03$, $C_D \approx 0.27$, $(L/D)_{\max} \approx 3.8$. The Hummel linearization overshoots the wind-tunnel $(L/D)_{\max} \approx 2.5$ at $\alpha \approx 9^\circ$ (Potts-Crowther data) because (\ref{eq:CLCD}) does not capture stall onset. \textbf{For all paper-quality work the linearization must be replaced by tabulated $C_L(\alpha), C_D(\alpha)$ beyond $\alpha \approx 15^\circ$.} The Hummel-coefficient prediction (\ref{eq:alphastar}) should be reported as a heuristic upper bound and explicitly bracketed against the wind-tunnel-data optimum $\alpha \approx 9^\circ$, $(L/D)_{\max} \approx 2.5$.
+
+\subsection{Range and time of flight}
+
+For a glide angle $\gamma$ released at height $h_0$:
+\begin{equation}
+R_{\text{glide}} = \frac{h_0}{\tan\gamma} = h_0 \cdot \frac{C_L(\alpha)}{C_D(\alpha)}.
+\end{equation}
+For $h_0 = 1.5$~m (release height) and $(L/D)_{\max} \approx 2.5$: $R_{\text{glide,steady}} \approx 3.75$~m --- laughably short, of course, because actual throws are not steady glides; they begin with $V$ well above the glide value and store kinetic energy in the initial fast cruise. \textbf{Lissaman \& Hubbard (2010)} treat the optimization more carefully, including ballistic phase + glide phase, and give a maximum range of $\sim 180$~m for a 30~m/s launch into still air. For working purposes here, the relevant analytical statement is: \emph{steady-glide range is bounded by $h_0 (L/D)_{\max}$, but the dominant range contribution in real throws comes from the ballistic / ``lifting cruise'' phase during which kinetic energy is depleted at the optimal-glide L/D.}
+
+\subsection{Trim condition for the body}
+
+The translational equilibrium fixes $V$ and $\gamma$ given $\alpha$. The rotational equilibrium under (\ref{eq:EulerEq}) requires $M = 0$ and $R = 0$ (since $\dot{p} = \dot{q} = 0$ and $p = q = 0$ in steady glide). The $M = 0$ condition fixes $\alpha = \alpha_M^\star$ (eq.\ \ref{eq:trimangle}):
+\begin{keyeq}
+\begin{equation}
+\alpha_{\text{trim}} = \alpha_0 - \frac{C_{M0}}{C_{M\alpha}} = 6.7^\circ.
+\label{eq:alphatrim}
+\end{equation}
+\end{keyeq}
+This is the \textbf{trim angle of attack} --- the only $\alpha$ at which the disc can glide without precession. The disc therefore self-selects $\alpha = 6.7^\circ$ asymptotically, and the corresponding $L/D$ at this $\alpha$ is
+\begin{equation}
+(L/D)_{\text{trim}} = \frac{C_{L0} + C_{L\alpha}(\alpha_M^\star - \alpha_0)}{C_{D0} + C_{D\alpha}(\alpha_M^\star - \alpha_0)^2}
+= \frac{0.33 + 1.91(0.187)}{0.18 + 0.69(0.187)^2}
+= \frac{0.687}{0.204}
+\approx 3.4.
+\label{eq:LDtrim}
+\end{equation}
+Cross-checking with the Potts-Crowther coefficients gives $\alpha_M^\star \approx 4.4^\circ$ and $(L/D)_{\text{trim}} \approx 3.0$ (less reliable because Potts-Crowther's CM values are reported with reduced precision). The convergence on a self-trimmed glide $L/D$ in the range $2.5$--$3.5$ matches both the in-flight measurements of Lorenz (2005) and the trajectory simulations of Lukes et al.\ (2022).
+
+\textbf{Key analytical statement:} the trim angle $\alpha_M^\star$ (where the pitching moment vanishes) is \emph{not} the same as the angle $\alpha^\star$ that maximizes $L/D$. They differ by $\sim 5$--$10^\circ$. The disc cannot fly at $\alpha^\star$ in steady state because the precession drives it to $\alpha_M^\star$. The achievable glide $L/D$ is therefore $(L/D)_{\text{trim}} \approx 3.4$, not $(L/D)_{\max} \approx 3.8$. This is a real loss but a small one, and it explains why the wind-tunnel optimum is rarely attained in flight.
+
+\section{Linear stability about the trim glide}
+\label{sec:stab}
+
+\subsection{Perturbation setup}
+
+We linearize the 6-DOF system (\ref{eq:Newton})+(\ref{eq:EulerEq}) about the trim glide of \S\ref{sec:glide}. The reference state has
+\begin{equation}
+V = V_e,\ \alpha = \alpha_M^\star = 6.7^\circ,\ \gamma = \gamma_e = \arctan(C_D/C_L)_{\text{trim}},\ \Omega = \Omega_e,\ p = q = 0.
+\end{equation}
+Perturbation variables: $(u, w, \delta q, \delta p, \delta\Omega)$ where $u$ is along-path velocity perturbation, $w$ is normal velocity perturbation (so $\alpha = \alpha_e + w/V_e + O(w^2)$), and the angular perturbations are about the trim.
+
+\subsection{Longitudinal mode (phugoid-like)}
+
+The translational equations (\ref{eq:Newton}) linearized along and perpendicular to the trim path give, after some standard algebra (Etkin \& Reid, \emph{Dynamics of Flight}),
+\begin{align}
+\dot{u} &= -g\cos\gamma_e\,(2 u/V_e) - g\sin\gamma_e\,(w/V_e) + \text{(quadratic-drag corrections)},\\
+\dot{w} &= -g\,(C_{L\alpha}/C_L)\,(w/V_e) + g\sin\gamma_e\,(2 u/V_e).
+\end{align}
+This is the \textbf{disc analog of the airplane phugoid}: a slow oscillation in $u$ and $w$ at frequency
+\begin{equation}
+\omega_{\text{phugoid}} = \frac{g\sqrt{2}}{V_e}, \qquad T_{\text{phugoid}} = \frac{\pi V_e \sqrt{2}}{g}.
+\label{eq:phug}
+\end{equation}
+For $V_e = 12$~m/s, $T \approx 5.4$~s --- \emph{comparable to the flight time}. The phugoid mode is therefore just barely excitable within a single throw; what it produces in practice is a gentle sinusoidal undulation of the trajectory (``S-curve'' trajectories of throws against slight tailwinds).
+
+\subsection{Lateral/precession mode}
+
+The transverse equations (\ref{eq:EulerEq}a-b) in the high-spin limit (\ref{eq:quasi}) gave algebraic $p, q$. Restoring the inertial terms and linearizing $M, R$ about trim:
+\begin{align}
+I_p \dot{\delta p} + (I_s - I_p)\,\delta q\,\Omega_e &= \delta R = -\tfrac{\partial R}{\partial \alpha}\tfrac{w}{V_e} + C_{Rp}\tfrac{\delta p\, d}{2 V_e}\,Q_{\text{trim}} + \ldots,\\
+I_p \dot{\delta q} - (I_s - I_p)\,\delta p\,\Omega_e &= \delta M = C_{M\alpha}\,\tfrac{w}{V_e}\,Q_{\text{trim}} d + C_{Mq}\,\tfrac{\delta q\,d}{2V_e}\,Q_{\text{trim}}\,d + \ldots,
+\end{align}
+with $Q_{\text{trim}} = \tfrac{1}{2}\rho V_e^2 A$. Substituting yields a damped oscillator for $\delta q$ at the \textbf{precession frequency}
+\begin{equation}
+\omega_{\text{prec}}^2 \approx \left(\frac{(I_s - I_p)\Omega_e}{I_p}\right)^2 = \Omega_e^2,
+\label{eq:omegaprec}
+\end{equation}
+with damping $\zeta_{\text{prec}} \sim |C_{Mq}|\,Q_{\text{trim}} d^2 / (2 I_p V_e \omega_{\text{prec}})$.
+
+For $\Omega_e = 100$~rad/s: $T_{\text{prec}} = 2\pi/\Omega_e \approx 0.063$~s --- much faster than the flight. \emph{This} is what makes the disc behave gyroscopically: the precession mode is fast and well-damped, so on flight time scales it is effectively slaved to its quasi-static value (\ref{eq:precess}), which is what we used in \S\ref{sec:precess}.
+
+A useful re-derivation: the transverse-precession eigenvalues of the linearized (\ref{eq:EulerEq}a-b) are approximately
+\begin{equation}
+\lambda_{\text{prec}} \approx -\frac{|C_{Mq}|\,Q_{\text{trim}} d^2}{4 I_p V_e} \pm i\,\Omega_e,
+\label{eq:eigval}
+\end{equation}
+a pair of slowly damped oscillations at frequency $\Omega_e$. The damping decay time is $\sim 4 I_p V_e / (|C_{Mq}|\,Q_{\text{trim}} d^2)$; for the trim flight, $\sim 30$--$100$~s. The mode is stable but lightly damped --- which means \emph{initial-condition errors in p, q at release ring down slowly}. This is exactly the ``wobble'' experienced after a sloppy release: the disc visibly oscillates for a second or two before settling.
+
+\subsection{Coupling: precession-modulated phugoid}
+
+The cross-coupling between the (slow) translational phugoid mode and the (fast) gyroscopic precession mode generates the turn-and-fade trajectory pattern via the mechanism of \S\ref{sec:precess}. Formally: the slow drift of $\alpha$ along the phugoid (and along the open-loop trim relaxation) modulates the pitching moment $M(\alpha)$, which through (\ref{eq:precess}b) drives a quasi-static $p \propto -M/\Omega$. The integrated heading change over a flight time $T$ is
+\begin{equation}
+\Delta\Psi = \int_0^T p(t)\,dt \approx -\frac{1}{I_p \Omega} \int_0^T M(\alpha(t))\,dt.
+\label{eq:dpsi}
+\end{equation}
+If $\alpha(t) - \alpha_M^\star$ averages to zero over the flight (the disc passes from above to below trim), then $\Delta\Psi \approx 0$ --- no net heading change. If the disc spends more time above trim (i.e.\ high-$\alpha$ throws), $\Delta\Psi$ is large and one-signed (anhyzer for a right-handed backhand). This integrated quantity is the practical \emph{throw shape}: how much net curl from release to landing.
+
+\section{Effect of wind}
+\label{sec:wind}
+
+\subsection{Velocity triangle}
+
+The relative wind is $\mathbf{V}_{\text{rel}} = \mathbf{v} - \mathbf{U}$. For a uniform steady wind $\mathbf{U} = U_0\,\hat{\mathbf{w}}$, the airspeed magnitude and direction relative to ground are shifted:
+\begin{equation}
+V = |\mathbf{v} - U_0\hat{\mathbf{w}}|, \qquad \beta_w = \arccos\!\left(\frac{(\mathbf{v} - U_0\hat{\mathbf{w}})\cdot \hat{\mathbf{v}}_{\text{ground}}}{V}\right).
+\end{equation}
+For a tailwind ($\hat{\mathbf{w}}$ parallel to $\mathbf{v}$): $V = v_{\text{ground}} - U_0$. Headwind: $V = v_{\text{ground}} + U_0$. Crosswind: changes effective heading.
+
+\subsection{Effect on $\alpha$ and the trim point}
+
+Since $\alpha$ is set by the geometry of $\mathbf{V}_{\text{rel}}$ relative to the disc plane, a tailwind that reduces $V$ also raises the effective $\alpha$ at constant body orientation (because the descent velocity component $w$ is unchanged but the horizontal component shrinks). Quantitatively, if the disc descends at $\dot{z} < 0$ in steady glide:
+\begin{equation}
+\alpha_{\text{tail}} - \alpha_{\text{still}} \approx \frac{w_{\text{glide}}\,U_0}{V_{\text{still}}^2}.
+\label{eq:alpha-tail}
+\end{equation}
+For $w_{\text{glide}} = V_{\text{still}} \sin\gamma \approx 4$~m/s, $V_{\text{still}} = 12$~m/s, $U_0 = 5$~m/s tailwind: $\Delta\alpha \approx 4 \cdot 5 / 144 \approx 0.14$~rad $\approx 8^\circ$. A 5~m/s tailwind therefore pushes $\alpha$ from $\sim 7^\circ$ trim to $\sim 15^\circ$ --- well above trim. By the turn argument of \S\ref{sec:precess}, this drives a substantial anhyzer turn rate. \textbf{Tailwinds make backhands turn more}, a well-known practitioner observation now given an analytical form. Headwinds do the opposite: a 5~m/s headwind reduces $\alpha$ by $\sim 8^\circ$, pushing the disc below trim and accelerating the fade.
+
+\subsection{Crosswind drift}
+
+For a crosswind $\mathbf{U} = U_c\,\hat{\mathbf{n}}_2$ perpendicular to the intended throw direction, the disc's airspeed direction is rotated by $\arctan(U_c/V_e) \sim 23^\circ$ for $U_c = 5$~m/s, $V_e = 12$~m/s. The trim angle of attack is unchanged (it depends only on $\alpha$ relative to the disc plane), but the disc's groundtrack rotates by the same angle. Cumulatively over a throw, this is a substantial lateral drift --- for $T = 4$~s flight: $\Delta y \approx U_c T = 20$~m. \textbf{The leading lateral-error term for an outdoor throw is simply $U_c T$.} Any wind-correction scheme starts here.
+
+\subsection{Wind-gradient effects (the lakefront IBL)}
+
+When $\mathbf{U} = \mathbf{U}(z)$ varies with height --- as in the Sean Earl Field internal boundary layer, where $|U|$ grows rapidly from the surface up to the IBL top at $z \sim 5$~m --- a climbing disc experiences a \emph{changing} relative wind. Differentiating:
+\begin{equation}
+\frac{d\mathbf{V}_{\text{rel}}}{dt} = \dot{\mathbf{v}} - \frac{d\mathbf{U}}{dt} = \dot{\mathbf{v}} - (\mathbf{v}\cdot\nabla)\mathbf{U}.
+\end{equation}
+The second term acts as an effective extra acceleration. For an updraft-equivalent gradient $\partial U_x/\partial z > 0$ encountered as the disc climbs (vertical velocity $w_z > 0$), the airspeed shifts toward more tailwind --- \emph{exactly} the same effect as a sudden tailwind gust at constant altitude, with magnitude proportional to $w_z\,\partial U/\partial z$. For the lakefront IBL, $\partial U/\partial z \sim 1$~s$^{-1}$ near the surface; a climbing disc at $w_z = 2$~m/s sees a 2~m/s tailwind gust over a one-second climb, which by (\ref{eq:alpha-tail}) shifts $\alpha$ by $\sim 3^\circ$. This is enough to bias the trajectory of low backhand throws, and is the analytical justification for caring about the CFD-resolved $U(z)$ field rather than a height-averaged surface wind.
+
+\section{Optimal release conditions}
+
+Given the trim analysis, the optimal release for maximum still-air range is:
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+  \item Release at the angle of attack that puts the disc \emph{near but above} the trim $\alpha_M^\star = 6.7^\circ$, so that the disc decelerates through its high-L/D range.
+  \item Release speed $V_0$ large enough that the disc enters the trim glide \emph{after} the desired range, not before.
+  \item Spin rate large enough to suppress wobble --- practical $\Omega \gtrsim 50$~rad/s, well within typical throw range.
+\end{enumerate}
+
+In the presence of a steady wind $\mathbf{U}$:
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item \textbf{Tailwind:} release at \emph{lower} $\alpha_0$ than still-air, to counter the wind-induced $\alpha$ increase (\ref{eq:alpha-tail}).
+  \item \textbf{Headwind:} release at higher $\alpha_0$ (and lower $V_0$, since induced drag is amplified by the higher airspeed against headwind).
+  \item \textbf{Crosswind:} aim heading at $\arctan(U_c/V_e)$ upwind of the target, plus an iterative correction for the integrated drift $U_c T$.
+\end{itemize}
+
+In the presence of a spatially varying wind field $\mathbf{U}(\mathbf{x})$ from CFD (the central case of the manuscript), the optimal release is found by \textbf{trajectory optimization} in the 6-DOF model: a Pontryagin / shooting-method search over $(V_0, \alpha_0, \Omega_0, \theta_{\text{throw}})$ minimizing landing-point error for each target. This is straightforward but numerical; the analytical content is the 6-DOF model itself, and the closed-form approximations of \S\ref{sec:glide}--\S\ref{sec:wind} act as the initial conditions for the search.
+
+\section{Summary of analytical results}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.30\linewidth} l p{0.27\linewidth} p{0.27\linewidth}@{}}
+\toprule
+\textbf{Result} & \textbf{Symbol} & \textbf{Closed form} & \textbf{Numerical (Hummel)} \\
+\midrule
+Reynolds number & Re & $V d/\nu$ & $2.7\times10^5$ \\
+Spin moment of inertia & $I_s$ & $\tfrac{1}{2}m r^2$ & $1.59\times10^{-3}$ kg\,m$^2$ \\
+Transverse moment of inertia & $I_p$ & $\tfrac{1}{4}m r^2$ & $7.97\times10^{-4}$ kg\,m$^2$ \\
+Precession rate (roll) & $p$ & $-M/(I_p\Omega)$ & quasi-static \\
+Precession rate (pitch) & $q$ & $+R/(I_p\Omega)$ & quasi-static \\
+Trim angle of attack & $\alpha_{M^\star}$ & $\alpha_0 - C_{M0}/C_{M\alpha}$ & $6.7^\circ$ \\
+Trim glide L/D & $(L/D)_{\text{trim}}$ & eq.\ (\ref{eq:LDtrim}) & $\approx 3.4$ \\
+Max-L/D angle & $\alpha^\star$ & eq.\ (\ref{eq:alphastar}) & $\approx 17^\circ$ (lin.) \\
+Spin-down time & $\tau_{\text{spin}}$ & eq.\ (\ref{eq:tauspin}) & $\sim 80$--$400$ s \\
+Phugoid period & $T_{\text{phug}}$ & $\pi V_e\sqrt{2}/g$ & $\approx 5.4$ s \\
+Precession period & $T_{\text{prec}}$ & $2\pi/\Omega$ & $\approx 0.06$ s \\
+Precession damping decay & $\tau_{\text{prec,decay}}$ & eq.\ (\ref{eq:eigval}) & $\sim 30$--$100$ s \\
+Tailwind $\alpha$ shift & $\Delta\alpha$ & $w_g U_0/V_{\text{still}}^2$ & $+8^\circ$ @ $U_0=5$ m/s \\
+Crosswind drift & $\Delta y$ & $U_c T$ & $20$ m @ $U_c=5$ m/s, $T=4$ s \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Open analytical extensions worth pursuing}
+
+\begin{enumerate}[leftmargin=*,itemsep=4pt]
+  \item \textbf{Beyond the linear-coefficient model.} The single most-impactful improvement is replacing (\ref{eq:CLCD}) with the tabulated wind-tunnel $C_L(\alpha), C_D(\alpha), C_M(\alpha)$ from Potts \& Crowther (2002). The trim and L/D analyses port over directly with the linearization replaced by table lookups; the trim equation $C_M(\alpha) = 0$ becomes a 1-D root-find rather than (\ref{eq:alphatrim}). Worth doing.
+  \item \textbf{Advance-ratio dependence of $C_L, C_D$.} Potts \& Crowther's data also shows weak AdvR dependence at AdvR $\gtrsim 0.5$. For low-spin throws (sloppy releases) this matters. A perturbative correction $C_L \to C_L (1 + \kappa\,\mathrm{AdvR})$ from the wind-tunnel fits would give a closed-form modifier.
+  \item \textbf{Roisman-style asymptotic analysis of the turn.} The integrated turn angle (\ref{eq:dpsi}) under a model phugoid trajectory ($\alpha(t)$ given by linearized longitudinal dynamics) should give a closed-form prediction of net hyzer/anhyzer as a function of release $\alpha_0$ and $V_0$. To my knowledge nobody has written this down; it's a tractable 3--4-page calculation.
+  \item \textbf{Non-axisymmetric corrections for the rim profile.} The Ultrastar's rim is slightly non-flat (a ``lip''). This introduces a small $C_S(\alpha)$ side force and breaks the body-frame $\hat{\mathbf{b}}_1$-along-airflow assumption used in \S3. A perturbative treatment quantifies the residual ``side slip'' that all practitioners feel but no published analysis treats.
+  \item \textbf{Coupled stability with an inhomogeneous wind $\mathbf{U}(\mathbf{x})$.} The wind-gradient analysis (\S\ref{sec:wind}.4) is currently only a single-term WKB-type estimate. A full Floquet treatment of the linearized 6-DOF in a streamwise-periodic wind (representative of a building wake) would predict resonance windows where the trajectory becomes especially sensitive to launch parameters --- a publishable analytical result that would naturally accompany the CFD.
+\end{enumerate}
+Items 1, 3, and 5 are the strongest candidates for inclusion in the manuscript theory section; 2 and 4 are journal-club material.
+
+\section*{References (verified)}
+
+\begin{description}[font=\normalfont\itshape,leftmargin=1em]
+  \item Crowther, W.J.\ \& Potts, J.R.\ (2007). Simulation of a spin-stabilised sports disc. \emph{Sports Engineering} \textbf{10}(1), 3--21.
+  \item Etkin, B.\ \& Reid, L.D.\ (1996). \emph{Dynamics of Flight: Stability and Control.} 3rd ed., Wiley.
+  \item Hubbard, M.\ \& Hummel, S.A.\ (2000). Simulation of Frisbee Flight. 5th Math \& Computers in Sport, Sydney.
+  \item Hummel, S.A.\ (2003). \emph{Frisbee Flight Simulation and Throw Biomechanics.} MS Thesis, UC Davis.
+  \item Kamaruddin, N.M., Potts, J.R.\ \& Crowther, W.J.\ (2018). Aerodynamic performance of flying discs. \emph{Aircraft Eng.\ Aerosp.\ Tech.}\ \textbf{90}(2), 390--397.
+  \item Lissaman, P.B.S.\ \& Hubbard, M.\ (2010). Maximum range of flying discs. \emph{Procedia Engineering} \textbf{2}(2), 2529--2535.
+  \item Lorenz, R.D.\ (2005). Flight and attitude dynamics measurements of an instrumented Frisbee. \emph{Meas.\ Sci.\ Technol.}\ \textbf{16}(3), 738.
+  \item Lukes, R., Hart, J.\ et al.\ (2022). Disc golf trajectory modelling combining CFD and rigid body dynamics. \emph{Sports Engineering} \textbf{25}, 24.
+  \item Potts, J.R.\ \& Crowther, W.J.\ (2002). Frisbee\texttrademark{} aerodynamics. AIAA 2002-3150.
+  \item Stilley, G.D.\ \& Carstens, D.L.\ (1972). \emph{Adaptation of the Frisbee Flight Principle to Delivery of Special Ordnance.} Sandia Labs SC-DR-72-0427.
+\end{description}
+
+\end{document}
+nd{description}
+
+\end{document}

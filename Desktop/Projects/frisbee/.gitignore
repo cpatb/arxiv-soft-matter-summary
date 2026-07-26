@@ -1,0 +1,9 @@
+# OpenFOAM run artefacts (regenerable; huge)
+SeanEarl_DiscFlight/P3_CFD/cases/
+SeanEarl_DiscFlight/P3_CFD/**/processor*/
+SeanEarl_DiscFlight/P3_CFD/**/postProcessing/
+# Large intermediate geospatial downloads
+SeanEarl_DiscFlight/P2_Geometry/raw/
+__pycache__/
+*.pyc
+.pytest_cache/
