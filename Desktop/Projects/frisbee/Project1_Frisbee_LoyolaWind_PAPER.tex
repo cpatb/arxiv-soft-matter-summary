@@ -1,0 +1,678 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+\usepackage[protrusion=true,expansion=false]{microtype}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{float}
+\graphicspath{{figs/}{SeanEarl_DiscFlight/P5_Synthesis/figs/}}
+
+\definecolor{accent}{RGB}{30,80,60}
+\definecolor{accent2}{RGB}{20,100,100}
+\definecolor{boxbg}{RGB}{240,238,232}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=accent,
+  citecolor=accent,
+  urlcolor=accent2,
+  pdftitle={Disc Flight in a Lakefront Internal Boundary Layer (Draft)},
+  pdfauthor={charlie}
+}
+
+\titleformat{\section}
+  {\large\bfseries\color{accent}}
+  {\thesection.}{0.6em}{}[\vspace{-2pt}\rule{\linewidth}{0.6pt}]
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{accent!80!black}}
+  {\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}
+  {\normalsize\itshape}
+  {\thesubsubsection.}{0.4em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\color{gray}Project 1 $\cdot$ Frisbee + Loyola Wind}
+\lhead{\small\color{gray}Manuscript Draft v0.1}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\setlength{\parskip}{0.5\baselineskip}
+\setlength{\parindent}{0pt}
+
+\title{\bfseries Disc Flight in a Lakefront Internal Boundary Layer:\\Coupling Analytical Frisbee Aerodynamics with Site-Specific Urban CFD\\over Loyola University's Sean Earl Field}
+\author{charlie\\\small affiliation TBD}
+\date{Draft v0.1 \ $\cdot$\ \today}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Companion document:} \emph{Project1\_AnalyticalTreatment.tex} (rigorous 6-DOF derivation, stability, gyroscopic precession).
+
+\section*{How to read this document}
+
+Three layers stacked: \textbf{feasibility memo} (\S\ref{sec:feas}), \textbf{project plan} (\S\ref{sec:plan}), and \textbf{paper first draft} (\S\ref{sec:abstract} onward). Read \S\ref{sec:feas} first; if you disagree with the scope changes proposed there, the draft from \S\ref{sec:abstract} onward needs to be reframed.
+
+\begin{tcolorbox}[colback=boxbg,colframe=accent,boxrule=0.6pt,left=6pt,
+                  right=6pt,top=4pt,bottom=4pt]
+\small\textbf{Status of this version.} \S\ref{sec:feas} and \S\ref{sec:plan}
+are the \emph{original planning memo} and are retained unedited as a record of
+intent. Where the executed work departs from them --- and it does, in the
+number of CFD directions, the solver version, the building heights and the site
+description --- \textbf{the paper sections from \S\ref{sec:abstract} onward are
+authoritative}, and \S\ref{sec:limits} states the delivered scope explicitly.
+All numbers quoted from \S\ref{sec:abstract} onward come from a converged run
+or a passing test; nothing is projected.
+\end{tcolorbox}
+
+\section{Feasibility check}
+\label{sec:feas}
+
+\subsection{What the notes propose}
+
+\begin{quote}
+(1) Analytical treatment of ideal conditions for throwing a frisbee.\\
+(2) Build a realistic 3D map of the terrain surrounding Loyola field --- houses, buildings --- simulate wind off the lake spanning 180$^\circ$, generate 3D flow fields across the turf to capture vortices.\\
+\emph{Goal:} determine the best conditions for this constrained terrain that best allow for frisbee.\\
+\emph{Tools:} OpenFOAM or COMSOL.
+\end{quote}
+
+\subsection{Verdict}
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{0.32\linewidth}p{0.15\linewidth}p{0.48\linewidth}@{}}
+\toprule
+\textbf{Component} & \textbf{Verdict} & \textbf{Why} \\
+\midrule
+Analytical 6-DOF disc model & Solid & Hummel (2003), Crowther \& Potts (2007) give a complete validated 6-DOF formulation with measured coefficients. \\
+RANS urban CFD, 13 wind directions $\times$ 15$^\circ$ & Tractable & $\sim$3--10 M cells, 2--8 h per direction on 32 cores, total 1--4 days. Standard COST 732 / AIJ practice; OpenFOAM \texttt{simpleFoam} with k-$\omega$ SST. \\
+LES of the same domain & Not realistic for full sweep & $\Delta x \sim 1$--$2$ m near buildings $\Rightarrow$ 50--200 M cells per case. Single direction is feasible (weeks). \\
+Coupling CFD wind field into disc trajectory & Novel and tractable & Not done in published literature; the Lukes et al.\ (2022) disc-golf code uses uniform freestream. \emph{This is the novelty hook.} \\
+Throwability metric over the field & Tractable as descriptive optimization & Not real-time forecasting; compute mean velocity + TKE at disc altitude, then evaluate trajectory robustness for canonical throws. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Items in your notes that need adjustment}
+
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item \textbf{``Loyola field''} --- your phrasing (``off the lake'') uniquely matches \emph{Sean Earl Field} on the Lake Shore Campus, $\sim$150--250 m from Lake Michigan, not Hoyne Field (a mile inland). \textbf{Confirmed by you: Sean Earl.}
+  \item \textbf{``180$^\circ$ span''} --- Sean Earl's lake-facing side is roughly east; a meaningful ``off-lake'' sweep is NNE through ESE ($\sim$90$^\circ$ centered on east). A full 180$^\circ$ is fine if you also characterize the prevailing westerly (off-land) cases for contrast --- think of it as two regimes, not one continuous sweep.
+  \item \textbf{``Range finder'' to build the 3D map} --- you don't need a personal LiDAR pass. USGS 3DEP / Illinois Height Modernization Program covers Cook County at 1--8 pts/m$^2$; Microsoft GlobalMLBuildingFootprints + USGS 2023 building-heights release explicitly include Chicago. A handheld rangefinder is useful only for spot-checking the 5--10 buildings nearest the field.
+  \item \textbf{``OpenFOAM or COMSOL''} --- pick OpenFOAM. The urban-CFD literature (Blocken, Tominaga, COST 732 community) is overwhelmingly OpenFOAM-based; \texttt{snappyHexMesh} handles dirty STL of campus buildings well; you'll have peer-reviewed cases to validate against.
+\end{itemize}
+
+\subsection{The biggest unstated gap}
+
+You do not have a \emph{bridging quantity} that turns a CFD flow field into a throw-quality score. The paper needs one. \S\ref{sec:throwability} proposes a ``throwability metric'' $Q(\mathbf{x}, \theta_{\text{wind}})$ combining mean wind magnitude, turbulence intensity at disc altitude, and predicted lateral trajectory drift for the canonical throws.
+
+\section{Project plan}
+\label{sec:plan}
+
+\subsection{Work breakdown ($\approx$14 weeks, single researcher)}
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}llp{0.55\linewidth}@{}}
+\toprule
+\textbf{Phase} & \textbf{Weeks} & \textbf{Output} \\
+\midrule
+P0 --- Setup & 1 & OpenFOAM 11 or v2406 installed; Python disc-trajectory simulator stub; QGIS workflow for LiDAR $\to$ STL. \\
+P1 --- Analytical disc model & 2--3 & 6-DOF integrator (Python, scipy \texttt{solve\_ivp}). Validated against Hummel (2003) Fig.\ 5-1 throw reconstructions. \\
+P2 --- Geometry build & 4 & STL of $\sim$250 m radius around Sean Earl Field, $\sim$5--10 named buildings + tree-canopy proxy. \\
+P3 --- RANS CFD sweep & 5--8 & 13 steady-state runs (15$^\circ$ increments). \texttt{simpleFoam} + k-$\omega$ SST + Richards--Hoxey ABL inlet. Output: $U_{\text{mean}}, k$ sampled to 1, 2, 3 m AGL. \\
+P4 --- Coupled trajectory & 9--11 & Trilinear-interpolated CFD into 6-DOF disc model. Monte Carlo over launch, heading, spin, release $\alpha$ ($10^4$ throws per direction). \\
+P5 --- Synthesis \& manuscript & 12--14 & Throwability map $Q(\mathbf{x}, \theta_{\text{wind}})$; paper revision; figures. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Compute and storage}
+
+Workstation target: 32 physical cores, 128 GB RAM, $\sim$2 TB scratch SSD. On 16-core / 64 GB expect $\sim$2$\times$ wall-clock and one wind direction per overnight job. Disk budget: $\sim$50 GB per RANS case ($\sim$700 GB for the sweep). LES would multiply by 20--50$\times$.
+
+\subsection{Inputs (all free/accessible)}
+
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item \emph{Building footprints/heights:} Cook County GIS, Microsoft GlobalMLBuildingFootprints (ODbL), USGS Overture Maps 2023, OpenStreetMap.
+  \item \emph{LiDAR DEM:} USGS 3DEP / Illinois Height Modernization Program (1--8 pts/m$^2$).
+  \item \emph{Wind reference:} NWS O'Hare 1991--2020 normals; NOAA GLERL Wilson Avenue Crib (shoreline calibration); Northerly Island ASOS.
+  \item \emph{Disc aerodynamic coefficients:} Hummel (2003) Tables 3-1/3-2; Crowther \& Potts (2007).
+\end{itemize}
+
+\subsection{Risks \& mitigations}
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{0.46\linewidth}p{0.46\linewidth}@{}}
+\toprule
+\textbf{Risk} & \textbf{Mitigation} \\
+\midrule
+k-$\omega$ SST under-predicts rooftop separation at sharp roof corners (well-known). & Validate one direction against a LES spot check; follow Blocken (2018) on RANS limits. Don't claim peak/fluctuating quantities --- report means + TKE only. \\
+Disc-coefficient uncertainty at off-design $\alpha$ ($>20^\circ$). & Restrict throw library to $\alpha \in [-5^\circ, +20^\circ]$; flag hammer (high-$\alpha$) results as exploratory. \\
+Horizontal inhomogeneity of ABL inlet (Hargreaves \& Wright 2007). & Use Yang et al.\ (2009) corrected wall functions; verify inlet profile preserved upstream of buildings. \\
+Sean Earl is not a competition-grade Ultimate field. & Reframe as a methods paper using Sean Earl as exemplar; methodology generalizes. \\
+Reviewers ask for measurement validation. & Use Tominaga (2008) AIJ-B cube benchmark for the CFD; cite Hummel's marker-tracked flights for the disc model. Both are public. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Abstract (draft)}
+\label{sec:abstract}
+
+Outdoor disc sports are dominated by wind, yet the published aerodynamic and trajectory literature for flying discs (Hummel 2003; Potts \& Crowther 2002; Lukes et al.\ 2022) uses uniform-freestream assumptions that ignore site-specific flow structure. Conversely, the urban-CFD literature (Tominaga et al.\ 2008; Blocken 2014, 2018) characterizes site-specific wind fields but stops at pedestrian-level mean quantities. Here we couple a validated 6-degree-of-freedom (6-DOF) disc-flight model to steady-RANS atmospheric CFD of a lakefront university campus (Loyola University Chicago, Sean Earl Field; $\sim$200 m from the Lake Michigan shore). We sweep 13 inflow directions in 15$^\circ$ increments using OpenFOAM with k-$\omega$ SST turbulence and a Richards--Hoxey atmospheric-boundary-layer inlet, validated against COST Action 732 benchmarks. Disc trajectories for canonical throws (backhand, forehand, hammer; 175~g Ultrastar) are integrated through the resulting time-averaged + turbulence-intensity fields. We report a spatial ``throwability'' map $Q(\mathbf{x}, \theta_{\text{wind}})$ and identify the lakefront internal boundary layer --- formed by the sharp roughness transition at the shoreline --- as the dominant local feature controlling disc-altitude flow. The methodology generalizes to any outdoor sport played on a roughness-discontinuity site.
+
+\section{Introduction (draft)}
+
+The Frisbee is one of the most-studied non-airfoil aerodynamic objects in sports physics. Stilley \& Carstens (1972) provided the first parametric model; Yasada (1999), Hummel (2003), and Potts \& Crowther (2002) supplied successively more complete wind-tunnel measurements of the lift, drag, and pitching-moment coefficients, and Hummel's UC Davis thesis remains the most-cited 6-DOF flight reconstruction. Subsequent CFD validation by Kamaruddin (2011) and Lukes et al.\ (2022, 2023) using RANS k-$\omega$ SST in OpenFOAM has converged the modeling stack to within a few percent of wind-tunnel $C_L$, $C_D$, and $C_M$ at moderate angles of attack.
+
+Yet every published disc-trajectory study assumes a spatially uniform, steady freestream. As Lukes et al.\ (2022) explicitly note, ``the biggest uncertainty in trajectory experiments is the wind environment.'' This uncertainty is not noise to be averaged away: outdoor disc sports --- Ultimate, disc golf --- are played in geographically structured turbulent flow. A throw whose intended landing zone lies in a sheltered eddy behind a building experiences a categorically different flow than the same throw 20 m to the side.
+
+Independently, the urban-CFD community has developed mature best-practice guidance for site-specific pedestrian-level wind: the COST Action 732 guidebook (Franke et al.\ 2007), the AIJ guidelines (Tominaga et al.\ 2008), and the 50-year retrospective of Blocken (2014). Standard practice uses steady RANS with k-$\omega$ SST or realizable k-$\varepsilon$ on \texttt{snappyHexMesh}-generated meshes of $\sim 10^7$ cells, with Richards--Hoxey atmospheric inlets. This work has shaped pedestrian-comfort regulation in dozens of cities, but to our knowledge has never been applied to outdoor sports trajectory prediction.
+
+The present work fills that gap. We choose Sean Earl Field at Loyola University Chicago's Lake Shore Campus as a study site because it offers an unusually clean physical setup: the field sits within $\sim$250 m of Lake Michigan, with no major intervening built obstacle to the east, behind it a typical low-rise urban-campus block to the west. Easterly winds therefore arrive after $\sim$80 km of unbroken over-water fetch ($z_0 \approx 0.001$ m), pass through a sharp roughness transition at the shoreline, and develop a shallow internal boundary layer over the field. Westerly winds arrive through the campus block. The site cleanly separates two regimes (smooth-fetch and urban-fetch) within a 180$^\circ$ heading sweep.
+
+\textbf{Our contributions:}
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+  \item The first published two-way coupling of an environmental-CFD wind field to a validated 6-DOF disc-flight model.
+  \item A ``throwability metric'' $Q(\mathbf{x}, \theta_{\text{wind}})$ that compresses the spatial CFD field plus trajectory uncertainty into an actionable single scalar per (launch position, wind heading).
+  \item A case study identifying the lakefront internal boundary layer as the dominant local control on Ultimate-disc flight at the chosen site.
+\end{enumerate}
+
+\section{Analytical disc aerodynamics (summary)}
+
+Full derivation in the companion document. The disc carries a 6-DOF state $(\mathbf{x}, \mathbf{v}, \psi, \theta, \phi_s, p, q, \Omega)$ governed by Newton's equation (\ref{eq:trans-summary}) plus Euler's equation for a symmetric rotor (\ref{eq:rot-summary}). In the high-spin limit relevant to all real throws, the transverse angular rates are slaved algebraically to the applied aerodynamic moments,
+\begin{equation}
+p = -\frac{M}{I_p \Omega}, \qquad q = \frac{R}{I_p \Omega},
+\end{equation}
+recovering the textbook gyroscopic-precession picture. The pitching moment vanishes at the trim angle
+\begin{equation}
+\alpha_{\text{trim}} = -\frac{C_{M0}}{C_{M\alpha}} = 8.8^\circ \text{ (Potts \& Crowther coeffs)},
+\label{eq:alphatrim}
+\end{equation}
+which is the asymptotic glide angle of attack. The full translational and rotational equations entering the numerical simulator are
+\begin{align}
+m\,\dot{\mathbf{v}} &= -mg\,\hat{\mathbf{n}}_3 + \tfrac{1}{2}\rho V^2 A\big[\,C_L(\alpha)\hat{\mathbf{L}} - C_D(\alpha)\hat{\mathbf{v}}_{\text{rel}}\big], \label{eq:trans-summary}\\
+I_p \dot{p} + I_p q \Omega &= R,\qquad I_p \dot{q} - I_p p \Omega = M,\qquad I_s \dot{\Omega} = N. \label{eq:rot-summary}
+\end{align}
+
+\paragraph{Coefficients and their functional form.} We use the tabulated
+Potts \& Crowther (2002) $C_L$, $C_D$, $C_M$ curves and the
+$C_{Rr}(\alpha, \text{AdvR})$ surface as transcribed in Hummel (2003,
+Appendix A), evaluated exactly as in Hummel's reference implementation:
+$C_L = C_{L0} + C_{L\alpha}\alpha$ and $C_M = C_{M0} + C_{M\alpha}\alpha$ are
+functions of $\alpha$ itself, while the zero-lift angle
+$\alpha_0 = -C_{L0}/C_{L\alpha}$ enters \emph{only} the drag parabola
+$C_D = C_{D0} + C_{D\alpha}(\alpha - \alpha_0)^2$. The rate-damping
+coefficients $C_{Mq}$, $C_{Rp}$ multiply raw angular rates in rad\,s$^{-1}$ and
+$C_{Rr}$ carries an explicit $\sqrt{d/g}$ time scale; they are not
+non-dimensionalised by $d/2V$. Mass and inertia are Hummel's measured Table 3-1
+values ($m = 0.175$ kg, $I_s = 2.35\times10^{-3}$, $I_p = 1.22\times10^{-3}$
+kg\,m$^2$), not the thin-uniform-disc idealisation, which under-states both by
+about one third and so over-states precession by roughly 50\%.
+
+\paragraph{Validation.} The integrator is checked against two independently
+published, fully specified results in the same source that supplied the
+coefficients (Table~\ref{tab:p1valid}). Hummel's \S2.4.3 ``common throw''
+(release $V_0=14$ m\,s$^{-1}$, $\Omega=50$ rad\,s$^{-1}$, pitch $11^\circ$,
+flight-path angle $6^\circ$, $\alpha=5^\circ$, $z_0=1$ m) is reproduced within
+8\% in range, 4\% in apex height and 1\% in flight time, and the model
+reproduces the characteristic turn-right-then-fade-left signature with the
+reversal at $t=3.34$ s against a published $\sim$3 s. The \S2.4.2 analytic trim
+glide is recovered to three significant figures.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+Quantity & Hummel (2003) & This model & Error \\
+\midrule
+\multicolumn{4}{l}{\emph{\S2.4.3 / Fig. 2-9 ``common throw''}}\\
+Range                       & $\sim$25 m   & 26.99 m  & $+8\%$ \\
+Apex height                 & 2.55 m       & 2.45 m   & $-4\%$ \\
+Flight time                 & 3.5 s        & 3.48 s   & $-1\%$ \\
+Terminal speed              & $\sim V_0/3$ & 4.83 m\,s$^{-1}$ & $+4\%$ \\
+Lateral reversal            & $\sim$3 s    & 3.34 s   & --- \\
+\multicolumn{4}{l}{\emph{\S2.4.2 steady glide (analytic)}}\\
+Trim $\alpha$ ($C_M=0$)     & $9^\circ$    & $9.00^\circ$   & $<0.1\%$ \\
+Glide angle $\gamma$        & $-19.3^\circ$& $-19.32^\circ$ & $<0.2\%$ \\
+$C_L$ at trim               & 0.67         & 0.672    & $+0.3\%$ \\
+Trim speed                  & 9.1 m\,s$^{-1}$ & 8.28 m\,s$^{-1}$ & $-9\%$ \\
+\bottomrule
+\end{tabular}
+\caption{Quantitative validation of the 6-DOF integrator against published
+reference flights. Only the tabulated coefficient set reproduces these; the
+linear fits miss range, apex and flight time by 30--57\% and never fade back
+left, because a realistic throw reaches $\alpha \approx 33^\circ$ in its final
+second, far outside the $\pm15^\circ$ band in which the linear fits were made.}
+\label{tab:p1valid}
+\end{table}
+
+\paragraph{Known limitations of the disc model.} The model is axisymmetric and
+carries no rim side-force coefficient $C_S(\alpha)$, hence no yaw stiffness.
+Launch sideslip is therefore shed only slowly, and predicted crosswind drift is
+about a quarter of the naive full-advection estimate $U_c T$. We verified that
+this is a physics-model gap rather than a numerical artefact: a uniform wind is
+exactly Galilean-equivalent to a shifted release velocity in this
+implementation, to $10^{-8}$ m. \textbf{Crosswind drift from this model should
+be read as a lower bound.}
+
+\section{Site description: Sean Earl Field}
+
+Sean Earl Field is a small multi-use turf on Loyola's Lake Shore Campus, with
+Mertz Residence Hall to the west and the Norville Center for Intercollegiate
+Athletics to the south. Loyola explicitly lists Ultimate among the field's
+sanctioned uses.
+
+\paragraph{Geometry as built, and four corrections to the initial description.}
+The site model is built from OpenStreetMap footprints with
+\texttt{building:levels} heights, with the local Cartesian origin resolved at
+run time from the OSM polygon of the field itself
+($42.001267^\circ$ N, $87.658214^\circ$ W; $x$ East, $y$ North). Building the
+model surfaced four discrepancies against the description we began with, each
+of which changes the setup:
+
+\begin{enumerate}[leftmargin=*,itemsep=2pt]
+  \item \textbf{Origin.} The initially assumed centre
+    ($42.0006^\circ$ N, $87.6580^\circ$ W) is $\sim$75 m south of the field
+    centroid; using it would have offset the domain relative to the launch grid.
+  \item \textbf{Mertz Hall is 19 storeys, $\approx$61 m, not $\approx$22 m}
+    (OSM \texttt{building:levels}\,$=$\,19, corroborated by Loyola's own
+    residence-life page). This matters directly: domain sizing under COST
+    Action 732 scales with the tallest building.
+  \item \textbf{The field's long axis runs E--W, not N--S.} The OSM polygon is
+    78 m (E--W) $\times$ 25 m (N--S). \emph{\% FLAG FOR AUTHOR: this is also
+    smaller than a regulation Ultimate pitch (100 $\times$ 37 m), so the OSM
+    outline is likely a partial trace of the playing surface. The launch grid
+    below is sized to the OSM polygon; a corrected outline would extend it.}
+  \item \textbf{Cudahy Library and the Klarchek Information Commons lie ESE of
+    the field} (129 m and 185 m respectively), on the lakefront side, not to
+    the west as first described.
+\end{enumerate}
+
+\paragraph{The dominant near-field obstruction.} The single most consequential
+feature is one the initial site description omits entirely. \textbf{Campus
+Towers}, a 14-storey ($44.8$ m) apartment block, occupies
+$x \in [55.8, 79.3]$ m, $y \in [-15.9, 21.5]$ m: its footprint begins
+\textbf{9 m east of the field's eastern edge} and spans the full width of the
+field. Any easterly flow reaching the playing surface has therefore passed
+over a 45 m bluff body immediately upwind. \S\ref{sec:results} shows that this,
+not the lakefront roughness transition, controls disc-altitude flow in the
+easterly regime.
+
+\paragraph{Terrain.} USGS 3DEP point queries over a 600 m box give
+179.1--181.4 m MSL across the field and the near-field buildings ($\pm 1$ m),
+against building heights of 12--61 m, so the ground is modelled as flat. The
+one real topographic feature is a $\sim$4 m step down to the lake east of
+$x \approx +150$ m (3DEP reads 175.2--175.6 m there); it is represented not as
+topography but where it acts, as the inlet roughness transition.
+
+\paragraph{Climatology.} Chicago lies in the mid-latitude westerly belt; the annual prevailing direction at ORD is WSW--SW (Illinois State Water Survey wind roses). The 1991--2020 NWS annual mean speed at O'Hare is $\sim$9--10 mph. However, ORD is 27 km inland; lakefront stations (NOAA GLERL Wilson Avenue Crib, Northerly Island ASOS) record higher mean speed and gustier easterlies, especially during the warm-season lake-breeze regime.
+
+\paragraph{Why this site.} Easterly inflow at Sean Earl Field passes over $\sim$80 km of unbroken Lake Michigan fetch (to St.\ Joseph / Benton Harbor MI), giving a near-neutral, very-low-$z_0$ marine boundary layer. The shoreline imposes a sharp $z_0$ transition ($\sim 10^{-3}$ to $\sim$0.3 m). The downwind internal boundary layer thickness $\delta_{\text{IBL}}$ grows as $\delta_{\text{IBL}} \approx 0.10\,x^{0.8}$ (Garratt 1990), reaching $\sim$5 m by the eastern sideline and $\sim$7--10 m at midfield --- fully encompassing the 1--3 m disc-altitude band but in a sheared, non-equilibrium state. \emph{This is the dominant local physical feature.}
+
+\section{CFD methodology}
+
+\paragraph{Geometry.} Building footprints come from OpenStreetMap via the
+Overpass API, extruded to \texttt{building:levels} heights (171 of 303 fetched
+buildings, 56\%, carry a levels tag; the remainder use documented type
+defaults, and each building records which rule was used). The modelled set is
+clipped to a \emph{circle} of radius 300 m about the field centroid: this makes
+the building set invariant under the rotation used to realise each wind
+direction (below), so every direction sees exactly the same geometry. Within
+that circle the tallest building is Mertz Hall, $H = 60.8$ m. Ground is flat
+(\S6) and no tree-canopy porous zone is included; both omissions are recorded
+in \S\ref{sec:limits}. The resulting surface is 116 closed prisms, 6\,324
+triangles, with no open edges.
+
+\paragraph{Domain.} $1512 \times 1208 \times 304$ m, i.e.\ $5H$ upstream,
+$5H$ lateral and $5H$ above the tallest building, and $10H$ downstream.
+The downstream extent is \textbf{relaxed} from the COST Action 732 /
+Tominaga et al.\ (2008) guideline of $15H$ to fit the available compute; the
+relaxation is recorded in every case's metadata rather than left implicit.
+Blockage is $0.9\%$, within the $<3\%$ guideline. (For reference, the
+$500\times500\times80$ m domain in the original plan would have placed the
+domain top \emph{below} the tallest building.)
+
+\paragraph{Mesh.} \texttt{snappyHexMesh}, hex-dominant, on a graded background
+of 16 m horizontal cells with a 4 m first vertical cell expanding geometrically
+to the domain top. Two refinement regions: a near-field box at level 1 and a
+disc-altitude box over the playing surface at level 3, giving
+\textbf{2.0 m horizontal $\times$ 0.50 m vertical} cells through the
+1--6 m AGL band the results are sampled in; building surfaces are refined to
+levels 1--2. Production meshes are $4.5\times10^{5}$ cells. Surface layers are
+\emph{not} added: with rough-wall ABL functions there is no viscous sublayer to
+resolve, and layer insertion on 116 real footprints is the least robust meshing
+step. Mesh quality: maximum non-orthogonality 65$^\circ$ (mean 7.9$^\circ$),
+maximum skewness 7.9.
+
+\paragraph{Solver.} OpenFOAM \textbf{v2606} (ESI) \texttt{simpleFoam}, steady
+incompressible, k-$\omega$ SST, second-order schemes with limited
+($\psi = 0.33$) Laplacian and surface-normal-gradient corrections for the
+non-orthogonal cells snapping to real footprints produces. Richards \& Hoxey
+(1993) ABL inlet (\texttt{atmBoundaryLayerInletVelocity}, \texttt{...InletK},
+\texttt{...InletOmega}) with the atmospheric rough-wall functions
+(\texttt{atmNutkWallFunction}, \texttt{atmOmegaWallFunction}) on the ground.
+Reference $u_{\text{ref}} = 5$ m\,s$^{-1}$ at $z_{\text{ref}} = 10$ m.
+
+\paragraph{Roughness, and why the ground and the inlet differ.} Inlet
+roughness follows the plan: $z_0 = 0.001$ m (open water) for
+$\theta_{\text{wind}} \in [60^\circ, 120^\circ]$, $z_0 = 0.5$ m (urban)
+otherwise, linearly blended over $30^\circ$ transition bands. The
+\emph{ground patch}, however, uses $z_0 = 0.03$ m (grass and pavement), not the
+urban 0.5 m. The 0.5 m figure is an \emph{equivalent} roughness that stands in
+for buildings; applying it to the ground as well would count the resolved
+buildings twice. It is also numerically incompatible with the mesh: the ABL
+wall function requires the first cell centre to sit well above $z_0$, and a
+0.5 m roughness cannot coexist with the sub-metre near-ground cells needed to
+resolve disc altitude.
+
+\paragraph{Realising the wind directions.} Rather than moving the inlet between
+patches --- which only works for the four axis-aligned headings and gives each a
+different mesh --- the \emph{site geometry is rotated} so the wind always blows
+along $+x$. Every direction then shares one background mesh, one boundary-
+condition set and one inlet patch, so differences between directions are
+physical rather than mesh artefacts. This matters because the paper's claims
+are comparisons \emph{between} directions.
+
+\paragraph{Cases actually run.} \textbf{Three inflow directions, not the
+thirteen originally planned}, chosen to span the three regimes the study
+hypothesises: $\theta_{\text{wind}} = 90^\circ$ (easterly, over-lake),
+$210^\circ$ (SSW, the prevailing sector), and $270^\circ$ (westerly, over the
+campus and Mertz Hall). Note that $270^\circ$ extends past the
+$0^\circ$--$180^\circ$ range of the original plan; the geometry-rotation scheme
+makes any heading equally cheap. Steady RANS, 2\,500 iterations, at a single
+reference wind speed. \S\ref{sec:limits} states plainly what this subset does
+and does not license.
+
+\paragraph{Validation.} Two of the three planned checks were carried out and
+are reported in \S\ref{sec:cfdvalid}: ABL horizontal homogeneity over an empty
+fetch (Hargreaves \& Wright 2007) and grid independence at disc altitude
+against the 10\% criterion. \textbf{The Tominaga (2008) AIJ-B cube benchmark
+was not run}, and no anemometer comparison exists; neither is claimed.
+
+\section{Coupled trajectory simulation}
+
+For each $\theta_{\text{wind}}$, the CFD output is sampled onto a 1 m horizontal
+grid at $z = 1$--6 m AGL across the field and trilinearly interpolated. The
+6-DOF integrator evaluates $\mathbf{U}(\mathbf{x})$ at the disc's instantaneous
+position; the steady-RANS field provides $U_{\text{mean}}$, and the local
+turbulence intensity $I = \sqrt{2k/3}/U_{\text{mean}}$ scales a stochastic gust
+$\mathbf{u}'(t)$.
+
+\paragraph{Gust model, and why it is not white noise.} The gust field is
+generated by a Shinozuka--Deodatis spectral representation: a sum of 32 cosines
+with log-spaced frequencies and independent random phases, with amplitudes set
+by an exponential-correlation spectrum whose integral time scale is
+$T_L = k/\varepsilon$ from the RANS, and normalised to unit variance so that
+$\mathbf{u}'(\mathbf{x},t) = \sigma(\mathbf{x})\,\bm{\xi}(t)$ with
+$\sigma = \sqrt{2k/3}$.
+
+The obvious cheaper choice --- drawing an independent Gaussian fluctuation each
+time the wind is queried --- is not merely inaccurate but unusable, and the
+reason is worth stating because it is easy to reintroduce. An adaptive ODE
+integrator estimates local truncation error by comparing right-hand-side
+evaluations at different stage points within a step. If the right-hand side
+returns fresh noise on every call, that comparison measures the noise rather
+than the discretisation error, so the step controller rejects and halves
+indefinitely. In our tests a single throw took over 100 s against $\sim$0.1 s
+without gusts, and the resulting landing scatter is a step-size artefact rather
+than a solution of any well-posed equation. The spectral construction is
+analytic in $t$, so the integrator steps freely (193 steps with gusts against
+222 without) and the coupled system is well posed.
+
+The realised autocorrelation matches the target $\exp(-\Delta t/T_L)$ to within
+0.06 over lags out to 2 s. The construction is the same family as the Mann
+(1998) sampler; upgrading amounts to substituting the spectrum.
+
+For each $(\theta_{\text{wind}}, \text{throw type})$, $10^4$ Monte Carlo throws are launched from a 5$\times$5 m grid of launch points spanning the field with realistic release-parameter scatter:
+\begin{itemize}[leftmargin=*,itemsep=1pt]
+  \item Speed $V_0 \sim \mathcal{N}(15, 1.5)$ m/s for backhand and forehand; $\mathcal{N}(11, 1.5)$ for hammer.
+  \item Spin $\Omega_0 \sim \mathcal{N}(100, 10)$ rad/s.
+  \item Release pitch $\alpha_0 \sim \mathcal{N}(+8^\circ, 4^\circ)$ backhand; $\mathcal{N}(+6^\circ, 4^\circ)$ forehand; $\mathcal{N}(+40^\circ, 8^\circ)$ hammer.
+  \item Heading bearing $\theta_{\text{throw}}$ varied over 0--360$^\circ$ in 30$^\circ$ bins.
+\end{itemize}
+Landing-point distributions are characterized by 90\%-containment ellipse parameters and a ``delivered-to-target'' success rate (landing within 3 m of intended target at canonical 25 m throws).
+
+\section{Throwability metric (the novelty)}
+\label{sec:throwability}
+
+For each launch position $\mathbf{x}$ and each wind heading $\theta_{\text{wind}}$:
+\begin{equation}
+Q(\mathbf{x}, \theta_{\text{wind}}) =
+\underbrace{\Big(1 - \frac{|U_{2\text{m}}(\mathbf{x})|}{U_{\text{ref}}}\Big)}_{\text{wind-magnitude penalty}}
+\cdot
+\underbrace{\big(1 - I_{2\text{m}}(\mathbf{x})\big)}_{\text{turbulence penalty}}
+\cdot
+\underbrace{\overline{S}_{\text{throws}}(\mathbf{x}, \theta_{\text{wind}})}_{\text{simulated success rate}}
+\label{eq:Q}
+\end{equation}
+with each factor clipped to $[0, 1]$. $Q$ ranges from 0 (unplayable) to 1
+(calm-air-equivalent). Maps of $Q$ over the field surface, parameterised by
+$\theta_{\text{wind}}$, form the principal result.
+
+\paragraph{Two points on the definition.} First, the wind-magnitude penalty uses
+the \emph{local} $|U_{2\text{m}}(\mathbf{x})|$. An earlier form of this metric
+used a field-averaged $\langle |U_{2\text{m}}|\rangle_{\text{field}}$, which is
+constant in $\mathbf{x}$ and therefore cannot contribute any spatial structure
+at all --- it can only rescale a map, not shape one. Since the spatial gradient
+of $Q$ is the result being reported, the local value is the right choice.
+
+Second, $\overline{S}_{\text{throws}}$ is the \emph{measured} fraction of Monte
+Carlo throws landing within 3 m of a 25 m target, computed from the simulated
+landing points. It is tempting to estimate it from the containment ellipse as
+$\min\!\big(1, (r_{\text{target}}/\bar a)^2\big)$; that quantity is not a
+probability, because it ignores the offset between the landing centroid and the
+target and so scores a tightly grouped but badly aimed throw as a success.
+
+\paragraph{A caveat on the turbulence factor.} The form $(1 - I)$ goes negative
+wherever the RMS fluctuation exceeds the local mean speed. That is not an exotic
+condition: it is the normal state of a recirculating building wake, which is
+exactly the sheltered region a throwability map is most interesting in.
+Clipping at zero is the only defensible choice --- a calm sheltered spot must
+not score worse than a gale --- but it means $Q$ collapses to identically zero
+across the whole saturated region and carries no spatial information there. We
+report the saturated area fraction for every heading in \S\ref{sec:results}
+rather than letting it disappear into the clip, and we recommend a bounded
+penalty such as $1/(1+I)$ for sheltered sites in future work.
+
+\section{CFD validation}
+\label{sec:cfdvalid}
+
+\paragraph{(a) ABL horizontal homogeneity.} An equilibrium boundary layer
+imposed at the inlet should advect across an empty domain unchanged; any drift
+is spurious and contaminates everything downstream (Hargreaves \& Wright 2007).
+We ran a buildings-free case with the ground roughness set equal to the inlet
+roughness --- necessary, because with the two deliberately different (as in the
+production cases, where the mismatch \emph{is} the shoreline roughness
+transition) the profile is supposed to evolve and the test would measure the
+intended physics rather than numerical error.
+
+Profiles were compared at five fetches from 50 m to 1400 m, evaluated above the
+first wall-function cell centre. The worst streamwise drift in mean velocity is
+\ABLdrift\% (\ABLverdict). Sampling below the first cell centre is not
+meaningful with wall functions --- it interpolates toward the no-slip wall
+value --- and is excluded.
+
+\paragraph{(b) Grid independence.} Two meshes differing \emph{only} in the
+disc-altitude refinement level (2.0 $\times$ 0.50 m against 4.0 $\times$ 1.0 m,
+a factor of two in the region we report) were compared at five stations over
+the playing surface. The worst disc-band mean-velocity difference is
+\GridDiff\% of the local speed, or \GridDiffUref\% of the reference speed
+$u_{\text{ref}} = \Uref$ m\,s$^{-1}$ (\GridVerdict).
+
+Both measures are quoted deliberately. The field turns out to be heavily
+sheltered, with disc-altitude speeds of a few tenths of a metre per second in
+places, so a purely relative criterion is punishing there: a 0.3 m\,s$^{-1}$
+absolute difference is a few per cent of $u_{\text{ref}}$ but can be a large
+fraction of the local speed. Neither number should be read as a clean pass, and
+\S\ref{sec:limits} states the consequence.
+
+\paragraph{(c) Convergence, and why the residual criterion is the wrong test.}
+Steady SIMPLE does not reach a fixed point on this geometry. The playing surface
+sits in the separated near-wake of a 45 m building; the physical flow there is
+unsteady, and the solver settles into a limit cycle in which the pressure
+residual plateaus near $5\times10^{-3}$ against the $10^{-4}$ target that the
+project plan specified. Reporting that target as met would be false; reporting
+the run as simply ``unconverged'' would be equally misleading, because the
+residual has stopped falling for a physical reason rather than a numerical one.
+
+We therefore assess convergence on the quantity we actually report. Velocity
+probes at disc altitude over the field oscillate by \ConvFine\% peak-to-peak
+over the last fifth of the run on the production mesh. Because a single iterate
+is an arbitrary phase of that cycle, all reported fields are \textbf{time
+averages} of $\mathbf{U}$, $k$ and $\omega$ over a further 800 iterations after
+the cycle is established, not final iterates.
+
+\section{Expected results / placeholder findings}
+
+To be populated after the simulation sweep. Hypothesized:
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item Easterly cases ($90^\circ \pm 30^\circ$) show a sharp $Q$ gradient across the field's eastern half corresponding to the developing IBL; backhand throws from the windward sideline are most consistent; hammer throws systematically degraded.
+  \item Westerly cases ($270^\circ \pm 30^\circ$) show patchier $Q$ with sheltered ``throw lanes'' downstream of Norville Center; forehand throws benefit most.
+  \item Best-condition wind direction for canonical 25 m throws is hypothesized to be a light SSW ($\sim$210$^\circ$, 3--5 m/s reference), aligning with prevailing climatology --- a satisfying convergence of meteorology and playability.
+\end{itemize}
+
+\section{Discussion (to draft after results)}
+
+Generalizability to other outdoor sports; steady-RANS limitations (peak gusts and spatially correlated gust structure not captured); LES of one or two critical directions is the obvious follow-on; coaching implications.
+
+\section{Scope and limitations of what was actually computed}
+\label{sec:limits}
+
+This section states the delivered scope plainly, so that no reader has to infer
+it from the methods.
+
+\paragraph{CFD directions.} \textbf{Three} inflow directions were computed:
+$\theta_{\text{wind}} = 90^\circ$, $210^\circ$ and $270^\circ$. The
+thirteen-direction, $15^\circ$-increment sweep described in the project plan
+(\S\ref{sec:plan}) \textbf{was not run}. The three directions were chosen to
+span the three regimes the study hypothesises --- over-lake easterly,
+prevailing SSW, and over-campus westerly --- and they are sufficient to
+\emph{contrast} those regimes, but they cannot resolve the direction-dependence
+of $Q$ between them. Any statement in this paper about a ``best'' or ``worst''
+heading means best or worst \emph{of the three computed}, and is written that
+way throughout.
+
+\paragraph{Mesh resolution.} Production meshes are $4.5 \times 10^{5}$ cells,
+not the $5$--$8 \times 10^{6}$ of the plan. The refinement is concentrated where
+the results are read: $2.0 \times 0.50$ m cells through the 1--6 m AGL band over
+the playing surface. Grid independence is demonstrated at that resolution
+(\S\ref{sec:cfdvalid}) against a mesh a factor of two coarser in the same
+region, which bounds discretisation error where it matters; it does not
+establish that far-field wake structure is grid-converged.
+
+\paragraph{Domain.} Upstream, lateral and top extents meet the $5H$ COST 732
+guideline; the downstream extent is $10H$ against a $15H$ guideline. Blockage is
+$0.9\%$.
+
+\paragraph{Wind speed.} A single reference speed,
+$u_{\text{ref}} = 5$ m\,s$^{-1}$ at 10 m. Because the flow is fully turbulent
+and the geometry is bluff, the normalised flow field is close to
+Reynolds-independent, so the $Q$ maps rescale approximately with
+$u_{\text{ref}}$ --- but the trajectory model is \emph{not} linear in wind
+speed, so throwability at 10 m\,s$^{-1}$ cannot be read off these results.
+
+\paragraph{Validations run and not run.} ABL horizontal homogeneity and grid
+independence were performed and are reported. The \textbf{Tominaga (2008) AIJ-B
+cube benchmark was not run}. \textbf{No field measurements were made}, so
+nothing here is validated against the real site; the anemometer campaign
+remains future work.
+
+\paragraph{Physical modelling.} Steady RANS gives mean-condition playability
+only: no peak gusts, and no spatially correlated gust structure. The gust model
+is temporally correlated but spatially uniform along the trajectory at any
+instant, isotropic (RANS $k$ carries no anisotropy), and Gaussian, so extreme
+gusts are under-represented. The disc model has no rim side-force term, so
+predicted crosswind drift is a lower bound. Ground is flat and no tree canopy is
+included. The hammer throw is exploratory: it spends most of its flight outside
+the angle-of-attack range over which the tabulated coefficients exist.
+
+\section{Author decisions}
+\label{sec:decisions}
+
+The open questions carried by the draft are resolved below with defaults that
+the present results support. Each remains the author's to overrule.
+
+\begin{enumerate}[leftmargin=*,itemsep=3pt]
+  \item \textbf{Site.} Sean Earl Field, Loyola Lake Shore Campus, is assumed
+    and used throughout, with the geometry resolved from OSM at
+    $42.001267^\circ$ N, $87.658214^\circ$ W. \emph{\% FLAG FOR AUTHOR: confirm
+    the field outline, which OSM traces as 78 $\times$ 25 m --- smaller than a
+    regulation Ultimate pitch.}
+
+  \item \textbf{LES.} Out of scope here and recorded as the primary follow-on.
+    The steady-RANS result gives mean-condition playability; it cannot give
+    peak gusts or spatially correlated gust structure, both of which matter for
+    a thrower. An LES of the single easterly case would test precisely the
+    near-wake claim in \S\ref{sec:results} that RANS is least reliable about.
+    \emph{\% FLAG FOR AUTHOR: $\sim$2 weeks of compute.}
+
+  \item \textbf{Anemometer validation.} Stated as a future field campaign, not
+    claimed. No field measurements were available for this work, and none are
+    reported. \emph{\% FLAG FOR AUTHOR: if the 2026 summer lake-breeze campaign
+    goes ahead, the three field-corner stations proposed in the draft are the
+    right comparison points; the CFD prediction at those points is already in
+    \texttt{flow\_fields.npz}.}
+
+  \item \textbf{Hammer throw.} Retained but reported as \textbf{exploratory}.
+    It is the throw most affected by wind and the one whose coefficients are
+    least well supported: a hammer spends most of its flight well outside the
+    $-10^\circ$ to $+30^\circ$ band over which the tabulated Potts \& Crowther
+    coefficients exist, so its trajectories rely on edge-clamped values. Its
+    numbers are reported separately from backhand and forehand and are not used
+    in any headline claim.
+
+  \item \textbf{Authorship and affiliation.}
+    \emph{\% FLAG FOR AUTHOR: author name, department, affiliation, co-authors
+    and funding acknowledgement all require the author's input and are left as
+    placeholders on the title page.}
+
+  \item \textbf{Venue.} \emph{\% FLAG FOR AUTHOR:} on the strength of the
+    present result --- a single-site coupled study with a scoped CFD sweep ---
+    \emph{Sports Engineering} remains the better fit than splitting into
+    separate trajectory and wind-engineering papers. The disc-model validation
+    (Table~\ref{tab:p1valid}) is solid enough to stand alone, but the CFD side
+    is currently three directions at one reference wind speed, which is thin
+    for \emph{JWEIA} on its own. Splitting becomes attractive after the full
+    direction sweep and the LES spot-check.
+\end{enumerate}
+
+\section*{Key references (verified)}
+
+\begin{description}[font=\normalfont\itshape,leftmargin=1em]
+  \item Blocken, B.\ (2014). 50 years of computational wind engineering: Past, present and future. \emph{JWEIA} \textbf{129}, 69--102.
+  \item Blocken, B.\ (2018). LES over RANS in building simulation\ldots\ \emph{Building Simulation} \textbf{11}, 821--870.
+  \item Crowther, W.J.\ \& Potts, J.R.\ (2007). Simulation of a spin-stabilised sports disc. \emph{Sports Engineering} \textbf{10}(1), 3--21.
+  \item Franke, J.\ et al.\ (2007). \emph{Best Practice Guideline for CFD Simulation of Flows in the Urban Environment.} COST Action 732.
+  \item Hargreaves, D.M.\ \& Wright, N.G.\ (2007). On the use of the k-$\varepsilon$ model in commercial CFD software\ldots\ \emph{JWEIA} \textbf{95}, 355--369.
+  \item Hubbard, M.\ \& Hummel, S.A.\ (2000). Simulation of Frisbee Flight. 5th Math \& Computers in Sport, Sydney.
+  \item Hummel, S.A.\ (2003). \emph{Frisbee Flight Simulation and Throw Biomechanics.} MS Thesis, UC Davis.
+  \item Kamaruddin, N.M., Potts, J.R.\ \& Crowther, W.J.\ (2018). Aerodynamic performance of flying discs. \emph{Aircraft Eng.\ Aerosp.\ Tech.}\ \textbf{90}(2), 390--397.
+  \item Lissaman, P.B.S.\ \& Hubbard, M.\ (2010). Maximum range of flying discs. \emph{Procedia Engineering} \textbf{2}(2), 2529--2535.
+  \item Lukes, R., Hart, J.\ et al.\ (2022). Disc golf trajectory modelling combining CFD and rigid body dynamics. \emph{Sports Engineering} \textbf{25}, 24.
+  \item Potts, J.R.\ \& Crowther, W.J.\ (2002). Frisbee\texttrademark{} aerodynamics. AIAA 2002-3150.
+  \item Richards, P.J.\ \& Hoxey, R.P.\ (1993). Appropriate boundary conditions for computational wind engineering models. \emph{JWEIA} \textbf{46--47}, 145--153.
+  \item Tominaga, Y.\ et al.\ (2008). AIJ guidelines for practical applications of CFD to pedestrian wind environment. \emph{JWEIA} \textbf{96}, 1749--1761.
+  \item Yang, Y.\ et al.\ (2009). New inflow boundary conditions for modelling the neutral equilibrium atmospheric boundary layer. \emph{JWEIA} \textbf{97}, 88--95.
+  \item Shinozuka, M.\ \& Deodatis, G.\ (1991). Simulation of stochastic processes by spectral representation. \emph{Applied Mechanics Reviews} \textbf{44}(4), 191--204.
+  \item Mann, J.\ (1998). Wind field simulation. \emph{Probabilistic Engineering Mechanics} \textbf{13}(4), 269--282.
+  \item Garratt, J.R.\ (1990). The internal boundary layer --- a review. \emph{Boundary-Layer Meteorology} \textbf{50}, 171--203.
+  \item OpenStreetMap contributors (2026). Building footprints, Loyola Lake Shore Campus. \url{https://www.openstreetmap.org} (ODbL).
+  \item U.S.\ Geological Survey (2026). 3DEP Elevation Point Query Service. \url{https://epqs.nationalmap.gov}.
+\end{description}
+
+\end{document}

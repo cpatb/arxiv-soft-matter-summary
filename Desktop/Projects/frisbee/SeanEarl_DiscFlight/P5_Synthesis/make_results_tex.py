@@ -29,6 +29,22 @@ from pathlib import Path
 import numpy as np
 
 
+_DIGIT_WORDS = {"0": "Zero", "1": "One", "2": "Two", "3": "Three",
+                "4": "Four", "5": "Five", "6": "Six", "7": "Seven",
+                "8": "Eight", "9": "Nine"}
+
+
+def digits_to_letters(v) -> str:
+    """LaTeX control-word names may contain LETTERS ONLY.
+
+    \\QmeanH90 does not define a macro called "QmeanH90" -- TeX reads the
+    control word \\QmeanH and then the characters 9 and 0, so the macro is
+    both undefined and silently prints stray digits. Heading numbers are
+    therefore spelled out: 90 -> NineZero, 210 -> TwoOneZero.
+    """
+    return "".join(_DIGIT_WORDS.get(c, c) for c in str(v))
+
+
 def macro(name, value):
     return f"\\newcommand{{\\{name}}}{{{value}}}\n"
 
@@ -87,9 +103,9 @@ def main():
     out.append(macro("QbestWorstRatio",
                      "$\\infty$" if not np.isfinite(ratio) else fmt(ratio, 1)))
     for h in headings:
-        out.append(macro(f"QmeanH{h}", fmt(meanQ[h], 4)))
-        out.append(macro(f"QmaxH{h}", fmt(maxQ[h], 4)))
-        out.append(macro(f"QminH{h}", fmt(minQ[h], 4)))
+        out.append(macro(f"QmeanH{digits_to_letters(h)}", fmt(meanQ[h], 4)))
+        out.append(macro(f"QmaxH{digits_to_letters(h)}", fmt(maxQ[h], 4)))
+        out.append(macro(f"QminH{digits_to_letters(h)}", fmt(minQ[h], 4)))
 
     # ---------------- disc-altitude wind ---------------------------------
     zk = int(np.argmin(np.abs(F["z"] - 2.0)))
@@ -102,13 +118,13 @@ def main():
         fx = (F["x"] >= -31) & (F["x"] <= 47)
         fy = (F["y"] >= -10) & (F["y"] <= 15)
         sub = mag[np.ix_(fx, fy)]
-        out.append(macro(f"UfieldMeanH{h}", fmt(float(sub.mean()), 2)))
-        out.append(macro(f"UfieldMinH{h}", fmt(float(sub.min()), 2)))
-        out.append(macro(f"UfieldMaxH{h}", fmt(float(sub.max()), 2)))
+        out.append(macro(f"UfieldMeanH{digits_to_letters(h)}", fmt(float(sub.mean()), 2)))
+        out.append(macro(f"UfieldMinH{digits_to_letters(h)}", fmt(float(sub.min()), 2)))
+        out.append(macro(f"UfieldMaxH{digits_to_letters(h)}", fmt(float(sub.max()), 2)))
         kk = F[f"dir_{h:03d}__k"][:, :, zk]
         ksub = kk[np.ix_(fx, fy)]
         I = np.sqrt(2 * np.maximum(ksub, 0) / 3) / np.maximum(sub, 1e-3)
-        out.append(macro(f"IfieldMeanH{h}", fmt(float(I.mean()), 2)))
+        out.append(macro(f"IfieldMeanH{digits_to_letters(h)}", fmt(float(I.mean()), 2)))
     out.append(macro("Uref", fmt(5.0, 0)))
 
     # ---------------- success rates by throw ------------------------------
@@ -118,7 +134,7 @@ def main():
         out.append(macro("SR" + t.replace("_", ""), fmt(100 * v, 1)))
     for i, h in enumerate(headings):
         v = float(np.nanmean(sr[:, :, i, :, :]))
-        out.append(macro(f"SRmeanH{h}", fmt(100 * v, 1)))
+        out.append(macro(f"SRmeanH{digits_to_letters(h)}", fmt(100 * v, 1)))
     if "blocked_fraction" in L.files:
         out.append(macro("BlockedMean",
                          fmt(100 * float(np.nanmean(L["blocked_fraction"])), 1)))
