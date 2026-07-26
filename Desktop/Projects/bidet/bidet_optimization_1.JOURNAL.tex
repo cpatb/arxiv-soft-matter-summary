@@ -96,16 +96,20 @@ verified against Hussein, Capp \& George (1994). The computed decay
 $\tau_w \propto r^{-1.90}$ is far shallower than the laminar Watson
 Region~II asymptotic ($r^{-5}$), confirming that the cleaning constraint
 must be evaluated with the turbulent closure rather than the laminar
-similarity law. Using this closure, the water-minimizing diameter scales as
-$d^* \propto \Delta P^{-1/4}\,r_\mathrm{max}^{5/6}\,\tau_c^{1/6}$ and the
-minimum flow rate depends only weakly on supply pressure
-($Q^* \propto \Delta P^{-0.57}$ under the CFD closure, versus the
-pressure-independent laminar-asymptotic result). For nominal residential
-conditions ($\Delta P = \SI{0.07}{MPa}$, $r_\mathrm{max} = \SI{15}{mm}$,
-$\tau_c = \SI{5}{Pa}$) the CFD gives $\tau_w(r_\mathrm{max}) \approx
-\SI{5.9}{Pa} \approx \tau_c$ for the commercial $d = \SI{1}{mm}$ nozzle:
-mainstream designs just meet the cleaning constraint and are therefore
-\emph{near-optimal} for the cleaning duty. Correcting an earlier analytic
+similarity law. Under this closure the minimum flow rate depends only weakly
+on supply pressure ($Q^* \propto \Delta P^{-0.57}$, versus the
+pressure-independent laminar-asymptotic result) but strongly on the cleaning
+shear ($Q^* \propto \tau_c^{1.43}$), so $\tau_c$ is the dominant design
+uncertainty. At $\Rey_d = 10^4$ (i.e.\ $\Delta P \approx \SI{40}{kPa}$,
+$r_\mathrm{max} = \SI{15}{mm}$) the CFD gives $\tau_w(r_\mathrm{max}) \approx
+\SI{5.9}{Pa}$ for the commercial $d = \SI{1}{mm}$ nozzle, rising to
+$\approx \SI{8.6}{Pa}$ at $\Delta P = \SI{0.07}{MPa}$. Against an assumed
+$\tau_c = 1$--$\SI{10}{Pa}$ the commercial nozzle cleans to
+$r \approx 25, 21, 16, \SI{12}{mm}$ at $\tau_c = 1, 3, 5, \SI{10}{Pa}$:
+mainstream designs sit within a factor of $\sim2$ of the cleaning constraint
+across the band --- near-optimal at the upper $\tau_c$, modestly
+over-provisioned at the lower --- so ``optimal'' is $\tau_c$-contingent, not
+absolute. Correcting an earlier analytic
 claim, the CFD shows the far-field wall shear at the cleaning radius is set
 by the jet's conserved momentum flux, not by centreline-velocity decay, so
 $\tau_w(r_\mathrm{max})$ is nearly standoff-independent
@@ -225,9 +229,12 @@ criteria of the EHEDG~\citep{Ehedg2003} are consistent with this window.
 We stress that $\tau_c$ is an explicit modelling assumption --- it is not
 fecal-specific --- and that the bulk yield stress of human
 faeces~\citep{Woolley2014} is a distinct (bulk-rheology, not wall-detachment)
-quantity that we do not equate with $\tau_c$. Because the design levers are
-ratios and $Q^* \propto \tau_c^{1/3}$, the results are only weakly sensitive
-to this choice.
+quantity that we do not equate with $\tau_c$. The dimensionless design levers
+(oblique, oscillation, standoff) are ratios and largely independent of $\tau_c$;
+the \emph{absolute} minimum flow, however, is a strong function of it
+($Q^* \propto \tau_c^{1.43}$ under the operative turbulent closure,
+Sec.~\ref{sec:P1}), so we treat $\tau_c$ as an explicit assumption and report
+its consequences across the $1$--$\SI{10}{Pa}$ band rather than at a single value.
 
 \begin{figure}[h]
 \centering
@@ -454,7 +461,19 @@ an axisymmetric wedge ($2.5^\circ$ half-angle, one cell thick) with
 OpenFOAM~v2606 \texttt{simpleFoam} (steady, incompressible, water,
 $\nu = 8.9\times 10^{-7}\,\mathrm{m^2/s}$) and the $k$--$\omega$~SST turbulence
 model with a blended-$\omega$ wall function. The mesh is wall-resolved
-($y^+ \approx 0.1$--$2$, median $0.8$). Only the single liquid phase is
+($y^+ \approx 0.1$--$2$, median $0.8$; $\approx 3\times10^4$ cells, graded to
+the plate). The radial domain extends to $R = \SI{25}{mm}$ ($\approx 1.7\,
+r_\mathrm{max}$); the nozzle inlet is a uniform (top-hat) profile at $V_0$
+with $5\%$ turbulence intensity, the surrounding nozzle plane and the outer
+radial boundary are constant-pressure entrainment/outflow, and the plate is
+no-slip. Momentum uses second-order \texttt{linearUpwind}, turbulence
+first-order upwind, with the SIMPLEC algorithm; residuals fall below $10^{-5}$
+(nominal $H/d=6$) or $\le 4\times10^{-4}$ (all other cases) with
+$\tau_w$ settled. Eddy-viscosity RANS is known to over-produce turbulent
+kinetic energy in the impingement stagnation zone; we therefore fit the
+closure over the developed wall jet ($r/d \in [2,20]$) rather than the
+stagnation region, and use no ad hoc production limiter. Only the single
+liquid phase is
 modelled; the free surface is \emph{not} resolved --- an approximation valid
 for the wall shear under the impinging core and the developed wall jet, where
 the film is thin and inertia-dominated. We swept
@@ -495,13 +514,21 @@ $\tau_w = \SI{390}{Pa}$ at $r \approx \SI{1}{mm}$ (stagnation), a peak
 skin-friction coefficient $C_f \approx 0.01$.
 
 The single most consequential output is direct. For the commercial
-$d = \SI{1}{mm}$ nozzle at $\Rey_d = 10^4$, the CFD wall shear at
-$r_\mathrm{max} = \SI{15}{mm}$ is $\SI{5.9}{Pa} \approx \tau_c = \SI{5}{Pa}$
-(the direct field value, not the extrapolated fit). The commercial nozzle
-therefore just meets the cleaning constraint --- mainstream designs are
-near-optimal for the cleaning duty --- and because $C_P$ now comes from the
-CFD independently of any commercial datum, the earlier commercial-datum
-calibration is corroborated rather than assumed.
+$d = \SI{1}{mm}$ nozzle at $\Rey_d = 10^4$ ($V_0 = \SI{8.9}{m/s}$, i.e.\
+$\Delta P \approx \SI{40}{kPa}$), the CFD wall shear at
+$r_\mathrm{max} = \SI{15}{mm}$ is $\SI{5.9}{Pa}$ (the direct field value, not
+the extrapolated fit); at the higher residential $\Delta P = \SI{0.07}{MPa}$
+($\Rey_d \approx 1.3\times10^4$) it rises to $\approx \SI{8.6}{Pa}$
+(since $\tau_w \propto V_0^{3/2}$). Whether the commercial nozzle ``just
+cleans'' or over-provisions therefore depends on $\tau_c$: solving
+$\tau_w(r) = \tau_c$ on the CFD profile, it cleans to
+$r \approx 25, 21, 16, \SI{12}{mm}$ at $\tau_c = 1, 3, 5, \SI{10}{Pa}$, so it
+sits within a factor of $\sim2$ of the $r_\mathrm{max} = \SI{15}{mm}$ target
+across the plausible band --- near-optimal at the upper $\tau_c$, modestly
+over-provisioned at the lower. The robust statement, independent of $\tau_c$,
+is that because $C_P$ now comes from the CFD independently of any commercial
+datum, the earlier commercial-datum calibration is corroborated rather than
+assumed.
 
 \begin{figure}[h]
 \centering
@@ -602,11 +629,20 @@ rather than asserted.
 
 \subsection{Sensitivity to $\tau_c$}
 
-The dominant uncertainty is the fecal adhesion threshold $\tau_c$, which
-enters as $Q^* \propto \tau_c^{1/3}$. A 10-fold uncertainty in $\tau_c$
-(1--$\SI{10}{Pa}$) translates to a $10^{1/3} \approx 2.15$-fold uncertainty
-in $Q^*$. This is the single most useful experimental measurement that
-would tighten the design specification.
+The dominant uncertainty is the fecal adhesion threshold $\tau_c$. On the
+\emph{laminar} Region~II branch the minimum flow enters weakly, as
+$Q^* \propto \tau_c^{1/3}$ (from Eq.~\eqref{eq:Qstar}). This weak sensitivity
+does \emph{not} carry over to the operative turbulent closure. Repeating the
+cleaning-limited optimization with the CFD closure
+$\tau_w \propto V_0^{3/2} d^{\,n_t-1/2}(d/r)^{n_t}$ gives
+$Q^* \propto \tau_c^{\,2/(p+n_t)} = \tau_c^{\,1.43}$ (with $p=-1/2$,
+$n_t=1.90$), so a 10-fold uncertainty in $\tau_c$ (1--$\SI{10}{Pa}$)
+propagates to a $\sim27$-fold uncertainty in $Q^*$ on that branch. Under the
+computed physics $\tau_c$ is therefore a \emph{strong} lever, not a weak one:
+a direct wall-detachment measurement for the relevant soft biological soil is
+the single most valuable experiment, and the ``near-optimal'' reading of
+commercial designs (Sec.~\ref{sec:cfd}) is itself $\tau_c$-contingent (see
+Sec.~\ref{sec:numerics}).
 
 % =============================================================
 \section{Optimization P2: Maximum Coverage at Fixed $Q$}
@@ -693,6 +729,18 @@ while neglecting the compensating growth of the impingement footprint at
 constant $M$. Once momentum is conserved consistently, the standoff dependence
 of $\tau_w(r_\mathrm{max})$ nearly cancels --- as the CFD confirms directly.
 
+\paragraph{Scope of the standoff result.}
+The weak-lever conclusion is quantitatively firm over $H/d = 1$--$20$, where the
+free-jet decay is validated ($B = 6.3$ at $H/d = 20$) and the domain is
+uncompromised. At the toilet-seat scale $H/d \approx 60$ the single-phase
+domain is confined (over-predicting the centreline decay, $B \approx 10.6$), so
+there the momentum-flux argument is an extrapolation rather than a resolved
+result; a larger-domain and, ultimately, multiphase computation is needed to
+confirm it. The $\sim20\%$ monotonic rise of $\tau_w(r_\mathrm{max})$ across
+$H/d = 1$--$20$ (Eq.~\eqref{eq:tauHd}) is consistent with a broadening
+impingement footprint delivering marginally more shear at a fixed radius, and
+does not overturn the weak-lever conclusion.
+
 \paragraph{Coherence caveat.}
 This result holds \emph{for a coherent jet}. The single-phase CFD models a
 continuous liquid column and does not resolve jet break-up or atomization; a
@@ -730,7 +778,7 @@ $\Rey_d^{1/2}$ factor turns the $\rho V_0^2$ prefactor into
 $\rho\,\nu^{1/2}V_0^{3/2}d^{-1/2}$). Enforcing the cleaning constraint at fixed
 supply pressure with $V_0 \to V_0\cos\theta$ then gives, with $Q \propto d^2 V_0$,
 \begin{equation}
-  \frac{a^*(\theta)}{a^*(0)} = (\cos\theta)^{-3/[2(2n_t-1)]},
+  \frac{a^*(\theta)}{a^*(0)} = (\cos\theta)^{-3/(2n_t-1)},
   \qquad
   \frac{Q^*(\theta)}{Q^*(0)} = \sec^{\,6/(2n_t-1)}\theta,
   \label{eq:obliqueII}
@@ -1095,8 +1143,9 @@ wall-detachment measurements (Nejadnik~et~al.~\citep{Nejadnik2008},
 $1$--$\SI{3}{Pa}$; Gi\~ao \& Keevil~\citep{Giao2013}, up to
 $\sim\SI{144}{Pa}$) rather than to bulk faecal rheology, but it is not
 fecal-specific; a dedicated detachment measurement on simulated perianal
-substrates would reduce the $Q^* \propto \tau_c^{1/3}$ uncertainty
-proportionally.
+substrates would directly constrain the dominant unknown; under the operative
+turbulent closure $Q^* \propto \tau_c^{1.43}$, so this uncertainty is amplified,
+not attenuated, in the absolute flow.
 
 % =============================================================
 \section{Conclusions}
@@ -1145,8 +1194,10 @@ principal results are:
   $H = \SI{80}{mm}$. The dwell-time constraint is non-binding.
 \end{enumerate}
 
-The design implication is that mainstream steady bidets are already
-near-optimal for the cleaning duty at the operating point: a
+The design implication is that mainstream steady bidets sit within a factor of
+$\sim2$ of the cleaning constraint across the plausible $\tau_c = 1$--$\SI{10}{Pa}$
+band (near-optimal at the upper end, modestly over-provisioned at the lower), so
+they are close to the cleaning-limited optimum without being wasteful: a
 normal-impingement jet is the target, oblique geometries carry a large
 ($\sim\SI{95}{\percent}$) penalty, and a mild $\pm\SI{15}{\degree}$
 oscillation is the one remaining lever worth $\sim\SI{52}{\percent}$;
@@ -1154,14 +1205,23 @@ standoff, contrary to the earlier revision, buys little for a coherent jet.
 The remaining scientific gap is the free-surface physics the present
 single-phase computation omits --- whether jet break-up at large standoff
 reintroduces a penalty --- together with a direct measurement of the critical
-detachment shear $\tau_c$, to which $Q^*$ is proportional as $\tau_c^{1/3}$.
-A multiphase (VOF) extension of the present CFD and a benchtop PIV /
-wall-shear rig, both scoped in Sec.~\ref{sec:verification}, would close it.
+detachment shear $\tau_c$, to which the absolute minimum flow is a strong
+function ($Q^* \propto \tau_c^{1.43}$ under the turbulent closure). A multiphase
+(VOF) extension of the present CFD and a benchtop PIV / wall-shear rig, both
+scoped in Sec.~\ref{sec:verification}, would close it.
 
-With a computed turbulent wall-shear closure and a CFD-corrected design
-conclusion in hand, the work is defensible as a fluids result for
-\emph{Physics of Fluids}, with \emph{European Journal of Physics} as a
-pedagogical fallback.
+On scope, we are deliberate: the fluid mechanics here is a single-phase RANS of
+a canonical round-jet-on-plate flow recovering a Phares-type wall-shear scaling,
+applied to a specific product-design question. Its contribution is the
+application (explicit water-minimization) and the CFD-anchored design reading,
+not new jet physics. The natural home is therefore a pedagogical/applied fluids
+venue --- \emph{European Journal of Physics} or \emph{American Journal of
+Physics} --- as a worked case study (Watson similarity, dimensional analysis,
+and a validating CFD on a memorable problem), with arXiv~\texttt{physics.flu-dyn}
+appropriate as a preprint now. Submission to a primary fluids journal
+(\emph{Physics of Fluids}/\emph{Phys.\ Rev.\ Fluids}) would additionally require
+the multiphase/free-surface computation and a full grid-convergence (GCI) study,
+which we scope as future work rather than claim here.
 
 % =============================================================
 \section{Verification Roadmap: Workstation-Scale Modeling and
@@ -1244,8 +1304,8 @@ interest. The same rig, with a fixed shear cell over a smear of a
 biocompatible fecal-residue surrogate (peanut-butter dilution,
 xanthan-thickened slurry, or Phytagel substrates calibrated to
 $\sigma_y \in [1, 10]$~Pa via parallel-plate rheometry), measures
-$\tau_c$ directly --- the single $\tau_c^{1/3}$ uncertainty that
-dominates the design specification. Hot-film calibration on the
+$\tau_c$ directly --- the single $\tau_c$ uncertainty that dominates the
+absolute design specification ($Q^* \propto \tau_c^{1.43}$). Hot-film calibration on the
 flat plate against the Phares correlation closes the dimensional
 loop.
 \textit{Effort: $\sim 1$~month to build, $\sim 1$~month to run.
