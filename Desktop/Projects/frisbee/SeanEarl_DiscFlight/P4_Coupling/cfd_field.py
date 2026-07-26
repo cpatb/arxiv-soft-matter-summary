@@ -81,6 +81,14 @@ class CFDField:
 
         self.is_stub = bool(data["is_stub"]) if "is_stub" in data.files else False
 
+        # Plan-view mask of grid columns that lie inside a building. Used to
+        # reject trajectories that would end inside a solid, which the
+        # trajectory model itself cannot detect (it has no collision test and
+        # would otherwise fly through on nearest-neighbour-filled wind).
+        skey = f"{self._key}__solid"
+        self._solid = (np.ascontiguousarray(data[skey], dtype=bool)
+                       if skey in data.files else None)
+
         self._n_eval = 0
         self._n_clamped = 0
 
@@ -165,6 +173,16 @@ class CFDField:
 
     def eps(self, r, t=0.0):
         return float(self._interp(self._eps, r))
+
+    def is_solid(self, x, y) -> bool:
+        """True if (x, y) falls in a grid column occupied by a building."""
+        if self._solid is None:
+            return False
+        ix, _, _ = self._locate(self._x, float(x))
+        iy, _, _ = self._locate(self._y, float(y))
+        # _locate returns the upper index of the bracketing pair; either cell
+        # being solid is enough to call the point blocked.
+        return bool(self._solid[ix - 1:ix + 1, iy - 1:iy + 1].any())
 
     @property
     def heading(self):

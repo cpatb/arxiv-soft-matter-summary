@@ -99,6 +99,18 @@ def sweep_one_launch_point(
 
     # A throw that never reached the ground inside t_max is not a landing.
     valid = np.isfinite(landings[:, 0])
+
+    # A throw whose landing point lies inside a building was never delivered.
+    # The 6-DOF model has no collision detection, so without this such throws
+    # would be scored on wind interpolated from the nearest open cell -- i.e.
+    # credited with flying through the building. Campus Towers sits 9 m off the
+    # field's eastern edge, so this is not a corner case for easterly bearings.
+    blocked = np.zeros(n_throws, dtype=bool)
+    if hasattr(field, "is_solid"):
+        for i in range(n_throws):
+            if valid[i]:
+                blocked[i] = field.is_solid(landings[i, 0], landings[i, 1])
+    n_blocked = int(blocked.sum())
     n_valid = int(valid.sum())
     good = landings[valid]
 
@@ -116,7 +128,8 @@ def sweep_one_launch_point(
         chi2_90 = -2.0 * np.log(0.1)
         ellipse_axes = np.sqrt(np.maximum(eigvals, 0.0) * chi2_90)
         d_target = np.linalg.norm(good[:, :2] - target_xy, axis=1)
-        success_rate = float(np.mean(d_target <= target_radius_m))
+        hit = (d_target <= target_radius_m) & (~blocked[valid])
+        success_rate = float(np.mean(hit))
     else:
         mean = np.full(3, np.nan)
         cov = np.full((2, 2), np.nan)
@@ -131,6 +144,8 @@ def sweep_one_launch_point(
         alpha_landing_mean=float(np.nanmean(alpha_lands)) if n_valid else np.nan,
         target_xy=target_xy,
         n_valid=n_valid,
+        n_blocked=n_blocked,
+        blocked_fraction=n_blocked / max(n_throws, 1),
     )
 
 
@@ -169,7 +184,7 @@ def _run_cell(task):
     )
     return idx, (stats["mean"], stats["cov"], stats["ellipse_axes"],
                  stats["success_rate"], stats["alpha_landing_mean"],
-                 stats["n_valid"])
+                 stats["n_valid"], stats["blocked_fraction"])
 
 
 def parse_grid(args_grid):
@@ -211,6 +226,7 @@ def main():
     succ_arr = np.full(shape, np.nan)
     alpha_arr = np.full(shape, np.nan)
     nvalid_arr = np.zeros(shape, dtype=int)
+    blocked_arr = np.full(shape, np.nan)
 
     tasks = []
     for ix, x_l in enumerate(xs):
@@ -249,13 +265,14 @@ def main():
                           f"[{el/60:.1f} min elapsed, ETA {eta/60:.1f} min]",
                           flush=True)
 
-    for idx, (mean, cov, axes, succ, alpha, nvalid) in results:
+    for idx, (mean, cov, axes, succ, alpha, nvalid, blk) in results:
         mean_arr[idx] = mean
         cov_arr[idx] = cov
         ax_arr[idx] = axes
         succ_arr[idx] = succ
         alpha_arr[idx] = alpha
         nvalid_arr[idx] = nvalid
+        blocked_arr[idx] = blk
 
     elapsed = time.perf_counter() - t0
     print(f"swept {total_throws:,} trajectories in {elapsed/60:.1f} min "
@@ -273,6 +290,7 @@ def main():
         success_rate=succ_arr,
         alpha_landing=alpha_arr,
         n_valid=nvalid_arr,
+        blocked_fraction=blocked_arr,
         n_throws=args.n_throws,
         seed=args.seed,
         target_range_m=TARGET_RANGE_M,
@@ -284,6 +302,8 @@ def main():
     with np.errstate(invalid="ignore"):
         print(f"  success_rate: min={np.nanmin(succ_arr):.3f} "
               f"mean={np.nanmean(succ_arr):.3f} max={np.nanmax(succ_arr):.3f}")
+        print(f"  blocked by buildings: mean "
+              f"{100*np.nanmean(blocked_arr):.1f}% of throws")
 
 
 if __name__ == "__main__":

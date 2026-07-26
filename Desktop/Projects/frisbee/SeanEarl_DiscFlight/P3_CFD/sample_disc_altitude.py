@@ -52,7 +52,7 @@ type            sets;
 libs            (sampling);
 setFormat       raw;
 interpolationScheme cellPoint;
-fields          (U k omega);
+fields          ({fields});
 
 sets
 {{
@@ -68,10 +68,20 @@ sets
 """
 
 
-def write_sample_dict(case: Path, pts: np.ndarray):
+def mean_fields_available(case: Path) -> bool:
+    """True if a time-averaging pass has produced UMean/kMean/omegaMean."""
+    times = sorted((d for d in case.iterdir()
+                    if d.is_dir() and d.name.replace(".", "").isdigit()),
+                   key=lambda d: float(d.name))
+    return bool(times) and (times[-1] / "UMean").exists()
+
+
+def write_sample_dict(case: Path, pts: np.ndarray, use_mean: bool):
     body = "\n".join(f"            ({p[0]:.4f} {p[1]:.4f} {p[2]:.4f})"
                      for p in pts)
-    (case / "system" / "sampleDisc").write_text(SAMPLE_DICT.format(points=body))
+    fields = ("UMean kMean omegaMean" if use_mean else "U k omega")
+    (case / "system" / "sampleDisc").write_text(
+        SAMPLE_DICT.format(points=body, fields=fields))
 
 
 def run_sampling(case: Path):
@@ -84,25 +94,39 @@ def run_sampling(case: Path):
     return r.stdout
 
 
-def read_samples(case: Path):
-    """Return (coords (n,3), U (n,3), k (n,), omega (n,))."""
+def read_samples(case: Path, use_mean: bool):
+    """Return (coords (n,3), U (n,3), k (n,), omega (n,)).
+
+    OpenFOAM merges all requested fields into ONE file whose name lists them
+    alphabetically. For a `cloud` set on axis xyz the columns are
+    x, y, z, then the fields in that alphabetical order.
+    """
     base = case / "postProcessing" / "sampleDisc"
     times = sorted(base.glob("*"), key=lambda p: float(p.name))
     if not times:
         raise SystemExit(f"no sampled output under {base}")
     tdir = times[-1]
 
-    def load(name):
-        cands = (sorted(tdir.glob(f"discGrid_{name}.xy"))
-                 or sorted(tdir.glob(f"discGrid*_{name}*"))
-                 or sorted(tdir.glob(f"*{name}*")))
-        if not cands:
-            raise SystemExit(f"missing sampled field '{name}' in {tdir}: "
-                             f"{[p.name for p in tdir.iterdir()]}")
-        return np.loadtxt(cands[0])
-
-    aU = load("U")
-    return aU[:, :3], aU[:, 3:6], load("k")[:, 3], load("omega")[:, 3]
+    cands = sorted(tdir.glob("discGrid_*.xy"))
+    if not cands:
+        raise SystemExit(f"no discGrid_*.xy in {tdir}: "
+                         f"{[p.name for p in tdir.iterdir()]}")
+    a = np.loadtxt(cands[0])
+    names = cands[0].stem.split("_")[1:]        # alphabetical field order
+    col = 3
+    got = {}
+    for nm in names:
+        width = 3 if nm.lower().startswith("u") else 1
+        got[nm] = a[:, col] if width == 1 else a[:, col:col + 3]
+        col += width
+    ukey = "UMean" if use_mean else "U"
+    kkey = "kMean" if use_mean else "k"
+    okey = "omegaMean" if use_mean else "omega"
+    for kx in (ukey, kkey, okey):
+        if kx not in got:
+            raise SystemExit(f"expected field {kx} in {cands[0].name}, "
+                             f"got {names}")
+    return a[:, :3], got[ukey], got[kkey], got[okey]
 
 
 def rotate_xy(a, phi):
@@ -158,10 +182,17 @@ def main():
         phi = np.radians(info["geometry_rotation_deg"])
         print(f"\n[dir_{theta:03d}] geometry rotation {np.degrees(phi):+.1f} deg")
 
+        use_mean = mean_fields_available(case)
+        print(f"  using {'TIME-AVERAGED' if use_mean else 'final-iterate'} "
+              f"fields")
+        if not use_mean:
+            print("  ** WARNING: no UMean present. Steady SIMPLE limit-cycles "
+                  "on this geometry, so a single iterate is an arbitrary phase "
+                  "of the cycle. Run averagePass.sh first. **")
         solve_pts = rotate_xy(site_pts, phi)
-        write_sample_dict(case, solve_pts)
+        write_sample_dict(case, solve_pts, use_mean)
         run_sampling(case)
-        coords, U_rot, kk, om = read_samples(case)
+        coords, U_rot, kk, om = read_samples(case, use_mean)
         print(f"  sampled {len(coords):,} / {len(site_pts):,} points "
               f"({100*len(coords)/len(site_pts):.1f}%)")
 
@@ -196,14 +227,24 @@ def main():
         out[f"dir_{theta:03d}__U"] = Ug
         out[f"dir_{theta:03d}__k"] = kg
         out[f"dir_{theta:03d}__eps"] = eg
+        # Solid mask: grid points with no owning cell are inside a building.
+        # Stored so the trajectory model can treat a throw that ends inside a
+        # building as undeliverable rather than silently flying through it on
+        # nearest-neighbour-filled wind. Collapsed over z because the buildings
+        # here are far taller than the 6 m sampling band.
+        out[f"dir_{theta:03d}__solid"] = (~valid).any(axis=2)
         headings.append(theta)
-        meta[str(theta)] = dict(info, unresolved_fraction=frac)
+        meta[str(theta)] = dict(info, unresolved_fraction=frac,
+                                time_averaged=bool(use_mean))
 
         mag = np.linalg.norm(Ug, axis=-1)
         print(f"  |U| at 2 m: {mag[:, :, 1].min():.2f} .. "
               f"{mag[:, :, 1].max():.2f} m/s (mean {mag[:, :, 1].mean():.2f})")
         print(f"  k   at 2 m: {kg[:, :, 1].min():.3f} .. "
               f"{kg[:, :, 1].max():.3f} m2/s2")
+        solid = out[f"dir_{theta:03d}__solid"]
+        print(f"  solid footprint covers {100*solid.mean():.1f}% of the "
+              f"sampling box in plan view")
 
     out["headings"] = np.array(sorted(headings))
     out["meta_json"] = json.dumps(meta)
