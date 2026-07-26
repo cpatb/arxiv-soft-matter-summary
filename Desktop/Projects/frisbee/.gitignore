@@ -7,3 +7,6 @@ SeanEarl_DiscFlight/P2_Geometry/raw/
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Large regenerable geometry artefacts
+SeanEarl_DiscFlight/P2_Geometry/buildings.stl
