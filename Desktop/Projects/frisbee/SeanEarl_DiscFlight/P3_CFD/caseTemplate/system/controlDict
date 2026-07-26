@@ -1,26 +1,14 @@
-/*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM                                        |
-|  \\    /   O peration     | simpleFoam steady-RANS Sean Earl ABL            |
-|   \\  /    A nd           |                                                 |
-|    \\/     M anipulation  |                                                 |
-\*---------------------------------------------------------------------------*/
-FoamFile
-{
-    version     2.0;
-    format      ascii;
-    class       dictionary;
-    object      controlDict;
-}
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; object controlDict; }
 
 application     simpleFoam;
 startFrom       startTime;
 startTime       0;
 stopAt          endTime;
-endTime         3000;       // steady iterations
+endTime         @@ENDTIME@@;
 deltaT          1;
 writeControl    timeStep;
-writeInterval   500;
+writeInterval   @@WRITEINTERVAL@@;
 purgeWrite      2;
 writeFormat     binary;
 writePrecision  8;
@@ -36,5 +24,16 @@ functions
         libs            (utilityFunctionObjects);
         fields          (U p k omega);
         writeResidualFields false;
+    }
+
+    // Mean speed at disc altitude over the field, monitored for convergence.
+    fieldAverageProbe
+    {
+        type            probes;
+        libs            (sampling);
+        writeControl    timeStep;
+        writeInterval   20;
+        fields          (U k);
+        probeLocations  ( (0 0 2) (-20 0 2) (20 0 2) (0 0 5) );
     }
 }

@@ -1,0 +1,10 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class dictionary; object surfaceFeatureExtractDict; }
+
+seanEarl.stl
+{
+    extractionMethod    extractFromSurface;
+    extractFromSurfaceCoeffs { includedAngle 150; }
+    subsetFeatures      { nonManifoldEdges no; openEdges yes; }
+    writeObj            no;
+}

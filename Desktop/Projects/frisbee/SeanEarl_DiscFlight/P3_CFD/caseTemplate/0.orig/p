@@ -6,9 +6,9 @@ internalField   uniform 0;
 
 boundaryField
 {
-    inlet     { type zeroGradient; }
-    outlet    { type fixedValue; value uniform 0; }
-    top       { type slip; }
+    inlet           { type zeroGradient; }
+    outlet          { type fixedValue; value uniform 0; }
+    top             { type slip; }
     "(north|south)" { type slip; }
-    "(ground|buildings|trees)" { type zeroGradient; }
+    "(ground|buildings)" { type zeroGradient; }
 }

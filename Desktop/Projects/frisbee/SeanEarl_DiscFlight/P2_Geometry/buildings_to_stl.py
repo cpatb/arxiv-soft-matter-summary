@@ -115,9 +115,24 @@ def main():
     ap.add_argument("--out", default="buildings.stl")
     ap.add_argument("--half-size", type=float, default=None,
                     help="clip to a square half-width (m) about the origin")
+    ap.add_argument("--radius", type=float, default=None,
+                    help="clip to a CIRCLE of this radius (m). Preferred for "
+                         "a direction sweep: the modelled building set is then "
+                         "invariant under the rotation used to point each "
+                         "inflow direction along +x, so every direction sees "
+                         "exactly the same geometry.")
+    ap.add_argument("--single-solid", default=None,
+                    help="emit one named solid instead of one per building "
+                         "(snappyHexMesh region name)")
     ap.add_argument("--min-height", type=float, default=2.0)
     ap.add_argument("--base-z", type=float, default=0.0,
                     help="flat ground elevation in local coords")
+    ap.add_argument("--bury", type=float, default=0.0,
+                    help="extend each building's base this far BELOW base-z. "
+                         "Roof heights are unaffected. Burying the base a few "
+                         "metres below the blockMesh floor avoids bottom faces "
+                         "exactly coplanar with the ground patch, which is a "
+                         "common source of snappyHexMesh snapping failures.")
     args = ap.parse_args()
 
     with open(args.geometry_json) as fh:
@@ -137,6 +152,9 @@ def main():
                                            or abs(cy) > args.half_size):
             skipped_far += 1
             continue
+        if args.radius is not None and np.hypot(cx, cy) > args.radius:
+            skipped_far += 1
+            continue
 
         h = float(b["height_m"])
         if h < args.min_height:
@@ -153,14 +171,26 @@ def main():
             continue
 
         try:
-            verts, faces = extrude(ring, args.base_z, args.base_z + h)
+            verts, faces = extrude(ring, args.base_z - args.bury,
+                                   args.base_z + h)
         except Exception as exc:                       # noqa: BLE001
             print(f"  skipping {b.get('osm_id')}: {exc}")
             degenerate += 1
             continue
         solids.append((f"bldg_{b['osm_id']}", verts, faces))
 
-    write_multisolid_stl(args.out, solids)
+    if args.single_solid:
+        # Merge into one named region. Face indices must be offset by the
+        # running vertex count as the blocks are concatenated.
+        allv, allf, off = [], [], 0
+        for _, v, f in solids:
+            allv.append(v)
+            allf.append(f + off)
+            off += len(v)
+        merged = [(args.single_solid, np.vstack(allv), np.vstack(allf))]
+        write_multisolid_stl(args.out, merged)
+    else:
+        write_multisolid_stl(args.out, solids)
 
     n_tri = sum(len(f) for _, _, f in solids)
     print(f"wrote {args.out}")

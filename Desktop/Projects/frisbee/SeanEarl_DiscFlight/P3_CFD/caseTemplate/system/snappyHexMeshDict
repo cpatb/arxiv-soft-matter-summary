@@ -3,94 +3,117 @@ FoamFile { version 2.0; format ascii; class dictionary; object snappyHexMeshDict
 
 castellatedMesh true;
 snap            true;
-addLayers       true;
+addLayers       false;   // wall functions with a rough-wall ABL treatment do
+                         // not need a resolved viscous layer; layer insertion
+                         // on 116 real footprints is also the least robust
+                         // step and the usual cause of mesh failure.
 
 geometry
 {
-    seanEarl
+    buildings
     {
         type triSurfaceMesh;
         file "seanEarl.stl";
-        regions
-        {
-            ground    { name groundSurf;    }
-            buildings { name buildingsSurf; }
-            trees     { name treesSurf;     }
-        }
+        name buildings;
     }
-    refinementBox
+
+    // Disc-altitude box over the playing surface: this is where the paper's
+    // results are sampled, so it gets the finest volume refinement.
+    fieldBox
     {
-        type box;
-        min (-150 -150 0);
-        max ( 150  150 40);
+        type searchableBox;
+        min (@@FBXMIN@@ @@FBYMIN@@ 0);
+        max (@@FBXMAX@@ @@FBYMAX@@ @@FBZMAX@@);
+    }
+
+    // Wider box covering the near-field buildings whose wakes reach the field.
+    nearFieldBox
+    {
+        type searchableBox;
+        min (@@NBXMIN@@ @@NBYMIN@@ 0);
+        max (@@NBXMAX@@ @@NBYMAX@@ @@NBZMAX@@);
     }
 }
 
 castellatedMeshControls
 {
-    maxLocalCells       2000000;
-    maxGlobalCells      12000000;
+    maxLocalCells       4000000;
+    maxGlobalCells      @@MAXCELLS@@;
     minRefinementCells  10;
     nCellsBetweenLevels 3;
-    resolveFeatureAngle 30;
+    resolveFeatureAngle 45;
     allowFreeStandingZoneFaces true;
+    planarAngle         30;
 
-    features
-    (
-        { file "seanEarl.eMesh"; level 2; }
-    );
+    features ( { file "seanEarl.eMesh"; level @@FEATLEVEL@@; } );
 
     refinementSurfaces
     {
-        seanEarl
+        buildings
         {
-            level (1 2);
-            regions
-            {
-                groundSurf    { level (1 2); patchInfo { type wall; } }
-                buildingsSurf { level (2 3); patchInfo { type wall; } }
-                treesSurf     { level (1 2); patchInfo { type wall; } }
-            }
+            level (@@SURFMIN@@ @@SURFMAX@@);
+            patchInfo { type wall; }
         }
     }
 
     refinementRegions
     {
-        refinementBox { mode inside; levels ((1.0 2)); }
+        nearFieldBox { mode inside; levels ((1E15 @@NEARLEVEL@@)); }
+        fieldBox     { mode inside; levels ((1E15 @@FIELDLEVEL@@)); }
     }
 
-    locationInMesh (0 0 5);
-    insidePoint    (0 0 5);
+    // Inside the domain, above ground, clear of every building.
+    locationInMesh (@@LOCX@@ @@LOCY@@ @@LOCZ@@);
 }
 
 snapControls
 {
-    nSmoothPatch        3;
-    tolerance           2.0;
-    nSolveIter          30;
-    nRelaxIter          5;
+    nSmoothPatch    3;
+    tolerance       2.0;
+    nSolveIter      50;
+    nRelaxIter      5;
+    nFeatureSnapIter 10;
+    implicitFeatureSnap false;
+    explicitFeatureSnap true;
+    multiRegionFeatureSnap false;
 }
 
 addLayersControls
 {
-    relativeSizes       true;
-    layers
-    {
-        "buildingsSurf|groundSurf"
-        {
-            nSurfaceLayers 3;
-        }
-    }
-    expansionRatio      1.3;
+    relativeSizes    true;
+    layers { }
+    expansionRatio   1.2;
     finalLayerThickness 0.5;
-    minThickness        0.1;
+    minThickness     0.1;
+    nGrow            0;
+    featureAngle     60;
+    nRelaxIter       5;
+    nSmoothSurfaceNormals 1;
+    nSmoothNormals   3;
+    nSmoothThickness 10;
+    maxFaceThicknessRatio 0.5;
+    maxThicknessToMedialRatio 0.3;
+    minMedialAxisAngle 90;
+    nBufferCellsNoExtrude 0;
+    nLayerIter       50;
 }
 
 meshQualityControls
 {
-    #include "meshQualityDict"
+    maxNonOrtho         65;
+    maxBoundarySkewness 20;
+    maxInternalSkewness 4;
+    maxConcave          80;
+    minVol              1e-13;
+    minTetQuality       1e-15;
+    minArea             -1;
+    minTwist            0.02;
+    minDeterminant      0.001;
+    minFaceWeight       0.02;
+    minVolRatio         0.01;
+    minTriangleTwist    -1;
+    nSmoothScale        4;
+    errorReduction      0.75;
 }
-
-writeFlags ( scalarLevels );
 
 mergeTolerance 1e-6;

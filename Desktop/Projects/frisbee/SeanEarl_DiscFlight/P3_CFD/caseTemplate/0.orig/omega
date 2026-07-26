@@ -1,0 +1,42 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class volScalarField; object omega; }
+
+// NOTE: the previous template used atmBoundaryLayerInletEpsilon on this field.
+// That BC returns epsilon, dimensions [0 2 -3], which is not omega
+// [0 0 -1] -- OpenFOAM rejects it. v2606 provides atmBoundaryLayerInletOmega.
+
+dimensions      [0 0 -1 0 0 0 0];
+internalField   uniform @@OMEGAINIT@@;
+
+boundaryField
+{
+    inlet
+    {
+        type            atmBoundaryLayerInletOmega;
+        flowDir         (1 0 0);
+        zDir            (0 0 1);
+        Uref            @@UREF@@;
+        Zref            @@ZREF@@;
+        z0              uniform @@Z0_INLET@@;
+        d               uniform 0;
+        zGround         uniform 0;
+        value           $internalField;
+    }
+    outlet          { type zeroGradient; }
+    top             { type slip; }
+    "(north|south)" { type slip; }
+    ground
+    {
+        // Yang et al. (2009) / atmospheric variant, consistent with the
+        // rough-wall atmNutkWallFunction used for nut.
+        type            atmOmegaWallFunction;
+        z0              uniform @@Z0_GROUND@@;
+        d               uniform 0;
+        value           $internalField;
+    }
+    buildings
+    {
+        type            omegaWallFunction;
+        value           $internalField;
+    }
+}

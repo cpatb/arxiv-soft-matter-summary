@@ -1,0 +1,33 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class volScalarField; object nut; }
+
+dimensions      [0 2 -1 0 0 0 0];
+internalField   uniform 0;
+
+boundaryField
+{
+    inlet           { type calculated; value $internalField; }
+    outlet          { type calculated; value $internalField; }
+    top             { type slip; }
+    "(north|south)" { type slip; }
+    ground
+    {
+        // Rough-wall ABL function (Richards & Hoxey / Yang et al. 2009).
+        // z0 here is the LOCAL surface roughness of the ground BETWEEN the
+        // resolved buildings -- grass and pavement, ~0.03 m -- NOT the 0.5 m
+        // urban value. The 0.5 m figure is an equivalent roughness that stands
+        // in for buildings; applying it to the ground as well would count the
+        // resolved buildings twice. It also matters numerically: the ABL wall
+        // function requires the first cell centre to sit well above z0, and a
+        // 0.5 m z0 is incompatible with the sub-metre near-ground cells needed
+        // to resolve disc altitude.
+        type            atmNutkWallFunction;
+        z0              uniform @@Z0_GROUND@@;
+        value           $internalField;
+    }
+    buildings
+    {
+        type            nutkWallFunction;
+        value           $internalField;
+    }
+}

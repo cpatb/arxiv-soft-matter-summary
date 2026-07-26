@@ -1,0 +1,31 @@
+/*--------------------------------*- C++ -*----------------------------------*/
+FoamFile { version 2.0; format ascii; class volVectorField; object U; }
+
+// Richards & Hoxey (1993) ABL inlet. The geometry is ROTATED per direction so
+// the wind always blows along +x; flowDir is therefore always (1 0 0).
+
+dimensions      [0 1 -1 0 0 0 0];
+internalField   uniform (@@UREF@@ 0 0);
+
+boundaryField
+{
+    inlet
+    {
+        type            atmBoundaryLayerInletVelocity;
+        flowDir         (1 0 0);
+        zDir            (0 0 1);
+        Uref            @@UREF@@;
+        Zref            @@ZREF@@;
+        z0              uniform @@Z0_INLET@@;
+        d               uniform 0;
+        zGround         uniform 0;
+        value           $internalField;
+    }
+    outlet          { type inletOutlet; inletValue uniform (0 0 0); value $internalField; }
+    top             { type slip; }
+    "(north|south)" { type slip; }
+    "(ground|buildings)"
+    {
+        type            noSlip;
+    }
+}

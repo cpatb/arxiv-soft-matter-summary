@@ -2,7 +2,7 @@
 FoamFile { version 2.0; format ascii; class volScalarField; object k; }
 
 dimensions      [0 2 -2 0 0 0 0];
-internalField   uniform 0.5;
+internalField   uniform @@KINIT@@;
 
 boundaryField
 {
@@ -11,16 +11,17 @@ boundaryField
         type            atmBoundaryLayerInletK;
         flowDir         (1 0 0);
         zDir            (0 0 1);
-        Uref            5.0;
-        Zref            10;
-        z0              uniform 0.001;
+        Uref            @@UREF@@;
+        Zref            @@ZREF@@;
+        z0              uniform @@Z0_INLET@@;
+        d               uniform 0;
         zGround         uniform 0;
-        value           uniform 0.5;
+        value           $internalField;
     }
-    outlet    { type zeroGradient; }
-    top       { type slip; }
+    outlet          { type zeroGradient; }
+    top             { type slip; }
     "(north|south)" { type slip; }
-    "(ground|buildings|trees)"
+    "(ground|buildings)"
     {
         type            kqRWallFunction;
         value           $internalField;

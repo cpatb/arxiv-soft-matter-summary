@@ -10,3 +10,6 @@ __pycache__/
 
 # Large regenerable geometry artefacts
 SeanEarl_DiscFlight/P2_Geometry/buildings.stl
+SeanEarl_DiscFlight/P2_Geometry/buildings_r300.stl
+SeanEarl_DiscFlight/P3_CFD/*.orig
+SeanEarl_DiscFlight/P4_Coupling/*.orig

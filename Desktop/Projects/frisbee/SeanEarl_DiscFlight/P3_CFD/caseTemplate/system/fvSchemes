@@ -18,22 +18,9 @@ divSchemes
     div((nuEff*dev2(T(grad(U))))) Gauss linear;
 }
 
-laplacianSchemes
-{
-    default         Gauss linear corrected;
-}
-
-interpolationSchemes
-{
-    default         linear;
-}
-
-snGradSchemes
-{
-    default         corrected;
-}
-
-wallDist
-{
-    method meshWave;
-}
+// snappyHexMesh on real building footprints leaves some high-non-orthogonality
+// cells; "limited 0.33" is the standard robust choice for such meshes.
+laplacianSchemes    { default Gauss linear limited 0.33; }
+interpolationSchemes{ default linear; }
+snGradSchemes       { default limited 0.33; }
+wallDist            { method meshWave; }
