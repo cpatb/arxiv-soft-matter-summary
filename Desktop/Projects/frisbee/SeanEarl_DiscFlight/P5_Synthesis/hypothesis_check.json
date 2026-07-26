@@ -1,0 +1,52 @@
+[
+  {
+    "hypothesis": "H1a_gradient",
+    "verdict": "SUPPORTED",
+    "Q_west": 0.04752329021018891,
+    "Q_east": 0.04098801207479326,
+    "normalised_gradient": 1.499664169727113
+  },
+  {
+    "hypothesis": "H1_speed_profile",
+    "U_west_end": 0.8610260350991477,
+    "U_east_end": 0.5986074529012414,
+    "U_min": 0.21687097249372916,
+    "U_max": 1.9689787722840824
+  },
+  {
+    "hypothesis": "H1b_hammer_degraded",
+    "verdict": "NOT TESTABLE",
+    "reason": "hammer still-air range 12.1 m vs 25 m scoring target; success rate is structurally zero",
+    "hammer": 0.0,
+    "backhand": 0.06675925925925925
+  },
+  {
+    "hypothesis": "H2a_patchier",
+    "verdict": "CONTRADICTED",
+    "cv_by_heading": {
+      "90": 0.18877824145815045,
+      "210": 0.2522060010218821,
+      "270": 0.2520342442655135
+    }
+  },
+  {
+    "hypothesis": "H2b_forehand_benefits",
+    "verdict": "CONTRADICTED",
+    "forehand_minus_backhand": {
+      "90": 0.032222222222222235,
+      "210": 0.017962962962962972,
+      "270": 0.02074074074074074
+    }
+  },
+  {
+    "hypothesis": "H3_best_is_SSW",
+    "verdict": "SUPPORTED",
+    "mean_Q_by_heading": {
+      "90": 0.04425565114249109,
+      "210": 0.04828789471825446,
+      "270": 0.035635054281
+    },
+    "best_heading": 210,
+    "caveat": "best of the computed subset only"
+  }
+]

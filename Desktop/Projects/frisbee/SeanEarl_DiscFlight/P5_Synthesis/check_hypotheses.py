@@ -106,11 +106,20 @@ def main():
             ib_t = throws.index("right_backhand")
             s_h = float(np.nanmean(sr[:, :, ih, ih_t, :]))
             s_b = float(np.nanmean(sr[:, :, ih, ib_t, :]))
-            ok = s_h < s_b
-            print(verdict(ok, f"hammer success {s_h:.4f} vs backhand "
-                              f"{s_b:.4f}"))
+            # The hammer's still-air range is 12.1 m; the scoring target is
+            # 25 m downrange. Its success rate is therefore structurally zero
+            # whatever the wind does, so this comparison cannot test the
+            # hypothesis -- it measures the target choice.
+            print(verdict(None, f"hammer success {s_h:.4f} vs backhand "
+                                f"{s_b:.4f} -- NOT INTERPRETABLE: the "
+                                f"hammer's 12.1 m still-air range cannot "
+                                f"reach the 25 m scoring target, so 0% "
+                                f"measures the target, not the wind"))
             results.append(dict(hypothesis="H1b_hammer_degraded",
-                                verdict="SUPPORTED" if ok else "CONTRADICTED",
+                                verdict="NOT TESTABLE",
+                                reason="hammer still-air range 12.1 m vs 25 m "
+                                       "scoring target; success rate is "
+                                       "structurally zero",
                                 hammer=s_h, backhand=s_b))
 
     # ---------------- H2: westerly sheltered lanes, forehand gains --------

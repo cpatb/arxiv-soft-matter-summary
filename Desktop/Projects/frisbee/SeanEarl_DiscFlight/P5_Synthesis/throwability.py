@@ -76,7 +76,7 @@ def turbulence_factor(k_2m, U_2m, I_cap=1.0):
 
 
 def compute_Q(fields_npz, landings_npz, U_ref, field_average_wind=False,
-              allow_stub=False):
+              allow_stub=False, exclude_throws=()):
     """Return (Q, launch_x, launch_y, headings, parts).
 
     `parts` carries the three factors separately so the paper can report which
@@ -102,6 +102,12 @@ def compute_Q(fields_npz, landings_npz, U_ref, field_average_wind=False,
             "P4/monte_carlo.py, which now measures it directly from the "
             "landing points."
         )
+
+    all_throws = [str(t) for t in L["throws"]]
+    keep = [i for i, t in enumerate(all_throws) if t not in exclude_throws]
+    if len(keep) < len(all_throws):
+        dropped = [t for t in all_throws if t in exclude_throws]
+        print(f"  excluding throw type(s) {dropped} from the success factor")
 
     headings = L["headings"]
     launch_x, launch_y = L["launch_x"], L["launch_y"]
@@ -147,7 +153,7 @@ def compute_Q(fields_npz, landings_npz, U_ref, field_average_wind=False,
 
         # Measured success rate, averaged over throw types and bearings.
         # (nx, ny, nt, nb) -> (nx, ny)
-        sr = np.nanmean(L["success_rate"][:, :, ih, ...], axis=(-1, -2))
+        sr = np.nanmean(L["success_rate"][:, :, ih, keep, :], axis=(-1, -2))
 
         Q[:, :, ih] = wf * tf * sr
         wf_all[:, :, ih], tf_all[:, :, ih], sr_all[:, :, ih] = wf, tf, sr
@@ -175,13 +181,19 @@ def main():
                     help="use the draft's spatially-averaged wind penalty")
     ap.add_argument("--allow-stub", action="store_true",
                     help="permit a stub (non-CFD) wind field")
+    ap.add_argument("--exclude-throws", nargs="*", default=[],
+                    help="throw types to omit from the success factor. Use for "
+                         "a throw whose characteristic range makes the fixed "
+                         "25 m scoring target unreachable, where a 0%% success "
+                         "rate measures the target choice rather than the wind.")
     ap.add_argument("--out", default="Q.npz")
     args = ap.parse_args()
 
     Q, x, y, h, parts = compute_Q(
         args.fields, args.landings, args.u_ref,
         field_average_wind=args.field_average_wind,
-        allow_stub=args.allow_stub)
+        allow_stub=args.allow_stub,
+        exclude_throws=tuple(args.exclude_throws))
 
     np.savez_compressed(args.out, Q=Q, x=x, y=y, headings=h,
                         u_ref=args.u_ref, **parts)
