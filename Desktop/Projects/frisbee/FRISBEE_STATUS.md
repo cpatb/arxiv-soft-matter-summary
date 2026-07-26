@@ -130,6 +130,68 @@ because the paper's claims are comparisons *between* directions.
 
 ---
 
+### Stage 5 — P4, real Monte Carlo ✅ COMPLETE
+
+**97,200 trajectories in 59 min** (27/s on 20 workers), through the time-averaged
+CFD fields: 12 launch points × 3 headings × 3 throw types × 6 bearings × 150
+release realisations. 10.2% of throws were scored as blocked by a building
+rather than credited with flying through it.
+
+### Stage 6 — P5, throwability ✅ COMPLETE
+
+| θ_wind | Q̄ | Q_min | Q_max | wind | turb | delivery |
+|---|---|---|---|---|---|---|
+| 90° (easterly, over-lake) | 0.0443 | 0.0303 | 0.0563 | 0.727 | 0.744 | 8.3% |
+| 210° (SSW, prevailing) | **0.0483** | 0.0261 | 0.0643 | 0.715 | 0.634 | 10.8% |
+| 270° (westerly, urban) | 0.0356 | 0.0131 | 0.0471 | 0.723 | 0.563 | 9.2% |
+
+**Best of the three computed = 210° (SSW). Worst = 270° (westerly).**
+
+Mean disc-altitude (2 m) wind speed over the playing surface: **1.09, 1.13 and
+1.01 m/s** for 90°/210°/270°, against a 5 m/s reference at 10 m — **roughly one
+fifth, in every direction**.
+
+### Hypothesis verdicts (Stage 6, item 2)
+
+| # | Draft prediction | Verdict |
+|---|---|---|
+| H1a | Easterly Q gradient across the field | **SUPPORTED** (Q 0.0475 west vs 0.0410 east) — *but by the wrong mechanism, see §4* |
+| H1b | Hammer systematically degraded | **NOT TESTABLE** — scoring artefact, see below |
+| H2a | Westerly Q patchier than others | **CONTRADICTED** (CV 0.189 / 0.252 / 0.252 for 90/210/270 — easterly is smoothest) |
+| H2b | Forehand benefits most under westerlies | **CONTRADICTED** (forehand advantage largest under the *easterly*, +0.032 vs +0.021) |
+| H3 | Best conditions at a light SSW (~210°) | **SUPPORTED** (of the three computed) |
+
+**A scoring artefact caught before it reached the paper.** The hammer's delivery
+rate came out as exactly 0.0000 at every heading, which reads like a dramatic
+wind effect. It is not: the hammer's still-air range in this model is **12.1 m**
+and the scoring target is **25 m** downrange, so its success rate is
+structurally zero whatever the wind does. The number measured the scoring rule,
+not the physics. Hammer is now excluded from the Q success factor (it was
+depressing every heading by about a third) and the verdict is NOT TESTABLE.
+
+### Stage 7–8 — manuscript, review, PDF ✅ COMPLETE
+
+- `Project1_Frisbee_LoyolaWind_PAPER.tex` — working copy (original draft untouched)
+- `Project1_Frisbee_LoyolaWind_PAPER.REVIEWED.tex` → **22-page PDF, 0 errors, 0 undefined refs, 4/4 figures**
+- `Project1_Frisbee_LoyolaWind_REVIEW_DOSSIER_2026-07-26.md` — four-tier review
+- **Verdict: POST-READY, 5 author decisions outstanding.** Venue: arXiv
+  `physics.flu-dyn`, then *Sports Engineering*.
+
+### CFD validation results
+
+| Test | Result | Verdict |
+|---|---|---|
+| ABL horizontal homogeneity (Hargreaves & Wright) | 0.7% worst streamwise drift over 1400 m; 1.3% vs analytic Richards–Hoxey | **PASS** |
+| Limit-cycle amplitude at disc altitude | 13.7% (fine) / 7.4% (coarse) peak-to-peak | characterised; fields are cycle-averaged |
+| Grid independence at disc altitude | 57.1% of local speed / 10.3% of u_ref | **FAIL** (10% criterion) |
+| Tominaga AIJ-B cube benchmark | not run | — |
+
+**The grid-independence failure is reported as a failure.** The criterion was
+not relaxed after seeing the result. What survives it: the *magnitude* of the
+sheltering (both meshes agree, every direction). What does not: the spatial
+detail of Q within the field — so **no ranking of individual launch positions is
+claimed**.
+
 ## 3. What was scoped down (stated in the paper, §"Scope and limitations")
 
 | Planned | Delivered | Why |
@@ -214,3 +276,48 @@ bash averagePass.sh 11 800 cases/dir_090 cases/dir_210 cases/dir_270
 # everything downstream
 cd .. && bash runDownstream.sh 20 150
 ```
+
+---
+
+## 7. Remaining author decisions
+
+| # | Decision | Recommendation |
+|---|---|---|
+| 1 | Author, affiliation, co-authors, funding | Only you can supply — 6 `% FLAG FOR AUTHOR` markers |
+| 2 | Field outline (OSM 78×25 m vs regulation 100×37 m) | Confirm on site; direction-level conclusions survive either way |
+| 3 | Grid independence not achieved | Post with the limitation stated |
+| 4 | Hammer throw scoring | Re-score at ~12 m, its own characteristic range |
+| 5 | Venue | arXiv `physics.flu-dyn` now; *Sports Engineering* for the journal version |
+
+## 8. Second-pass compute worth doing, in priority order
+
+1. **A third, finer mesh** (~4 h/direction). Grid independence at disc altitude
+   is the one failed validation and the only thing gating per-location claims.
+2. **LES of the easterly case** (~2 weeks). Steady RANS cannot give peak gusts
+   or spatially correlated gust structure, which is what a thrower actually
+   experiences. Highest scientific value.
+3. **The full 13-direction sweep** (~13 × 25 min meshing + solve ≈ 1 day here).
+   Cheap now that the harness works; would turn "best of three" into a real
+   direction-dependence curve.
+4. **A uniform-freestream control** through the same Monte Carlo (~1 h). Isolates
+   what the site-specific coupling actually buys. Cheapest item on this list and
+   a referee will ask for it.
+5. **A second reference wind speed** (~2 h). The Q maps rescale approximately
+   with `u_ref`, but the trajectory model is not linear in wind speed, so this
+   is an assumption currently untested.
+6. **Building-height sensitivity** (~1 h). 44% of heights are type defaults;
+   Mertz and Campus Towers are tagged, but a ±20% perturbation study would
+   bound the effect.
+
+## 9. Honest bottom line
+
+The disc model is the strong part: quantitatively validated, five real errors
+found and fixed against the primary source, 26 tests. The coupling machinery is
+sound and now well-tested (18 tests). The CFD is real, validated for ABL
+homogeneity, **and not grid-converged at the altitude it reports** — which is
+stated in the paper, bounds what is claimed, and is the first thing a second
+pass should fix.
+
+The scientific result — that a 45 m building nine metres off the sideline, not
+the lakefront boundary layer, controls disc-altitude flow — is robust to that
+limitation, because it is a statement about magnitude that both meshes agree on.

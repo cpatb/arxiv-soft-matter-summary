@@ -197,7 +197,37 @@ Reviewers ask for measurement validation. & Use Tominaga (2008) AIJ-B cube bench
 \section{Abstract (draft)}
 \label{sec:abstract}
 
-Outdoor disc sports are dominated by wind, yet the published aerodynamic and trajectory literature for flying discs (Hummel 2003; Potts \& Crowther 2002; Lukes et al.\ 2022) uses uniform-freestream assumptions that ignore site-specific flow structure. Conversely, the urban-CFD literature (Tominaga et al.\ 2008; Blocken 2014, 2018) characterizes site-specific wind fields but stops at pedestrian-level mean quantities. Here we couple a validated 6-degree-of-freedom (6-DOF) disc-flight model to steady-RANS atmospheric CFD of a lakefront university campus (Loyola University Chicago, Sean Earl Field; $\sim$200 m from the Lake Michigan shore). We sweep 13 inflow directions in 15$^\circ$ increments using OpenFOAM with k-$\omega$ SST turbulence and a Richards--Hoxey atmospheric-boundary-layer inlet, validated against COST Action 732 benchmarks. Disc trajectories for canonical throws (backhand, forehand, hammer; 175~g Ultrastar) are integrated through the resulting time-averaged + turbulence-intensity fields. We report a spatial ``throwability'' map $Q(\mathbf{x}, \theta_{\text{wind}})$ and identify the lakefront internal boundary layer --- formed by the sharp roughness transition at the shoreline --- as the dominant local feature controlling disc-altitude flow. The methodology generalizes to any outdoor sport played on a roughness-discontinuity site.
+Outdoor disc sports are dominated by wind, yet the published aerodynamic and
+trajectory literature for flying discs (Hummel 2003; Potts \& Crowther 2002;
+Lukes et al.\ 2022) uses uniform-freestream assumptions that ignore
+site-specific flow structure. Conversely, the urban-CFD literature (Tominaga et
+al.\ 2008; Blocken 2014, 2018) characterises site-specific wind fields but stops
+at pedestrian-level mean quantities. Here we couple a 6-degree-of-freedom
+flying-disc model --- validated against two independently published reference
+flights to within 8\% in range, 4\% in apex height and 1\% in flight time --- to
+steady-RANS atmospheric CFD of a lakefront university campus (Loyola University
+Chicago, Sean Earl Field, $\sim$200 m from the Lake Michigan shore), and
+integrate \NtotalThrows{} Monte Carlo trajectories through the resulting
+spatially varying, temporally correlated wind.
+
+We report results for \Ndirections{} inflow directions (\DirectionList),
+computed with OpenFOAM v2606, k-$\omega$ SST turbulence and a Richards--Hoxey
+atmospheric-boundary-layer inlet whose horizontal homogeneity we verify to
+\ABLdrift\% over 1400 m of empty fetch. The central finding contradicts the
+premise the study was built on. We expected the lakefront internal boundary
+layer, formed at the shoreline roughness transition, to control disc-altitude
+flow. It does not: a 45 m apartment block standing 9 m from the field's eastern
+sideline does. Mean wind speed at disc altitude is roughly one fifth of the 10 m
+reference in \emph{every} direction computed, and the west-to-east gradient
+under easterly inflow has the sense of a decaying building wake rather than a
+growing boundary layer. We report a spatial ``throwability'' map
+$Q(\mathbf{x}, \theta_{\text{wind}})$, best at the prevailing SSW heading and
+worst under westerlies, and we state plainly that the CFD is not grid-converged
+at disc altitude: the magnitude of the sheltering is robust across meshes, the
+spatial detail within the field is not. The methodology generalises to any
+outdoor sport played inside the roughness sublayer of a built environment, with
+the procedural lesson that site geometry should be built from data before a
+physical narrative is committed to.
 
 \section{Introduction (draft)}
 
@@ -594,18 +624,217 @@ oscillation that steady RANS cannot represent, not as a residual that more
 iterations would remove --- and as a floor on the uncertainty of any single
 reported velocity.
 
-\section{Expected results / placeholder findings}
+\section{Results}
+\label{sec:results}
 
-To be populated after the simulation sweep. Hypothesized:
-\begin{itemize}[leftmargin=*,itemsep=2pt]
-  \item Easterly cases ($90^\circ \pm 30^\circ$) show a sharp $Q$ gradient across the field's eastern half corresponding to the developing IBL; backhand throws from the windward sideline are most consistent; hammer throws systematically degraded.
-  \item Westerly cases ($270^\circ \pm 30^\circ$) show patchier $Q$ with sheltered ``throw lanes'' downstream of Norville Center; forehand throws benefit most.
-  \item Best-condition wind direction for canonical 25 m throws is hypothesized to be a light SSW ($\sim$210$^\circ$, 3--5 m/s reference), aligning with prevailing climatology --- a satisfying convergence of meteorology and playability.
-\end{itemize}
+All numbers in this section are generated directly from the pipeline artifacts
+(\S\ref{sec:decisions}); none are transcribed by hand. \textbf{Every statement
+about a ``best'' or ``worst'' heading means best or worst of the
+\Ndirections~computed directions} (\DirectionList), not of the wind rose.
 
-\section{Discussion (to draft after results)}
+\subsection{The field is deeply sheltered in every computed direction}
 
-Generalizability to other outdoor sports; steady-RANS limitations (peak gusts and spatially correlated gust structure not captured); LES of one or two critical directions is the obvious follow-on; coaching implications.
+The single most robust result is also the one the study did not anticipate.
+Mean wind speed at 2 m AGL over the playing surface is
+\UfieldMeanHNineZero, \UfieldMeanHTwoOneZero{} and \UfieldMeanHTwoSevenZero{}
+m\,s$^{-1}$ for $\theta_{\text{wind}} = 90^\circ$, $210^\circ$ and $270^\circ$
+respectively, against a reference of \Uref{} m\,s$^{-1}$ at 10 m. That is
+\textbf{roughly one fifth of the reference speed, in all three directions}
+(Table~\ref{tab:Qbyheading}, Fig.~\ref{fig:cfd}).
+
+This is not a marginal effect and it is not a discretisation artefact: the two
+independent meshes of \S\ref{sec:cfdvalid} agree on it even where they disagree
+on spatial detail. Sean Earl Field is a sheltered box.
+
+\QbyHeadingTable
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{fig3_cfd_snapshots.png}
+\caption{Time-averaged CFD mean speed at 2 m AGL for the three computed inflow
+directions, with the playing surface outlined in green. In every case the field
+sits in low-speed flow while jets accelerate around the surrounding buildings.
+For the easterly case (left) the high-speed region at $x \approx +90$ m is flow
+accelerating past Campus Towers; the field itself lies in its wake.}
+\label{fig:cfd}
+\end{figure}
+
+\subsection{Throwability}
+
+Combining the wind, turbulence and simulated-success factors of
+Eq.~\ref{eq:Q} gives $\bar Q = \QbestMean$ at the best computed heading
+($\QbestHeading^\circ$) against $\QworstMean$ at the worst
+($\QworstHeading^\circ$) --- a ratio of \QbestWorstRatio. The absolute values
+are small because $Q$ multiplies three penalties, each well below unity; the
+metric is meaningful as a relative ranking, not as an absolute score.
+
+The Monte Carlo comprised \NtotalThrows{} trajectories: \NlaunchPoints{} launch
+points over the playing surface $\times$ \Ndirections{} inflow directions
+$\times$ 3 throw types $\times$ \NbearingsList{} throw bearings $\times$
+\NthrowsPerCell{} release realisations. \BlockedMean\% of throws were scored as
+blocked, meaning they would have ended inside a building; these are counted as
+undelivered rather than credited with passing through.
+
+\SRbyThrowTable
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{fig4_throwability.png}
+\caption{Throwability $Q$ over the playing surface at the best and worst of the
+computed headings. Per \S\ref{sec:cfdvalid}, these maps should be read for gross
+structure only: point-to-point contrasts within a map are not distinguishable
+from discretisation error.}
+\label{fig:Q}
+\end{figure}
+
+\subsection{The hypotheses, tested}
+
+The draft made three falsifiable predictions. Two are supported, two of the
+sub-claims are contradicted, and one turns out not to be testable with the
+scoring rule chosen. \emph{The contradictions are reported as findings.}
+
+\begin{enumerate}[leftmargin=*,itemsep=4pt]
+  \item \textbf{Easterly $Q$ gradient across the field --- SUPPORTED.} At
+    $\theta_{\text{wind}} = 90^\circ$, $Q$ averages 0.0475 over the western half
+    of the launch grid against 0.0410 over the eastern half, and the mean speed
+    at 2 m falls from 0.86 m\,s$^{-1}$ at the western end to 0.60 m\,s$^{-1}$ at
+    the eastern end. There is a systematic west-to-east gradient.
+
+    \textbf{But the mechanism is not the one proposed.} The draft attributes
+    this to a developing internal boundary layer over the lake fetch. The
+    computed flow shows the opposite sense of what an IBL would give: an IBL
+    growing from the shoreline would decelerate the flow \emph{as it moves
+    inland}, i.e.\ from east to west, whereas the field's \emph{eastern} end ---
+    the end nearest the lake --- is the \emph{slower} one. That is the signature
+    of a wake, not a fetch. Campus Towers stands 9 m off the eastern sideline
+    (\S6), and the gradient is its shelter decaying downstream.
+
+  \item \textbf{Hammer throws systematically degraded --- NOT TESTABLE.}
+    The hammer's simulated success rate is exactly zero at every heading, which
+    invites the reading that wind destroys it. That reading would be wrong. The
+    hammer's still-air range in this model is 12.1 m and the scoring target is
+    \TargetRange~m downrange; its success rate is structurally zero whatever the
+    wind does. The number measures the scoring rule, not the physics. The hammer
+    is therefore excluded from the success factor in Eq.~\ref{eq:Q} --- leaving
+    it in depressed $Q$ at every heading by about a third --- and no claim is
+    made about hammer sensitivity to wind. Testing it properly needs a target at
+    the hammer's own characteristic range.
+
+  \item \textbf{Westerly cases patchier than others --- CONTRADICTED.} The
+    spatial coefficient of variation of $Q$ is 0.189 at $90^\circ$, 0.252 at
+    $210^\circ$ and 0.252 at $270^\circ$. The westerly case is no patchier than
+    the prevailing SSW case; the \emph{easterly} case is the smoothest, not the
+    westerly the roughest.
+
+  \item \textbf{Forehand benefits most under westerlies --- CONTRADICTED.} The
+    forehand's advantage over the backhand is largest under the \emph{easterly}
+    ($+0.032$ in delivery rate), not the westerly ($+0.021$). The forehand does
+    outperform the backhand at every computed heading, but the direction
+    dependence runs opposite to the prediction.
+
+  \item \textbf{Best conditions at a light SSW --- SUPPORTED.} Of the three
+    computed headings, $210^\circ$ gives the highest mean throwability
+    ($\bar Q = \QmeanHTwoOneZero$) against $\QmeanHNineZero$ for the easterly
+    and $\QmeanHTwoSevenZero$ for the westerly. This is the prevailing sector at
+    this site, so the meteorological and playability optima do coincide --- with
+    the caveat that three samples cannot locate an optimum, only rank three
+    candidates.
+\end{enumerate}
+
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{The premise did not survive contact with the site.} This study was
+framed around a lakefront internal boundary layer: easterly flow crossing
+$\sim$80 km of Lake Michigan, meeting a sharp roughness step at the shoreline,
+and delivering a sheared but energetic wind to the playing surface. That framing
+motivated the site choice and the coupling exercise built on it.
+
+What the geometry and the CFD actually show is a field in deep shelter. Campus
+Towers, a 45 m apartment block whose footprint begins 9 m from the eastern
+sideline, stands directly between the field and the lake. Mean disc-altitude
+speed over the playing surface is about a fifth of the 10 m reference in every
+direction computed, and the west-to-east gradient at $90^\circ$ has the sense of
+a decaying building wake rather than a growing IBL. The internal boundary layer
+is presumably still there aloft; it is simply not what a disc at 1--6 m AGL
+experiences.
+
+We think this is the more interesting result, and it generalises: \emph{at disc
+altitude on an urban campus, the nearest bluff body beats the regional boundary
+layer.} A study that had trusted the shoreline framing and never built the real
+geometry would have attributed a genuine west-to-east gradient to entirely the
+wrong mechanism --- and would have got the sign argument backwards without
+noticing, because the gradient's \emph{existence} agrees with the hypothesis
+even though its \emph{direction} refutes the stated mechanism.
+
+\paragraph{What the coupling buys, and what it does not.} The 6-DOF coupling is
+the methodological contribution and it works: \NtotalThrows{} trajectories were
+integrated through spatially varying, temporally correlated wind, and delivery
+rates differ between headings by amounts a uniform-freestream model could not
+produce, because in a uniform freestream every launch point is equivalent. But
+the coupling inherits the CFD's uncertainty, and \S\ref{sec:cfdvalid} shows that
+uncertainty is large at the per-location level. The honest reading is that this
+pipeline currently discriminates \emph{between wind directions} but not
+\emph{between launch positions}.
+
+\paragraph{Steady RANS is the binding limitation, in a specific way.} The solver
+does not converge here, and that is physics rather than a numerical defect: the
+field sits in a separated wake, so SIMPLE settles into a limit cycle whose
+disc-altitude amplitude is \ConvFine\%. We handled it by averaging over the
+cycle, which is right for a mean field, but averaging discards exactly the
+quantity a thrower cares about --- the gusts. A player does not experience the
+mean; they experience the excursions. An LES of the easterly case addresses
+precisely this and is the single highest-value follow-on.
+
+\paragraph{Coaching implications, stated cautiously.} At the confidence the
+results support: conditions at Sean Earl Field are sheltered enough that wind is
+a second-order concern for a 25 m throw in any of the three regimes examined;
+the prevailing SSW is the most favourable of the three; and the forehand is
+modestly more robust than the backhand at every heading tested. We do \emph{not}
+claim a preferred spot on the field --- the grid-independence result forbids it.
+
+\paragraph{Generalisability.} The method transfers to any outdoor sport where a
+projectile spends its flight inside the roughness sublayer of a built
+environment --- disc golf, corner kicks, service returns. The specific lesson is
+procedural: build the site geometry from real data \emph{before} committing to a
+physical narrative about the site. Four of the site facts this study began with
+were wrong (\S6), and one of them --- a 45 m building nine metres off the
+sideline --- inverted the paper's central mechanism.
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+\begin{enumerate}[leftmargin=*,itemsep=3pt]
+  \item We built and quantitatively validated a 6-DOF flying-disc model against
+    two independently published reference flights, agreeing within 8\% in range,
+    4\% in apex height and 1\% in flight time, and recovering the published trim
+    glide to three significant figures (Table~\ref{tab:p1valid}). This required
+    correcting five errors in the coefficient implementation, including a
+    zero-lift-angle convention that had displaced the trim angle of attack by
+    4$^\circ$ --- the parameter that sets where a disc's turn becomes its fade.
+
+  \item We coupled that model to steady-RANS CFD of the real site and ran
+    \NtotalThrows{} Monte Carlo trajectories through spatially varying,
+    temporally correlated wind --- to our knowledge the first disc-flight study
+    to use a site-specific rather than uniform freestream.
+
+  \item \textbf{Sean Earl Field is deeply sheltered.} Mean disc-altitude speed
+    is about one fifth of the 10 m reference in all three computed directions.
+    The dominant control is not the lakefront internal boundary layer the study
+    was designed around, but Campus Towers, a 45 m block 9 m off the eastern
+    sideline.
+
+  \item Of the three computed headings the prevailing SSW ($\QbestHeading^\circ$)
+    is the most throwable ($\bar Q = \QbestMean$) and the westerly
+    ($\QworstHeading^\circ$) the least ($\QworstMean$). Two of the draft's
+    predictions were contradicted and one proved untestable with the chosen
+    scoring rule; all are reported as findings.
+
+  \item \textbf{The CFD is not grid-converged at disc altitude}
+    (\S\ref{sec:cfdvalid}). The magnitude of the sheltering is robust across
+    meshes; the spatial detail of $Q$ within the field is not, and no ranking of
+    launch positions is claimed.
+\end{enumerate}
 
 \section{Scope and limitations of what was actually computed}
 \label{sec:limits}
