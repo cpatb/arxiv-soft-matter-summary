@@ -281,23 +281,33 @@ def test_grid_independence(fine: Path, coarse: Path, outdir: Path):
     pf = sample_profiles(fine, stations, z_max=20.0, n_z=80)
     pc = sample_profiles(coarse, stations, z_max=20.0, n_z=80)
 
+    u_ref = float(info_f.get("u_ref", 5.0))
     print(f"\n  {'station':>16s} {'|U| fine':>9s} {'|U| coarse':>11s} "
-          f"{'diff':>8s}")
-    diffs = []
+          f"{'rel':>7s} {'/u_ref':>8s}")
+    diffs, diffs_ref = [], []
     for (sx, sy), a, b in zip(stations, pf, pc):
         band = (a["z"] >= Z_DISC[0]) & (a["z"] <= Z_DISC[1])
         ua = float(np.mean(np.linalg.norm(a["U"], axis=1)[band]))
         ub = float(np.mean(np.linalg.norm(b["U"], axis=1)[band]))
         d = abs(ua - ub) / max(ua, 1e-9)
+        dref = abs(ua - ub) / u_ref
         diffs.append(d)
+        diffs_ref.append(dref)
         print(f"  ({sx:6.1f},{sy:6.1f}) {ua:8.3f} {ub:10.3f} "
-              f"{100*d:7.1f}%")
+              f"{100*d:6.1f}% {100*dref:7.1f}%")
 
     worst = max(diffs)
+    worst_ref = max(diffs_ref)
     verdict = "PASS" if worst < 0.10 else ("MARGINAL" if worst < 0.20
                                            else "FAIL")
-    print(f"  -> worst disc-band mean-velocity difference {100*worst:.1f}%  "
-          f"[{verdict}]  (criterion: 10%)")
+    print(f"  -> worst disc-band difference: {100*worst:.1f}% of the local "
+          f"speed [{verdict}] (criterion 10%)")
+    print(f"     {100*worst_ref:.1f}% of the reference speed u_ref = "
+          f"{u_ref:g} m/s")
+    print("     NOTE: the field is heavily sheltered, with disc-altitude")
+    print("     speeds of 0.3-1.8 m/s against a 5 m/s reference. A RELATIVE")
+    print("     criterion is therefore very demanding here; both measures are")
+    print("     reported so the reader can judge.")
 
     import matplotlib
     matplotlib.use("Agg")
@@ -318,8 +328,10 @@ def test_grid_independence(fine: Path, coarse: Path, outdir: Path):
     fig.savefig(outdir / "validation_grid_independence.png", dpi=150)
     plt.close(fig)
     print(f"  [figure: {outdir/'validation_grid_independence.png'}]")
-    return dict(test="grid_independence", worst_dU=worst, verdict=verdict,
-                stations=[list(s) for s in stations], diffs=diffs)
+    return dict(test="grid_independence", worst_dU=worst,
+                worst_dU_over_uref=worst_ref, verdict=verdict, u_ref=u_ref,
+                stations=[list(s) for s in stations], diffs=diffs,
+                diffs_over_uref=diffs_ref)
 
 
 def main():
@@ -356,7 +368,8 @@ def main():
     print(f"\nwrote {args.out_json}")
     print("\nSUMMARY")
     for r in results:
-        print(f"  {r['test']:22s} worst {100*r['worst_dU']:5.1f}%  "
+        key = "worst_dU" if "worst_dU" in r else "worst_pk_pk"
+        print(f"  {r['test']:22s} worst {100*r.get(key, float('nan')):5.1f}%  "
               f"{r['verdict']}")
 
 
