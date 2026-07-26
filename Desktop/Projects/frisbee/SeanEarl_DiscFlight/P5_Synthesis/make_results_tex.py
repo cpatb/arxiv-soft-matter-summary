@@ -108,7 +108,11 @@ def main():
         out.append(macro(f"QminH{digits_to_letters(h)}", fmt(minQ[h], 4)))
 
     # ---------------- disc-altitude wind ---------------------------------
+    # Reference speed of the ABL inlet at 10 m; the sheltering fraction below
+    # is quoted against it, so it must match the value used to drive the CFD.
+    U_REF = 5.0
     zk = int(np.argmin(np.abs(F["z"] - 2.0)))
+    shelter_frac = []
     for h in headings:
         key = f"dir_{h:03d}__U"
         if key not in F.files:
@@ -125,7 +129,14 @@ def main():
         ksub = kk[np.ix_(fx, fy)]
         I = np.sqrt(2 * np.maximum(ksub, 0) / 3) / np.maximum(sub, 1e-3)
         out.append(macro(f"IfieldMeanH{digits_to_letters(h)}", fmt(float(I.mean()), 2)))
-    out.append(macro("Uref", fmt(5.0, 0)))
+        shelter_frac.append(float(sub.mean()) / U_REF)
+    out.append(macro("Uref", fmt(U_REF, 0)))
+    if shelter_frac:
+        # Sheltering expressed as a percentage of the 10 m reference, so the
+        # manuscript never states the ratio in words that could drift away
+        # from the numbers printed beside it.
+        out.append(macro("UfieldFracMin", fmt(100 * min(shelter_frac), 0)))
+        out.append(macro("UfieldFracMax", fmt(100 * max(shelter_frac), 0)))
 
     # ---------------- success rates by throw ------------------------------
     sr = L["success_rate"]

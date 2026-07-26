@@ -70,6 +70,7 @@
   \newcommand{\GridDiff}{\MISSINGNUM}\newcommand{\GridDiffUref}{\MISSINGNUM}%
   \newcommand{\GridVerdict}{\MISSINGNUM}\newcommand{\ConvFine}{\MISSINGNUM}%
   \newcommand{\ConvCoarse}{\MISSINGNUM}\newcommand{\Uref}{\MISSINGNUM}%
+  \newcommand{\UfieldFracMin}{\MISSINGNUM}\newcommand{\UfieldFracMax}{\MISSINGNUM}%
   \newcommand{\Ndirections}{\MISSINGNUM}\newcommand{\DirectionList}{\MISSINGNUM}%
   \newcommand{\NtotalThrows}{\MISSINGNUM}\newcommand{\NthrowsPerCell}{\MISSINGNUM}%
   \newcommand{\NlaunchPoints}{\MISSINGNUM}\newcommand{\NbearingsList}{\MISSINGNUM}%
@@ -217,8 +218,8 @@ atmospheric-boundary-layer inlet whose horizontal homogeneity we verify to
 premise the study was built on. We expected the lakefront internal boundary
 layer, formed at the shoreline roughness transition, to control disc-altitude
 flow. It does not: a 45 m apartment block standing 9 m from the field's eastern
-sideline does. Mean wind speed at disc altitude is roughly one fifth of the 10 m
-reference in \emph{every} direction computed, and the west-to-east gradient
+sideline does. Mean wind speed at disc altitude is \UfieldFracMin--\UfieldFracMax\% of the
+10 m reference in \emph{every} direction computed, and the west-to-east gradient
 under easterly inflow has the sense of a decaying building wake rather than a
 growing boundary layer. We report a spatial ``throwability'' map
 $Q(\mathbf{x}, \theta_{\text{wind}})$, best at the prevailing SSW heading and
@@ -639,7 +640,8 @@ Mean wind speed at 2 m AGL over the playing surface is
 \UfieldMeanHNineZero, \UfieldMeanHTwoOneZero{} and \UfieldMeanHTwoSevenZero{}
 m\,s$^{-1}$ for $\theta_{\text{wind}} = 90^\circ$, $210^\circ$ and $270^\circ$
 respectively, against a reference of \Uref{} m\,s$^{-1}$ at 10 m. That is
-\textbf{roughly one fifth of the reference speed, in all three directions}
+\textbf{\UfieldFracMin--\UfieldFracMax\% of the reference speed, in all three
+directions}
 (Table~\ref{tab:Qbyheading}, Fig.~\ref{fig:cfd}).
 
 This is not a marginal effect and it is not a discretisation artefact: the two
@@ -753,8 +755,8 @@ motivated the site choice and the coupling exercise built on it.
 What the geometry and the CFD actually show is a field in deep shelter. Campus
 Towers, a 45 m apartment block whose footprint begins 9 m from the eastern
 sideline, stands directly between the field and the lake. Mean disc-altitude
-speed over the playing surface is about a fifth of the 10 m reference in every
-direction computed, and the west-to-east gradient at $90^\circ$ has the sense of
+speed over the playing surface is \UfieldFracMin--\UfieldFracMax\% of the 10 m
+reference in every direction computed, and the west-to-east gradient at $90^\circ$ has the sense of
 a decaying building wake rather than a growing IBL. The internal boundary layer
 is presumably still there aloft; it is simply not what a disc at 1--6 m AGL
 experiences.
@@ -819,7 +821,8 @@ sideline --- inverted the paper's central mechanism.
     to use a site-specific rather than uniform freestream.
 
   \item \textbf{Sean Earl Field is deeply sheltered.} Mean disc-altitude speed
-    is about one fifth of the 10 m reference in all three computed directions.
+    is \UfieldFracMin--\UfieldFracMax\% of the 10 m reference in all three
+    computed directions.
     The dominant control is not the lakefront internal boundary layer the study
     was designed around, but Campus Towers, a 45 m block 9 m off the eastern
     sideline.
