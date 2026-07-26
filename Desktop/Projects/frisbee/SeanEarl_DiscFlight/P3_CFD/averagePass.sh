@@ -28,6 +28,15 @@ for c in "$@"; do
     END=$((LATEST + NAVG))
     sed -i "s/^startFrom .*/startFrom       latestTime;/" system/controlDict
     sed -i "s/^endTime .*/endTime         $END;/" system/controlDict
+    # CRITICAL: writeControl is timeStep, so a write happens only when the time
+    # index is a multiple of writeInterval. The interval left over from the
+    # solve phase (half the original endTime) does not divide END, so the
+    # averaging run would complete and write NOTHING -- the averaged fields
+    # would silently never reach disk and sampling would fall back to the final
+    # iterate. Setting writeInterval to END guarantees exactly one write, at
+    # the end of the averaging window.
+    sed -i "s/^writeInterval .*/writeInterval   $END;/" system/controlDict
+    sed -i "s/^purgeWrite .*/purgeWrite      0;/" system/controlDict
     # Append the averaging function object once.
     if ! grep -q "fieldAverageWindow" system/controlDict; then
         python3 - <<PY
