@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dst-fit"
+version = "0.0.1"
+description = "Constitutive identification for dense and shear-thickening suspensions, with an honest identifiability verdict"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Charlie Burton" }]
+keywords = ["rheology", "suspension", "shear thickening", "constitutive model"]
+classifiers = [
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "xlrd>=2.0",       # legacy .xls, which is what TRIOS exports
+    "openpyxl>=3.1",   # .xlsx, used by the test fixtures
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.4"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -1,0 +1,20 @@
+# Literature data downloaded from Edinburgh DataShare, 158 MB extracted plus 39 MB of zips.
+# Redistributing it here would be wrong anyway: it is covered by the DataShare depositor
+# agreement and belongs with its own citation. DATA_INVENTORY.md records what it is and
+# where to get it again.
+DS_*.zip
+Towards a unified description of the rheology of hard-particle suspensions/
+Hydrodynamic and Contact Contributions to Continuous Shear Thickening in Colloidal Suspensions/
+Competing Timescales Lead to Oscillations in Shear-Thickening Suspensions/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.venv/
+
+# Gate and test run output, regenerable.
+logs/
