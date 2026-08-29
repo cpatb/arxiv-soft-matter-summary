@@ -1,0 +1,895 @@
+% ============================================================
+%  Hyperlocal Air Quality Mapping in Chicago
+%  A Citizen Science Project in Urban Aerosol Transport
+%  Project Overview Document
+% ============================================================
+%  Compile with:  pdflatex chicago_airquality_project.tex
+%  (run twice to resolve cross-references)
+% ============================================================
+
+\documentclass[11pt, letterpaper]{article}
+
+% ── packages ────────────────────────────────────────────────
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{parskip}          % space between paragraphs, no indent
+\usepackage{titlesec}         % custom heading styles
+\usepackage[table]{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{ragged2e}
+\tcbuselibrary{skins, breakable}
+
+% ── colours ─────────────────────────────────────────────────
+\definecolor{navy}{HTML}{1B3A6B}
+\definecolor{teal}{HTML}{1D6A72}
+\definecolor{gold}{HTML}{C8860A}
+\definecolor{lightgray}{HTML}{F2F4F7}
+\definecolor{midgray}{HTML}{D0D4DB}
+\definecolor{lteal}{HTML}{EAF4F5}
+\definecolor{darktext}{HTML}{1A1A1A}
+
+% ── heading styles ───────────────────────────────────────────
+\titleformat{\section}
+  {\color{navy}\Large\bfseries}
+  {\thesection.}{0.6em}{}
+  [\vspace{2pt}\color{teal}{\titlerule[0.8pt]}\vspace{4pt}]
+
+\titleformat{\subsection}
+  {\color{teal}\large\bfseries}
+  {\thesubsection}{0.6em}{}
+
+\titleformat{\subsubsection}
+  {\color{gold}\normalsize\bfseries}
+  {\thesubsubsection}{0.6em}{}
+
+\titlespacing{\section}{0pt}{18pt}{6pt}
+\titlespacing{\subsection}{0pt}{12pt}{4pt}
+\titlespacing{\subsubsection}{0pt}{8pt}{3pt}
+
+% ── hyperref ────────────────────────────────────────────────
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = navy,
+  urlcolor   = teal,
+  citecolor  = teal,
+  pdftitle   = {Hyperlocal Air Quality Mapping in Chicago},
+  pdfauthor  = {Northwestern University PhD Project},
+}
+
+% ── callout box ─────────────────────────────────────────────
+\tcbset{
+  callout/.style={
+    enhanced,
+    breakable,
+    colback=lteal,
+    colframe=teal,
+    fonttitle=\bfseries\color{navy},
+    boxrule=0.7pt,
+    arc=3pt,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    before upper={\setlength{\parskip}{3pt}},
+  }
+}
+
+% ── table helpers ────────────────────────────────────────────
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\Centering\arraybackslash}p{#1}}
+
+\renewcommand{\arraystretch}{1.3}
+
+% ── header / footer ─────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{midgray}\leaders\hrule height \headrulewidth\hfill}}
+\fancyhead[L]{\small\color{teal} Hyperlocal Air Quality Mapping in Chicago}
+\fancyhead[R]{\small\color{midgray} Page \thepage}
+
+% ── list style ───────────────────────────────────────────────
+\setlist[itemize]{
+  leftmargin=1.4em,
+  itemsep=2pt,
+  parsep=0pt,
+  topsep=4pt,
+}
+\setlist[enumerate]{
+  leftmargin=1.6em,
+  itemsep=2pt,
+  parsep=0pt,
+  topsep=4pt,
+}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ── cover page ───────────────────────────────────────────────
+\thispagestyle{empty}
+\begin{center}
+  \vspace*{3cm}
+  {\color{navy}\Huge\bfseries Hyperlocal Air Quality\\[6pt] Mapping in Chicago}\\[16pt]
+  {\color{teal}\Large\itshape A Citizen Science Project in Urban Aerosol Transport}\\[20pt]
+  {\color{gold}\rule{0.5\textwidth}{1.2pt}}\\[20pt]
+  {\large PhD Research Project \quad|\quad Northwestern University}\\[6pt]
+  {\normalsize Department of Physics \quad|\quad Soft Condensed Matter \& Fluid Dynamics}\\[6pt]
+  {\normalsize 2026\,--\,2027}
+\end{center}
+\vfill
+\begin{center}
+  \small\color{midgray}
+  Hardware instrumentation $\cdot$ Open dataset $\cdot$ Urban aerosol physics $\cdot$ Citizen science
+\end{center}
+\newpage
+
+% ── table of contents ────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Project Summary}
+% ============================================================
+
+Chicago has just five EPA air quality monitoring stations for a city of 2.7 million people---a spatial
+resolution of roughly one sensor per 540{,}000 residents. This project deploys a lightweight,
+wearable sensor package on everyday running and cycling routes to collect fine-grained measurements
+of particulate matter (PM\textsubscript{2.5}, PM\textsubscript{10}), volatile organic compounds
+(VOCs), temperature, humidity, and pressure, each paired with a GPS coordinate and timestamp.
+
+The result will be an open dataset of street-level air quality at spatial resolutions of 5--10\,m
+and time resolutions of 1\,s---roughly 100$\times$ finer than anything currently publicly available
+for Chicago. On top of that dataset, the project applies established fluid mechanics and atmospheric
+physics models (Gaussian plume dispersion, street canyon recirculation, Stokes-number particle
+sorting, lake breeze dynamics) to turn casual outdoor exercise into a genuine scientific
+investigation of urban air quality.
+
+This is a solo, end-to-end project: you design the hardware, collect every data point yourself,
+build the analysis pipeline, and tell the final scientific story---from sensor to published result.
+
+\newpage
+
+% ============================================================
+\section{Scientific Goals and Hypotheses}
+% ============================================================
+
+Each hypothesis below is specific, directional, and testable with the dataset you will collect.
+They are ordered from most tractable (large expected signal, few confounders) to most ambitious.
+
+% ────────────────────────────────────────────────────────────
+\subsection{H1\,---\,Street Canyon Recirculation}
+
+When wind blows perpendicular to a row of buildings (a ``street canyon''), fluid mechanics predicts
+that a recirculation vortex forms inside the canyon, trapping pollutants rather than flushing them.
+Streets parallel to the wind experience ventilation; perpendicular streets do not. This is one of the
+most robust phenomena in urban meteorology and should produce a large, detectable signal even with
+modest sampling.
+
+\begin{tcolorbox}[callout, title={Testable Hypothesis}]
+PM\textsubscript{2.5} concentrations on streets oriented \textbf{perpendicular} to the prevailing
+wind will be 30--50\% higher than on parallel streets of similar traffic density, measured during
+steady winds $\geq 3$\,m\,s$^{-1}$.
+
+\medskip
+\textbf{Method:} Bin routes by street--wind angle ($0$--$30^\circ$, $31$--$60^\circ$, $61$--$90^\circ$).
+One-way ANOVA + Tukey HSD post-hoc test. Report Cohen's $d$ as effect size.\\
+\textbf{Control variable:} Annual average daily traffic (AADT) from IDOT open data.
+\end{tcolorbox}
+
+% ────────────────────────────────────────────────────────────
+\subsection{H2\,---\,Gaussian Plume Dispersion from Highway Line Sources}
+
+A highway acts as a continuous line source of PM\textsubscript{2.5} and NO$_x$. Classical
+atmospheric dispersion theory (Gaussian plume model) predicts that downwind pollutant concentration
+falls off as a Gaussian in the cross-wind direction, with spread $\sigma_y(x)$ governed by
+Pasquill--Gifford (PG) atmospheric stability classes. This is the most directly quantitative
+hypothesis---fitting the plume model yields physically interpretable parameters
+($\sigma_y$, emission rate $Q$) that can be compared to published values.
+
+\begin{tcolorbox}[callout, title={Testable Hypothesis}]
+PM\textsubscript{2.5} concentrations on repeated transects across I-90/94 and I-290 will fit
+a Gaussian cross-wind profile with $\sigma_y$ consistent with Pasquill--Gifford class D (neutral)
+stability at the measured wind speeds.
+
+\medskip
+\textbf{Method:} 20+ perpendicular transects per highway. Nonlinear least-squares fit of
+\[
+  C(y) = \frac{Q}{\sqrt{2\pi}\,\sigma_y\,u}\exp\!\left(-\frac{y^2}{2\sigma_y^2}\right)
+\]
+Extract $\sigma_y(x)$; compare to PG power-law curves. Estimate $Q$; compare to USEPA NEI emission factors.
+\end{tcolorbox}
+
+% ────────────────────────────────────────────────────────────
+\subsection{H3\,---\,Stokes-Number-Dependent Particle Separation}
+
+Coarse particles (PM\textsubscript{10} but not PM\textsubscript{2.5}) have a larger Stokes number
+$\mathrm{St} = \tau_p / \tau_f$, where the particle relaxation time is
+$\tau_p = \rho_p d_p^2 / 18\mu$. High-St particles cannot follow rapid changes in airflow and
+preferentially deposit near their source. Fine particles (PM\textsubscript{2.5}) track the flow
+and travel farther. This predicts that the PM\textsubscript{10}/PM\textsubscript{2.5} mass ratio
+should decrease with distance from a coarse-particle source and increase with wind speed at fixed
+distance.
+
+\begin{tcolorbox}[callout, title={Testable Hypothesis}]
+The PM\textsubscript{10}/PM\textsubscript{2.5} mass concentration ratio will decrease
+monotonically with distance from identified coarse-particle sources (construction sites, unsealed
+lots) at a rate consistent with Stokes-number-predicted settling velocities for 2.5--10\,$\mu$m
+diameter particles.
+
+\medskip
+\textbf{Method:} Characterize 3--5 point sources. Run 10+ transects per source at distances
+20, 50, 100, 200\,m. Fit exponential decay: $R(r) = R_0 \exp(-\lambda r)$. Interpret $\lambda$ via
+theoretical settling velocity $v_s = \rho_p d_p^2 g / 18\mu$.
+\end{tcolorbox}
+
+% ────────────────────────────────────────────────────────────
+\subsection{H4\,---\,Lake Breeze Effects on Near-Surface Pollutant Concentrations}
+
+Lake Michigan drives a mesoscale lake breeze circulation on summer afternoons: cool, relatively
+clean air advects inland, deepening the atmospheric boundary layer (ABL) and diluting near-surface
+pollutants. This effect should be detectable as a spatial gradient in PM\textsubscript{2.5} along
+an east--west transect, conditional on confirmed lake breeze events.
+
+\begin{tcolorbox}[callout, title={Testable Hypothesis}]
+On confirmed lake breeze days (easterly surface wind, KMDW vs.\ KORD wind speed divergence),
+PM\textsubscript{2.5} concentrations within 1\,km of Lake Michigan will be $\geq 20\%$ lower than
+on matched non-lake-breeze days with similar traffic and time-of-day conditions.
+
+\medskip
+\textbf{Method:} Composite analysis. Lake breeze days identified via NOAA ISD + surface analysis.
+Matched-pair design (same day-of-week, time-of-day, season). Mann--Whitney $U$ test;
+effect size $r = Z/\sqrt{N}$.
+\end{tcolorbox}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Ancillary Goal\,---\,Open Dataset Publication}
+
+Regardless of hypothesis outcomes, the spatial dataset itself is a novel contribution. No open,
+street-level, multi-parameter air quality dataset at cycling/running resolution ($\sim$10\,m)
+exists for Chicago. The dataset will be published to Zenodo under a CC-BY\,4.0 license with a DOI,
+and a Data Descriptor submitted to \textit{Earth System Science Data}.
+
+\newpage
+
+% ============================================================
+\section{Hardware Build List}
+% ============================================================
+
+Total estimated cost: \textbf{\$165--\$185 USD}. All components are commercially available; no
+specialized lab equipment is required. The Sensirion SEN54 is the non-negotiable core sensor---it
+combines five measurements into a single factory-calibrated unit with peer-reviewed validation
+against federal reference instruments (Zimmerman et al., 2018; Tryner et al., 2020).
+
+\medskip
+\begin{center}
+\begin{tabular}{L{3.8cm} L{5.0cm} C{1.4cm} L{3.2cm}}
+\toprule
+\rowcolor{navy!90}
+\color{white}\textbf{Component} &
+\color{white}\textbf{Notes} &
+\color{white}\textbf{Cost} &
+\color{white}\textbf{Source} \\
+\midrule
+Raspberry Pi Zero 2W &
+Quad-core 1\,GHz, 512\,MB RAM. Low-power Linux SBC. &
+\$15 & Adafruit, PiShop.us \\
+\rowcolor{lightgray}
+Sensirion SEN54 &
+PM\textsubscript{1/2.5/4/10}, VOC, T, RH on one I\textsuperscript{2}C board. Factory-calibrated laser counter. &
+\$45 & Mouser, DigiKey \\
+u-blox NEO-M9N GPS &
+10\,Hz, 2.5\,m CEP. NMEA over UART. Strong urban canyon performance. &
+\$30 & SparkFun \#GPS-17285 \\
+\rowcolor{lightgray}
+MicroSD card, 64\,GB U3 A2 &
+Class-10 write speed avoids I/O bottlenecks during 1\,Hz logging. &
+\$10 & Amazon (Samsung Endurance) \\
+USB-C battery, 10{,}000\,mAh &
+Powers Pi + sensors for 8--10\,hrs continuously. &
+\$25 & Amazon (Anker PowerCore) \\
+\rowcolor{lightgray}
+USB-C cable + splitter &
+Power routing from pack to Pi. &
+\$8 & Amazon \\
+JST-SH / Qwiic cable (4-pin) &
+I\textsuperscript{2}C connection SEN54 $\to$ Pi GPIO. &
+\$5 & SparkFun, Adafruit \\
+\rowcolor{lightgray}
+CP2102 USB--UART adapter &
+UART connection for GPS; doubles as debug serial port. &
+\$8 & Amazon \\
+ABS enclosure 120$\times$80$\times$55\,mm &
+Protects from sweat, rain, condensation. Hammond 1554A or similar. &
+\$12 & Amazon \\
+\rowcolor{lightgray}
+Silica gel packets &
+Humidity control inside sealed enclosure. &
+\$3 & Amazon \\
+40-pin GPIO header &
+Required for Pi Zero 2W (ships unsoldered). &
+\$3 & Adafruit \\
+\rowcolor{lightgray}
+Jumper wires, heat shrink, tape &
+Wiring and strain relief. &
+\$8 & Amazon / local shop \\
+3D-printed vest/handlebar mount &
+Attach enclosure to running vest or bike bar. STL files on Thingiverse. &
+\$5 & Self-print \\
+\midrule
+\multicolumn{2}{l}{\textbf{Total}} & \textbf{\$177} & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[callout, title={Why the SEN54 specifically?}]
+Sensirion's SEN5x series uses a calibrated laser-diffraction optical particle counter with
+on-board signal processing. Independent laboratory evaluations show PM\textsubscript{2.5}
+$R^2 > 0.95$ against FEM reference instruments under most atmospheric conditions. The VOC index
+is a qualitative relative metric (scale 1--500), not absolute ppb---useful for detecting emission
+events but not for regulatory comparison.
+\end{tcolorbox}
+
+\newpage
+
+% ============================================================
+\section{Step-by-Step Build Instructions}
+% ============================================================
+
+\subsection{Hardware Assembly}
+
+\subsubsection{Step 1\,---\,Prepare the Raspberry Pi Zero 2W}
+\begin{enumerate}
+  \item Solder or press-fit the 40-pin GPIO header if not pre-soldered.
+  \item Insert a formatted 64\,GB microSD card (will be overwritten in \S\ref{sec:software}).
+  \item Do not power on until software is fully installed.
+\end{enumerate}
+
+\subsubsection{Step 2\,---\,Wire the SEN54 via I\textsuperscript{2}C}
+The SEN54 communicates over I\textsuperscript{2}C at 3.3\,V logic. Use 4 wires:
+\begin{enumerate}
+  \item \textbf{VDD} $\to$ Pi GPIO Pin 1 (3.3\,V). SEN54 operates at 3.3\,V---confirmed safe.
+  \item \textbf{GND} $\to$ Pi GPIO Pin 6 (GND).
+  \item \textbf{SDA} $\to$ Pi GPIO Pin 3 (I\textsuperscript{2}C SDA, BCM GPIO2).
+  \item \textbf{SCL} $\to$ Pi GPIO Pin 5 (I\textsuperscript{2}C SCL, BCM GPIO3).
+  \item Leave the \texttt{SEL} pin floating or tie to GND (selects I\textsuperscript{2}C mode). Default address: \texttt{0x69}.
+  \item Use a Qwiic/JST-SH cable for a secure, rattle-free connection. Protect both ends with heat shrink.
+\end{enumerate}
+
+\subsubsection{Step 3\,---\,Wire the GPS Module via UART}
+\begin{enumerate}
+  \item TX (GPS) $\to$ RX (Pi GPIO Pin 10, BCM GPIO15).
+  \item RX (GPS) $\to$ TX (Pi GPIO Pin 8, BCM GPIO14).
+  \item VCC (GPS) $\to$ 5\,V or 3.3\,V depending on your module---check the datasheet.
+  \item GND (GPS) $\to$ Pi GPIO Pin 14.
+  \item \textit{Note:} Disable the Pi's serial console via \texttt{raspi-config} before using UART for GPS.
+\end{enumerate}
+
+\subsubsection{Step 4\,---\,Enclosure and Weatherproofing}
+\begin{enumerate}
+  \item Drill two holes in the ABS lid: one for the SEN54 inlet/outlet ports (must be open to air flow), one for the USB-C power cable.
+  \item Use M12 weatherproof cable glands at all entry points.
+  \item Place silica gel packets inside to control interior humidity.
+  \item Mount Pi, battery, and sensors with double-sided foam tape or M2.5 standoffs.
+  \item Test fit: all cables should have slack; no stress on connectors when lid is closed.
+  \item Attach to running vest or handlebar with zip ties or outdoor-rated Velcro. Orient so the SEN54 inlet faces into oncoming airflow.
+\end{enumerate}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Software Setup}
+\label{sec:software}
+
+\subsubsection{Step 1\,---\,Install Raspberry Pi OS Lite}
+\begin{enumerate}
+  \item Download Raspberry Pi OS Lite (64-bit, Bookworm) from \url{https://raspberrypi.com}.
+  \item Flash to microSD using Raspberry Pi Imager. In Advanced Options: set hostname, enable SSH, set home WiFi credentials.
+  \item Boot, SSH in: \texttt{ssh pi@<hostname>.local}
+\end{enumerate}
+
+\subsubsection{Step 2\,---\,Enable Interfaces}
+\begin{enumerate}
+  \item Run \texttt{sudo raspi-config}
+  \item Interface Options $\to$ I\textsuperscript{2}C: \textbf{Enable}.
+  \item Interface Options $\to$ Serial Port: disable the login shell; enable the hardware serial port.
+  \item Reboot. Verify with \texttt{i2cdetect -y 1}---you should see \texttt{0x69} (SEN54).
+\end{enumerate}
+
+\subsubsection{Step 3\,---\,Install Python Dependencies}
+\begin{enumerate}
+  \item \texttt{sudo apt update \&\& sudo apt install -y python3-pip python3-serial gpsd gpsd-clients}
+  \item \texttt{pip3 install sensirion-i2c-driver sensirion-i2c-sen5x pynmea2}
+  \item \texttt{pip3 install pandas pyserial}
+\end{enumerate}
+
+\subsubsection{Step 4\,---\,Configure \texttt{gpsd}}
+\begin{enumerate}
+  \item Edit \texttt{/etc/default/gpsd}: set \texttt{DEVICES="/dev/ttyS0"} and \texttt{GPSD\_OPTIONS="-n"}.
+  \item \texttt{sudo systemctl enable gpsd \&\& sudo systemctl start gpsd}
+  \item Test: \texttt{cgps -s}---should show lat/lon within 60\,s in open sky.
+\end{enumerate}
+
+\subsubsection{Step 5\,---\,Deploy the Logging Script}
+
+Create \texttt{/home/pi/airlog/logger.py}. The core loop reads sensor and GPS at 1\,Hz and
+writes one row per second to a date-stamped CSV:
+
+\begin{tcolorbox}[callout, title={Logger Script---Core Logic (Python pseudocode)}]
+\small\ttfamily
+sensor = Sen5xI2cDevice(I2cConnection(i2c\_transceiver))\\
+sensor.start\_measurement()\\
+gps\_ser = serial.Serial('/dev/ttyS0', 9600, timeout=1)\\
+\\
+with open(f'/data/airlog\_\{date.today()\}.csv', 'w') as f:\\
+\quad writer.writerow(['timestamp','lat','lon','pm1','pm25',\\
+\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad 'pm4','pm10','voc\_index','temp\_c',\\
+\quad\quad\quad\quad\quad\quad\quad\quad\quad\quad 'rh\_pct','fix\_quality','n\_sats'])\\
+\quad while True:\\
+\quad\quad parse \$GNGGA NMEA sentence $\to$ lat, lon, fix, sats\\
+\quad\quad read sensor $\to$ pm1, pm25, pm4, pm10, rh, temp, voc\\
+\quad\quad write row with datetime.utcnow().isoformat()\\
+\quad\quad time.sleep(1)   \# 1\,Hz sampling rate
+\end{tcolorbox}
+
+\subsubsection{Step 6\,---\,Auto-Start on Boot}
+\begin{enumerate}
+  \item Create \texttt{/etc/systemd/system/airlog.service} with \texttt{ExecStart} pointing to \texttt{logger.py}.
+  \item \texttt{sudo systemctl enable airlog \&\& sudo systemctl start airlog}
+  \item Reboot; verify CSVs appear in \texttt{/data/} within 30\,s.
+\end{enumerate}
+
+\subsubsection{Step 7\,---\,Pre-Run Calibration}
+\begin{itemize}
+  \item Co-locate the SEN54 beside a PurpleAir or IQAir AirVisual for 24\,hrs. Record any systematic PM\textsubscript{2.5} offset. If offset $> 15\%$, document a correction factor.
+  \item Verify GPS cold-start time $< 90$\,s in open sky.
+  \item Log a 10-minute stationary test. Verify timestamps are UTC, lat/lon stable, all columns populated.
+\end{itemize}
+
+\newpage
+
+% ============================================================
+\section{Data Collection Protocol}
+% ============================================================
+
+\subsection{Route Design Strategy}
+
+Routes are designed to isolate specific independent variables, not chosen at random. Build four
+route families:
+
+\subsubsection{Route Family 1\,---\,Street Orientation Transects (for H1)}
+\begin{itemize}
+  \item Design 3--5 matched pairs: one block running N--S, one E--W, within 200\,m of each other with comparable building height and traffic density.
+  \item Target Chicago's grid: Wacker, Michigan Ave, State St vs.\ adjacent cross-streets.
+  \item Run each pair on the same day within 30\,min so meteorological conditions are identical.
+  \item \textbf{Go/no-go condition:} steady wind $\geq 3$\,m\,s$^{-1}$. Check ASOS KMDW before leaving.
+\end{itemize}
+
+\subsubsection{Route Family 2\,---\,Highway Plume Transects (for H2)}
+\begin{itemize}
+  \item Target two highways: I-90/94 (Dan Ryan Expressway) and I-290 (Eisenhower Expressway).
+  \item Design perpendicular transects at 25, 50, 100, 200, and 400\,m downwind from the highway centerline.
+  \item A transect is only valid when wind is blowing from the highway toward you (confirmed from KMDW obs.).
+  \item Run consistently at 7--9\,AM (peak traffic) for comparability across dates.
+\end{itemize}
+
+\subsubsection{Route Family 3\,---\,Lakefront Gradient (for H4)}
+\begin{itemize}
+  \item Design an E--W transect from the lakefront (e.g., Montrose Beach, 41.96$^\circ$\,N) inland $\sim 5$\,km.
+  \item Collect data on lake breeze days and non-lake-breeze days; label using NOAA ISD wind records.
+  \item Minimum 10 lake breeze runs and 10 matched control runs for adequate comparison.
+\end{itemize}
+
+\subsubsection{Route Family 4\,---\,Point Source Transects (for H3)}
+\begin{itemize}
+  \item Identify 3--5 active construction sites or unsealed lots. Confirm still active before each run.
+  \item Run at 20, 50, 100, and 200\,m from the source boundary on concentric arcs.
+  \item Target steady moderate winds ($\geq 4$\,m\,s$^{-1}$, from source toward runner).
+\end{itemize}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Flagging Wind and Weather Conditions}
+
+For every run, record the following alongside the sensor data:
+
+\medskip
+\begin{center}
+\begin{tabular}{L{3.2cm} L{3.8cm} L{6.0cm}}
+\toprule
+\rowcolor{navy!90}
+\color{white}\textbf{Variable} &
+\color{white}\textbf{Source} &
+\color{white}\textbf{How to Record} \\
+\midrule
+Wind speed (10\,m) &
+NOAA ASOS KMDW or KORD &
+Iowa State Mesonet API; log obs.\ at start and end of run \\
+\rowcolor{lightgray}
+Wind direction &
+Same ASOS station &
+Bin into 8 cardinal directions. Flag runs with variable wind ($>45^\circ$ std.\ dev.) \\
+Stability class &
+Wind speed + cloud cover + solar elevation &
+Pasquill--Gifford table (Seinfeld \& Pandis, Table 4.2) \\
+\rowcolor{lightgray}
+Precipitation &
+NWS observed &
+Exclude runs during or within 2\,hrs of rain (wet deposition removes PM) \\
+Mixing layer height &
+NOAA HRRR model (hourly) &
+AWS Open Data. Low MLH ($\leq 500$\,m) = pollution trapping event \\
+\rowcolor{lightgray}
+Lake breeze flag &
+KMDW vs.\ KORD wind divergence &
+Binary yes/no per run; confidence notes in field log \\
+Traffic proxy &
+Time of day + day of week &
+AM peak (7--9), midday (10--15), PM peak (16--19), off-peak \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Statistical Power and Required Sample Size}
+
+Estimates assume $\alpha = 0.05$, power $= 0.80$, effect sizes from published urban air quality
+literature.
+
+\medskip
+\begin{center}
+\begin{tabular}{L{3.0cm} L{3.8cm} L{2.8cm} C{2.0cm}}
+\toprule
+\rowcolor{navy!90}
+\color{white}\textbf{Hypothesis} &
+\color{white}\textbf{Expected Effect} &
+\color{white}\textbf{Runs Needed} &
+\color{white}\textbf{Running Total} \\
+\midrule
+H1: Street canyon &
+Cohen's $d \approx 0.8$, 30--50\% PM\textsubscript{2.5} difference &
+$\sim$60 route segments &
+60 \\
+\rowcolor{lightgray}
+H2: Highway plume &
+Gaussian fit $R^2 > 0.7$ &
+40 transects (2 highways) &
+100 \\
+H3: Particle separation &
+Moderate effect, high variability &
+40 transects (4 sources) &
+140 \\
+\rowcolor{lightgray}
+H4: Lake breeze &
+20--30\% PM reduction &
+20 runs &
+160 \\
+Buffer / exploratory &
+Opportunistic repeats &
+$+40$ runs &
+\textbf{200} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\textbf{Bottom line:} $\sim$200 total logged runs over 6--12 months. At 3--4 runs per week
+(integrated into your normal exercise habit), this is achievable in 50--67 weeks. Prioritize H1
+and H2 first---they are weather-gated and cannot be rescheduled freely.
+
+\newpage
+
+% ============================================================
+\section{Data Pipeline}
+% ============================================================
+
+The pipeline transforms raw, messy SD-card CSVs into a clean, analysis-ready dataset. Every step
+should be scripted and fully reproducible. Use Python with \texttt{pandas}, \texttt{geopandas},
+and \texttt{pyarrow}.
+
+\subsubsection{Step 1\,---\,Ingest and Concatenate}
+\begin{itemize}
+  \item Read all per-run CSV files. Tag each row with \texttt{run\_id}, \texttt{route\_family}, and \texttt{run\_date}.
+  \item Assert the column schema on read---fail loudly on any missing column rather than silently dropping data.
+  \item Save concatenated raw data to \texttt{raw\_combined.parquet} (preserves dtypes, much faster than CSV for repeated reads).
+\end{itemize}
+
+\subsubsection{Step 2\,---\,GPS Quality Filter}
+\begin{itemize}
+  \item Drop rows where \texttt{fix\_quality\,==\,0} (no GPS fix) or \texttt{n\_sats\,<\,4}.
+  \item Flag rows where implied speed between consecutive positions exceeds physically plausible values ($>35$\,km\,h$^{-1}$ running, $>60$\,km\,h$^{-1}$ cycling).
+  \item Apply a Hampel identifier (5-point median filter, threshold $= 3\sigma$) to \texttt{lat} and \texttt{lon} separately to remove spike outliers.
+  \item Report fraction of data dropped per run; flag any run losing $>10\%$ of rows.
+\end{itemize}
+
+\subsubsection{Step 3\,---\,Sensor Quality Control}
+\begin{itemize}
+  \item PM\textsubscript{2.5}, PM\textsubscript{10}: physical range 0--1000\,$\mu$g\,m$^{-3}$. Flag out-of-range values as instrument errors.
+  \item Temperature: flag values outside $-20$ to $50^\circ$C.
+  \item RH $>85\%$: flag as high-humidity condition. Optical particle counters overcount PM\textsubscript{2.5} at high RH due to hygroscopic particle growth; exclude these rows from plume fitting or analyze separately.
+  \item VOC index: qualitative scale 1--500. Use only for event detection, not absolute comparison.
+  \item Sensor warm-up artifact: SEN54 requires $\sim$30\,s to stabilize. Drop the first 60\,s of every run.
+\end{itemize}
+
+\subsubsection{Step 4\,---\,Time Synchronization}
+\begin{itemize}
+  \item Verify Pi clock was NTP-synced before each run (add NTP check to logger startup script).
+  \item GPS NMEA sentences carry UTC time---use this as the master clock, not the Pi system clock.
+  \item Interpolate GPS position to 1\,Hz if GPS dropouts create sub-second gaps.
+\end{itemize}
+
+\subsubsection{Step 5\,---\,Meteorological Data Merge}
+\begin{itemize}
+  \item Download hourly ASOS observations for KMDW and KORD from the Iowa State Mesonet API (\url{https://mesonet.agron.iastate.edu}).
+  \item For each run, assign the ASOS observation nearest in time ($\pm 30$\,min) as the meteorological context.
+  \item Compute PG stability class: wind speed + cloud cover + solar elevation angle (Seinfeld \& Pandis, Eq.~4.7).
+\end{itemize}
+
+\subsubsection{Step 6\,---\,Spatial Binning}
+\begin{itemize}
+  \item Project GPS coordinates to Illinois State Plane (EPSG:3435) for accurate metric distance calculations.
+  \item Snap each measurement to a $10 \times 10$\,m grid cell using a \texttt{geopandas} spatial join.
+  \item Per cell compute: mean PM\textsubscript{2.5}, std PM\textsubscript{2.5}, $n_\text{obs}$, $n_\text{runs}$. Flag cells with $n_\text{obs} < 5$ as low-confidence.
+\end{itemize}
+
+\subsubsection{Step 7\,---\,Final Dataset Schema}
+
+Two output tables:
+\begin{itemize}
+  \item \texttt{observations.parquet}: one row per 1-second sensor reading, all quality flags applied.
+  \item \texttt{grid\_summary.parquet}: one row per 10\,m grid cell, aggregated statistics across all runs.
+\end{itemize}
+
+\medskip
+\begin{center}
+\small
+\begin{tabular}{L{3.8cm} L{3.2cm} L{6.0cm}}
+\toprule
+\rowcolor{navy!90}
+\color{white}\textbf{Column} &
+\color{white}\textbf{Type} &
+\color{white}\textbf{Description} \\
+\midrule
+\texttt{run\_id} & \texttt{str} & Unique ID per run (\texttt{YYYYMMDD\_routeID}) \\
+\rowcolor{lightgray}
+\texttt{timestamp\_utc} & \texttt{datetime64[ns,UTC]} & GPS-anchored UTC timestamp \\
+\texttt{lat} / \texttt{lon} & \texttt{float64} & WGS84 decimal degrees, Hampel-filtered \\
+\rowcolor{lightgray}
+\texttt{easting} / \texttt{northing} & \texttt{float64} & Illinois State Plane (m) \\
+\texttt{pm1}, \texttt{pm25}, \texttt{pm4}, \texttt{pm10} & \texttt{float32} & Particle mass concentration ($\mu$g\,m$^{-3}$) \\
+\rowcolor{lightgray}
+\texttt{voc\_index} & \texttt{int16} & Sensirion VOC index (1--500, dimensionless) \\
+\texttt{temp\_c}, \texttt{rh\_pct} & \texttt{float32} & Ambient temperature ($^\circ$C) and relative humidity (\%) \\
+\rowcolor{lightgray}
+\texttt{wind\_speed\_ms}, \texttt{wind\_dir\_deg} & \texttt{float32} & From nearest ASOS obs., interpolated to run time \\
+\texttt{stability\_class} & \texttt{str} & Pasquill--Gifford A--F \\
+\rowcolor{lightgray}
+\texttt{lake\_breeze\_flag} & \texttt{bool} & \texttt{True} if run tagged as lake breeze event \\
+\texttt{route\_family} & \texttt{categorical} & \texttt{canyon / plume / lakefront / point\_source / exploratory} \\
+\rowcolor{lightgray}
+\texttt{qc\_flag} & \texttt{int8} & Bitmask: bit0=GPS drop, bit1=high RH, bit2=warm-up, bit3=range \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\newpage
+
+% ============================================================
+\section{Analysis Roadmap}
+\label{sec:analysis}
+% ============================================================
+
+Work through these levels in order. Each one builds on the previous and serves as a sanity check
+that the data are behaving physically before you commit to model fitting.
+
+% ────────────────────────────────────────────────────────────
+\subsection{Level 1\,---\,Exploratory Spatial Analysis}
+\begin{itemize}
+  \item \textbf{Spatial heatmap:} Plot all PM\textsubscript{2.5} measurements on an interactive Chicago basemap using \texttt{folium} or \texttt{kepler.gl}. This is your first look at whether the data make physical sense---hot spots should correspond to highways, industrial zones, and street canyons, not random locations.
+  \item \textbf{Time-of-day profiles:} Boxplot PM\textsubscript{2.5} by hour of day. Expect morning and evening peaks corresponding to commuter traffic; clean midday if winds are strong.
+  \item \textbf{Seasonal decomposition:} Compare summer vs.\ winter runs. Winter temperature inversions trap boundary-layer pollutants and should produce dramatically higher concentrations than summer runs on the same routes.
+  \item \textbf{Sensor self-consistency:} Scatter PM\textsubscript{2.5} vs.\ PM\textsubscript{10}. Expect $R^2 > 0.7$. Points far off the regression line (anomalously high PM\textsubscript{10}/PM\textsubscript{2.5}) signal coarse-particle events worth investigating.
+  \item \textbf{Wind rose of polluted runs:} 90th-percentile PM\textsubscript{2.5} binned by wind sector. A quick qualitative check on dominant source directions before any model fitting.
+\end{itemize}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Level 2\,---\,Statistical Testing of Core Hypotheses}
+\begin{itemize}
+  \item \textbf{H1 (Street canyon):} One-way ANOVA across street--wind angle bins. Tukey HSD post-hoc test. Report Cohen's $d$ as effect size. Visualize as mean $\pm$ 95\% CI bar chart.
+  \item \textbf{H4 (Lake breeze):} Mann--Whitney $U$ test (non-parametric; PM distributions are right-skewed). Effect size $r = Z/\sqrt{N}$.
+  \item \textbf{For both:} Bootstrap confidence intervals ($n = 10{,}000$ resamples) on group means; this requires no distributional assumptions and is straightforward to implement with \texttt{scipy.stats} or \texttt{numpy}.
+\end{itemize}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Level 3\,---\,Gaussian Plume Fitting (H2)}
+\begin{itemize}
+  \item For each highway transect, bin PM\textsubscript{2.5} by cross-wind distance from the highway centerline (10\,m bins).
+  \item Fit
+  \[
+    C(y) = A \exp\!\left(-\frac{y^2}{2\sigma_y^2}\right)
+  \]
+  using \texttt{scipy.optimize.curve\_fit}. Extract $\sigma_y$ and its uncertainty.
+  \item Plot $\sigma_y$ vs.\ downwind distance $x$. Expect power-law growth $\sigma_y = ax^b$; compare exponent $b$ to PG stability-class predictions.
+  \item Estimate emission rate $Q$ from the peak concentration using the full Gaussian plume formula with measured $u$. Compare to USEPA National Emissions Inventory (NEI) highway emission factors.
+\end{itemize}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Level 4\,---\,Stokes Number Analysis (H3)}
+\begin{itemize}
+  \item Compute particle relaxation time: $\tau_p = \rho_p d_p^2 / 18\mu$ for $d_p = 2.5$ and $10\,\mu$m. Use $\rho_p = 1500$\,kg\,m$^{-3}$ (typical urban aerosol), $\mu = 1.81\times10^{-5}$\,Pa\,s.
+  \item Compute $\mathrm{St} = \tau_p U / L$ where $U$ is measured wind speed and $L$ is a characteristic building scale ($\sim$20\,m).
+  \item Plot PM\textsubscript{10}/PM\textsubscript{2.5} ratio vs.\ distance from each point source. Fit exponential decay $R(r) = R_0 e^{-\lambda r}$.
+  \item Interpret $\lambda$ via theoretical settling velocity $v_s = \rho_p d_p^2 g / 18\mu$. \textit{This level is the most original physics in the project---in-situ Stokes analysis at street scale is genuinely novel in the literature.}
+\end{itemize}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Level 5\,---\,Data-Driven Spatial Modeling}
+\begin{itemize}
+  \item Train a random forest regressor to predict PM\textsubscript{2.5} at any (lat, lon) given: wind speed, wind direction, time of day, day of week, proximity to roads/highways (OpenStreetMap network), land use (NLCD), and season.
+  \item Evaluate with RMSE and spatial cross-validation (leave-one-neighborhood-out), to prevent inflated performance from spatial autocorrelation.
+  \item Extract feature importances to quantify which variables dominate PM\textsubscript{2.5} predictions across Chicago.
+  \item Compare to a kriging interpolation (geostatistical baseline).
+\end{itemize}
+
+% ────────────────────────────────────────────────────────────
+\subsection{Level 6\,---\,Community Impact Map}
+\begin{itemize}
+  \item Join \texttt{grid\_summary} with the Chicago Community Areas shapefile (City of Chicago Open Data Portal).
+  \item Compute mean and 90th-percentile PM\textsubscript{2.5} per community area.
+  \item Overlay with demographic data (ACS 5-year estimates: \% below poverty line, \% non-white residents, \% under 5 and over 65 years).
+  \item Report Pearson correlation between socioeconomic indicators and mean PM\textsubscript{2.5}. This is the public-facing story and the most immediately communicable result.
+\end{itemize}
+
+\newpage
+
+% ============================================================
+\section{Milestone Timeline (6--12 Months)}
+% ============================================================
+
+Designed to be completed alongside a full PhD workload---roughly 5--10 hours per week of
+project time (including the runs themselves).
+
+\medskip
+\begin{center}
+\begin{tabular}{L{2.0cm} L{2.4cm} L{9.0cm}}
+\toprule
+\rowcolor{navy!90}
+\color{white}\textbf{Period} &
+\color{white}\textbf{Phase} &
+\color{white}\textbf{Key Deliverables and Actions} \\
+\midrule
+Month 1 &
+Hardware &
+Order all components. Assemble Pi + SEN54 + GPS. Verify I\textsuperscript{2}C and UART. Log first 30-min stationary test file. Confirm GPS cold-start time. \\
+\rowcolor{lightgray}
+Months 1--2 &
+Software &
+Deploy \texttt{logger.py} with systemd auto-start. Build pre-run health check script. 24-hr co-location calibration vs.\ PurpleAir or IQAir. Document any correction factors. \\
+Months 2--3 &
+Pilot Runs &
+20 exploratory runs across all route families to shake out hardware and logging issues. Build v1 data pipeline. Fix systematic errors. Refine enclosure weatherproofing. \\
+\rowcolor{lightgray}
+Months 3--6 &
+Systematic Collection &
+\textbf{Priority phase.} Focus on weather-gated H1 and H2 runs. Target 3--4 runs/week. Reach $\sim$100 runs by month 6. Build met.\ merge pipeline in parallel. \\
+Months 6--7 &
+Pipeline \& QC &
+Run full data pipeline on all collected data. Generate QC report (flag drop rates, RH exceedances, GPS quality). Produce first spatial heatmap. Identify gaps; plan fill runs. \\
+\rowcolor{lightgray}
+Months 7--8 &
+Exploratory Analysis &
+Complete Level 1 and Level 2 analyses. Run all 4 hypothesis tests. Share informal update with advisor or lab group. Refine collection strategy based on power analysis of real data. \\
+Months 8--10 &
+Advanced Analysis &
+Gaussian plume fitting (Level 3). Stokes analysis (Level 4). ML spatial model (Level 5). Freeze dataset for publication. \\
+\rowcolor{lightgray}
+Months 10--11 &
+Write-Up &
+Write dataset descriptor paper (\textit{ESSD} target). Write main results paper or technical report. Produce blog post and GitHub repository. \\
+Months 11--12 &
+Dissemination &
+Submit dataset to Zenodo. Post to personal site. Submit abstract to AGU or AAAR. Consider journal submission (see \S\ref{sec:present}). \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[callout, title={PhD Compatibility Notes}]
+\begin{itemize}[topsep=0pt]
+  \item Data collection = 45--90\,min per run, integrated into exercise you would do anyway.
+  \item Analysis is modular: each Level in \S\ref{sec:analysis} is a self-contained Jupyter notebook.
+  \item Hardware is passive once deployed---no babysitting required during runs.
+  \item Build pipeline and analysis during slower PhD periods (between semesters, post-quals).
+  \item A 3-month delay in any phase is recoverable without compromising scientific quality.
+\end{itemize}
+\end{tcolorbox}
+
+\newpage
+
+% ============================================================
+\section{How to Present the Final Result}
+\label{sec:present}
+% ============================================================
+
+\subsection{GitHub Repository (Public Portfolio Piece)}
+\begin{itemize}
+  \item \textbf{Repository structure:} \texttt{/hardware} (wiring diagrams, enclosure CAD), \texttt{/firmware} (logger.py, systemd config), \texttt{/pipeline} (data cleaning notebooks), \texttt{/analysis} (one notebook per hypothesis), \texttt{/data} (Zenodo links), \texttt{/docs} (rendered GitHub Pages site).
+  \item Write a thorough \texttt{README.md} with photos of the hardware setup, example output maps, and one-sentence plain-language summaries of each finding.
+  \item Use DVC (Data Version Control) or Git LFS to track large data files without bloating the repo.
+  \item \textbf{Target:} full reproducibility---a collaborator should be able to \texttt{git clone}, download the Zenodo dataset, run \texttt{make analysis}, and reproduce every figure.
+\end{itemize}
+
+\subsection{Dataset Publication}
+\begin{itemize}
+  \item Publish the clean dataset to Zenodo (\url{https://zenodo.org}) under CC-BY\,4.0. Free, issues a DOI, indexed by Google Scholar and OpenAIRE.
+  \item Consider a Data Descriptor submission to \textit{Earth System Science Data} (ESSD)---a peer-reviewed EGU journal for novel environmental datasets (IF $\approx 12$). An ESSD paper is a standalone, citable publication even if it precedes the main analysis paper.
+  \item Minimum metadata: sensor make/model/firmware version, calibration protocol and correction factors, GPS accuracy characterization, route family definitions, and meteorological data sources.
+\end{itemize}
+
+\subsection{Blog Post / Public Communication}
+\begin{itemize}
+  \item Write one 2{,}000-word accessible post for a technically curious general audience. Suggested platforms: Towards Data Science, a personal Hugo/Jekyll site, or Substack.
+  \item Suggested structure: (1) Chicago's monitoring gap, (2) the hardware you built and why, (3) one striking map or chart, (4) what the physics tells us, (5) what you'll do next.
+  \item Cross-post on Twitter/X, LinkedIn, and Reddit (\texttt{r/dataisbeautiful}, \texttt{r/chicago}, \texttt{r/STEM}). This is how citizen science projects get noticed by journalists and environmental agencies.
+\end{itemize}
+
+\subsection{Conference Presentations}
+\begin{itemize}
+  \item \textbf{AAAR Annual Conference} (American Association for Aerosol Research): ideal venue. Abstract deadline typically April for October conference. Target session: Urban Aerosols / Low-Cost Sensors.
+  \item \textbf{AGU Fall Meeting}: large atmospheric science community. Target session: Atmospheric Composition / Air Quality.
+  \item \textbf{AMS Annual Meeting}: good fit for the lake breeze and Gaussian dispersion components.
+  \item \textbf{Northwestern Graduate Research Symposium}: low-stakes entry point to practice your talk. Present there first.
+\end{itemize}
+
+\subsection{Potential Journal Venues}
+
+\medskip
+\begin{center}
+\begin{tabular}{L{4.2cm} C{1.8cm} L{7.2cm}}
+\toprule
+\rowcolor{navy!90}
+\color{white}\textbf{Journal} &
+\color{white}\textbf{Fit} &
+\color{white}\textbf{Notes} \\
+\midrule
+\textit{Atmospheric Measurement Techniques} (EGU) &
+Excellent &
+Best fit if sensor validation + novel dataset is the primary contribution. Open access. \\
+\rowcolor{lightgray}
+\textit{Atmospheric Environment} &
+Excellent &
+Best fit if main findings are the urban aerosol physics results (H1--H4). Broad readership. \\
+\textit{npj Climate and Atmospheric Science} (Nature) &
+Strong &
+High-impact. Requires novel, broadly significant findings. Good if equity/lake breeze results are striking. \\
+\rowcolor{lightgray}
+\textit{Environmental Science \& Technology} (ACS) &
+Good &
+Well-regarded applied urban air quality journal; strong policy-community readership. \\
+\textit{Earth System Science Data} (EGU) &
+Excellent (dataset) &
+Peer-reviewed data descriptor. Citable standalone publication; does not require full analysis. \\
+\rowcolor{lightgray}
+\textit{PLOS ONE} &
+Fallback &
+Accepts well-executed work regardless of novelty threshold. Good if hypothesis results are mixed. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{tcolorbox}[callout, title={Final Advice}]
+\textbf{Start writing before the analysis is done.} Write the Introduction and Methods sections while you are still collecting data---the Methods section is fully knowable right now.
+
+\medskip
+\textbf{The dataset is the guaranteed deliverable.} Even if every hypothesis yields a null result, a publicly released, GPS-tagged, street-level air quality dataset for Chicago is a genuine scientific contribution.
+
+\medskip
+\textbf{This project demonstrates, in one package:} hardware design, experimental protocol, data engineering, statistical analysis, and physical modeling. For a physics PhD, that range of demonstrated skills is rare and impressive to future employers in academia, national labs, and industry alike.
+\end{tcolorbox}
+
+% ============================================================
+\end{document}
+% ============================================================

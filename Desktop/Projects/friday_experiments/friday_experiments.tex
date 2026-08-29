@@ -1,0 +1,932 @@
+%% friday_experiments.tex  –– v2 (corrected)
+%% Preliminary ("Friday") Experiment Proposals
+%% Free-surface flows of shear-thickening suspensions
+%% APS / RevTeX 4-2 preprint format
+%%
+%% C. Burton, Driscoll Lab, Northwestern University
+%% May 2026
+%%
+%% v2 corrections:
+%%   Exp 1 – fixed H_c derivation (3D Newtonian uses axisymmetric Huppert
+%%            scaling, H_c is V-dependent; Saffman-Taylor analogy clarified)
+%%   Exp 2 – removed oscillatory "forced oobleck wave" protocol (amplitude
+%%            analysis shows v_c requires unreachable stroke at oobleck
+%%            frequencies); corrected tau_c numerical estimate; focus on
+%%            step-forcing protocol only
+%%   Exp 3 – replaced fringe-projection shadowgraphy (Cobelli 2009) with
+%%            side-view LED backlit imaging; removed cross-sectional PIV
+%%            of opaque cornstarch as primary deliverable (physically
+%%            impossible without index-matched system); velocity-reversal
+%%            measurement demoted to future extension
+%%   Exp 4 – removed claim lambda -> 2pi/k_max as Omega -> 0 (not derived
+%%            from Balmforth 2025); Omega* retained as order-of-magnitude only
+%%   Exp 5 – corrected b* scaling: delta ~ (2 l tau_c / rho g)^{1/2}, not
+%%            the 1/3-power formula; corrected numerical estimate
+
+\documentclass[aps,preprint,superscriptaddress,longbibliography]{revtex4-2}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[framemethod=TikZ]{mdframed}
+
+%% ---------------------------------------------------------------
+\mdfdefinestyle{questionbox}{
+  backgroundcolor=blue!7, linecolor=blue!50, linewidth=1pt,
+  roundcorner=4pt, innertopmargin=6pt, innerbottommargin=6pt,
+  innerleftmargin=8pt, innerrightmargin=8pt,
+  skipabove=6pt, skipbelow=4pt}
+\mdfdefinestyle{setupbox}{
+  backgroundcolor=green!7, linecolor=green!50, linewidth=1pt,
+  roundcorner=4pt, innertopmargin=6pt, innerbottommargin=6pt,
+  innerleftmargin=8pt, innerrightmargin=8pt,
+  skipabove=6pt, skipbelow=4pt}
+\mdfdefinestyle{noveltybox}{
+  backgroundcolor=orange!8, linecolor=orange!60, linewidth=1pt,
+  roundcorner=4pt, innertopmargin=6pt, innerbottommargin=6pt,
+  innerleftmargin=8pt, innerrightmargin=8pt,
+  skipabove=6pt, skipbelow=4pt}
+
+\setlength{\emergencystretch}{3em}
+\hyphenation{quasi-two-di-men-sion-al}
+
+\newcommand{\ULD}{{U^{\mathrm{LD}}}}
+\newcommand{\tauc}{\tau_c}
+\newcommand{\etaz}{\eta_0}
+\newcommand{\phione}{\phi_1}
+\newcommand{\phizero}{\phi_0}
+
+%% ---------------------------------------------------------------
+\begin{document}
+
+\title{Friday Experiments: Novel Free-Surface Configurations for Probing
+Shear-Thickening Suspension Dynamics}
+
+\author{C.~Burton}
+\affiliation{Department of Mechanical Engineering, Northwestern University,
+Evanston, IL 60208, USA}
+
+\date{\today}
+
+\begin{abstract}
+We propose five preliminary experimental programs---``Friday experiments''---
+motivated by two recent landmark papers on shear-thickening (``oobleck'') flows:
+Darbois~Texier \textit{et al.}~\cite{DarboisTexier2020,DarboisTexier2023},
+who identified and characterized the inertia-free surface-wave instability
+of dense cornstarch suspensions on inclined planes, and Bougouin \textit{et al.}\
+\cite{Bougouin2026PRL}, who discovered the ``liquid dam''---a constant-speed
+gravity-driven front arising from a jammed, load-bearing structure at the
+advancing edge.  Each proposed experiment targets a gap that is clearly open in
+the literature and feasibly addressable with existing high-speed photography and
+a modest laser-based velocimetry system.  The five programs are:
+(1)~a three-dimensional radial free-surface dam break that removes the
+quasi-two-dimensional channel constraint of all prior liquid-dam work and
+probes azimuthal stability of the jammed front; (2)~upward elastic-membrane
+forcing of a resting suspension layer (``reverse impact''), providing a
+controlled, inertia-free route to jamming-front nucleation and propagation;
+(3)~quantitative mapping of the oobleck-wave dispersion relation via controlled
+sinusoidal inlet perturbations, providing the first systematic experimental test
+of the linear stability theory using only side-view imaging;
+(4)~stairwave wavelength selection under a programmable tilt-rate protocol; and
+(5)~liquid-dam interaction with a geometric step discontinuity, testing the
+intrinsic character of $\ULD$ and providing the first direct measurement of the
+overflow-layer thickness $\delta$.  For each experiment we derive the relevant
+scalings, identify the decisive observables, and discuss measurement strategy.
+\end{abstract}
+
+\maketitle
+
+%% ---------------------------------------------------------------
+\section{Introduction and Literature Landscape}
+\label{sec:intro}
+
+Dense suspensions of hard particles near the jamming transition exhibit
+a remarkably rich class of free-surface flow phenomena absent in Newtonian or
+conventional non-Newtonian fluids.  The physical origin lies in the Wyart--Cates
+(WC) model of discontinuous shear thickening (DST): a smooth crossover from a
+frictionless viscosity $\etaz(\phi) = \eta_s (\phizero - \phi)^{-2}$ at low
+stress to a frictional, near-divergent viscosity at stresses above a
+concentration-dependent critical stress $\tauc(\phi)$, with a fully re-entrant
+(backward-bending) constitutive curve in the shear-jamming (SJ) regime
+$\phione < \phi < \phizero$~\cite{WyartCates2014}.
+
+\paragraph{Oobleck waves.}
+Darbois~Texier \textit{et al.}~\cite{DarboisTexier2020} reported that dense
+cornstarch suspensions flowing down an inclined channel spontaneously develop
+prominent, regular surface waves at volume fractions $\phi \gtrsim 0.38$.
+Unlike the classical Kapitza (roll-wave) instability of Newtonian thin films,
+which requires a finite Reynolds number, oobleck waves appear at vanishingly
+small Re and are entirely inertia-free.  Their origin is the coupling between
+the free surface and the backward-bending branch of the constitutive curve:
+an increase in surface stress reduces flow velocity, which raises the local
+free-surface height, which further amplifies the stress---a self-sustaining
+feedback~\cite{DarboisTexier2023,Depoilly2024}.  Darbois~Texier
+\textit{et al.}~\cite{DarboisTexier2023} subsequently provided a quantitative
+linear stability theory spanning the full Kapitza-to-Oobleck range, and
+Balmforth~\cite{Balmforth2025} extended this to nonlinear saturation, predicting
+that finite-amplitude waves steepen into staircase fronts---precisely the
+``stairwaves'' subsequently observed by Bougouin \textit{et al.}~\cite{Bougouin2026PRL}.
+
+\paragraph{Liquid dam.}
+Bougouin \textit{et al.}~\cite{Bougouin2026PRL} showed that when a DST
+suspension in the SJ regime is released in a dam-break geometry, it spreads
+not by decelerating like any known fluid but instead with a nearly vertical
+front---a ``liquid dam''---that advances at a constant speed
+\begin{equation}
+  \ULD(\phi) = 2k\,\frac{\tauc(\phi)^2}{\rho g\,\etaz(\phi)},
+  \label{eq:ULD}
+\end{equation}
+independent of released volume, flow height, and channel slope.  The mechanism
+is a jammed, frictional front of length $\ell \sim k H / k_0$ (where $k = 10$
+and $k_0 \approx 2$--$3$ from their model, consistent with $\ell/H \approx 3$--$5$
+observed in their surface velocimetry) above which a thin frictionless overflow
+layer of thickness $\delta$ carries the mass flux.  Equation~\eqref{eq:ULD}
+is validated across nearly two decades in speed by varying $\phi$, solvent
+viscosity, and particle type.  Related localized jammed structures---frictional
+solitons---had previously been identified in pipe flow~\cite{Bougouin2024PNAS}
+and Couette cells~\cite{Rathee2022PNAS}, establishing a generic picture of
+stress-localization in DST systems.
+
+\paragraph{Open questions.}
+The liquid-dam experiments are all performed in quasi-two-dimensional channels;
+the three-dimensional geometry is completely unexplored.  The overflow-layer
+thickness $\delta$ and jammed-front length $\ell$ appear in the model but have
+not been directly measured; the paper explicitly calls for future internal imaging
+\cite{Bougouin2026PRL}.  The linear stability theory for oobleck waves has been
+tested only against naturally arising waves; no controlled-perturbation experiment
+has mapped the dispersion relation $\omega(k)$ or growth rate $\sigma(k)$.  The
+stairwave wavelength formula $\lambda \approx 2h_\text{ini}/\sin\theta$ has not
+been tested against a controlled tilt protocol.  And the behavior of the liquid
+dam upon encountering a geometric discontinuity is entirely unexplored.  The five
+experiments proposed below address these gaps one by one.
+
+Throughout, we characterize the system by: particle volume fraction $\phi$
+(corrected for cornstarch porosity via $\phi_\text{eff} = 1.136\,\phi_\text{nom}$
+\cite{HanVanHaJaeger2017}), critical stress $\tauc(\phi)$ and frictionless
+viscosity $\etaz(\phi)$ from WC fits to Couette rheometry (representative values
+for cornstarch-water in the SJ regime: $\tauc \approx 2$--$4$~Pa,
+$\etaz \approx 0.2$--$1.5$~Pa$\cdot$s~\cite{Bougouin2026PRL}), layer thickness
+$H$, jammed-front length $\ell \approx 4H$ (from surface velocimetry of
+Bougouin \textit{et al.}), and suspension density
+$\rho \approx \rho_w\left[1 + (\rho_p/\rho_w - 1)\phi\right]$.
+
+%% ---------------------------------------------------------------
+\section{Experiment~1: Three-Dimensional Radial Free-Surface Dam Break}
+\label{sec:3Ddambreak}
+
+\subsection{Physical motivation and gap}
+
+Every existing liquid-dam experiment confines the suspension between parallel
+channel walls, reducing the problem to one spatial dimension.  Real
+gravity-driven flows of DST suspensions---lava analogues, slurry spills,
+concrete placement---are three-dimensional.  When the advancing front is a
+growing annulus (radius $R(t)$), azimuthal perturbations of the jammed ring
+experience a qualitatively different geometry than the flat channel case.  In
+standard viscous spreading, the 3D (axisymmetric) Newtonian gravity current
+% CORRECTED 2026-07-06: fixed-VOLUME axisymmetric current is R ~ t^{1/8} (Huppert 1982);
+% t^{1/2} is the constant-FLUX case. Planar fixed-volume height decays as t^{-1/5},
+% not t^{-2/5}. Applied here and at the three sites below (+ summary list).
+follows $R \propto t^{1/8}$ (Huppert 1982~\cite{Huppert1982}), with a
+qualitatively different height evolution than the 2D case ($X \propto t^{1/5}$).
+Whether the liquid-dam regime persists in 3D, and how the transition to
+Newtonian spreading is modified, are both unexplored.
+
+A further question is azimuthal stability.  In the channel, the jammed front
+is a rectangle driven forward by the frictionless pool.  In the radial geometry,
+the frictionless pool (viscosity $\etaz$) drives the jammed annulus (effective
+viscosity $\gg \etaz$) outward.  This configuration---a less-viscous fluid
+displacing a more-viscous one in radial outward spreading---is the same
+orientation as the Saffman--Taylor instability in a Hele-Shaw cell, raising
+the possibility that fingers of the frictionless pool penetrate the jammed ring.
+Whether this analogy carries over quantitatively is unknown: the jammed front
+is not a passive fluid but a self-sustaining frictional structure.  Determining
+whether the front fingers or remains azimuthally uniform is a key open question.
+
+\begin{mdframed}[style=questionbox]
+\textbf{Key questions.}
+(1)~Does $\ULD = dR/dt$ remain constant and consistent with
+Eq.~\eqref{eq:ULD} in radial 3D spreading?
+(2)~Is the liquid dam azimuthally uniform, or do fingers of the frictionless
+pool penetrate the jammed annulus?
+(3)~How does the height evolution $H(t)$ differ from the 2D case, and where
+does the transition to Newtonian axisymmetric spreading
+($R \propto t^{1/8}$) occur?
+\end{mdframed}
+
+\subsection{Geometry and scaling}
+
+Consider a cylindrical release of volume $V = \pi R_0^2 H_0$ spreading
+radially on a horizontal surface.  If the flat-top liquid-dam morphology holds
+in 3D (as it does in 2D), volume conservation with $h(r,t) \approx H(t)$ for
+$r < R(t)$ gives
+\begin{equation}
+  H(t) = \frac{V}{\pi R(t)^2}.
+  \label{eq:3D_conservation}
+\end{equation}
+The front mass balance is local: a cross-section of the annular front at any
+azimuthal position still satisfies $H\,\ULD \sim \delta\bar{u}$ (the same
+relation as in 2D), provided the overflow remains frictionless and $\ell \sim H$.
+If these conditions hold, the front speed in 3D is still $\ULD(\phi)$ from
+Eq.~\eqref{eq:ULD}, giving
+\begin{equation}
+  R(t) \approx \ULD(\phi)\,t, \qquad
+  H(t) \approx \frac{V}{\pi\,\ULD^2\,t^2}.
+  \label{eq:3D_kinematics}
+\end{equation}
+The $H \sim t^{-2}$ decay in 3D is qualitatively faster than the $H \sim
+t^{-1/5}$ decay in the 2D Newtonian case and represents a clean, falsifiable
+difference from any existing spreading model.
+
+The transition to Newtonian spreading occurs when the Newtonian axisymmetric
+front speed overtakes $\ULD$.  For the axisymmetric viscous gravity current
+(Huppert 1982 \cite{Huppert1982}), the lubrication scaling gives
+$\dot{R}_\text{Newt} \sim \rho g H^3/(\eta_0 R)$, so the transition condition
+$\ULD = \dot{R}_\text{Newt}$ yields
+\begin{equation}
+  \ULD \sim \frac{\rho g H_c^3}{\etaz R_c},
+  \label{eq:3D_transition}
+\end{equation}
+where $R_c$ and $H_c$ are simultaneously constrained by
+$H_c = V/(\pi R_c^2)$.  Unlike the 2D case---where $H_c$ depends only on
+$\phi$ and $A$---in 3D the transition height and radius depend on $V$ as well.
+The coupled system of Eq.~\eqref{eq:3D_transition} and volume conservation
+must be solved numerically for each $V$ and $\phi$; subsequent spreading after
+the transition follows $R \propto t^{1/8}$ (Huppert 1982 \cite{Huppert1982}).
+
+\begin{mdframed}[style=setupbox]
+\textbf{Proposed setup.}
+A Plexiglas cylinder ($R_0 = 4$--$6$~cm, $H_0 = 3$--$8$~cm) is filled with
+a DST cornstarch suspension at $\phi \in \{0.43, 0.45, 0.46\}$ and placed on
+a flat, hydrophobic-coated acrylic sheet.  The cylinder is lifted rapidly
+($\Delta t \lesssim 0.1\,H_0/\ULD \sim 0.1$~s) by a pneumatic actuator,
+releasing the suspension to spread freely.  Top-view high-speed photography
+(1000--3000~fps) records $R(\theta, t)$ where $\theta$ is the azimuthal angle.
+A synchronized side-view camera at 500--1000~fps tracks $H(t)$ and verifies
+the flat-top morphology.  Surface PTV: the free surface is seeded with
+$50$--$100$~\textmu m hollow glass microspheres; a horizontal CW 532~nm
+laser sheet illuminates the surface, and the top-view camera (with long-pass
+filter) records particle tracks at 1000--2000~fps for radial velocity mapping.
+\end{mdframed}
+
+\subsection{Observables and expected results}
+
+From top-view imagery: mean radius $\bar{R}(t)$ tests Eq.~\eqref{eq:3D_kinematics};
+a log-log plot of $\bar{R}$ vs.\ $t$ should show slope 1 during the liquid-dam
+phase, transitioning to slope $1/2$ after $t_c$.  The rms azimuthal fluctuation
+$\sigma_R(t) = \langle [R(\theta,t) - \bar{R}]^2\rangle^{1/2}$ quantifies any
+fingering instability.  If fingers grow, their count $m$ and growth rate can be
+extracted by azimuthal Fourier decomposition.
+
+From surface PTV: the radial velocity profile $u_r(r,t)$ should exhibit a
+localized overspeed near the front (analogous to the 2D signature of Bougouin
+\textit{et al.}~\cite{Bougouin2026PRL}) with azimuthal modulation if fingers
+are present.
+
+\begin{mdframed}[style=noveltybox]
+\textbf{Novelty and publishability.}
+This is the first liquid-dam experiment without lateral confinement.  It tests
+whether Eq.~\eqref{eq:ULD} is a genuinely local, geometry-independent
+constitutive law, reveals whether the jammed annulus is azimuthally stable,
+and provides the first experimental measurement of the 3D height evolution
+$H(t) \sim t^{-2}$.  A clean result---stability or instability---is a natural
+\textit{Physical Review Letters} paper; a full dataset mapping $R_c$, $H_c$,
+and $R(\theta, t)$ as functions of $V$ and $\phi$ suits
+\textit{Physical Review Fluids}.
+\end{mdframed}
+
+%% ---------------------------------------------------------------
+\section{Experiment~2: Elastic Membrane Upward Forcing (``Reverse Impact'')}
+\label{sec:elasticmem}
+
+\subsection{Physical motivation and gap}
+
+Work from the Driscoll laboratory on drop impact of DST suspensions onto
+compliant (PEGDA/PEGMEA gel) substrates has established that the elastic wave
+reflection timescale $t_r = 2h/c_s$ competes with jamming front propagation
+and strongly alters impact morphology~\cite{Mobaseri2025PNAS,Mobaseri2026arXiv}.
+In all of this work, the suspension is the impactor and the elastic substrate
+is the target; the jammed region nucleates at the impact interface and propagates
+upward through the suspension.
+
+Here we propose to invert this geometry: a thin elastic membrane (stretched
+latex or PDMS sheet) is clamped over a rigid frame and loaded from above with
+a layer of DST suspension of height $h_0$.  A rod pushes upward through the
+frame at controlled velocity $v_\text{rod}$.  There is no impact---the forcing
+is slow and controlled---so inertia plays no role.  The free surface of the
+suspension (the top surface) is unconfined.  This provides a clean way to study
+jamming-front nucleation and propagation in the quasi-static limit, which is
+inaccessible in drop-impact experiments where inertia and stress localization
+are entangled.
+
+\begin{mdframed}[style=questionbox]
+\textbf{Key questions.}
+(1)~At what critical velocity $v_c$ does a jammed patch nucleate above the rod
+contact, and does $v_c \sim \tauc h_0 / \etaz$ (the WC-based threshold)?
+(2)~Does a radially propagating jamming front appear above this threshold,
+and how does its speed depend on $v_\text{rod}$ and $\phi$?
+(3)~How does the elastic restoring force of the membrane modify the spatial
+extent of the jammed region compared to the rigid-substrate impact case?
+(4)~Does the free surface deform upward (``dome'') above the jammed patch,
+and at what height does the dome arrest?
+\end{mdframed}
+
+\subsection{Geometry and scaling}
+
+When the rod tip (radius $a_\text{rod}$) pushes up at speed $v_\text{rod}$,
+the suspension layer is compressed vertically at a strain rate
+$\dot{\varepsilon} \approx v_\text{rod}/h_0$.  For a suspension layer with
+free-slip at the top surface and no-slip at the membrane, the resulting shear
+rate is of the same order, $\dot{\gamma} \sim v_\text{rod}/h_0$.  Jamming
+nucleates when the local stress exceeds $\tauc$:
+\begin{equation}
+  v_\text{rod} \geq v_c \equiv \frac{\tauc(\phi)\,h_0}{\etaz(\phi)}.
+  \label{eq:vc}
+\end{equation}
+For cornstarch-water in the SJ regime ($\tauc \sim 2$--$4$~Pa,
+$\etaz \sim 0.2$--$1.5$~Pa$\cdot$s) with $h_0 = 1$~cm, this gives
+$v_c \sim 10$--$100$~mm/s, accessible with a standard lead-screw actuator or
+pneumatic piston.  The elastic membrane contributes a spatially varying upward
+normal stress $\sigma_\text{mem}(r) \approx T\,\nabla^2 w(r)$ (where $T$ is
+membrane tension and $w$ is the deflection profile), which partially offsets
+the rod forcing away from the contact point.  As a result, the jammed region
+may arrest at a finite radius $R_\text{jam}$ before the rod is withdrawn,
+allowing one to map $R_\text{jam}(v_\text{rod}, T, \phi)$.
+
+Once a jammed front nucleates, its radial propagation speed $c_f$ in the
+drop-impact geometry has been shown to scale with the impact velocity and
+current front radius~\cite{WaitukaitisJaeger2012,Rathee2022PNAS}.  Whether
+the same scaling holds in the quasi-static, upward-forcing geometry---where
+neither the forcing velocity nor the stress distribution are the same as in
+impact---is an open question.
+
+\begin{mdframed}[style=setupbox]
+\textbf{Proposed setup.}
+A circular latex membrane ($R_\text{frame} = 10$~cm, thickness 0.3--1~mm,
+pretension $T$ set by a calibrated tightening ring; $T$ measured via the
+fundamental drum frequency with a microphone) is clamped over a rigid acrylic
+support with a central hole (diameter $2a_\text{frame} = 1$~cm).  A suspension
+layer ($h_0 = 0.5$--$2$~cm, $\phi = 0.43$--$0.46$) is loaded on top.  A
+rounded Delrin rod ($a_\text{rod} = 2$--$5$~mm tip radius) is driven from below
+by a stepper-motor lead screw at controlled $v_\text{rod} = 1$--$200$~mm/s.
+Top-view high-speed camera (500--2000~fps) images plan-view jamming front
+growth.  Side-view camera records free-surface dome profile $h(r,t)$.  Surface
+PTV (seeded free surface, horizontal CW laser sheet, top-view camera with
+long-pass filter) provides radial velocity $u_r(r,t)$.
+\end{mdframed}
+
+\subsection{Observables and expected results}
+
+Vary $v_\text{rod}$ from well below to well above $v_c(\phi)$ at fixed $h_0$
+and $\phi$: the onset of visible jamming (central dark rigid patch in top-view)
+defines $v_c$ experimentally.  Plotting $v_c$ vs.\ $\tauc h_0/\etaz$ across
+multiple $\phi$ tests Eq.~\eqref{eq:vc}.  Above threshold: track $R_\text{jam}(t)$
+to extract the front propagation speed $c_f(v_\text{rod}, \phi)$ and compare
+with the drop-impact scaling~\cite{WaitukaitisJaeger2012}.  Vary $T$ at fixed
+$v_\text{rod}$ and $\phi$: if membrane tension halts front growth at
+$R_\text{jam} < R_\text{frame}$, this directly reveals the length scale over
+which the elastic restoring stress becomes comparable to $\tauc$.  The dome
+height $h_\text{dome}(R_\text{jam}, T, \phi)$ from the side-view camera provides
+a complementary observable.
+
+\begin{mdframed}[style=noveltybox]
+\textbf{Novelty and publishability.}
+This is the first experiment in which an elastic substrate drives jamming
+in a resting suspension from below.  By removing impact inertia entirely, it
+isolates the quasi-static stress-localization mechanism and provides a direct,
+parameter-free test of the WC nucleation threshold $v_c$.  The dependence of
+$R_\text{jam}$ on membrane tension $T$ introduces a new length scale with no
+analogue in the rigid-substrate impact literature, and connects directly to the
+Driscoll-lab program on compliance effects in DST impact.  Target:
+\textit{Physical Review Letters} or \textit{Soft Matter}.
+\end{mdframed}
+
+%% ---------------------------------------------------------------
+\section{Experiment~3: Oobleck-Wave Dispersion Relation via Controlled
+Inlet Perturbation}
+\label{sec:dispersion}
+
+\subsection{Physical motivation and gap}
+
+Darbois~Texier \textit{et al.}~\cite{DarboisTexier2023} derived the full linear
+stability problem for a WC suspension on an inclined plane, predicting the
+spatial growth rate $\sigma(k;\,\phi,\theta)$ and phase speed $c(k;\,\phi,\theta)$
+as functions of streamwise wavenumber $k$.  Depoilly \textit{et al.}\
+\cite{Depoilly2024} generalized this to an arbitrary generalized-Newtonian
+rheology, unifying the Kapitza and Oobleck branches.  These theories make
+quantitative, parameter-free predictions (all inputs come from rheometry): the
+neutral stability curve $k_\text{neutral}(\phi,\theta)$, the wavenumber of
+maximum growth $k_\text{max}$, and the sign of the group velocity $c_g =
+\partial\omega/\partial k$.
+
+Experimentally, only naturally arising waves have been studied.  Darbois~Texier
+\textit{et al.}~\cite{DarboisTexier2020} detected waves by laser profilometry but
+did not control the perturbation wavenumber and did not measure $\sigma(k)$.
+No experimental dispersion relation for oobleck waves exists.  This is a
+remarkable gap given the maturity of the theory.
+
+\begin{mdframed}[style=questionbox]
+\textbf{Key questions.}
+(1)~Does $\sigma(k)$ from experiment agree with the WC-based linear stability
+theory \cite{DarboisTexier2023}, with no free parameters?
+(2)~Is the neutral stability wavenumber $k_\text{neutral}(\phi,\theta)$
+consistent with the predicted band of unstable modes?
+(3)~Does the measured phase speed $c(k)$ match theory, including the sign
+of $c_g$?
+\end{mdframed}
+
+\subsection{Geometry, perturbation scheme, and scaling}
+
+A steady base flow at controlled thickness $h_0$ and mean velocity $\bar{U}$
+is established in a recirculating inclined-plane channel (length $L = 80$--$150$~cm,
+width $W = 10$--$15$~cm, slope $\theta$ adjustable from $0^\circ$ to $30^\circ$;
+pump with PID-controlled flow rate).  A thin Teflon paddle ($\sim$2~mm height,
+spanning $W$) at the inlet is driven sinusoidally at frequency $f_0$ by a
+voice-coil actuator.  This imposes a surface-height perturbation of dominant
+wavenumber $k_0 = 2\pi f_0/\bar{U}$ at $x = 0$.  Sweeping $f_0$ at fixed
+base-flow conditions maps the full $\sigma(k)$ curve.
+
+\subsection{Free-surface height measurement}
+
+Darbois~Texier \textit{et al.}~\cite{DarboisTexier2020} measured $h(x,t)$
+using a Keyence laser line profilometer, which resolves the opaque
+suspension-air interface by triangulation.  A simpler and equally
+effective approach for our setup is backlit side-view imaging: a diffuse
+LED panel behind the channel provides high-contrast silhouettes of the
+opaque suspension, and the high-speed camera positioned at the side records
+$h(x,t)$ directly at each frame.  This method requires no additional
+instrumentation beyond the existing camera.  The free-surface perturbation
+$\eta(x,t) = h(x,t) - h_0$ is extracted by edge detection.
+
+The amplitude $|\hat{\eta}(x,f_0)|$ at the forcing frequency is extracted at
+multiple streamwise positions $x_1,\ldots,x_n$ by lock-in analysis, yielding
+the spatial growth rate
+\begin{equation}
+  \sigma(k_0) = \frac{1}{\Delta x}\ln\frac{|\hat{\eta}(x_2)|}{|\hat{\eta}(x_1)|}.
+  \label{eq:sigma}
+\end{equation}
+The phase velocity $c(k_0)$ is obtained by cross-correlating $\eta(x_1,t)$
+and $\eta(x_2,t)$ to find the propagation delay.
+
+\subsection{Practical constraints}
+
+Cornstarch suspensions are optically opaque at $\phi \gtrsim 0.40$; a laser
+sheet cannot penetrate the bulk.  The primary measurement is therefore the
+free-surface profile $h(x,t)$ from side-view imaging, not interior velocity
+fields.  Cross-sectional PIV inside the flow would require either (a)~an
+ultrasound velocimetry system or (b)~a fully transparent index-matched
+suspension (e.g., PMMA beads in water--DMSO or silica beads in a
+refractive-index-matched glycerol--water mixture); both are reserved for
+future work.  The surface-height measurement alone is sufficient to map
+$\sigma(k)$ and $c(k)$, which are the primary deliverables of this experiment.
+
+Sedimentation: cornstarch suspensions at $\phi < 0.43$ can sediment on the
+timescale of an experiment.  The Bougouin group discards flows with $H < 7.5$~mm
+for this reason~\cite{Bougouin2026PRL}; we apply the same criterion.
+Recirculating the suspension through a pump continuously re-mixes it.
+
+\begin{mdframed}[style=setupbox]
+\textbf{Proposed setup.}
+Recirculating channel (acrylic, $150 \times 12 \times 5$~cm, variable slope
+mount); gear pump with PID flow control; inlet paddle voice-coil (0.1--50~Hz).
+Backlit LED panel + side-view high-speed camera at 2000--5000~fps for $h(x,t)$
+over a 60~cm window.  Cornstarch-water at $\phi = 0.40$, $0.43$, $0.45$, $0.46$;
+$\theta = 5^\circ$--$25^\circ$; $h_0 = 5$--$15$~mm.  Lock-in analysis of
+$\eta(x,t)$ at each $(f_0, \phi, \theta)$.
+\end{mdframed}
+
+\subsection{Observables and expected results}
+
+Plot $\sigma$ vs.\ $k_0$ for each $(\phi, \theta)$: expect a band of unstable
+wavenumbers $k_\text{min} < k_0 < k_\text{max}$ with a peak at $k_\text{max}$.
+Compare directly with the Darbois~Texier (2023) predictions using
+$\tauc(\phi)$ and $\etaz(\phi)$ from independent rheometry.  Plot $c(k_0)$
+vs.\ $k_0$: theory predicts $c > \bar{U}$ in the oobleck-wave regime
+(waves travel faster than mean flow).
+
+\begin{mdframed}[style=noveltybox]
+\textbf{Novelty and publishability.}
+This is the first experimental measurement of the oobleck-wave dispersion
+relation.  The controlled-perturbation protocol distinguishes stable from
+unstable wavenumbers and measures growth rates without free parameters,
+providing a stringent quantitative test of the WC-based stability theory that
+the existing literature cannot supply.  A clean $\sigma(k)$ curve across two
+or three volume fractions constitutes a full \textit{Journal of Fluid Mechanics}
+or \textit{Physical Review Fluids} paper.  Extension to interior velocity
+measurement (via index-matched transparent system or ultrasound velocimetry)
+is a natural second phase.
+\end{mdframed}
+
+%% ---------------------------------------------------------------
+\section{Experiment~4: Stairwave Wavelength Selection Under Controlled Tilt Rate}
+\label{sec:stairwave}
+
+\subsection{Physical motivation and gap}
+
+Balmforth~\cite{Balmforth2025} showed theoretically that the nonlinear
+saturation of oobleck waves produces steadily propagating, finite-amplitude
+stairwaves: steep fronts separated by nearly flat regions at the base-flow
+thickness.  Bougouin \textit{et al.}~\cite{Bougouin2026PRL} subsequently
+observed stairwaves when a horizontal layer of DST suspension was abruptly
+tilted.  The observed wavelength agrees with a geometric mass-conservation
+argument:
+\begin{equation}
+  \lambda \approx \frac{2\,h_\text{ini}}{\sin\theta},
+  \label{eq:lambda_geom}
+\end{equation}
+which contains no rheological parameters and predicts $\lambda$ independent
+of $\phi$.
+
+Two questions remain open.  First, in the Bougouin experiments the tilt was
+rapid but not controlled; whether $\lambda$ depends on the tilt rate $\Omega$
+is unknown.  Balmforth's theory connects stairwaves to the nonlinear saturation
+of the fastest-growing oobleck wave mode, which has a wavenumber $k_\text{max}$
+that depends on $\phi$ and $\theta$; if the tilt is slow enough that the
+suspension evolves quasi-statically through the Oobleck-unstable regime, it is
+plausible that the selected $\lambda$ differs from Eq.~\eqref{eq:lambda_geom}.
+Whether and how this occurs is an empirical question that the theory does not
+yet prescribe analytically.  Second, how quickly do stairwaves form from an
+initially flat layer, and does this timescale scale with the oobleck-wave
+e-folding time?
+
+\begin{mdframed}[style=questionbox]
+\textbf{Key questions.}
+(1)~Does $\lambda$ depend on $\Omega$, or is Eq.~\eqref{eq:lambda_geom} exact
+regardless of tilt rate?
+(2)~Does $\lambda$ depend on $\phi$ at fixed $(h_\text{ini}, \theta)$?
+(If yes, rheology matters; Eq.~\eqref{eq:lambda_geom} is incomplete.)
+(3)~Is there a minimum $\Omega$ below which stairwaves do not form?
+(4)~What is the stairwave formation time $t_\text{stair}(\phi, \theta, \Omega)$?
+\end{mdframed}
+
+\subsection{Geometry, protocol, and scaling}
+
+A flat acrylic tray ($40 \times 15$~cm, depth 2~cm) is mounted on a motorized
+hinge (stepper motor, angular resolution $0.05^\circ$, range 0.1--$90^\circ$/s)
+and filled with a suspension layer of thickness $h_\text{ini}$ at rest.  The
+motor tilts the tray to a target angle $\theta_f$ at rate $\Omega$.
+
+A natural timescale for comparing the tilt to the wave dynamics is
+$\Omega^* \sim \theta_f \cdot \sigma_\text{max}(\phi, \theta_f)$, where
+$\sigma_\text{max}$ is the peak temporal growth rate of the oobleck instability
+(dimension s$^{-1}$).  Roughly, if $\Omega \gg \Omega^*$ the tray reaches its
+final angle before Oobleck waves can grow; if $\Omega \ll \Omega^*$ the waves
+begin growing during the tilt transient.  From the linear stability theory of
+Darbois-Texier \textit{et al.}~\cite{DarboisTexier2023}, $\sigma_\text{max}$ at
+$\phi = 0.45$ and $\theta \sim 15^\circ$ is of order $10^{-2}$~s$^{-1}$, giving
+$\Omega^* \sim 10^{-2} \times 15^\circ \sim 0.15^\circ$--$1^\circ$/s (the
+range reflects uncertainty in the exact $\sigma_\text{max}$ without running the
+full linear stability code).  The motor range (0.1--$90^\circ$/s) straddles
+this estimate by over two decades in either direction, which is the essential
+experimental requirement.
+
+\begin{mdframed}[style=setupbox]
+\textbf{Proposed setup.}
+Motorized tray as described; $\phi \in \{0.43, 0.45, 0.46\}$;
+$h_\text{ini} \in \{3, 5, 7, 10\}$~mm; $\theta_f \in \{10^\circ, 15^\circ,
+20^\circ, 25^\circ\}$; $\Omega \in \{0.1, 0.5, 2, 10, 50\}^\circ$/s.
+Side-view high-speed camera (2000~fps) for $h(x,t)$ via backlit LED; spatiotemporal
+diagrams $h(x,t)$ reveal stairwave nucleation time and speed.
+Top-view camera for plan-view stairwave geometry near sidewalls.
+No laser or PIV required.
+\end{mdframed}
+
+\subsection{Observables and expected results}
+
+Primary observable: spatiotemporal diagram $h(x,t)$ from side-view footage.
+Stairwaves appear as diagonal stripes with slope $dx/dt = \ULD$; their spatial
+spacing gives $\lambda$.  Plot $\lambda(\Omega)$ at fixed $(\phi, \theta_f,
+h_\text{ini})$.
+
+If Eq.~\eqref{eq:lambda_geom} is exact, $\lambda$ is independent of $\Omega$
+and $\phi$---a clean null result that itself confirms the geometric picture and
+the universality of the liquid-dam speed.  If $\lambda(\Omega)$ shows a trend,
+the crossover rate $\Omega^*$ provides a direct empirical measurement of the
+oobleck-wave growth rate without a separate perturbation experiment.  Measuring
+$\lambda(\phi)$ at fixed $(\Omega, \theta_f, h_\text{ini})$ tests whether the
+rheological parameters enter the wavelength selection at all.
+
+\begin{mdframed}[style=noveltybox]
+\textbf{Novelty and publishability.}
+Stairwaves were first reported by Bougouin \textit{et al.}~\cite{Bougouin2026PRL};
+this would be the first controlled study of their formation.  The experiment
+requires only a motorized tray and existing camera, is executable within 2--3
+weeks, and the cleanest outcome---$\lambda$ independent of $\Omega$ and $\phi$---is
+itself publishable as a concise confirmation of the Balmforth--Bougouin picture.
+A $\phi$-dependent or $\Omega$-dependent $\lambda$ is a more striking result and
+would motivate a direct comparison with Balmforth's nonlinear theory.
+Target: \textit{Physical Review Letters} or \textit{Physical Review Fluids}.
+\end{mdframed}
+
+%% ---------------------------------------------------------------
+\section{Experiment~5: Liquid Dam Arrest and Reformation at a Step Discontinuity}
+\label{sec:step}
+
+\subsection{Physical motivation and gap}
+
+The gravito-rheological model of Bougouin \textit{et al.}~\cite{Bougouin2026PRL}
+predicts that $\ULD$ is an intrinsic material property: it depends only on
+$\tauc(\phi)$, $\etaz(\phi)$, $\rho$, and $g$, with no sensitivity to geometry,
+released volume, or surface topography.  This has been tested only on smooth,
+flat surfaces.  A step discontinuity provides a decisive test: if $\ULD$ is
+truly intrinsic, the dam should arrest at the step, undergo a transient, and
+then re-establish at exactly $\ULD$ below the step.  Beyond this falsification
+test, an upward step (barrier) of carefully chosen height can arrest the
+frictionless overflow layer, providing the first indirect measurement of the
+overflow-layer thickness $\delta$---the one quantity in the Bougouin model never
+directly observed.
+
+\begin{mdframed}[style=questionbox]
+\textbf{Key questions.}
+(1)~Does the liquid dam reform at $\ULD(\phi)$ after a downward step, confirming
+the intrinsic character of the gravito-rheological speed?
+(2)~What is the transient length $\Delta x_\text{trans}$ over which the dam
+re-establishes, and how does it scale with $\ell$ and $\Delta z/H$?
+(3)~What is the critical barrier height $b^*$ above which the jammed front
+is permanently arrested, and does it scale as predicted from the overflow
+thickness $\delta$?
+(4)~Is there an upstream-propagating disturbance when the front is arrested?
+\end{mdframed}
+
+\subsection{Geometry and scaling}
+
+\paragraph{Downward step.}
+The jammed front arrives at the step with speed $\ULD$ and height $H_1$.
+Below the step, the hydrostatic driving increases by $\rho g\Delta z$.  Since
+$\ULD$ is set by local rheology alone (independent of $\Delta z$), the dam must
+reform at the same speed below the step.  The reformation involves a transient
+in which the overflow layer re-equilibrates to its original thickness $\delta$.
+We do not make a detailed analytical prediction for $\Delta x_\text{trans}$---the
+model of Bougouin \textit{et al.}\ is not derived for this configuration---but
+parametrically, the relevant scales are $\ell$ (the jammed-front length) and
+$\Delta z/\delta$ (the step height normalized by the overflow thickness).
+
+\paragraph{Upward barrier (measurement of $\delta$).}
+An upward barrier of height $b$ blocks the jammed front but allows the thin
+frictionless overflow to pass over if $b < \delta$.  The critical barrier
+height that just arrests the overflow is $b^* \approx \delta$.  From the model,
+the overflow thickness is set by the DST onset condition on the overflow shear
+stress: the shear stress at the base of the overflow equals $\tauc$, giving
+\begin{equation}
+  \frac{\rho g\,\delta^2}{2\ell} \sim \tauc(\phi),
+  \qquad \Rightarrow \qquad
+  \delta \sim \left(\frac{2\ell\,\tauc}{\rho g}\right)^{1/2},
+  \label{eq:delta}
+\end{equation}
+and hence $b^* \sim \delta$.  With $\ell \approx 4H$ (from the Bougouin
+surface velocimetry), $H = 3$~cm, $\tauc = 3$~Pa, and $\rho g = 11{,}760$~N/m$^3$,
+\begin{equation}
+  \delta \approx \left(\frac{2 \times 0.12\,\text{m} \times 3\,\text{Pa}}
+  {11{,}760\,\text{N/m}^3}\right)^{1/2} \approx 8\,\text{mm}.
+  \label{eq:delta_num}
+\end{equation}
+This estimate uses $\ell = 4H$ from the $\ell/H \approx 3$--$5$ range reported
+by Bougouin \textit{et al.}  Steps in the range 3--15~mm comfortably bracket
+$b^*$.  Equation~\eqref{eq:delta} predicts $b^* \propto (H\tauc)^{1/2}$, which
+can be tested by varying $H$ and $\phi$ independently.
+
+We note that Eq.~\eqref{eq:delta} is derived from the Bougouin model and
+involves $\ell$, which is itself uncertain by a factor of $\sim 2$.  The
+numerical estimate in Eq.~\eqref{eq:delta_num} should be treated as an
+order-of-magnitude guide for step sizing, not a precise prediction.
+
+\begin{mdframed}[style=setupbox]
+\textbf{Proposed setup.}
+Primary channel ($100 \times 12 \times 6$~cm acrylic, horizontal).  Modular
+acrylic floor inserts, shimmed to precise heights, provide steps of
+$\Delta z \in \{-10, -5, -3, +1, +3, +5, +8, +12\}$~mm at $x_s = 30$~cm
+from the release point.  Dam-break release: acrylic wedge ($A = 50$--$200$~cm$^2$)
+initially at $45^\circ$, tilted to horizontal (identical to the Bougouin
+protocol).  Side-view high-speed camera (500--2000~fps) images the full
+channel.  Spatiotemporal diagram $X(t)$ extracted by front-edge detection.
+Surface PTV (seeded surface, horizontal laser sheet) for overflow velocity
+profile before and after step.
+\end{mdframed}
+
+\subsection{Observables and expected results}
+
+\emph{Downward step:} Spatiotemporal plot $X(t)$ shows a possible kink when
+the front crosses $x_s$, followed by recovery to slope $\ULD$.  The recovery
+length $\Delta x_\text{trans}$ vs.\ $\Delta z$ and $H$ characterizes the
+jammed-front relaxation.
+
+\emph{Upward barrier:} Front speed $U_\text{post}(b)$ measured for each $b$.
+For $b \ll b^*$: dam passes with no speed change.  For $b \sim b^*$: dam
+slows or arrests.  For $b \gg b^*$: front permanently arrested.  The threshold
+$b^*(\phi, H)$ tests Eq.~\eqref{eq:delta}.  Surface PTV at the step: for
+$b < b^*$, the overflow-layer velocity profile above the step directly reveals
+the overflow dynamics; comparing $u_r(r)$ just upstream and downstream of the
+barrier provides the most direct evidence of the overflow layer in either configuration.
+
+\begin{mdframed}[style=noveltybox]
+\textbf{Novelty and publishability.}
+The step provides a decisive, falsifiable test of the intrinsic character of
+$\ULD$---something no existing liquid-dam experiment has done.  The barrier
+threshold $b^*$ gives the first indirect measurement of $\delta$, closing the
+last major gap in the Bougouin model.  Both sub-experiments are low-cost
+(acrylic shims, existing channel, existing camera) and executable within a few
+weeks.  The combination of model falsification and internal-structure measurement
+in a single experiment makes this a strong \textit{Physical Review Letters}
+candidate.
+\end{mdframed}
+
+%% ---------------------------------------------------------------
+\section{Instrumentation Notes}
+\label{sec:measurement}
+
+\subsection{High-speed photography}
+
+All five experiments use a single side-view or top-view high-speed camera as
+the primary diagnostic.  Frame rates of 500--2000~fps are sufficient for all
+proposed flow velocities ($\ULD \sim 5$--$50$~mm/s) and length scales
+($H \sim 5$--$30$~mm).  Backlit LED panel illumination provides excellent
+contrast at the jammed front (the opacity change between flowing and jammed
+cornstarch is visible to the naked eye and is stark in high-speed images).
+
+\subsection{Laser PIV / PTV}
+
+Experiments 1, 2, and 5 use surface PTV: a CW 532~nm DPSS laser
+($\geq 300$~mW) expanded to a $\sim$1~mm horizontal sheet illuminates hollow
+glass microspheres ($50$--$100$~\textmu m) floating at the free surface.  The
+top-view high-speed camera (with a 550~nm long-pass filter to reject scattered
+laser light) records particle tracks.  This requires no additional hardware
+beyond a CW laser, cylindrical lens, and band-pass filter---all items available
+from standard optics suppliers.
+
+Cross-sectional (volumetric) PIV inside the bulk of an opaque cornstarch
+suspension is not possible with visible-light laser sheets and is not proposed
+here.  Any future requirement for interior velocity fields should be addressed
+by (a)~acoustic velocimetry (ultrasound Doppler), (b)~an index-matched
+transparent particle system, or (c)~high-resolution x-ray imaging, as
+suggested by Bougouin \textit{et al.}~\cite{Bougouin2026PRL}.
+
+\subsection{Rheological characterization}
+
+Independent Couette rheometry ($\dot{\gamma}$-sweep at controlled rate)
+provides $\tauc(\phi)$ and $\etaz(\phi)$ via WC fits.  The Han--van~Ha--Jaeger
+cornstarch correction $\phi_\text{eff} = 1.136\,\phi_\text{nom}$
+\cite{HanVanHaJaeger2017} is applied throughout.  Moisture content is
+controlled by preparing suspensions in a humidity-controlled environment
+($65 \pm 5\%$~RH) and measuring suspension density before each run.  Validating
+key results in a second particle system (polystyrene beads in water, or
+cornstarch in water--glycerol) confirms generality, following the Bougouin
+protocol~\cite{Bougouin2026PRL}.
+
+\subsection{Prioritization}
+
+Table~\ref{tab:priority} summarizes the estimated setup complexity and time to
+first publishable figure for each experiment.
+
+\begin{table}[h]
+\caption{\label{tab:priority}
+Prioritization of proposed experiments.
+Setup complexity: L = low (stock parts + machine shop),
+M = medium (1--2 weeks fabrication + alignment).
+Time to result: elapsed time from start to first publication-quality figure.}
+\begin{ruledtabular}
+\begin{tabular}{lllll}
+Exp. & Topic & Complexity & Time & Primary target \\
+\hline
+4 & Stairwave tilt-rate     & L   & 2--3 weeks  & \textit{PRL} / \textit{PRF} \\
+5 & Step discontinuity      & L   & 3--5 weeks  & \textit{PRL}               \\
+1 & 3D radial dam break     & L   & 3--5 weeks  & \textit{PRL} / \textit{PRF} \\
+2 & Elastic membrane        & M   & 4--8 weeks  & \textit{PRL} / \textit{SM}  \\
+3 & Wave dispersion mapping & M   & 8--16 weeks & \textit{JFM} / \textit{PRF} \\
+\end{tabular}
+\end{ruledtabular}
+\end{table}
+
+Experiments 4, 5, and 1 can be started immediately with stock acrylic,
+a motorized hinge, and the existing high-speed camera.  They share no hardware
+and can run in parallel.  Experiments 2 and 3 require additional fabrication
+(membrane frame and actuator; recirculating channel) but are the highest-impact
+targets and should be designed concurrently with the first three.
+
+%% ---------------------------------------------------------------
+\section{Discussion}
+\label{sec:discussion}
+
+The five experiments collectively address three open questions in the
+liquid-dam and oobleck-wave literature as of early 2026.
+
+\begin{enumerate}[leftmargin=1.5em, label=(\roman*)]
+
+\item \textit{Three-dimensionality} (Experiment~1):
+All existing theory and experiment is quasi-2D.  The 3D case modifies the
+height dynamics from $H \sim t^{-1/5}$ (Newtonian 2D) to the clean $H \sim t^{-2}$
+during the liquid-dam phase, with a subsequent transition to the Huppert
+axisymmetric regime.  The azimuthal stability of the jammed front is entirely
+open.
+
+\item \textit{Internal flow structure and model validation}
+(Experiments 3, 5):
+The overflow thickness $\delta$ and jammed-front length $\ell$ enter the
+Bougouin model but have not been directly measured.  Experiment~5 measures
+$\delta$ indirectly via the barrier threshold; Experiment~3 maps $\sigma(k)$
+with no free parameters, providing the first quantitative test of the
+Darbois~Texier stability theory.
+
+\item \textit{Controlled dynamics} (Experiments 4, 2):
+Stairwave formation has only been observed under abrupt tilt; controlling $\Omega$
+converts an observation into a measurement.  Experiment~2 similarly converts the
+impact scenario (impulsive, inertia-dominated) into a controlled quasi-static
+forcing, isolating the WC nucleation mechanism.
+
+\end{enumerate}
+
+Any publishable result from these experiments should include validation in a
+second particle system (polystyrene--water or cornstarch--glycerol) to confirm
+that the observed behavior is generic to DST suspensions rather than specific
+to cornstarch.
+
+%% ---------------------------------------------------------------
+\begin{acknowledgments}
+This work is supported by [grant details].  The author thanks the Driscoll
+Laboratory and the Cheng Laboratory (Northwestern University) for access to
+equipment and discussion.
+\end{acknowledgments}
+
+%% ---------------------------------------------------------------
+\begin{thebibliography}{99}
+
+\bibitem{DarboisTexier2020}
+B.~Darbois~Texier, H.~Lhuissier, Y.~Forterre, and B.~Metzger,
+\textit{Surface-wave instability without inertia in shear-thickening suspensions},
+Commun.\ Phys.\ \textbf{3}, 232 (2020).
+
+\bibitem{DarboisTexier2023}
+B.~Darbois-Texier, H.~Lhuissier, B.~Metzger, and Y.~Forterre,
+\textit{Shear-thickening suspensions down inclines: from Kapitza to Oobleck waves},
+J.\ Fluid Mech.\ \textbf{959}, A27 (2023).
+
+\bibitem{Bougouin2026PRL}
+A.~Bougouin, H.~Lhuissier, Y.~Forterre, and B.~Metzger,
+\textit{Liquid Dam: A Constant-Speed Regime in Gravity-Driven
+Shear-Thickening Suspensions},
+Phys.\ Rev.\ Lett.\ \textbf{136}, 158202 (2026).
+
+\bibitem{Bougouin2024PNAS}
+A.~Bougouin, B.~Metzger, Y.~Forterre, P.~Boustingorry, and H.~Lhuissier,
+\textit{A frictional soliton controls the resistance law of
+shear-thickening suspensions in pipes},
+Proc.\ Natl.\ Acad.\ Sci.\ U.S.A.\ \textbf{121}, e2321581121 (2024).
+
+\bibitem{WyartCates2014}
+M.~Wyart and M.~E.~Cates,
+\textit{Discontinuous shear thickening without inertia in dense
+non-Brownian suspensions},
+Phys.\ Rev.\ Lett.\ \textbf{112}, 098302 (2014).
+
+\bibitem{Balmforth2025}
+N.~J.~Balmforth,
+\textit{Nonlinear Oobleck waves},
+J.\ Fluid Mech.\ \textbf{1002}, A34 (2025).
+
+\bibitem{Rathee2022PNAS}
+V.~Rathee, J.~Miller, D.~Blair, and J.~Urbach,
+\textit{Structure of propagating high-stress fronts in a
+shear-thickening suspension},
+Proc.\ Natl.\ Acad.\ Sci.\ U.S.A.\ \textbf{119}, e2203795119 (2022).
+
+\bibitem{Depoilly2024}
+F.~Depoilly, S.~Millet, H.~Ben~Hadid, S.~Dagois-Bohy, and F.~Rousset,
+\textit{Unifying the roll waves},
+PLoS One \textbf{19}, e0310805 (2024).
+
+\bibitem{Rocha2023JFM}
+F.~Rocha, Y.~Forterre, B.~Metzger, and H.~Lhuissier,
+\textit{Drag of a shear-thickening suspension on a rotating cylinder},
+J.\ Fluid Mech.\ \textbf{970}, A35 (2023).
+
+\bibitem{WaitukaitisJaeger2012}
+S.~R.~Waitukaitis and H.~M.~Jaeger,
+\textit{Impact-activated solidification of dense suspensions via dynamic
+jamming fronts},
+Nature \textbf{487}, 205 (2012).
+
+\bibitem{HanVanHaJaeger2017}
+E.~Han, N.~Van~Ha, and H.~M.~Jaeger,
+\textit{Measuring the porosity and compressibility of liquid-suspended
+solids using ultrasound},
+Soft Matter \textbf{13}, 3506 (2017).
+
+\bibitem{Mobaseri2025PNAS}
+S.~Mobaseri \textit{et al.},
+Proc.\ Natl.\ Acad.\ Sci.\ U.S.A.\ (2025).
+
+\bibitem{Mobaseri2026arXiv}
+S.~Mobaseri \textit{et al.},
+arXiv:2601.12642 (2026).
+
+\bibitem{Huppert1982}
+H.~E.~Huppert,
+\textit{The propagation of two-dimensional and axisymmetric viscous
+gravity currents over a rigid horizontal surface},
+J.\ Fluid Mech.\ \textbf{121}, 43 (1982).
+
+\end{thebibliography}
+
+\end{document}

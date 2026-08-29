@@ -1,0 +1,28 @@
+All measurements taken with Modular Compact Series of Anton Paar AG rheometer at Institut für Transport- und Automatisierungstechnik (ITA) of the Leibniz Universität Hannover (LUH).
+
+All measurements taken by Lennart Mesecke @IPeG under supervision of Tobias Biermann @IPeG.
+
+All measurements taken at roomtemperature R_T=20°C.
+
+
+The material was analyzed regarding viscosity und shear stress under given shear rates. 
+
+
+Naming reference:
+
+ETD2020-01wt-30ul
+
+ETD2020 = Lubrizol Carbopol ETD2020
+
+01wt = 0,1 wt./% of Carbopol ETD2020; concentrations from 0,1-0,9 wt./% were analyzed
+
+30ul = 30 µl of Triethanolamine per 100ml distilled water; concentrations of 30-50µl were analyzed
+
+
+Mixing of Carbopol ETD2020:
+
+To produce the material, distilled water is mixed with Carbomber ETD2020, which is available in powder form.
+By adjusting the pH value with triethanolamine, polymerization occurs, resulting in the gel-like material. 
+Triethanolamine is a non-toxic, colourless, viscous liquid that is very soluble in water.
+Triethanolamine does not interfere with polymerization and reacts strongly alkaline in aqueous solution, which leads to an increase in the pH value of the dispersion.
+Sufficient mixing and degassing is necessary to obtain a homogeneous material.

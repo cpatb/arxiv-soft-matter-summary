@@ -1,0 +1,232 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue
+}
+
+\setlength{\parskip}{0.7em}
+\setlength{\parindent}{0pt}
+
+\title{Referee-Style Review of Research Approach}
+\author{}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Overall Assessment}
+
+This is a strong and potentially publishable project with a clear comparative narrative and a plausible path to a solid paper. The contrast between colloidal silica and cornstarch under matched effective-volume-fraction conditions is scientifically interesting, and the proposed figures are well aligned with the intended journal audience.
+
+That said, the current draft overstates mechanistic certainty. In its present form, the paper is most defensible as a comparative dynamics study showing that matched bulk rheology does not guarantee matched impact jamming and relaxation across materially distinct suspensions, rather than as a fully resolved mechanistic account of why silica and cornstarch differ.
+
+\section*{Major Concerns}
+
+\subsection*{1. Causality is stronger than the controls justify}
+
+The central claim states that particle identity controls the jamming and unjamming dynamics through size, porosity, and surface chemistry. However, the proposed comparison changes many things simultaneously: particle size, porosity, shape, likely roughness, contact mechanics, and electrostatic interactions.
+
+As a result, a reviewer can reasonably argue that the work demonstrates a strong difference between two material classes, but does not isolate which physical variable is actually responsible. This is not fatal, but it does mean the framing should be more careful. A better headline claim would be:
+
+\begin{quote}
+Matched bulk rheology and matched effective volume fraction do not collapse drop-impact jamming and relaxation across materially distinct dense suspensions.
+\end{quote}
+
+That claim is still novel and significant, but it is much harder to attack.
+
+\subsection*{2. The \texorpdfstring{$Pe_{unjam}$}{Peunjam} framework is interesting but not decisive}
+
+The proposed unjamming P\'eclet number,
+\[
+Pe_{unjam} = \frac{\tau_B}{\tau_{KWW}},
+\]
+is a useful organizing quantity. However, the argument currently treats
+\[
+\tau_B = \frac{a^2}{D_B}
+\]
+as though it were the relevant Brownian timescale inside a dense, near-jammed suspension.
+
+That is the main vulnerability. In a concentrated many-body system, the relevant diffusivity need not be the bare Stokes--Einstein diffusivity of an isolated particle. Therefore, the strongest safe statement is not that Brownian motion is ruled out, but rather that the \emph{bare Brownian timescale does not predict the observed unjamming hierarchy}.
+
+I recommend softening any sentence of the form
+\begin{quote}
+``This eliminates the thermal-fluctuation model of unjamming.''
+\end{quote}
+to something like
+\begin{quote}
+``The observed hierarchy is not captured by the bare Brownian timescale, indicating that unjamming is controlled by collective contact-network and fluid-coupled effects rather than by single-particle thermal diffusion alone.''
+\end{quote}
+
+\subsection*{3. The silica mechanism is inferred more than demonstrated}
+
+The cornstarch side of the story is relatively well motivated by the Reynolds--Darcy pore-fluid dilatancy picture. The silica side, by contrast, is presented as slow frictional contact-network relaxation, but this remains more an inference by exclusion than a directly tested mechanism.
+
+This asymmetry matters. The draft already anticipates the reviewer objection that DLVO interactions or surface chemistry could explain much of the difference. Since salt screening is presented only as an optional follow-up, the silica mechanism is not yet directly discriminated from plausible alternatives.
+
+I would therefore avoid language implying that the paper will \emph{demonstrate} the silica mechanism. Safer wording would be:
+\begin{quote}
+``The silica dynamics are consistent with the absence of porous-particle dilatancy and with slower collective relaxation of a nonporous contact network.''
+\end{quote}
+
+\subsection*{4. The \texorpdfstring{$t_{jam}$}{tjam} definition is not yet measurement-robust}
+
+This is the most important technical issue in the current plan.
+
+The draft defines \( t_{jam} \) by the condition
+\[
+\frac{r_N(t_{jam}) - r(t_{jam})}{R_0} > \epsilon_{jam}, \qquad \epsilon_{jam}=0.03.
+\]
+With \( D_0 = 3 \,\mathrm{mm} \), one has \( R_0 = 1.5 \,\mathrm{mm} \), so the threshold corresponds to a radial deviation of
+\[
+0.03 \times 1.5\,\mathrm{mm} = 0.045\,\mathrm{mm} = 45\,\mu\mathrm{m}.
+\]
+
+But the imaging resolution is stated as approximately \(50\,\mu\mathrm{m}\) per pixel, and the contact-radius uncertainty is given as \( \pm 1\text{--}2 \) pixels, i.e. about \( \pm 0.1\,\mathrm{mm} \). This means the proposed \(t_{jam}\) threshold is at or below the stated measurement floor.
+
+In other words, the onset criterion is currently too fragile. A reviewer could argue that the apparent order-of-magnitude difference in \(t_{jam}\) may partly reflect thresholding, edge detection, or ellipse-fit bias.
+
+I strongly recommend redefining \(t_{jam}\) using a composite criterion, for example:
+\begin{itemize}[leftmargin=2em]
+    \item deviation in \(r(t)\) from the Newtonian reference,
+    \item aspect-ratio arrest or plateau behavior in \(AR(t)\),
+    \item visible contact-line arrest,
+    \item and, if possible, a curvature-based or velocity-based criterion.
+\end{itemize}
+
+At minimum, the manuscript should report an uncertainty band for \(t_{jam}\), not just a point estimate.
+
+\subsection*{5. The Newtonian reference is useful but not uniquely diagnostic of jamming}
+
+Using a glycerol/water reference matched by \( \eta_{eff} \) is a sensible baseline. However, deviation from such a reference is not uniquely equivalent to the onset of jamming, because density, surface tension, and wetting can still differ.
+
+Thus, the reference should be described as a comparative baseline rather than a direct detector of jamming. In the present draft, the logic sometimes reads as though any departure from the Newtonian curve automatically indicates jamming onset. That is too strong.
+
+\subsection*{6. Scope and timeline appear optimistic}
+
+The planned campaign includes:
+\begin{itemize}[leftmargin=2em]
+    \item 60 distinct conditions,
+    \item at least 600 drops,
+    \item likely around 800 including failed captures,
+    \item \(N=20\) for KWW-sensitive conditions,
+    \item full rheological characterization,
+    \item data reduction,
+    \item uncertainty analysis,
+    \item figure preparation,
+    \item and a full manuscript by August.
+\end{itemize}
+
+This may be possible, but only if nearly everything runs smoothly. In practice, image cleanup, failed triggering, preparation variability, calibration drift, and fit vetting usually expand the workload substantially.
+
+For a first submission, I recommend narrowing the matrix. A much safer first-pass design would be:
+\begin{itemize}[leftmargin=2em]
+    \item one substrate,
+    \item three effective volume fractions,
+    \item two or three impact velocities,
+    \item and a focused set of high-replicate conditions for the KWW analysis.
+\end{itemize}
+
+The second substrate and salt-screening experiments could then become either supplemental or follow-up work.
+
+\section*{Scientific Comments}
+
+\subsection*{1. The core contribution is already strong without maximal mechanistic claims}
+
+The paper does not need to prove everything to be valuable. Its strongest publishable contribution is that two dense suspensions with apparently comparable bulk rheology and matched effective-volume-fraction framing can exhibit qualitatively and quantitatively different impact jamming and post-impact relaxation.
+
+That result alone is interesting and would motivate deeper mechanistic studies later.
+
+\subsection*{2. The ``relaxation paradox'' language should be toned down}
+
+The draft sometimes says silica relaxes ``orders of magnitude'' more slowly than cornstarch. Based on the stated prediction ranges, the contrast is real, but not consistently at the level implied by that phrase.
+
+I would recommend replacing
+\begin{quote}
+``orders of magnitude more slowly''
+\end{quote}
+with
+\begin{quote}
+``substantially more slowly''
+\end{quote}
+unless the actual data clearly support a larger separation.
+
+\subsection*{3. The compressed-exponential discussion is interesting but should remain phenomenological}
+
+Testing whether \( \beta_{KWW} > 1 \) occurs in silica is worthwhile. However, if such behavior is observed, it should be framed as a phenomenological connection to compressed-exponential relaxation in other dense colloidal systems, not as proof of the same microscopic mechanism.
+
+The impact observable here is a macroscopic contact-radius relaxation, not the same kind of microscopic dynamical correlation function used in much of the colloidal-gel literature. That distinction should be acknowledged explicitly.
+
+\section*{Methods Comments}
+
+\subsection*{1. Imaging rate may be borderline for the earliest onset claims}
+
+The spreading phase is proposed at 5{,}000 fps, corresponding to \(0.2\) ms per frame. That sounds fast, but if silica truly exhibits very early jamming onset, the onset window may still span only a few frames.
+
+This is not necessarily unacceptable, but it means the onset metric must be extremely robust. If possible, it would be worth testing whether the key silica conditions should be run at higher frame rate, even at reduced field of view.
+
+\subsection*{2. KWW fitting protocol needs tighter rules}
+
+The current fitting plan is reasonable, but I would specify more details before data collection:
+\begin{itemize}[leftmargin=2em]
+    \item How is \(r_\infty\) estimated?
+    \item What minimum late-time window is required for a fit to be accepted?
+    \item Are the primary fits done per-drop or on condition-averaged trajectories?
+    \item What criteria distinguish a credible KWW fit from an overfit?
+    \item What happens if a simple exponential performs comparably well?
+\end{itemize}
+
+Without pre-specified rules, reviewers may suspect model flexibility, especially for \( \beta_{KWW} \).
+
+\subsection*{3. Replicate strategy should be tied to the highest-value observables}
+
+If time is limited, not all observables need the same number of replicates. For example:
+\begin{itemize}[leftmargin=2em]
+    \item \( \beta_{max} \): moderate replicate count may be enough.
+    \item \( t_{jam} \): higher replicate count at selected key conditions.
+    \item \( \tau_{KWW}, \beta_{KWW} \): highest replicate priority, because these are fit-derived and likely noisier.
+\end{itemize}
+
+That would be a more efficient design than treating every condition equally.
+
+\section*{Recommended Revisions}
+
+I would recommend the following changes before treating this as the final project plan:
+
+\begin{enumerate}[leftmargin=2em]
+    \item Recast the central claim around failure of rheology-only collapse across particle identity.
+    \item Present \(Pe_{unjam}\) as a scaling framework or organizing axis, not a decisive mechanistic proof.
+    \item Redefine \(t_{jam}\) using multiple observables and report uncertainty explicitly.
+    \item Reduce the experimental matrix for the first paper.
+    \item Upgrade salt screening from ``optional'' to ``high-priority,'' since it directly addresses a predictable reviewer objection.
+    \item Make the silica mechanism more cautious in tone unless a direct control is added.
+    \item Clearly distinguish hypothesis, expectation, and established result throughout the document.
+\end{enumerate}
+
+\section*{Minor Concerns}
+
+\begin{itemize}[leftmargin=2em]
+    \item The phrase ``order of magnitude earlier'' for \(t_{jam}\) reads too confident for an approach document unless preliminary data already support it.
+    \item The figure plotting \( \tau_{KWW} \) versus \( Pe_{unjam} \) is somewhat self-referential, since \( Pe_{unjam} \) is constructed using \( \tau_{KWW} \).
+    \item The Boyer-style \( \psi \) normalization is a smart idea, but some reviewers may still object that extracting \( \phi_J \) for irregular porous cornstarch is model-dependent.
+    \item The manuscript should avoid blending anticipated outcomes with established conclusions.
+\end{itemize}
+
+\section*{Recommendation}
+
+I would encourage pursuing this paper. The concept is strong, the comparison is interesting, and the likely main result is publishable.
+
+However, I would revise the framing substantially before proceeding. The best version of this manuscript is a sharp comparative paper showing that impact jamming and unjamming cannot be collapsed by matched bulk rheology alone across two materially distinct suspension classes. That is already a strong result and is more defensible, more realistic, and more likely to survive peer review than the current fully mechanistic framing.
+
+\end{document}

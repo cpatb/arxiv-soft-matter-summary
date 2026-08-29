@@ -1,0 +1,1154 @@
+%=============================================================================
+% paper1_research_approach.tex
+% Drop Impact Paper 1 — Comprehensive Research Approach
+% Driscoll Lab, Northwestern University
+% Compiled: April 2026
+%=============================================================================
+
+\documentclass[11pt,letterpaper]{article}
+
+%--- Packages ----------------------------------------------------------------
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{mdframed}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{multirow}
+
+%--- Colors ------------------------------------------------------------------
+\definecolor{gapblue}{RGB}{30, 80, 160}
+\definecolor{intuitionblue}{RGB}{220, 235, 255}
+\definecolor{intuitionborder}{RGB}{80, 130, 210}
+\definecolor{reviewgray}{RGB}{245, 245, 245}
+\definecolor{reviewborder}{RGB}{130, 130, 130}
+\definecolor{cautionred}{RGB}{255, 240, 240}
+\definecolor{cautionborder}{RGB}{190, 60, 60}
+\definecolor{gapgreen}{RGB}{235, 255, 235}
+\definecolor{gapborder}{RGB}{60, 150, 80}
+\definecolor{claimyellow}{RGB}{255, 252, 230}
+\definecolor{claimborder}{RGB}{180, 150, 30}
+\definecolor{sectionblue}{RGB}{20, 60, 130}
+
+%--- mdframed box environments -----------------------------------------------
+
+% intuitionbox (blue) — physical interpretation, key insight
+\newmdenv[
+  backgroundcolor=intuitionblue,
+  linecolor=intuitionborder,
+  linewidth=1.5pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  skipabove=8pt,
+  skipbelow=8pt,
+  roundcorner=3pt,
+]{intuitionbox}
+
+% reviewbox (gray) — reviewer objections and responses
+\newmdenv[
+  backgroundcolor=reviewgray,
+  linecolor=reviewborder,
+  linewidth=1.5pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  skipabove=8pt,
+  skipbelow=8pt,
+  roundcorner=3pt,
+]{reviewbox}
+
+% cautionbox (red) — warnings, consistency requirements, risks
+\newmdenv[
+  backgroundcolor=cautionred,
+  linecolor=cautionborder,
+  linewidth=1.5pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  skipabove=8pt,
+  skipbelow=8pt,
+  roundcorner=3pt,
+]{cautionbox}
+
+% gapbox (green) — literature gaps this paper fills
+\newmdenv[
+  backgroundcolor=gapgreen,
+  linecolor=gapborder,
+  linewidth=1.5pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=8pt,
+  innerbottommargin=8pt,
+  skipabove=8pt,
+  skipbelow=8pt,
+  roundcorner=3pt,
+]{gapbox}
+
+% claimbox (yellow) — central scientific claims
+\newmdenv[
+  backgroundcolor=claimyellow,
+  linecolor=claimborder,
+  linewidth=2pt,
+  innerleftmargin=12pt,
+  innerrightmargin=12pt,
+  innertopmargin=10pt,
+  innerbottommargin=10pt,
+  skipabove=10pt,
+  skipbelow=10pt,
+  roundcorner=3pt,
+]{claimbox}
+
+%--- Section formatting ------------------------------------------------------
+\titleformat{\section}
+  {\large\bfseries\color{sectionblue}}
+  {\thesection.}{0.5em}{}[\titlerule]
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{sectionblue!80!black}}
+  {\thesubsection.}{0.5em}{}
+
+\titlespacing{\section}{0pt}{14pt}{6pt}
+\titlespacing{\subsection}{0pt}{10pt}{4pt}
+
+%--- Hyperref setup ----------------------------------------------------------
+\hypersetup{
+  colorlinks=true,
+  linkcolor=sectionblue,
+  citecolor=sectionblue,
+  urlcolor=gapborder,
+}
+
+%--- Custom commands ---------------------------------------------------------
+\newcommand{\phieff}{\phi_{\mathrm{eff}}}
+\newcommand{\phinom}{\phi_{\mathrm{nom}}}
+\newcommand{\phiJ}{\phi_{J}}
+\newcommand{\phiJz}{\phi_{J0}}
+\newcommand{\phiJmu}{\phi_{J\mu}}
+\newcommand{\taukww}{\tau_{\mathrm{KWW}}}
+\newcommand{\taub}{\tau_{B}}
+\newcommand{\tauic}{\tau_{\mathrm{ic}}}
+\newcommand{\tjam}{t_{\mathrm{jam}}}
+\newcommand{\peunj}{\mathrm{Pe}_{\mathrm{unjam}}}
+\newcommand{\peimp}{\mathrm{Pe}_{\mathrm{impact}}}
+\newcommand{\etaeff}{\eta_{\mathrm{eff}}}
+\newcommand{\gamcrit}{\dot{\gamma}_c}
+\newcommand{\betamax}{\beta_{\max}}
+\newcommand{\bkww}{\beta_{\mathrm{KWW}}}
+\newcommand{\sigstar}{\sigma^*}
+\newcommand{\DB}{D_B}
+\newcommand{\kB}{k_B}
+\newcommand{\gap}[1]{\textbf{\color{gapborder}Gap~#1:}}
+
+%=============================================================================
+\begin{document}
+%=============================================================================
+
+%--- Title block -------------------------------------------------------------
+\begin{center}
+  {\LARGE\bfseries\color{sectionblue} Paper 1 --- Research Approach}\\[6pt]
+  {\large Drop Impact of Dense TPM vs.\ Cornstarch Suspensions:\\
+  Jamming, Unjamming, and the Role of Particle Identity}\\[10pt]
+  {\normalsize Driscoll Lab $\cdot$ Northwestern University $\cdot$ May 2026}\\[4pt]
+  {\small
+    \textbf{Target journal:} \textit{Physical Review Fluids} (primary) $|$
+    \textit{Soft Matter} (secondary)\\
+    \textbf{Submission target:} August 2026
+  }
+\end{center}
+
+\vspace{4pt}
+\noindent\rule{\linewidth}{0.8pt}
+\vspace{4pt}
+
+%=============================================================================
+\section{Scientific Narrative --- The Central Claim}
+%=============================================================================
+
+\begin{claimbox}
+\textbf{Primary claim:}
+The jamming and unjamming dynamics during drop impact are controlled by
+\emph{particle identity} --- specifically particle size, porosity, and surface
+chemistry --- and cannot be predicted from bulk shear-thickening rheology alone,
+even when bulk flow curves are matched between materials.
+
+\medskip
+\textbf{Sub-claim 1 (kinetic asymmetry):}
+TPM sphere drops (${\approx}830$\,nm, $\phieff = 0.42$--$0.50$)
+jam an order of magnitude \emph{sooner} after impact than cornstarch drops at
+matched effective volume fraction, despite comparable bulk rheology.
+
+\medskip
+\textbf{Sub-claim 2 (relaxation paradox):}
+Despite having near-Brownian diffusion timescales during unjamming
+($\peunj \sim \mathcal{O}(1)$ for TPM vs.\ $\gg 1$ for cornstarch),
+% EDIT [physics/claim strength, 2026-07-22]: AUDIT_papers.md issue #4, and the
+% recommendation of this paper's OWN companion referee review.
+% Was: "TPM relaxes orders of magnitude more slowly."
+% Basis: the paper's own predicted values -- tau_KWW = 300--600 ms (TPM) vs 50--200 ms
+% (cornstarch), Table at l.813--815, and 400--500 vs 50--200 ms at l.320. That is a
+% ratio of ~1.5x to ~12x, i.e. single-digit-to-ten-fold, NOT "orders of magnitude"
+% (which reads as >=100x). Softened to match the paper's own numbers, which also makes
+% the sub-claim falsifiable rather than unreachable. Confidence: high.
+% NOTE: Sub-claim 1's "an order of magnitude sooner" (l.191) was deliberately LEFT
+% ALONE -- the paper's own Fig. 4 key result states t_jam^TPM/t_jam^cornstarch ~ 0.1
+% (l.743--744), so there the phrase is internally consistent. The June audit lumped
+% the two together; only the tau_KWW claim is actually overstated.
+TPM relaxes several-fold (a factor ${\sim}2$--$10$) \emph{more slowly}. Brownian motion
+does not accelerate unjamming; contact-network geometry and pore-fluid
+mechanics dominate.
+
+\medskip
+\textbf{Sub-claim 3 (mechanism):}
+Cornstarch unjams rapidly via Reynolds--Darcy pore-fluid dilatancy
+\cite{Mobaseri2026}, a pathway unavailable to non-porous TPM.
+Without it, the TPM contact network relaxes via a slowly-evolving
+frictional state described by KWW kinetics. At high $\phieff$,
+$\bkww$ may approach or exceed unity (compressed-exponential form),
+consistent phenomenologically with compressed-exponential relaxation
+observed in dense colloidal systems near the glass/jamming transition
+\cite{Ballesta2008}. Note that the microscopic origin of compressed-exponential
+relaxation in Ballesta et al.\ --- internal stress from arrested phase separation
+--- differs from the contact-network stress driving post-impact relaxation; the
+connection here is functional (same KWW form with $\bkww > 1$) rather than
+mechanistic identity.
+\end{claimbox}
+
+%=============================================================================
+\section{Scientific Gap Analysis}
+%=============================================================================
+
+The following five gaps in the existing literature make this paper publishable
+at the PRF/Soft Matter level.
+
+\begin{gapbox}
+\gap{1} \textbf{No systematic Brownian/non-Brownian comparison in drop impact.}
+Nearly all drop impact studies use a single material (cornstarch \emph{or}
+silica, never both matched). Waitukaitis \& Jaeger (2012)~\cite{Waitukaitis2012}
+established impact-activated solidification and jamming-front propagation in
+cornstarch, and Han et al.\ (2016)~\cite{HanJaeger2016} confirmed the mechanism
+via high-speed ultrasound imaging. Peters et al.\ (2016)~\cite{Peters2016}
+demonstrated dynamic shear jamming in dense suspension extension flows. None
+of these studies compare Brownian-regime particles ($\peunj \sim 1$) to
+non-Brownian particles ($\peunj \gg 1$) under controlled, matched conditions.
+\emph{Closest prior work:} Shah et al.\ (2022)~\cite{Shah2022} used colloidal
+silica drops and identified coexisting solid/liquid phases, but did not compare
+to cornstarch or frame the result in $\peunj$ terms.
+\end{gapbox}
+
+\begin{gapbox}
+\gap{2} \textbf{Effective viscosity approach never tested across particle identity.}
+Shah et al.\ (2025)~\cite{Mobaseri2025} validated the $\etaeff(\gamcrit)
+\to$ Laan--Padé mapping across concentration and velocity for one material at
+a time. Whether it holds when particle identity changes --- and whether the
+prefactor $A$ is universal or material-dependent --- is untested. The $A = 0.09$
+anomaly in Shah et al.\ (2022)~\cite{Shah2022} remains unexplained and is
+directly addressed here.
+\end{gapbox}
+
+\begin{gapbox}
+\gap{3} \textbf{KWW exponent $\bkww$ never measured as a function of particle type.}
+Post-impact relaxation has been fit with KWW forms exclusively for cornstarch.
+Whether colloidal silica drops show compressed exponential relaxation
+($\bkww > 1$), as predicted for dense colloidal systems near jamming
+\cite{Ballesta2008}, is completely open.
+\end{gapbox}
+
+\begin{gapbox}
+\gap{4} \textbf{Reynolds--Darcy dilatancy mechanism untested for non-porous particles.}
+Mobaseri et al.\ (2026)~\cite{Mobaseri2026} established that cornstarch
+retraction is governed by inertia--dilatancy interplay with pore-fluid
+pressure driving rapid unjamming. This is an explicitly material-specific
+mechanism. No paper has tested whether removing particle porosity (TPM)
+eliminates this relaxation pathway and produces qualitatively different dynamics.
+\end{gapbox}
+
+\begin{gapbox}
+\gap{5} \textbf{$\peunj$ has never been defined or measured in drop impact.}
+Existing literature defines Pe only at impact timescales, where both materials
+are non-Brownian. The unjamming-timescale Pe ($\peunj = \taub / \taukww$)
+has not been introduced, computed, or used to frame unjamming physics.
+\end{gapbox}
+
+%=============================================================================
+\section{The Péclet Number Framework}
+%=============================================================================
+
+We define and separate two distinct Péclet numbers for this work.
+
+\subsection{Impact-time Péclet number (both materials non-Brownian)}
+
+\begin{equation}
+  \peimp = \frac{\gamcrit \cdot a^2}{\DB}
+  = \frac{U_0/(D_0/2)\cdot a^2}{k_B T/(6\pi\eta_0 a)}
+  \label{eq:Pe_impact}
+\end{equation}
+
+\noindent For representative conditions ($U_0 = 1$\,m/s, $D_0 = 3$\,mm,
+$\eta_0 = 1$\,mPa$\cdot$s, $T = 298$\,K):
+
+\begin{center}
+\begin{tabular}{lcc}
+  \toprule
+  & TPM ($a = 415$\,nm) & Cornstarch ($a \approx 5\,\mu$m) \\
+  \midrule
+  $\DB$ (m$^2$/s) & $5.3\times10^{-13}$ & $4.4\times10^{-14}$ \\
+  $\gamcrit$ (s$^{-1}$) & 667 & 667 \\
+  $\peimp$ & $\approx 220$ & $\approx 380{,}000$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+Both materials are mechanically driven (non-Brownian) during spreading.
+Brownian motion does not influence the impact dynamics \emph{per se}.
+
+\subsection{Unjamming-time Péclet number (the novel frame)}
+
+\begin{equation}
+  \peunj = \frac{\taub}{\taukww}, \qquad
+  \taub = \frac{a^2}{\DB}
+  \label{eq:Pe_unjam}
+\end{equation}
+
+\begin{center}
+\begin{tabular}{lcc}
+  \toprule
+  & TPM & Cornstarch \\
+  \midrule
+  $\taub$ & ${\approx}325$\,ms & ${\approx}570$\,s \\
+  $\taukww$ (expected) & $400$--$500$\,ms & $50$--$200$\,ms \\
+  $\peunj$ & $\mathbf{{\approx}0.6}$--$\mathbf{0.8}$ & $\mathbf{{\approx}3{,}000}$--$\mathbf{10{,}000}$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{intuitionbox}
+\textbf{The paradox, stated quantitatively.}
+Brownian diffusion operates on the unjamming timescale for TPM
+($\peunj < 1$) but is completely irrelevant for cornstarch ($\peunj \gg 1$).
+Yet TPM relaxes ${\sim}4\times$ or more slowly. If Brownian motion were
+the controlling mechanism, TPM would unjam \emph{faster} --- the opposite
+is observed. This decoupling of $\peunj$ from $\taukww$ is the core finding
+and is inconsistent with the simplest thermal-fluctuation model of unjamming.
+\end{intuitionbox}
+
+\begin{cautionbox}
+\textbf{$\peunj$ is a lower bound: bare $\DB$ overestimates collective diffusion.}
+The calculation above uses the \emph{bare} single-particle Stokes--Einstein diffusivity
+$\DB = k_BT/(6\pi\eta_0 a)$, valid for an isolated particle in pure solvent. Inside a
+dense suspension at $\phieff \approx 0.46$, the long-time self-diffusivity $D_s^l$ is
+dramatically suppressed relative to $\DB$ by cage trapping and correlated motion. For
+hard-sphere-like colloids at $\phieff \approx 0.5$, $D_s^l/\DB \sim 10^{-2}$--$10^{-3}$
+is commonly reported. The effective Brownian timescale for collective particle rearrangements
+is therefore $\tau_B^\mathrm{eff} = a^2/D_s^l \gg \taub$, pushing the effective $\peunj$ for
+TPM well above unity. This actually \emph{strengthens} the argument: even with the most
+favorable (lowest) estimate of the Brownian timescale ($\taub$ based on $\DB$), Brownian
+diffusion still does not predict the observed unjamming hierarchy. When framing this in the
+manuscript, state explicitly that $\peunj$ is computed using bare $\DB$ and represents a
+lower bound on the unjamming P\'{e}clet number. Avoid language implying that $\peunj < 1$
+definitively places TPM in a Brownian-dominated regime.
+\end{cautionbox}
+
+%=============================================================================
+\section{Volume Fraction Normalization}
+%=============================================================================
+
+\begin{cautionbox}
+\textbf{Getting $\phieff$ right is non-negotiable.} All TPM--cornstarch
+comparisons are invalid unless both materials are reported at matched
+\emph{effective} volume fraction. Use the Han, Van Ha \& Jaeger (2017)
+correction \cite{HanVanHa2017} for cornstarch and verify TPM $\phi$ by
+DLS + gravimetry. Normalize all dimensionless timescales using
+$\eta_0(\phieff)$ from the low-shear plateau of the measured flow curve,
+not the pure-solvent viscosity.
+\end{cautionbox}
+
+\subsection{Cornstarch porosity correction \cite{HanVanHa2017}}
+
+Cornstarch particles are porous with measured porosity $p \approx 0.31$
+(31\% of particle volume is liquid-filled pores).
+
+\begin{equation}
+  \phieff = \frac{\phinom}{1 - p} \approx \frac{\phinom}{0.69} \approx 1.45\,\phinom
+  \label{eq:phi_correction}
+\end{equation}
+
+A separate moisture-content correction accounts for surface-adsorbed water.
+Both corrections must be applied before comparing to TPM results. Target
+cornstarch $\phinom \approx 0.29$--$0.34$ to match TPM $\phieff = 0.42$--$0.50$.
+
+\begin{cautionbox}
+\textbf{Correction factor must be verified and locked before data analysis.}
+Equation~\eqref{eq:phi_correction} gives $\phieff \approx 1.45\,\phinom$ from the
+porosity correction alone ($p = 0.31$). A two-step variant of the Han et al.\
+correction --- which accounts for surface-adsorbed moisture reducing the
+apparent dry solid fraction before applying the porosity factor --- yields a
+significantly lower effective multiplier (${\approx}1.14$ depending on measured
+moisture content).
+
+A factor discrepancy of ${\sim}25\%$ in $\phieff$ shifts the Boyer jamming distance
+$\psi = 1 - \phieff/\phiJ$ by a comparable amount and invalidates all matched-$\phieff$
+comparisons between TPM and cornstarch.
+
+\noindent \textbf{Required action:}
+\begin{enumerate}[noitemsep,topsep=3pt]
+  \item Measure moisture content of your cornstarch stock by oven drying (mass loss
+    at $105\,^\circ$C for 2\,h) as described in Han et al.\ (2017)~\cite{HanVanHa2017}.
+  \item Apply both the moisture-content correction \emph{and} the porosity correction
+    in the prescribed order, using the measured values --- do not use the single-factor
+    shorthand until you have verified it against the two-step result for your specific
+    preparation.
+  \item Record the factor used and cite the measured moisture content explicitly in
+    the Methods section.
+\end{enumerate}
+\end{cautionbox}
+
+\subsection{Viscosity normalization}
+
+For cornstarch, use $\eta_0(\phieff)$ from the low-shear plateau of the
+measured flow curve at the corrected $\phieff$ --- \textbf{not} pure-water
+viscosity. This is mandatory for correctly computing the viscous timescale
+$\tau_v = \eta_0 D_0 / \sigma$ and the effective shear rate $\gamcrit$.
+
+\subsection{Boyer jamming distance}
+
+Near jamming, using Boyer et al.\ (2011) \cite{Boyer2011} unified rheology,
+define the \emph{jamming distance} $\psi = 1 - \phieff/\phiJ$.
+For cornstarch: $\phiJ \approx 0.57$ (irregular particles);
+for TPM: $\phiJ \approx 0.64$ (monodisperse spheres). At matched $\phieff = 0.46$:
+$\psi_\mathrm{cornstarch} \approx 0.19$, $\psi_\mathrm{TPM} \approx 0.28$.
+Cornstarch is geometrically \emph{closer} to jamming at the same $\phieff$,
+making TPM's earlier $\tjam$ genuinely surprising and mechanistically
+interesting.
+
+%=============================================================================
+\section{Experimental Design}
+%=============================================================================
+
+\subsection{Materials}
+
+\noindent\textbf{TPM spheres [3-(trimethoxysilyl)propyl methacrylate]:}
+\begin{itemize}[noitemsep,topsep=3pt]
+  \item Diameter $2a \approx 830$\,nm; PDI $< 5\%$ (verify by DLS post-synthesis)
+  \item Density $\rho_p \approx 1200$\,kg/m$^3$ (polymer particle, non-porous)
+  \item Synthesis: aqueous condensation of TPM monomer; size set by pH and reaction
+    time \cite{Sacanna2013}
+  \item Solvent: ultrapure water; matched viscosity series with glycerol
+  \item Volume fractions: $\phieff = 0.42, 0.44, 0.46, 0.48, 0.50$
+  \item Characterize: $\zeta$-potential (expect negative from methacrylate/silanol
+    surface groups; measure before each campaign --- value needed for $\sigstar$
+    estimate and salt-screening interpretation)
+  \item \textbf{Advantage over Stöber silica:} lower density reduces sedimentation
+    during sample preparation; synthesis is single-pot; fluorescent dye can be
+    incorporated during polymerization for future confocal work
+\end{itemize}
+
+\medskip
+\noindent\textbf{Cornstarch:}
+\begin{itemize}[noitemsep,topsep=3pt]
+  \item Sigma-Aldrich or Argo; mean diameter ${\approx}5$--$8\,\mu$m (SEM)
+  \item Density $\rho_p \approx 1400$\,kg/m$^3$; porosity $p \approx 0.31$ \cite{HanVanHa2017}
+  \item $\phinom \approx 0.29$--$0.34$ to achieve matched $\phieff$ series
+\end{itemize}
+
+\subsection{Impact conditions}
+
+\begin{center}
+\begin{tabular}{llll}
+  \toprule
+  Parameter & Value & Sweep range & Notes \\
+  \midrule
+  Drop diameter $D_0$ & $3.0\pm0.1$\,mm & fixed & pendant drop release \\
+  Impact velocity $U_0$ & $1.0$\,m/s & $0.5, 1.0, 1.5, 2.0, 2.5$\,m/s & \\
+  Substrate & glass ($\theta\approx5^\circ$) & + PTFE ($\theta\approx110^\circ$) & 2 substrates \\
+  Volume fraction & $\phieff = 0.46$ & $0.42, 0.46, 0.50$ & \\
+  Replicates & $N \geq 10$ & $N = 20$ for KWW fits & \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+This gives $5 \times 3 \times 2 \times 2~\text{materials} = 60$ distinct conditions;
+$\times 10$ replicates = 600 drops minimum. Plan for ${\sim}800$ total to accommodate
+failed captures.
+
+\subsection{Ionic strength sweep (TPM only --- primary surface-chemistry control)}
+
+\begin{gapbox}
+\textbf{Why this is a primary experiment, not a follow-up.}
+The $\zeta$-potential difference between TPM and cornstarch ($\zeta \approx +22$\,mV)
+is expected to be significant (TPM has negatively charged surface groups). Without a
+within-paper ionic-strength control, a reviewer can attribute the entire TPM--cornstarch
+relaxation gap to electrostatic surface chemistry, and the comparison remains inconclusive.
+Adding NaCl compresses the Debye layer ($\lambda_D \approx 10$\,nm at 1\,mM;
+${\approx}3$\,nm at 10\,mM for a 1:1 electrolyte at 298\,K), drastically reducing
+$\sigstar$ and pushing TPM toward hard-sphere-like conditions. If $\taukww$ does
+\emph{not} change significantly with ionic strength, surface chemistry is ruled out as
+the primary driver of slow relaxation --- converting the paper's most vulnerable reviewer
+objection into a positive falsification result.
+\end{gapbox}
+
+\begin{center}
+\begin{tabular}{lll}
+  \toprule
+  Parameter & Values & Notes \\
+  \midrule
+  Material & TPM only & Cornstarch ionic strength not well-controlled \\
+  NaCl concentration & 0, 1, 10\,mM & 0\,mM = baseline (already in main matrix) \\
+  $\phieff$ & $0.46$ & Single concentration (mid-point) \\
+  $U_0$ & 1.0, 2.0\,m/s & Two velocities \\
+  Substrate & Glass only & \\
+  Replicates & $N = 10$ & \\
+  \midrule
+  \textbf{Additional drops} & \textbf{40} & (2 NaCl $\times$ 2 $U_0$ $\times$ 10) \\
+  \textbf{Revised total} & \textbf{${\sim}840$} & Main matrix + ionic strength sweep \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Sample preparation:} dissolve NaCl in ultrapure water before adding
+TPM particles; verify pH $= 7.0 \pm 0.2$ (buffer if needed --- TPM $\zeta$ is
+pH-sensitive due to surface silanol/methacrylate groups). Re-measure $\zeta$-potential
+and $\etaeff$ at each salt
+concentration to confirm that bulk rheology changes are small before attributing
+impact differences to surface chemistry changes.
+
+\noindent\textbf{Expected result and interpretation:}
+\begin{itemize}[noitemsep,topsep=3pt]
+  \item If $\taukww$ is unchanged at 10\,mM: surface chemistry / DLVO is \emph{not}
+    controlling post-impact relaxation. The slow relaxation is intrinsic to the
+    non-porous contact network. This directly addresses Reviewer Objection 2.
+  \item If $\taukww$ \emph{decreases} with increasing salt: $\sigstar$ reduction
+    (easier frictional activation) accelerates unjamming. A systematic $\taukww$ vs.\
+    $\sigstar$ plot becomes possible by combining ionic strength and $\phieff$ as
+    independent levers on $\sigstar$.
+\end{itemize}
+
+\subsection{High-speed imaging}
+
+\begin{itemize}[noitemsep,topsep=3pt]
+  \item \textbf{Spreading phase:} 5,000\,fps; spatial resolution ${\approx}50\,\mu$m/pixel
+  \item \textbf{Relaxation phase:} 500\,fps, extended to $t = 5$\,s post-impact
+  \item Back illumination (LED panel, diffuse) for clean silhouette
+  \item Laser-break trigger at 5\,mm above substrate; $t=0$ = frame of first contact
+  \item \textbf{Reference Newtonian:} glycerol/water matched to $\etaeff$ at each condition
+\end{itemize}
+
+\subsection{Rheology measurements}
+
+All samples on a stress-controlled rheometer (MCR~302 or equivalent):
+
+\begin{enumerate}[noitemsep,topsep=3pt]
+  \item \textbf{Flow curve} $\eta(\dot\gamma)$, $\dot\gamma = 0.01$--$3000$\,s$^{-1}$;
+        extract $\etaeff$ at $\gamcrit = U_0/(D_0/2)$
+  \item \textbf{Stress ramp}: identify $\sigstar$ for shear-thickening onset;
+        extract Wyart--Cates parameters $\phiJz$, $\phiJmu$ \cite{WyartCates2014}
+  \item \textbf{Oscillatory strain sweep} at $\omega = 1$\,rad/s: $G'$, $G''$ vs.\ strain;
+        confirms solid-like plateau in jammed state
+  \item \textbf{Relaxation after cessation}: step shear then $\eta(t)$; KWW fit for
+        comparison to impact-derived KWW parameters
+\end{enumerate}
+
+%=============================================================================
+\section{Analysis Framework}
+%=============================================================================
+
+\subsection{Contact radius $r(t)$}
+
+Silhouette analysis: background subtraction $\to$ threshold $\to$ ellipse fit to
+lower drop profile $\to$ half horizontal extent = $r(t)$. Report $r(t)/R_0$
+($R_0 = D_0/2$). Uncertainty: $\pm1$--$2$\,px $\approx \pm 0.1$\,mm.
+
+\subsection{Height and aspect ratio $h(t)$, AR$(t)$}
+
+Extract apex height $h(t)$ from same silhouette.
+\begin{equation}
+  \text{AR}(t) = \frac{2r(t)}{h(t)}
+\end{equation}
+
+\begin{intuitionbox}
+TPM is expected to maintain $\text{AR}(t) \approx 1$ (quasi-spherical cap)
+for much longer than cornstarch before abruptly flattening. This is the
+morphological signature of early jamming maintaining drop shape against
+gravity and inertia. A sudden jump in AR marks the onset of flow resumption
+after the jammed state.
+\end{intuitionbox}
+
+\subsection{Maximum spreading $\betamax$}
+
+\begin{equation}
+  \betamax = \frac{D_\mathrm{max}}{D_0}
+\end{equation}
+
+Compare to three predictions:
+\begin{enumerate}[noitemsep,topsep=3pt]
+  \item Laan--Padé using pure solvent $\eta_0$ (Newtonian baseline) \cite{Laan2014}
+  \item Shah et al.\ (2025) using $\etaeff(\gamcrit)$ (non-Newtonian prediction) \cite{Mobaseri2025}
+  \item Residual $\Delta\betamax = \betamax^\mathrm{exp} - \betamax^\mathrm{Shah}$ (novel test of universality)
+\end{enumerate}
+
+\subsection{Jamming onset time $\tjam$}
+
+Define $\tjam$ as the time at which $r(t)$ first deviates significantly from the
+Newtonian reference $r_N(t)$ (glycerol/water matched by $\etaeff$):
+\begin{equation}
+  \tjam:\quad \frac{r_N(\tjam) - r(\tjam)}{R_0} > \varepsilon_\mathrm{jam} = 0.07
+  \label{eq:t_jam}
+\end{equation}
+
+\noindent At $D_0 = 3$\,mm, this threshold corresponds to a radial deviation of
+$0.07 \times 1.5\,\mathrm{mm} = 105\,\mu\mathrm{m} \approx 2$ pixels at $50\,\mu\mathrm{m/pixel}$,
+which is at the minimum resolvable level. Values below $\varepsilon = 0.07$ fall below the
+measurement floor (pixel uncertainty $\pm 1$--$2$ pixels $\approx \pm 50$--$100\,\mu\mathrm{m}$)
+and must not be used as the primary criterion.
+
+\begin{cautionbox}
+\textbf{Composite criterion requirement.}
+The $r(t)$ deviation threshold alone is not sufficient to declare jamming onset --- a
+two-pixel radial shift can arise from edge-detection noise, substrate reflections, or
+ellipse-fit bias, especially for TPM where the early deviation is subtle.
+
+\noindent \textbf{Required:} a candidate $\tjam$ event is only accepted if \emph{both}
+conditions are simultaneously satisfied for at least three consecutive frames:
+\begin{enumerate}[noitemsep,topsep=3pt]
+  \item $[r_N(t) - r(t)]/R_0 > \varepsilon_\mathrm{jam} = 0.07$, and
+  \item $\mathrm{AR}(t)$ shows a plateau or arrested growth
+    (i.e.\ $|\mathrm{d}\,\mathrm{AR}/\mathrm{d}t| < \delta_\mathrm{AR}$,
+    where $\delta_\mathrm{AR}$ is set from the Newtonian reference variability).
+\end{enumerate}
+Drops failing the composite criterion are excluded from $\tjam$ statistics and flagged
+in the data tables. Report $\tjam$ with an explicit uncertainty band, not just a point
+estimate.
+\end{cautionbox}
+
+Sensitivity check: verify result is stable for $\varepsilon \in [0.05, 0.10]$.
+Normalize by the inertio-capillary time:
+\begin{equation}
+  \tauic = \sqrt{\frac{\rho D_0^3}{8\sigma}}
+\end{equation}
+
+\subsection{KWW relaxation fit}
+
+After maximum spreading at $t_\mathrm{max}$, fit the retraction/relaxation phase:
+\begin{equation}
+  \delta(t) = \delta_0 \exp\!\left[-\left(\frac{t - t_\mathrm{max}}{\taukww}\right)^{\!\bkww}\right]
+  \label{eq:KWW}
+\end{equation}
+
+where $\delta(t) = r(t) - r_\infty$ (excess contact radius above long-time plateau).
+
+\noindent\textbf{Fitting protocol:}
+\begin{itemize}[noitemsep,topsep=3pt]
+  \item Nonlinear least squares (\texttt{scipy.optimize.curve\_fit})
+  \item Free parameters: $\delta_0 > 0$, $\taukww > 0$, $\bkww \in [0.1, 2.0]$
+  \item Report $\bkww > 1$ as \emph{compressed exponential} \cite{Ballesta2008}
+  \item Bootstrap uncertainty: 1000 resamples for 95\% CI on $\taukww$ and $\bkww$
+  \item Report $R^2$ and residual plot for every fit
+\end{itemize}
+
+\begin{intuitionbox}
+\textbf{Physical interpretation of $\bkww$:}
+$\bkww = 1$: pure exponential --- single relaxation time, homogeneous unjamming.
+$\bkww < 1$ (stretched): heterogeneous unjamming --- distribution of timescales;
+some regions near the boundary unjam quickly, deeply jammed regions slowly.
+$\bkww > 1$ (compressed, Ballesta et al.\ \cite{Ballesta2008}): stored elastic
+energy drives ballistic collective unjamming --- predicted for colloidal systems
+near the glass/jamming boundary. If TPM shows $\bkww > 1$, this connects
+drop impact unjamming to the broader colloidal glass literature.
+\end{intuitionbox}
+
+\subsection{Unjamming Péclet number}
+
+From KWW fits, compute for each experimental condition:
+\begin{equation}
+  \peunj(\phieff,\, U_0) = \frac{\taub}{\taukww(\phieff,\, U_0)},
+  \qquad \taub = \frac{a^2}{\DB}
+  \label{eq:Pe_unjam_exp}
+\end{equation}
+
+Plot $\peunj$ vs.\ $\phieff$ for both materials (log scale).
+Expected: TPM $\peunj \approx 0.5$--$1.5$ (near-Brownian);
+cornstarch $\peunj \approx 1000$--$10{,}000$ (deeply non-Brownian).
+The crossover $\peunj \sim 1$ marks where Brownian diffusion could, in
+principle, assist unjamming. The data tests whether it does.
+
+%=============================================================================
+\section{Six-Figure Plan}
+%=============================================================================
+
+\subsection{Figure 1 --- Bulk Rheology Characterization}
+
+\begin{itemize}[noitemsep,topsep=3pt]
+  \item \textbf{Panel (a):} $\eta(\dot\gamma)$ flow curves for TPM at
+    $\phieff = 0.42, 0.46, 0.50$ and cornstarch at matched $\phieff$.
+    Vertical lines at $\gamcrit$ for representative $U_0$ values.
+  \item \textbf{Panel (b):} Wyart--Cates fits \cite{WyartCates2014};
+    $(\eta-\eta_0)/\eta_0$ vs.\ $\sigma/\sigstar$; extract $\sigstar$,
+    $\phiJz$, $\phiJmu$ for both materials.
+  \item \textbf{Panel (c):} Normal stress $N_1$ vs.\ $\dot\gamma$ at highest
+    $\phieff$; sign change negative $\to$ positive marks lubricated $\to$
+    frictional transition \cite{Seto2013}.
+\end{itemize}
+
+\begin{intuitionbox}
+\textbf{Purpose:} Establish that bulk rheology is \emph{comparable} between
+materials at matched $\phieff$ and $\gamcrit$. Without Figure 1 showing
+$\etaeff$ differences $<2\times$, every impact difference can be attributed
+to viscosity alone. This figure makes the dynamic differences (Figs.\ 4--6)
+genuinely surprising.
+\end{intuitionbox}
+
+\subsection{Figure 2 --- Impact Morphology Sequences}
+
+High-speed image mosaic: 8--10 frames from first contact to ${\sim}1$\,s,
+for TPM and cornstarch at matched $\phieff$ and $U_0$. Side-view and
+(if available) bottom-view.
+
+Mark $\tjam$ with a vertical indicator. TPM solidification ($\text{AR}(t)$
+plateau, possible shape arrest) should be visually apparent much earlier
+than for cornstarch.
+
+\begin{intuitionbox}
+\textbf{Purpose:} Visual proof before quantitative analysis. Readers need to
+\emph{see} that these two materials look different during impact. This is
+the most impactful figure in the paper for convincing non-specialist reviewers.
+\end{intuitionbox}
+
+\subsection{Figure 3 --- Maximum Spreading and Shah et al.\ Test}
+
+\begin{itemize}[noitemsep,topsep=3pt]
+  \item \textbf{Panel (a):} $\betamax$ vs.\ $\mathrm{We}$ for both materials
+    at matched $\phieff$. Overlay Laan--Padé (dashed, using $\eta_0$) and
+    Shah et al.\ prediction (solid, using $\etaeff$) \cite{Mobaseri2025}.
+  \item \textbf{Panel (b):} Residual $\Delta\betamax$ vs.\ $\phieff$.
+    Positive residual = less spreading than predicted.
+\end{itemize}
+
+Expected result: Shah et al.\ (2025) works for cornstarch (validated
+previously~\cite{Mobaseri2025}) but shows systematic offset for TPM at
+high $\phieff$ --- a revisit and mechanistic explanation of the $A = 0.09$
+anomaly~\cite{Shah2022}.
+
+\subsection{Figure 4 --- Jamming Onset Time $\tjam(\phieff, U_0)$}
+
+\begin{itemize}[noitemsep,topsep=3pt]
+  \item \textbf{Panel (a):} $r(t)/R_0$ vs.\ $t/\tauic$ for both materials;
+    overlay Newtonian reference; mark $\tjam$.
+  \item \textbf{Panel (b):} $\tjam/\tauic$ vs.\ $\phieff$ for two $U_0$
+    values; TPM systematically earlier.
+  \item \textbf{Panel (c):} $\text{AR}(t)$ vs.\ $t$; morphological signature
+    of earlier solidification in TPM.
+\end{itemize}
+
+Key result: $\tjam^\mathrm{TPM}/\tjam^\mathrm{cornstarch} \sim 0.1$
+(order of magnitude); ratio should be approximately independent of $U_0$.
+
+\subsection{Figure 5 --- KWW Relaxation and the $\bkww$ Contrast}
+
+\begin{itemize}[noitemsep,topsep=3pt]
+  \item \textbf{Panel (a):} $\delta(t)/\delta_0$ vs.\ $t/\taukww$ (log-lin)
+    for representative drops of each material. KWW curves; reference lines
+    at $\bkww = 0.5$, $1.0$, $1.5$.
+  \item \textbf{Panel (b):} $\taukww$ vs.\ $\phieff$ for both materials;
+    overlay $\taub$ (constant, particle-specific) for TPM.
+  \item \textbf{Panel (c):} $\bkww$ vs.\ $\phieff$ for both materials.
+    Shade $\bkww > 1$ region. Mark whether TPM approaches compressed
+    exponential at high $\phieff$.
+\end{itemize}
+
+\begin{intuitionbox}
+\textbf{Phenomenological connection to Ballesta et al.\ (2008):}
+If TPM shows $\bkww \geq 1$, the relaxation has the same functional form ---
+compressed exponential --- as observed in dense colloidal gels approaching the
+jamming/glass transition \cite{Ballesta2008}. In Ballesta et al., the physical
+origin is ballistic particle motion driven by internal stress from arrested phase
+separation. In our system, the analogous stored stress is the contact-network
+stress built up during shear jamming. The two systems share the same
+phenomenological kinetics, but the microscopic mechanisms are distinct and should
+not be conflated. Frame this as: if $\bkww > 1$ is observed, it is \emph{consistent
+with} the class of colloidal systems where stored elastic energy drives
+faster-than-exponential structural relaxation --- a connection that motivates
+further study but does not by itself identify the mechanism. This would be the first
+report of $\bkww > 1$ relaxation in a drop-impact context; that framing alone is
+sufficient without requiring mechanistic equivalence to the gel literature.
+\end{intuitionbox}
+
+\subsection{Figure 6 --- Mechanistic Summary: $\peunj$ and the Dilatancy Argument}
+
+\begin{itemize}[noitemsep,topsep=3pt]
+  \item \textbf{Panel (a):} $\peunj$ vs.\ $\phieff$ (log scale, both materials).
+    Horizontal line at $\peunj = 1$.
+  \item \textbf{Panel (b):} $\taukww/\taub$ vs.\ $\phieff/\phiJ$ for both
+    materials (log scale). Color by material. Expected: both curves rise with
+    concentration, but TPM rises far more steeply --- the normalized relaxation
+    time diverges from cornstarch as $\phieff/\phiJ$ increases. This panel avoids
+    the self-referential structure of plotting $\taukww$ against $\peunj = \taub/\taukww$
+    (which by construction places the two quantities on the same axis inverse to one
+    another). Using $\phieff/\phiJ$ as the $x$-axis provides an independent variable
+    that separates the materials' proximity to jamming without circularity.
+  \item \textbf{Panel (c):} Schematic of two unjamming pathways:
+    (1) Cornstarch --- inertia--dilatancy; pore-fluid dilation drives fast
+    retraction regardless of $\peunj$ \cite{Mobaseri2026};
+    (2) TPM --- no pore-fluid mechanism; slow frictional contact-network
+    relaxation; $\peunj \sim 1$ insufficient.
+\end{itemize}
+
+%=============================================================================
+\section{Quantitative Predictions}
+%=============================================================================
+
+\begin{center}
+\begin{tabularx}{\linewidth}{lXXl}
+  \toprule
+  Observable & TPM & Cornstarch & Source \\
+  \midrule
+  $\betamax$ ($\mathrm{We}=100$, $\phieff=0.46$)
+    & 2.0--2.3
+    & 2.3--2.8
+    & Shah et al.\ (2025) \cite{Mobaseri2025} \\
+  $\tjam/\tauic$
+    & 0.05--0.2
+    & 0.3--1.5
+    & Peters et al.\ (2016) \cite{Peters2016} \\
+  $\taukww$ (ms)
+    & 300--600
+    & 50--200
+    & Maharjan \& Brown (2017) \cite{Maharjan2017} \\
+  $\bkww$
+    & 0.8--1.5
+    & 0.4--0.6
+    & Ballesta et al.\ (2008) \cite{Ballesta2008} \\
+  $\peunj$
+    & 0.5--1.5
+    & 1000--8000
+    & Eq.~\eqref{eq:Pe_unjam} \\
+  $\sigstar$ (Pa)
+    & [measure]
+    & 8--20
+    & WC model \cite{WyartCates2014}; measure from Fig.~1b \\
+  \bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{cautionbox}
+\textbf{Note on $\sigstar$ and the early-jamming paradox.}
+The Wyart--Cates $\sigstar \sim \zeta^2/a$ scaling \cite{WyartCates2014,Guy2015}
+predicts that TPM spheres (small $a$, electrostatic stabilization) will have
+higher $\sigstar$ than cornstarch (large $a \approx 5\,\mu$m). This means TPM
+should shear-thicken at \emph{higher} applied stress and jam \emph{later} during
+spreading than cornstarch. If experiments show TPM jams sooner despite higher
+$\sigstar$, this confirms that $\tjam$ is not controlled by bulk $\sigstar$
+alone and is one of the central contributions of the paper.
+
+\noindent\textbf{Important:} the $\sigstar$ prediction for TPM requires the
+measured $\zeta$-potential, which is not yet known. Measure $\zeta$ before
+computing any $\sigstar$ estimate. TPM surface groups (methacrylate/silanol)
+may give different $\zeta$ and a different electrostatic repulsion profile than
+pure silanol-surface Stöber silica; do not assume the silica literature value
+of $\zeta \approx -40$\,mV applies. Measure $\sigstar$ directly from the
+stress ramp in Figure~1b and use the measured value throughout; the WC framework
+provides the scaling rationale, not a numerical prediction.
+
+Do not use Seto et al.\ (2013)~\cite{Seto2013} as the source for numerical
+$\sigstar$ predictions --- that paper establishes the DST mechanism via
+simulation but does not predict $\sigstar$ for specific particle types.
+\end{cautionbox}
+
+%=============================================================================
+\section{Anticipated Reviewer Objections}
+%=============================================================================
+
+\begin{reviewbox}
+\textbf{Objection 1: ``The comparison is unfair --- your materials are at different
+distances from their respective jamming points $\phiJ$."}
+
+\textbf{Response:}
+All results are reported in both $\phieff$ coordinates and in normalized
+jamming-distance coordinates $\psi = 1 - \phieff/\phiJ$, where $\phiJ$ is
+extracted for each material from Boyer framework rheological fits
+\cite{Boyer2011}. At fixed $\psi$, TPM still jams sooner and relaxes more
+slowly. This is shown explicitly in Supplemental Materials with all primary
+figures re-plotted in $\psi$ coordinates.
+\end{reviewbox}
+
+\begin{reviewbox}
+\textbf{Objection 2: ``Surface chemistry (DLVO interactions) explains everything.
+TPM particles have negatively charged surfaces while cornstarch is
+weakly positive ($\zeta \approx +22$\,mV). The comparison is not
+apples-to-apples."}
+
+\textbf{Response:}
+We report $\zeta$ for all samples (measured before each campaign). The sign
+difference does change the DLVO landscape, but $\zeta$ sets $\sigstar$
+(contact threshold) not the global unjamming timescale. This objection is
+directly addressed within the paper by the ionic strength sweep
+(Section~5.3): at 10\,mM NaCl the Debye length collapses to ${\approx}3$\,nm
+and TPM effectively approaches hard-sphere conditions ($\sigstar \to$ minimum).
+If $\taukww$ is unchanged at high ionic strength, surface chemistry is
+falsified as the controlling variable. The ionic strength sweep is a primary
+experiment, not a follow-up, specifically so this objection cannot be deferred
+to future work.
+\end{reviewbox}
+
+\begin{reviewbox}
+\textbf{Objection 3: ``Shah et al.\ (2025) already explains the spreading of
+shear-thickening drops. What is new here?"}
+
+\textbf{Response:}
+Shah et al.\ (2025) \cite{Mobaseri2025} predicts $\betamax$ via
+$\etaeff(\gamcrit)$ for a single material class. Our paper addresses three
+things that paper explicitly does not: (1) whether the $\etaeff$ mapping
+works across particle identity (Fig.~3 directly tests this); (2) jamming
+onset time $\tjam$ --- when during spreading the drop solidifies, not just
+the final extent; and (3) post-impact relaxation via KWW fitting ($\taukww$,
+$\bkww$). Items (2) and (3) occur on entirely different timescales from
+spreading (${\sim}$ms and ${\sim}$hundreds of ms, respectively) and are not
+addressed anywhere in the Shah et al.\ framework.
+\end{reviewbox}
+
+\begin{reviewbox}
+\textbf{Objection 4: ``$N=10$ replicates is insufficient for KWW fitting."}
+
+\textbf{Response:}
+For primary figures ($\betamax$ vs.\ We, $\taukww$ vs.\ $\phieff$), $N=10$
+gives 95\% CI on the mean at $\pm 30\%$ for our observed variability.
+For KWW fits, we increase to $N=20$ per condition. All KWW uncertainties
+are propagated via bootstrapping (1000 resamples). Error bars are shown
+explicitly on all panels; conditions with high variability are flagged.
+The qualitative ordering ($\taukww^\mathrm{TPM} > \taukww^\mathrm{cornstarch}$,
+$\bkww^\mathrm{TPM} > \bkww^\mathrm{cornstarch}$) is robust to individual
+outlier drops.
+\end{reviewbox}
+
+\begin{reviewbox}
+% EDIT [mechanical/consistency, 2026-07-22]: AUDIT_papers.md issue #2.
+% This response promised to test eps = 0.02, 0.03, 0.05 -- but the body (Sec. on t_jam,
+% Eq.~\eqref{eq:t_jam}) sets the PRIMARY threshold eps_jam = 0.07, states that
+% 0.07 x 1.5 mm = 105 um ~ 2 px at 50 um/px is "the minimum resolvable level", and
+% explicitly says values below eps = 0.07 "fall below the [measurement floor]".
+% Two of the three promised thresholds (0.02, 0.03) are therefore ones the paper
+% itself calls unresolvable, and 0.05 sits at the bottom of its own sensitivity band.
+% Synced to the body's primary value + its stated sensitivity band [0.05, 0.10].
+% This is the paper's own internal definition, not a new choice. Confidence: high.
+\textbf{Objection 5: ``The $\tjam$ ratio is an artifact
+of your threshold definition."}
+
+\textbf{Response:}
+We test the primary threshold $\varepsilon_\mathrm{jam} = 0.07$ together with the
+sensitivity band $\varepsilon \in [0.05, 0.10]$ in
+Eq.~\eqref{eq:t_jam} --- the range that remains resolvable at our imaging
+scale of $50\,\mu$m/pixel --- and two Newtonian references (matched by $\etaeff$ and
+by $\eta_0$). The ratio
+$\tjam^\mathrm{TPM}/\tjam^\mathrm{cornstarch}$ is stable to $\pm 20\%$
+across all choices. The visual evidence (Fig.~2 morphology mosaic) makes the
+qualitative difference unambiguous to any observer; the threshold only
+affects where exactly on the image sequence we place the quantitative marker.
+\end{reviewbox}
+
+%=============================================================================
+\section{Internal Consistency with Prior Coauthored Work}
+%=============================================================================
+
+\begin{cautionbox}
+Paper 1 must be internally consistent with two coauthored papers. Read both
+carefully before finalizing the Discussion.
+\end{cautionbox}
+
+\textbf{Mobaseri et al.\ (2025, PNAS) \cite{Mobaseri2025}:}
+Established the $\etaeff(\gamcrit) \to$ Laan--Padé effective viscosity
+mapping for cornstarch. Paper 1 extends this by testing across particle
+identity rather than concentration/velocity within one material. Do not
+re-derive the framework --- cite Mobaseri (2025) for the method.
+
+\textbf{Mobaseri et al.\ (2026, arXiv:2601.12642) \cite{Mobaseri2026}:}
+Established inertia--dilatancy interplay as the governing mechanism for
+cornstarch impact and retraction, using the Reynolds--Darcy pore-fluid
+mechanism. Paper 1 completes this picture by demonstrating that removing
+porosity (TPM) eliminates this relaxation pathway and produces
+qualitatively different dynamics. Use identical language: ``Reynolds--Darcy
+pore-fluid dilatancy.''
+
+\begin{cautionbox}
+\textbf{Consistency check:} The $\betamax$ data for cornstarch at overlapping
+$\phieff$ and $U_0$ must agree with published values in Mobaseri (2025)
+within experimental variability. Check this explicitly before submission.
+The Boyer scaling exponent must be quoted identically to both prior papers
+(1/3, not 1/4 --- confirm in both papers before using either value).
+\end{cautionbox}
+
+%=============================================================================
+\section{Experimental Timeline (April--August 2026)}
+%=============================================================================
+
+\begin{center}
+\begin{tabular}{lll}
+  \toprule
+  Weeks & Priority & Deliverable \\
+  \midrule
+  1--2 (late Apr) & Rheology characterization &
+    Flow curves, stress ramps, $\sigstar$ for all $\phieff$ \\
+  3--4 (early May) & Low-$\phieff$ impacts ($\phieff = 0.42$) &
+    Full $U_0$ sweep; both materials; glass \\
+  5--6 (mid May) & Mid-$\phieff$ impacts ($\phieff = 0.46$) &
+    Full $U_0$ sweep; both substrates \\
+  7--8 (late May) & High-$\phieff$ impacts ($\phieff = 0.50$) &
+    Augment $N$ at key conditions \\
+  9--10 (June) & Analysis sprint &
+    KWW fits; $\bkww$, $\taukww$ vs.\ $\phieff$ maps \\
+  11--12 (late June) & Figure assembly &
+    Drafts of all 6 figures \\
+  13--14 (July) & First manuscript draft &
+    Introduction through Discussion \\
+  15--16 (Aug) & Advisor review + revision &
+    Submission \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+%=============================================================================
+\section{Journal Fit Assessment}
+%=============================================================================
+
+\textbf{\textit{Physical Review Fluids} (primary):}
+PRF publishes quantitative drop impact papers including the Mobaseri (2025)
+predecessor work. The explicit quantitative framework (Pe, KWW, Boyer scaling)
+matches PRF editorial style. Target 8--10 pages; supplemental material for
+tabulated $\taukww$, $\bkww$ values.
+
+\textbf{\textit{Soft Matter} (secondary):}
+More receptive to connecting particle-level physics (Ballesta compressed
+exponential, surface chemistry) to macroscopic dynamics. Broader audience
+including colloidal science community. Slightly more tolerance for Discussion
+length.
+
+\textbf{Recommendation:} Submit to PRF. If rejected with major revisions
+requesting broader impact framing, redirect to Soft Matter with expanded
+Discussion on the colloidal glass / KWW connection.
+
+%=============================================================================
+\section*{References}
+%=============================================================================
+
+\begin{thebibliography}{99}
+
+\bibitem{Sacanna2013}
+  \textit{[PLACEHOLDER --- replace with the specific TPM synthesis protocol
+  used in your lab. Candidates: Sacanna \& Pine (2010), van der Wel et al.\
+  (2017), or your own adapted procedure. Verify DOI before submission.]}
+
+\bibitem{Waitukaitis2012}
+  S.~R. Waitukaitis and H.~M. Jaeger,
+  ``Impact-activated solidification of dense suspensions via dynamic jamming fronts,''
+  \textit{Nature} \textbf{487}, 205 (2012).
+  DOI: \href{https://doi.org/10.1038/nature11187}{10.1038/nature11187}
+
+\bibitem{Peters2016}
+  I.~R. Peters, S.~Majumdar, and H.~M. Jaeger,
+  ``Direct observation of dynamic shear jamming in dense suspensions,''
+  \textit{Nature} \textbf{532}, 214 (2016).
+  DOI: \href{https://doi.org/10.1038/nature17167}{10.1038/nature17167}
+
+\bibitem{HanJaeger2016}
+  E.~Han, I.~R. Peters, and H.~M. Jaeger,
+  ``High-speed ultrasound imaging in dense suspensions reveals
+  impact-activated solidification due to dynamic shear jamming,''
+  \textit{Nat.\ Commun.} \textbf{7}, 12243 (2016).
+  DOI: \href{https://doi.org/10.1038/ncomms12243}{10.1038/ncomms12243}
+
+\bibitem{HanVanHa2017}
+  E.~Han, N.~Van Ha, and H.~M. Jaeger,
+  ``Measuring the porosity and compressibility of liquid-suspended porous
+  particles using ultrasound,''
+  \textit{Soft Matter} \textbf{13}, 3506 (2017).
+  DOI: \href{https://doi.org/10.1039/C7SM00182G}{10.1039/C7SM00182G}
+
+\bibitem{Shah2022}
+  P.~Shah, S.~Arora, and M.~M. Driscoll,
+  ``Coexistence of solid and liquid phases in shear jammed colloidal drops,''
+  \textit{Commun.\ Phys.} \textbf{5}, 222 (2022).
+  DOI: \href{https://doi.org/10.1038/s42005-022-00998-w}{10.1038/s42005-022-00998-w}
+
+\bibitem{Mobaseri2025}
+  A.~Mobaseri et al.,
+  ``Maximum spreading of impacting shear-thinning and shear-thickening drops,''
+  \textit{Proc.\ Natl.\ Acad.\ Sci.\ USA} \textbf{122}, e2500163122 (2025).
+  DOI: \href{https://doi.org/10.1073/pnas.2500163122}{10.1073/pnas.2500163122}
+
+\bibitem{Mobaseri2026}
+  A.~Mobaseri, J.~M. Gordillo, C.~Burton, J.~Yoon, S.~Lee, R.~Kumar,
+  M.~M. Driscoll, and X.~Cheng,
+  ``Inertia--Dilatancy Interplay Governs Shear-Thickening Drop Impact,''
+  \textit{arXiv}:2601.12642 [cond-mat.soft] (2026).
+
+\bibitem{Maharjan2017}
+  P.~Maharjan, S.~Mukhopadhyay, J.~Allen, O.~Storz, and E.~Brown,
+  ``Giant deviation of a relaxation time from generalized Newtonian theory
+  in discontinuous shear thickening suspensions,''
+  \textit{Phys.\ Rev.\ Fluids} \textbf{2}, 123301 (2017).
+  DOI: \href{https://doi.org/10.1103/PhysRevFluids.2.123301}{10.1103/PhysRevFluids.2.123301}
+
+\bibitem{Ballesta2008}
+  P.~Ballesta, A.~Duri, and L.~Cipelletti,
+  ``Unexpected drop of dynamical heterogeneities in colloidal suspensions
+  approaching the jamming transition,''
+  \textit{Nat.\ Phys.} \textbf{4}, 550 (2008).
+  DOI: \href{https://doi.org/10.1038/nphys1000}{10.1038/nphys1000}
+
+\bibitem{Boyer2011}
+  F.~Boyer, \'{E}.~Guazzelli, and O.~Pouliquen,
+  ``Unifying suspension and granular rheology,''
+  \textit{Phys.\ Rev.\ Lett.} \textbf{107}, 188301 (2011).
+  DOI: \href{https://doi.org/10.1103/PhysRevLett.107.188301}{10.1103/PhysRevLett.107.188301}
+
+\bibitem{WyartCates2014}
+  M.~Wyart and M.~E. Cates,
+  ``Discontinuous shear thickening without inertia in dense non-Brownian
+  suspensions,''
+  \textit{Phys.\ Rev.\ Lett.} \textbf{112}, 098302 (2014).
+  DOI: \href{https://doi.org/10.1103/PhysRevLett.112.098302}{10.1103/PhysRevLett.112.098302}
+
+\bibitem{Seto2013}
+  R.~Seto, R.~Mari, J.~F. Morris, and M.~M. Denn,
+  ``Discontinuous shear thickening of frictional hard-sphere suspensions,''
+  \textit{Phys.\ Rev.\ Lett.} \textbf{111}, 218301 (2013).
+  DOI: \href{https://doi.org/10.1103/PhysRevLett.111.218301}{10.1103/PhysRevLett.111.218301}
+
+\bibitem{Guy2015}
+  B.~M. Guy, M.~Hermes, and W.~C.~K. Poon,
+  ``Towards a unified description of the rheology of hard-particle suspensions,''
+  \textit{Phys.\ Rev.\ Lett.} \textbf{115}, 088304 (2015).
+  DOI: \href{https://doi.org/10.1103/PhysRevLett.115.088304}{10.1103/PhysRevLett.115.088304}
+
+\bibitem{Brown2014}
+  E.~Brown and H.~M. Jaeger,
+  ``Shear thickening in concentrated suspensions: phenomenology, mechanisms,
+  and relations to jamming,''
+  \textit{Rep.\ Prog.\ Phys.} \textbf{77}, 046602 (2014).
+  DOI: \href{https://doi.org/10.1088/0034-4885/77/4/046602}{10.1088/0034-4885/77/4/046602}
+
+\bibitem{Laan2014}
+  N.~Laan, K.~G. de Bruin, D.~Bartolo, C.~Josserand, and D.~Bonn,
+  ``Maximum diameter of impacting liquid droplets,''
+  \textit{Phys.\ Rev.\ Applied} \textbf{2}, 044018 (2014).
+  DOI: \href{https://doi.org/10.1103/PhysRevApplied.2.044018}{10.1103/PhysRevApplied.2.044018}
+
+\end{thebibliography}
+
+\vspace{20pt}
+\noindent\rule{\linewidth}{0.4pt}
+{\small\textit{Working document --- update as experiments produce data.
+Version: May 2026 (v4 --- TPM replaces silica). Questions: Charlie (Driscoll Lab, Northwestern).}}
+
+\end{document}

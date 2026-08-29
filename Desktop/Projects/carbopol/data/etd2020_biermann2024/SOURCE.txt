@@ -1,0 +1,11 @@
+Biermann, T. & Mesecke, L. (2024). "Rheology Data of Lubrizol Carbopol ETD2020."
+LUIS, Leibniz Universitaet Hannover.  DOI: 10.25835/hjn2qcvy
+https://data.uni-hannover.de/dataset/rheology-data-of-lubrizol-carbopol-etd2020
+Licence: CC BY-NC-SA 4.0  (attribution required, non-commercial, share-alike)
+
+Companion paper (open access):
+Biermann, T., Mesecke, L. et al. "Full-Factorial Rheological Investigation of
+Carbopol ETD2020 for Embedded Printing: Effects of pH and Carbomer Concentration."
+Materials 18, 3164 (2025).  DOI: 10.3390/ma18133164
+
+Downloaded 2026-08-17. Files are unmodified from the archive.
