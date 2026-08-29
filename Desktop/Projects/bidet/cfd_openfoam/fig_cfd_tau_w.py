@@ -60,27 +60,42 @@ def main():
     band = (r_over_d >= 2) & (r_over_d <= 20)
     fig, ax = plt.subplots(figsize=(7, 4.6))
     ax.axvspan(2 * D * 1e3, 20 * D * 1e3, color="C1", alpha=0.06,
-               label="power-law fit band")
+               label="fit band")
     ax.loglog(r_mm, tau, "o", ms=3.5, color="C0", label="CFD (k-$\\omega$ SST)")
     ax.loglog(r_mm[band], tau_fit[band], "-", color="C1", lw=2.2,
-              label=f"fitted turbulent  $r^{{-{n_t:.2f}}}$  ($C_P={C_P:.3g}$)")
-    ax.loglog(r_mm, tau_lam, "--", color="C3", lw=1.5, label="laminar Watson II  $r^{-5}$")
-    ax.axvline(15.0, ls=":", color="grey", label="$r_{max}=15$ mm")
-    # Domain truncation: the profile stops at the outer radial boundary Rdom, where
-    # tau_w is still ~2 Pa.  Without this marker the plot reads as if the curve simply
-    # ended, and the tau_c = 1 Pa contour looks resolved when it is outside the domain.
+              label=f"turbulent fit, $r^{{-{n_t:.2f}}}$")
+    ax.loglog(r_mm, tau_lam, "--", color="C3", lw=1.5, label="laminar, $r^{-5}$")
+    ax.axvline(15.0, ls=":", color="grey", label="$r_{max}$")
+    # Mark where the computation actually ends, and where it used to end. Without the
+    # first the plot reads as if the curve simply stopped; without the second a reader
+    # cannot see that the tau_c = 1 Pa contour used to lie outside the domain.
     Rdom_mm = info["Rdom"] * 1e3
     ax.axvline(Rdom_mm, ls="-", color="k", lw=1.3, alpha=0.7,
-               label=f"domain edge $R={Rdom_mm:.0f}$ mm")
-    ax.axhline(1.0, ls="-.", color="C2", lw=1.3,
-               label=r"$\tau_c=1$ Pa (not reached in domain)")
+               label=f"$R={Rdom_mm:.0f}$ mm")
+    if Rdom_mm > 26.0:
+        ax.axvline(25.0, ls=":", color="k", lw=1.1, alpha=0.6,
+                   label="earlier $R$")
+    # tau_c = 1 Pa: the level the narrow domain could not reach.
+    ipk = int(np.argmax(tau))
+    ro, to = r_mm[ipk:], tau[ipk:]
+    if to.min() <= 1.0:
+        root = float(np.interp(1.0, to[::-1], ro[::-1]))
+        ax.axhline(1.0, ls="-.", color="C2", lw=1.3,
+                   label=rf"$\tau_c=1$ Pa, crossed at {root:.1f} mm")
+        ax.plot([root], [1.0], "*", ms=11, color="C2", zorder=5)
+    else:
+        ax.axhline(1.0, ls="-.", color="C2", lw=1.3,
+                   label=r"$\tau_c=1$ Pa (not reached in domain)")
     ax.set_xlabel("radius $r$ (mm)")
     ax.set_ylabel(r"wall shear stress $\tau_w$ (Pa)")
-    ax.set_title(f"Impinging-jet wall shear: CFD vs turbulent fit vs laminar $r^{{-5}}$\n"
-                 f"$Re_d={Re:.0f}$, $H/d={info['H_over_d']:.0f}$")
-    ax.set_ylim(1e-3, max(tau.max(), tau_lam[np.argmin(np.abs(r_mm-2))]) * 2)
-    ax.legend(fontsize=8, loc="upper right")
-    ax.grid(True, which="both", alpha=0.25)
+    # No title: the manuscript caption carries Re_d, H/d and the fit parameters, and a
+    # figure that needs a paragraph printed on it is a caption pasted into the axes.
+    # The log ordinate is kept because tau_w spans ~3 decades (0.455 to 389 Pa); the
+    # abscissa spans ~3.5. See fig_cfd_tau_w.md.
+    ax.set_ylim(0.2, tau.max() * 2.0)
+    ax.set_xlim(r_mm.min() * 0.9, info["Rdom"] * 1e3 * 1.15)
+    ax.legend(fontsize=7.5, loc="lower left", frameon=False)
+    ax.tick_params(direction="in", which="both", top=True, right=True)
     fig.tight_layout()
     out = os.path.join(here, "..", "fig_cfd_tau_w.png")
     fig.savefig(out, dpi=140)

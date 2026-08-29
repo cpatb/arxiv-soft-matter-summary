@@ -102,18 +102,15 @@ pressure-independent laminar-asymptotic result) but strongly on the cleaning
 shear ($Q^* \propto \tau_c^{1.43}$), so $\tau_c$ is the dominant design
 uncertainty. At $\Rey_d = 10^4$ (i.e.\ $\Delta P \approx \SI{42}{kPa}$,
 $r_\mathrm{max} = \SI{15}{mm}$) the CFD gives $\tau_w(r_\mathrm{max}) \approx
-\SI{5.9}{Pa}$ for the commercial $d = \SI{1}{mm}$ nozzle, rising to
-$\approx \SI{8.6}{Pa}$ at $\Delta P = \SI{0.07}{MPa}$. Against an assumed
+\SI{6.0}{Pa}$ for the commercial $d = \SI{1}{mm}$ nozzle, rising to
+$\approx \SI{8.7}{Pa}$ at $\Delta P = \SI{0.07}{MPa}$. Against an assumed
 $\tau_c = 1$--$\SI{10}{Pa}$ the commercial nozzle cleans to
-$r \approx 21, 16, \SI{12}{mm}$ at $\tau_c = 3, 5, \SI{10}{Pa}$: mainstream
-designs sit within a factor of $\sim2$ of the cleaning constraint over
-$\tau_c \gtrsim \SI{3}{Pa}$, near-optimal at the upper $\tau_c$. At
-$\tau_c = \SI{1}{Pa}$ the cleaning contour falls outside the \SI{25}{mm}
-radial domain of the computation ($\tau_w = \SI{1.96}{Pa}$ at the outer
-boundary), and extrapolation of the fitted closure puts it at
-$r \approx 35$--$\SI{39}{mm}$, i.e.\ $2.3$--$2.6\times$ over-provisioning that
-the computed field does not resolve --- so ``optimal'' is $\tau_c$-contingent,
-not absolute. Correcting an earlier analytic
+$r \approx 35, 21, 16, \SI{12}{mm}$ at $\tau_c = 1, 3, 5, \SI{10}{Pa}$, every
+one of them resolved inside a \SI{50}{mm} radial domain: mainstream designs sit
+within a factor of $\sim2$ of the cleaning constraint over
+$\tau_c \gtrsim \SI{3}{Pa}$, near-optimal at the upper $\tau_c$, and are
+$2.3\times$ over-provisioned at $\tau_c = \SI{1}{Pa}$ --- so ``optimal'' is
+$\tau_c$-contingent, not absolute. Correcting an earlier analytic
 claim, the CFD shows the far-field wall shear at the cleaning radius is set
 by the jet's conserved momentum flux, not by centreline-velocity decay, so
 $\tau_w(r_\mathrm{max})$ is nearly standoff-independent
@@ -520,29 +517,41 @@ skin-friction coefficient $C_f \approx 0.01$.
 The single most consequential output is direct. For the commercial
 $d = \SI{1}{mm}$ nozzle at $\Rey_d = 10^4$ ($V_0 = \SI{8.9}{m/s}$, i.e.\
 $\Delta P \approx \SI{42}{kPa}$), the CFD wall shear at
-$r_\mathrm{max} = \SI{15}{mm}$ is $\SI{5.9}{Pa}$ (the direct field value, not
+$r_\mathrm{max} = \SI{15}{mm}$ is $\SI{6.0}{Pa}$ (the direct field value, not
 the extrapolated fit); at the higher residential $\Delta P = \SI{0.07}{MPa}$
-($\Rey_d \approx 1.3\times10^4$) it rises to $\approx \SI{8.6}{Pa}$
+($\Rey_d \approx 1.3\times10^4$) it rises to $\approx \SI{8.7}{Pa}$
 (since $\tau_w \propto V_0^{3/2}$). Whether the commercial nozzle ``just
 cleans'' or over-provisions therefore depends on $\tau_c$: solving
 $\tau_w(r) = \tau_c$ on the CFD profile, it cleans to
-$r \approx 21, 16, \SI{12}{mm}$ at $\tau_c = 3, 5, \SI{10}{Pa}$. At
-$\tau_c = \SI{1}{Pa}$ there is no root inside the computed domain. The profile
-is truncated at the outer radial boundary $R = \SI{25}{mm}$, where $\tau_w$ has
-fallen only to $\SI{1.96}{Pa}$ (outermost cell centre $r = \SI{24.77}{mm}$), so
-the $\tau_c = \SI{1}{Pa}$ contour lies \emph{outside} the simulated domain.
-Extrapolating the fitted closure~\eqref{eq:cfdclosure} beyond $R$ places it at
-$r \approx \SI{39}{mm}$; refitting the outer half of the profile alone
-($r/d \in [10, 24.8]$, giving $n_t = 2.10$, $r^2 = 0.9997$) places it at
-$r \approx \SI{35}{mm}$. Both are extrapolations, not computed values. The
-nozzle therefore sits within a factor of $\sim2$ of the
-$r_\mathrm{max} = \SI{15}{mm}$ target only over the upper part of the plausible
-band, $\tau_c \gtrsim \SI{3}{Pa}$ (ratios $1.4, 1.1, 0.8$ at
-$\tau_c = 3, 5, \SI{10}{Pa}$) --- near-optimal at the upper $\tau_c$. At
-$\tau_c = \SI{1}{Pa}$ the over-provisioning is larger, an extrapolated
-$2.3$--$2.6\times$, and the present computation resolves only the bound
-$r > \SI{25}{mm}$; settling it would require re-running the case on a radial
-domain of at least $\approx \SI{50}{mm}$. The robust statement, independent of $\tau_c$,
+$r \approx 35, 21, 16, \SI{12}{mm}$ at $\tau_c = 1, 3, 5, \SI{10}{Pa}$, ratios
+of $2.3, 1.4, 1.1, 0.8$ against the $r_\mathrm{max} = \SI{15}{mm}$ target. The
+nozzle therefore sits within a factor of $\sim2$ of the target over the upper
+part of the plausible band, $\tau_c \gtrsim \SI{3}{Pa}$, and is over-provisioned
+by $2.3\times$ at $\tau_c = \SI{1}{Pa}$.
+
+All four radii are read off the computed field. That required widening the
+radial domain: the original case ended at $R = \SI{25}{mm}$, only
+$\approx 1.7\,r_\mathrm{max}$, where $\tau_w$ had fallen just to
+$\SI{1.96}{Pa}$ (outermost cell centre $r = \SI{24.77}{mm}$), so the
+$\tau_c = \SI{1}{Pa}$ contour lay \emph{outside} it and could only be bounded,
+$r > \SI{25}{mm}$, or extrapolated. Re-running at $R = \SI{50}{mm}$ on a mesh
+built to hold the first radial cell width fixed ($\SI{7.05}{\micro m}$;
+$485$ radial cells against $240$; converged in $2689$ SIMPLE iterations,
+$y^+ = 0.05$--$1.39$) places the contour at $r = \SI{34.8}{mm}$, and $\tau_w$
+reaches $\SI{0.455}{Pa}$ at the new outer boundary. The two domains agree to a
+median $0.7\%$ and a maximum $1.8\%$ in $\tau_w$ over the interior
+($r \leq \SI{22.5}{mm}$); they part only in the outer shell of the narrow
+domain, reaching $5.7\%$ at its last cell, which is the expected signature of an
+outflow boundary reaching back into the profile it was meant to terminate.
+
+Two things about that are worth recording, because they bear on how far a fitted
+closure may be pushed. Extrapolating~\eqref{eq:cfdclosure} beyond its own fit
+band $r/d \in [2,20]$ put the contour at $\SI{39}{mm}$, $12.5\%$ too far.
+Refitting the outer half of the profile alone ($r/d \in [10, 24.8]$, giving
+$n_t = 2.10$, $r^2 = 0.9997$) put it at $\SI{34.75}{mm}$, within $0.1\%$ of the
+computed value. The far field is steeper than the whole-band fit, so a
+single-power-law extrapolation of a profile whose local slope is still steepening
+overestimates the reach, and a local refit does not. The robust statement, independent of $\tau_c$,
 is that because $C_P$ now comes from the CFD independently of any commercial
 datum, the earlier commercial-datum calibration is corroborated rather than
 assumed.
@@ -552,14 +561,15 @@ assumed.
 \includegraphics[width=\columnwidth]{fig_cfd_tau_w.png}
 \caption{CFD-computed wall shear $\tau_w$ versus radius $r$ for a round jet
 impinging normally on a flat plate (axisymmetric $k$--$\omega$~SST,
-$\Rey_d = 10^4$, $H/d = 6$). The developed-wall-jet band $r/d \in [2, 20]$
-(shaded) is fit by the Phares form~\eqref{eq:cfdclosure} with $n_t = 1.90$,
-$C_P = 1.35$ ($r^2 = 0.997$). The local slope shallows toward impingement
-and steepens to $\approx 2$ in the developed wall jet. The solid vertical line
-marks the outer radial boundary of the computational domain,
-$R = \SI{25}{mm}$; the computed profile stops there at
-$\tau_w = \SI{1.96}{Pa}$, so the $\tau_c = \SI{1}{Pa}$ level (dash-dot) is
-never crossed inside the domain.}
+$\Rey_d = 10^4$, $H/d = 6$, radial domain $R = \SI{50}{mm}$). The
+developed-wall-jet band $r/d \in [2, 20]$ (shaded) is fit by the Phares
+form~\eqref{eq:cfdclosure} with $n_t = 1.90$, $C_P = 1.35$ ($r^2 = 0.997$). The
+local slope shallows toward impingement and steepens to $\approx 2$ in the
+developed wall jet. The $\tau_c = \SI{1}{Pa}$ level (dash-dot) is crossed at
+$r = \SI{34.8}{mm}$, inside the domain. The dotted vertical line marks
+$R = \SI{25}{mm}$, where an earlier version of this case ended with $\tau_w$
+still at $\SI{1.96}{Pa}$; that contour could then only be bounded or
+extrapolated.}
 \label{fig:cfd}
 \end{figure}
 
@@ -1143,19 +1153,20 @@ under the CFD closure the cleaning constraint is slack for a sub-millimetre
 nozzle, so the binding limit is coherence, and the minimum lands near the
 commercial $0.3$--$\SI{0.4}{L/min}$ range.
 
-\paragraph{Radial domain truncation.}
-The CFD domain extends to $R = \SI{25}{mm}$, only $\approx 1.7\,r_\mathrm{max}$,
-and $\tau_w$ has fallen only to $\SI{1.96}{Pa}$ at the outer boundary. Every
-cleaning radius quoted at $\tau_c \geq \SI{3}{Pa}$ is read directly off the
-computed field, but the $\tau_c = \SI{1}{Pa}$ contour is not: it lies outside
-the domain and is reached only by extrapolating the fitted
-closure~\eqref{eq:cfdclosure} (Sec.~\ref{sec:cfd}). That extrapolation assumes
-the single-power-law wall jet continues undisturbed past the outflow boundary,
-which this case cannot verify, and it is sensitive to the fit band --- $r/d \in
-[2,20]$ gives $\SI{39}{mm}$, the outer half alone gives $\SI{35}{mm}$. A domain
-of $R \gtrsim \SI{50}{mm}$ would settle it directly; until then the
-low-$\tau_c$ end of the band is bounded ($r > \SI{25}{mm}$) rather than
-determined.
+\paragraph{Radial domain extent.}
+The CFD domain extends to $R = \SI{50}{mm}$, $\approx 3.3\,r_\mathrm{max}$, and
+$\tau_w$ falls to $\SI{0.455}{Pa}$ at the outer boundary, so every cleaning
+radius quoted here, $\tau_c = \SI{1}{Pa}$ included, is read directly off the
+computed field. This was not true of an earlier version of the case, which ended
+at $R = \SI{25}{mm}$ with $\tau_w$ still at $\SI{1.96}{Pa}$; there the
+$\tau_c = \SI{1}{Pa}$ contour lay outside the domain and could only be bounded
+($r > \SI{25}{mm}$) or extrapolated. The two agree to a median $0.7\%$ and a
+maximum $1.8\%$ in $\tau_w$ for $r \leq \SI{22.5}{mm}$, and diverge only in the
+outer $10\%$ of the narrow domain (to $5.7\%$ at its last cell), so the widened
+case contains the narrower one everywhere the narrower one was trustworthy. What
+remains untested is the outflow condition at $R = \SI{50}{mm}$ itself; by the
+same argument its influence should be confined to the last few millimetres, well
+outside the $\SI{34.8}{mm}$ contour.
 
 \paragraph{Stagnation zone.}
 The analysis treats the wall-jet region $r \gtrsim a$. The stagnation
@@ -1231,11 +1242,9 @@ principal results are:
 The design implication is that mainstream steady bidets sit within a factor of
 $\sim2$ of the cleaning constraint over the upper part of the plausible
 $\tau_c = 1$--$\SI{10}{Pa}$ band ($\tau_c \gtrsim \SI{3}{Pa}$; near-optimal at
-the upper end), while at $\tau_c = \SI{1}{Pa}$ the cleaning contour lies
-outside the computed radial domain and the over-provisioning is an extrapolated
-$2.3$--$2.6\times$ rather than a computed one. Over the range the CFD resolves,
-they are therefore close to the cleaning-limited optimum without being
-wasteful: a
+the upper end), and are over-provisioned by a computed $2.3\times$ at
+$\tau_c = \SI{1}{Pa}$. They are therefore close to the cleaning-limited optimum
+without being wasteful: a
 normal-impingement jet is the target, oblique geometries carry a large
 ($\sim\SI{95}{\percent}$) penalty, and a mild $\pm\SI{15}{\degree}$
 oscillation is the one remaining lever worth $\sim\SI{52}{\percent}$;
