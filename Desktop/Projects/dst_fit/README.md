@@ -391,11 +391,43 @@ Something real is moving.
 
 Two things sharpen the reading rather than explaining it away.
 
-**The fitter recovers the label.** Fitted phi against nominal phi gives slope
-0.970, intercept +0.052, r2 = 0.99925. The nominal fraction is the only external
-reference available and the fit reproduces it from curve shape alone, with a
-constant offset in the direction corn-starch granules are known to go, since
-they swell in water. So the fit is not confused about the data.
+**The fitter recovers the label's ordering, and only that.** Fitted phi against
+nominal phi gives slope 0.970, intercept +0.052, r2 = 0.99925 at `phi_0 = 0.64`.
+An earlier version of this section read all three numbers as an external check
+and attributed the offset to corn-starch granules swelling in water. Only the
+correlation survives that reading.
+
+Sweep `phi_0` and the reason is plain (`scripts/probe_gauge_dependence.py`):
+
+| phi_0 | slope | intercept | r2 |
+|---|---|---|---|
+| 0.5800 | 0.8791 | +0.0469 | 0.99925 |
+| 0.6400 | 0.9700 | +0.0517 | 0.99925 |
+| **0.6598** | **1.0001** | +0.0533 | 0.99925 |
+| 0.6800 | 1.0307 | +0.0549 | 0.99925 |
+
+Every fitted `phi` scales with the assumed `phi_0`, so the slope scales with it
+too — exactly, to four decimals, matching the covariance prediction at every
+point. **At `phi_0 = 0.6598` the slope reads 1.0001: the check can be dialled to
+pass by choosing the gauge.** The intercept moves with it, so the swelling story
+is unsupported; its size was set by a constant we picked, not by the starch.
+
+`r2` is the half that means something. It is **identical at every `phi_0`**,
+because rescaling one axis cannot change a correlation. So the defensible claim
+is that fitted `phi` tracks the label *linearly* — the fit is not confused about
+the data — and nothing about the values.
+
+The gauge-invariant version of the test needs a dataset where `phi` is a real
+volume fraction rather than a label of unrecorded convention. Guy et al.'s PMMA
+is that, and there the fit does **not** reproduce the values:
+
+| series | n | slope | intercept | r2 |
+|---|---|---|---|---|
+| d = 404 nm | 5 | 1.1329 | -0.0880 | 0.98947 |
+| d = 3770 nm | 7 | 1.2027 | -0.1248 | 0.99718 |
+
+No choice of `phi_0` sets both slope and intercept right at once. The fit
+reproduces the ordering of the volume fractions, not their values.
 
 **The degeneracy appears only at high phi.** r(phi, phi_m) runs 0.910, 0.891,
 0.916 for the lower three and 0.995, 0.994, 0.998 for the upper three. Close to
@@ -636,8 +668,16 @@ series the same comparison lost by 55.
 | phi_0 = 0.64 and beta = 1.0, the pre-refactor code | 0.5483 | 0.5270 to 0.5959 | 185.4 |
 
 `phi_0` moves the *level* of `phi_m` by 0.08 and leaves the reduced chi-squared
-bit-for-bit unchanged. Candidate (1), a wrong `phi_0`, is dead for a second time
-and on somebody else's data.
+bit-for-bit unchanged — and that identity is the point, not the evidence. The
+model is exactly covariant under a common rescaling of `(phi, phi_m, phi_0)`, so
+`phi_0 = 0.64` returns `phi_m = 0.5432`, which is `0.4634 x 0.64/0.546` to four
+decimals. Nothing was learned by running it.
+
+So candidate (1) is not "dead a second time"; it was never testable this way. The
+correct statement is that a wrong `phi_0` cannot *explain* the drift because it
+cannot *change* anything except the level, and the drift is in the spread. `beta`
+is the constant worth sweeping here: it moves the reduced chi-squared from 221.1
+to 185.4.
 
 ---
 
@@ -837,10 +877,20 @@ the unknown constant cancels, then say where it cancelled.
 flow curve lands within a factor of two of an independently measured contact
 crossover, on two different materials. That half of Wyart-Cates checks out.
 
-**`sigma*` is orthogonal to `phi_0`.** Sweeping the unmeasured `phi_0` from 0.58
-to 0.68 moves `phi` by 0.06 and `phi_m` by 0.08 and leaves `sigma*` **identical
-to four figures**, with an identical rmse. The degeneracy that ruins `phi_m`
-does not touch the onset stress.
+**`sigma*` carries no packing units, and the `phi_0` sweep is algebra.** Sweeping
+`phi_0` from 0.58 to 0.68 moves `phi` by 0.06 and `phi_m` by 0.08 and leaves
+`sigma*` identical to four figures with an identical rmse. That was once written
+here as a result. It is not one: the model is exactly covariant under
+`(phi, phi_m, phi_0) -> c (phi, phi_m, phi_0)`, so the sweep slides the fit along
+a direction that changes no prediction, and `sigma*` — which has no packing
+units — cannot move. The sweep could not have come out any other way.
+
+What is true, and stronger, is that **`phi_0` is a gauge choice for a flow-curve
+fit**: only `phi_m/phi_0` is ever determined. To test `sigma*`'s robustness
+against something that can actually move it, sweep `beta` instead — it shifts
+`sigma*` by 15% over 0.8 to 1.2, and `beta = 0.8` fits this silica 1.4x better
+(rmse 0.0140 against 0.0199) than the `beta = 1` assumed throughout. That is a
+real sensitivity and it is not yet resolved.
 
 **The 2 um silica fit is the only well-specified fit on real data in this
 project.** Runs test p = 0.092, rmse 0.0199, no degenerate pair. Every other
