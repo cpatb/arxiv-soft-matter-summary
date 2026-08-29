@@ -414,7 +414,7 @@ That also names the first constant to ask a real company for: their ramp coeffic
 Headline moves 1.236 → 1.235, cooling cut 26.4 → 25.9%. Tests 13 → 16, including one that
 would catch the term being neutered.
 
-### Bidet: the CFD domain is being widened to R = 50 mm
+### Bidet: the 1 Pa contour is computed, not extrapolated
 
 `gen_case.py` had `Rdom` hardcoded at 25 mm. It is now a parameter, and the radial cell
 count scales with the span so widening cannot silently coarsen the wall jet. The grading is
@@ -424,14 +424,63 @@ cells and driven the first cell to 0.2 µm. At the default radius the generator 
 the 2026-07-25 `blockMeshDict` **byte for byte**, which is the regression check that makes
 the widened run comparable.
 
-`compare_domain_extent.py` does the two-part test: the wide case must agree with the narrow
-one on the 2-25 mm overlap (otherwise the outflow boundary was reaching into the interior
-and neither case means anything), and only then is the τ_c = 1 Pa root read directly off
-the computed field and compared with the paper's two extrapolations (39.14 and 34.75 mm).
+`compare_domain_extent.py` does the two-part test in that order: the wide case must agree
+with the narrow one on the overlap, and only then is the root read off the computed field.
 
-### Frisbee: the stale downstream chain is being regenerated
+**Result. τ_c = 1 Pa is crossed at r = 34.79 mm**, inside the domain, with τ_w reaching
+0.455 Pa at the outer boundary. Validation passed: median 0.7% and max 1.8% agreement in
+τ_w for r ≤ 22.5 mm, diverging only in the outer 10% of the narrow domain (5.7% at its last
+cell), the signature of an outflow boundary reaching back into the profile it was meant to
+terminate. Converged in 2689 SIMPLE iterations, y⁺ 0.047-1.39, max aspect ratio 106.6
+against the narrow case's 105.9.
 
-`rerunMonteCarloOnward.sh` re-runs `runDownstream.sh` steps 3-8 and deliberately skips
-steps 1-2, so `flow_fields.npz` stays byte-identical to the field both the manuscript and
-GATE G1 were computed on. The Monte Carlo is then the only variable that moves, which is
-the point. Everything it replaces is backed up to `_pre_rerun_2026-08-29/` first.
+The two extrapolations can now be scored, and the answer is transferable:
+
+| method | r at τ_c = 1 Pa | error |
+|---|---|---|
+| **computed, R = 50 mm** | **34.79 mm** |, |
+| outer-half refit, r/d ∈ [10, 24.8] | 34.75 mm | **−0.1%** |
+| full-band closure pushed past r/d = 20 | 39.14 mm | **+12.5%** |
+
+The far field is steeper than the whole-band fit, so extrapolating a single power law
+through a profile whose local slope is still steepening overestimates the reach; a local
+refit does not.
+
+Manuscript updated: all four cleaning radii now read off the computed field, over-provisioning
+at 1 Pa is a computed 2.3× rather than an extrapolated 2.3-2.6×, τ_w(r_max) 5.9 → 6.0 Pa and
+the 0.07 MPa value 8.6 → 8.7 Pa, and the "Radial domain truncation" limitation becomes
+"Radial domain extent". The figure is redrawn to your figure rules with a sibling
+`fig_cfd_tau_w.md`. **12 pp, 0 errors, 0 undefined references.**
+
+### Frisbee: the chain is regenerated, and the verdict survives it
+
+`rerunMonteCarloOnward.sh` re-ran `runDownstream.sh` steps 3-8 and deliberately skipped
+steps 1-2, so `flow_fields.npz` stayed byte-identical to the field both the manuscript and
+GATE G1 were computed on. The Monte Carlo was then the only variable that moved. 97,200
+trajectories, 648 cells × 150 throws, ~110 min.
+
+The provenance gap is closed: `landing_stats.npz` has 42 keys instead of 19, and
+**`gust_model = sweeping`** is now recorded in the artifact rather than inferred from file
+timestamps.
+
+**The conclusions did not move, and that is the result.** 17 of 58 results macros and 19 of
+35 significance macros changed value; none were added or removed, so the `\input` wiring and
+the `\MISSINGNUM` guard are intact.
+
+| comparison | before | after | verdict |
+|---|---|---|---|
+| 90 vs 210 | p = 0.206, 4/12 | p = 0.203, 4/12 | **not resolved**, unchanged |
+| 90 vs 270 | p = 0.031, 11/12 | **p = 0.022**, 10/12 | resolved, unchanged |
+| 210 vs 270 | p = 0.026, 10/12 | **p = 0.0038**, 11/12 | resolved, unchanged |
+
+Mean Q at 270° fell 0.0356 → 0.0324, which is why both comparisons against it tightened.
+That the ordering survives a full regeneration under a corrected gust model, a corrected
+reference frame and a corrected throw-exclusion flag is the strongest evidence yet that
+"270° is the worst of the three computed" is a property of the field, not of the pipeline.
+
+It also caught one more typed number: the manuscript hardcoded "9 to 14 times the Monte
+Carlo standard error" in a project whose whole convention is that manuscript numbers are
+generated. The regenerated values are 12, 13 and 13, and the sentence now reads them from
+`\QsdOverSeH*`. **26 pp, 0 errors, 0 undefined references, 0 `\MISSINGNUM`.**
+
+GATE G1 is still failed and untouched by this. Do not start WP2 on the 4-6 eddy count.
