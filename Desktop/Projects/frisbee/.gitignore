@@ -22,3 +22,6 @@ SeanEarl_DiscFlight/P4_Coupling/*.orig
 *.fls
 *.fdb_latexmk
 *.synctex.gz
+
+# rerunMonteCarloOnward.sh's safety copy; git already holds the state it saves.
+SeanEarl_DiscFlight/_pre_rerun_*/
