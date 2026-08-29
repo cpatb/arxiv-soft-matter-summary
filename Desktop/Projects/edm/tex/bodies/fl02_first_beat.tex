@@ -1,0 +1,158 @@
+No theory required. Follow the steps, and read \texttt{THEORY/03\_rhythm.md} afterwards to find out
+what you just did.
+
+Everything here uses samples that are already on your machine. Nothing to download.
+
+\subsection{Setup}\label{fl02_first_beat-setup}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{File \textgreater{} New}. Remember that Ctrl+N is "save new version" in FL, not "new file".
+\item
+  Right-click the tempo readout in the top toolbar, choose \textbf{Type in value}, enter \textbf{124}.
+\item
+  Press \textbf{F6} to open the Channel Rack. If it already has channels loaded, right-click each
+  name and choose \textbf{Delete} to clear it out.
+\item
+  Make sure you are in \textbf{Pattern mode}. The toolbar shows PAT or SONG, and \textbf{L} toggles it.
+\end{enumerate}
+
+\subsection{Load four sounds}\label{fl02_first_beat-load-four-sounds}
+
+Open the Browser on the left (\textbf{Alt+F8} if it is hidden) and navigate to \textbf{Packs \textgreater{} Drums}.
+
+Drag each of these onto an empty slot in the Channel Rack:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}ll@{}}
+\toprule\noalign{}
+Sound & Browser location \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Kick & \texttt{Packs\ \textgreater{}\ Drums\ \textgreater{}\ Kicks\ \textgreater{}\ 909\ Kick} \\
+Clap & \texttt{Packs\ \textgreater{}\ Drums\ \textgreater{}\ Percussion\ \textgreater{}\ 909\ Clap} \\
+Open hat & \texttt{Packs\ \textgreater{}\ Drums\ \textgreater{}\ Hats\ \textgreater{}\ 909\ OH} \\
+Closed hat & \texttt{Packs\ \textgreater{}\ Drums\ \textgreater{}\ Hats\ \textgreater{}\ 909\ CH\ 1} \\
+\end{longtable}
+}
+
+These are samples of the Roland TR-909, the drum machine that Chicago house and techno were
+built on. Single-clicking a sample in the browser previews it, so you can hear them before
+you commit.
+
+\subsection{Program the pattern}\label{fl02_first_beat-program-the-pattern}
+
+Each channel has sixteen step buttons. They are one bar, divided into sixteenth notes.
+Left-click to turn a step on, right-click to turn it off.
+
+Turn on these steps:
+
+\begin{verbatim}
+Step        1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16
+Count       1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
+
+909 Kick    X   .   .   .   X   .   .   .   X   .   .   .   X   .   .   .
+909 Clap    .   .   .   .   X   .   .   .   .   .   .   .   X   .   .   .
+909 OH      .   .   X   .   .   .   X   .   .   .   X   .   .   .   X   .
+909 CH 1    X   X   .   X   X   X   .   X   X   X   .   X   X   X   .   X
+\end{verbatim}
+
+Press \textbf{Space}.
+
+That is a house beat. Kick on every beat, clap on 2 and 4, open hi-hat on every offbeat,
+closed hats filling the rest.
+
+Build it one channel at a time and listen after each. In particular, program the kick alone,
+then add the open hat, and notice how much the open hat does. It is the element that makes
+the loop move rather than just plod.
+
+\subsection{Make it feel human}\label{fl02_first_beat-make-it-feel-human}
+
+Two adjustments, both of which matter more than they sound like they should.
+
+\textbf{Swing.} Find the swing knob on the Channel Rack toolbar and turn it up to somewhere
+between 15\% and 25\%. This delays every second sixteenth slightly. The pattern stops sounding
+like a machine and starts sounding like a groove. Turn it back to zero and compare.
+
+\textbf{Velocity.} Select the closed hat channel, then click the \textbf{graph editor} button at the
+top-left of the Channel Rack (the small bar-chart icon). You now see a bar for each step.
+Drag them so the hats alternate loud and quiet, or so that every fourth one is loudest.
+
+Real drummers do not hit every note identically. Programmed hats at uniform velocity are the
+clearest giveaway of an amateur track, and this takes thirty seconds to fix.
+
+\subsection{Route to the mixer}\label{fl02_first_beat-route-to-the-mixer}
+
+Right now every channel goes straight to the master, which means you cannot process them
+separately.
+
+Select all the channels in the Channel Rack (Ctrl+A works, or click the first channel button
+and Ctrl+click the others), then press \textbf{Ctrl+L}. Each channel is assigned to its own free
+mixer track.
+
+Press \textbf{F9} to open the Mixer and confirm you now have four labelled tracks.
+
+This is the most useful shortcut in FL Studio and it is very hard to discover on your own.
+
+\subsection{Balance it}\label{fl02_first_beat-balance-it}
+
+In the mixer, set rough levels. The kick should be the loudest thing. A starting point:
+
+\begin{itemize}
+\tightlist
+\item
+  Kick: leave at 0 dB, and check the master is peaking around −6 dB
+\item
+  Clap: 3 to 6 dB below the kick
+\item
+  Closed hat: quiet, 10 to 15 dB below the kick
+\item
+  Open hat: slightly louder than the closed hat
+\end{itemize}
+
+Then add \textbf{Fruity Parametric EQ 2} to both hat channels and highpass them at around 400 Hz.
+Hats have no useful information down low, and removing it cleans up the whole mix. Do the
+same to the clap at around 200 Hz.
+
+\subsection{Now make it yours}\label{fl02_first_beat-now-make-it-yours}
+
+The four-line pattern above is correct and generic. Everything interesting comes from what
+you add to it. Try these one at a time:
+
+\textbf{A shaker or tambourine on sixteenths.} \texttt{Packs\ \textgreater{}\ Drums\ \textgreater{}\ Percussion\ \textgreater{}\ 707\ Tamb}. Set it
+quiet, and use the graph editor so it pulses.
+
+\textbf{A rimshot on the "a" of beat 4} (step 16). \texttt{Packs\ \textgreater{}\ Drums\ \textgreater{}\ Snares\ \textgreater{}\ 909\ Rim}. One extra
+hit at the end of the bar makes the loop turn over instead of just repeating.
+
+\textbf{An 808 cowbell} somewhere unexpected. \texttt{Packs\ \textgreater{}\ Drums\ \textgreater{}\ Percussion\ \textgreater{}\ 808\ Cowbell}. Almost
+comically effective in house.
+
+\textbf{A second kick sample layered underneath} for weight, or an 808 kick with its decay
+shortened.
+
+\textbf{Drop the closed hats for two bars.} You will need to extend the pattern length first
+(the pattern length control is at the top of the Channel Rack, set it to 2 bars and you get
+32 steps).
+
+\textbf{Take the kick out entirely for four bars} and hear what happens when it comes back.
+
+\subsection{Save}\label{fl02_first_beat-save}
+
+\textbf{Ctrl+S}, and give it a real name. Not "untitled".
+
+\subsection{What you have}\label{fl02_first_beat-what-you-have}
+
+\begin{reviewbox}
+\textbf{What you have.} A loop, not a track. Twelve to sixteen hits, four samples, one bar.
+Turning it into a track is \texttt{03\_first\_track.md}, and it is a different and harder skill.
+\end{reviewbox}
+
+Before you go there, spend some time on this loop. Try to rebuild the drum pattern of a
+Chicago house record by ear, using only these four sounds. Put on Marshall Jefferson\textquotesingle s "Move
+Your Body" or anything from \texttt{LISTENING/chicago\_canon.md}, and copy what you hear. That single
+exercise teaches more than any tutorial.

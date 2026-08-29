@@ -1,0 +1,152 @@
+The problems that stop beginners, and their fixes. Most of them are settings, not skill.
+
+\subsection{No sound at all}\label{fl06_trouble-no-sound-at-all}
+
+\textbf{Check the audio device.} F10, Audio tab. Device should be \textbf{FL Studio ASIO}. If it says
+something else, or "no device", that is your problem.
+
+\textbf{Check you are in the right mode.} The toolbar shows PAT or SONG, and \textbf{L} toggles.
+Pattern mode plays only the selected pattern. If your notes are in the playlist and you are
+in Pattern mode, you hear nothing.
+
+\textbf{Check the master fader} in the Mixer (F9) is not at zero.
+
+\textbf{Check the channel is not muted.} The green LED to the left of each channel name in the
+Channel Rack.
+
+\textbf{Check Windows is not sending audio elsewhere.} Bluetooth headphones connecting mid-session
+will silently steal the output.
+
+If all else fails, \textbf{Ctrl+H} is panic, and clears stuck notes.
+
+\subsection{Crackling, popping, or stuttering}\label{fl06_trouble-crackling-popping-or-stuttering}
+
+Your buffer is too small for what your CPU is doing.
+
+F10, Audio tab, \textbf{Show ASIO panel}, and raise the buffer to 1024 samples. Latency goes up,
+which only matters when you are playing something in live.
+
+If it still crackles, look at the CPU meter in the top-right of FL. If it is pinned:
+
+\begin{itemize}
+\tightlist
+\item
+  Right-click a channel and choose \textbf{Freeze} to render it to audio temporarily
+\item
+  Reduce reverb instances by using sends instead of per-channel reverbs
+\item
+  Increase the "Underruns" tolerance in audio settings
+\item
+  Close Chrome, which is almost certainly using more CPU than FL is
+\end{itemize}
+
+\subsection{Everything I play is late}\label{fl06_trouble-everything-i-play-is-late}
+
+Latency. Lower the buffer to 256 or 128 samples in the ASIO panel, and make sure you are on
+FL Studio ASIO rather than a generic Windows driver.
+
+There is a tradeoff: lower buffer means lower latency and higher CPU load. Use a small buffer
+while recording or playing in, and a large one while mixing.
+
+\subsection{I hear only drums when I press play}\label{fl06_trouble-i-hear-only-drums-when-i-press-play}
+
+Pattern mode. Press \textbf{L} to switch to Song mode.
+
+This is the single most common confusion in FL Studio and it catches everyone at least twice.
+
+\subsection{My pattern is in the playlist but nothing plays}\label{fl06_trouble-my-pattern-is-in-the-playlist-but-nothing-plays}
+
+Check the playlist track is not muted (the small LED on each lane).
+
+Check the clip is actually on the timeline where the playhead is, not sitting before bar 1.
+
+Check the pattern actually contains notes. An empty named pattern looks identical to a full
+one from the outside.
+
+\subsection{I cannot EQ one sound without affecting everything}\label{fl06_trouble-i-cannot-eq-one-sound-without-affecting-everything}
+
+Your channels are all going to the Master. Select them in the Channel Rack and press
+\textbf{Ctrl+L} to give each its own mixer track.
+
+\subsection{My kick and bass sound muddy together}\label{fl06_trouble-my-kick-and-bass-sound-muddy-together}
+
+Three fixes, in order of effort:
+
+Move the bass notes to the offbeats so they never sound at the same instant as the kick.
+
+Highpass the bass above the kick\textquotesingle s fundamental with Fruity Parametric EQ 2.
+
+Sidechain the bass to the kick. See \texttt{03\_first\_track.md}.
+
+Also check that the kick is tuned near your track\textquotesingle s key. A kick whose pitch clashes with the
+bass produces a beating you will hear as mud. See \texttt{THEORY/07\_mixing.md}.
+
+\subsection{The exported file sounds different from the project}\label{fl06_trouble-the-exported-file-sounds-different-from-the-project}
+
+Almost always one of three things.
+
+\textbf{The tail was cut.} In the export dialog, set \textbf{Tail} to \textbf{Leave remainder} so reverb and
+delay tails finish.
+
+\textbf{Only part exported.} If you have a time selection in the playlist, FL exports only that
+range. Click an empty area of the timeline to clear the selection first.
+
+\textbf{It is quieter.} Your project has no limiter on the master. Add Fruity Limiter with the
+ceiling at −1 dB.
+
+\subsection{The exported file is distorted}\label{fl06_trouble-the-exported-file-is-distorted}
+
+Your master is clipping. Turn individual channels down, not the master fader. Aim for the
+master peaking at around −6 dB before you add a limiter.
+
+\subsection{I lost my project}\label{fl06_trouble-i-lost-my-project}
+
+FL autosaves aggressively into \texttt{Documents\textbackslash{}Image-Line\textbackslash{}FL\ Studio\textbackslash{}Projects} with names like
+\texttt{untitled\ (autosaved\ at\ 21h49).flp}. There is also a \texttt{Backup} folder in there.
+
+You already have several of these from May. Long term, save with real names and use
+\textbf{Ctrl+N} deliberately (it saves an incremented version) at milestones.
+
+\subsection{A plugin window disappeared}\label{fl06_trouble-a-plugin-window-disappeared}
+
+\textbf{F12} closes all windows, and it is easy to hit by accident. To get a plugin back, click
+the channel\textquotesingle s name button in the Channel Rack, or find it in the Browser under \textbf{Current
+project}.
+
+\subsection{The project opens with missing samples}\label{fl06_trouble-the-project-opens-with-missing-samples}
+
+FL stores sample paths, and moving or renaming files breaks them. When prompted, point FL at
+the new location.
+
+To avoid it: \textbf{Tools \textgreater{} Macros \textgreater{} Prepare for sharing} collects every sample the project uses
+into the project folder.
+
+\subsection{Everything is too quiet compared to real records}\label{fl06_trouble-everything-is-too-quiet-compared-to-real-records}
+
+Commercial tracks are mastered. Yours is not.
+
+Put Fruity Limiter on the master with the ceiling at −1 dB and raise the gain. If you want a
+shortcut while learning, Soundgoodizer on the master, knob at about 30\%.
+
+Do not chase commercial loudness. Streaming services normalise it away, and a well-arranged
+quiet track beats a loud badly-arranged one. See \texttt{THEORY/07\_mixing.md}.
+
+\subsection{It does not sound like the records I like}\label{fl06_trouble-it-does-not-sound-like-the-records-i-like}
+
+This one is not a settings problem, and it is worth saying plainly: this gap does not close
+by finding the right plugin. It closes by finishing tracks, referencing against commercial
+releases while you mix, and accumulating hours.
+
+The specific thing that helps fastest is \textbf{referencing}. Load a track you admire into your
+project, level-match it, and A/B constantly. You will hear exactly which of your elements is
+wrong within about two minutes, which is much faster than guessing.
+
+\subsection{Where to get help}\label{fl06_trouble-where-to-get-help}
+
+Image-Line\textquotesingle s own manual is genuinely good and it is installed locally (F1 opens it, though
+in this version most pages redirect to the web).
+
+The Image-Line forums are active and the moderators are the actual developers.
+
+For anything conceptual rather than mechanical, the files in \texttt{THEORY/} in this folder will
+usually cover it.

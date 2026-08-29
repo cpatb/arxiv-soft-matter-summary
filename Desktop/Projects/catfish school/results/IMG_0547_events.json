@@ -1,0 +1,140 @@
+[
+  {
+    "frame": 863,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 864,
+    "type": "fission",
+    "parent": 3,
+    "n_children": 2
+  },
+  {
+    "frame": 865,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 866,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 869,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 3
+  },
+  {
+    "frame": 870,
+    "type": "fission",
+    "parent": 2,
+    "n_children": 2
+  },
+  {
+    "frame": 870,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 3
+  },
+  {
+    "frame": 871,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 4
+  },
+  {
+    "frame": 871,
+    "type": "fusion",
+    "child": 3,
+    "n_parents": 2
+  },
+  {
+    "frame": 872,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 872,
+    "type": "fusion",
+    "child": 2,
+    "n_parents": 2
+  },
+  {
+    "frame": 872,
+    "type": "fusion",
+    "child": 3,
+    "n_parents": 2
+  },
+  {
+    "frame": 874,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 875,
+    "type": "fission",
+    "parent": 2,
+    "n_children": 2
+  },
+  {
+    "frame": 875,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 875,
+    "type": "fusion",
+    "child": 2,
+    "n_parents": 2
+  },
+  {
+    "frame": 882,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 885,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 889,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 896,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 916,
+    "type": "fission",
+    "parent": 2,
+    "n_children": 2
+  },
+  {
+    "frame": 923,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 930,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  }
+]

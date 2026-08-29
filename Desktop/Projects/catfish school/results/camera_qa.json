@@ -1,0 +1,17 @@
+{
+  "n_frames": 240,
+  "pol_raw_median": 0.6098878126079742,
+  "pol_corrected_median": 0.5721138305093189,
+  "median_inflation": 0.05449651790849552,
+  "max_inflation": 0.8270089946634762,
+  "worst_case": {
+    "clip": "IMG_0545",
+    "frame": 1001,
+    "cam_shift_px": 40.25907955689742,
+    "pol_raw": 0.9982304349198947,
+    "pol_cor": 0.17122144025641844
+  },
+  "frac_frames_inflated_by_over_0.2": 0.325,
+  "camera_shift_px_median": 1.5100069742724636,
+  "camera_shift_px_p95": 5.558804150437286
+}

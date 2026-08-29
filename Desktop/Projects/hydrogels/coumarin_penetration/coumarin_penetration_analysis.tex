@@ -1,0 +1,437 @@
+\documentclass[11pt]{article}
+
+% ---------------------------------------------------------------------------
+% Coumarin-dimerized PEG hydrogels: UV penetration depth, cure-through time,
+% and a project direction ("programmed stiffness gradients").
+% Working analysis + plan. C. Burton collaboration, 2026-07-08.
+% ---------------------------------------------------------------------------
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\usepackage{siunitx}
+\sisetup{detect-all, per-mode=symbol}
+\DeclareSIUnit{\Molar}{M}
+\DeclareSIUnit{\angstrom}{\text{\AA}}
+
+% plain, robust unit shortcuts (avoid siunitx edge cases)
+\newcommand{\Wcm}{\si{\watt\per\square\cm}}
+\newcommand{\eps}{\varepsilon_{365}}
+\newcommand{\Coum}{\text{CoumAc}}
+
+\title{\textbf{UV Penetration Depth and Cure-Through Time in\\
+Coumarin-Dimerized PEG Hydrogels}\\[4pt]
+\large A quantitative diagnosis of the 1:9:90 gel, and a project direction:\\
+\emph{programmed stiffness gradients}}
+\author{Working note --- hydrogels project}
+\date{2026-07-08}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+A collaborator's \textbf{1:9:90} (\SI{1}{mol\%} PEGDA / \SI{9}{mol\%} CoumAc /
+\SI{90}{mol\%} PEGMA), \SI{2}{mm}-thick PEG gel was photocured
+(\SI{7}{min}, \SI{365}{nm}) and then irradiated \SI{10}{h} on each face, yet appears
+``not to dimerize all the way through.'' We ask whether this is explained by simple
+optical penetration-depth limits. Using Beer--Lambert attenuation, the photobleaching
+nature of the coumarin $[2+2]$ dimerization, and a photon-budget argument, we conclude
+that \textbf{dose starvation is almost certainly \emph{not} the cause}: the incident dose
+exceeds the minimum needed to dimerize a full \SI{2}{mm} column by roughly
+$20\times$. The more likely explanations are (i) a mobility/topology-limited conversion
+\emph{ceiling} in the set network, (ii) a small non-bleaching absorber floor, or
+(iii) misinterpretation of a \emph{surface-only} readout (swelling-induced creasing on the
+irradiated faces) as a bulk measurement. We give the explicit penetration-depth and
+cure-time formulae with numbers for this formulation, identify the single dominant unknown
+(the molar absorptivity of CoumAc at \SI{365}{nm}, $\eps$), and propose three cheap
+diagnostic experiments that settle the question. Finally, we develop \textbf{Direction A}:
+rather than fighting the depth gradient, \emph{program} it --- single-sided or photomask
+irradiation makes a stiff-skin/soft-core architecture whose differential swelling drives
+predictable bending and patterned surface topography. We outline the coupled
+optics--kinetics--mechanics forward model and a staged experimental program that reuses the
+group's existing brightfield crease/curl analysis pipeline.
+\end{abstract}
+
+\tableofcontents
+
+% ===========================================================================
+\section{The observation and the question}
+% ===========================================================================
+
+The reference system is the in-house dual-cross-linked PEG--coumarin network of
+VanZanten \emph{et al.}\ \cite{vanzanten2026} (same lab, same light source, same geometry).
+The backbone is a permanent PEGDA/PEGMA acrylate network formed by free-radical
+photopolymerization (DMPA initiator, \SI{0.5}{wt\%}); a pendant photoresponsive
+cross-linker, 7-(2-acryloyloxyethoxy)-4-methylcoumarin (\emph{CoumAc}), dimerizes under
+\SI{365}{nm} light via a $[2+2]$ cycloaddition (adding covalent cross-links, stiffening the
+gel) and cleaves under \SI{254}{nm} light. Formulation names denote the mole percents of
+\textbf{PEGDA:CoumAc:PEGMA}; the gel in question is \textbf{1:9:90}, i.e.\ the
+second-highest coumarin loading in the entire study and twice the coumarin of the paper's
+workhorse formulation (0.5:4.5:95).
+
+\paragraph{Protocol as reported to us.}
+Cure \SI{7}{min} at \SI{365}{nm} (ThorLabs Solis LED 365C, incident \SI{0.1}{\Wcm}),
+then postcure-irradiate \SI{10}{h} per face (flip halfway). Readout: harvest the
+collaborator's samples and score how each \emph{face} wrinkles/fractures when exposed to
+water, by brightfield microscopy --- the same swelling-induced surface-creasing assay used
+in \cite{vanzanten2026}. The reported symptom is that dimerization does not appear to reach
+the interior.
+
+\paragraph{Question.}
+Can the penetration depth be computed analytically from the light specs, composition, and
+geometry, and does it predict the observation? Short answer: \emph{we can compute it, and it
+predicts that penetration is not the limiting factor here.} The rest of this note shows why,
+and what to do instead.
+
+% ===========================================================================
+\section{Governing physics}
+% ===========================================================================
+
+\subsection{Beer--Lambert attenuation and the penetration depth}
+Monochromatic intensity decays with depth $z$ as
+\begin{equation}
+  I(z) = I_0\, 10^{-\eps\, c\, z} = I_0\, e^{-\alpha z},
+  \qquad \alpha = \ln(10)\,\eps\, c ,
+  \label{eq:beer}
+\end{equation}
+where $c$ is the molar concentration of the dominant \SI{365}{nm} absorber (here CoumAc),
+$\eps$ its molar absorptivity (decadic, \si{\per\Molar\per\cm}), and $\alpha$ the natural
+attenuation coefficient. The $1/e$ penetration depth is
+\begin{equation}
+  \boxed{\;\delta_{1/e} = \frac{1}{\alpha} = \frac{1}{\ln(10)\,\eps\, c}
+  = \frac{1}{2.303\,\eps\, c}\;}
+  \label{eq:delta}
+\end{equation}
+and the fraction of light reaching the back face of a slab of thickness $L$ is
+$T = 10^{-\eps c L}$. Equations~\eqref{eq:beer}--\eqref{eq:delta} are the ``penetration
+depth'' the collaborators want --- but they describe the \emph{initial}, unbleached state
+and are only half the story for a reacting gel (next).
+
+\subsection{Coumarin is a \emph{photobleaching} absorber: the cure front self-clears}
+The coumarin chromophore absorbs near \SI{320}{nm} because of the conjugated
+$\mathrm{C3{=}C4}$ double bond. The $[2+2]$ dimerization \emph{destroys} that double bond,
+blue-shifting the absorption out of the \SI{365}{nm} band: \textbf{the dimer is effectively
+transparent at \SI{365}{nm}}. Consequently the absorber is consumed where the light is
+strongest (the surface), the local optical density drops, and a \emph{conversion front}
+propagates inward --- the standard behavior of frontal photopolymerization/photobleaching
+media \cite{cabral2005,terrones2001}. A na\"ive static Beer--Lambert reading therefore
+\emph{overstates} the steady-state penetration limit: given enough dose, the front can in
+principle sweep the full thickness.
+
+\subsection{Three distinct limiters}
+Whether the interior ever cures is set by whichever of the following bites first:
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Optical attenuation (dose-limited, transient).} If $\delta_{1/e}\ll L$ and
+  bleaching is slow, the front takes a long time to advance. Curable in principle, given
+  dose. Dominant at \SI{254}{nm} (see below), mild at \SI{365}{nm}.
+  \item \textbf{Conversion ceiling (dose-\emph{independent}).} Once the acrylate network is
+  set, each CoumAc is tethered and can only dimerize with a partner already within
+  $\sim\SI{4}{\angstrom}$ and correctly oriented. Isolated coumarins never react;
+  restricted segmental mobility caps conversion well below 100\%. VanZanten \emph{et al.}\
+  attribute thick-sample behavior partly to this ``diffusion-limited network
+  reorganization'' \cite{vanzanten2026}. \emph{More hours cannot beat this.}
+  \item \textbf{Non-bleaching absorber floor (hard optical limit).} Any species that
+  absorbs at \SI{365}{nm} but does \emph{not} bleach sets a floor the front cannot cross.
+  DMPA (\SI{0.5}{wt\%}) absorbs weakly at \SI{365}{nm} ($\sim\!10\times$ less than at
+  \SI{254}{nm} \cite{vanzanten2026}); its photolysis products (benzil/benzaldehyde-type
+  species) absorb near \SI{360}{nm} and do not bleach. Plausible but small.
+\end{enumerate}
+
+\paragraph{Why the collaborators' \SI{254}{nm} intuition does not transfer.}
+The strong attenuation documented in \cite{vanzanten2026} is a \SI{254}{nm} phenomenon:
+$\sim$90\% of incident \SI{254}{nm} intensity is lost within the top $\sim\SI{25}{\micro m}$
+of a \SI{2}{mm} specimen, so \SI{254}{nm} cleavage is confined to a
+tens-of-microns surface layer. \textbf{Both the collaborators and the paper perform
+\emph{dimerization} at \SI{365}{nm}}, where DMPA absorbs far less and penetration is much
+deeper; the \SI{254}{nm} wall does not apply.
+
+% ===========================================================================
+\section{Quantitative estimates for the 1:9:90 gel}
+% ===========================================================================
+
+\subsection{CoumAc concentration}
+With mole fractions $x_{\text{PEGDA}}{=}0.01$, $x_{\Coum}{=}0.09$, $x_{\text{PEGMA}}{=}0.90$
+and molar masses \SI{700}{g/mol} (PEGDA), \SI{274.3}{g/mol} (CoumAc, $\mathrm{C_{15}H_{14}O_5}$),
+\SI{400}{g/mol} (PEGMA), the mole-averaged monomer mass is
+$\bar M = \sum x_i M_i \approx \SI{392}{g/mol}$. Taking a resin density
+$\rho \approx \SI{1.10}{g/cm^3}$ (typical PEG-acrylate; $\pm10\%$), the total monomer
+concentration is $c_\text{tot}=\rho/\bar M \approx \SI{2.81}{\Molar}$ and
+\begin{equation}
+  c_{\Coum} = x_{\Coum}\, c_\text{tot} \approx \SI{0.25}{\Molar}.
+  \label{eq:conc}
+\end{equation}
+
+\subsection{Penetration depth vs.\ the one unknown, $\eps$}
+Everything rides on $\eps$, the molar absorptivity of CoumAc at \SI{365}{nm}. The chromophore
+peaks near \SI{320}{nm}; \SI{365}{nm} sits on the red tail, so $\eps$ plausibly ranges over
+orders of magnitude and \emph{must be measured} (Sec.~\ref{sec:experiments}). Its value
+alone decides whether optics matter (Table~\ref{tab:delta}).
+
+\begin{table}[h]
+\centering
+\caption{Beer--Lambert penetration for $c_{\Coum}=\SI{0.25}{\Molar}$, $L=\SI{2}{mm}$
+(initial, unbleached state). $T_\text{back}$ = fraction of incident \SI{365}{nm} light
+reaching the far face.}
+\label{tab:delta}
+\begin{tabular}{rrrrl}
+\toprule
+$\eps$ (\si{\per\Molar\per\cm}) & $\alpha$ (\si{\per\cm}) & $\delta_{1/e}$ & $A$(2\,mm) & $T_\text{back}$ \\
+\midrule
+5    & 2.9    & \SI{3.4}{mm}          & 0.25 & 56\%\ \ (optics irrelevant) \\
+20   & 11.6   & \SI{859}{\micro m}    & 1.0  & 10\%\ \ (marginal) \\
+50   & 29.1   & \SI{344}{\micro m}    & 2.5  & 0.3\%\ \ (surface-limited) \\
+100  & 58.2   & \SI{172}{\micro m}    & 5.1  & $9\times10^{-6}$ \\
+300  & 174.6  & \SI{57}{\micro m}     & 15   & $\sim 0$ \\
+1000 & 582    & \SI{17}{\micro m}     & 51   & $\sim 0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Cure-through time: the photon budget}
+For a cleanly bleaching front, the time to dimerize a column of thickness $L$ has a hard
+lower bound set by photon supply: enough \SI{365}{nm} photons must be absorbed to react
+every coumarin, discounted by the dimerization quantum yield $\Phi$:
+\begin{equation}
+  \boxed{\;t_\text{through} \;\gtrsim\; \frac{c_{\Coum}\, N_A\, L}{\Phi\, \big(I_0\,\lambda / hc\big)}\;}
+  \label{eq:tthrough}
+\end{equation}
+where $I_0\lambda/hc$ is the incident photon flux. With
+$c_{\Coum}=\SI{0.25}{\Molar}$, $L=\SI{2}{mm}$, $I_0=\SI{0.1}{\Wcm}$,
+$\lambda=\SI{365}{nm}$ (flux $\approx \SI{1.8e17}{photons\,cm^{-2}\,s^{-1}}$):
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+$\Phi$ & $t_\text{through}$ (min) & note \\
+\midrule
+0.05 & $\approx 55$ & pessimistic $\Phi$ \\
+0.1  & $\approx 28$ & \\
+0.3  & $\approx 9$  & optimistic $\Phi$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+The real cure-through time is a small multiple ($2$--$5\times$) of this bound because the
+front slows and the conversion ceiling intervenes --- i.e.\ order \textbf{1--2 hours},
+consistent with VanZanten \emph{et al.}, who obtained substantial bulk stiffening through
+\SI{2}{mm} in \textbf{\SI{60}{min}} of \SI{365}{nm} postcure (E$'$ up 69\% for 1:1:98).
+
+\subsection{Interpretation: dose is not the bottleneck}
+The collaborators applied \SI{10}{h} \emph{per face} ($\sim\!20\times$ the photon-budget
+bound of Eq.~\eqref{eq:tthrough} and $\sim\!20\times$ the paper's successful \SI{60}{min}
+cure). \textbf{If penetration/dose were the sole gate, the gel would be far past complete.}
+That it is not points away from optics and toward the conversion ceiling
+(limiter 2), a non-bleaching floor (limiter 3), or --- most likely --- a readout artifact
+(next section). One caveat worth testing: the paper cured its \emph{own} 1:9:90 sample for
+\SI{77}{min} at \SI{365}{nm} (not \SI{7}{min}) before postcure; in this slow-polymerizing,
+high-CoumAc formulation a \SI{7}{min} cure may under-form the acrylate network.
+
+% ===========================================================================
+\section{A critical look at the readout}\label{sec:readout}
+% ===========================================================================
+
+The evidence for ``not curing through'' is swelling-induced \emph{surface creasing} imaged
+in brightfield on the two \emph{irradiated faces}. Three cautions:
+\begin{itemize}[leftmargin=*]
+  \item \textbf{It is a near-surface probe.} Creasing arises from the mismatch between a
+  constrained, stiffer surface skin and the swelling material beneath; the crease pattern
+  encodes the crosslink-density gradient over roughly the top tens-to-hundreds of microns of
+  the imaged face. It is excellent for detecting \emph{asymmetry between faces} but does not
+  directly image the \SI{1}{mm}-deep core.
+  \item \textbf{Coumarin dimerization is colorless.} Any opacity/yellowing seen by eye is
+  most likely something else (light scattering, incipient phase separation, DMPA
+  photoproducts, or incomplete acrylate cure), \emph{not} the dimerization front. The
+  crease pattern --- not color --- is the dimerization-sensitive signal.
+  \item \textbf{No positive control.} Without a reference for what fully dimerized material
+  looks like under this assay, ``incomplete'' cannot be quantified.
+\end{itemize}
+In short, the current data cannot distinguish ``the interior never dimerized'' from ``the
+interior dimerized to its achievable ceiling, which is less than the surface,'' nor from
+``it did cure through and the face assay is misleading.''
+
+% ===========================================================================
+\section{Three cheap experiments that settle it}\label{sec:experiments}
+% ===========================================================================
+\begin{enumerate}[leftmargin=*]
+  \item \textbf{Direct attenuation ($\sim$10 min).} Place a \SI{2}{mm} gel on the ThorLabs
+  power sensor and read transmitted vs.\ blank intensity. This gives $\alpha=-\ln(I/I_0)/L$
+  and $\delta_{1/e}$ \emph{with no assumption about $\eps$}, and repeating it during
+  irradiation shows the front bleaching through in real time.
+  \item \textbf{A real depth probe.} The coumarin \emph{monomer} fluoresces blue; the
+  \emph{dimer} does not. Cut a cross-section and image the \SI{2}{mm} edge under
+  blue/UV excitation: a dark shell over a bright core \emph{directly visualizes} a
+  surface-limited dimerization profile. This is the measurement the project currently lacks.
+  \item \textbf{Positive control.} Irradiate a thin ($\sim$\SI{10}{\micro m}) free-standing
+  film to completion (as the paper's FTIR films) to define ``100\% achievable
+  dimerization,'' giving the face-creasing assay a reference.
+\end{enumerate}
+
+% ===========================================================================
+\section{Direction A --- Programmed stiffness gradients}\label{sec:A}
+% ===========================================================================
+
+\subsection{The idea, and why it is the project}
+``We can tune rigidity with light'' is \emph{already published} for exactly this system
+\cite{vanzanten2026}. Reproducing it is not a project. But that paper treated the
+through-thickness non-uniformity as a nuisance --- it \emph{simulated} attenuation, called
+thick-sample cure ``thickness-sensitive,'' and stopped. Nobody \emph{measured} the
+dimerization depth profile or \emph{used} the gradient as a design variable.
+
+\textbf{Direction A inverts the framing: the penetration-limited gradient is the feature.}
+Single-sided (or photomask-patterned) \SI{365}{nm} irradiation deliberately builds a
+stiff-skin/soft-core architecture. On solvent uptake the differential swelling between the
+lightly cross-linked (high-swelling) core and the heavily cross-linked (low-swelling) skin
+generates a bending moment; the sheet \textbf{curls} predictably, and masked regions produce
+\textbf{patterned crease fields / programmable surface topography}. The output observables
+--- curl radius and crease morphology --- are exactly what the group's brightfield pipeline
+already measures.
+
+\subsection{Novelty relative to VanZanten \emph{et al.}\ \cite{vanzanten2026}}
+\begin{itemize}[leftmargin=*]
+  \item \emph{They:} aim for uniform bulk dimerization; treat gradients as error; qualitative
+  attenuation simulation only.
+  \item \emph{Us:} \textbf{deliberate asymmetric/patterned dose as a control knob}; a
+  \textbf{quantitative forward model} dose $\to$ conversion profile $\to$ modulus/swelling
+  profile $\to$ shape; and \textbf{shape/topography as the designed output}, validated
+  against the crease/curl assay.
+\end{itemize}
+
+\subsection{The forward model (what makes it predictive)}
+A five-stage chain, each stage a standard, citable model; the whole thing is a small,
+verifiable 1-D solve.
+
+\paragraph{(1) Optics + kinetics $\to$ conversion profile $p(z)$.}
+Couple bleaching attenuation to first-order dimerization:
+\begin{equation}
+  \frac{\partial p}{\partial t} = \Phi\,\sigma\, I(z,t)\,\big[1-p(z,t)\big],
+  \qquad
+  I(z,t) = I_0\,\exp\!\Big[-\ln(10)\,\eps\, c_{\Coum}\!\int_0^z\!\big(1-p(z',t)\big)\,dz'\Big],
+  \label{eq:model}
+\end{equation}
+with absorption cross-section $\sigma = \ln(10)\,\eps/N_A$ and a conversion ceiling
+$p \le p_\text{max}(\text{network})<1$ imposed to encode the mobility/partner limit
+(limiter 2). Inputs: measured $\alpha$ (Exp.~1), $\Phi$, $p_\text{max}$ (Exp.~2/3).
+
+\paragraph{(2) Conversion $\to$ cross-link density.}
+$\nu_x(z) = \nu_{x,0} + \tfrac{1}{2}\,p(z)\,c_{\Coum}$ (each dimer joins two chains).
+
+\paragraph{(3) Cross-link density $\to$ swelling and modulus (Flory--Rehner).}
+Equilibrium swelling ratio $\lambda(z)$ and shear modulus
+$G(z)=\nu_x(z) k_B T$ from Flory--Rehner \cite{floryrehner}, giving the stress-free
+(free-swelling) linear strain $\varepsilon^*(z)=\lambda(z)-1$.
+
+\paragraph{(4) Depth profile $\to$ curvature (graded-beam / plate theory).}
+For a stress-free strain $\varepsilon^*(z)$ and modulus $E(z)=3G(z)$, small-deflection beam
+theory gives the equilibrium curvature
+\begin{equation}
+  \kappa \;=\; \frac{\displaystyle\int_0^L E(z)\,\varepsilon^*(z)\,(z-\bar z)\,dz}
+                    {\displaystyle\int_0^L E(z)\,(z-\bar z)^2\,dz},
+  \qquad
+  \bar z = \frac{\int E z\,dz}{\int E\,dz},
+  \label{eq:curv}
+\end{equation}
+which reduces to the Timoshenko bimetallic-strip result \cite{timoshenko1925} in the
+two-layer limit --- a clean analytic anchor for validation.
+
+\paragraph{(5) Surface instability $\to$ crease onset.}
+Where a stiff skin is compressed by a swelling substrate, creasing sets in above a critical
+mismatch strain ($\varepsilon_c\!\approx\!0.35$ for a neo-Hookean surface
+\cite{hong2009creasing}); crease spacing scales with skin depth. This links the model to the
+existing brightfield crease-metric readout.
+
+\paragraph{Outputs.} Given a measured $\alpha$ and an irradiation recipe (which faces, how
+long, mask pattern), the model predicts: $p(z)$, $G(z)$, the curl radius $1/\kappa$, and the
+crease onset/wavelength --- all directly comparable to measurement.
+
+\subsection{Code reuse.}
+The group's \texttt{drying\_analysis} package already provides the two macroscopic readouts
+this direction needs --- \texttt{curl\_radius} (K\aa sa circle fit of $1/\kappa$) and
+\texttt{crack\_metrics}/crease morphology --- plus \texttt{calibration} and
+\texttt{indentation\_modulus} (Hertz/Dimitriadis, for spot-checking $E(z)$ on cut faces).
+The new work is the forward model of Eq.~\eqref{eq:model}--\eqref{eq:curv}; the measurement
+layer largely exists.
+
+\subsection{Staged experimental program}
+\begin{description}[leftmargin=*,style=nextline]
+  \item[Phase 0 --- Diagnostics (1 week).] Experiments 1--3 (Sec.~\ref{sec:experiments}):
+  measure $\alpha$, the fluorescence depth profile, and a positive control. Deliverable:
+  a defensible answer to ``does it cure through, and if not, why.'' Also fixes the cure time
+  (\SI{7}{min} vs.\ paper's \SI{77}{min}).
+  \item[Phase 1 --- Dose $\to$ curvature map (2--3 weeks).] Single-sided \SI{365}{nm} dose
+  series ($t=0,10,30,60,\SI{120}{min}$) on 1:9:90 and a lower-coumarin control (e.g.\
+  1:4:95). Measure curl radius on swelling and crease metrics on both faces. Fit
+  $\Phi,p_\text{max}$; validate Eq.~\eqref{eq:model}--\eqref{eq:curv}.
+  \item[Phase 2 --- Thickness scaling (1--2 weeks).] Repeat at $L=0.5,1,\SI{2}{mm}$ to test
+  the predicted gradient-vs-thickness scaling; the crossover where curl gives way to
+  through-cure is a sharp, falsifiable prediction.
+  \item[Phase 3 --- Patterning (2--3 weeks).] Photomask/grayscale \SI{365}{nm} exposure to
+  print lateral stiffness patterns; demonstrate a programmed shape (self-folding element or a
+  simple gripper) and a patterned crease field.
+  \item[Phase 4 --- Model + write-up.] Consolidate into the predictive tool and a manuscript:
+  \emph{``Programming shape and surface topography in coumarin PEG gels via depth-resolved
+  photo-dimerization.''}
+\end{description}
+
+\subsection{Risks and mitigations}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Gradient too shallow to bend} (if $\eps$ is small, cure is nearly uniform).
+  Mitigate with higher CoumAc, thinner samples, or a benign inert \SI{365}{nm} dye to sharpen
+  the gradient on purpose. Phase 0's $\alpha$ measurement tells us immediately which regime
+  we are in.
+  \item \textbf{Conversion ceiling limits stiffness contrast.} Characterized directly in
+  Phase 1 as $p_\text{max}$; if too low, raise crosslinker or reduce initial cure so more
+  coumarins remain mobile.
+  \item \textbf{Creasing vs.\ smooth-bending regime} depends on boundary constraint; both are
+  informative and covered by the existing readouts.
+\end{itemize}
+
+% ===========================================================================
+\section{Summary}
+% ===========================================================================
+\begin{itemize}[leftmargin=*]
+  \item Penetration depth follows Eq.~\eqref{eq:delta}; cure-through time follows
+  Eq.~\eqref{eq:tthrough}. Both are dominated by one measurable unknown, $\eps$.
+  \item For the 1:9:90 gel, \SI{10}{h}/face is $\sim\!20\times$ the dose needed; \textbf{dose
+  starvation is not the cause}. Suspect a conversion ceiling, a non-bleaching floor, or a
+  surface-only-readout artifact --- resolved by the three Phase-0 experiments.
+  \item \textbf{Direction A} turns the depth gradient into the deliverable: predictable,
+  programmable stiffness gradients $\to$ bending and patterned topography, with a compact
+  forward model and an experimental program that reuses the existing crease/curl pipeline.
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+\appendix
+\section{Constants and assumptions}
+$N_A=\SI{6.022e23}{mol^{-1}}$, $h=\SI{6.626e-34}{J\,s}$, $c=\SI{3.0e8}{m/s}$,
+$\lambda=\SI{365}{nm}$ ($E_\gamma=\SI{5.44e-19}{J}$). Resin density
+$\rho=\SI{1.10}{g/cm^3}$ (assumed, $\pm10\%$). CoumAc $M=\SI{274.3}{g/mol}$
+($\mathrm{C_{15}H_{14}O_5}$). Quantum yield $\Phi$ and molar absorptivity $\eps$ are
+\emph{unmeasured} and are the two parameters to pin experimentally. All numerical values in
+Tables~\ref{tab:delta} were generated by the accompanying script
+\texttt{penetration.py} (reproduce with the constants above).
+
+\begin{thebibliography}{9}
+\bibitem{vanzanten2026} A. VanZanten, S. Punhani-Schillinger, M. R. Blocksome, A. Ketkar,
+  S.-Y. Chen, M. M. Driscoll, R. C. Ferrier Jr., C. R. Szczepanski.
+  \emph{Photoswitchable Cross-Linking in Polymer Gels: Effects on Surface Creasing and
+  Network Relaxation during Swelling.} Macromolecules \textbf{2026}, 59, 4622--4635.
+  DOI: 10.1021/acs.macromol.5c03103.
+\bibitem{cabral2005} J. T. Cabral, J. F. Douglas.
+  \emph{Propagating waves of network formation induced by light.} Polymer \textbf{2005}, 46, 4230.
+\bibitem{terrones2001} G. Terrones, A. J. Pearlstein.
+  \emph{Effects of optical attenuation and consumption of a photobleaching initiator on
+  local initiation rates in photopolymerizations.} Macromolecules \textbf{2001}, 34, 3195.
+\bibitem{floryrehner} P. J. Flory, J. Rehner.
+  \emph{Statistical mechanics of cross-linked polymer networks II. Swelling.}
+  J. Chem. Phys. \textbf{1943}, 11, 521.
+\bibitem{timoshenko1925} S. Timoshenko.
+  \emph{Analysis of bi-metal thermostats.} J. Opt. Soc. Am. \textbf{1925}, 11, 233.
+\bibitem{hong2009creasing} W. Hong, X. Zhao, Z. Suo.
+  \emph{Formation of creases on the surfaces of elastomers and gels.}
+  Appl. Phys. Lett. \textbf{2009}, 95, 111901.
+\end{thebibliography}
+
+\end{document}

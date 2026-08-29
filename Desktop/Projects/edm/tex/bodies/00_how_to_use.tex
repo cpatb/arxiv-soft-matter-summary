@@ -1,0 +1,107 @@
+Written for someone who has never made a track, does not read music, and lives in the city
+where this whole thing was invented.
+
+You played guitar and trumpet as a kid, which is more useful than you think. You already
+know what a beat feels like and you have held an instrument. What you are missing is a
+vocabulary, a mental model of how a dance record is built, and about six hours of clicking
+around FL Studio until the layout stops feeling hostile. That is all this is.
+
+\subsection{What is here}\label{00_how_to_use-what-is-here}
+
+\textbf{THEORY/} is the reading. Nine files, roughly an hour each if you read slowly and
+actually stop to listen to the examples.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}>{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1759}}>{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.8241}}@{}}
+\toprule\noalign{}
+File & What it covers \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{01\_what\_edm\_is.md} & What dance music is \emph{for}, and why that explains almost every formal choice in it \\
+\texttt{02\_chicago\_house.md} & The Warehouse, the Music Box, Trax, acid, ghetto house, footwork. Your local history \\
+\texttt{03\_rhythm.md} & The grid, four on the floor, swing, the drum machine vocabulary \\
+\texttt{04\_harmony.md} & Notes, keys, scales, chords, bass lines. Music theory, but only the parts house uses \\
+\texttt{05\_sound\_design.md} & Oscillators, filters, envelopes, LFOs. How a synth actually makes a sound \\
+\texttt{06\_arrangement.md} & Why everything happens in multiples of 8 bars, and how a track is shaped over six minutes \\
+\texttt{07\_mixing.md} & Gain staging, EQ, compression, sidechain, loudness \\
+\texttt{08\_genre\_map.md} & Deep house through footwork through techno through drum and bass, with tempos and tells \\
+\texttt{09\_glossary.md} & Every term you will hear, defined in one line \\
+\end{longtable}
+}
+
+\textbf{FL\_STUDIO/} is the software. Written against the version you actually have installed
+(FL Studio 2025, v25.1.4, All Plugins bundle), with the real sample paths and the real
+keyboard shortcuts checked against Image-Line\textquotesingle s manual.
+
+Start with \texttt{00\_setup.md}, then \texttt{02\_first\_beat.md}. You can make a recognisable Chicago
+house loop in about twenty minutes without understanding any of the theory. Do that first.
+The reading makes far more sense once your hands know where things are.
+
+\textbf{PRACTICE/} is an eight week plan and a list of drills. The plan is the single most
+important file in here, because the failure mode for beginners is not lack of knowledge.
+It is making forty eight-bar loops and never finishing anything.
+
+\textbf{LISTENING/} is a canon and a scene guide. Chicago house is one of the few genres where
+the founding documents are all on streaming and most of the founders are, or were until
+recently, still playing in the city.
+
+\subsection{How to use it}\label{00_how_to_use-how-to-use-it}
+
+Suggested first week, in order:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \texttt{FL\_STUDIO/00\_setup.md}, then \texttt{FL\_STUDIO/02\_first\_beat.md}. Get a kick, clap and hats
+  looping. One hour.
+\item
+  \texttt{THEORY/01\_what\_edm\_is.md} and \texttt{THEORY/03\_rhythm.md}. Now the loop you just made will
+  have names attached to it.
+\item
+  \texttt{LISTENING/chicago\_canon.md}. Put on the first five tracks while you read.
+\item
+  \texttt{THEORY/02\_chicago\_house.md}.
+\item
+  \texttt{FL\_STUDIO/03\_first\_track.md}. Add chords and bass, arrange it, export an MP3.
+\end{enumerate}
+
+After that, \texttt{PRACTICE/8\_week\_plan.md} takes over.
+
+\subsection{Two things worth saying up front}\label{00_how_to_use-two-things-worth-saying-up-front}
+
+\textbf{You do not need to learn theory before you can make music.} House was built almost
+entirely by people who could not read music and were working out chords by ear on
+second-hand equipment. Marshall Jefferson bought a piano and taught himself the riff to
+"Move Your Body" by trial and error. The theory in here is a shortcut for understanding why
+the things you like sound good, not a licence you have to earn.
+
+\textbf{The gap between your ears and your hands is the whole difficulty.} You have excellent
+taste already, because you have been listening to music your entire life. Your first
+tracks will be bad, and you will hear exactly how bad, and that gap is discouraging in a
+way that has nothing to do with talent. Everyone goes through it. The only known treatment
+is finishing things.
+
+\subsection{The LaTeX edition}\label{00_how_to_use-the-latex-edition}
+
+\texttt{tex/} holds a typeset version of everything above: 21 standalone chapter PDFs and one
+86-page bound volume, \texttt{tex/edm\_guide.pdf}.
+
+The markdown is the source of truth. \texttt{tex/build.py} converts it with pandoc and wraps it in
+\texttt{tex/preamble.tex}, so editing a markdown file and re-running the script updates the
+standalone chapter and the bound volume together:
+
+\begin{verbatim}
+cd tex
+python build.py --pdf
+\end{verbatim}
+
+\subsection{Where the facts come from}\label{00_how_to_use-where-the-facts-come-from}
+
+Historical dates and details were checked against Wikipedia, Image-Line\textquotesingle s manual, and the
+City of Chicago\textquotesingle s landmark designation report for the Warehouse. FL Studio keyboard
+shortcuts come from Image-Line\textquotesingle s official shortcut reference, not memory. Venue and record
+shop details change, so anything in \texttt{LISTENING/chicago\_scene\_today.md} is worth a search
+before you get on the train.

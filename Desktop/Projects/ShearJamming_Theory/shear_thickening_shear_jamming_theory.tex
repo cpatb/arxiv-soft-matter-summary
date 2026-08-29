@@ -1,0 +1,751 @@
+% ============================================================
+%  Particle-Scale Determinants of Shear Thickening and Shear
+%  Jamming in Dense Suspensions: A Unified Constraint-Based
+%  Theory, and the Formal Distinction Between Confined Rheometry
+%  and Free-Surface / Drop-Impact Flows
+%
+%  Compiled for the Drop Impact project — 2026-08-20
+%  Author: charlie (with Claude)
+%  Build: pdflatex (twice for references and TOC)
+% ============================================================
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[colorlinks=true, linkcolor=blue!60!black, citecolor=blue!60!black, urlcolor=blue!60!black]{hyperref}
+
+\newcommand{\phiJ}{\phi_{\mathrm{J}}}
+\newcommand{\phiO}{\phi_{0}}
+\newcommand{\phiM}{\phi_{\mathrm{m}}}
+\newcommand{\phiRCP}{\phi_{\mathrm{rcp}}}
+\newcommand{\sigmastar}{\sigma^{*}}
+\newcommand{\etar}{\eta_{\mathrm{r}}}
+\newcommand{\etas}{\eta_{\mathrm{s}}}
+\newcommand{\Fstar}{F^{*}}
+\newcommand{\mup}{\mu_{\mathrm{p}}}
+\newcommand{\gdot}{\dot{\gamma}}
+\newcommand{\Dt}[1]{\frac{\mathrm{D}#1}{\mathrm{D}t}}
+
+\title{\textbf{Particle-Scale Determinants of Shear Thickening and Shear Jamming in Dense Suspensions:}\\[4pt]
+\large A Unified Constraint-Based Theory, and the Formal Distinction Between Confined Rheometry and Free-Surface / Drop-Impact Flows}
+\author{Drop Impact Project --- Theory Compendium}
+\date{August 20, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+Dense particulate suspensions --- cornstarch in water, St\"ober silica in ionic solutions, and their many industrial cousins --- exhibit continuous shear thickening (CST), discontinuous shear thickening (DST), and shear jamming (SJ): a stress-induced conversion of a flowing liquid into a transiently solid, load-bearing material. This document builds a unified, falsifiable theory of these phenomena in three layers. \textbf{Layer 1 (statics; synthesis of established results):} every particle attribute --- size $a$, shape, size distribution, modulus $E$, hardness $H$, and interfacial chemistry --- enters steady rheology through exactly two ladders: the \emph{onset-stress ladder} $\{\sigmastar_k\}$ at which constraint families activate, and the \emph{jamming-point ladder} $\{\phiJ^{(k)}\}$ set by constraint counting; CST, DST, and SJ are the smooth, spinodal, and completed stages of the flowing state's approach to its stress-dependent jamming point. \textbf{Layer 2 (dynamics; the central new claim):} jamming and un-jamming are \emph{not time-reverses of one another}. Constraint formation is mechanically activated --- driven over the repulsive barrier by the flow-scale force $\sigma a^2$ --- and its rate is \emph{algebraic} in $\sigma/\sigmastar$; constraint release at low load has no mechanical drive and proceeds by activated escape from the contact minimum into which the pair was pressed, at a rate \emph{exponential} in the escape energy $E_{\mathrm{esc}}/k_{\mathrm{B}}T$ (thermal channel) or gated by a residual-stress threshold (mechanical channel). Because $\sigmastar$ is a functional of the \emph{maximum slope} of the interparticle potential while $E_{\mathrm{esc}}$ is a functional of its \emph{depth}, chemistry tunes the two rates independently --- and, for screening-type perturbations, in opposite directions. This ``contact latching'' asymmetry predicts, with no adjustable structure: knobs that make jamming easier \emph{and} longer-lived while leaving arrest geometry fixed; stretched-exponential (KWW) macroscopic relaxation whose stretching exponent falls as latching deepens; Arrhenius lifetimes for colloidal systems versus athermal, boundary-condition-dependent lifetimes for granular-scale systems; and sharp vibration thresholds for un-jamming. \textbf{Layer 3 (ensembles):} confined rheometry and free-surface/drop-impact flows are formally different mechanical ensembles probing this one structure --- rheometry isolates the static ladders under sustained boundary load with dilation frustrated; a drop is inertially self-loaded, capillarity-capped at stress $\sim\Gamma/a$, and is the \emph{only} clean measurement of the backward (un-jamming) rate, because only a free surface can hold a jammed state at zero mean applied stress. The theory is confronted with drop-impact data from this program --- salt-invariant deposit geometry with order-of-magnitude salt-slowed un-jamming in sub-micron silica, velocity-suppressed maximum spreading $\beta_{\max}\!\sim\!u_0^{-0.4}$, and the silica/cornstarch lifetime inversion --- and each confrontation is converted into a discriminating experiment.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduction, scope, and the central claim}
+% ============================================================
+
+\subsection{The phenomena}
+A dense suspension is a fluid–solid composite: rigid or nearly rigid particles (radius $a\sim 10\,\mathrm{nm}$--$100\,\mu\mathrm{m}$) at solid volume fraction $\phi$ in a Newtonian solvent of viscosity $\etas$. Three regimes of stress response concern us:
+
+\begin{enumerate}
+\item \textbf{Continuous shear thickening (CST):} the viscosity $\eta(\sigma)$ rises smoothly, typically over 1--2 decades of stress, by a factor of a few to $\sim$100. Reversible, steady-state, observed for $\phi$ moderately below a critical fraction.
+\item \textbf{Discontinuous shear thickening (DST):} above a $\phi$-dependent critical stress the steady flow curve $\sigma(\gdot)$ becomes non-monotonic (S-shaped); stress-controlled ramps show a viscosity jump of orders of magnitude, rate-controlled protocols show giant fluctuations and banding in the time domain. DST is the spinodal of the thickening transition.
+\item \textbf{Shear jamming (SJ):} in a window $\phiM < \phi < \phiO$ (defined below), sufficient applied stress converts the suspension into a solid with a finite yield stress and (transiently) a shear modulus --- a material that fractures, supports a person running on it, and stops a projectile. Unlike DST, which is still a flowing state, SJ is an arrested state, and it \emph{melts back} to a liquid on a measurable timescale when the load is removed.
+\end{enumerate}
+
+These phenomena were long attributed to hydrodynamic clustering alone \cite{brady1985,wagner2009}, but order-of-magnitude arguments and direct measurements show lubrication hydrodynamics cannot by itself produce DST or SJ: the lubrication singularity is too weak (logarithmic in gap for rough particles), and thickened suspensions exhibit contact-dominated normal stresses, frictional flow signatures, and tribologically measurable film ruptures \cite{seto2013,mari2014,lin2015,royer2016,comtet2017,clavaud2017,hsiao2017}. The modern synthesis \cite{morris2020,ness2022,denn2018} is:
+
+\begin{quote}
+\emph{Shear thickening is the stress-activated conversion of lubricated, sliding-free interactions into constraint-carrying contacts (frictional, and in some systems adhesive or interlocking), which lowers the operative jamming point $\phiJ$ from the frictionless value $\phiO$ toward the fully-constrained value $\phiM$. CST, DST, and SJ are, respectively, the smooth, spinodal, and completed stages of the flowing state's approach to its own (stress-dependent) jamming point.}
+\end{quote}
+
+\subsection{The central claims of this document}
+\label{sec:claims}
+Three claims, in ascending order of novelty and descending order of how settled they are:
+
+\begin{enumerate}
+\item \textbf{The onset-stress ladder} $\{\sigmastar_k\}$ (established, here systematized): the characteristic stresses at which successive microscopic constraints switch on (or off). Each $\sigmastar_k = \Fstar_k / (\alpha\, a^2)$ is set by a critical force $\Fstar_k$ (maximum repulsive-barrier force, adhesive pull-off force, asperity yield load, \ldots) normalized by the particle cross-section, with $\alpha = \mathcal{O}(1)$--$\mathcal{O}(10)$ a geometry factor.
+\item \textbf{The jamming-point ladder} $\{\phiJ^{(k)}\}$ (established, here systematized): the volume fractions at which the suspension with constraint set $k$ fully active becomes isostatic and rigid. These are pure statements of geometry and constraint counting --- functions of shape, polydispersity, friction and rolling-friction coefficients, and adhesion --- and are computable or measurable independently of flow.
+\item \textbf{The forward--backward asymmetry (the theory this document argues for; \S\ref{sec:latching})}: the rate of constraint \emph{formation} and the rate of constraint \emph{release} are governed by different functionals of the same interparticle potential --- the barrier's maximum slope versus the contact well's depth --- and consequently by different physics: mechanical activation (algebraic in stress, strain-clocked) forward; thermally or residually-stress activated escape (exponential in well depth, time-clocked) backward. Statics and arrest geometry inherit the ladders; lifetimes and hysteresis inherit the asymmetry. Because the two functionals are independently tunable by chemistry, the theory is falsifiable in a strong sense: it predicts \emph{signed, orthogonal} responses of onset and lifetime to specific chemical perturbations, not merely trends.
+\end{enumerate}
+
+Given the ladders, steady rheology follows from an interpolation (\S\ref{sec:WC}) and the DST/SJ boundaries from its stability. Given additionally the asymmetry, the \emph{dynamics} --- jamming fronts, arrest, deposit lifetime, KWW relaxation --- follow from a two-clock transport equation for the constraint fraction (\S\ref{sec:ffield}, \S\ref{sec:latching}). The physics of the particles enters nowhere else. To predict a new suspension one must measure or compute its two ladders and its two clocks, and nothing else.
+
+\subsection{Roadmap}
+\S\ref{sec:micro} builds the microscopic foundation: lubrication films, contact mechanics, and the stress-activation rule. \S\ref{sec:geometry} supplies the granular-mechanics side: constraint counting, isostaticity, and how $\phiJ$ depends on friction, shape, and adhesion. \S\ref{sec:attributes} derives, attribute by attribute (size, shape, distribution, modulus/hardness, chemical potentials), where each material knob enters the ladders. \S\ref{sec:unified} states the unified constitutive framework and its dynamical ($f$-field) extension. \S\ref{sec:latching} is the heart: the forward--backward asymmetry theory of jamming versus un-jamming, its microscopic derivation, and its corollaries (orthogonal chemical tunability, latched populations, KWW relaxation, channel competition, intrinsic hysteresis). \S\ref{sec:rheometry} analyzes what confined rheometry actually measures and controls. \S\ref{sec:freesurface} develops the physics specific to drop impact and free-surface flows: inertial self-loading, capillary confinement, jamming fronts, and un-jamming. \S\ref{sec:contrast} formalizes the rheometry/free-surface distinction as a difference of ensembles. \S\ref{sec:confront} confronts the theory with this program's own measurements --- the salt sign test, the $\beta_{\max}(u_0)$ suppression, the silica/cornstarch inversion --- and with the published transient literature. \S\ref{sec:predictions} converts each confrontation into discriminating experiments.
+
+% ============================================================
+\section{Microscopic foundation: films, contacts, and stress activation}
+\label{sec:micro}
+% ============================================================
+
+\subsection{The lubricated state and why it cannot jam}
+\label{sec:lubrication}
+Two smooth spheres of radius $a$ approaching along their line of centers at speed $\dot h$ with surface gap $h \ll a$ experience the squeeze-film resistance
+\begin{equation}
+F_{\mathrm{lub}} = \frac{3\pi \etas a^2}{2h}\,\dot h ,
+\label{eq:lub}
+\end{equation}
+which diverges as $h \to 0$: perfectly smooth spheres in a continuum Newtonian solvent \emph{never touch} in finite time, and tangential lubrication resistance diverges only logarithmically, $\sim \ln(a/h)$. Two consequences anchor everything that follows:
+
+\begin{enumerate}
+\item A strictly lubricated suspension has \emph{no sliding constraints}. Each near-contact transmits force but does not remove relative-motion degrees of freedom. Constraint counting (\S\ref{sec:isostatic}) then places its jamming point at the frictionless value $\phiO \approx \phiRCP \approx 0.64$ (monodisperse spheres), and the viscosity diverges only as $\phi \to \phiO$:
+\begin{equation}
+\etar \equiv \frac{\eta}{\etas} = \left(1 - \frac{\phi}{\phiJ}\right)^{-\lambda}, \qquad \lambda \approx 2,
+\label{eq:maronpierce}
+\end{equation}
+the Maron--Pierce/Krieger--Dougherty form \cite{krieger1959,guazzelli2018}, with $\phiJ = \phiO$ in the lubricated branch.
+\item The divergence of Eq.~\eqref{eq:lub} is cut off in reality at a length $h_{\min}$ set by surface roughness ($h_{\mathrm{rough}} \sim 1$--$50\,\mathrm{nm}$ for typical colloids; up to hundreds of nm for cornstarch), by the range of stabilizing surface forces (\S\ref{sec:chemistry}), or by the breakdown of continuum hydrodynamics ($\sim$ nm). Contact is therefore \emph{possible} --- but only if the driving force can overwhelm whatever repulsion guards the gap $h_{\min}$. This is the door through which stress activation enters.
+\end{enumerate}
+
+\subsection{The frictional contact and the critical load}
+\label{sec:criticalload}
+Colloidal particles are stabilized --- electrostatically (charged silica), sterically (polymer brushes, protein/pectin layers on cornstarch), or by hydration/solvation structure. Stabilization means the pair potential has a repulsive barrier whose maximum slope defines a \emph{critical force} $\Fstar$: pushed together with $F < \Fstar$, particles remain separated on the lubricated branch; with $F > \Fstar$, they breach the barrier, expel or rupture the film, and make solid--solid (or brush--brush, asperity--asperity) contact. Tribological AFM measurements on model silica confirm a sharp transition at a measurable critical load ($\Fstar \sim$ a few nN for $\sim\mu$m silica in water) from a low-friction lubricated regime to a high-friction regime with friction coefficient $\mup \sim 0.2$--$1$ \cite{comtet2017}. Once contact forms:
+
+\begin{itemize}
+\item \textbf{Sliding friction} (coefficient $\mup$) constrains relative tangential sliding: a Coulomb inequality $|F_t| \le \mup F_n$ converts a force-transmitting neighbor into a \emph{constraint-carrying} neighbor.
+\item \textbf{Rolling friction} (coefficient $\mu_{\mathrm{r}}$), present for rough, faceted, adhesive, or interlocking surfaces, additionally constrains relative rotation. This second constraint family is weaker in magnitude but dramatically more potent per contact in lowering $\phiJ$ (\S\ref{sec:isostatic}) \cite{singh2020}.
+\item \textbf{Adhesion} (pull-off force $F_{\mathrm{adh}}$), when present, makes constraints persist at \emph{low} stress and breaks them at high stress --- an inverted activation that generates yield stresses and shear \emph{thinning} that composes with thickening \cite{richards2020,guy2018}.
+\end{itemize}
+
+\subsection{The stress-activation rule}
+\label{sec:activation}
+In flow, the force pressing a typical nearest-neighbor pair together is set by the macroscopic stress: $F \sim \sigma a^2$ (per particle cross-section, with an $\mathcal{O}(1)$ concentration- and microstructure-dependent prefactor). The fraction of near contacts that have breached the barrier is therefore a function of $\sigma/\sigmastar$ where
+\begin{equation}
+\boxed{\;\sigmastar = \frac{\Fstar}{\alpha\, a^{2}}\;}
+\label{eq:onsetstress}
+\end{equation}
+with $\alpha \approx \pi/6$--$3$ depending on convention. Averaging the barrier-crossing criterion over the distribution of pair forces $P(F)$ in a sheared packing (approximately exponential at large $F$, as in granular force networks) gives the \emph{fraction of frictional contacts}
+\begin{equation}
+f(\sigma) = \exp\!\left[-\left(\frac{\sigmastar}{\sigma}\right)^{\beta}\right], \qquad \beta \approx 1,
+\label{eq:fsigma}
+\end{equation}
+the form introduced by Wyart and Cates \cite{wyart2014} and validated in contact-resolved simulations \cite{mari2014,ness2016}. The exponent $\beta$ encodes the width of the force distribution and of the barrier distribution (polydispersity in $\Fstar$ broadens the crossover; \S\ref{sec:polydispersity}).
+
+Three remarks. (i) $f$ is a \emph{state variable} of the suspension, not a property of the applied deformation --- the recognition that $f$ can lag, advect, and relax is what turns the steady theory into a dynamical one (\S\ref{sec:ffield}). (ii) Activation is by \emph{stress}, not rate: the same $\gdot$ at higher $\etas$ produces more contacts. This is why onset in the flow curve is organized by a critical stress $\sigmastar$ that is nearly rate- and temperature-independent, while the critical \emph{rate} $\gdot^* = \sigmastar/\eta$ varies widely. (iii) In the colloidal regime an additional thermal gate applies: Brownian motion re-opens gaps at rate $\sim D/h_{\min}^2$, so contacts only accumulate when the P\'eclet number is large (\S\ref{sec:size}).
+
+\subsection{The Wyart--Cates interpolation and the phase diagram}
+\label{sec:WC}
+The two ladders enter here. With only one constraint family (sliding friction), the two ends are $\phiO$ (no frictional contacts, $f=0$) and $\phiM(\mup)$ (all contacts frictional, $f=1$; $\phiM \approx 0.56$--$0.59$ for $\mup \sim 0.5$--$1$, monodisperse spheres). The operative jamming point of the flowing suspension interpolates:
+\begin{equation}
+\phiJ(f) = f\,\phiM + (1-f)\,\phiO ,
+\label{eq:phiJf}
+\end{equation}
+(linear interpolation suffices; simulations suggest mild convexity). The steady flow curve is then Eq.~\eqref{eq:maronpierce} with $\phiJ = \phiJ(f(\sigma))$:
+\begin{equation}
+\eta(\sigma,\phi) = \etas \left[1 - \frac{\phi}{\phiJ\!\big(f(\sigma)\big)}\right]^{-2}.
+\label{eq:WCflowcurve}
+\end{equation}
+This one-line constitutive law organizes the entire steady phenomenology:
+
+\begin{itemize}
+\item \textbf{CST} for $\phi < \phi_{\mathrm{DST}}$: $\eta$ rises smoothly from the frictionless to the frictional branch as $\sigma$ traverses $\sigmastar$.
+\item \textbf{DST} for $\phi_{\mathrm{DST}} < \phi < \phiM$: the flow curve $\sigma(\gdot) = \eta\gdot$ becomes S-shaped when
+\begin{equation}
+\frac{\mathrm{d}\ln \eta}{\mathrm{d}\ln \sigma} \ge 1
+\quad\Longleftrightarrow\quad
+\frac{\mathrm{d}\gdot}{\mathrm{d}\sigma} \le 0,
+\label{eq:DSTcriterion}
+\end{equation}
+which Eq.~\eqref{eq:WCflowcurve} first satisfies at $\phi_{\mathrm{DST}} \approx \phiM - \mathcal{O}(0.05)$; the negatively sloped branch is mechanically unstable, producing hysteresis, bands, and giant fluctuations.
+\item \textbf{SJ} for $\phiM < \phi < \phiO$: at stresses where $\phiJ(f(\sigma)) < \phi$, Eq.~\eqref{eq:WCflowcurve} has no flowing solution --- the material is a stress-induced solid. The SJ boundary is
+\begin{equation}
+\sigma_{\mathrm{SJ}}(\phi) = \sigmastar \left[\ln\frac{\phiO - \phiM}{\phi - \phiM}\right]^{-1/\beta}
+\qquad (\phiM < \phi < \phiO),
+\label{eq:SJboundary}
+\end{equation}
+obtained by inverting $\phiJ(f)=\phi$ with Eq.~\eqref{eq:fsigma}. Below $\phiM$ jamming under shear is impossible at any stress (for rigid particles); above $\phiO$ the system is jammed at rest.
+\item \textbf{Frictionless window recovery:} at $\sigma \ll \sigmastar$ (or with stabilizers restored, \S\ref{sec:chemistry}) the material forgets its contacts and flows with $\phiJ = \phiO$ --- the microscopic content of ``un-jamming.''
+\end{itemize}
+
+This $(\phi,\sigma)$ phase diagram --- flowing / CST / DST / SJ / isotropically jammed --- is the object that every particle attribute deforms, and \S\ref{sec:attributes} is a systematic account of those deformations: $\sigmastar$ moves the diagram vertically (in stress), the ladder $\{\phiJ^{(k)}\}$ moves its vertical boundaries ($\phiM,\phiO$) horizontally (in $\phi$), and soft-particle effects truncate it from above (\S\ref{sec:modulus}).
+
+% ============================================================
+\section{The geometry and granular mechanics of the jamming-point ladder}
+\label{sec:geometry}
+% ============================================================
+
+\subsection{Constraint counting and isostaticity}
+\label{sec:isostatic}
+Jamming is a rigidity transition governed by Maxwell counting. For $N$ particles in $d$ dimensions, mechanical rigidity requires the number of independent constraints to match the number of degrees of freedom \cite{ohern2003,vanhecke2010}. Per particle with average contact number $z$:
+
+\begin{itemize}
+\item \textbf{Frictionless spheres}: each contact constrains only the normal approach; force balance requires $z \ge z_{\mathrm{iso}}^{0} = 2d = 6$ (3D). This is reached at $\phiO \approx 0.64$ (monodisperse random packing).
+\item \textbf{Frictional spheres}: each contact also carries two tangential force components (within the Coulomb cone), so counting gives $z_{\mathrm{iso}}^{\mu} = d+1 = 4$. Fewer required contacts per particle means rigidity at looser packing: $\phiM(\mup)$ decreases monotonically from $\phiO$ at $\mup=0$ to $\approx 0.55$--$0.58$ at large $\mup$ \cite{silbert2010,song2008}.
+\item \textbf{Rolling/twisting constraints}: constraining the three relative rotations as well drives $z_{\mathrm{iso}} \to d+1-\varepsilon$ and empirically $\phiM^{\mathrm{roll}}$ down to $\approx 0.36$--$0.45$ \cite{singh2020}. This is the leverage that makes surface chemistry and interlocking roughness (cornstarch!) so much more potent than sliding friction alone: DST onset volume fractions as low as $\phi \approx 0.4$ require a rotation-constraining contact, not merely a sliding-constraining one.
+\item \textbf{Adhesive contacts}: adhesion does not change the counting at jamming but stabilizes under-coordinated, anisotropic networks, enabling rigidity (yield stress) at very low $\phi$ --- gel physics, which composes with thickening in real systems.
+\end{itemize}
+
+The general principle: \emph{each independently switchable constraint family $k$ defines its own isostatic packing fraction $\phiJ^{(k)}$, and the operative jamming point of a mixed population interpolates among them} --- Eq.~\eqref{eq:phiJf} generalizes to
+\begin{equation}
+\phiJ(\{f_k\}) = \phiO + \sum_k f_k\left(\phiJ^{(k)} - \phiJ^{(k-1)}\right),
+\label{eq:ladder}
+\end{equation}
+where $f_k \in [0,1]$ is the activated fraction of family $k$ (sliding, then rolling, then interlocking, \ldots), each with its own activation stress $\sigmastar_k$ via Eq.~\eqref{eq:fsigma}. This ``constraint ladder'' formulation \cite{guy2018} is the backbone of \S\ref{sec:attributes}.
+
+\subsection{Force chains, fabric anisotropy, and the tensorial character of SJ}
+\label{sec:fabric}
+Shear-jammed states are not isotropic solids. Shear jamming in dry grains \cite{bi2011} occurs between $\phiM$ (there called $\phi_S$) and the isotropic jamming point via \emph{fabric anisotropy}: shear builds force chains along the compressive principal axis, and rigidity appears first for loads aligned with that fabric (``fragile'' states), then for generic loads (shear-jammed proper). Consequences carried over to suspensions:
+\begin{enumerate}
+\item The jammed solid formed under shear or impact has a directional contact network; its strength is anisotropic, and reversing the load can melt it at far smaller stress than sustaining it (fragility) \cite{cates1998fragile}.
+\item A minimum accumulated \emph{strain} $\gamma^{*} \sim 0.1$--$1$ (larger at lower $\phi$) is needed to build the anisotropic network --- stress alone is not sufficient, a point that becomes central for impact dynamics, where it sets jamming-front kinematics (\S\ref{sec:fronts}).
+\item Normal stress differences and particle-pressure anisotropy ($N_1<0$ typically, contact-dominated at thickening) are not corrections but signatures of the load-bearing structure; any tensorial continuum model must carry a fabric-like internal variable (\S\ref{sec:ffield}).
+\end{enumerate}
+
+\subsection{The frictional-suspension bridge: $\mu(J)$ rheology}
+\label{sec:muJ}
+Dense suspensions and dry granular media are one family \cite{gdrmidi2004}. In the pressure-imposed ensemble (\S\ref{sec:rheometry}), steady suspension flow obeys the viscous granular rheology of Boyer, Guazzelli \& Pouliquen \cite{boyer2011}: with viscous number $J = \etas\gdot/P_{\mathrm{p}}$ ($P_{\mathrm{p}}$ the particle pressure),
+\begin{equation}
+\frac{\sigma}{P_{\mathrm{p}}} = \mu(J) = \mu_1 + \frac{\mu_2-\mu_1}{1 + J_0/J} + J + \tfrac{5}{2}\phiM J^{1/2},
+\qquad
+\phi(J) = \frac{\phiM}{1 + J^{1/2}},
+\label{eq:muJ}
+\end{equation}
+which is mathematically equivalent to Eq.~\eqref{eq:maronpierce} near jamming but exposes the correct control variables of free-surface flows: when the boundary supplies a \emph{pressure} rather than a \emph{volume}, the suspension chooses its own $\phi$, and ``jamming'' appears as $J \to 0$ at finite $\mu$, i.e., a yielding solid, not a viscosity divergence. Holding this dual description in mind --- $\eta(\phi,\sigma)$ at fixed volume, $\mu(J)$ and $\phi(J)$ at fixed pressure --- is essential preparation for \S\ref{sec:contrast}, because a rheometer approximates the first ensemble and a drop in air approximates (a transient, capillarity-regulated version of) the second.
+
+% ============================================================
+\section{The particle-attribute ladder: how each material knob enters}
+\label{sec:attributes}
+% ============================================================
+
+We now go attribute by attribute. The discipline throughout: locate each physical effect in (i) the onset ladder $\{\sigmastar_k\}$, (ii) the jamming ladder $\{\phiJ^{(k)}\}$, or (iii) the cutoffs that bound the phase diagram (thermal floor, stiffness ceiling, capillary ceiling). Any proposed mechanism that cannot be so located is either a restatement or does not affect steady thickening.
+
+% ------------------------------------------------------------
+\subsection{Particle size}
+\label{sec:size}
+
+\subsubsection{Onset stress: the $a^{-2}$ law and its DLVO correction}
+From Eq.~\eqref{eq:onsetstress}, at fixed critical force $\Fstar$,
+\begin{equation}
+\sigmastar \propto a^{-2}.
+\label{eq:sizescaling}
+\end{equation}
+This inverse-square law is one of the most robust empirical facts of shear thickening \cite{maranzano2001,guy2015,brown2014}: it is why nm-scale colloids thicken at kPa--MPa stresses (spray-resistant armor regime), $\mu$m silica at $\sim 1$--$100$\,Pa, and $10$--$20\,\mu$m cornstarch at $\mathcal{O}(1$--$10)$\,Pa --- accessible to a falling drop. The refinement: $\Fstar$ itself can carry size dependence. For electrostatic (DLVO) stabilization the barrier force scales as $\Fstar \sim 2\pi \varepsilon\varepsilon_0 \kappa a \psi_0^2 e^{-\kappa h}$ (linear in $a$ via the Derjaguin approximation), giving
+\begin{equation}
+\sigmastar_{\mathrm{DLVO}} \propto \frac{\varepsilon\varepsilon_0\,\kappa\,\psi_0^{2}}{a}\,e^{-\kappa h_{\min}},
+\label{eq:dlvoonset}
+\end{equation}
+an $a^{-1}$ law, with the Debye length $\kappa^{-1}$ and surface potential $\psi_0$ as the chemical knobs (\S\ref{sec:chemistry}). For brush/steric or hydration stabilization $\Fstar$ is nearly $a$-independent and the pure $a^{-2}$ law is recovered. Measuring the exponent of $\sigmastar(a)$ is thus a diagnostic of \emph{which} stabilizer guards the film.
+
+\subsubsection{The thermal floor: colloidal-to-granular crossover}
+Brownian motion both delays contact formation and heals broken films. Contacts accumulate only above a P\'eclet threshold; equivalently the applied stress must exceed the thermal stress scale
+\begin{equation}
+\sigma_{\mathrm{th}} \sim \frac{k_{\mathrm{B}}T}{a^{3}},
+\label{eq:thermalstress}
+\end{equation}
+which is $\sim 4$\,Pa for $a = 100$\,nm but $\sim 4\times 10^{-3}$\,Pa for $a = 1\,\mu$m: sub-micron suspensions have a genuine shear-thinning (Brownian) branch below onset, while granular-scale suspensions ($a \gtrsim 5\,\mu$m: cornstarch) are athermal for all practical stresses --- their low-stress branch is set by residual adhesion and by whatever contacts survive at rest, not by thermal equilibration. Additionally gravity: the sedimentation Ansatz $\sigma_{\mathrm{grav}} \sim \Delta\rho\, g\, a$ becomes comparable to onset stresses for $a \gtrsim 10\,\mu$m, making density matching a size-dependent necessity and adding a body-force scale absent in colloids. \textbf{Size therefore does triple duty: it sets the onset ($a^{-1}$--$a^{-2}$), sets the thermal floor ($a^{-3}$), and sets the gravitational/inertial intrusion scale ($a^{+1}$).} The window in which clean DST/SJ physics is observable is bounded by all three.
+
+\subsubsection{Size relative to system scales}
+Two ratios matter macroscopically. Confinement $H/a$ (gap or film thickness per particle): rheometric artifacts (structuring, slip layers) appear for $H/a \lesssim 30$--$50$, and jamming under confinement is enhanced as $H/a \to \mathcal{O}(10)$ because walls supply constraint. For a drop of radius $R$, $R/a$ sets whether continuum modeling is legitimate in thin lamellae and fingers at late spreading (rims and sheets thin to tens of particles). The capillary ceiling $\sigma_{\mathrm{cap}} \sim 2\Gamma/(r_{\mathrm{men}})$ with menisci $r_{\mathrm{men}} \sim 0.1 a$ (i.e., up to $\sim 20\Gamma/a$) is deferred to \S\ref{sec:capillary} but is again a \emph{size} effect: smaller particles let the free surface push harder before yielding, making free-surface SJ more robust for finer powders at equal $\Gamma$.
+
+% ------------------------------------------------------------
+\subsection{Particle shape}
+\label{sec:shape}
+
+Shape acts almost entirely through the jamming ladder, with a secondary lever on constraint type.
+
+\subsubsection{Both ends of the interpolation move}
+For convex shapes of aspect ratio $\Lambda$, the frictionless jamming point $\phiO(\Lambda)$ is non-monotonic: it \emph{rises} above the sphere value for slight asphericity (ellipsoids to $\approx 0.70$--$0.74$ at $\Lambda \approx 1.5$: rotational degrees of freedom let slightly anisotropic particles pack denser) and then falls steeply for elongated or flattened particles ($\phiO \sim \Lambda^{-1}$ for rods at large $\Lambda$, via random-contact arguments). The frictional end $\phiM(\Lambda,\mup)$ falls faster: anisotropic frictional particles interlock and support sparse load-bearing networks. The net effect on thickening is governed by the \emph{gap} $\phiO - \phiM$, which widens with anisotropy: rod-like and plate-like particles show DST and SJ at markedly lower $\phi$ and with wider SJ windows than spheres of equal chemistry \cite{brown2011shape,egres2005,james2019fiber}. Practical statement: at equal $\phi/\phiO$, anisotropic particles are deeper into their thickening window; comparing systems at raw $\phi$ (cornstarch's irregular, faceted grains vs.\ smooth silica spheres) systematically misranks them, and the honest control variable is $\phi$ \emph{measured from each system's own ladder}, e.g., $(\phi-\phiM)/(\phiO-\phiM)$.
+
+\subsubsection{Shape as a constraint-type selector}
+Sharp edges, facets, and surface asperities at scale $\delta_{\mathrm{r}}$ convert sliding contacts into rolling-constrained or interlocked contacts once the load flattens films below $\delta_{\mathrm{r}}$: geometry manufactures the rotation constraints of \S\ref{sec:isostatic}. Controlled-roughness experiments \cite{hsiao2017,hsu2018} show raspberry-textured spheres thicken at lower $\sigma$ and reach DST at $\phi$ several points lower than smooth twins --- the roughness moves \emph{both} ladders: $\sigmastar$ down (asperities puncture films at lower load) and $\phiM$ down (rolling constraints). Cornstarch is the extreme natural example: polyhedral, micro-rough, hydrogen-bonding grains --- a rolling-constrained system at modest load, which is why its DST onset ($\phi \approx 0.40$--$0.45$ by volume) sits far below smooth-sphere expectations and why smooth silica at the same nominal $\phi$ is much farther from its jamming point. \emph{This single fact reorganizes any silica-vs-cornstarch comparison: equal $\phi$ is not equal proximity to $\phiJ$.}
+
+% ------------------------------------------------------------
+\subsection{Size distribution (polydispersity)}
+\label{sec:polydispersity}
+
+Polydispersity acts on both ladders, in opposite directions, plus a distinct large-intruder effect.
+
+\subsubsection{Jamming ladder: dilution of the transition in $\phi$}
+Broadening the size distribution raises \emph{all} jamming points --- small particles fill interstices, so $\phiO$ and $\phiM$ both increase (binary spheres at size ratio $\sim$3--5 can push $\phiRCP$ to $\gtrsim 0.7$; log-normal cornstarch similarly). To first order the whole phase diagram translates to higher $\phi$; the gap $\phiO - \phiM$ is roughly preserved or mildly widened. Hence at fixed raw $\phi$, polydispersity \emph{weakens} thickening (moves the system away from $\phiJ$) --- the standard industrial trick for pumpable dense slurries --- while at fixed $\phi/\phiJ$ the physics is largely invariant. Any cross-batch comparison (e.g., sieved vs.\ unsieved cornstarch, or silica lots with different width) must therefore report distributions, not just means.
+
+\subsubsection{Onset ladder: smearing of the transition in $\sigma$}
+Since each pair's activation stress depends on the smaller of the two radii and on local geometry, a distribution of sizes is a distribution of $\sigmastar$: the effective activation Eq.~\eqref{eq:fsigma} acquires a smaller $\beta$ (broader crossover), converting sharp DST toward extended CST. Sharp, dramatic DST is a signature of narrow distributions; strongly polydisperse systems thicken continuously over decades. Conversely, the largest particles in a broad distribution carry disproportionate stress ($F \sim \sigma a^2$ with the local large-$a$), seeding frictional clusters below the mean onset.
+
+\subsubsection{Large intruders and stress localization}
+A dilute admixture of particles much larger than the matrix (or bubbles/drops of comparable size) locally amplifies strain and stress in the interstitial matrix and can trigger DST in an otherwise sub-critical suspension \cite{madraki2017}; conversely, a small-particle ``lubricant'' fraction can suppress it. Practically: dust, aggregates, and air bubbles are not passive contamination in drop-impact experiments --- they are nucleation sites for jamming fronts, and batch-to-batch irreproducibility in onset often traces to the far tail of the size distribution.
+
+% ------------------------------------------------------------
+\subsection{Modulus and hardness}
+\label{sec:modulus}
+
+Stiffness enters as the \emph{ceiling} of the phase diagram and, more subtly, through load-dependent friction; hardness governs which tribological regime the contacts live in.
+
+\subsubsection{The stiffness ceiling: rigid-particle physics has an upper stress}
+All of \S\ref{sec:WC} assumed rigid particles. A contact under load $F$ flattens by the Hertzian $\delta/a \sim (F/E^{*}a^{2})^{2/3}$, with $E^{*}$ the reduced modulus. Two consequences:
+
+\begin{enumerate}
+\item \textbf{Truncation of DST/SJ at $\sigma \sim \epsilon\,E^{*}$.} When macroscopic stress approaches a small fraction $\epsilon \sim 10^{-2}$--$10^{-1}$ of $E^{*}$, deformation creates the free volume that rigidity forbade: the viscosity divergence at $\phiJ$ is cut off, the S-curve regains positive slope at high stress, and the shear-jammed solid acquires a finite (Hertzian) modulus $G \sim E^{*}(\phi z)^{?}(\delta/a)^{1/2}$ and a pressure-dependent strength instead of an infinite one. Soft particles (microgels, emulsions, $E^{*} \lesssim 10^{4}$--$10^{5}$\,Pa) can erase DST entirely: their phase diagram closes before the frictional branch is reachable \cite{brown2014}. Hard oxides ($E^{*}\sim 70$\,GPa for silica) push the ceiling far above every stress in a drop impact ($\rho U^2 \sim$ kPa--tens of kPa), so silica and cornstarch ($E^{*}\sim$ GPa, hydration-dependent) are safely on the rigid side for impact --- but \emph{not} necessarily in high-stress rheometry or ballistic impact, where the ceiling produces the experimentally observed high-stress ``second thinning.''
+\item \textbf{The dimensionless stiffness.} The controlling group is
+\begin{equation}
+\mathcal{S} = \frac{\sigma}{E^{*}} \quad (\text{rigid limit } \mathcal{S}\to 0);
+\qquad \text{DST/SJ window requires } \sigmastar \ll \epsilon E^{*}.
+\label{eq:stiffnessgroup}
+\end{equation}
+A suspension thickens \emph{discontinuously} only if its onset ladder fits under its stiffness ceiling; this inequality, not any qualitative novelty, is why ``hard particles shear thicken and soft particles shear thin.''
+\end{enumerate}
+
+\subsubsection{Hardness, asperity yielding, and load-dependent friction}
+Friction is not a constant: it is the shear strength of the true contact area. For elastic (Hertz-limited) rough contacts $\mup$ falls weakly with load; when asperities yield plastically (load per asperity exceeding hardness $H$), true contact area grows linearly with load and $\mup$ plateaus at higher values; for soft polymeric surfaces (PMMA, PS, latex) $\mup$ can \emph{decrease} strongly with load. Load-dependent $\mup(F)$ feeds back into the ladder as a stress-dependent $\phiM(\sigma)$ --- one documented origin of S-shape details, hysteresis asymmetries, and the imperfect collapse of $\phiM$ across chemically similar systems. Hardness also controls \emph{wear}: repeated DST cycling polishes asperities on soft particles (aging of $\sigmastar$ and $\phiM$ over a run) but not on hard oxides --- an underappreciated protocol variable: \emph{flow history modifies the ladders themselves for soft/rough particles, while hard smooth oxides give the stationary ladders the theory assumes.}
+
+% ------------------------------------------------------------
+\subsection{Chemical potentials: electrostatics, solvation, hydrogen bonding, adhesion, and the solvent bath}
+\label{sec:chemistry}
+
+``Chemistry'' is where $\Fstar$ (hence every $\sigmastar_k$) and the constraint \emph{types} (hence the $\phiJ^{(k)}$ ladder) are actually manufactured. We organize by the potential that guards or glues the contact.
+
+\subsubsection{Electrostatic double layers: the tunable barrier}
+For charged oxides in polar solvents, DLVO repulsion sets $\Fstar$ via Eq.~\eqref{eq:dlvoonset} with two chemical control knobs: ionic strength $I$ (through $\kappa^{-1} \propto I^{-1/2}$) and surface potential $\psi_0$ (through pH relative to the point of zero charge, specific ion adsorption). Predictions, directly relevant to a LiCl-sweep program on silica:
+\begin{enumerate}
+\item \textbf{Onset stress falls with salt}: $\sigmastar(I)$ decreases as screening lowers the barrier ($\sigmastar \propto \kappa\psi_0^2 e^{-\kappa h_{\min}}$ is non-monotonic in principle, but in the practically relevant regime the barrier-\emph{height} reduction dominates and $\sigmastar$ falls, steeply once $\kappa^{-1}$ drops below the roughness/hydration scale). The DST and SJ boundaries move down in stress; at fixed impact velocity, a screened suspension jams earlier and more completely.
+\item \textbf{The frictional branch strengthens}: with the barrier lowered, the same stress activates more constraints ($f\uparrow$ at fixed $\sigma$), and if screening admits contact into the primary minimum, contacts acquire adhesion --- adding a \emph{low}-stress constraint family (yield stress, aggregation) and moving $\phiM$ down. The full trajectory with increasing $I$ is: pure thickening $\to$ thickening with emerging yield stress $\to$ attractive gel whose yielding and thickening merge \cite{guy2018,richards2020}.
+\item \textbf{Un-jamming slows with salt}: relaxation from the jammed state requires re-opening films against whatever force remains at contact; the restoring push is the (screened) double-layer pressure plus Brownian agitation. Screening therefore lengthens the relaxation/un-jamming time --- for micron-scale particles dramatically, since the Brownian backup is already weak (Eq.~\eqref{eq:thermalstress}). \emph{This is the microscopic account of ``salt lengthens the un-jamming time without changing the final deposit geometry'': statics (final shape, set by $\phiJ$ geometry and capillarity) is barely moved at moderate $I$, while the kinetics of constraint release is exponentially sensitive to the residual barrier.}
+\item \textbf{Effective volume fraction bookkeeping}: screening \emph{shrinks} the electrostatic effective radius $a_{\mathrm{eff}} = a + \mathcal{O}(\kappa^{-1})$, lowering $\phi_{\mathrm{eff}}$ --- by itself this would \emph{weaken} crowding effects. Any observed strengthening of jamming with salt therefore cannot be a crowding artifact; it is constraint physics. (This sign discipline is a useful referee-proof argument.)
+\end{enumerate}
+
+\subsubsection{Solvation, hydration, and brush layers}
+Hydration layers on silica (structured water, $\sim$1\,nm) and adsorbed polymer/protein brushes provide short-ranged, steep repulsions: nearly $a$-independent $\Fstar$, hence the clean $a^{-2}$ onset law, and a strong solvent dependence --- replacing water with a solvent that dissolves or collapses the brush can move $\sigmastar$ by orders of magnitude or convert repulsion to adhesion. Solvent quality is thus a chemical-potential lever on the same footing as salt: the relevant thermodynamic statement is that the film's disjoining pressure $\Pi_{\mathrm{d}}(h;\mu_{\mathrm{solvent}}, \mu_{\mathrm{ions}})$ is a functional of the chemical potentials of every species in the bath, and $\Fstar = \max_h [-\partial_h \int \Pi_{\mathrm{d}}]$ inherits that dependence. In this precise sense \emph{shear thickening onset is a wetting/thin-film phenomenon, and the onset ladder is a section through the suspension's disjoining-pressure isotherm.}
+
+\subsubsection{Hydrogen bonding and specific surface chemistry}
+Cornstarch owes its notoriety to surface chemistry as much as to shape: hydroxyl-rich amylopectin surfaces form interparticle hydrogen bonds under load, i.e., a load-activated \emph{adhesive + rolling} constraint. Demonstrations that DST/SJ in cornstarch requires hydrogen-bond-capable solvents, and can be switched off by urea or by solvent exchange while leaving size and shape untouched \cite{james2018}, are the cleanest proof that constraint chemistry, not hydrodynamics, controls the ladders. Similarly, silica's surface silanol chemistry makes its friction and adhesion pH- and ion-specific (Li$^+$/Na$^+$/Ca$^{2+}$ are not interchangeable at equal $I$: ion-specific hydration forces and bridging). The general rule: \emph{any chemistry that increases the constraint count per contact at load (H-bonds, bridging ions, capillary necks in partially wetting mixtures) lowers $\phiM$ and can produce SJ at volume fractions far below sphere-friction expectations; any chemistry that thickens or stiffens the protective film raises $\sigmastar$.}
+
+\subsubsection{Solvent chemical potential at the free surface: evaporation and migration}
+Unique to free-surface flows (preview of \S\ref{sec:freesurface}): the solvent's chemical potential is continuous with the vapor, so evaporation raises $\phi$ in precisely the thinnest, highest-curvature regions (rims, fingers, contact lines) --- a slow drift of the state point toward $\phiJ$ that has no counterpart in a sealed rheometer. On impact timescales (ms) this is negligible; on un-jamming and deposit-relaxation timescales (seconds to minutes) it is not, and it composes with capillary suction of solvent out of the jammed plug (the plug is a porous medium whose Darcy drainage into menisci concentrates it further --- self-stabilizing arrest). Humidity logging is therefore not hygiene but a control of a state variable.
+
+% ============================================================
+\section{The unified framework, formalized}
+\label{sec:unified}
+% ============================================================
+
+\subsection{Statics: the generalized constraint model}
+Collecting \S\ref{sec:micro}--\S\ref{sec:attributes}, the steady-state theory is fully specified by:
+\begin{align}
+&\text{(i) ladders:} && \{\sigmastar_k(\Fstar_k, a)\},\qquad \{\phiJ^{(k)}(\text{shape},\ \mathrm{PSD},\ \mup,\ \mu_{\mathrm{r}},\ \mathrm{adhesion})\}, \nonumber\\[2pt]
+&\text{(ii) activation:} && f_k(\sigma) = \exp[-(\sigmastar_k/\sigma)^{\beta_k}] \quad\text{(or } 1-f_k \text{ for stress-\emph{released} adhesive constraints)}, \nonumber\\[2pt]
+&\text{(iii) interpolation:} && \phiJ(\{f_k\}) \ \text{via Eq.~\eqref{eq:ladder}}, \nonumber\\[2pt]
+&\text{(iv) divergence:} && \eta = \etas\,[1-\phi/\phiJ]^{-2},\qquad
+P_{\mathrm{p}} \simeq \eta\gdot/\mu(J) \ \text{consistently via Eq.~\eqref{eq:muJ}},
+\label{eq:master}
+\end{align}
+with cutoffs: thermal floor $\sigma \gtrsim k_BT/a^3$ for contact accumulation (colloidal), stiffness ceiling $\sigma \lesssim \epsilon E^{*}$ for rigidity (soft), and --- in free-surface geometries --- the capillary ceiling of \S\ref{sec:capillary}. Every knob of the experimental program maps onto Eq.~\eqref{eq:master}:
+\begin{center}
+\begin{tabular}{l l l}
+\hline
+\textbf{Knob} & \textbf{Primary entry} & \textbf{Secondary entry} \\
+\hline
+size $a$ & $\sigmastar \propto a^{-1}$--$a^{-2}$ & thermal floor $a^{-3}$; capillary ceiling $a^{-1}$ \\
+shape & $\phiO,\ \phiM$ (both down at high $\Lambda$) & selects rolling constraints ($\phiM \Downarrow$) \\
+polydispersity & $\phiO,\phiM \Uparrow$ (translation in $\phi$) & broadens onset ($\beta \Downarrow$); intruder tail \\
+modulus $E^{*}$ & ceiling $\sigma_{\max}\sim\epsilon E^{*}$ & jammed-state modulus; $\mup(F)$ \\
+hardness $H$ & tribological regime of $\mup$ & wear/aging of ladders \\
+electrolyte ($\kappa,\psi_0$) & $\sigmastar \Downarrow$ with $I$ & adhesion at high $I$ ($\phiM \Downarrow$, yield stress); un-jamming time $\Uparrow$ \\
+H-bonding / solvent & constraint count per contact & switches SJ on/off at fixed geometry \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Dynamics: the $f$-field}
+\label{sec:ffield}
+Steady-state Eq.~\eqref{eq:master} cannot describe impact, fronts, or un-jamming, because $f$ (and fabric) are history variables. The minimal dynamical completion promotes $f$ to a material field advected with the suspension:
+\begin{equation}
+\boxed{\;
+\Dt{f} \;=\; \underbrace{\frac{\gdot}{\gamma^{*}}\,\Big[f_{\mathrm{eq}}\big(\sigma(\mathbf{x},t)\big) - f\Big]_{+}}_{\text{strain-driven activation}}
+\;-\; \underbrace{\frac{f}{\tau_{\mathrm{r}}(\phi, I, T, \ldots)}}_{\text{absolute-time relaxation}}
+\;}
+\label{eq:fdynamics}
+\end{equation}
+(with $[\,\cdot\,]_+$ activation only toward equilibrium from below; variants distribute relaxation over strain and time channels) \cite{baumgarten2019}. The two clocks are physically distinct and both necessary:
+\begin{itemize}
+\item \textbf{The strain clock} $\gamma^{*}$: constraints are built by rearrangement; a material element must accumulate $\mathcal{O}(\gamma^{*})$ strain under supercritical stress before its contact network percolates (\S\ref{sec:fabric}). This clock sets front widths and the delay between stress arrival and solidity.
+\item \textbf{The time clock} $\tau_{\mathrm{r}}$: constraint \emph{release} in a quiescent jammed region proceeds without strain --- by thermal re-opening of films against residual repulsion, by drainage, by vibration. $\tau_{\mathrm{r}}$ is precisely the chemically sensitive quantity of \S\ref{sec:chemistry} (salt $\Rightarrow$ $\tau_{\mathrm{r}} \Uparrow$), it is \emph{not} derivable from steady flow curves, and it must be measured by transient protocols (stress step-down, flow cessation) or by the free-surface relaxation itself. A model with only a strain clock cannot un-jam material that has stopped moving --- a structural defect for impact problems, where most of the interesting material is (transiently) at rest.
+\end{itemize}
+Tensorial completions add a fabric tensor $\mathbf{A}$ (contact-orientation second moment) with analogous advection-relaxation dynamics, restoring normal-stress anisotropy, fragility under load reversal, and orientation-dependent strength; scalar $f$ suffices for axisymmetric impact morphology but not for rays, cracks, or banding. Nonlocality (gradient terms $\xi^2\nabla^2 f$, with $\xi$ a cooperativity length of order several $a$ growing near $\phiJ$) regularizes front widths and is required for mesh-independent DST interfaces in continuum simulation.
+
+% ============================================================
+\section{The central theory: forward--backward asymmetry and contact latching}
+\label{sec:latching}
+% ============================================================
+
+The framework so far --- ladders plus interpolation plus an $f$-field --- is a synthesis: it organizes the established literature but adds no falsifiable structure beyond it. This section adds that structure. The claim is a microscopic \emph{asymmetry theorem} about the two clocks of Eq.~\eqref{eq:fdynamics}, from which several signed, quantitative, and (in \S\ref{sec:confront}) already partially tested predictions follow.
+
+\subsection{The contact as a stress-tilted double well}
+\label{sec:doublewell}
+Consider the pair interaction energy $U(h)$ of two stabilized particles as a function of surface gap $h$, i.e., the integrated disjoining-pressure isotherm of the intervening film \cite{israelachvili}. For every system that shear thickens it has the same topology: an \emph{outer, lubricated well} (or plateau) at $h \sim h_{\mathrm{out}}$, the range of the stabilizing repulsion, where the pair interacts hydrodynamically but carries no constraints; a \emph{barrier} at $h_{\mathrm{b}} < h_{\mathrm{out}}$ whose maximum restoring force is the critical load, $\Fstar = \max_h[-\partial_h U]$; and an \emph{inner, contact well} at $h_{\mathrm{c}} \lesssim$ nm --- the mechanical contact state (asperities engaged, films ruptured or squeezed to molecular thickness) --- of depth
+\begin{equation}
+E_{\mathrm{esc}} \;=\; U(h_{\mathrm{b}}) - U(h_{\mathrm{c}}),
+\label{eq:Eesc}
+\end{equation}
+the energy required to \emph{escape} contact outward. The depth of the inner well is built from van der Waals attraction, solvation/hydration structure, hydrogen bonding, ion bridging, and asperity adhesion; its occupants are exactly the constraint-carrying contacts of \S\ref{sec:micro}. Flow tilts this landscape: a compressive pair force $F$ adds $-Fh$, lowering the barrier seen from outside by $\sim F h_{\mathrm{b}}$ and, at $F \ge \Fstar$, abolishing it.
+
+\subsection{The asymmetry theorem}
+\label{sec:asymmetry}
+The forward and backward transitions across this landscape are governed by different physics, because the driving force available to each is different in kind:
+
+\begin{itemize}
+\item \textbf{Forward (constraint formation) is mechanically activated.} Under flow at stress $\sigma$, pair forces $F \sim \sigma a^{2}$ vastly exceed thermal forces for every system of interest here ($\sigma a^{3}/k_{\mathrm{B}}T = \sigma/\sigma_{\mathrm{th}} \gg 1$ above onset, \S\ref{sec:size}). Barrier crossing is not a rare fluctuation but a deterministic yielding event occurring wherever the force network delivers $F > \Fstar$; averaging over the (exponential-tailed) force distribution gives Eq.~\eqref{eq:fsigma}: the forward rate per unit strain is \emph{algebraic} in $\sigma/\sigmastar$, and $\sigmastar$ is a functional of the \emph{maximum slope} of $U(h)$ only. The well depth $E_{\mathrm{esc}}$ is invisible to the forward process.
+\item \textbf{Backward (constraint release) is activated escape.} When flow stops or stress falls, the mechanical drive disappears --- but latched pairs now sit in the inner well with no force pulling them out. Release requires climbing $E_{\mathrm{esc}}$, by one of exactly two channels:
+\begin{equation}
+\tau_{\mathrm{r}} = \min\Big(
+\underbrace{\tau_{0}\, e^{E_{\mathrm{esc}}/k_{\mathrm{B}}T}}_{\text{thermal (Kramers) channel}},\;
+\underbrace{\tau_{\mathrm{mech}}\,\Theta^{-1}\!\big(\sigma_{\mathrm{drive}} - \sigma_{\mathrm{y}}(f)\big)}_{\text{mechanical channel}}
+\Big),
+\label{eq:taur}
+\end{equation}
+where $\tau_{0} \sim \etas a^{3}/k_{\mathrm{B}}T$ (hindered-Brownian attempt time; $\sim$\,0.1--1\,s for $2a \sim 0.8\,\mu$m silica in water, hours for cornstarch --- the size dependence is cubic and decisive), and the mechanical channel opens only if some residual driving stress $\sigma_{\mathrm{drive}}$ (capillary $\sim\Gamma/R_{\mathrm{dep}}$, gravitational $\sim\rho g h$, imposed vibration) exceeds the yield stress $\sigma_{\mathrm{y}}(f)$ of the latched network --- a \emph{threshold}, not a rate: below it, the mechanical channel contributes nothing at any waiting time. The backward rate is \emph{exponential} in the \emph{depth} of $U(h)$, and the barrier slope $\Fstar$ is (nearly) invisible to it.
+\end{itemize}
+
+\noindent Hence the theorem:
+\begin{quote}
+\emph{The jamming rate and the un-jamming rate of a dense suspension are set by two different functionals of the same interparticle potential --- $\sigmastar \propto \max_h[-\partial_h U]/a^2$ forward, $E_{\mathrm{esc}} = U(h_\mathrm{b})-U(h_\mathrm{c})$ backward --- with algebraic versus exponential sensitivity respectively. They are therefore independently tunable material properties, and no measurement of one (e.g., any steady or onset rheology, which probes only $\sigmastar$ and the ladders) constrains the other.}
+\end{quote}
+This is the microscopic content of the statement in \S\ref{sec:ffield} that the time clock $\tau_{\mathrm{r}}$ ``is not derivable from steady flow curves'': not merely unmeasured by them, but \emph{functionally independent} of everything they measure.
+
+\subsection{Corollary 1: orthogonal, signed chemical tunability}
+\label{sec:orthogonal}
+For a charge-stabilized oxide, adding electrolyte does two things to $U(h)$ at once: it \emph{lowers the barrier} (screening shrinks the double-layer force: $\sigmastar\!\downarrow$, jamming easier, onset earlier) and it \emph{deepens the accessible contact well} (with the repulsive skirt collapsed, latched pairs sit closer to the van der Waals/H-bonding minimum and the outward barrier from $h_{\mathrm{c}}$ grows: $E_{\mathrm{esc}}\!\uparrow$, release exponentially slower). The same knob moves the forward and backward rates in \emph{opposite} directions --- and moves the geometric ladders hardly at all, since once impact drives $f \to 1$ the arrest configuration is fixed by $\phiJ^{(k)}$ geometry, which is salt-blind at moderate $I$. The signed prediction triplet for a salt sweep on charged colloids is therefore: (i) onset stress and critical impact velocity \emph{decrease} (algebraically, i.e., modestly); (ii) arrested-state geometry (final deposit aspect, front-swept morphology) is \emph{nearly invariant}; (iii) the un-jamming lifetime \emph{increases exponentially}, i.e., by potentially orders of magnitude over a range of $I$ that changes onset by a mere factor. No crowding, hydrodynamic, or generalized-Newtonian account produces this triplet --- crowding arguments get the \emph{sign} of (iii) wrong, since screening shrinks $a_{\mathrm{eff}}$ and lowers $\phi_{\mathrm{eff}}$ (\S\ref{sec:confront}). The triplet is the theory's sharpest falsifier, and \S\ref{sec:confront} confronts it with data.
+
+More generally: any perturbation acting on the \emph{tail} of $U(h)$ (electrolyte, weak depletion) shifts $\sigmastar$ strongly and $E_{\mathrm{esc}}$ through the latched population it admits; any perturbation acting on the \emph{contact} region (urea disrupting interparticle hydrogen bonds \cite{james2018}, surface-grafted brushes that survive contact, trace surfactant adsorbing on the solid) shifts $E_{\mathrm{esc}}$ strongly at nearly fixed $\sigmastar$. The two-functional structure thus defines a genuine materials-design plane --- $(\sigmastar, E_{\mathrm{esc}})$ --- in which onset and lifetime can be engineered independently; conventional rheology sees only one axis of it.
+
+\subsection{Corollary 2: latched populations and the KWW form}
+\label{sec:kww}
+During an impact, pairs driven over the barrier divide into two populations upon unloading: \emph{unlatched} contacts ($E_{\mathrm{esc}} \lesssim$ few $k_{\mathrm{B}}T$; brush-protected or barely-engaged asperities) that reopen elastically within $\tau_{0}$ on the recoil strain itself, and \emph{latched} contacts ($E_{\mathrm{esc}} \gg k_{\mathrm{B}}T$) that persist. Real surfaces guarantee that $E_{\mathrm{esc}}$ is \emph{distributed} --- over asperity contact areas, local curvatures, adsorbed-layer coverage, and force-network history --- and an exponential rate with a distributed exponent yields, upon superposition, a stretched-exponential macroscopic relaxation
+\begin{equation}
+\frac{X(t)-X_{\infty}}{X_{0}-X_{\infty}} \;=\; \exp\!\big[-(t/\tau_{\mathrm{KWW}})^{\beta_{\mathrm{KWW}}}\big],
+\qquad
+\beta_{\mathrm{KWW}} \sim \Big(1 + \mathrm{Var}[E_{\mathrm{esc}}]/k_{\mathrm{B}}^{2}T^{2}\Big)^{-1/2},
+\label{eq:kww}
+\end{equation}
+for any observable $X$ slaved to the surviving constraint fraction (deposit height, aspect ratio, residual modulus). Two consequences: the empirical success of KWW fits to deposit relaxation is not a curve-fitting convenience but the expected signature of exponential kinetics with quenched disorder; and $\beta_{\mathrm{KWW}}$ is itself a measurement --- it should \emph{decrease} (broader effective spectrum) as the mean latch deepens with salt, and the relaxation should become visibly two-step (fast elastic recoil of the unlatched fraction, slow activated decay of the latched one) exactly as reported for stress relaxation in shear-jammed suspensions \cite{barik2022} and as ``lasting effects'' after flow cessation \cite{cho2022}. The solid-yet-slowly-spreading drops of Shah, Arora \& Driscoll \cite{shah2022} --- solid on ms scales, liquid over seconds --- are the two populations seen in a single free-surface event.
+
+\subsection{Corollary 3: channel competition and the athermal--colloidal divide}
+\label{sec:channels}
+Equation~\eqref{eq:taur} partitions all suspensions by which release channel they possess:
+\begin{itemize}
+\item \textbf{Colloidal ($2a \lesssim 1$--$2\,\mu$m):} both channels. Lifetime is intrinsic --- set by chemistry through $E_{\mathrm{esc}}(I,\mathrm{pH},\ldots)$ --- and Arrhenius in temperature. It can be enormous despite proximity to equilibrium: at $E_{\mathrm{esc}} = 15\,k_{\mathrm{B}}T$ and $\tau_0 = 0.1$\,s, $\tau_{\mathrm{r}} \sim$ days.
+\item \textbf{Granular-scale/athermal (cornstarch, $2a \sim 5$--$20\,\mu$m):} the thermal channel is absent ($\tau_{0}$ alone is hours; any $E_{\mathrm{esc}} > 0$ makes it geological). \emph{Athermal suspensions un-jam only mechanically}: the latched network yields when residual stress exceeds $\sigma_{\mathrm{y}}(f)$, or constraints self-release because they were load-activated in the first place (H-bonded cornstarch contacts require normal load to engage \cite{james2018}; when the impact stress decays the constraint disengages on the recoil strain --- an ``unlatched by construction'' chemistry). Consequently athermal lifetimes are \emph{extrinsic}: they depend on the boundary conditions that set $\sigma_{\mathrm{drive}}$ and on confinement that maintains load. The same cornstarch that melts in $\sim 10^{-1}$\,s as a free deposit (capillary drive available, load released) exhibits giant, protocol-dependent relaxation times in a rheometer gap \cite{maharjan2017}, where tool constraint maintains normal load on the network --- not a contradiction but the signature of a threshold-gated, drive-dependent channel.
+\end{itemize}
+This divide converts the vague ``colloidal vs granular'' distinction into a sharp, testable dichotomy: \textbf{intrinsic, Arrhenius, chemistry-set lifetimes below the micron scale; extrinsic, threshold-gated, geometry-set lifetimes above it} --- with a crossover regime ($2a \sim 1$--$3\,\mu$m) where temperature and drive compete measurably.
+
+\subsection{Corollary 4: hysteresis and memory are structural, not incidental}
+Forward algebraic, backward exponential means jam-fast/melt-slow asymmetry grows \emph{exponentially} with latch depth: rate-sweep hysteresis loops, thixotropic recovery times, and impact-versus-relaxation timescale separation are one phenomenon. It also means the arrested state is a \emph{memory} state: the latched fraction records the maximum stress experienced (which set how deep into the well pairs were driven, and how many), so deposit lifetime should correlate with impact velocity at fixed chemistry --- a history dependence no equation-of-state rheology can produce. Plastic latching (asperity yield at loads exceeding hardness, \S\ref{sec:modulus}) is the irreversible limit of the same physics: there $E_{\mathrm{esc}}$ is effectively infinite, un-jamming requires bulk yielding, and the material ages under flow cycling.
+
+\subsection{Where each material sits}
+\label{sec:placement}
+\begin{center}
+\small
+\begin{tabular}{p{0.26\textwidth} p{0.20\textwidth} p{0.20\textwidth} p{0.24\textwidth}}
+\hline
+\textbf{System} & \textbf{Forward ($\sigmastar$)} & \textbf{Latch ($E_{\mathrm{esc}}$)} & \textbf{Predicted lifetime} \\
+\hline
+Charged silica, low $I$ & high (tall barrier) & shallow (repulsive push-off survives) & short; single-exponential-ish \\
+Charged silica, high $I$ & low & deep (vdW + silanol/hydration, no push-off) & long, Arrhenius, KWW-broadened \\
+Cornstarch in water & low (rough, H-bond under load) & load-activated $\Rightarrow$ self-releasing & short and \emph{extrinsic} (boundary-set) \\
+Cornstarch + urea & raised (H-bonding disrupted) & shallower still & SJ weakened and short-lived \cite{james2018} \\
+Sterically stabilized (brush) & set by brush compression & shallow if brush survives contact & short unless brush damaged \\
+Soft polymeric (PMMA, latex) & low--moderate & plastic/adhesive (contact flattening) & aging, protocol-dependent \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Consequence for continuum modeling}
+The theory gives microscopic content to the relaxation term of Eq.~\eqref{eq:fdynamics}: $\tau_{\mathrm{r}}$ is not a fit parameter but $\tau_{0}(a,\etas,T)\,e^{E_{\mathrm{esc}}(I,\mathrm{chem})/k_{\mathrm{B}}T}$ for colloidal systems, and a threshold functional of local residual stress for athermal ones. A continuum $f$-field solver in which $f$ relaxes on an absolute, chemistry-set clock (rather than on a strain clock alone) is therefore not a phenomenological convenience --- it is the \emph{required} structure, since strain-clock-only models possess no backward channel for material at rest and hence cannot represent the latched state at all. Conversely, the theory constrains such solvers: $\tau_{\mathrm{r}}$ calibrated at one salt concentration must extrapolate to others via the measured $E_{\mathrm{esc}}(I)$ (from AFM pull-off or DLVO with measured $\zeta(I)$), with no refitting --- a stringent internal test.
+
+% ============================================================
+\section{What confined rheometry is: ensembles, boundaries, artifacts}
+\label{sec:rheometry}
+% ============================================================
+
+\subsection{The rheometric ensemble}
+An ideal rheometer imposes: (i) a \emph{fixed particle content} (sealed sample, $\phi$ global and conserved); (ii) \emph{boundary kinematics or traction} on rigid tool surfaces (imposed $\gdot$ or $\sigma$, one signal, viscometric symmetry); (iii) \emph{steady state accessible}: arbitrary strain can be accumulated at fixed conditions; (iv) \emph{stiff confinement}: the walls supply whatever normal force the material demands (up to compliance), so dilation is frustrated. Formally, it samples the constitutive surface $\eta(\phi,\sigma)$ along the plane $\phi = \mathrm{const}$, with the conjugate variable $P_{\mathrm{p}}$ free to take any value --- the \emph{fixed-volume ensemble}. Pressure-imposed cells (porous plate, adjustable gap at set normal load) instead fix $P_{\mathrm{p}}$ and free $\phi$: the \emph{fixed-pressure ensemble}, in which the same material shows no DST at all --- the S-curve unfolds into smooth dilation, $\phi(J)$, at monotone $\mu(J)$ \cite{boyer2011}. \textbf{DST is an ensemble-dependent phenomenon: a fixed-volume instability, not a material discontinuity.} This single sentence is the pivot on which the rheometry/free-surface comparison turns, because a drop is in neither ensemble.
+
+\subsection{What the confined geometry does to the signal}
+Real rheometry near DST/SJ is dominated by the interaction of the material's instability with the boundary conditions:
+\begin{itemize}
+\item \textbf{Dilatancy against walls}: approaching $\phiJ$ the material wants to dilate ($\phi(J)$ logic); rigid walls forbid it, so particle pressure spikes, particles are pressed through the free menisci at the sample edge (visible as surface roughening/``dry'' edge), normal-force transients saturate the transducer, and the measured $\eta$ becomes a measurement of the \emph{apparatus} (tool inertia, axial compliance, edge fracture) \cite{brown2014,hermes2016}.
+\item \textbf{Inhomogeneity}: S-shaped constitutive curves cannot be realized homogeneously; the cell partitions into bands (gradient or vorticity), stress oscillates at fixed $\gdot$, and local rheo-imaging shows the ``steady state'' is a statistical mixture of branches. Reported flow curves in the DST region are protocol-dependent averages.
+\item \textbf{Slip and structuring}: layers at $H/a \lesssim$ tens of particles slip and order; roughened tools trade slip for enhanced local jamming at tool asperities.
+\item \textbf{Finite strain history}: because arbitrary strain is available, rheometry measures the \emph{fully developed} contact network, $f = f_{\mathrm{eq}}(\sigma)$ --- it cannot see $\gamma^{*}$ or $\tau_{\mathrm{r}}$ without dedicated transient protocols (startup, cessation, superposition, stress step-down). Steady flow curves constrain the ladders $\{\sigmastar_k, \phiJ^{(k)}\}$; they leave the clocks of Eq.~\eqref{eq:fdynamics} \emph{completely undetermined}.
+\end{itemize}
+
+\subsection{What rheometry is for, in this program}
+Properly used, confined rheometry is the instrument that calibrates statics: $\sigmastar(I)$, $\phi$-sweeps bracketing $\phi_{\mathrm{DST}}$ and $\phiM$, the high-stress ceiling, yield stress emergence at high salt. Transient rheometry (step-down relaxation at fixed small stress; flow cessation with parallel superposition) is the instrument that calibrates $\tau_{\mathrm{r}}$. Neither is a simulation of impact; both are the source of every material number an impact theory legitimately uses. The load-bearing methodological rule: \emph{calibrate on rheology, predict impact --- never fit the constitutive law to the impact data it is supposed to predict.}
+
+% ============================================================
+\section{Drop impact and free-surface flows: the untethered ensemble}
+\label{sec:freesurface}
+% ============================================================
+
+\subsection{Inertial self-loading}
+In a rheometer, stress is supplied by a boundary and can be held. In impact at velocity $U$, stress is generated \emph{internally} by the deceleration of the drop's own momentum:
+\begin{equation}
+\sigma_{\mathrm{imp}} \sim \rho\, U\, u_{\mathrm{front}} \;\sim\; k\,\rho U^{2}, \qquad k = u_{\mathrm{front}}/U \gtrsim 1,
+\label{eq:impactstress}
+\end{equation}
+transmitted not by viscous diffusion but by a \emph{jamming front} (below). The loading is: impulsive (duration $\sim R/U \sim$ ms), decaying (momentum is finite), spatially localized (front-swept region only), and mixed in character --- biaxial extension in the spreading lamella, shear at the substrate, compression under the impact point. Thickening physics activated by extension is at least as strong as in shear (extensional flows build compressive contact chains efficiently), so impact probes the constitutive law along tensorial directions rheometry rarely measures.
+
+\subsection{Capillary confinement: the soft wall}
+\label{sec:capillary}
+The free surface replaces the rheometer's rigid wall as the supplier of confining stress, with a crucial nonlinearity. At stresses below the interfacial scale, the surface is flat at particle scale and supplies confinement $\sim 2\Gamma/R_{\mathrm{drop}}$ --- negligible. When the suspension dilates and particles push against the interface, the menisci between protruding particles curve at radius $r_{\mathrm{men}} \sim (0.1\text{--}0.5)\,a$, and the interface pushes back with capillary pressure up to
+\begin{equation}
+\sigma_{\mathrm{cap}}^{\max} \sim \frac{2\Gamma \cos\theta}{r_{\mathrm{men}}} \;\sim\; \frac{(4\text{--}20)\,\Gamma}{a},
+\label{eq:capceiling}
+\end{equation}
+i.e., $\sim 10^{3}$--$10^{5}$\,Pa for $\Gamma \approx 40$--$70$\,mN/m and $a \sim 1$--$20\,\mu$m \cite{brown2014,cates2005granulation}. The free surface is thus a \emph{stress-limited, self-engaging wall}: it permits dilation freely up to particle-scale protrusion, then confines with a ceiling $\propto \Gamma/a$. Consequences:
+\begin{enumerate}
+\item \textbf{Free-surface SJ exists at all} only because Eq.~\eqref{eq:capceiling} exceeds the SJ stress ladder for small enough particles --- a drop can be a solid only while its skin can hold the required particle pressure. Surfactants (lower $\Gamma$) weaken impact jamming; finer particles strengthen it; fully wetting vs.\ partially wetting solvents change $\cos\theta$ and hence the ceiling.
+\item \textbf{The drop is a pressure-imposed system with a capped, state-dependent pressure} --- intermediate between the two rheometric ensembles: locally fixed-$\phi$ on ms timescales (solvent can't drain far), globally pressure-limited by the skin. DST's fixed-volume violence is therefore \emph{tamed} at the free surface (dilation is partially available), while SJ is \emph{enabled} (the skin supplies enough pressure to hold the jammed state) --- opposite modifications, both from the same capillary term.
+\item \textbf{Granulation/surface morphology as a signal}: matte, rough, ``dry''-looking surface = interface engaged at particle scale = the plug is at its capillary ceiling; glossy surface = lubricated branch. This is a zero-instrumentation local stress gauge in every high-speed video frame.
+\end{enumerate}
+
+\subsection{Jamming fronts}
+\label{sec:fronts}
+Impact-activated solidification propagates as a front \cite{waitukaitis2012,han2016,peters2016}: material behind the front moves rigidly with the contacted boundary; material ahead is undisturbed. Front kinematics follow from the strain clock: the front consumes material at the rate at which fresh suspension accumulates the jamming strain $\Delta\gamma \sim \Delta\phi/\phi$ (the dilation deficit to its jamming point), giving
+\begin{equation}
+\frac{u_{\mathrm{front}}}{U} \;=\; k \;\sim\; \frac{1}{\Delta\gamma} \;\sim\; \frac{\phi}{\phiJ(f)-\phi},
+\label{eq:frontspeed}
+\end{equation}
+so $k$ diverges as $\phi \to \phiJ$: near-critical suspensions solidify almost instantaneously over macroscopic volumes ($k \sim 10$--$40$ observed). The front is the object that converts the impulsive load into a growing ``added mass'' of jammed material, whose inertia in turn supplies Eq.~\eqref{eq:impactstress}'s stress --- a bootstrapped solidification unique to inertial free-surface flow (nothing in a rheometer bootstraps: the tool sets the load). When fronts reach free boundaries (drop surface, lamella edge), reflected \emph{unloading} waves release the stress and the material re-enters the race between re-flow and relaxation, governed now by $\tau_{\mathrm{r}}$ --- i.e., by the latch physics of \S\ref{sec:latching}.
+
+A formal remark worth stating: the jamming front \emph{is} the free-surface realization of the Maxwell construction that the fixed-volume rheometer performs by banding. Where the S-shaped constitutive curve forces a confined sample to partition into coexisting low-$f$ and high-$f$ bands separated by a stationary interface of width $\sim\xi$, the impacting drop realizes the same two-branch coexistence as a \emph{propagating} interface between jammed and flowing material, its speed set by mass and momentum flux (Eq.~\eqref{eq:frontspeed}) rather than by stress selection. Band interface and jamming front are one object in two ensembles --- so their widths should be governed by the same cooperativity length $\xi$, a nontrivial cross-geometry identity testable by comparing rheo-imaged band interfaces with ultrasound- or imaging-resolved front widths.
+
+\subsection{The life cycle of an impacting suspension drop}
+The theory assembled above predicts a five-act structure, each act owned by a different piece of the framework:
+\begin{enumerate}
+\item \textbf{Loading} ($t \lesssim R/U$): impact stress Eq.~\eqref{eq:impactstress} vs.\ the onset ladder decides whether fronts launch; Eq.~\eqref{eq:frontspeed} sets how far they run. Observable: abrupt arrest of spreading, non-Newtonian $\beta_{\max}$ scaling (velocity-suppressed spreading: $\beta_{\max}$ growing more slowly than the Newtonian $U$-scalings, or even decreasing) \cite{boyer2016impact}.
+\item \textbf{Peak deformation and arrest}: spreading halts when the jammed fraction percolates across the lamella; morphology (thick pancake vs.\ partial rebound vs.\ cracked shell) is set by where the front-swept region sits when kinetic energy is exhausted.
+\item \textbf{Capillary-held solidity} ($t \sim$ ms--s): the deposit is a granular solid confined by its own skin at pressure $\lesssim$ Eq.~\eqref{eq:capceiling}; height and contact angle are metastable, history-encoding quantities --- \emph{not} equilibrium capillary shapes.
+\item \textbf{Un-jamming} ($t \sim \tau_{\mathrm{r}}$, ms--minutes): constraints release by the time clock; the solid softens, and surface tension + gravity resume spreading. The relaxation observable (e.g., stretched-exponential approach of height/aspect to final) is a direct, rheometer-free measurement of $\tau_{\mathrm{r}}(\phi, I)$ --- the chemically sensitive clock \cite{maharjan2017,barik2022,cho2022,shah2022}. Salt-slowed un-jamming at unchanged final geometry is the clean signature separating constraint kinetics from statics.
+\item \textbf{Late consolidation}: evaporation and capillary drainage drift $\phi$ upward (\S\ref{sec:chemistry}); the final deposit may re-arrest as a drying-jammed, not shear-jammed, solid. The two arrests have different physics and must not be conflated in analysis windows.
+\end{enumerate}
+
+% ============================================================
+\section{The formal contrast: rheometry vs.\ free-surface flows as different ensembles of one constitutive law}
+\label{sec:contrast}
+% ============================================================
+
+\subsection{Axiomatic statement}
+Let the material be specified by the constitutive data $\mathcal{M} = \{\sigmastar_k, \phiJ^{(k)}, \beta_k, \gamma^{*}, \tau_{\mathrm{r}}, \epsilon E^{*}\}$ (ladders, clocks, ceiling). Define an \emph{experiment} as $\mathcal{E} = (\mathcal{D}, \mathcal{B}, \mathcal{P})$: domain, boundary conditions, protocol. Then:
+
+\begin{itemize}
+\item \textbf{Confined rheometry} $\mathcal{E}_{\mathrm{rheo}}$: $\mathcal{D}$ fixed, $\partial\mathcal{D}$ rigid ($\phi$ conserved) or load-controlled; $\mathcal{B}$ imposes viscometric kinematics; $\mathcal{P}$ allows $t \to \infty$ at fixed control parameter. Accessible output: sections of the \emph{equilibrium} constitutive surface, $f = f_{\mathrm{eq}}$: the map $(\phi,\sigma) \mapsto \gdot$ (fixed volume) or $(P_{\mathrm{p}},\sigma)\mapsto (\phi, \gdot)$ (fixed pressure). Clocks invisible except via dedicated transients.
+\item \textbf{Drop impact / free surface} $\mathcal{E}_{\mathrm{imp}}$: $\mathcal{D}(t)$ self-selected; $\partial\mathcal{D}$ is a capillary surface --- a stress-limited unilateral constraint, Eq.~\eqref{eq:capceiling}, plus a substrate; loading is an initial condition (momentum $\rho U$), not a boundary control; $\mathcal{P}$ is a single transient of duration set by the material itself. Accessible output: functionals of the \emph{full dynamical system} Eq.~\eqref{eq:fdynamics} + momentum + interface evolution: $\beta_{\max}(U,\phi,I)$, front trajectories, arrest morphology, relaxation curves.
+\end{itemize}
+
+\noindent The two experiments share $\mathcal{M}$ and nothing else. Six formal differences, with their operational consequences:
+
+\begin{center}
+\small
+\begin{tabular}{p{0.21\textwidth} p{0.34\textwidth} p{0.36\textwidth}}
+\hline
+ & \textbf{Confined rheometry} & \textbf{Drop impact / free surface} \\
+\hline
+1. Ensemble & fixed $\phi$ (or fixed $P_{\mathrm{p}}$); conjugate free & neither: locally fixed $\phi$, globally pressure-capped by skin, $\sigma_{\mathrm{cap}}^{\max}\!\sim\!\Gamma/a$ \\
+2. Stress source & boundary-imposed, sustainable & inertial, impulsive, self-generated via front added-mass; decays as momentum spends \\
+3. Kinematic character & viscometric (simple shear), homogeneous by intent & mixed shear + biaxial extension + compression; inhomogeneous by construction (fronts) \\
+4. Time structure & steady state accessible; $f=f_{\mathrm{eq}}$ & single transient; $f$ lags via $\gamma^{*}$, decays via $\tau_{\mathrm{r}}$; steady state never reached \\
+5. Role of instability & DST = ensemble instability: bands, oscillations, apparatus coupling & S-curve traversed dynamically; instability partially defused by dilation, SJ stabilized by skin \\
+6. Observables & $\eta(\sigma)$, $N_1, N_2$, $P_{\mathrm{p}}$; clocks only via transients & $\beta_{\max}$, $k=u_{\mathrm{f}}/U$, arrest shape, surface texture, relaxation time; clocks are \emph{primary} observables \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{The mapping, and what does not map}
+\label{sec:mapping}
+The dimensionless groups controlling impact of a thickening suspension extend the Newtonian set $\{\mathrm{We} = \rho U^2 R/\Gamma,\ \mathrm{Re} = \rho U R/\eta,\ \mathrm{Oh}\}$ by exactly the ratios of the impact scales to the material ladders and clocks:
+\begin{equation}
+\Pi_1 = \frac{\rho U^{2}}{\sigmastar}, \qquad
+\Pi_2 = \frac{\phiJ^{(\mathrm{deep})}\!-\phi}{\phiO - \phiM}\ \text{(depth into the window)}, \qquad
+\Pi_3 = \frac{\tau_{\mathrm{r}}}{R/U}, \qquad
+\Pi_4 = \frac{\Gamma/a}{\sigmastar},
+\label{eq:groups}
+\end{equation}
+plus $\gamma^{*}$ (order unity, weakly variable). $\Pi_1$ decides whether impact activates the ladder ($\Pi_1 \gtrsim 1$: fronts launch); $\Pi_2$ sets front amplification Eq.~\eqref{eq:frontspeed} and whether SJ (as opposed to DST-like transient thickening) is reachable; $\Pi_3$ separates ``jams and stays jammed through the event'' ($\Pi_3 \gg 1$) from ``jams and melts mid-event'' ($\Pi_3 \sim 1$ --- the richest morphologies); $\Pi_4$ decides whether the skin can hold the jammed plug at all. \textbf{A steady rheometric characterization supplies $\sigmastar$ and the $\phi$-ladder (hence $\Pi_1, \Pi_2, \Pi_4$) but cannot supply $\Pi_3$}: two suspensions with identical flow curves but different $\tau_{\mathrm{r}}$ (e.g., silica at 0 vs.\ 100\,mM LiCl, where statics shift modestly but film-healing kinetics shift enormously) will impact almost identically and relax entirely differently. Conversely, impact experiments constrain the clocks but convolve the ladders with geometry. \emph{The two classes of experiment are therefore complementary coordinates on $\mathcal{M}$, and only their union identifies the material.} This, stated formally, is the reason a drop-impact program plus targeted transient rheometry is not redundant with — and cannot be replaced by — steady rheometry of any sophistication.
+
+One asymmetry deserves emphasis, because it elevates the free-surface experiment from ``complementary'' to ``privileged'' for the backward rate. To measure $\tau_{\mathrm{r}}$ one must \emph{hold a jammed state at zero mean applied stress} and watch it decay. A rheometer cannot do this cleanly: after any step-down, tool contact maintains residual normal loads on the network (feeding the mechanical channel, \S\ref{sec:channels}), sedimentation presses the sample against a tool, and the measurement itself perturbs the state. A free deposit sitting on a substrate under its own capillary skin is the one configuration in which the latched network is held (by a stress-capped, self-adjusting boundary) while the mean applied stress is essentially zero and the decay is read out without contact, by imaging. \textbf{The arrested drop is the natural instrument for the backward rate, in the same sense that the rheometer is the natural instrument for the forward ladders.} A drop-impact lifetime program is thus not an application of suspension rheology but a measurement of the half of the constitutive structure rheometry cannot reach.
+
+\subsection{Failure modes of naive translation}
+Three common errors, now diagnosable:
+\begin{enumerate}
+\item \textbf{``Effective viscosity'' fallacy}: inserting $\eta(\sigma)$ from steady rheometry into Newtonian spreading laws. Fails because the lamella never reaches $f_{\mathrm{eq}}$ (strain clock) and because arrest is a rigidity event ($\phi$ crossing $\phiJ(f)$ locally), not a large-viscosity limit. Symptom: fitted ``viscosities'' exceeding the steady curve by orders of magnitude and scaling wrongly with $U$.
+\item \textbf{DST-at-fixed-$\phi$ intuition applied to the drop}: expecting the violent fixed-volume instability. The drop partially dilates (skin-regulated), so impact response is closer to the smooth pressure-imposed $\mu(J)$ surface than to the S-curve --- fluctuations are tamed, fronts are orderly.
+\item \textbf{Reading the deposit as equilibrium}: final aspect ratios and contact angles are arrest-frozen, history-dependent quantities (act 3--5 outcomes), informative precisely because they are \emph{not} minimal-energy shapes; comparing them to equilibrium wetting theory measures nothing about wetting.
+\end{enumerate}
+
+% ============================================================
+\section{Confrontation with data}
+\label{sec:confront}
+% ============================================================
+
+A theory earns its keep against measurements it did not curve-fit. Four confrontations: three with this program's own drop-impact data (quoted values are the program's current, in places provisional, estimates and are flagged as such), one with the published transient literature.
+
+\subsection{The salt sign test (silica + LiCl)}
+\label{sec:salttest}
+\textbf{Data.} Sub-micron St\"ober silica ($2a \approx 0.8\,\mu$m) in water at $\phi = 0.44$, LiCl from 0 to 100\,mM: the final deposit aspect ratio is unchanged to within $-0.5\%$ across the analysis-specification ensemble, while the un-jamming (deposit relaxation) time lengthens by a factor whose defensible range spans $\sim$4.5--30$\times$ (core estimate $\sim$10$\times$); the same-day 0-vs-100\,mM contrast is statistically clean.
+
+\textbf{What the theory requires.} This is precisely the signed triplet of \S\ref{sec:orthogonal}: statics (arrest geometry, set by the ladders once impact drives $f\to1$) nearly invariant; kinetics (lifetime, exponential in $E_{\mathrm{esc}}$) enormously extended. The \emph{ratio} of effects --- order-unity statics shift versus order-of-magnitude kinetics shift from the same knob --- is the fingerprint of algebraic-forward/exponential-backward and is not produced by any single-clock account.
+
+\textbf{The sign discipline, quantified.} Any crowding explanation must route the salt effect through the effective volume fraction. The electrostatic shell at low ionic strength (Debye length plus hydration, $\delta \sim 15$--$30$\,nm on $a = 400$\,nm) gives $\phi_{\mathrm{eff}} = \phi\,(1+\delta/a)^{3} \approx 0.49$--$0.55$ from $\phi = 0.44$; at 100\,mM, $\kappa^{-1} \approx 1$\,nm and $\phi_{\mathrm{eff}} \to 0.45$. Salt therefore moves the system \emph{away} from its jamming point by up to $\Delta\phi_{\mathrm{eff}} \sim 0.1$ --- crowding predicts \emph{faster} relaxation and \emph{weaker} jamming with salt, the opposite of observation on the kinetic axis. The latching theory predicts exactly this opposition: the static, crowding-controlled quantities (onset, arrest geometry) may soften slightly with salt while the lifetime explodes. A quantitative closure is available with no new apparatus: measure $\zeta(I)$, compute $E_{\mathrm{esc}}(I)$ from DLVO + hydration, and test $\ln\tau_{\mathrm{KWW}}$ vs $E_{\mathrm{esc}}(I)/k_{\mathrm{B}}T$ for unit slope --- the theory's hardest quantitative commitment.
+
+\textbf{Note also what the shell calculation does to the statics baseline:} at low salt, $\phi_{\mathrm{eff}} \approx 0.49$--$0.55$ places the 0\,mM suspension at or near its frictional jamming point $\phiM \approx 0.56$--$0.58$ --- resolving the apparent paradox that smooth spheres at nominal $\phi=0.44$ (well below sphere $\phiM$) shear-jam under impact at all \cite{shah2022}, and predicting that impact jamming of this system should weaken detectably at \emph{very} high dilution of $\phi$ even as salt strengthens the latch.
+
+\subsection{Velocity-suppressed spreading}
+\textbf{Data.} At 0\,mM, maximum spreading follows $\beta_{\max} \propto u_{0}^{-0.41}$ over the program's velocity range --- decreasing with impact speed, opposite to every Newtonian scaling ($\beta_{\max}$ growing as $\mathrm{We}^{1/4}$ or $\mathrm{Re}^{1/5}$). The program's continuum $f$-field simulations reproduce the signature: a thickening closure gives near-velocity-independent crater response ($U_{3}/U_{1} = 1.07$) where the Newtonian viscosity-matched twin grows ($1.74$).
+
+\textbf{Theory.} Front-limited arrest gives the structure. The front consumes the drop in $t_{\mathrm{J}} \sim R\,\Delta\phi/(\phi\,U)$ (Eq.~\eqref{eq:frontspeed}); inserting into inertial-lamella spreading $r \sim (RUt)^{1/2}$ yields
+\begin{equation}
+\beta_{\max} \;\sim\; \left(\frac{\Delta\phi(U)}{\phi}\right)^{1/2},
+\qquad
+\Delta\phi(U) = \phiJ\!\big(f_{\mathrm{eq}}(k\rho U^{2})\big) - \phi_{\mathrm{eff}},
+\label{eq:betamax}
+\end{equation}
+so all $U$-dependence of $\beta_{\max}$ enters through the activation depth $\Delta\phi(U)$. In the crossover window $\rho U^{2} \sim \sigmastar$, $\Delta\phi$ falls steeply with $U$ (more of the constraint ladder activates) and $\beta_{\max}$ \emph{decreases} with an apparent power law whose exponent is the local logarithmic slope --- naturally of order $-0.3$ to $-0.5$, but \textbf{not universal}. Two falsifiable consequences: (i) the exponent must flatten toward zero at high $U$ (once $f\to1$, $\Delta\phi$ saturates at $\phiM-\phi_{\mathrm{eff}}$ and $\beta_{\max}$ becomes $U$-independent --- the simulations' velocity-insensitive regime); (ii) salt, which lowers $\sigmastar$, shifts the crossover to lower $U$: at 100\,mM the same velocity range should sit further into saturation and show a \emph{smaller} exponent magnitude. Strongest form: $\beta_{\max}$ data at all $I$ and $U$ collapse when plotted against $\Pi_{1} = \rho U^{2}/\sigmastar(I)$ with $\sigmastar(I)$ taken from rheometry --- zero free parameters once the flow curves are measured.
+
+\subsection{The silica--cornstarch inversion}
+\textbf{Data.} At comparable nominal volume fractions, the program finds silica suspensions jam roughly an order of magnitude \emph{earlier} and relax roughly an order of magnitude \emph{more slowly} than cornstarch --- inverting the folk expectation that cornstarch is the archetypal jammer. (Caveat carried explicitly: the cornstarch concentration convention (wt\%/vol\%) is under reconciliation in the program; the comparison is directional until that closes.)
+
+\textbf{Theory.} Both halves follow. \emph{Earlier jamming}: proximity to jamming must be measured on each material's own ladder. The charged shell places the 0\,mM silica at $\phi_{\mathrm{eff}}$ near its (narrow-PSD, smooth-sphere) $\phiM$, while cornstarch's broad polydispersity and irregular shape raise its entire ladder (\S\ref{sec:polydispersity}), so nominal-$\phi$ parity puts cornstarch \emph{shallower} in its window. Narrow PSD also sharpens the silica onset (large $\beta$ in Eq.~\eqref{eq:fsigma}) where cornstarch's is smeared. \emph{Slower relaxation}: the channel dichotomy of \S\ref{sec:channels}. Silica ($2a = 0.8\,\mu$m) is colloidal --- its lifetime is intrinsic, Arrhenius, and latch-deepened by any dissolved ions; cornstarch is athermal with load-activated, self-releasing H-bond constraints --- its free-deposit lifetime is short and extrinsic. The inversion is not an anomaly; it is the predicted phenotype of ``colloidal latch'' versus ``athermal self-release.''
+
+\subsection{The published transient literature as prior confirmation}
+The two-population, two-channel structure was already visible, unnamed, in four independent measurements: two distinct stress-relaxation regimes in shear-jammed suspensions (fast then activated-slow) \cite{barik2022}; lasting microstructural memory after DST flow cessation \cite{cho2022}; giant, protocol-dependent relaxation times in confined DST cornstarch --- the mechanical channel held shut by tool load \cite{maharjan2017}; and ms-solid/seconds-liquid coexistence in free colloidal drops \cite{shah2022}. The theory's contribution is to assert these are one phenomenon, to attach the controlling parameter ($E_{\mathrm{esc}}$ and its distribution), and to predict how each observation moves under chemical and thermal perturbation --- which no purely descriptive account does.
+
+% ============================================================
+\section{Predictions and experimental designs}
+\label{sec:predictions}
+% ============================================================
+
+Each prediction names its knob, its observable, and the piece of the framework it tests. The first four are the theory's kill shots --- outcomes that would falsify the asymmetry core, not merely trim parameters.
+
+\begin{enumerate}
+\item \textbf{The Arrhenius discriminator} (kill shot for \S\ref{sec:channels}). Sweep bath temperature 5--45\,$^{\circ}$C at fixed chemistry and normalize out solvent trivia by reporting $\tau_{\mathrm{r}}/(\etas(T)\,a^{3}/k_{\mathrm{B}}T)$. Prediction: silica deposit lifetimes are Arrhenius with activation energy $E_{\mathrm{esc}}(I)$ that \emph{increases with salt} (a factor $\sim e^{2}$--$e^{3}$ over 40\,K at $E_{\mathrm{esc}}\!\sim\!15\,k_{\mathrm{B}}T$); cornstarch lifetimes track $\etas(T)$ only (athermal channel). If silica lifetimes prove temperature-blind, the thermal-latch mechanism is dead as stated.
+\item \textbf{The vibration threshold} (kill shot for Eq.~\eqref{eq:taur}). Apply substrate vibration of controlled acceleration to an arrested deposit. Prediction: lifetime collapses \emph{discontinuously} when the induced stress crosses $\sigma_{\mathrm{y}}(f_{\mathrm{latched}})$ --- a threshold, not a smooth acceleration dependence --- and the threshold rises with salt (deeper latch $\Rightarrow$ stronger network). A smooth, thresholdless speedup would falsify the channel structure.
+\item \textbf{The slope test} (the theory's hardest quantitative commitment; \S\ref{sec:salttest}). $\ln\tau_{\mathrm{KWW}}$ versus DLVO+hydration-computed $E_{\mathrm{esc}}(I)/k_{\mathrm{B}}T$ (with measured $\zeta(I)$) must be linear with slope $1$ and intercept $\ln\tau_{0}$ consistent with the hindered-Brownian time. Slope far from unity falsifies the Kramers channel; the data for this test (0--100\,mM lifetimes) largely already exist in the program.
+\item \textbf{KWW broadening} (tests \S\ref{sec:kww}, on data already collected). Refit existing deposit-relaxation curves: $\beta_{\mathrm{KWW}}$ should decrease monotonically with $I$, and high-salt relaxations should resolve into an early fast (unlatched/elastic) step plus a slow tail. A salt-independent $\beta_{\mathrm{KWW}}$ near 1 would falsify the distributed-latch picture.
+\item \textbf{$\beta_{\max}$ collapse and saturation} (tests Eq.~\eqref{eq:betamax}). $\beta_{\max}(U, I)$ collapses against $\Pi_{1} = \rho U^{2}/\sigmastar(I)$ with rheometrically measured $\sigmastar(I)$; the apparent exponent $-0.41$ flattens at high $U$ and is smaller in magnitude at 100\,mM than at 0\,mM over the same velocities.
+\item \textbf{Salt ladder on silica, statics half} (tests \S\ref{sec:chemistry}): rheometric $\sigmastar(I)$ decreasing; impact arrest earlier in spreading and at lower $U$; final deposit geometry nearly $I$-independent --- with the effective-$\phi$ sign argument (\S\ref{sec:salttest}) pre-empting any crowding reinterpretation.
+\item \textbf{Size scaling of impact jamming} (tests Eq.~\eqref{eq:onsetstress}, \eqref{eq:groups}): across silica sizes at fixed $\phi/\phiJ$ and fixed $U$, arrest onset organizes by $\Pi_1 = \rho U^2/\sigmastar(a)$; the exponent of $\sigmastar(a)$ ($a^{-2}$ steric/hydration vs.\ $a^{-1}$ DLVO) identifies the stabilizer (\S\ref{sec:size}). Simultaneously, lifetime scaling $\tau_{0} \propto a^{3}$ (\S\ref{sec:channels}) is testable with the same size series.
+\item \textbf{Same-$\phi$ fallacy, quantified} (tests \S\ref{sec:shape}, \S\ref{sec:confront}): cornstarch vs.\ silica compared at matched $(\phi_{\mathrm{eff}}-\phiM)/(\phiO-\phiM)$ (each ladder from $\phi$-sweep rheometry, silica with shell correction) should collapse front kinematics Eq.~\eqref{eq:frontspeed}; compared at raw $\phi$ they should not.
+\item \textbf{Skin-limited jamming} (tests Eq.~\eqref{eq:capceiling}): surfactant (halving $\Gamma$) weakens impact solidity for the largest particles first ($\Pi_4 \propto \Gamma/a$), with matte granulation texture disappearing concurrently. Corollary from \S\ref{sec:channels}: surfactant also \emph{shortens cornstarch lifetimes} (less capillary drive is needed, but less confinement is provided --- net predicted effect computable from the deposit's $\sigma_{\mathrm{drive}}$ budget) while leaving silica's thermal-channel lifetime intact unless the surfactant adsorbs on silica --- an adsorption-sensitive discriminator.
+\item \textbf{Boundary-condition dependence of athermal lifetimes} (tests \S\ref{sec:channels}): the same cornstarch batch measured (a) as a free deposit, (b) under a plate at controlled normal load, (c) on substrates of differing wettability should show lifetimes ranging over orders of magnitude --- extrinsic; silica lifetimes under the same manipulations vary weakly --- intrinsic.
+\item \textbf{Clock separation across geometries} (tests Eq.~\eqref{eq:fdynamics}): stress step-down rheometry must yield the same $\tau_{\mathrm{r}}(\phi,I)$ law as free-surface deposit relaxation once the residual-load channel is accounted for; a \emph{systematic} rheometer-shorter-than-drop discrepancy is itself a prediction (tool load feeds the mechanical channel).
+\item \textbf{Polydispersity translation} (tests \S\ref{sec:polydispersity}): blending two silica sizes (ratio $\sim$3) at fixed total $\phi$ weakens impact jamming by a $\Delta\phiJ$ predictable from packing simulations --- zero-free-parameter ladder check.
+\item \textbf{Extensional activation} (tests \S\ref{sec:freesurface}): rod-shaped particles at matched shear-rheometry ladders arrest earlier in the biaxial lamella --- quantifying tensorial fabric physics absent from scalar models.
+\item \textbf{Un-jamming fronts and the Maxwell identity} (tests $\tau_{\mathrm{r}}$ + nonlocality + \S\ref{sec:fronts}): melting fronts in releasing deposits and rheometric band interfaces share one cooperativity length $\xi$; measuring both in one material closes the loop between the two ensembles.
+\end{enumerate}
+
+% ============================================================
+\section{Summary and outlook}
+% ============================================================
+
+The theory assembled here has deliberately few moving parts, and its parts have deliberately unequal epistemic status. The \emph{synthesis} layer --- geometry and granular mechanics supplying a ladder of jamming points $\{\phiJ^{(k)}\}$, colloid and interface science supplying a ladder of activation stresses $\{\sigmastar_k\}$ from the disjoining-pressure isotherm, contact elasticity supplying the ceiling, one interpolation formula generating CST/DST/SJ as stages of one transition --- is established physics, organized. The \emph{theory} layer is the asymmetry theorem of \S\ref{sec:latching}: constraint formation is mechanically activated and algebraic in $\sigma/\sigmastar$ because it is driven by the barrier's maximum force; constraint release is activated escape, exponential in the contact well's depth $E_{\mathrm{esc}}/k_{\mathrm{B}}T$ or gated by a residual-stress threshold, because at low load nothing drives it. Since barrier slope and well depth are independent functionals of the same potential, onset and lifetime are independently, and for screening perturbations \emph{oppositely}, tunable --- the $(\sigmastar, E_{\mathrm{esc}})$ design plane. From this one asymmetry follow, without further assumptions: salt-invariant arrest geometry alongside order-of-magnitude salt-slowed un-jamming (observed in this program, with the effective-$\phi$ sign argument excluding crowding accounts); KWW relaxation with salt-decreasing stretching exponent; the intrinsic/extrinsic (Arrhenius/threshold-gated) lifetime dichotomy across the colloidal--granular divide, which rationalizes the silica--cornstarch inversion; jam-fast/melt-slow hysteresis growing exponentially with latch depth; and the identification of the arrested free-surface drop as the privileged instrument for the backward rate.
+
+The ensemble analysis then locates each experiment's jurisdiction: confined rheometry isolates the forward ladders under sustained, boundary-supplied load with dilation frustrated; the free-surface drop --- inertially self-loaded, capillarity-capped at $\sim\Gamma/a$, capable of holding a jammed state at zero mean stress --- measures the backward clock rheometry cannot cleanly reach. Their union, and only their union, determines the material.
+
+What would kill the theory, and is measurable now: silica deposit lifetimes indifferent to temperature (breaks the thermal latch); vibration accelerating un-jamming smoothly rather than through a threshold (breaks the channel structure); $\ln\tau$ failing the unit-slope test against independently computed $E_{\mathrm{esc}}(I)$ (breaks the Kramers identification); a salt-independent KWW exponent (breaks the distributed-latch picture); or $\beta_{\max}$ refusing to collapse against $\rho U^{2}/\sigmastar(I)$ (breaks the front-limited-arrest closure). What remains open even if all of these survive: the tensorial/fabric structure of transiently jammed states (anisotropic strength, crack patterns in arrested drops), the nonlocal length shared between band interfaces and jamming/melting fronts, the composition of shear jamming with drying-consolidation arrest, and the many-body corrections to the pairwise landscape picture (collective latching along force chains, which may renormalize $E_{\mathrm{esc}}$ upward with $\phi$). Each is measurable with high-speed imaging of impacting drops plus targeted transient rheometry; none is measurable with steady flow curves alone.
+
+% ============================================================
+\begin{thebibliography}{99}
+\small
+
+\bibitem{brady1985} G.~Bossis and J.~F.~Brady, \emph{The rheology of Brownian suspensions}, J. Chem. Phys. \textbf{91}, 1866 (1989); J.~F.~Brady and G.~Bossis, \emph{Stokesian dynamics}, Annu. Rev. Fluid Mech. \textbf{20}, 111 (1988).
+
+\bibitem{wagner2009} N.~J.~Wagner and J.~F.~Brady, \emph{Shear thickening in colloidal dispersions}, Phys. Today \textbf{62}(10), 27 (2009).
+
+\bibitem{seto2013} R.~Seto, R.~Mari, J.~F.~Morris, and M.~M.~Denn, \emph{Discontinuous shear thickening of frictional hard-sphere suspensions}, Phys. Rev. Lett. \textbf{111}, 218301 (2013).
+
+\bibitem{mari2014} R.~Mari, R.~Seto, J.~F.~Morris, and M.~M.~Denn, \emph{Shear thickening, frictionless and frictional rheologies in non-Brownian suspensions}, J. Rheol. \textbf{58}, 1693 (2014).
+
+\bibitem{lin2015} N.~Y.~C.~Lin, B.~M.~Guy, M.~Hermes, C.~Ness, J.~Sun, W.~C.~K.~Poon, and I.~Cohen, \emph{Hydrodynamic and contact contributions to continuous shear thickening in colloidal suspensions}, Phys. Rev. Lett. \textbf{115}, 228304 (2015).
+
+\bibitem{royer2016} J.~R.~Royer, D.~L.~Blair, and S.~D.~Hudson, \emph{Rheological signature of frictional interactions in shear thickening suspensions}, Phys. Rev. Lett. \textbf{116}, 188301 (2016).
+
+\bibitem{comtet2017} J.~Comtet, G.~Chatt\'e, A.~Ni\-guès, L.~Bocquet, A.~Siria, and A.~Colin, \emph{Pairwise frictional profile between particles determines discontinuous shear thickening transition in non-colloidal suspensions}, Nat. Commun. \textbf{8}, 15633 (2017).
+
+\bibitem{clavaud2017} C.~Clavaud, A.~B\'erut, B.~Metzger, and Y.~Forterre, \emph{Revealing the frictional transition in shear-thickening suspensions}, Proc. Natl. Acad. Sci. USA \textbf{114}, 5147 (2017).
+
+\bibitem{hsiao2017} L.~C.~Hsiao, S.~Jamali, E.~Glynos, P.~F.~Green, R.~G.~Larson, and M.~J.~Solomon, \emph{Rheological state diagrams for rough colloids in shear flow}, Phys. Rev. Lett. \textbf{119}, 158001 (2017).
+
+\bibitem{morris2020} J.~F.~Morris, \emph{Shear thickening of concentrated suspensions: recent developments and relation to other phenomena}, Annu. Rev. Fluid Mech. \textbf{52}, 121 (2020).
+
+\bibitem{ness2022} C.~Ness, R.~Seto, and R.~Mari, \emph{The physics of dense suspensions}, Annu. Rev. Condens. Matter Phys. \textbf{13}, 97 (2022).
+
+\bibitem{denn2018} M.~M.~Denn, J.~F.~Morris, and D.~Bonn, \emph{Shear thickening in concentrated suspensions of smooth spheres in Newtonian suspending fluids}, Soft Matter \textbf{14}, 170 (2018).
+
+\bibitem{krieger1959} I.~M.~Krieger and T.~J.~Dougherty, \emph{A mechanism for non-Newtonian flow in suspensions of rigid spheres}, Trans. Soc. Rheol. \textbf{3}, 137 (1959).
+
+\bibitem{guazzelli2018} \'E.~Guazzelli and O.~Pouliquen, \emph{Rheology of dense granular suspensions}, J. Fluid Mech. \textbf{852}, P1 (2018).
+
+\bibitem{singh2020} A.~Singh, C.~Ness, R.~Seto, J.~J.~de~Pablo, and H.~M.~Jaeger, \emph{Shear thickening and jamming of dense suspensions: the ``roll'' of friction}, Phys. Rev. Lett. \textbf{124}, 248005 (2020).
+
+\bibitem{richards2020} J.~A.~Richards, B.~M.~Guy, E.~Blanco, M.~Hermes, G.~Poy, and W.~C.~K.~Poon, \emph{The role of friction in the yielding of adhesive non-Brownian suspensions}, J. Rheol. \textbf{64}, 405 (2020).
+
+\bibitem{guy2018} B.~M.~Guy, J.~A.~Richards, D.~J.~M.~Hodgson, E.~Blanco, and W.~C.~K.~Poon, \emph{Constraint-based approach to granular dispersion rheology}, Phys. Rev. Lett. \textbf{121}, 128001 (2018).
+
+\bibitem{wyart2014} M.~Wyart and M.~E.~Cates, \emph{Discontinuous shear thickening without inertia in dense non-Brownian suspensions}, Phys. Rev. Lett. \textbf{112}, 098302 (2014).
+
+\bibitem{ness2016} C.~Ness and J.~Sun, \emph{Shear thickening regimes of dense non-Brownian suspensions}, Soft Matter \textbf{12}, 914 (2016).
+
+\bibitem{silbert2010} L.~E.~Silbert, \emph{Jamming of frictional spheres and random loose packing}, Soft Matter \textbf{6}, 2918 (2010).
+
+\bibitem{song2008} C.~Song, P.~Wang, and H.~A.~Makse, \emph{A phase diagram for jammed matter}, Nature \textbf{453}, 629 (2008).
+
+\bibitem{bi2011} D.~Bi, J.~Zhang, B.~Chakraborty, and R.~P.~Behringer, \emph{Jamming by shear}, Nature \textbf{480}, 355 (2011).
+
+\bibitem{cates1998fragile} M.~E.~Cates, J.~P.~Wittmer, J.-P.~Bouchaud, and P.~Claudin, \emph{Jamming, force chains, and fragile matter}, Phys. Rev. Lett. \textbf{81}, 1841 (1998).
+
+\bibitem{boyer2011} F.~Boyer, \'E.~Guazzelli, and O.~Pouliquen, \emph{Unifying suspension and granular rheology}, Phys. Rev. Lett. \textbf{107}, 188301 (2011).
+
+\bibitem{maranzano2001} B.~J.~Maranzano and N.~J.~Wagner, \emph{The effects of particle size on reversible shear thickening of concentrated colloidal dispersions}, J. Chem. Phys. \textbf{114}, 10514 (2001).
+
+\bibitem{guy2015} B.~M.~Guy, M.~Hermes, and W.~C.~K.~Poon, \emph{Towards a unified description of the rheology of hard-particle suspensions}, Phys. Rev. Lett. \textbf{115}, 088304 (2015).
+
+\bibitem{brown2014} E.~Brown and H.~M.~Jaeger, \emph{Shear thickening in concentrated suspensions: phenomenology, mechanisms and relations to jamming}, Rep. Prog. Phys. \textbf{77}, 046602 (2014).
+
+\bibitem{brown2011shape} E.~Brown, H.~Zhang, N.~A.~Forman, B.~W.~Maynor, D.~E.~Betts, J.~M.~DeSimone, and H.~M.~Jaeger, \emph{Shear thickening and jamming in densely packed suspensions of different particle shapes}, Phys. Rev. E \textbf{84}, 031408 (2011).
+
+\bibitem{egres2005} R.~G.~Egres and N.~J.~Wagner, \emph{The rheology and microstructure of acicular precipitated calcium carbonate colloidal suspensions through the shear thickening transition}, J. Rheol. \textbf{49}, 719 (2005).
+
+\bibitem{james2019fiber} N.~M.~James, H.~Xue, M.~Goyal, and H.~M.~Jaeger, \emph{Controlling shear jamming in dense suspensions via the particle aspect ratio}, Soft Matter \textbf{15}, 3649 (2019).
+
+\bibitem{hsu2018} C.-P.~Hsu, S.~N.~Ram\-akrishna, M.~Zanini, N.~D.~Spencer, and L.~Isa, \emph{Roughness-dependent tribology effects on discontinuous shear thickening}, Proc. Natl. Acad. Sci. USA \textbf{115}, 5117 (2018).
+
+\bibitem{madraki2017} Y.~Madraki, S.~Hormozi, G.~Ovarlez, \'E.~Guazzelli, and O.~Pouliquen, \emph{Enhancing shear thickening}, Phys. Rev. Fluids \textbf{2}, 033301 (2017).
+
+\bibitem{james2018} N.~M.~James, E.~Han, R.~A.~L.~de~la~Cruz, J.~Jureller, and H.~M.~Jaeger, \emph{Interparticle hydrogen bonding can elicit shear jamming in dense suspensions}, Nat. Mater. \textbf{17}, 965 (2018).
+
+\bibitem{cates2005granulation} M.~E.~Cates, M.~D.~Haw, and C.~B.~Holmes, \emph{Dilatancy, jamming, and the physics of granulation}, J. Phys.: Condens. Matter \textbf{17}, S2517 (2005).
+
+\bibitem{waitukaitis2012} S.~R.~Waitukaitis and H.~M.~Jaeger, \emph{Impact-activated solidification of dense suspensions via dynamic jamming fronts}, Nature \textbf{487}, 205 (2012).
+
+\bibitem{han2016} E.~Han, I.~R.~Peters, and H.~M.~Jaeger, \emph{High-speed ultrasound imaging in dense suspensions reveals impact-activated solidification due to dynamic shear jamming}, Nat. Commun. \textbf{7}, 12243 (2016).
+
+\bibitem{peters2016} I.~R.~Peters, S.~Majumdar, and H.~M.~Jaeger, \emph{Direct observation of dynamic shear jamming in dense suspensions}, Nature \textbf{532}, 214 (2016).
+
+\bibitem{hermes2016} M.~Hermes, B.~M.~Guy, W.~C.~K.~Poon, G.~Poy, M.~E.~Cates, and M.~Wyart, \emph{Unsteady flow and particle migration in dense, non-Brownian suspensions}, J. Rheol. \textbf{60}, 905 (2016).
+
+\bibitem{maharjan2017} R.~Maharjan and E.~Brown, \emph{Giant deviation of a relaxation time from generalized Newtonian theory in discontinuous shear thickening suspensions}, Phys. Rev. Fluids \textbf{2}, 123301 (2017).
+
+\bibitem{shah2022} P.~Shah, S.~Arora, and M.~M.~Driscoll, \emph{Coexistence of solid and liquid phases in shear jammed colloidal drops}, Commun. Phys. \textbf{5}, 222 (2022).
+
+\bibitem{boyer2016impact} F.~Boyer, J.~Sandoval-Nava, J.~H.~Snoeijer, J.~F.~Dijksman, and D.~Lohse, \emph{Drop impact of shear thickening liquids}, Phys. Rev. Fluids \textbf{1}, 013901 (2016).
+
+\bibitem{barik2022} S.~Barik and S.~Majumdar, \emph{Origin of two distinct stress relaxation regimes in shear jammed dense suspensions}, Phys. Rev. Lett. \textbf{128}, 258002 (2022).
+
+\bibitem{cho2022} J.~Cho, A.~H.~Griese, I.~R.~Peters, and I.~Bischofberger, \emph{Lasting effects of discontinuous shear thickening in cornstarch suspensions upon flow cessation}, Phys. Rev. Fluids \textbf{7}, 063302 (2022).
+
+\bibitem{baumgarten2019} A.~S.~Baumgarten and K.~Kamrin, \emph{A general constitutive model for dense, fine-particle suspensions validated in many geometries}, Proc. Natl. Acad. Sci. USA \textbf{116}, 20828 (2019).
+
+\bibitem{gdrmidi2004} GDR~MiDi, \emph{On dense granular flows}, Eur. Phys. J. E \textbf{14}, 341 (2004).
+
+\bibitem{ohern2003} C.~S.~O'Hern, L.~E.~Silbert, A.~J.~Liu, and S.~R.~Nagel, \emph{Jamming at zero temperature and zero applied stress: the epitome of disorder}, Phys. Rev. E \textbf{68}, 011306 (2003).
+
+\bibitem{vanhecke2010} M.~van Hecke, \emph{Jamming of soft particles: geometry, mechanics, scaling and isostaticity}, J. Phys.: Condens. Matter \textbf{22}, 033101 (2010).
+
+\bibitem{israelachvili} J.~N.~Israelachvili, \emph{Intermolecular and Surface Forces}, 3rd ed. (Academic Press, 2011).
+
+\end{thebibliography}
+
+\end{document}

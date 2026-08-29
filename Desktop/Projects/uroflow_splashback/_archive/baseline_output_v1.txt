@@ -1,0 +1,20 @@
+====================================================================
+UROFLOW SPLASHBACK -- model summary
+====================================================================
+Exit: Q=21 mL/s, d=4 mm -> v=1.67 m/s, We=173, Re=6818, Oh=0.0019
+Ideal breakup length L_b = 63 cm (real streams break sooner; Splash Lab ~15-20 cm)
+
+Driest configuration found:
+  height 15 cm, distance 12 cm, aim +0 deg
+  -> path 12 cm (coherent), impact angle 23 deg from horizontal, splash index 0.9
+
+Wettest (worst) configuration found:
+  height 75 cm, distance 39 cm, aim -38 deg
+  -> path 85 cm (BROKEN into drops), impact angle 71 deg, splash index 28.4
+
+Recommendations (physics-backed, matching Splash Lab):
+  1. Stand close  -> impact before Rayleigh breakup (coherent << drops).
+  2. Aim shallow  -> grazing impact, sin(angle) small, less normal momentum.
+  3. Sit / lower  -> shorter path + slower impact + easier shallow aim.
+
+Figures written to figures/.

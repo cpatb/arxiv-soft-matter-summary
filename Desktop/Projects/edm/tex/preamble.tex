@@ -1,0 +1,136 @@
+% ---------------------------------------------------------------------------
+%  Shared preamble: "Electronic Dance Music and Chicago House"
+%
+%  Engine: XeLaTeX (required -- fontspec + Unicode source text).
+%
+%  Loaded by every standalone chapter in this directory and by the bound
+%  volume edm_guide.tex. Nothing here is chapter-specific; if a rule only
+%  applies to one document it belongs in that document, not in this file.
+%
+%  Font choice follows the Basilisk mini-course build: Cambria for prose,
+%  Consolas for the step-grids and file paths. The non-ASCII inventory of the
+%  source markdown was audited before this file was written and contains
+%  exactly five codepoints (U+00B0, U+00B2, U+00D7, U+00E9, U+2212). Cambria
+%  covers all five. The three symbol codepoints are nevertheless mapped to
+%  math-font equivalents below, so the build does not silently change
+%  appearance if it is ever run on a machine without Cambria installed.
+% ---------------------------------------------------------------------------
+
+\usepackage{fontspec}
+\setmainfont{Cambria}
+\setmonofont{Consolas}[Scale=0.85]
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{newunicodechar}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{enumitem}
+
+% --- symbol codepoints pinned to the math font ----------------------------
+% Present in Cambria, mapped anyway so a font substitution cannot quietly
+% turn a minus sign into a hyphen in a table of decibel values.
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{×}{\ensuremath{\times}}
+\newunicodechar{²}{\ensuremath{^{2}}}
+
+% --- page geometry, spacing, headers --------------------------------------
+\usepackage[letterpaper,margin=0.95in,bottom=1.1in]{geometry}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+
+\setlength{\parskip}{0.32em}
+\setlength{\parindent}{0pt}
+\titlespacing*{\section}{0pt}{1.3em}{0.45em}
+\titlespacing*{\subsection}{0pt}{0.9em}{0.3em}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\nouppercase\leftmark}
+\fancyhead[R]{\small EDM \& Chicago House}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}%
+  \renewcommand{\headrulewidth}{0pt}}
+
+% --- verbatim -------------------------------------------------------------
+% The step-grids in the rhythm and FL Studio chapters are fixed-width ASCII
+% and must not be reflowed or broken. fvextra is loaded for its better
+% verbatim handling; breaking is deliberately left off so a 16-step bar
+% cannot be silently wrapped into something that is no longer 16 steps.
+\usepackage{fvextra}
+\fvset{breaklines=false,fontsize=\small}
+
+% --- tables ---------------------------------------------------------------
+\usepackage{etoolbox}
+\usepackage{booktabs}
+\usepackage{longtable}
+\AtBeginEnvironment{longtable}{\small}
+
+% --- breaking long identifiers --------------------------------------------
+% This guide is full of filenames like 03_first_track.md and sample paths
+% like 909 CH 1.wav. TeX will not hyphenate them, so in a narrow table column
+% they run into the margin. Permitting a break after each underscore fixes it
+% without inserting a hyphen that would misrepresent the filename.
+\let\origunderscore\_
+\renewcommand{\_}{\origunderscore\allowbreak}
+
+% --- links ----------------------------------------------------------------
+\usepackage[colorlinks=true,linkcolor=black!70!blue,urlcolor=black!60!blue,
+            citecolor=black!70!blue]{hyperref}
+
+% --- callout boxes --------------------------------------------------------
+% Same three-box idiom as the Jamming and Fracture lecture notes, plus a
+% fourth for the listening prompts, which are specific to this subject.
+\usepackage{mdframed}
+
+\newmdenv[backgroundcolor=blue!5,linecolor=blue!40,linewidth=0.8pt,
+  roundcorner=4pt,skipabove=8pt,skipbelow=8pt,
+  innertopmargin=6pt,innerbottommargin=6pt,
+  innerleftmargin=8pt,innerrightmargin=8pt]{intuitionbox}
+
+\newmdenv[backgroundcolor=orange!8,linecolor=orange!60,linewidth=0.8pt,
+  roundcorner=4pt,skipabove=8pt,skipbelow=8pt,
+  innertopmargin=6pt,innerbottommargin=6pt,
+  innerleftmargin=8pt,innerrightmargin=8pt]{pitfallbox}
+
+\newmdenv[backgroundcolor=gray!10,linecolor=gray!60,linewidth=0.8pt,
+  roundcorner=4pt,skipabove=8pt,skipbelow=8pt,
+  innertopmargin=6pt,innerbottommargin=6pt,
+  innerleftmargin=8pt,innerrightmargin=8pt]{reviewbox}
+
+\newmdenv[backgroundcolor=green!5,linecolor=green!45!black!60,linewidth=0.8pt,
+  roundcorner=4pt,skipabove=8pt,skipbelow=8pt,
+  innertopmargin=6pt,innerbottommargin=6pt,
+  innerleftmargin=8pt,innerrightmargin=8pt]{listenbox}
+
+% --- block quotes ---------------------------------------------------------
+\usepackage{quoting}
+\renewenvironment{quote}
+  {\begin{quoting}[leftmargin=1.2em,vskip=0.4em]\itshape}
+  {\end{quoting}}
+
+% --- pandoc compatibility -------------------------------------------------
+% The chapter bodies are generated by pandoc, whose LaTeX writer assumes the
+% scaffolding its own default template provides. We supply our own template,
+% so that scaffolding has to be reproduced here.
+%
+% \newcounter{none} is the one that bites: pandoc emits every table as an
+% unnumbered longtable keyed to a counter of that name, so without it each of
+% the ~40 tables in this guide is a hard error, not a warning.
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\passthrough}[1]{#1}
+
+\newcounter{none}
+\usepackage{calc}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% footnotehyper must come after hyperref; it lets footnotes survive inside a
+% longtable head or foot.
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+
+\setlength{\emergencystretch}{3em}

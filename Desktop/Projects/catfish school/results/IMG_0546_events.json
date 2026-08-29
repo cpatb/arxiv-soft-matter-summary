@@ -1,0 +1,20 @@
+[
+  {
+    "frame": 151,
+    "type": "fission",
+    "parent": 2,
+    "n_children": 2
+  },
+  {
+    "frame": 161,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 163,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 3
+  }
+]

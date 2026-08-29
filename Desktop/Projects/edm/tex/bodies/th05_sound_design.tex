@@ -1,0 +1,284 @@
+Every synthesiser you will ever open is a variation on the same three-stage chain, with two
+kinds of controller wired across it. Learn the chain once and every plugin becomes legible.
+
+\subsection{The chain}\label{th05_sound_design-the-chain}
+
+\begin{verbatim}
+OSCILLATOR  ->  FILTER  ->  AMPLIFIER  ->  out
+                  ^            ^
+                  |            |
+              ENVELOPE     ENVELOPE
+                 LFO          LFO
+\end{verbatim}
+
+The \textbf{oscillator} makes a raw tone with a lot of harmonic content.
+
+The \textbf{filter} removes some of those harmonics. This is where most of the character comes
+from.
+
+The \textbf{amplifier} controls the volume over time, which is what makes a sound a stab, a pluck
+or a pad.
+
+\textbf{Envelopes} and \textbf{LFOs} are not audible themselves. They are controllers that move the
+other things around over time.
+
+This is called \textbf{subtractive synthesis}, because you start with something harmonically rich
+and carve away. It is the dominant method in dance music and it is what the TB-303, the
+Juno-60 and roughly everything else in this folder are doing.
+
+\subsection{Waveforms}\label{th05_sound_design-waveforms}
+
+The oscillator\textquotesingle s shape determines which harmonics are present. The harmonics are integer
+multiples of the fundamental frequency, and the amplitude pattern is what your ear reads as
+timbre.
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}>{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0691}}>{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1199}}>{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1551}}>{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.6559}}@{}}
+\toprule\noalign{}
+Wave & Harmonics present & Amplitude falls off as & Sounds like \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Sine & fundamental only & n/a & pure, hollow, a whistle. The building block of sub bass \\
+Triangle & odd only & 1/n² & soft, flute-like, slightly more body than a sine \\
+Square & odd only & 1/n & hollow, woody, reedy. Classic for basses and leads \\
+Sawtooth & all & 1/n & bright, buzzy, aggressive. The most harmonically rich, and the default for pads and supersaws \\
+Noise & all, randomly & flat & hiss. Used for percussion, risers and texture \\
+\end{longtable}
+}
+
+Two practical consequences.
+
+A sine has nothing to filter, so a lowpass filter does nothing interesting to it. That is
+why sub basses are usually sines with no filter movement at all.
+
+A saw has everything to filter, so it responds enormously to filter movement. That is why
+every filter sweep you have ever heard in dance music is a saw wave underneath.
+
+A \textbf{pulse wave} is a square with an adjustable duty cycle. Modulating that duty cycle
+(pulse width modulation, PWM) gives you the thick, shifting, slightly detuned sound of
+1980s string machines. The Juno-60 that Larry Heard used for "Can You Feel It" is doing
+exactly this.
+
+\subsection{Filters}\label{th05_sound_design-filters}
+
+A filter attenuates frequencies above or below a cutoff point.
+
+\textbf{Lowpass (LPF)} passes low frequencies and removes highs. This is the one you will use 90\%
+of the time. Closing a lowpass makes a sound darker, more distant, more muffled.
+
+\textbf{Highpass (HPF)} does the opposite. Essential in mixing: highpass everything that is not
+the kick and bass to clear out the low end.
+
+\textbf{Bandpass} passes a band and removes everything either side. Telephone or radio effects,
+and useful for making a sound sit in a narrow slot.
+
+\textbf{Notch} removes a narrow band and passes the rest.
+
+Two controls matter:
+
+\textbf{Cutoff} is the corner frequency. Sweeping cutoff on a saw wave is the single most
+recognisable gesture in electronic music.
+
+\textbf{Resonance} boosts the frequencies right at the cutoff point. A little adds bite and
+focus. A lot makes the filter ring and whistle, and at extreme settings the filter
+self-oscillates and becomes a sine wave generator in its own right. Acid house is entirely
+about high resonance.
+
+\textbf{Slope} is how steeply the filter cuts, in decibels per octave. 12 dB/octave (2-pole) is
+gentle. 24 dB/octave (4-pole) is the Moog ladder sound, tighter and more dramatic. The
+TB-303 uses an unusual 18 dB/octave design, which is part of why acid basslines sound the way
+they do and not like every other synth.
+
+\subsection{Envelopes}\label{th05_sound_design-envelopes}
+
+An envelope describes how a parameter changes over the life of a single note. The standard
+form has four controls, universally abbreviated \textbf{ADSR}.
+
+\textbf{Attack} is the time from the note starting to the peak. Zero attack means the sound
+begins instantly, which is what you want for anything percussive. Long attack means it fades
+in, which is what makes a pad a pad.
+
+\textbf{Decay} is the time from that peak down to the sustain level.
+
+\textbf{Sustain} is a \textbf{level, not a time}. It is how loud the sound stays while you keep holding
+the key.
+
+\begin{pitfallbox}
+\textbf{Common mistake.} Reading sustain as a duration. Three of the four ADSR controls are
+times and the fourth is not, which is why beginners set sustain to zero expecting silence
+and get a pluck instead.
+\end{pitfallbox}
+
+\textbf{Release} is the time it takes to fade to silence after you let go.
+
+An organ has full sustain and no decay: it stays until you release. A piano has zero sustain
+and a long decay: it starts loud and fades even while you hold the key. A pluck is fast
+attack, fast decay, zero sustain.
+
+The single most useful trick in synthesis: route an envelope to the \textbf{filter cutoff} as
+well as the volume. A short filter envelope on a saw wave gives you the "wow" at the front
+of the note that makes a bass sound alive. Almost every good bass patch is doing this.
+
+\subsection{LFOs}\label{th05_sound_design-lfos}
+
+A low frequency oscillator is an oscillator running below hearing range, used as a
+controller rather than as a sound. Typical rates are a fraction of a hertz up to about 20 Hz.
+
+Route an LFO to:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{pitch}, slowly and shallowly, for vibrato
+\item
+  \textbf{volume} for tremolo
+\item
+  \textbf{filter cutoff} for the wobbling, breathing quality on pads and, taken to extremes, for
+  dubstep basses
+\item
+  \textbf{pan} for movement in the stereo field
+\end{itemize}
+
+In dance music LFOs are almost always \textbf{tempo-synced}, meaning their rate is locked to a
+musical division (one cycle per bar, per beat, per 1/8) instead of a free-running frequency.
+FL Studio does this with a tempo-sync button on every LFO.
+
+\subsection{Other kinds of synthesis, briefly}\label{th05_sound_design-other-kinds-of-synthesis-briefly}
+
+\textbf{FM synthesis} uses one oscillator to modulate the frequency of another at audio rate.
+This generates complex, often inharmonic sidebands. It is brilliant for bells, metallic
+sounds, electric pianos and gnarly basses, and it is much harder to control intuitively than
+subtractive. In FL Studio: \textbf{Sytrus}.
+
+\textbf{Additive synthesis} builds sounds by summing individual sine partials, giving you direct
+control over each harmonic. Very powerful, very fiddly. In FL Studio: \textbf{Harmor} and
+\textbf{Ogun}.
+
+\textbf{Wavetable synthesis} scans through a table of stored single-cycle waveforms, so the
+timbre morphs as you move through the table. This is the dominant modern method and the
+reason Serum became ubiquitous. In FL Studio: the wavetable mode in \textbf{FLEX}, or third
+party plugins like Serum and Vital.
+
+\textbf{Physical modelling} simulates the physics of a real instrument rather than the sound. In
+FL Studio: \textbf{Sakura} for strings, \textbf{Drumaxx} for drums.
+
+\textbf{Granular synthesis} chops audio into tiny grains and reassembles them. Textural and
+strange. In FL Studio: \textbf{Fruity Granulizer}.
+
+Do not learn all of these. Learn subtractive properly and you can make 95\% of house.
+
+\subsection{Sampling}\label{th05_sound_design-sampling}
+
+Sampling is using recorded audio instead of a synthesised waveform, and it is at least half
+of what dance music is made of.
+
+\textbf{One-shots} are single hits: a kick, a clap, a stab. Load, trigger, done. Your drums will
+mostly be one-shots.
+
+\textbf{Loops} are pre-recorded bars of audio. Useful but dangerous, because a loop someone else
+made carries their groove and their sound, and a track built entirely from loops sounds like
+a track built entirely from loops.
+
+\textbf{Chopping and slicing} means cutting a longer sample into pieces and replaying them in a
+new order. This is the foundation of hip-hop, jungle, and all of Chicago footwork. In FL
+Studio: \textbf{Slicex} and \textbf{Fruity Slicer}.
+
+\textbf{Time stretching} changes the length of a sample without changing its pitch, so you can
+fit a sample recorded at 100 BPM into a 124 BPM track. FL Studio does this automatically
+when you enable stretching on an audio clip.
+
+Two things to know about \textbf{vocal samples}, which are central to house. First, the classic
+Chicago approach is a full soulful vocal over the whole track, gospel-derived, sung properly.
+Second, the modern approach is the \textbf{vocal chop}: a short fragment of a vocal, pitched and
+sequenced like an instrument. Both are house. They just come from different decades.
+
+On the legal question, because it will come up: sampling a commercial record without
+clearance is copyright infringement, and the fact that everyone did it in 1987 does not mean
+you can now. For learning, sample whatever you like. Before you release anything, use
+royalty-free sample packs, vocals you have licensed or recorded yourself, or public domain
+material.
+
+\subsection{The sounds you actually need for house}\label{th05_sound_design-the-sounds-you-actually-need-for-house}
+
+\textbf{The kick.} A 909 kick is a sine-ish body with a fast downward pitch envelope and a click
+at the front. You can build one from scratch in FL\textquotesingle s \textbf{Fruit Kick} or \textbf{BassDrum} plugin,
+but you should start with the sampled \texttt{909\ Kick.wav} that ships with FL and only build your
+own once you know what you are trying to make.
+
+\textbf{The clap.} Several noise bursts a few milliseconds apart, band-passed around 1 kHz, with
+a short reverb tail. That tiny stagger is why a clap sounds like several people and not one.
+Use \texttt{909\ Clap.wav}.
+
+\textbf{The hats.} Filtered noise plus metallic partials, gated very short for closed and longer
+for open. Highpass everything below about 300 Hz. \texttt{909\ CH\ 1.wav} and \texttt{909\ OH.wav}.
+
+\textbf{The acid bass.} A sawtooth or square through a resonant lowpass, with a filter envelope,
+plus two things that are specific to the 303: \textbf{slide} (portamento between overlapping
+notes) and \textbf{accent} (certain notes hit harder and open the filter more). Without slide and
+accent you have a filtered bass, not an acid line. FL Studio ships \textbf{Transistor Bass},
+which is a 303 emulation, and it is genuinely good. Load it, set resonance high, and turn
+the cutoff knob while a 16th-note pattern loops. That is acid house.
+
+\textbf{The chord stab.} A short, filtered, heavily enveloped chord played on the offbeat. Often
+a sampled organ, a Rhodes, or a brass patch. Fast attack, short decay, no sustain. The
+Chicago version is usually drier and more mechanical than the New York version.
+
+\textbf{The pad.} Saw or PWM, slow attack, long release, lowpass filter mostly closed, plenty of
+reverb, gentle LFO on the cutoff. This is the layer that gives deep house its atmosphere. In
+FL Studio, \textbf{FLEX} has a lot of usable ones out of the box.
+
+\textbf{The Rhodes / electric piano.} FL\textquotesingle s \textbf{FL Keys} does a passable one. Play seventh and ninth
+chords on it and you are immediately in deep house territory.
+
+\subsection{Effects are sound design too}\label{th05_sound_design-effects-are-sound-design-too}
+
+\textbf{Reverb} puts a sound in a space. Short reverbs make things feel close and real, long ones
+make them feel distant and dreamy. Use it on a \textbf{send}, not on every channel individually
+(see \texttt{07\_mixing.md}).
+
+\textbf{Delay} is discrete echoes. Tempo-synced to a dotted eighth is the classic dance music
+setting. A ping-pong delay alternates between left and right and instantly widens a mono
+sound.
+
+\textbf{Chorus} duplicates the signal, detunes and delays the copy slightly, and mixes it back.
+Makes anything thicker and wider. The Juno\textquotesingle s built-in chorus is a large part of why those
+records sound the way they do.
+
+\textbf{Distortion and saturation} add harmonics. A little on a kick or a bass adds weight and
+makes it audible on small speakers. A lot is a creative choice.
+
+\textbf{Bitcrushing and sample rate reduction} deliberately degrade the signal. Good for that
+gritty, early-hardware texture.
+
+\textbf{Filter automation on an effect send} is how you do the classic house breakdown, where
+everything gets muffled and distant and then snaps back.
+
+\subsection{How to actually learn this}\label{th05_sound_design-how-to-actually-learn-this}
+
+Do not read synth manuals. Do this instead, once, for an hour:
+
+Open \textbf{3x Osc} in FL Studio, which is deliberately primitive. Set one oscillator to a
+sawtooth and turn the other two off. Play and hold a note. Now, one at a time and listening
+the whole way:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Sweep the filter cutoff from fully open to fully closed.
+\item
+  Put resonance to about 70\% and sweep again.
+\item
+  Set the volume envelope attack to maximum, then back to zero.
+\item
+  Set the decay short and sustain to zero. You now have a pluck.
+\item
+  Route the envelope to the filter and repeat step 4.
+\item
+  Add an LFO to the cutoff, sync it to 1/4, and listen.
+\end{enumerate}
+
+After that hour, every synth you open for the rest of your life will make sense. The
+controls are always the same controls.

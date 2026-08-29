@@ -1,0 +1,242 @@
+Continues from \texttt{02\_first\_beat.md}. By the end you will have an exported MP3. It will not be
+good. That is not the point of the exercise.
+
+Budget two to three hours. Do it in one sitting if you can, because the failure mode is
+stopping halfway.
+
+We are in \textbf{A minor} at \textbf{124 BPM}. Everything below uses FL Studio\textquotesingle s note naming, in which
+middle C is labelled \textbf{C5}.
+
+\subsection{1. Organise your patterns first}\label{fl03_first_track-1-organise-your-patterns-first}
+
+You will end up with several patterns, and naming them now saves real pain later.
+
+Press \textbf{F4} to create a new named pattern. Make these:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{DRUMS} (the one you already made)
+\item
+  \texttt{DRUMS\ MINIMAL} (kick and hats only, for the intro)
+\item
+  \texttt{BASS}
+\item
+  \texttt{CHORDS}
+\end{itemize}
+
+\textbf{F2} renames the currently selected pattern if you need to fix one.
+
+\subsection{2. The chords}\label{fl03_first_track-2-the-chords}
+
+Add a channel: click the \textbf{+} at the bottom of the Channel Rack and choose \textbf{FL Keys}. It
+is FL\textquotesingle s electric piano, and a Rhodes-type sound is the correct instrument for deep house.
+
+Select the CHORDS pattern, select the FL Keys channel, press \textbf{F7} for the piano roll.
+
+Set the pattern length to 2 bars, then draw two chords, one per bar:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lll@{}}
+\toprule\noalign{}
+Bar & Chord & Notes (FL naming) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 & A minor 7 & A4, C5, E5, G5 \\
+2 & D minor 7 & A4, C5, D5, F5 \\
+\end{longtable}
+}
+
+Draw each chord as four notes stacked vertically, each lasting a full bar.
+
+\begin{intuitionbox}
+\textbf{Why this works.} A4 and C5 stay exactly where they are. E5 moves down to D5, and G5 moves
+down to F5. Two notes move, by one step each. That is voice leading, and it is why this
+sounds smooth instead of blocky. The lazy version (A-C-E-G then D-F-A-C, everything jumping)
+sounds noticeably worse. Play both.
+\end{intuitionbox}
+
+Both chords are minor sevenths rather than plain triads, which is what gives house its
+warm, unresolved, loops-forever quality. See \texttt{THEORY/04\_harmony.md}.
+
+\subsubsection{Making it sound like house rather than like a piano}\label{fl03_first_track-making-it-sound-like-house-rather-than-like-a-piano}
+
+Right now it is a sustained chord, which is fine for a pad but dull as the main hook. Two
+options:
+
+\textbf{The stab.} Shorten every note to a sixteenth and move them onto the offbeats (steps 3, 7,
+11, 15). Now the chord punches between the kicks. This is the Chicago sound.
+
+\textbf{The pad.} Leave them long, add \textbf{Fruity Reeverb 2} to the channel, and turn the mix up
+to about 30\%. Now it is atmosphere.
+
+Do both, on two separate channels, and use the stab in the busy sections and the pad in the
+breakdown.
+
+\subsection{3. The bass}\label{fl03_first_track-3-the-bass}
+
+Add another channel. Two good options on your install:
+
+\textbf{FLEX} with a bass preset, which is the easy route.
+
+\textbf{Transistor Bass}, which is FL\textquotesingle s Roland TB-303 emulation, and is the historically correct
+choice. If you want acid, this is the instrument. Turn the resonance up high and sweep the
+cutoff while it plays.
+
+Select the BASS pattern and open the piano roll. Set the length to 2 bars.
+
+Play the root of whatever chord is above it, on the offbeats, so the bass never collides with
+the kick:
+
+\begin{verbatim}
+Count      1   e   &   a   2   e   &   a   3   e   &   a   4   e   &   a
+Kick       X   .   .   .   X   .   .   .   X   .   .   .   X   .   .   .
+Bass       .   .   X   .   .   .   X   .   .   .   X   .   .   .   X   .
+\end{verbatim}
+
+Bar 1 plays \textbf{A2} (55 Hz). Bar 2 plays \textbf{D3} (73 Hz).
+
+That is the entire disco and house bass tradition in one pattern, and it solves a mixing
+problem for free: because the bass never sounds at the same instant as the kick, they cannot
+fight each other.
+
+Once that works, try the octave bounce. Alternate A2 and A3 instead of repeating A2. It
+immediately has more movement.
+
+Make sure the bass is \textbf{monophonic}, one note at a time. Chords in the bass register turn to
+mud.
+
+\subsection{4. Route everything and set levels}\label{fl03_first_track-4-route-everything-and-set-levels}
+
+Select all channels, press \textbf{Ctrl+L}, open the mixer with \textbf{F9}.
+
+Highpass the chords at around 200 Hz with \textbf{Fruity Parametric EQ 2}. They do not need low
+end, and removing it gives the bass room.
+
+Set the kick as the loudest element and balance everything against it. Aim for the master
+peaking around \textbf{−6 dB} with everything playing.
+
+\subsection{5. Sidechain the bass to the kick}\label{fl03_first_track-5-sidechain-the-bass-to-the-kick}
+
+This is the pumping effect, and it is what makes the low end work.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  In the Mixer, select the \textbf{kick\textquotesingle s} track.
+\item
+  Look at the small send arrows at the bottom of the mixer tracks. Right-click the arrow
+  underneath the \textbf{bass\textquotesingle s} track and choose \textbf{Sidechain to this track}.
+\item
+  Select the bass\textquotesingle s track. Add \textbf{Fruity Limiter} to an effect slot.
+\item
+  In Fruity Limiter, switch to the \textbf{COMP} tab.
+\item
+  Set the \textbf{SIDECHAIN} knob to the sidechain number you just created (it will be 1 if this
+  is your first).
+\item
+  Set the ratio to about 4:1, threshold down until you see 3 to 6 dB of gain reduction on
+  each kick, attack fast, and release tuned so the bass recovers just before the next kick.
+\end{enumerate}
+
+If you hear the kick doubling through the bass channel, turn that send\textquotesingle s level knob to zero.
+You want the kick\textquotesingle s signal used as a trigger, not mixed in.
+
+Do the same for the pad. Not for the kick itself.
+
+If this feels like too much routing for now, the simpler alternative: right-click the bass
+channel\textquotesingle s volume knob, choose \textbf{Create automation clip}, and draw a shape that dips on every
+beat. Less elegant, entirely functional, and you get exact control of the curve.
+
+\subsection{6. Arrange it}\label{fl03_first_track-6-arrange-it}
+
+Switch to \textbf{Song mode} (press \textbf{L}) and open the Playlist (\textbf{F5}).
+
+Place pattern clips using the paint tool. Here is a 128-bar arrangement, which runs about
+4 minutes 8 seconds at 124 BPM. Copy it directly:
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}llllll@{}}
+\toprule\noalign{}
+Bars & DRUMS MINIMAL & DRUMS & BASS & CHORDS (stab) & CHORDS (pad) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+1 to 16 & yes & & & & \\
+17 to 32 & yes & & yes & & \\
+33 to 64 & & yes & yes & yes & \\
+65 to 80 & & & & & yes \\
+81 to 96 & yes & & & & yes \\
+97 to 128 & & yes & yes & yes & yes \\
+\end{longtable}
+}
+
+Bars 65 to 80 are the breakdown: the drums stop, the pad carries it. Bars 81 to 96 are the
+build. Bar 97 is the drop, and it is the loudest moment in the track.
+
+\textbf{Ctrl+B} duplicates a selection to the right, which is how you fill 32 bars without a
+hundred clicks.
+
+Notice every section boundary is on a multiple of 16 bars. This is not optional. See
+\texttt{THEORY/06\_arrangement.md}.
+
+\subsection{7. Make the build build}\label{fl03_first_track-7-make-the-build-build}
+
+At the moment bars 81 to 96 are just quieter. Add tension:
+
+\textbf{A riser.} Drag something from \texttt{Packs\ \textgreater{}\ Risers} onto the playlist so it ends exactly on
+bar 97.
+
+\textbf{A filter opening.} Right-click the cutoff knob on the pad\textquotesingle s filter, create an automation
+clip, and draw it rising across those 16 bars.
+
+\textbf{A hat roll.} Make a new pattern with closed hats every 1/8 for four bars, then 1/16 for
+four, then 1/32 for the last two.
+
+\textbf{Silence.} Delete everything from the last half bar before the drop. This is the single
+most effective trick available and it is free.
+
+\textbf{A crash on bar 97.} \texttt{Packs\ \textgreater{}\ Drums\ \textgreater{}\ Cymbals}. Marks the boundary.
+
+\subsection{8. Master, lightly}\label{fl03_first_track-8-master-lightly}
+
+Select the Master track in the mixer. Add \textbf{Fruity Limiter}. Set the ceiling to \textbf{−1 dB}
+and push the gain until it is comfortably loud.
+
+That is enough. Do not spend three hours here. A well-arranged track at moderate loudness
+beats a badly arranged one that is very loud.
+
+\subsection{9. Export}\label{fl03_first_track-9-export}
+
+First make sure the playlist knows how long the song is. If you have a time selection active
+FL will export only that, so click in an empty part of the timeline to clear it.
+
+\textbf{Ctrl+R} exports a WAV. \textbf{Ctrl+Shift+R} exports an MP3.
+
+For sharing, MP3 at 320 kbps. For archiving or sending to anyone who will work on it further,
+WAV at 24-bit.
+
+In the export dialog, set the \textbf{Tail} option to \textbf{Leave remainder} so your reverb tails do
+not get chopped off at the end.
+
+\subsection{10. Then listen to it somewhere else}\label{fl03_first_track-10-then-listen-to-it-somewhere-else}
+
+Put it on your phone. Play it in the car. Play it on a bluetooth speaker.
+
+It will sound different and worse, and the specific ways it sounds worse are your next
+lesson. Write them down.
+
+\subsection{What to expect}\label{fl03_first_track-what-to-expect}
+
+Your first track will have most of these problems: the mix is muddy, the arrangement is
+repetitive, the drums are stiff, and it does not sound like the records you like. All of that
+is normal and none of it is a reason to stop.
+
+You have now done the whole loop once, from empty project to exported file. That is the thing
+most people never get to. Everything from here is refinement.
+
+\texttt{PRACTICE/8\_week\_plan.md} for what to do next.

@@ -67,3 +67,18 @@ id_rsa*
 *.bcf
 *.run.xml
 *.blg
+
+# ---- large data and media inside Desktop/Projects ----
+# Raw capture and extracted frames. `catfish school` alone is 2.3 GB across 5920
+# files (1.9 GB of extracted jpgs plus 360 MB of source video), which is what made
+# an unscoped `git add -A` time out. Source stays tracked; the data does not.
+Desktop/Projects/catfish school/data/
+Desktop/Projects/catfish school/figures/
+*.MOV
+*.mov
+*.mp4
+*.cine
+
+# Reference libraries, not source: PDFs and assets that belong on disk, not in git.
+Desktop/Projects/ARCHIVE/
+Desktop/Projects/LDV Paper/

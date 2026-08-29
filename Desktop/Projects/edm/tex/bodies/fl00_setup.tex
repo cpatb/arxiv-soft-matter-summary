@@ -1,0 +1,119 @@
+Written against what is actually installed on this machine: \textbf{FL Studio 2025, version
+25.1.4}, with the All Plugins bundle. Every path and shortcut below has been checked
+against your install and against Image-Line\textquotesingle s official shortcut reference rather than
+recalled from memory.
+
+You already opened FL once, on 8 May, and worked for about two hours before stopping. Worth
+knowing that those projects are still there under
+\texttt{Documents\textbackslash{}Image-Line\textbackslash{}FL\ Studio\textbackslash{}Projects} if you want to look at what past-you was doing.
+
+\subsection{1. Audio settings, before anything else}\label{fl00_setup-1-audio-settings-before-anything-else}
+
+If the audio is misconfigured, everything you play will be late, crackly, or silent, and
+you will conclude that you are bad at this rather than that a dropdown is wrong.
+
+Press \textbf{F10} to open Settings, then click the \textbf{Audio} tab.
+
+Set \textbf{Device} to \textbf{FL Studio ASIO}. It is already installed on this machine. ASIO is the
+low-latency Windows audio driver standard, and the generic Windows driver will give you
+audible delay between pressing a key and hearing a note. FL Studio ASIO has the useful
+property of letting other applications keep using your sound card at the same time, so you
+can have a YouTube tutorial open while FL is running.
+
+If you later buy an audio interface, use its own ASIO driver instead.
+
+Click \textbf{Show ASIO panel} and set the buffer to \textbf{512 samples}, which is about 11 ms of
+latency. If you get crackling, go up to 1024. If you are playing an instrument in and it
+feels sluggish, go down to 256.
+
+Set the sample rate to \textbf{44100 Hz}. There are arguments for 48 kHz. None of them will
+matter to you for a year.
+
+\subsection{2. Project settings}\label{fl00_setup-2-project-settings}
+
+\textbf{Tempo.} The number in the top toolbar. Right-click it and choose \textbf{Type in value}, then
+enter \textbf{124}. That is the middle of the house range and a good default.
+
+\textbf{Save your project immediately} with Ctrl+S, and give it a real name. FL autosaves, but
+it autosaves into files called "untitled (autosaved at 21h49)", which is how you end up with
+the folder you currently have.
+
+A warning about a shortcut that will surprise you: in FL Studio \textbf{Ctrl+N is not "new
+file"}. It is "save new version", which increments your filename. Use \textbf{File \textgreater{} New} from
+the menu instead.
+
+\subsection{3. Make a starter template}\label{fl00_setup-3-make-a-starter-template}
+
+You will do the same setup at the start of every project. Do it once.
+
+Build a project containing:
+
+\begin{itemize}
+\tightlist
+\item
+  Tempo at 124
+\item
+  Four drum channels loaded (kick, clap, closed hat, open hat) and routed to their own
+  mixer tracks
+\item
+  A Fruity Limiter on the master with the ceiling at −1 dB
+\item
+  Two mixer tracks set up as reverb sends, one short and one long
+\end{itemize}
+
+Then save it into:
+
+\begin{verbatim}
+C:\Users\compl\Documents\Image-Line\FL Studio\Projects\Templates\
+\end{verbatim}
+
+That folder exists and is currently empty. Anything you save there appears under \textbf{File \textgreater{}
+New from template}. Call it something like \texttt{house\_124.flp}.
+
+This is a bigger time-saver than it looks. Removing twenty minutes of setup friction is the
+difference between opening FL when you have a spare hour and not bothering.
+
+\subsection{4. Where your files live}\label{fl00_setup-4-where-your-files-live}
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}>{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1875}}>{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.8125}}@{}}
+\toprule\noalign{}
+What & Where \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+The program & \texttt{C:\textbackslash{}Program\ Files\textbackslash{}Image-Line\textbackslash{}FL\ Studio\ 2025} \\
+Bundled samples & \texttt{...\textbackslash{}FL\ Studio\ 2025\textbackslash{}Data\textbackslash{}Patches\textbackslash{}Packs} (shown as \textbf{Packs} in the browser) \\
+Your projects & \texttt{C:\textbackslash{}Users\textbackslash{}compl\textbackslash{}Documents\textbackslash{}Image-Line\textbackslash{}FL\ Studio\textbackslash{}Projects} \\
+Your templates & \texttt{...\textbackslash{}FL\ Studio\textbackslash{}Projects\textbackslash{}Templates} \\
+Rendered audio & \texttt{...\textbackslash{}FL\ Studio\textbackslash{}Audio} by default \\
+\end{longtable}
+}
+
+Worth adding your own sample folder to the browser at some point: \textbf{Settings (F10) \textgreater{} File},
+then point one of the extra search folders at wherever you keep downloaded packs. They then
+show up in the browser alongside the bundled ones.
+
+\subsection{5. Turn on two things that will save you}\label{fl00_setup-5-turn-on-two-things-that-will-save-you}
+
+\textbf{Options \textgreater{} Undo history} is not enabled by default in a useful depth. Set the undo levels
+higher in Settings \textgreater{} General.
+
+\textbf{The metronome} is Ctrl+M. You will not need it for step-sequenced drums, but you will the
+moment you try to play anything in.
+
+\subsection{6. A note on editions}\label{fl00_setup-6-a-note-on-editions}
+
+FL Studio comes in Fruity, Producer, Signature and All Plugins editions. Your install has
+the All Plugins generator set: Sytrus, Harmor, Morphine, Ogun, Toxic Biohazard, Transistor
+Bass, Kepler, Drumaxx, Slicex, DirectWave and the rest are all present.
+
+That means every tutorial you find online will work for you, and you never need to buy a
+plugin to follow along. It also means you have about forty synthesisers and will be tempted
+to try all of them. Do not. \texttt{05\_plugins.md} lists the six that matter.
+
+\subsection{Next}\label{fl00_setup-next}
+
+\texttt{01\_interface.md} to learn the windows, or skip straight to \texttt{02\_first\_beat.md} and make
+noise. Making noise first is the better order.

@@ -1,0 +1,176 @@
+[
+  {
+    "frame": 268,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 282,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 292,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 294,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 295,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 298,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 478,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 479,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 484,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 526,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 529,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 530,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 531,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 533,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 534,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 543,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 582,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 584,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 589,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 591,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 645,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 647,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 647,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 1244,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 1359,
+    "type": "fusion",
+    "child": 2,
+    "n_parents": 2
+  },
+  {
+    "frame": 1415,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 1417,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  },
+  {
+    "frame": 1659,
+    "type": "fission",
+    "parent": 1,
+    "n_children": 2
+  },
+  {
+    "frame": 1660,
+    "type": "fusion",
+    "child": 1,
+    "n_parents": 2
+  }
+]

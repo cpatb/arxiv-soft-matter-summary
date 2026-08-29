@@ -1,0 +1,20 @@
+======================================================================
+BLOODSTAIN PATTERN ANALYSIS -- ballistic region-of-origin
+======================================================================
+
+[Fig 1] single scene, true height 1.150 m:
+    straight-line estimate : 2.803 m  (+143.8%)
+    ballistic estimate     : 1.151 m  (+0.1%)
+
+[Fig 2] height-error sweep (mean over speed regimes):
+    straight-line mean error : +156.7%
+    ballistic mean error     : +0.7%
+    -> straight-line bias reduced ~230x
+
+[Fig 3] spread-factor bridge written.
+
+[Fig 4] noise robustness (40 trials):
+    straight-line : +212.3 +- 14.9 cm
+    ballistic     : -18.0 +- 5.5 cm
+
+All figures in figures/. Done.

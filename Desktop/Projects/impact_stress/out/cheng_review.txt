@@ -1,0 +1,1746 @@
+
+===== PAGE 1 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+Annual Review of Fluid Mechanics
+Drop Impact Dynamics:
+Impact Force and Stress
+Distributions
+Xiang Cheng,1 Ting-Pi Sun,1 and Leonardo Gordillo2
+1Department of Chemical Engineering and Materials Science, University of Minnesota,
+Minneapolis, Minnesota, USA; email: xcheng@umn.edu
+2Departamento de Física, Facultad de Ciencia, Universidad de Santiago de Chile (USACH),
+Santiago, Chile
+Annu. Rev. Fluid Mech. 2022. 54:57–81
+First published as a Review in Advance on
+September 23, 2021
+The Annual Review of Fluid Mechanics is online at
+fluid.annualreviews.org
+https://doi.org/10.1146/annurev-fluid-030321-
+103941
+Copyright © 2022 by Annual Reviews.
+All rights reserved
+Keywords
+impact force, pressure, shear stress, self-similarity, singularity, boundary
+layer, air cushioning, erosion
+Abstract
+Dynamic variables of drop impact such as force, drag, pressure, and stress
+distributions are key to understanding a wide range of natural and industrial
+processes. While the study of drop impact kinematics has been in constant
+progress for decades thanks to high-speed photography and computational
+fluid dynamics, research on drop impact dynamics has only peaked in the
+last 10 years. Here, we review how recent coordinated efforts of experi-
+ments, simulations, and theories have led to new insights on drop impact
+dynamics. Particularly, we consider the temporal evolution of the impact
+force in the early- and late-impact regimes, as well as spatiotemporal fea-
+tures of the pressure and shear-stress distributions on solid surfaces. We also
+discuss other factors, including the presence of water layers, air cushioning,
+and nonspherical drop geometry, and briefly review granular impact crater-
+ing by liquid drops as an example demonstrating the distinct consequences
+of the stress distributions of drop impact.
+57
+
+===== PAGE 2 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+1. INTRODUCTION
+Drop impact is so familiar to us that we are usually indifferent to this elegant ephemeral fluid
+process in our daily life, for example, when raindrops fall on our skin with small yet perceptible
+force. However, this everyday phenomenon is of great importance to many natural and industrial
+processes, ranging from soil erosion (Terry 1998, Planchon & Mouche 2010, Bako et al. 2016) to
+the dispersion and spreading of airborne pathogens ( Joung & Buie 2015, Bourouiba 2021) and the
+coating and printing of functional materials (Wijshoff 2018). Driven by its ubiquitous presence
+and vast industrial applications, drop impact has become one of the most extensively studied topics
+in fluid mechanics.
+Although the study of drop impact can be traced back nearly 150 years to the pioneering work
+of Worthington (1876), significant progress has only been made in the past three decades thanks
+to the fast development of high-speed photography techniques ( Josserand & Thoroddsen 2016).
+In combination with advanced numerical algorithms enabled by increasing computational power
+(Scardovelli & Zaleski 1999, Popinet 2009), researchers can now elucidate the spatiotemporal
+structures of fast drop impact events with unprecedented detail. A wide range of theoretical
+concepts including Wagner’s (1932) impact theory, viscous boundary layers (Schlichting &
+Gersten 2000), self-similarity (Barenblatt 1996), and finite-time singularity (Eggers 1997, Eggers
+& Fontelos 2015) have been invoked and integrated to decipher the dynamics of drop impact.
+Nevertheless, relying upon direct imaging, most experiments have focused on the kinematics
+of impact processes, i.e., the morphological changes of impacting drops (Figure 1). Kinematic
+features such as the maximum spreading diameter (Bennett & Poulikakos 1993, Clanet et al. 2004,
+Ukiwe & Kwok 2005, Roisman 2009, Eggers et al. 2010, Laan et al. 2014, Wildeman et al. 2016),
+the contact time (Richard et al. 2002, Bird et al. 2013), and the splashing threshold (Mundo et al.
+1995, Yarin & Weiss 1995, Josserand & Zaleski 2003, Xu et al. 2005, Roisman 2009, Riboux &
+Gordillo 2014, Howland et al. 2016) have taken the center stage and dominated the study of drop
+impact. In comparison, relatively fewer studies have been devoted to dynamic properties such as
+the impact force and stress distributions of drop impact, even though these dynamic variables
+arguably lead to the most consequential outcomes of drop impact events.
+Many early studies of drop impact were motivated by the process of soil erosion (Laws 1940,
+Ellison 1945,Palmer 1965,Ghadiri & Payne 1977,Imeson et al.1981,Nearing et al.1986,Nearing
+& Bradford 1987), where the impact force and stress distributions of raindrops play a key role in
+breaking soil aggregates and detaching and transporting granular particles (Figure 1b). Wear and
+a
+b
+Figure 1
+Drop impact kinematics. (a) A 3-mm-diameter drop of aqueous glycerol solution with a viscosity of 6 mPa·s and an impact velocity of
+1.5 m/s impacts on a glass surface. Frames are 75 µs apart. Panel a courtesy of Michelle Driscoll. (b) A 3-mm-diameter water drop with
+an impact velocity of 2.7 m/s impacts on a granular medium made of 90-µm-diameter glass beads. The times of the snapshots are
+t = 0.3 ms, 5.7 ms, 11.9 ms, 19.4 ms, and 56.8 ms after the impact at t = 0. Panel b adapted with permission from R. Zhao et al. (2015).
+58
+Cheng • Sun • Gordillo
+
+===== PAGE 3 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+Mach number:
+M = V/c
+damage induced by repeated impact of high-speed drops on solid surfaces such as turbine blades
+also crucially depend on impact force and stress distributions (Hancox & Brunton 1966, Zhou
+et al. 2008, Obreschkow et al. 2011, Takekura et al. 2018). Moreover, these dynamic quantities
+are also the leading factor affecting surface cleaning and jet peening and cutting (Kondo & Ando
+2019, Mitchell et al. 2019a). The temporal variation of impact force and stresses also controls the
+splashing of droplets on soft substrates (Pepper et al. 2008, Howland et al. 2016), as well as the
+signature of raindrop noises (Prosperetti & Oguz 1993, Yu & Hopkins 2018, Schmid et at. 2021).
+Lastly, the survival of living organisms exposed to the elements in events such as the collision of
+flying insects with falling raindrops (Dickerson et al. 2012, Kim et al. 2020) and the abscission
+of plant leaves by raindrops (Gart et al. 2015) also relies on the transient force impulse of drop
+impact.
+More fundamentally, impact force and stress distributions can reveal certain aspects of drop
+impact dynamics, which are hard, if not impossible, to probe from kinematics measurements. Par-
+ticularly, these dynamic quantities exhibit strong temporal variations at the early time of drop
+impact, where impacting drops barely deviate from their original spherical shape (Rioboo et al.
+2002, Lagubeau et al. 2012, Philippi et al. 2016). Thus, measuring the temporal evolution of the
+impact force and pressure distribution of drop impact provides a more sensitive way to investigate
+impact dynamics at early times (Eggers et al. 2010, Philippi et al. 2016). Similarly, the shear stress
+distribution of drop impact reveals the development of the viscous boundary layer within impact-
+ing drops (Roisman 2009, Eggers et al. 2010, Lastakowski et al. 2014, Philippi et al. 2016, Riboux
+& Gordillo 2017, Gordillo et al. 2019), which is difficult to access by other experimental methods.
+There are many excellent reviews focusing on the kinematics of drop impact (Rein 1993, Yarin
+2006, Marengo et al. 2011, Josserand & Thoroddsen 2016, Yarin et al. 2017). Instead, we provide
+here a brief account of the current understanding of the impact force and stress distributions of
+drop impact. We limit our review on drop impact to moderate impact velocities, where impacting
+drops can be considered incompressible. The compressibility of impacting drops leads to the so-
+called water-hammer pressure on the order of ρVc over a time duration of RV/c2 (Lesser & Field
+1983, Nearing et al. 1986, Field et al. 2012). Here, ρ is the density of liquid, V is the impact velocity,
+c is the speed of sound in the drop, and R is the radius of the drop. For a typical millimeter-sized
+raindrop impacting at its terminal velocity of ∼10 m/s, ρVc is large, ∼10 MPa. However, the time
+duration associated with the propagation of the compression wave in the impacting drop is only
+∼10 ns. The radius of the contact area over this time interval is on the order of RV/c ∼10 µm.
+Hence, compressibility affects only the very early moment of impact over a tiny contact area,
+which is not directly relevant to drop dynamics at long times and is hard to detect experimentally
+(Soto et al. 2014, Visser et al. 2015, Bako et al. 2016). The effect of air cushioning further screens
+the water-hammer pressure, as we discuss below. As a result, compressibility is important only for
+drop impact of very high speeds with the Mach number on the order of one (Lesser & Field 1983),
+a regime beyond the scope of the current review.
+We organize the review as follows. In Section 2, we first consider the temporal evolution of
+impact force. Experimental and theoretical understanding of drop impact force are discussed in
+the early-impact regime and the late spreading regime, respectively. We then discuss the pressure
+and shear stress distributions underneath impacting drops in Section 3. The discussion is limited
+to spherical drops impacting on a dry smooth solid surface first. Other relevant factors such as the
+presence of liquid layers, the effect of air cushioning, and nonspherical drop shapes are considered
+in Section 4. Lastly, we briefly discuss granular impact cratering by liquid drops in Section 5,
+which provides a concrete example demonstrating the unique role of the stress distributions of
+drop impact in surface erosion. Open questions and future directions are stated at the end.
+www.annualreviews.org • Drop Impact Dynamics
+59
+
+===== PAGE 4 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+Reynolds number:
+Re = DV/ν
+Weber number:
+We = ρDV 2/γ
+Froude number:
+Fr = V/
+
+gD
+2. IMPACT FORCE
+2.1. Temporal Evolution of Impact Force
+Impact force is the most studied dynamic quantity of drop impact. Piezoelectric sensors are fre-
+quently used for measuring the temporal evolution of the normal force of impacting drops (Imeson
+et al. 1981; Nearing et al. 1986; Nearing & Bradford 1987; Grinspan & Gnanamoorthy 2010; Li
+et al. 2014; Soto et al. 2014; Zhang et al. 2017, 2019; Gordillo et al. 2018; Mitchell et al. 2019b;
+Schmid et at. 2021). Other methods such as cantilever beams (Mangili et al. 2012, Soto et al.
+2014, Gart et al. 2015, Chen et al. 2019) and accelerometer arrays attached to elastic plates (Yu &
+Hopkins 2018) have also been employed for impact force measurements. These measurements are
+often synchronized with high-speed photography for simultaneous imaging of the morphology of
+impacting drops (Zhang et al. 2017, 2019; Gordillo et al. 2018; Mitchell et al. 2019b; Schmid et at.
+2021).
+Figure 2 shows an example of a simultaneous measurement of the shape and of the impact force
+of a silicone oil drop impacting on the smooth metal surface of a piezoelectric sensor. Upon im-
+pact, the contact line of the drop increases immediately following a square-root temporal scaling.
+Nevertheless, the top of the drop still falls linearly with the original impact velocity at early times,
+as if the impact had not yet occurred at the bottom. In contrast, the impact force rises quickly upon
+impact and reaches a maximum when the boundary of the drop is approximately vertical to the
+impacted surface. The force then decays over much longer times as the drop spreads out radially
+along the surface. The resulting force–time curve is asymmetric with respect to the peak force. As
+a comparison, the impact force of an elastic sphere on a flat surface is symmetric, preserving the
+time-reversal symmetry.
+The key dimensionless numbers governing the dynamics of drop impact are the Reynolds num-
+ber Re and the Weber number We, which compare the inertia of impacting drops with the viscous
+and capillary forces, respectively. We consider impact conditions with the Froude number Fr 
+1 such that the effect of gravity is negligible. For raindrops impacting at their terminal velocities,
+we have Re ∼104, We ∼102–103, and Fr ∼50. In the limit of high Re and We, where inertia
+dominates the impact process, Soto et al. (2014) experimentally demonstrated that the peak force
+follows the inertial force scaling, Fmax ∼ρD2V 2. Later experiments by Zhang et al. (2017) further
+showed that the temporal evolution of the dimensionless impact force ˜F(˜t) exhibits a universal
+form in this limit, independent of Re and We. Here, the impact force F(t) is nondimensionalized
+by the inertial force, ˜F = F/(ρD2V 2), and the time is nondimensionalized by the impact time,
+˜t = t/(D/V ). The universal form has also been confirmed by several independent experiments
+(Figure 3a) (Gordillo et al. 2018, Yu & Hopkins 2018, Mitchell et al. 2019b). In this review, the
+dimensionless quantities are represented by adding a tilde on the top of the corresponding di-
+mensional quantities. The time- and length scales used for nondimensionalization are the drop
+diameter D and impact time D/V, respectively. Pressure is nondimensionalized by ρV 2.
+The shape of the universal form is characterized by three features: (a) the dimensionless peak
+force, ˜Fmax = 0.85 ± 0.05; (b) the dimensionless time when the peak force occurs, ˜tmax = 0.17 ±
+0.02; and (c) the area underneath the force–time curve before the peak force, which is about one
+quarter of the total area (Figure 3b) (Gordillo et al. 2018). Note that the total area underneath a
+force–time curve gives the impulse of the impact event, which is equal to the initial momentum
+of the impacting drop. Thus, one quarter of the initial momentum has been transferred from the
+drop to the impacted surface when the peak force is reached.
+The deviation from the universal form has been observed under the following conditions.
+(a) When Re is below 200, ˜Fmax increases and ˜tmax decreases with decreasing Re (Figure 3a) (Zhang
+et al. 2017, Gordillo et al. 2018). Although the temporal evolution of the impact force does not
+60
+Cheng • Sun • Gordillo
+
+===== PAGE 5 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+Gordillo et al. 2018
+Philippi et al. 2016
+Eggers et al. 2010
+Mitchell et al. 2019b
+0
+1
+2
+hmax, r0 (mm)
+hmax
+r0
+a
+1 − t
+~
+1
+2 √6t
+~
+0.0
+0.5
+1.0
+tmax
+0
+10
+20
+F (mN)
+b
+c
+–0.5
+0.0
+0.5
+1.0
+1.5
+2
+0.0
+0.5
+1.0
+1.5
+t (ms)
+Turning line
+Contact
+line
+Lamella
+F
+~
+–0.5
+0.0
+0.5
+t
+~
+1.0
+1.5
+2.0
+t
+~
+max
+h
+~
+max, r~
+0
+Figure 2
+Simultaneous measurements on the kinematics and dynamics of an impacting drop of diameter D = 2.2 mm
+with impact velocity V = 1.93 m/s, viscosity ν = 20 cSt, and surface tension γ = 18.9 mN/m. (a) Drop
+height hmax (t) and the radius of the turning line r0(t). The fitting lines indicate the free fall of hmax with V
+and the scaling of ˜r0 =
+√
+6˜t/2. Here, the dimensionless variables are represented by adding a tilde on the top
+of the corresponding dimensional variables. The length and time are nondimensionalized by the drop
+diameter D and the impact time D/V, respectively. The impact force is nondimensionalized by ρD2V 2.
+(b) Normal impact force F(t). Experimental results are from Gordillo et al. (2018). Theoretically, Philippi
+et al. (2016) predicted the impact force in the early-impact regime, whereas the force in the late spreading
+regime can be derived from the pressure formula of Eggers et al. (2010). Mitchell et al. (2019b) provided an
+empirical relation covering the entire time domain. Panels a and b adapted with permission from Gordillo
+et al. (2018). (c) The definition of the turning line at r0(t). Arrows indicate the flow inside an impacting drop
+in the lab frame (left) and in the reference frame moving with the drop initial impact velocity (right).
+follow the universal form at low Re, the shape of the force-time curves is still invariant. The area
+underneath the force curve before the peak remains at 1/4 of the total impulse (Gordillo et al.
+2018). A good collapse can still be achieved when F(t) is normalized by Fmax and t is normalized
+by tmax (inset in Figure 3a). (b) For large drops near their terminal velocities, ˜F(˜t) also deviates
+www.annualreviews.org • Drop Impact Dynamics
+61
+
+===== PAGE 6 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+0.0
+0.4
+0.8
+1.2
+1.6
+a
+10−1
+100
+101
+102
+103
+0.00
+0.25
+0.5
+0.75
+1.00
+t
+~
+F~
+0
+5
+10
+0.0
+0.5
+1.0
+t/tmax
+F/Fmax
+10−1
+100
+101
+102
+103
+104
+0.0
+2.0
+4.0
+S ∞ ≈ 3.08 ± 0.01
+Re
+S
+Trendline
+b
+S−
+S+
+S = S+
+S−
+10−1
+100
+101
+102
+103
+104
+10−1
+100
+101
+102
+103
+104
+10
+20
+30
+40
+α∞ = 2
+Re
+α
+c
+104
+100
+102
+10−2
+10−1
+100
+101
+102
+α – α∞
+0.4
+0.5
+0.6
+0.7
+0.8
+Re
+β
+d
+105
+104
+103
+102
+101
+100
+105
+104
+103
+102
+101
+100
+105
+104
+103
+102
+101
+100
+ν (cSt)
+ν (cSt)
+ν (cSt)
+Re
+F
+~
+t
+~
+F
+~
+F
+~ = αt
+~β
+t
+~
+Re −1/2 correction
+3√6
+1
+2
+β = 
+Re−1/2
+Figure 3
+Temporal evolution of impact force. (a) Dimensionless impact force, ˜F = F/(ρD2V 2), versus dimensionless time, ˜t = t/(D/V ), at
+different Reynolds numbers, Re, where D is the drop diameter and V is the impact velocity. (Inset) Impact force normalized by the peak
+force Fmax versus time normalized by the peak time tmax . (b) The ratio of the area underneath the F −t curves after the peak to that
+before the peak, S, at different Re. The inset shows the definition of the area ratio, S. (c) The numerical prefactor α and (d) the scaling
+exponent β of the impact force ˜F = α˜tβ near t →0+ (see the inset in panel d). The inset in panel c shows α in a log-log plot. ν is the
+kinematic viscosity of the drop. Dashed lines are the theoretical prediction (Equation 2). Figure adapted with permission from Gordillo
+et al. (2018).
+from the universal form (Yu & Hopkins 2018). It has been suggested that the deviation arises
+due to the deformation of large drops under air drag (see Section 4.3). (c) The impact force of
+viscoelastic drops also deviates from the universal form (see Figures 3d and 4c and discussion
+below).
+The temporal evolution of the impact force naturally divides an impact event into two regimes,
+i.e., the early-impact regime before the peak force and the later-impact regime after the peak force.
+Below we consider the dynamics of the impact force in each of these two regimes, separately.
+2.2. Early-Impact Regime: Turning Line–Controlled Self-Similar Flow
+The early moment of drop impact is driven by inertia and controlled by the sudden change of the
+direction of flow velocity from downward vertical to outward radial. Such a drastic change occurs
+over a localized region near the turning line. In the reference frame moving with the drop’s initial
+62
+Cheng • Sun • Gordillo
+
+===== PAGE 7 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+F/Fmax
+10−1
+100
+101
+102
+103
+Re
+100
+101
+F
+~∞
+max ≈ 0.85 ± 0.05
+F
+~
+max
+10−1
+100
+101
+102
+103
+104
+0.3
+0.2
+0.1
+0.0
+0.1
+0.0
+t
+~∞max ≈ 0.18 ± 0.02
+Re
+10−1
+100
+101
+102
+103
+104
+Re
+t/tmax
+b
+a
+0
+2
+4
+6
+8
+1.0
+c
+t
+~
+F
+~
+t
+~
+max
+F
+~
+max
+t
+~
+max
+300-St silicone oil
+100-St silicone oil
+50-, 20-, 10-St silicone oils
+5.0-, 2.0-, 1.0-St silicone oils
+0.5-, 0.2-, 0.1-St silicone oils
+5.0-, 2.0-,1.0-cSt silicone oils
+    Re −1/2 correction
+Gordillo et al. 2018
+AG90
+AG80
+AG70
+AG60
+AG50
+Glycerin at 19° C
+Glycerin at 22° C
+Glycerin at 26° C
+Water
+Ethanol
+Zhang et al. 2017
+Water
+Soto et al. 2014
+Water
+Mitchell et al. 2016
+Water
+Mitchell et al. 2017
+Oil 68
+Oil SAE 30
+Water
+Grinspan & Gnanamoorthy 2010
+AG95, 90, 80 at 20° C
+Glycerin at 20° C
+Water  
+Mitchell et al. 2019b
+Re −1/2 correction
+Re −1/2 correction
+Figure 4
+(a) Peak force ˜Fmax (see inset) as a function of Reynolds number Re. Symbols are from experiments, and the dashed line is the theoretical
+prediction (Equation 4). (b) Peak time ˜tmax as a function of Re. Symbols are from experiments, and the dashed line is the theoretical
+prediction (Equation 3). (c) Comparison of the force–time curves of viscoelastic drops at low Re < 7 with those of Newtonian drops at
+high Re. The color map is the same as that in Figure 3a. Abbreviation: AGX, aqueous glycerin of weight percentage X%.
+impact velocity, the flow inside the drop winds around the turning line, showing a tank-treading
+movement (Figure 2c). Before the formation of the liquid lamella, the turning line is coincident
+with the contact line (Philippi et al. 2016). The two terms are used interchangeably. With the
+liquid lamella, however, the turning line sits at the root of liquid lamella and separates from the
+contact line at the tip of the lamella. The turning line becomes the waistline of the impacting drop.
+Quantitatively, the radius of the turning line follows a square-root scaling, r0(t) ∼
+√
+DV t, at
+high Re and We near t →0+, which was first proposed by Wagner (1932) in the context of the
+water entry of solid objects. The scaling can be obtained geometrically by considering the in-
+tersection of a free-falling drop with the impacted surface at small t. Experiments and detailed
+calculations have confirmed the scaling with a numerical prefactor slightly larger than the simple
+geometric consideration, r0(t) =
+√
+6DV t/2 (Figure 2a) (Riboux & Gordillo 2014, Philippi et al.
+2016, Gordillo et al. 2018). Experiments have shown that the peak force is reached when the side
+wall of the impacting drop is normal to the impacted surface (Mitchell et al. 2019b). The obser-
+vation suggests r0(t = tmax ) = D/2 at the peak time, which gives ˜tmax = 1/6, agreeing with the
+experimental findings.
+www.annualreviews.org • Drop Impact Dynamics
+63
+
+===== PAGE 8 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+The fast horizontal flow on the substrate generates a viscous boundary layer that propagates
+radially and moves upward. When the length scale of the impact process under consideration
+l is larger than the thickness of the viscous boundary layer lv but much smaller than the drop
+size D, the inertia-driven potential flow should have a self-similar structure with the self-similar
+variable defined via l/r0. The condition of self-similarity is satisfied at the early times of high-Re
+drop impact, as ˜lv ≈
+˜t/Re ≪˜r0 =
+√
+6˜t/2 ≪1 at small ˜t. Josserand & Zaleski (2003) first applied
+the self-similar hypothesis for drop impact on a thin fluid film at early times. They showed that
+p = ρV 3/2D1/2t−1/2g(X, Y), where X = 1 −r/r0 and Y = z/r0 are the self-similar coordinates and
+g is a dimensionless scaling function. The impact force then follows as F ∼pr2
+0 ∼ρV 5/2D3/2t1/2
+or ˜F ∼˜t1/2 in the dimensionless form. Using the length scale set by the turning line r0, we can
+also form a simple scaling argument for the impact force. The portion of an impacting drop that
+decelerates from V to 0 over a time interval of dt is d[r3
+0(t)] ∼(V D)3/2t1/2dt, which leads to the
+change of the axial momentum dM ∼ρV 5/2D3/2t1/2dt. Thus, the impact force scales as F = dM/dt
+∼ρV 5/2D3/2t1/2.
+Philippi et al. (2016) analyzed the detailed structure of the self-similar potential flow for drop
+impact on a dry surface and obtained an analytical solution for the impact force in the high Re
+limit as t →0+ with an order-one numerical prefactor:
+˜F = 3
+√
+6
+2
+˜t1/2.
+1.
+Gordillo et al. (2018) experimentally verified the predicted square-root temporal scaling of the
+impact force. Figure 3c,d show the numerical prefactor α and the power exponent β of the tem-
+poral scaling of the impact force, extracted from the power law fitting of the experimental force–
+time curves at early times. Above Re > 200, α = 3
+√
+6/2 and β = 1/2 quantitatively agree with
+Equation 1. The square-root scaling has also been confirmed by two other recent experiments
+and simulations (Mitchell et al. 2019b, Zhang et al. 2019).
+At 7 < Re < 200, the impact force still follows the square-root temporal scaling. However,
+the numerical prefactor increases with decreasing Re, deviating from the theoretical prediction
+(Figure 3c,d). To understand the behavior of the impact force at finite Re, Gordillo et al. (2018)
+performed an asymptotic perturbation calculation by matching the inner velocity profile within a
+viscous boundary layer and the outer velocity profile in the self-similar potential flow to the first
+order of Re−1/2. They showed that the viscous boundary layer enhances the propagation speed of
+the self-similar pressure field within the impacting drop, leading to an increased impact force:
+˜F = 3
+√
+6
+2
+
+1 + 8
+√
+6
+3π 3/2
+1
+Re1/2
+
+˜t1/2.
+2.
+Equation 2 quantitatively agrees with experiments without fitting parameters (Figure 3c,d). Note
+that the viscous boundary layer grows as lv ∼√νt, showing the same temporal scaling as r0(t).
+Thus, the viscous effect is added as a self-similar correction to the original solution of the potential
+flow, resulting in the same square-root temporal scaling for the impact force at finite Re. At even
+lower Re < 7, experiments using high–molecular weight silicone oils with viscosity above 1,000 cSt
+showed an increase of the exponent of the temporal scaling above 1/2 (Figure 3d). In addition,
+the area of the force–time curves before the peak sharply increases above 1/4 of the total area
+(Figure 3b) toward the value of 1/2, which is the expected result for the impact of elastic spheres.
+These qualitative changes are thus attributed to the effect of the viscoelasticity of high–molecular
+weight silicone oils (Gordillo et al. 2018).
+The peak time ˜tmax can be estimated as the time when the self-similar pressure field propagates
+through the entire impacting drop and terminates the early-time self-similar flow structure. While
+64
+Cheng • Sun • Gordillo
+
+===== PAGE 9 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+the top of an impacting drop decreases linearly with the initial impact velocity following (D −Vt)
+in the early-impact regime (Figure 2a),the self-similar pressure field propagates upward following
+(VD3t)1/4 at high Re (Gordillo et al. 2018). The two fronts meet at tmax when (D −Vtmax ) =
+A(VD3tmax )1/4, where an order-one geometric factor A is added to count the mismatch of the shape
+of the isobars and the free surface of the drop. From ˜tmax = 0.17 at high Re, we have A = 1.29.
+The above argument can be extended to finite-Re impact by considering the enhanced pressure
+propagation induced by the viscous boundary layer. The dimensionless peak time is given by the
+solution of the following polynomial equation,
+(1 −˜tmax)4 −A4 
+1 + ˜URe−1/22 ˜tmax = 0,
+3.
+where ˜U = 8
+√
+6/(3π 3/2) is the first-order correction to the axial velocity of the outer poten-
+tial flow. The calculation provides a quantitative prediction of the peak time as a function of Re
+(Figure 4b) with no fitting parameter. Since the shape of the force–time curves is invariant (inset
+in Figure 3a), the peak force at low Re can thus be estimated as
+˜Fmax(Re) = ˜F ∞
+max
+˜t∞
+max
+˜tmax(Re),
+4.
+where ˜F ∞
+max = 0.85 ± 0.05 and ˜t∞
+max = 0.17 ± 0.02 are the peak force and time in the high-Re limit,
+respectively. The equation provides a good estimate of the peak force of viscous drops (Figure 4a).
+At low Re < 7, the prediction deviates from experiments likely because of the viscoelasticity of
+silicone oils used in experiments. The force–time curves of viscoelastic drops become more sym-
+metric, approaching the behavior of solid-sphere impact (Figures 3b and 4c). Negative forces can
+also be observed due to the bouncing of the viscoelastic drops on the force sensor (Figure 4c).
+2.3. Late-Impact Regime: Drop Spreading
+Pressure gradients dominate the impact process in the early-impact regime and redirect the flow
+from the axial direction to the radial direction. In contrast, the spreading of drop in the late-impact
+regime is driven by drop inertia in the radial direction. Pressure gradients are insignificant and
+play only a minor role in the process. Depending on Re and We, the spreading is eventually checked
+by either viscous forces, capillary forces, or both, giving rise to the maximum spreading diameter
+(Laan et al. 2014). Nevertheless, from the perspective of impact force, the axial momentum of
+impacting drops approaches zero near the maximum spreading diameter, which leads to only very
+weak impact force. Thus, our discussion of the impact force in the late-impact regime focuses
+on inertia-driven spreading when the force signal is still strong and ignores viscous and capillary
+effects important toward the end of drop spreading.
+Inertia-driven drop spreading is governed asymptotically by a hyperbolic flow (Yarin & Weiss
+1995, Fedorchenko et al. 2005, Roisman 2009, Roisman et al. 2009, Eggers et al. 2010): vr =
+r/(t + t0) and vz = −2z/(t + t0), where vr and vz are the flow velocity in the radial and axial
+directions, respectively. The term t0 indicates the onset time of inertia-driven spreading after
+impact. The associated pressure field can then be obtained from the Euler equations, p(r, z, t) =
+3ρ[h2(r, t) −z2]/(t + t0)2, where h(r, t) is the free surface of the spreading drop, which can be
+further written as h(r, t) = hmax (t)G(ξ), where hmax = A1D3/[V(t + t0)]2 is the maximum drop
+height at r = 0 with a fitting constant A1 and G(ξ) is a dimensionless scaling function (Roisman
+et al. 2009, Eggers et al. 2010). The variable ξ = r
+
+hmax/V0 is a self-similar variable governing
+drop spreading, and V0 = πD3/6 is the drop volume. The impact force can thus be calculated as
+˜F(˜t) = 2π
+ ∞
+0
+˜p(˜r, ˜z = 0, ˜t)˜r d˜r =
+π 2A1
+(˜t + ˜t0)4
+ ∞
+0
+G2(ξ )ξ dξ,
+5.
+www.annualreviews.org • Drop Impact Dynamics
+65
+
+===== PAGE 10 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+which shows a 1/4 power law decay at long times. From experiments on the shape of spreading
+drops, we obtain A1 = 0.492, ˜t0 = 0.429, and
+ ∞
+0 G2(ξ )ξ dξ = 0.0911 (Lagubeau et al. 2012).
+Equation 5 agrees with experiments for ˜t > 0.8 (the Eggers et al. line in Figure 2b).
+Instead of the power law decay, Mitchell et al. (2019b) showed empirically that the decrease of
+the impact force can be approximated by an exponential decay:
+˜F(˜t) = ˜F0 exp
+	
+−
+˜t −˜t0
+k
+
+.
+6.
+From direct fitting, we have 1/k = −2.84. The exponential decay starts around ˜t0 = 0.5, with
+˜F0 = 0.53.
+By interpolating the square-root scaling of the early-impact regime and the empirical expo-
+nential decay of the spreading regime, Mitchell et al. (2019b) also proposed a simple formula that
+quantitatively describes the temporal evolution of the impact force over the entire time domain
+(the Mitchell et al. line in Figure 2b),
+˜F(˜t) =
+
+C1˜t exp (−C2˜t),
+7.
+where the coefficients C1 = 1,000π/243 and C2 = 10/3 are fixed by the initial momentum of im-
+pacting drops ρV0V and the peak time ˜tmax = 0.15. Note that √C1 ≈3.60 is close to the numerical
+factor 3
+√
+6/2 ≈3.67. Thus, Equation 7 is asymptotic to Equation 1 in the limit t →0+.
+3. STRESS DISTRIBUTIONS
+3.1. Pressure
+Impact force quantifies the average impact pressure but cannot reveal the pressure distribution
+underneath impacting drops. Indeed, the pressure distribution of an impacting drop is far from
+uniform, which provides more detailed and interesting information on the dynamics of drop im-
+pact. We again divide our discussion into the early- and late-impact regimes.
+3.1.1. Early-impact regime. The self-similar scaling in the early-impact regime has shown that
+p(t) ∼ρV 3/2D1/2t−1/2 (see Section 2.2). Marengo et al. (2011) further suggested that the velocity
+field in an impacting drop can be approximated by the irrotational flow past a disk of radius r0(t),
+where r0(t) is the radius of the turning line. At the impact point, the velocity potential of the flow
+past a disk is known as φ = −2Vr0/π (Batchelor 1967). The pressure can then be calculated using
+the unsteady Bernoulli’s equation,
+p
+ρ + ∂φ
+∂t + 1
+2 (▽φ)2 = 1
+2V 2.
+8.
+The pressure at the stagnant point with ▽φ = 0 is
+p(r = 0,t) = 1
+2ρV 2 + 2ρV
+π
+dr0
+dt = 1
+2ρV 2 +
+√
+6
+2π ρV 3/2D1/2t−1/2,
+9.
+where we use r0(t) =
+√
+6DV t/2 instead of the radius of a truncated sphere suggested in the original
+derivation by Marengo et al. (2011).
+A similar analogy between drop impact and flow past a radially expanding disk has also been
+made by Philippi et al. (2016). Based on the analogy, they calculated the self-similar potential flow
+during early impact near the tip. Their theory provided the analytical solution of the turning line
+r0(t) and revealed the singular structure of the pressure distribution over the contact area,
+p(r,t) = 3
+√
+2
+2π
+ρV 2D
+√
+3V Dt −2r2 .
+10.
+66
+Cheng • Sun • Gordillo
+
+===== PAGE 11 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+0
+0.5
+0.0
+1.5
+1.0
+2.5
+2.0
+3.0
+0.0
+0.5
+1.0
+1.5
+2.0
+2.5
+3.0
+10
+20
+30
+40
+a
+b
+c
+d
+√2t
+~ · p~(2r~, z = 0, 2t
+~)
+p~(2r~, z = 0, 2t
+~)
+√2ξ
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+0.0
+2r~
+Figure 5
+Pressure distribution of drop impact at Reynolds number Re = 5,000 and Weber number We = 250 at early times from numerical
+simulations. (a) Close-up view of the pressure field inside an impacting drop at early times, ˜t = 2 × 10−4. (b) Time series showing the
+development of the pressure field (top panels), as well as the pressure on the impacted surface (bottom panels). From top to bottom,
+˜t = 5 × 10−5, 5 × 10−4, and 5 × 10−3. (c) Pressure ˜p at the contacted surface at different times. Time increases from red to blue to gray.
+(d) Pressure as a function of the rescaled variable ξ = ˜r/
+√˜t. The black dashed line is the theoretical prediction (Equation 10). Figure
+adapted with permission from Philippi et al. (2016).
+Equation 10 reduces to Equation 9 at the drop axis r = 0, except for a constant dynamic pressure
+that can be adsorbed by redefining the reference pressure. More importantly, it reveals a finite-
+time singularity at the turning line r0(t) away from the impact axis. The prediction quantitatively
+agrees with volume-of-fluid numerical simulations (Figure 5). Particularly, Equation 10 predicts
+an annular ring of divergent pressure propagating radially with the turning line (Figure 5b,c).
+www.annualreviews.org • Drop Impact Dynamics
+67
+
+===== PAGE 12 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+Such a noncentral pressure maximum is in sharp contrast to the pressure distribution induced by
+a steady jet of a liquid impinging on a flat wall, where the pressure maximum is expected at the
+central stagnation point. For steady flows, we have࢚
+φ/࢚t = 0 in Equation 8. Since the kinetic term
+is (▽φ)2/2 ≥0, the pressure p = ρ[V 2 −(▽φ)2]/2 reaches maximum at the central stagnant point.
+In contrast, the acceleration term࢚
+φ/࢚t dominates drop impact, leading to the counter-intuitive
+off-axial pressure maximum ( Josserand & Zaleski 2003, Philippi et al. 2016). The integration of
+Equation 10 over the contact area within the turning line gives the impact force in Equation 1.
+It is clearly difficult to conduct experimental measurements on the transient pressure distribu-
+tion underneath millimeter-sized drops with micron spatial resolutions and submillisecond tem-
+poral resolutions. Early experiments assessing the damage of solid surfaces induced by high-speed
+drop impacts with impact velocities >200 m/s showed patterns of ring cracks on the impacted
+surfaces, indicating the existence of annular pressure peaks (Figure 6a) (Adler 1977, Hackworth
+1979). Experiments have also been conducted by shooting cylindrical bullets at high speeds into
+2D drops or the side of vertical liquid jets. Pressure was measured by embedded small piezo-
+electric sensors on the surface of the bullets. An off-axial pressure maximum has been observed,
+although the temporal variation of the pressure distribution has not been reported (Figure 6b)
+(Rochester & Brunton 1979, Lesser & Field 1983). Using an array of miniature force sensors based
+on microelectromechanical systems,Thanh-Vinh and coworkers measured the temporal evolution
+of pressure distributions under impacting drops of low impact velocities relevant to this review
+(Thanh-Vinh et al. 2016, Thanh-Vinh & Shimoyama 2019). Nevertheless, the spacing between
+the force sensors in their experiments was too large to resolve the fine structure of the pressure
+distribution predicted in Equation 10. More recently, the authors of this review measured the
+temporal evolution of the stress distributions of drop impact by imaging the deformation of elas-
+tic gels underneath impacting drops (Sun et al. 2021). The measurements provided experimental
+evidence of the noncentral propagating pressure maximum for drop impact (Figure 6c).
+a
+−2
+0
+2
+4
+6
+0
+100
+200
+300
+r (mm)
+p (MPa)
+b
+t = 0 μs
+t = 50 μs
+t = 100 μs
+t = 150 μs
+t = 200 μs
+c
+−2.0
+0.0
+2.0
+p (kPa)
+Drop
+r
+Figure 6
+Impact pressure from experiments. (a) Ring fracture formed on chemically vapor-deposited zinc sulfide due to the impact of a 2-mm-
+diameter water drop at an impact velocity of V = 340 m/s. The width of the picture is 2.89 mm. Panel a adapted with permission from
+Hackworth (1979). (b) Peak pressure p at different positions r under a 2D water drop of diameter 5.0 mm with an impact velocity of
+V = 100 m/s. Panel b adapted with permission from Rochester & Brunton (1979). (c) Temporal variation of the pressure distribution
+underneath a 3.5-mm-diameter drop of sodium iodide aqueous solution (60% weight per weight) with a drop impact of V = 2.97 m/s.
+Panel c data from Sun et al. (2021).
+68
+Cheng • Sun • Gordillo
+
+===== PAGE 13 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+We = 761, Re = 83
+We = 1,165, Re = 104
+Roisman et al. 2009
+Roisman et al. 2009
+Eggers et al. 2010
+Eggers et al. 2010
+Gordillo et al. 2018
+0.0
+0.5
+1.0
+0.0
+0.5
+1.0
+p~(r~, z~ = 0)
+p~(r~ = 0, z~ = 0, t
+~)
+a
+10−2
+10−1
+100
+101
+10−5
+10−2
+101
+b
+r~
+t
+~
+t
+~ = 0.24 
+t
+~ = 0.5
+t
+~ = 0.75
+t
+~ = 1.0
+Figure 7
+Pressure distribution during drop spreading. (a) Numerical results showing the pressure ˜p near the impacted surface as a function of the
+radial position ˜r at different times ˜t. The impacted surface is treated as a symmetric plane with a slip boundary condition. Panel a
+adapted with permission from Roisman et al. (2009). (b) Pressure at the impact axis. Symbols are numerical results at high Reynolds
+number Re and Weber number We from Roisman et al. (2009) and Eggers et al. (2010). Lines are fittings (Roisman et al. 2009) and
+theoretical predictions (Eggers et al. 2010, Gordillo et al. 2018).
+3.1.2. Late-impact regime. Inertia-driven drop spreading at high Re and We in the late-impact
+regime leads to a universal pressure field away from the edge of the spreading lamella. Roisman
+et al. (2009) numerically solved the universal pressure distribution along the contact surface in the
+late-impact regime (Figure 7a). They found that the contact pressure at the center of spreading
+drops can be fitted with an exponentially decaying function, p(r = 0, t) = 1.7ρV 2exp(−3.1Vt/D)
+(Figure 7b).
+The pressure at the impact axis has also been simulated by Eggers et al. (2010) (Figure 7b).
+They further analytically solved the asymptotic pressure distribution along the contact surface
+in the limit t →∞: p(r, t) = 3ρh2(r, t)/(t + t0)2 (see Section 2.3). Here, the free surface of the
+spreading drop is h(r, t) = hmax (t)G(ξ), with hmax (t) = h(r = 0, t) the maximum drop height at the
+impact axis. While hmax (t) = A1D3/[V(t + t0)]2 can be derived from the mass conservation with A1
+as a numerical constant (Roisman et al. 2009), the scaling function G(ξ ≡r
+
+hmax/V0) is obtained
+from either experiments (Lagubeau et al. 2012, Lastakowski et al. 2014) or simulations (Eggers
+et al. 2010). An empirical function has been proposed, G(x) = 1/(1 + Cx2)6, with C = 0.625 from
+simulations (Eggers et al. 2010) and C = 0.604 from experiments (Lastakowski et al. 2014). Thus,
+an analytical formula for the pressure distribution underneath a spreading drop is reached,
+p(r,t) =
+ 3ρA2
+1D6
+V 4(t + t0)6
+ 
+πV 2(t + t0)2
+πV 2(t + t0)2 + 6CA1r2
+12
+,
+11.
+where A1 = 0.492 and t0 = 0.429D/V are obtained from the experimental profile of spreading
+drops (Lagubeau et al. 2012), and A1 = 0.39 and t0 = 0.25D/V are obtained from the numerical
+profile of spreading drops (Roisman et al. 2009). The calculation by Eggers et al. is valid at the
+long-time limit when p →0. Gordillo et al. (2018) further extended the self-similar scaling of
+drop spreading and provided a fully nonlinear self-similar analytical solution for hmax (t) and p(r, t),
+valid at finite times in the late-impact regime of inviscid-drop impacts. In the t →∞limit, their
+theory analytically predicts A1 = 0.44 and t0 = 0.31D/V, which are in close agreement with fitted
+parameters of experiments and simulations. The pressure at the impact axis was also given in a
+www.annualreviews.org • Drop Impact Dynamics
+69
+
+===== PAGE 14 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+parametric representation
+˜p( ˆω) = −1
+8t2
+2
+ˆωT ′′( ˆω)
+T 3( ˆω)
+and
+˜t( ˆω) = t1 + t2T ( ˆω),
+12.
+where t2 =
+√
+2/3, t1 = −t2T(2), and T(x) = 2x−1/2(1 + x3)1/2 −3(1 + x3)1/3F[ −1/3, 1/6, 2/3][(1 +
+x3)−1], with F[m, n, p](x) a hypergeometric function. Different theoretical predictions are compared
+in Figure 7b.
+We end this section with two remarks. First, Equations 11 and 12 predict p(t) behaves asymp-
+totically following 1/(t + t0)6 at the impact axis, which is different from the exponential decay
+suggested based on the fitting of numerical results (Figure 7b). Nevertheless, the formulas nu-
+merically converge in the regime of inertia-driven spreading for 0.5 < ˜t < 2. At even longer times
+toward the end of spreading, the inertia-driven universal pressure profile is invalid due to the ac-
+tion of viscous and capillary forces. Second, since the maximum pressure of spreading drops occurs
+at the impact axis, the pressure maximum has to shift from the position of the turning line near
+the edge of impacting drops to the center of the drops during the transition from the early-impact
+to the late-impact regime (Eggers et al. 2010, Bako et al. 2016). It is still not clear how the shift
+proceeds theoretically (see the Future Issues section).
+3.2. Shear Stress
+Next, we consider the shear stress distribution of drop impact, which is more relevant to the
+erosion induced by drop impact. At high Re and We, the viscous boundary layer is thin and scales
+as ˜lv ∼
+˜t/Re. Pressure gradients across this thin viscous boundary layer are small. Hence, to the
+first order, the pressure distribution is not affected by the viscous boundary layer. Nevertheless,
+the boundary layer plays the essential role for the shear stress on impacted surfaces. Ignoring
+the viscous boundary layer would lead to zero shear stress and significantly reduce the erosion
+capability of impacting drops (Bako et al. 2016).
+3.2.1. Early-impact regime. In the early-impact regime, Philippi et al. (2016) hypothesized
+that the structure of the viscous boundary layer of drop impact is similar to that of the shock wave–
+induced boundary layer. Here, the turning line of an impacting drop is analogous to a shock front
+with a growing viscous boundary layer trailing behind. Based on the classic shock wave solution
+(Mirels 1955), they obtained the velocity profile within the boundary layer and calculated the shear
+stress distribution along the contact surface,
+τ(r,t) = η ∂vr(r, z = 0,t)
+∂z
+=
+√
+6ρ1/2V 3/2D1/2η1/2
+π 3/2
+2r
+3V Dt −2r2 ,
+13.
+where η is the dynamic viscosity of fluid. Similar to the pressure distribution (Equation 10), the
+shear stress also exhibits a finite-time singularity at the turning line r0(t). The formula agrees well
+with numerical simulations away from the singularity (Figure 8a). A small cutoff  was found
+near the turning line, below which the 1/r singularity is screened (Figure 8b). By integrating the
+shear stress over the contact area, they also derived the magnitude of the drag force induced by
+drop impact in the early-impact regime,
+Fd(t) =
+ 2π
+0
+ r0−
+0
+τ(r,t)r drdθ = 5.35η1/2ρ1/2V 2D
+√
+t,
+14.
+where  = 0.02
+√
+V Dt is chosen based on numerical findings at different Re.
+70
+Cheng • Sun • Gordillo
+
+===== PAGE 15 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+−1,000
+0
+1,000
+τ (Pa)
+c
+0.0
+0.5
+1.0
+1.5
+0.2
+0.1
+0.0
+a
+Δ/√2t
+~
+10−3
+10−2
+10−1
+100
+101
+10−6
+10−3
+100
+b
+√2t
+~ · τ~ (r~,t
+~)
+√2t
+~ · τ~ (r~,t
+~)
+√2ξ 
+√3 – √2ξ
+t = 0 μs
+t = 50 μs
+t = 100 μs
+t = 150 μs
+t = 200 μs
+Figure 8
+Shear stress distribution in the early-impact regime. (a) Shear stress τ from numerical simulations with Reynolds number Re = 5,000
+and Weber number We = 250 at different times, represented in the self-similar variables ξ = ˜r/
+√˜t. The red dashed line is the theoretical
+prediction (Equation 13). (b) Same data represented as a function of the distance from the turning line. A cutoff  is indicated, below
+which the 1/x singularity is screened. Panels a and b adapted with permission from Philippi et al. (2016). (c) Experimental shear stress
+distribution underneath an impacting drop. Impact conditions are the same as those in Figure 6c. Panel c data from Sun et al. (2021).
+Our recent experiments with elastic gels confirmed the existence of a propagating shear stress
+maximum (Figure 8c). The position of the maximum shear stress is slightly behind the turning
+line, following a square-root temporal scaling. The drag force from our latest experiments also
+quantitatively agrees with Equation 14 after a transient time upon impact.
+3.2.2. Late-impact regime. The viscous boundary layer plays a more prominent role in deter-
+mining the shape of impacting drops in the late-impact regime during drop spreading (Roisman
+2009, Eggers et al. 2010, Schroll et al. 2010). The final thickness of the spreading lamellae of vis-
+cous drops is set by the thickness of the viscous boundary layer at the time when the growing layer
+meets with the decreasing surface of the spreading drops.
+A simple scaling can be formulated for the shear stress during drop spreading (Bako et al. 2016).
+As discussed in Section 2.3, inertia-driven drop spreading is governed by a hyperbolic flow with
+vr ∼r/t. The thickness of the viscous boundary layer grows as lv ∼√νt. Thus, the shear stress
+scales as τ(r,t) ∼ηvr/lv ∼ρ√νrt−3/2. More detailed analysis confirmed the scaling with a numer-
+ical factor close to one (Roisman 2009, Eggers et al. 2010):
+τ(r,t) = 1.0354√νρrt−3/2.
+15.
+Equation 15 shows that τ(r, t) increases linearly with r and reaches a maximum at the edge of the
+spreading lamella,where a thick rim is formed due to the capillary force and the hyperbolic velocity
+profile is invalid. After the stress maximum, the shear stress quickly relaxes to zero toward the edge
+of the rim (Bako et al. 2016). The function form of the shear stress in the rim of spreading drops
+has not been studied. Differently from the pressure distribution, where the maximum pressure
+shifts from the edge of an impacting drop to the center of the drop during the transition from
+the early-impact to the late-impact regime, the maximum shear stress stays near the edge of the
+impacting drop in the entire impact process. Indeed, due to the axial symmetry of drop impact,
+the shear stress is necessarily zero at the impact axis.
+www.annualreviews.org • Drop Impact Dynamics
+71
+
+===== PAGE 16 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+4. OTHER FACTORS
+Studies of the impact force and the stress distributions in an ideal impact situation, where spherical
+drops impact on smooth solid surfaces, have been inspired and motivated by related problems
+that include other factors, such as the presence of fluid layers, the effect of air cushioning, and
+nonspherical impacting drops.
+4.1. Fluid Layers
+The preexisting fluid layer on impacted surfaces can significantly modify the impact force and
+stress distributions.
+4.1.1. Impact force.
+Petersson (1995) experimentally studied the drop impact force on a solid
+surface covered by a water layer using an underwater piezoelectric sensor. Although the exact
+thickness of the water layer was not measured, Petersson showed that the peak force decreases and
+the width of the force peak increases with increasing thickness of the water layer. More recently, Yu
+& Hopkins (2018) used the technique of wavelet deconvolution and studied the temporal evolution
+of the drop impact force on an elastic plate underneath a water layer of controlled thickness. The
+force–time curves can be generally divided into two parts in their experiments: the short-time
+dynamics due to the initial impact and the long-time dynamics associated with the formation of
+jets, vortex rings, or oscillating bubbles induced by the impacting drops (Yarin 2006). While the
+force impulse of the initial impact broadens with the thickness of the water layer, consistent with
+Petersson’s experiments, the force at long times is more complicated because of complex flow
+dynamics in the water layer. Particularly for small drops impacting into deep layers, bubbles are
+entrained underneath the impact point. The oscillation of these bubbles gives rise to strong force
+signals at high frequencies above 700 Hz in the frequency domain.
+4.1.2.
+Stress distributions. Early studies by Hartley and coworkers investigated impact-
+induced shear stress on a solid surface underneath water layers of different thicknesses (Hartley
+& Alonso 1991, Hartley & Julien 1992). They focused on the short-time dynamics during the
+expansion of impact craters in the water layer. Based on numerical simulations at intermediate Re,
+they obtained a series of empirical relations for various features of the shear stress distribution,
+including the maximum shear stress, the position and time of the maximum shear stress, and the
+spatial distribution of the shear stress. Particularly, they suggested that the maximum shear stress
+on the solid surface follows
+τmax = 4.17C1ρV 2(2h/D + 1)−3.16Re−0.55,
+16.
+where h is the thickness of the water layer. The prefactor C1 ranges between 0.91 and 1 and is a
+weak function of a specific combination of We and Fr. Equation 16 shows a strong dependence
+of τ max on the thickness of the water layer. Water layers effectively shield the shear stress at the
+solid surface, a known effect from the study of soil erosion (Mutchler & Young 1975, Bako et al.
+2016). The decay of shear stress after the maximum shows a strong dependence on We and Fr,
+as gravity and surface tension provide the restoring force for the disturbed water layer. Using
+hot-film anemometry, Hartley and coworkers further experimentally measured the shear stress of
+drop impact on the bottom surface of a water flume. A slow horizontal base flow had to be imposed
+in the flume in order to maintain a constant fluid temperature over the hot-film sensor in their
+experiments. A qualitative agreement between numerical and experimental results was found.
+Thanks to advances in computational power, simulations of the pressure and shear stress of
+drop impact on water layers can now be extended to high Re, which is relevant to raindrop impact.
+72
+Cheng • Sun • Gordillo
+
+===== PAGE 17 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+Bako et al. (2016) showed that the position of the maximum pressure inside the water layer follows
+the square-root scaling, rmax(t) ∼√t, similar to that of drop impact on dry surfaces. For shallow
+water layers of height h/D < 1/4, the maximum pressure is pmax(t) ∼1/√t, which also agrees with
+the prediction of Equation 9. For thick layers, the maximum pressure is pmax (t) ∼1/t at interme-
+diate times and transitions to ∼1/√t at long times. The crossover time between the two scaling
+behaviors increases with increasing h/D. While rmax (t) within water increases with time, the max-
+imum pressure on the solid surface underneath the water layers stays at r = 0. Thus, water layers
+eliminate the annular pressure maximum on the solid surface. Nevertheless, self-similar structures
+of the pressure field could still be identified, although the scaling parameters vary with h/D. For
+the maximum shear stress on the solid surface, Bako et al. (2016) found τ max /(ρV 2) ∼(2h/D +
+1)−2.6, which shows a weaker dependence on the thickness of the water layer than that predicted
+by Equation 16. Self-similar structures of shear stress distributions were observed for shallow
+(h/D < 1/3) and thick (h/D > 1) water layers, but not for water layers of intermediate thicknesses.
+4.2. Air Cushioning
+Since the discovery of the effect of ambient air on the splashing of impacting drops on solid sur-
+faces (Xu et al. 2005), air cushioning in drop impact has attracted great research interests [see
+Josserand & Thoroddsen (2016) and references therein]. The thin layer of air underneath an im-
+pacting drop induces a submicron dimple-like deformation on the bottom of the drop and delays
+the contact between the drop and the solid surface (Figure 9a) (Thoroddsen et al. 2005, Driscoll
+& Nagel 2011, Kolinski et al. 2012, Lee et al. 2012). This effect of air cushioning screens the
+1/√t singularity of the pressure at the impact point predicted by Equations 9 and 10, as well as
+the water-hammer pressure at the very early moment of impact. Smith et al. (2003) calculated the
+screened pressure on the impacted surface. Before the drop touches the surface, a maximum gas
+pressure first builds up at the impact axis. As the impact pressure overcomes the gas pressure, an
+annular pressure maximum develops at later times along a ring where the distance between the
+bottom of the deformed drop and the surface is smallest at hmin . Similar dynamics have also been
+a
+b
+ 1
+ 2
+ 3
+t = –0.1 μs
+ 1
+ 2
+ 3
+t = 0.0 μs
+ 1
+ 2
+ 3
+y (μm)
+t = 0.1 μs
+ 1
+ 2
+ 3
+t = 0.5 μs
+ 0
+ 1
+ 2
+ 3
+–150
+–100
+–50
+0
+50
+100
+150
+x (μm)
+–150
+–100
+–50
+0
+50
+100
+150
+x (μm)
+t = 0.6 μs
+t = –0.1 μs
+t = 0.0 μs
+t = 0.1 μs
+t = 0.5 μs
+t = 0.6 μs
+ 1
+ 10
+ 1
+ 10
+ 1
+ 10
+p (atm)
+ 1
+ 10
+ 1
+ 10
+Figure 9
+Air cushioning effect. (a) Snapshots from simulations showing the deformation of a drop of diameter D =
+3.4 mm (ηg = 1.8 × 10−5 Pa·s, ρ = 0.78 g/cm3) before contacting the impacted surface at an impact velocity
+of V = 3.74 m/s. (b) The corresponding gas pressure within the air layer. Figure adapted with permission
+from Mani et al. (2010).
+www.annualreviews.org • Drop Impact Dynamics
+73
+
+===== PAGE 18 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+Stokes number:
+St = ηa/(ρVD)
+reported by Mandre and coworkers (Figure 9b) (Mandre et al. 2009, Mani et al. 2010), who fur-
+ther showed that the air underneath the impacting drop can either drain out of the thin layer or
+be compressed, depending on specific impact parameters and the ambient pressure. The compres-
+sion dynamics are further divided into two different regimes in their theory: the subcompressible
+regime at large hmin and the supercompressible regime at small hmin . In all the cases, the pressure
+distributions near hmin can be described by self-similar solutions.
+Coupling the potential flow of the impacting drop with the lubrication flow of the thin incom-
+pressible air film, Hendrix et al. (2016) studied the air entrainment induced by drop impact on
+a deep liquid pool. Their simulations revealed a similar pressure screening effect by air cushion-
+ing, where the maximum gas pressure moves from the impact axis to the contact ring between the
+drop and the pool. Josserand et al. (2016) also discussed the effect of air cushioning in regularizing
+the pressure singularity at the turning line for drop impacts on a thin liquid film. In the draining
+regime without air compression, they showed that the pressure inside an air layer of viscosity ηa
+follows p ∼ρV 2St−1/3, where the Stokes number St compares the viscous effect of air with drop
+inertia. The proposed scaling agrees with their simulations. Systematic experiments investigating
+the effect of air cushioning on the impact force and stress distributions of drop impact have not
+been conducted so far (see the Future Issues section).
+4.3. Nonspherical Drops
+Drops under equilibrium form perfectly spherical shapes due to the action of capillary forces.
+However,drops in nature are often in an out-of-equilibrium state.For instance,drops may oscillate
+between a prolate and oblate shape due to the initial perturbations (Lamb 1945). The amplitude of
+the oscillation diminishes over time because of viscous dampening. Likewise, large drops falling at
+their terminal velocities are deformed due to air drag, leading to nonspherical shapes with flatter
+bottoms (Clift et al. 1978). The effects of the nonspherical shape on the impact force of liquid
+drops have been examined in several experiments and simulations.
+The first evidence of the shape-dependent impact force was from the early study of Nearing
+& Bradford (1987), who showed that the peak force oscillates with the release height. They veri-
+fied the shape origin of the force oscillation by showing that the oscillation amplitude decreased
+with the fall time. For a millimeter-sized water drop released from a 14-m height, the oscillation
+amplitude is a few percent of the mean peak force. More recently, Zhang et al. (2019) studied
+the impact force of ellipsoidal drops of different aspect ratios in simulations. They found that
+oblate drops have larger peak forces and shorter peak times compared with prolate drops of
+the same impact momentum. They further showed that the impact force of ellipsoidal drops ex-
+hibits the same square-root temporal scaling at early times as the impact force of spherical drops
+(Equation 1). The higher peak force induced by the impact of oblate drops has been confirmed
+by recent experiments comparing the temporal evolution of the impact force of oblate, spherical,
+and prolate drops (Schmid et at. 2021). When nondimensionalized by the nominal diameter D =
+(6V0/π)1/3 defined in terms of the drop volume V0, the dimensionless peak force of large drops
+near terminal velocities is larger than ˜Fmax = 0.85 of the universal force curve (Yu & Hopkins
+2018). The deviation is attributed to the oblate shape of large drops induced by air drag, which
+gives rise to the higher peak force.
+5. SURFACE EROSION AND GRANULAR IMPACT CRATERING
+The pressure and shear stress of drop impact are responsible for the wear and erosion of impacted
+surfaces, which motivated many of the studies reviewed above. In this last section, we briefly dis-
+cuss impact-induced surface erosion on granular media as an example illustrating the outcome of
+74
+Cheng • Sun • Gordillo
+
+===== PAGE 19 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+a
+101
+102
+103
+104
+2
+4
+E (ergs)
+D (mm)
+b
+0.5
+1.0
+1.5
+Dc
+liquid/Dc
+solid
+0
+100
+200
+Es/Eg
+0
+2
+4
+6
+Vc/V0
+d
+0
+100
+200
+300
+2
+3
+4
+5
+Dc/D
+c
+E/Eg
+2.8 (mm)
+3.4 (mm)
+Liquid
+2.0 (mm)
+3.3 (mm)
+Solid
+4.0 (mm)
+V = 0.9 m/s
+Field view: 8.7 mm
+V = 2.0 m/s
+Field view: 14.0 mm
+V = 3.2 m/s
+Field view: 14.8 mm
+V = 6.2 m/s
+Field view: 20.0 mm
+Figure 10
+Granular impact cratering by liquid drops. (a) Morphology of granular craters induced by the impact of 3.1-mm-diameter water drops.
+Panel a adapted with permission from R. Zhao et al. (2015). (b) Ratio Dliquid
+c
+/Dsolid
+c
+of the diameter of granular craters by water drops to
+that by solid spheres at different projectile sizes D and energies E based on Equations 17 and 18. The dashed line indicates the sizes and
+energies of projectiles where the ratio is 1. Above the line, liquid drop craters are larger. (c) Comparison of the diameter of drop craters
+and that of solid-sphere craters. Eg = (π/6)ρgφgD4 is the characteristic potential energy, where φ is the volume fraction of granular
+media. (d) Excavated crater volume Vc normalized by V0 = (π/6)D3 versus the scaled granular deformation energy Es/Eg. Panels c and
+d adapted with permission from de Jong et al. (2021).
+the unique spatiotemporal structure of the stress distributions of impacting drops. Although the
+erosion of hard solid surfaces by high-speed impacting drops have been investigated (Figure 6a)
+(Adler 1977,Hackworth 1979),the study of the erosion effect of low-speed drop impact relevant to
+the current review focuses mainly on deformable granular media. We limit our review on the pro-
+cess of impact cratering by single drops on dry granular media. Other effects such as the ejection
+of granular particles, the so-called rain splash, and impact on wet granular media can be found in
+the literature (see Furbish et al. 2007, Long et al. 2014, Zhang et al. 2015, and references therein).
+Under the impact of a liquid drop, the surface of a granular medium readily deforms. Granular
+particles on the surface are pushed away from the impact point by the spreading drop, leading
+to an impact crater as the final outcome of the impact event (Figures 1a and 10a). Early experi-
+ments investigated the scaling of the diameter Dc of liquid drop impact craters on granular media
+(Katsuragi 2010, Marston et al. 2010, Delon et al. 2011). These experiments suggested that Dc
+scales with the 1/4 power of We of impacting drops, which yields Dc ∼E1/4, where E is the impact
+energy of the drops. Nevertheless, later studies extending over a larger range of impact energies
+showed the scaling exponent is less than 1/4 due to the internal dissipation associated with drop
+deformation (Nefzaoui & Skurtys 2012, R. Zhao et al. 2015). R. Zhao et al. (2015) proposed a
+scaling relation for the diameter of impact craters:
+Dc = 1.74
+
+ρg
+−1/6 D1/3E1/6.
+17.
+The van der Meer group has conducted a series of experiments investigating both the dynamics
+of impacting drops on granular surfaces and the shape of resulting impact craters (S.-C. Zhao
+et al. 2015, 2017, 2019; de Jong et al. 2017, 2021). They showed that the energy transferred from
+impacting drops to granular media can be expressed as Es = Z∗
+cE/(D/2 + Z∗
+c ), where Z∗
+c is the
+maximum crater depth. A scaling of Dc/D ∼E0.16
+s
+has been found.
+www.annualreviews.org • Drop Impact Dynamics
+75
+
+===== PAGE 20 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+As a comparison, the scaling of the size of impact craters by solid spheres has also been obtained
+from experiments (Uehara et al. 2003),
+Dc = 0.92
+
+ρ
+ρgμ2
+1/4
+D3/4H1/4 = 1.08
+
+1
+ρggμ2
+1/4
+E1/4,
+18.
+where H is the fall height of solid spheres, ρg is the density of granular particles, and μ is the grain
+friction coefficient. Note that the impact energy is E = (π/6)D3ρgH.
+The different scaling behaviors of the two impact processes arise due to the distinctive dynamic
+features of their stress distributions. Equation 18 shows that, when plotted against the impact en-
+ergy, the size of craters from solid-sphere impact is independent of the size of spheres. As the
+positions of the maximum impact pressure and the maximum shear stress of solid-sphere impact
+are stationary, concentrating near the impact point, the process of solid-sphere impact can be
+viewed as the deposit of a point-source energy on the granular surface, similar to explosion crater-
+ing (Gao et al. 2017, Liu et al. 2020). As a result, the crater size is independent of the size or even
+the shape of the impacting sphere when the impact energy is sufficiently high (Pacheco-Vazquez
+2019). In contrast, the maximum pressure and shear stress of drop impact expand radially in an
+impact event (Figures 6c and 8c). Since the spreading of impacting drops is a strong function of
+the size of the drops, the resulting granular craters exhibit a clear size dependence (Equation 17).
+As a consequence of this size dependence, the diameter of impact craters by large drops at
+low impact energies is larger than that of solid-sphere impact craters at the same impact energy,
+even though the average impact force and pressure of drop impact are significantly smaller than
+those of solid-sphere impact (Figure 10b). More recent experiments by de Jong et al. (2021)
+directly compared the sizes of granular craters by drop impact and those by solid-sphere impact.
+Their study indeed showed larger impact craters by water drops at relatively low impact energies
+(Figure 10c). In addition, they showed that the drop impact craters are shallower than those from
+solid spheres. More interestingly, they found that the excavated crater volume is the same for
+both drop and solid-sphere impact when plotting against the granular deformation energy Es
+(Figure 10d).
+FUTURE ISSUES
+1. While the self-similar dynamics in both the early-impact and the late-impact regimes
+have been elucidated thanks to recent theoretical progress, an understanding of the tran-
+sition between the two regimes at intermediate times is still out of reach. As a result, a
+first-principle description of the dynamics of impact force and stress distributions over
+the entire time domain of drop impact has not yet been achieved. As the maximum im-
+pact force occurs in this transition regime, a theoretical understanding of the regime
+will provide a quantitative prediction of the peak impact force, which is crucial for many
+impact-related processes.
+2. Quantitative measurements of the stress distributions underneath impacting drops are
+highly demanded and are important not only for verifying the key assumptions of theo-
+ries and simulations but also for understanding the dynamics of drop impact in situations
+that are hard to simulate at present (e.g., drop impact on granular media). For such chal-
+lenging measurements, new experimental techniques are likely needed.
+3. Although extensive research has been conducted in probing the kinematics of drop im-
+pact across a large control parameter space, the study of the impact force and stress
+76
+Cheng • Sun • Gordillo
+
+===== PAGE 21 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+distributions under different impact conditions requires further efforts. The effects of
+important parameters on the dynamical variables of drop impact, including the texture
+of impacted surfaces, the impact angle of impinging drops, and the pressure of ambient
+gases, have not been systematically investigated. Understanding the influence of these
+parameters will open the door for manipulating and exploiting the impact force and
+stress distributions of drop impact in engineering applications.
+4. Experiments on the impact force of low–Reynolds number drops without viscoelastic-
+ity are needed to detect the higher-order effect of viscosity on the peak force and time
+(Figure 4). It would also be interesting to investigate the impact force and stress distri-
+butions of viscoelastic drops and explore the transition between drop impact and solid
+sphere impact from the perspective of impact dynamics and materials science.
+5. A vast knowledge gap still exists between our fundamental understanding of the impact
+force and stress distributions and the outcome of drop impact events. For example, it
+is far from clear how the dynamics of impact force and stress distributions lead to the
+unusual scaling of drop impact granular craters (Equation 17) and how to use the basic
+understanding presented in this review to predict the degree of soil erosion induced by
+raindrop impact.
+DISCLOSURE STATEMENT
+The authors are not aware of any biases that might be perceived as affecting the objectivity of this
+review.
+ACKNOWLEDGMENTS
+We are grateful to all coworkers, collaborators, and colleagues who made significant contribu-
+tions to enrich our understanding of the dynamics of drop impact. We acknowledge the US Na-
+tional Science Foundation awards DMR-1452180, CBET-2017071, and CBET-2002817 and the
+American Chemical Society Petroleum Research Fund 60668-ND9 for financially supporting our
+research over the years. L.G. acknowledges the financial support of the grant CONICYT
+FONDECYT 11170700.
+LITERATURE CITED
+Adler WF. 1977. Liquid drop collisions on deformable media. J. Mater. Sci. 12:1253–71
+Bako AN,Darboux F,James F,Josserand C,Lucas C.2016.Pressure and shear stress caused by raindrop impact
+at the soil surface: scaling laws depending on the water depth. Earth Surf. Process. Landf. 41:1199–210
+Barenblatt GI. 1996. Scaling, Self-similarity, and Intermediate Asymptotics. Cambridge, UK: Cambridge Univ.
+Press
+Batchelor GK. 1967. An Introduction to Fluid Dynamics. Cambridge, UK: Cambridge Univ. Press
+Bennett T, Poulikakos D. 1993. Splat-quench solidification: estimating the maximum spreading of a droplet
+impacting a solid surface. J. Mater. Sci. 28:963–70
+Bird JC, Dhiman R, Kwon HM, Varanasi KK. 2013. Reducing the contact time of a bouncing drop. Nature
+503:385–88
+Bourouiba L. 2021. The fluid dynamics of disease transmission. Annu. Rev. Fluid Mech. 53:473–508
+Chen H, Zhang X, Garcia BD, Georgoulas A, Deflorin M, et al. 2019. Drop impact onto a cantilever beam:
+behavior of the lamella and force measurement. Interfacial Phenom. Heat Transf. 7:85–96
+www.annualreviews.org • Drop Impact Dynamics
+77
+
+===== PAGE 22 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+Clanet C, Beguin C, Richard D, Quéré D. 2004. Maximal deformation of an impacting drop. J. Fluid Mech.
+517:199–208
+Clift R, Grace JR, Weber ME. 1978. Bubbles, Drops, and Particles. New York: Dover
+de Jong R, Zhao S-C, Garcia-Gonzalez D, Verduijn G, van der Meer D. 2021. Impact cratering in sand:
+comparing solid and liquid intruders. Soft Matter 17:120–25
+de Jong R, Zhao S-C, van der Meer D. 2017. Crater formation during raindrop impact on sand. Phys. Rev. E
+95:042901
+Delon G, Terwagne D, Dorbolo S, Vandewalle N, Caps H. 2011. Impact of liquid droplets on granular media.
+Phys. Rev. E 84:046320
+Dickerson AK, Shankles PG, Madhavan NM, Hu DL. 2012. Mosquitoes survive raindrop collisions by virtue
+of their low mass. PNAS 109:9822–27
+Driscoll MM, Nagel SR. 2011. Ultrafast interference imaging of air in splashing dynamics. Phys. Rev. Lett.
+107:154502
+Eggers J. 1997. Nonlinear dynamics and breakup of free-surface flows. Rev. Mod. Phys. 69:865–929
+Eggers J, Fontelos MA. 2015. Singularities: Formation, Structure, and Propagation. Cambridge, UK: Cambridge
+Univ. Press.
+Eggers J, Fontelos MA, Josserand C, Zaleski S. 2010. Drop dynamics after impact on a solid wall: theory and
+simulations. Phys. Fluids 22:062101
+Ellison WD. 1945. Some effects of raindrops and surface-flow on soil erosion and infiltration. Eos 26:415–29
+Fedorchenko AI, Wang AB, Wang YH. 2005. Effect of capillary and viscous forces on spreading of a liquid
+drop impinging on a solid surface. Phys. Fluids 17:093104
+Field JE, Camus JJ, Tinguely M, Obreschkow D, Farhat M. 2012. Cavitation in impacted drops and jets and
+the effect on erosion damage thresholds. Wear 290:154–60
+Furbish DJ, Hamner KK, Schmeeckle M, Borosund MN, Mudd SM. 2007. Rain splash of dry sand revealed
+by high-speed imaging and sticky paper splash targets. J. Geophys. Res. 112:F01001
+Gao M, Liu X, Vanin LP, Sun T-P, Cheng X, Gordillo L. 2017. Dynamics and scaling of explosion cratering
+in granular media. AIChE J. 64:2972–81
+Gart S, Mates JE, Megaridis CM, Jung S. 2015. Droplet impacting a cantilever: a leaf-raindrop system. Phys.
+Rev. Appl. 3:044019
+Ghadiri H, Payne D. 1977. Raindrop impact stress ad the breakdown of soil crumbs. J. Soil Sci. 28:247–58
+Gordillo JM, Riboux G, Quintero ES. 2019. A theory on the spreading of impacting droplets. J. Fluid Mech.
+866:298–315
+Gordillo L, Sun TP, Cheng X. 2018. Dynamics of drop impact on solid surfaces: evolution of impact force
+and self-similar spreading. J. Fluid Mech. 840:190–214
+Grinspan AS, Gnanamoorthy R. 2010. Impact force of low velocity liquid droplets measured using piezoelec-
+tric PVDF film. Colloids Surfaces A 356:162–68
+Hackworth JV. 1979. A mechanistic investigation of the rain erosion of infrared transmitting materials at
+velocities to Mach 2. In Proceedings of 5th International Conference on Erosion by Liquid and Solid Impact, ed.
+JE Field, Pap. 10. Cambridge, UK: Cavendish Lab.
+Hancox NL, Brunton JH. 1966. Erosion of solids by repeated impact of liquid drops. Philos. Trans. R. Soc. A
+260:121–39
+Hartley DM, Alonso CV. 1991. Numerical study of the maximum boundary shear stress induced by raindrop
+impact. Water Resour. Res. 27:1819–26
+Hartley DM, Julien PY. 1992. Boundary shear stress induced by raindrop impact. J. Hydraul. Res. 30:341–59
+Hendrix MHW, Bouwhuis W, van der Meer D, Lohse D, Snoeijer JH. 2016. Universal mechanism for air
+entrainment during liquid impact. J. Fluid Mech. 789:708–25
+Howland CJ, Antkowiak A, Castrejon-Pita JR, Howison SD, Oliver JM, et al. 2016. It’s harder to splash on
+soft solids. Phys. Rev. Lett. 117:184502
+Imeson AC, Vis R, de Water E. 1981. The measurement of water-drop impact forces with a piezo-electric
+transducer. Catena 8:83–96
+Josserand C, Ray P, Zaleski S. 2016. Droplet impact on a thin liquid film: anatomy of the splash. J. Fluid Mech.
+802:775–805
+78
+Cheng • Sun • Gordillo
+
+===== PAGE 23 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+Josserand C, Thoroddsen ST. 2016. Drop impact on a solid surface. Annu. Rev. Fluid Mech. 48:365–91
+Josserand C, Zaleski S. 2003. Droplet splashing on a thin liquid film. Phys. Fluids 15:1650–57
+Joung YS, Buie CR. 2015. Aerosol generation by raindrop impact on soil. Nat. Commun. 6:6083
+Katsuragi H. 2010. Morphology scaling of drop impact onto a granular layer. Phys. Rev. Lett. 104:218001
+Kim S, Wu Z, Esmaili E, Dombroskie JJ, Jung S. 2020. How a raindrop gets shattered on biological surfaces.
+PNAS 117:13901–7
+Kolinski JM, Rubinstein SM, Mandre S, Brenner MP, Weitz DA, Mahadevan L. 2012. Skating on a film of
+air: drops impacting on a surface. Phys. Rev. Lett. 108:074503
+Kondo T, Ando K. 2019. Simulation of high-speed droplet impact against a dry/wet rigid wall for understand-
+ing the mechanism of liquid jet cleaning. Phys. Fluids 31:013303
+Laan N,de Bruin KG,Bartolo D,Josserand C,Bonn D.2014.Maximum diameter of impacting liquid droplets.
+Phys. Rev. Appl. 2:044018
+Lagubeau G, Fontelos MA, Josserand C, Maurel A, Pagneux V, Petitjeans P. 2012. Spreading dynamics of drop
+impacts. J. Fluids Mech. 713:50–60
+Lamb H. 1945. Hydrodynamics. New York: Dover
+Lastakowski H, Boyer F, Biance AL, Pirat C, Ybert C. 2014. Bridging local to global dynamics of drop impact
+onto solid substrates. J. Fluids Mech. 747:103–18
+Laws JO. 1940. Recent studies in raindrops and erosion. Agric. Eng. 21:431–33
+Lee JS, Weon BM, Je JH, Fezzaa K. 2012. How does an air film evolve into a bubble during drop impact? Phys.
+Rev. Lett. 109:204501
+Lesser MB, Field JE. 1983. The impact of compressible liquids. Annu. Rev. Fluid Mech. 15:97–122
+Li J, Zhang B, Guo P, Lv Q. 2014. Impact force of a low speed water droplet colliding on a solid surface.
+J. Appl. Phys. 116:214903
+Liu T, Cao B, Liu X, Sun T-P, Cheng X. 2020. Explosion cratering in 3D granular media. Soft Matter 16:1323–
+32
+Long EJ, Hargrave GK, Cooper JR, Kitchener BGB, Parsons AJ, et al. 2014. Experimental investigation into
+the impact of a liquid droplet onto a granular bed using three-dimensional, time-resolved, particle track-
+ing. Phys. Rev. E 89:032201
+Mandre S, Mani M, Brenner MP. 2009. Precursors to splashing of liquid droplets on a solid surface. Phys. Rev.
+Lett. 102:134502
+Mangili S, Antonini C, Marengo M, Amirfazli A. 2012. Understanding the drop impact phenomenon on soft
+PDMS substrates. Soft Matter 8:10045–54
+Mani M, Mandre S, Brenner MP. 2010. Events before droplet splashing on a solid surface. J. Fluid Mech.
+647:163–85
+Marengo M, Antonini C, Roisman IV, Tropea C. 2011. Drop collisions with simple and complex surfaces.
+Curr. Opin. Colloid Interface Sci. 16:292–302
+Marston JO, Thoroddsen ST, Ng WK, Tan RBH. 2010. Experimental study of liquid drop impact onto a
+powder surface. Powder Technol. 203:223–36
+Mirels H. 1955. Laminar boundary layer behind shock advancing into stationary fluid. Tech. Note 3401, Natl. Adv.
+Comm. Aeronaut., Washington, DC
+Mitchell BR, Bate T, Klewicki J, Korkolis Y, Kinsey B. 2017. Experimental investigation of droplet impact on
+metal surfaces in reduced ambient pressure. Proc. Manuf. 10:730–36
+Mitchell BR, Klewicki JC, Korkolis YP, Kinsey BL. 2019a. Normal impact force of Rayleigh jets. Phys. Rev.
+Fluids 4:113603
+Mitchell BR, Klewicki JC, Korkolis YP, Kinsey BL. 2019b. The transient force profile of low-speed droplet
+impact: measurements and model. J. Fluid Mech. 867:300–22
+Mitchell BR, Nassiri A, Locke M, Klewicki J, Korkolis Y, Kinsey B. 2016. Experimental and numerical
+framework for study of low velocity water droplet impact dynamics. In Proceedings of ASME 2016: 11th
+International Manufacturing Science and Engineering Conference, Pap. V001T002A047. New York: Am. Soc.
+Mech. Eng.
+Mundo C, Sommerfeld M, Tropea C. 1995. Droplet-wall collisions: experimental studies of the deformation
+and breakup process. Int. J. Multiph. Flow 21:151–73
+www.annualreviews.org • Drop Impact Dynamics
+79
+
+===== PAGE 24 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+Mutchler CK, Young RA. 1975. Soil detachment by raindrops. In Present Prospective Technology for Predicting
+Sediment Yields and Sources, pp. 114–17. Washington, DC: US Dep. Agric.
+Nearing MA, Bradford JM. 1987. Relationships between waterdrop properties and forces of impact. Soil Sci.
+Soc. Am. J. 51:425–30
+Nearing MA, Bradford JM, Holtz RD. 1986. Measurement of force versus time relations for waterdrop impact.
+Soil Sci. Soc. Am. J. 50:1532–36
+Nefzaoui E, Skurtys O. 2012. Impact of a liquid drop on a granular medium: inertia, viscosity and surface
+tension effects on the drop deformation. Exp. Therm. Fluid Sci. 41:43–50
+Obreschkow D, Dorsaz N, Kobel P, de Bosset A, Tinguely M, et al. 2011. Confined shocks inside isolated
+liquid volumes: a new path of erosion? Phys. Fluids 23:101702
+Pacheco-Vazquez F. 2019. Ray systems and craters generated by the impact of nonspherical projectiles. Phys.
+Rev. Lett. 122:164501
+Palmer RS. 1965. Water drop impact forces. Trans. Am. Soc. Agric. Eng. 8:69–71
+Pepper RE, Courbin L, Stone HA. 2008. Splashing on elastic membranes: the importance of early-time dy-
+namics. Phys. Fluids 20:082103
+Petersson BAT. 1995. The liquid drop impact as a source of sound and vibration. Build. Acoust. 2:585–624
+Philippi J, Lagree PY, Antkowiak A. 2016. Drop impact on a solid surface: short-time self-similarity. J. Fluid
+Mech. 795:96–135
+Planchon O, Mouche E. 2010. A physical model for the action of raindrop erosion on soil microtopography.
+Soil Sci. Soc. Am. J. 74:1092–103
+Popinet S. 2009. An accurate adaptive solver for surface-tension-driven interfacial flows. J. Comput. Phys.
+228:5838–66
+Prosperetti S, Oguz HN. 1993. The impact of drops on liquid surfaces and the underwater noise of rain. Annu.
+Rev. Fluid Mech. 25:577–602
+Rein M. 1993. Phenomena of liquid drop impact on solid and liquid surfaces. Fluid Dyn. Res. 12:61–93
+Riboux G, Gordillo JM. 2014. Experiments of drops impacting a smooth solid surface: a model of the critical
+impact speed for drop splashing. Phys. Rev. Lett. 113:024507
+Riboux G, Gordillo JM. 2017. Boundary-layer effects in droplet splashing. Phys. Rev. E 96:013105
+Richard D, Clanet C, Quéré D. 2002. Contact time of a bouncing drop. Nature 417:811
+Rioboo R, Marengo M, Tropea C. 2002. Time evolution of liquid drop impact onto solid, dry surfaces. Exp.
+Fluids 33:112–24
+Rochester MC, Brunton JH. 1979. Pressure distribution during drop impact. In Proceedings of the 5th Interna-
+tional Conference on Erosion by Liquid and Solid Impact, ed. JE Field, Pap. 6. Cambridge, UK: Cavendish
+Lab.
+Roisman IV. 2009. Inertia dominated drop collisions. II. An analytical solution of the Navier–Stokes equations
+for a spreading viscous film. Phys. Fluids 21:052104
+Roisman IV, Berberovic E, Tropea C. 2009. Inertia dominated drop collisions. I. On the universal flow in the
+lamella. Phys. Fluids 21:052103
+Scardovelli R, Zaleski S. 1999. Direct numerical simulation of free-surface and interfacial flow. Annu. Rev.
+Fluid Mech. 31:567–603
+Schlichting H, Gersten K. 2000. Boundary-Layer Theory. Berlin: Springer. 8th ed.
+Schmid G, Kingan MJ, Panton L, Willmott GR, Yang Y, et al. 2021. On the measurement and prediction of
+rainfall noise. Appl. Acoust. 171:107636
+Schroll RD, Josserand C, Zaleski S, Zhang WW. 2010. Impact of a viscous liquid drop. Phys. Rev. Lett.
+104:034504
+Smith FT, Li L, Wu GX. 2003. Air cushioning with a lubrication/inviscid balance. J. Fluid Mech. 482:291–318
+Soto D, De Larivière AB, Boutillon X, Clanet C, Quéré D. 2014. The force of impacting rain. Soft Matter
+10:4929–34
+Sun T-P, Alvarez-Novoa F, Andrade K, Gutierrez P, Gordillo L, Cheng X. 2021. Erosion by dripping drops:
+the stress distribution and surface shock wave of drop impact. arXiv:2108.09398 [physics.flu-dyn]
+Tatekura Y, Watanabe M, Kobayashi K, Sanada T. 2018. Pressure generated at the instant of impact between
+a liquid droplet and solid surface. R. Soc. Open Sci. 5:181101
+80
+Cheng • Sun • Gordillo
+
+===== PAGE 25 =====
+Downloaded from www.annualreviews.org.  Guest (guest) IP:  128.119.202.49 On: Wed, 03 Jun 2026 21:50:38
+Terry JP. 1998. A rainsplash component analysis to define mechanisms of soil detachment and transportation.
+Aust. J. Soil Res. 36:525–42
+Thanh-Vinh N,Matsumoto K,Shimoyama I.2016.Pressure distribution on the contact area during the impact
+of a droplet on a texture surface. In Proceedings of the 2016 IEEE 29th International Conference on Micro
+Electro Mechanical Systems (MEMS), pp. 177–80. New York: IEEE
+Thanh-Vinh N, Shimoyama I. 2019. Maximum pressure caused by droplet impact is dependent on the droplet
+size.In Proceedings of the 2019 20th International Conference on Solid-State Sensors,Actuators and Microsystems
+and Eurosensors XXXIII, pp. 813–16. New York: IEEE
+Thoroddsen ST, Etoh TG, Takehara K, Ootsuka N, Hatsuki Y. 2005. The air bubble entrapped under a drop
+impacting on a solid surface. J. Fluid Mech. 545:203–12
+Uehara JS, Ambroso MA, Ojha RP, Durian DJ. 2003. Low-speed impact craters in loose granular media. Phys.
+Rev. Lett. 90:194301
+Ukiwe C, Kwok DY. 2005. On the maximal spreading diameter of impacting droplets on well-prepared solid
+surfaces. Langmuir 21:666–73
+Visser CW, Frommhold PE, Wildeman S, Mettin R, Lohse D, Sun C. 2015. Dynamics of high-speed micro-
+drop impact: numerical simulations and experiments at frame-to-frame times below 100 ns. Soft Matter
+11:1708–22
+Wagner H. 1932. Über Stoß- und Gleitvorgänge an der Oberfläche von Flüssigkeiten. Z. Angew. Math. Mech.
+12:193–215
+Wijshoff H. 2018. Drop dynamics in the inkjet printing process. Curr. Opin. Colloid Interface Sci. 36:20–27
+Wildeman S, Visser CW, Sun C, Lohse D. 2016. On the spreading of impacting drops. J. Fluid Mech. 805:636–
+55
+Worthington AM. 1876. On the forms assumed by drops of liquids falling vertically on a horizontal plate. Proc.
+R. Soc. 25:261–72
+Xu L, Zhang WW, Nagel SR. 2005. Drop splashing on a dry smooth surface. Phys. Rev. Lett. 94:184505
+Yarin AL. 2006. Drop impact dynamics: splashing, spreading, receding, bouncing. . . . Annu. Rev. Fluid Mech.
+38:159–92
+Yarin AL, Roisman IV, Tropea C. 2017. Collision Phenomena in Liquids and Solids. Cambridge, UK: Cambridge
+Univ. Press
+Yarin AL, Weiss DA. 1995. Impact of drops on solid surfaces: self-similar capillary waves, and splashing as a
+new type of kinematic discontinuity. J. Fluid Mech. 283:141–73
+Yu Y, Hopkins C. 2018. Experimental determination of forces applied by liquid water drops at high drop
+velocities impacting a glass plate with and without a shallow water layer using wavelet deconvolution.
+Exp. Fluids 59:84
+Zhang B, Li J, Guo P, Lv Q. 2017. Experimental studies on the effect of Reynolds and Weber numbers on the
+impact forces of low-speed droplets colliding with a solid surface. Exp. Fluids 58:125
+Zhang Q, Gao M, Zhao R, Cheng X. 2015. Scaling of liquid-drop impact craters in wet granular media. Phys.
+Rev. E 92:042205
+Zhang R, Zhang B, Lv Q, Li J, Guo P. 2019. Effects of droplet shape on impact force of low-speed droplets
+colliding with solid surface. Exp. Fluids 60:64
+Zhao R, Zhang Q, Tjugito H, Cheng X. 2015. Granular impact cratering by liquid drops: understanding
+raindrop imprints through an analogy to asteroid strikes. PNAS 112:342–47
+Zhao S-C, de Jong R, van der Meer D. 2015. Raindrop impact on sand: a dynamic explanation of crater
+morphologies. Soft Matter 11:6562–68
+Zhao S-C, de Jong R, van der Meer D. 2017. Liquid-grain mixing suppresses droplet spreading and splashing
+during impact. Phys. Rev. Lett. 118:054502
+Zhao S-C, de Jong R, van der Meer D. 2019. Formation of a hidden cavity below droplets impacting on a
+granular substrate. J. Fluid Mech. 880:59–72
+Zhou Q, Li N, Chen X, Xu T, Hui S, Zhang D. 2008. Liquid drop impact on solid surface with application
+to water drop erosion on turbine blades, part II: axisymmetric solution and erosion analysis. Int. J. Mech.
+Sci. 50:1543–58
+www.annualreviews.org • Drop Impact Dynamics
+81

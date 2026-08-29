@@ -1,0 +1,826 @@
+
+===== PAGE 1 =====
+ARTICLE
+Coexistence of solid and liquid phases in shear
+jammed colloidal drops
+Phalguni Shah
+1,2, Srishti Arora1,2 & Michelle M. Driscoll
+1✉
+Complex ﬂuids exhibit a variety of exotic ﬂow behaviours under high stresses, such as shear
+thickening and shear jamming. Rheology is a powerful tool to characterise these ﬂow
+behaviours over the bulk of the ﬂuid. However, this technique is limited in its ability to probe
+ﬂuid behaviour in a spatially resolved way. Here, we utilise high-speed imaging and the free-
+surface geometry in drop impact to study the ﬂow of colloidal suspensions. Here, we report
+observations of coexisting solid and liquid phases due to shear jamming caused by impact. In
+addition to observing Newtonian-like spreading and bulk shear jamming, we observe the
+transition between these regimes in the form of localised patches of jammed suspension in
+the spreading drop. We capture shear jamming as it occurs via a solidiﬁcation front travelling
+from the impact point, and show that the speed of this front is set by how far the impact
+conditions are beyond the shear thickening transition.
+https://doi.org/10.1038/s42005-022-00998-w
+OPEN
+1 Department of Physics and Astronomy, Northwestern University, Evanston, IL, US. 2These authors contributed equally: Phalguni Shah, Srishti Arora.
+✉email: michelle.driscoll@northwestern.edu
+COMMUNICATIONS PHYSICS | (2022) 5:222 | https://doi.org/10.1038/s42005-022-00998-w | www.nature.com/commsphys
+1
+1234567890():,;
+
+===== PAGE 2 =====
+C
+omplex ﬂuids, such as particulate suspensions1,2 and
+polymer solutions3, exhibit a variety of exotic ﬂow beha-
+viours, for instance shear thickening and solidiﬁcation via
+jamming. These behaviours are particularly relevant to develop-
+ment of smart materials, such as body armours4 and soft robots5.
+Rheometry is traditionally used to characterise complex ﬂuids.
+However, this technique typically provides measurements aver-
+aged over the bulk of the ﬂuid and obscures the information on
+local variations in ﬂow. The free-surface geometry in drop impact
+systems offers a unique lens to probe these ﬂow properties, as it
+provides data on manifestations of non-Newtonian ﬂow with
+high spatial and temporal resolution.
+An extensive understanding has been developed for the
+dynamics of a Newtonian ﬂuid drop impacting a dry solid
+substrate6–11. However, the vastly different ﬂow properties of
+complex ﬂuids substantially modify impact dynamics. Past studies
+have explored the spreading and splashing of a variety of polymeric
+ﬂuids12,13 and particulate suspensions14–19; however each has lar-
+gely focused on a relatively narrow slice of the vast parameter space.
+The role of particulate additives in controlling the splashing tran-
+sition has been explored14,15, as well as the spreading and jamming
+of dense suspension drops16–19. In particular, experiments on
+impacting shear thickening ﬂuids have reported solid-like states
+after impact16–18. Colloidal suspensions offer a convenient control
+parameter — volume fraction — to scan suspension behaviours
+ranging from Newtonian-like to shear thickening.
+Shear thickening — an increase in viscosity with increasing shear
+— is one of the most counterintuitive phenomena exhibited by
+dense suspensions1,2. The Peclét number, Pe ¼
+shear rate
+rate of diffusion, is
+a dimensionless number used to quantify high shear rates, and we
+expect the onset of shear thickening at Pe ≫1. The transition to
+shear thickening occurs when a suspension with relatively high ϕ is
+subjected to a shear higher than a critical value1,20–22. We note that
+for our experimental parameters, Pe > 102, and thus we expect shear
+thickening after impact in the high-ϕ limit. Many rheological studies
+have focused on elucidating the mechanism of shear thickening, and
+both lubrication hydrodynamics and particle interactions have been
+shown to play a role. Shear thickening has been proposed as pre-
+cursor to shear jamming, and the nature of this transition is an
+active ﬁeld of study. For a more detailed discussion, we refer the
+reader to the following reviews2,20–22.
+Here, we use high-speed imaging to study the drop impact of
+colloidal suspensions over a large range of volume fractions (0.09
+≤ϕ ≤0.50) and impact velocities (0.7 m/s ≤u0 ≤4.0 m/s), thus
+sampling impact behaviour from liquid-like spreading to solid-
+like shear jamming. Our highly time-resolved data allows us to
+characterize the transition to shear jamming in detail, and pro-
+vides valuable insights about the effects of high instantaneous
+shear on ﬂuid properties. Combined with input from rheological
+data, our measurements offer a more holistic picture of complex
+ﬂuid ﬂow, especially under dynamic conditions. The results we
+present here take us closer to an understanding of the shear
+jamming transition and the properties of shear jammed solids.
+Results
+For our experiments, we synthesize charge-stabilized silica spheres
+(diameter 2a = 830 ± 20 nm, Fig. 1a) using the Stöber process23,24
+and suspend them in water. The sedimentation time is the time a
+sphere takes to sediment freely over its radius a25, calculated as:
+ts ¼
+9η
+2Δρga ;
+ð1Þ
+where η is the dynamic viscosity of the suspending ﬂuid (water in
+this case), Δρ is the density difference (ρsilica −ρwater = 1 g/cm3),
+g = 9.8 m/s2, and a = 415 nm, the radius of the particle. Calculated
+in this manner, ts = 1.1 s. Therefore, the characteristic time for a
+particle to sediment over the lengthscale of the drop (d0 = 3 mm) is
+tdrop
+s
+¼ 4000 seconds, or over an hour. Thus, the time for our silica
+sphere to sediment over the size of the droplet is much longer than
+the time of the experiment. This calculation for dilute suspensions
+has been shown to be modiﬁed by a factor smaller than 1, up to
+ϕ = 0.3026. Therefore, for our system, this calculation serves as an
+upper-bound estimate. To further decrease sedimentation effects,
+all samples are re-suspended immediately before every trial using a
+vortex mixer. Spherical drops of diameter d0 = 3.0 ± 0.1 mm are
+formed by drawing a known volume of ﬂuid (15 μL) into a
+micropipette. We set the impact velocity by changing the height
+from which the drops are released, and record the drops impacting
+on a dry, hydrophilic glass substrate using a high-speed camera. We
+note that the contact angle of gently deposited suspensions on the
+glass substrate is practically constant with increasing ϕ, around 4o
+(for more details, see Supplementary Note 1). All experiments are
+performed in a humidity chamber, which additionally mitigates air
+currents (see Methods for details). Data is analysed via ImageJ, and
+plotted using python. Error bars reported are one standard devia-
+tion over at least 5 trials (one standard deviation corresponds to a
+68% conﬁdence interval).
+To connect impact behaviours with rheological properties, a mapping
+between impact velocity and rheological parameters such as shear rate or
+shear stress is necessary. Precisely quantifying shear rates in drop impact
+systems is challenging due to the nonuniformity of shear in both space
+and time. However, a simple dimensional argument can be used to
+estimate the shear rate at impact. At the instant of impact, the bottom
+point of the drop comes to rest, while the apex continues to fall at the
+impact velocity u0, as the shear caused by impact has not had time to
+propagate across the drop. Dividing this difference in speeds, u0, by the
+drop size d0 thus provides an estimate of the maximum shear rate at the
+moment of impact: _γimpact ¼ u0=d0. With the drop size of 3mm, we
+could access shear rates in the range 233 s1 ≤_γimpact ≤1333s−1. Thus,
+we are able to span a large spectrum of ﬂow behaviours in these sus-
+pensions, and observe how non-Newtonian ﬂow gives rise to a rich
+variety of impact phenomena.
+Bulk rheometry measurements [Fig. 1b] demonstrate the
+variety of ﬂow behaviours exhibited by our suspensions. At low ϕ
+(black and pink lines), the ﬂuid viscosity is constant, akin to a
+Newtonian ﬂuid. Shear thinning (decreasing viscosity) becomes
+pronounced as ϕ is increased (green and purple curves), and
+shear thickening (indicated by increasing viscosity) appears for
+ϕ≥0.47 at high shear stresses (shear stress above 100 Pa, orange,
+blue, and red curves). We observe fascinating consequences of
+this non-Newtonian rheology in our impact experiments. At
+ϕ = 0.47, where weak shear thickening appears at high stresses in
+bulk rheology, we observe patches of localised solidiﬁcation
+during spreading — panel 3 of Fig. 2a shows small solid-like
+bumps that protrude from the spreading drop, but vanish in
+panels 4 and 5 [Video SI127]. At higher ϕ, we observe partial
+solidiﬁcation of the drop — Panel 2 in Fig. 2b shows that the
+bottom part of the drop acts as a solid, while the top part remains
+ﬂuid and ﬂows over the solidiﬁed region throughout panels 3–5
+[Video SI227]. Finally, at ϕ = 0.49 and high impact velocities,
+most of drop solidiﬁes as shown in Fig. 2c [Video SI327]. Here, we
+show that this variety of solidiﬁcation behaviours is a direct
+consequence of shear jamming28, evidenced by their occurrence
+much below the static jamming threshold29.
+We encapsulate this broad range of impact outcomes in a
+ϕ −u0 state diagram [Fig. 3]. Green circles, indicating simple
+spreading [Video SI427], dominate the low ϕ and low u0 region.
+With increasing ϕ or u0, the localised solidiﬁcation regime
+ARTICLE
+COMMUNICATIONS PHYSICS | https://doi.org/10.1038/s42005-022-00998-w
+2
+COMMUNICATIONS PHYSICS | (2022) 5:222 | https://doi.org/10.1038/s42005-022-00998-w | www.nature.com/commsphys
+
+===== PAGE 3 =====
+appears (orange diamonds), followed by the bulk solidiﬁcation
+regime (blue triangles), where a larger and larger portion of the
+drop solidiﬁes upon impact. The transition between these regimes
+is a function of both ϕ and u0, as all regimes can be accessed by
+varying either of the parameters while keeping the other constant.
+Additionally, we ﬁnd that the drop behaviour is very sensitive to
+small changes in ϕ, consistent with the transition to shear
+thickening in rheological measurements [Fig. 1b].
+To quantify this range of impact outcomes, we compute
+the normalized maximum diameter of the impacted drops,
+β = dmax/d0, and plot this metric against u0 [Fig. 4a]. For ϕ≤0.47,
+β increases with increasing impact velocity. However, β drops to 1
+at ϕ≥0.49 and high impact velocities. This is because the drop no
+longer spreads after impact (lower inset). This result is consistent
+with recent studies that observed similar solidiﬁcation in sus-
+pension impact at high ϕ16,18. Our drops remain solid for a few
+milliseconds; however, they spread like a liquid over the timescale
+of a second [Video SI527]. Thus, the solid-like state we observe is
+transient in nature, further evidence that this solidiﬁcation is a
+direct result of shear jamming. A recent result suggests that the
+Fig. 1 Rheology of the colloidal suspensions. a SEM image of the colloidal silica spheres used in our drop impact experiments; the sphere diameter is
+830 ± 20 nm. b Bulk rheological ﬂow curves: the colloidal suspension exhibits viscous ﬂow, shear thinning, and shear thickening as ϕ is increased. The grey
+triangle in the bottom right indicates the rate limit of the rheometer.
+Fig. 2 Exotic impact behaviours of colloidal suspension drops. a Timeseries of a ϕ = 0.47 colloidal drop expanding after impacting at u0 = 3.0 m/s [Video
+SI127]. The spreading drop shows transient pockets of localized solidiﬁcation, indicating the onset of shear thickening. b Timeseries of a ϕ = 0.49 colloidal
+drop impacting at u0 = 2.0 m/s [see also Video SI2]. The bottom half of the drop solidiﬁes, while the still-ﬂuid top portion ﬂows over it. c Timeseries of a
+ϕ = 0.49 drop impacting at u0 = 3.0 m/s [Video SI327]. While most of the drop is solidiﬁed, the top portion of the drop is in the liquid phase. All scale bars
+are 1 mm.
+COMMUNICATIONS PHYSICS | https://doi.org/10.1038/s42005-022-00998-w
+ARTICLE
+COMMUNICATIONS PHYSICS | (2022) 5:222 | https://doi.org/10.1038/s42005-022-00998-w | www.nature.com/commsphys
+3
+
+===== PAGE 4 =====
+substrate wettability affects this timescale of unjamming18, but
+this problem remains largely unexplored.
+At ϕ ≤0.47, the drops spread in a manner qualitatively similar
+to Newtonian ﬂuids [Video SI427]. Previous experiments8 with
+Newtonian ﬂuids have shown that β=Re1=5
+eff scales as the dimen-
+sionless parameter WeRe2=5
+eff
+, where We is the impact Weber
+number, ρu2
+0d0=σ, and Re is the Reynolds number, Re = ρu0d0/η.
+Here, σ is the surface tension of the suspending ﬂuid (for this case
+water, σ = 72 mN/m), ρ is the ﬂuid density, calculated as:
+ρ ¼ ρsilicaϕ þ ρwaterð1  ϕÞ
+ð2Þ
+with ρsilica = 2000 kg/m3 and ρwater = 1000 kg/m3, and η is the
+suspension viscosity. For impacting colloidal drops, the calcula-
+tion for the Weber number remains identical to Newtonian ﬂuids.
+Estimating the Reynolds number, however, is less straightforward
+due to the non-constant ﬂuid viscosity of complex ﬂuids. During
+the spreading phase, the maximum shear rate can be estimated as
+_γspr  u0=l, where l is the minimal thickness of the expanding
+ﬂuid layer. Past work has established that l ~ 100 μm for the range
+of ﬂuid parameters relevant to this work6. Estimated this way, the
+_γspr values we obtain are of the order 104 s−1. Measurements of
+ﬂuid viscosity at such high shear rates cannot be made via con-
+ventional rheometry. Therefore, we use the ﬂuid viscosity at the
+highest accessible shear rate from our rheology data (see Sup-
+plementary Note 2). For our experimental conditions, the range
+of dimensionless numbers was 20 < We < 1000 and 50 < Reeff <
+1600. In Fig. 4b, we plot β=Re1=5
+eff
+against WeRe2=5
+eff
+in the
+spreading regime. The dashed black line is the ﬁrst-order Padé
+approximant ﬁt to our data:
+β
+Re1=5
+eff
+¼
+ðWeRe2=5
+eff
+Þ
+1=2
+A þ ðWeRe2=5
+eff
+Þ
+1=2 :
+ð3Þ
+This equation was reported by Laan et al.8 to interpolate
+between the inertial and viscous regimes. The parameters Re1/5
+and WeRe−2/5 are based on scaling arguments that consider the
+balance of inertial, viscous, and capillary effects6,8. For our data,
+the ﬁt returns A = 0.09 ± 0.01, much smaller than A = 1.24 ± 0.01
+reported for Newtonian ﬂuids8. Nevertheless, given that the ﬂuids
+considered in this study are highly shear thinning at higher ϕ, the
+agreement we report here with Newtonian models is surprising.
+Our data also shows good agreement with an empirical ﬁt reportd
+Fig. 3 State diagram of colloidal drop impact. ϕ −u0 state diagram summarizing impact regimes; representative snapshots corresponding to these
+regimes are shown on the right. Green circles denote simple spreading behaviour, which dominates the low ϕ, low u0 region. Orange diamonds indicate
+that transient pockets of localised solidiﬁcation were observed during spreading. Blue triangles correspond to the partial/full solidiﬁcation regime, where
+the bottom portion of the drop jams after impact, but a shrinking region at the top remains ﬂuid. Scale bars are 1 mm.
+Fig. 4 Quantifying maximum drop spreading. a Normalised maximum diameter, β = dmax/d0, as a function of u0 for various volume fractions ϕ. For ϕ ≥
+0.49 and high impact velocities, β drops to 1, indicating the drop does not spread. Insets show representative snapshots of simple spreading (upper),
+localised solidiﬁcation (middle), and bulk solidiﬁcation (lower). Dotted lines are guides to the eye, and the dashed black line indicates β = 1. b β=Re1=5
+eff for ϕ
+≤0.47, plotted against the dimensionless parameter WeRe2=5
+eff
+. The dashed black line is the ﬁrst-order Padé approximant as reported by Laan et al.8 [Eq.
+(3)] for Newtonian ﬂuids, ﬁt to our data. Considering the strongly shear-thinning nature of our suspensions, the data shows a good agreement with the
+Newtonian model.
+ARTICLE
+COMMUNICATIONS PHYSICS | https://doi.org/10.1038/s42005-022-00998-w
+4
+COMMUNICATIONS PHYSICS | (2022) 5:222 | https://doi.org/10.1038/s42005-022-00998-w | www.nature.com/commsphys
+
+===== PAGE 5 =====
+by Scheller et al.30. Recent work has additionally reported a
+scaling correcting for surface wettabilty9; see Supplementary
+Note 3 for a further discussion of these models.
+In the localised solidiﬁcation regime [orange diamonds in
+Fig. 3, Video SI127] the bulk of the drop still spreads like a
+Newtonian ﬂuid [Fig. 4b], but shear thickening is apparent via
+solidiﬁed patches that appear and then disappear. These patches
+appear during the spreading phase, around 1 millisecond after
+impact. However, indicators of jamming are present earlier, in
+the form of nonuniformity in the spreading rim of the drop [see
+for example, panel 2 in Fig. 2a]. In most cases, these patches
+outlive the spreading phase and disappear during the receding
+phase, over tens of milliseconds. Our observation of this regime
+coincides with the onset of weak shear thickening in the bulk
+rheology data [orange curve in Fig. 1b]. Moreover, the transient
+nature of these patches is strong evidence that regions of high
+viscosity are embedded in a lower-viscosity ﬂuid phase. We note
+that we can only observe these patches on the drop surface in
+high-speed imaging data, and there is a large variance in the
+spatial and temporal distribution of these patches. This limits
+our ability to extract quantitative information about localised
+jamming. For higher ϕ, where shear thickening is pronounced,
+the drop exhibits drastically different behaviour, and does not
+spread at all.
+For ϕ ≥0.49, a large fraction of the drop solidiﬁes upon impact.
+To quantify the dynamics of this partially solidiﬁed state, we
+measure the height of the drop apex as a function of time
+[Fig. 5a]. Consistent with another study of impacting shear-
+thickening drops16, we observe two regimes in the h vs. t curve —
+a free-fall regime and a plateau regime. Immediately after impact,
+h decreases at a rate identical to the impact velocity (free-fall
+regime) [Fig. 5b], and then plateaus at a constant value, hmin
+(plateau regime). This is strong evidence that any shear from the
+impact event has not yet propagated to the top portion of the
+drop, and hence the top portion must still remain a liquid. Studies
+of impacting Newtonian drops have also observed a similar ‘free-
+fall’
+regime
+where
+the
+drop
+apex
+moves
+at
+the
+impact
+velocity10,31,32. It is worth noting that in contrast to Newtonian
+ﬂuids, where a broad transition regime was observed between the
+free-fall and the plateau regimes, we observe a sudden transition
+from the free-fall to plateau regime [Fig. 5a], a direct indication of
+a shear jammed drop.
+We quantify the spatial extent of solidiﬁcation by plotting the
+normalized minimum height, hmin/d0 against u0 [Fig. 5c]. The
+increase in hmin/d0 with u0 indicates that a larger and larger
+volume of the drop is solidiﬁed as the impact velocity is
+increased. Interestingly, at high impact velocities, hmin/d0 pla-
+teaus to a value smaller than 1, indicating that the solidiﬁed
+drop also undergoes deformation along the impact direction,
+along with slight bulging in the plane transverse to impact
+[Fig. 2c]. Furthermore, the high temporal resolution (100,000
+fps) of our imaging enables us to capture the details of this
+solidiﬁcation as it occurs.
+Immediately after impact, we observe a disturbance travelling
+upward along the drop surface over hundreds of microseconds
+[orange and green arrows in Fig. 6a].
+To better visualise this front, we subtract successive frames of
+the image sequence, so that only the parts that change between
+frames are highlighted [right panel of Fig. 6a, Video SI627]. The
+location of the front is given by the lower end of the bright edge
+[Fig. 6b]. As this front travels upward, the portion of the drop
+above the front still maintains its pre-impact curvature [red cir-
+cles in Fig. 6a], indicating that it is unaffected by the impact event
+until the front reaches it (consistent with u* = u0, Fig. 5b). The
+angular location of this front plotted against time reveals that the
+front travels at a constant speed, ufront [slope of the line in
+Fig. 6c]. ufront increases with increasing u0, and its value is several
+times larger than u0 [Fig. 6d]. As evident from the rheology, the
+suspension thickens when the applied shear surpasses a critical
+value. Indicated by the dotted lines in Fig. 6e, the critical shear
+rate where thickening is observed, _γc, is much lower for ϕ = 0.50
+than for ϕ = 0.49. We plot ufront against the excess shear rate over
+this critical value, _γimpact  _γc, and the data indeed collapses on a
+single curve for both ϕ [Fig. 6f] . This suggests that the speed of
+this disturbance is set by this excess shear rate; the physical
+relevance of this excess shear rate is discussed in the following
+section.
+As the impact velocity is increased, a larger and larger volume
+of the drop solidiﬁes upon impact. At ϕ = 0.50 and u0 = 4m/s, we
+observe that the drop bounces off the substrate, with the coefﬁ-
+cient of restitution ϵ = 0.1 [Video SI727]. This rebound behaviour
+is especially striking given the hydrophilic nature of the substrate.
+By coupling this coefﬁcient of restitution with the drop’s defor-
+mation along the impact axis, we can semi-empirically estimate
+the elastic modulus of the solidiﬁed drop. The drop impacts the
+substrate with an initial velocity u0, remains in contact with the
+substrate for time Δt = 200μ s, and then rebounds with the ﬁnal
+velocity ϵu0. While in contact with the substrate, we measure that
+the drop is deformed in the direction of impact by the amount
+Δx = 0.24 mm. We calculate the force experienced by the drop
+Fig. 5 Characterisation of the partial solidiﬁcation regime. a Height of the drop apex from the impact substrate, plotted against time, for ϕ = 0.50,
+u0 = 3m/s. h decreases at the speed u* until time t*, then plateaus at the value hmin. Inset: post-impact snapshot of a drop at the minimum height hmin. Scale
+bar in the inset is 1mm. b h decreases at a speed identical to the impact velocity, indicating that over the timescale t*, the top portion of the drop is
+unaffected by the impact event. u* is computed as the slope of the linear ﬁt to the decreasing part of h vs. t data, error bars indicating the standard deviation
+over at least 5 trials. Dashed line corresponds to u* = u0. c hmin/d0 vs. impact velocity u0. hmin/d0 increases with increasing impact velocity, and then
+plateaus at a value less than 1, indicating ﬁnite compression of the drop along impact axis. Dashed line indicates hmin/d0 = 1. Error bars indicate one
+standard deviation over at least 5 trials.
+COMMUNICATIONS PHYSICS | https://doi.org/10.1038/s42005-022-00998-w
+ARTICLE
+COMMUNICATIONS PHYSICS | (2022) 5:222 | https://doi.org/10.1038/s42005-022-00998-w | www.nature.com/commsphys
+5
+
+===== PAGE 6 =====
+upon impact using momentum conservation:
+F ¼ mΔu
+Δt
+¼ mð1 þ ϵÞu0
+Δt
+;
+ð4Þ
+To convert the force to a stress, we divide by the contact area
+for a Hertzian contact33, πa2 = πd0Δx/2:
+σ ¼
+F
+πd0Δx=2 ¼ 2mð1 þ ϵÞu0
+πd0ΔxΔt
+:
+ð5Þ
+The strain experienced by the drop is γ = Δx/d0. Thus, the elastic
+modulus of the rebounding drop can be computed as
+E ¼ σ
+γ ¼ 2mð1 þ ϵÞu0
+πðΔxÞ2Δt
+:
+ð6Þ
+using m = 2.25 × 10−5 kg, we ﬁnd E = 5 MPa. A more thorough
+estimate using Hertz’s equations33 for two colliding elastic bodies
+leads to a similar estimate of E. Calculating the elastic modulus in
+this way for other impact conditions is challenging, as measuring
+the contact time in the absence of rebound is nontrivial.
+Discussion
+In sum, our analysis presents the following picture of the drop
+dynamics. Upon impact, the drop experiences a large instanta-
+neous shear at the impact point. At high enough volume fractions
+and impact velocities, this stress manifests itself as pockets of
+localised solidiﬁcation embedded in the spreading liquid phase.
+At even higher volume fractions or shear, a larger and larger
+fraction of the drop solidiﬁes after impact, but some volume at
+the top remains liquid. Therefore, the shear front must be dis-
+sipating as it moves upward, and the stress falls below the critical
+stress for shear thickening before the entirety of the drop is
+solidiﬁed. Moreover, at the highest impact velocity, the drop
+rebounds, and the coefﬁcient of restitution allows us to estimate
+the elastic modulus of the shear jammed solid, E = 5 MPa. Thus,
+our drop impact experiments provide a unique window to
+observe shear jamming as it occurs, and give rise to a number of
+questions about the nature of both the shear jamming transition
+and the resulting jammed solid.
+The occurrence of localised solidiﬁcation coincides with the
+appearance of weak shear thickening in our bulk rheology data.
+The fact that these solidiﬁed patches vanish over tens of milli-
+seconds is strong evidence that they are regions of high viscosity
+embedded in a lower-viscosity ﬂuid phase. Recent rheological
+studies using boundary stress measurements (BSM) have reported
+ﬁnite regions of enhanced stress in silica suspensions34–36. In
+these works, Rathee et al.34–36 argued that the transition from
+shear thickening to shear jamming is governed by the growing
+size of such localised shear jammed regions. Our observations of
+transient localized solidiﬁcation are thus striking visual evidence
+of such a mechanism. Further spatially resolved stress measure-
+ments performed on impacting drops11 could provide more
+information on the nature of localised solidiﬁcation in free-
+surface systems.
+In the bulk solidiﬁcation regime, the coexistence of liquid and
+solid regions is a result of shear traveling upward from the
+impact point, and simultaneously dissipating due to the high
+suspension viscosity. Although recent studies of Newtonian
+ﬂuids for a large range of viscosities7,10 have established the
+velocity and pressure ﬁelds within an impacting drop, they are
+not directly applicable in case of colloidal systems due to their
+highly non-Newtonian nature. Numerical work investigating
+transient shear might be a useful next step to uncover the
+mechanism of dissipating shear fronts. Though challenging,
+measurements of the ﬂow inside the drop via methods such as
+Fig. 6 Dynamics of the solidiﬁcation front. a Timeseries of a ϕ = 0.50 drop impacting at u0 = 2.0 m/s [Video SI627]. Right panels are images obtained by
+subtracting consecutive frames, so that the edge of the solidiﬁcation front is highlighted (shown by arrows).The red circle indicates the drop proﬁle before
+impact. Even at 0.19 ms, the portion of the drop above the front maintains its pre-impact curvature. Scale bar is 1 mm. b Schematic of a subtracted image of
+the moving solidiﬁcation front, outlining relevant parameters. The height, hfront, of the edge of the white outline gives the location of the front, which is then
+converted to rθfront using the spherical geometry. c Example datasets of rθfront vs. t for ϕ = 0.49 and u0 = 3m/s. rθ vs. t is a straight line, the slope being the
+front speed along the surface, ufront. d ufront plotted against _γimpact. e High- ϕ bulk rheological data from Fig. 1b re-plotted as shear stress vs. shear rate.
+Dotted lines indicate the onset shear rates _γc for shear thickening. f The ufront data for ϕ = 0.49 and ϕ = 0.50, when plotted against _γimpact  _γc, collapses
+on a single curve. In all panels, error bars indicate one standard deviation over at least 5 trials.
+ARTICLE
+COMMUNICATIONS PHYSICS | https://doi.org/10.1038/s42005-022-00998-w
+6
+COMMUNICATIONS PHYSICS | (2022) 5:222 | https://doi.org/10.1038/s42005-022-00998-w | www.nature.com/commsphys
+
+===== PAGE 7 =====
+particle tracking would provide key information about the ﬂow
+ﬁeld in an impacting colloidal drop.
+The nature of the upward-travelling front raises a number of
+interesting questions. Before the front reaches the top, the speed
+of the drop apex u* is identical to u0 [Fig. 5b], and the curvature
+of the top portion is the same as it was before impact. This
+conﬁrms that the information of the impact event reaches the top
+portion only with the front, thus establishing that it is a solidi-
+ﬁcation front. Why the speed of this front is constant along the
+drop surface is an intriguing question. One would expect a shear
+front to travel through the bulk of the drop, upward from the
+region in contact with the substrate. Given the visual nature of
+our measurements on an opaque drop, we can naturally observe
+this front only on the surface. The most likely explanation,
+therefore, is that the front we measure is this bulk shear front
+after it interacts with the drop boundary.
+Our experiments are especially well-positioned to capture such
+a front due to the free-surface conditions here that are absent in
+other studies of shear fronts. Past work has established that shear
+fronts in dense suspensions are not a result of densiﬁcation37, and
+their velocity is set by the external driving speed37–41. We are able
+to characterise the dependence of the front speed on applied shear
+rate due to the unique capability of the drop impact system to
+apply large and instantaneous shear. At a ﬁrst glance, Fig. 6e
+suggests that reaching a shear rate beyond the critical value is
+impossible, making an excess rate beyond the critical value
+unphysical. However, we argue here that this is meaningful for
+drop impact systems. In a rheometer, resistance to shear in a
+thickened ﬂuid causes the shear rate to not increase even though
+applied shear stress increases [Fig. 6e]. However, at the instant of
+impact, the shear rate estimated by _γ ¼ u0=d0 is a physically
+relevant quantity. The rationale is as follows: at the moment of
+impact (before the front has travelled across the drop over ~100
+microseconds, Fig. 6a, b), the impact point comes to an abrupt
+halt while the drop apex still moves at the impact velocity
+[Fig. 5b]. Therefore, the velocity difference of u0 exists across the
+drop size d0, leading to _γ ¼ u0=d0. The front propagation gives us
+a timescale over which effects of shear jamming are apparent over
+the whole drop, and we believe that the inability to access high
+shear rates in a rheometer is a direct consequence of the longer
+timescale (typically a few seconds) over which shear is applied in
+rheometry measurements. We emphasize this ability to apply
+instantaneous high shear is the greatest strength of studying
+suspension behaviour via drop impact.
+The dependence of the front speed on _γimpact  _γc in our
+experiments [Fig. 6f] suggests that the suspension properties near
+the shear jamming transition are governed by the distance from
+the onset of shear thickening. This is consistent with measure-
+ments in static jamming, where material properties depend on the
+distance from the critical point42. The functional form of this
+dependence potentially contains insights into the nature of the
+shear jamming transition. Numerical work exploring the impact
+of suspension drops, although incredibly challenging due to the
+strong role of hydrodynamics in colloidal systems, might provide
+crucial information in this respect. Unfolding the physics of these
+fronts will not only extend constitutive models for complex ﬂuid
+rheology to much higher stress regimes, but will also help us
+understand more about the nature of the shear jamming
+transition.
+Due to the transient nature of the shear jammed state, char-
+acterising the jammed solid created after impact is challenging.
+Using the coefﬁcient of restitution of the rebounding drop, we
+were able to estimate the elastic modulus of the solid phase, E = 5
+MPa. As rebound only occurred at one impact velocity, how the
+elastic properties of shear jammed drops are controlled by the
+impact conditions remains obscure. The use of superhydrophobic
+substrates promotes rebound, even in Newtonian liquid drops43.
+Further colloidal drop impact experiments on superhydrophobic
+surfaces could extend the parameter space where drops rebound,
+and thus provide the information essential to understand what
+controls the properties of this elastic state. Numerous other
+properties of the shear jammed solid are of interest: When and
+how would such a solid fracture? How broad is its linear elastic
+regime? How do these properties compare to those of static
+jammed solids?
+In conclusion, we conduct highly time-resolved drop impact
+experiments and systematically probe suspension ﬂow ranging
+from Newtonian-like to shear jamming. We show that the impact
+behaviour in the spreading regime can be quantitatively under-
+stood via an effective viscosity framework, and that the solidiﬁ-
+cation behaviours at high ϕ and u0 are direct consequences of
+shear jamming. The free-surface geometry in our system provides
+direct visual information on how the shear jamming transition
+occurs, both in parameter space and in time. Shear jamming
+occurs via a solidiﬁcation front, the speed of which is set by how
+far into the shear thickening regime the applied shear rate is.
+Furthermore, we see this transition occur via a localised solidi-
+ﬁcation regime that cannot be observed via bulk measurements.
+We believe that drop impact is a powerful experimental tool to
+investigate macroscopic properties of complex ﬂuids, and pro-
+vides
+information
+that
+compliments
+the
+data
+from
+bulk
+rheometry.
+Methods
+Colloidal sample preparation. We fabricated silica spheres in our lab using the
+Stöber23,24 synthesis method. The particle size was determined by the number of
+feeds: we performed 14 feeds after the initiation of the reaction, resulting in par-
+ticles with a diameter of 830 ± 20 nm. The reaction mixture was centrifuged and re-
+suspended in ethanol 3 times; the suspension was then gravity separated to
+improve monodispersity. The particles were then imaged on the Hitachi S4800
+Scanning Electron Microscope [Fig. 1a]. The particle size was characterized by
+measuring the diameter of a representative sample of 100 particles in ImageJ, and
+the polydispersity reported is the standard deviation in particle size.
+A concentrated stock suspension of the silica spheres was prepared in water
+(with no surfactant), and the weight fraction was measured by drying 100 μL of the
+stock suspension. The density of silica (2 g/cm3) was used to convert weight
+fractions into volume fractions. Dilutions were then performed to prepare samples
+of desired volume fractions. The uncertainty in volume fractions reported is 0.5%
+(0.005) or less, determined by repeated measurements. When not in use, all the
+sample tubes were sealed using Paraﬁlm and stored in a refrigerator to minimize
+evaporation and contamination.
+Experimental setup. We used Fisherbrand plain glass slides as the hydrophilic
+impact substrate. The slides were cleaned using a 2.5 M solution of NaOH in
+ethanol and water to remove organic impurities. A micropipette was used to form
+colloidal drops. The micropipette was mounted on a vertically moving pipette
+holder to vary impact velocities. We used 15 μL of ﬂuid to obtain drops of
+3.0 ± 0.1mm diameter. The setup was enclosed in a humidity chamber with the
+relative humidity maintained between 70–80% using a saturated solution of NaCl
+in water, and the humidity was monitored in real time during experiments. Before
+every trial of the impact experiments, a vortex mixer was used to re-disperse the
+sample, ensuring that it was consistently well-mixed. The experiment was repeated
+at least 5 times for each impact condition to ensure reproducibility.
+The impacting drops were backlit using a white LED light, and ﬁlmed using two
+high-speed cameras. The ﬁrst camera, a Phantom V2512, captured the side-view of
+the impacting drop at 100,000 frames per second. The second camera, a Phantom
+V640L, ﬁlmed at 20,000 fps. It was tilted at an angle of 15∘to gather information on
+how the impact affected the top surface of the drop. The spatial resolution of the
+data collected from both cameras was so that the size of a single pixel is
+approximately 40 μm × 40 μm.
+Rheological studies. Stress-controlled rheological measurements were performed
+on the colloidal samples over 0.09 ≤ϕ ≤0.50. The measurements were done on a
+TA Instruments Discovery HR-2 rheometer at room temperature (~21∘C) using the
+cone-plate geometry with 40 mm diameter and a 1∘cone angle. The truncation gap
+was 25 μm. We covered the edges of the samples with a microscope immersion oil
+to minimize evaporation. The samples were pre-sheared to remove effects of shear
+history.
+COMMUNICATIONS PHYSICS | https://doi.org/10.1038/s42005-022-00998-w
+ARTICLE
+COMMUNICATIONS PHYSICS | (2022) 5:222 | https://doi.org/10.1038/s42005-022-00998-w | www.nature.com/commsphys
+7
+
+===== PAGE 8 =====
+Data analysis. All high-speed videos were background-divided and analysed using
+ImageJ. The plots were made using python, and all errors reported are one stan-
+dard deviation calculated over at least 5 trials (corresponding to a 68% conﬁdence
+interval). To experimentally verify the impact velocities,the drop position in the
+high-speed videos was measured over the distance of at least 10 mm before impact.
+The impact velocity, u0, was obtained as the slope the least squares linear ﬁt of the
+position-time data. The maximum drop spread dmax was determined by locating
+the frame in the impact timeseries where the extent of the spreading drop was the
+greatest.
+The height of the tallest point on the drop relative to the substrate, h, was
+measured for each frame in the image sequence. The speed of the drop apex after
+impact, u*, was computed as the slope of the least-square ﬁt to the h vs. t data in
+the free-fall regime. The minimum height, hmin, was deﬁned as the drop height
+at the crossover point between the free-fall and plateau regimes in the h vs. t
+plot. The time of ﬁrst observation of hmin, measured since the impact event, was
+deﬁned as t*. The slope of the linearly decreasing regime in the h vs. t plot was
+deﬁned as u*. To calculate the coefﬁcient of restitution, the speed of the drop
+before impact u0, and the speed after rebound, uf were computed using several
+frames of the image sequence. The coefﬁcient of restitution was then computed
+as ϵ = uf/u0.
+To calculate the speed of the upward-moving front, the side-view impact videos
+recorded at 100,000 fps were used. For every frame of the image sequence, the
+pixel-wise difference between consecutive frames was taken in ImageJ, so that only
+the elements that changed between consecutive frames (corresponding to the
+location of the moving front) were highlighted [Video SI727]. This enabled us to
+locate the jamming front with a time uncertainty of 10 μs. The images were then
+adjusted for brightness and contrast to enhance the moving front. The vertical
+height hfront of the disturbance from the impact substrate was measured for each
+frame of the image sequence, until the front was no longer visible. For every high-
+speed video, the left and right half of the drop were separately analyzed to obtain
+two datasets for hfront(t). In order to convert hfront to the position along the drop
+surface, rθfront(t), we approximated the drop proﬁle as a circle of radius r = 1.5mm
+(disregarding the slight deviation from spherical shape during front propagation),
+and used the relation hfrontðtÞ ¼ rð1  cos θfrontðtÞÞ, such that θfront(0) = 0 at the
+impact point, to obtain the angle θfront(t). A line was then ﬁt to the rθfront vs. time
+plots, and the slope, averaged over the two halves of the drop and several movies
+for each impact condition [Fig. 6c], was reported as ufront with error bars indicating
+the standard deviation.
+Data availability
+The datasets generated during and/or analysed during the current study are available
+from the corresponding author on reasonable request. The SI videos can be found at this
+https://doi.org/10.6084/m9.ﬁgshare.19608918.v1.
+Received: 4 March 2022; Accepted: 23 August 2022;
+References
+1.
+Mewis, J. & Wagner, N. J.Colloidal suspension rheology (Cambridge University
+Press, 2012).
+2.
+Stickel, J. J. & Powell, R. L. Fluid mechanics and rheology of dense
+suspensions. Annu. Rev. Fluid Mechanics. 37, 129–149 (2005).
+3.
+Osswald, T. & Rudolph, N. Polymer rheology. Carl Hanser, München (2015).
+4.
+David, N. V., Gao, X.-L. & Zheng, J. Q.Ballistic Resistant Body Armor:
+Contemporary and Prospective Materials and Related Protection Mechanisms.
+Appl. Mechanics Rev. 62 050802(2009).
+5.
+Rus, D. & Tolley, M. T. Design, fabrication and control of soft robots. Nature
+521, 467–475 (2015).
+6.
+Josserand, C. & Thoroddsen, S. T. Drop impact on a solid surface. Annu. Rev.
+Fluid Mechanics. 48, 365–391 (2016).
+7.
+Philippi, J., Lagrée, P.-Y. & Antkowiak, A. Drop impact on a solid surface:
+short-time self-similarity. J. Fluid Mechanics. 795, 96–135 (2016).
+8.
+Laan, N., de Bruin, K. G., Bartolo, D., Josserand, C. & Bonn, D. Maximum
+diameter of impacting liquid droplets. Phys. Rev. Appl. 2, 044018 (2014).
+9.
+Lee, J. B. et al. Universal rescaling of drop impact on smooth and rough
+surfaces. J. Fluid Mechanics. 786, R4 (2016).
+10. Gordillo, L., Sun, T.-P. & Cheng, X. Dynamics of drop impact on solid
+surfaces: evolution of impact force and self-similar spreading. J. Fluid
+Mechanics. 840, 190–214 (2018).
+11. Cheng, X., Sun, T.-P. & Gordillo, L. Drop impact dynamics: Impact force and
+stress distributions. Annu. Rev. Fluid Mechanics. 54, 57–81 (2022).
+12. Bergeron, V., Bonn, D., Martin, J. Y. & Vovelle, L. Controlling droplet
+deposition with polymer additives. Nature 405, 772–775 (2000).
+13. Blackwell, B. C., Deetjen, M. E., Gaudio, J. E. & Ewoldt, R. H. Sticking and
+splashing in yield-stress ﬂuid drop impacts on coated surfaces. Phys. Fluids.
+27, 043101 (2015).
+14. Peters, I. R., Xu, Q. & Jaeger, H. M. Splashing onset in dense suspension
+droplets. Phys. Rev. Lett. 111, 028301 (2013).
+15. Thoraval, M.-J. et al. Nanoscopic interactions of colloidal particles can
+suppress millimetre drop splashing. Soft Matter. 17, 5116–5121 (2021).
+16. Boyer, F., Sandoval-Nava, E., Snoeijer, J. H., Dijksman, J. F. & Lohse, D. Drop
+impact of shear thickening liquids. Phys. Rev. Fluids. 1, 013901 (2016).
+17. Jørgensen, L., Forterre, Y. & Lhuissier, H. Deformation upon impact of a
+concentrated suspension drop. J. Fluid Mechanics. 896 (2020). https://www.
+cambridge.org/core/services/aop-cambridge-core/content/view/
+C05D1B4CDE53506DC85FD69E7A03397C/S0022112020003948a.pdf/
+deformation-upon-impact-of-a-concentrated-suspension-drop.pdf
+18. Bertola, V. & Haw, M. D. Impact of concentrated colloidal suspension drops
+on solid surfaces. Powder Technol. 270, 412–417 (2015).
+19. Kim, G., Kim, W., Lee, S. & Jeon, S. Impact dynamics of a polystyrene
+suspension droplet on nonwetting surfaces measured using a quartz crystal
+microresonator and a high-speed camera. Sensors Actuators B: Chem. 288,
+716–720 (2019).
+20. Brown, E. & Jaeger, H. M. Shear thickening in concentrated suspensions:
+phenomenology, mechanisms and relations to jamming. Reports Progress
+Phys. 77, 046602 (2014).
+21. Denn, M. M., Morris, J. F. & Bonn, D. Shear thickening in concentrated
+suspensions of smooth spheres in newtonian suspending ﬂuids. Soft Matter.
+14, 170–184 (2018).
+22. Morris, J. F. Shear thickening of concentrated suspensions: Recent
+developments and relation to other phenomena. Annu. Rev. Fluid Mechanics.
+52, 121–144 (2020).
+23. Stöber, W., Fink, A. & Bohn, E. Controlled growth of monodisperse silica
+spheres in the micron size range. J. Colloid Interface Sci. 26, 62–69 (1968).
+24. Zhang, L. et al. Hollow silica spheres: synthesis and mechanical properties.
+Langmuir 25, 2711–2717 (2009).
+25. Whitmer, J. K. & Luijten, E. Sedimentation of aggregating colloids. J. Chem.
+Phys. 134, 034510 (2011).
+26. Shajahan, T. & Breugem, W.-P. Inﬂuence of concentration on sedimentation
+of a dense suspension in a viscous ﬂuid. Flow, Turbulence Combustion. 105,
+537–554 (2020).
+27. Supplementary Material, https://ﬁgshare.com/articles/media/Colloidal_drop_
+impact_SI_videos/19608918.
+28. Bi, D., Zhang, J., Chakraborty, B. & Behringer, R. P. Jamming by shear. Nature
+480, 355–358 (2011).
+29. James, N. M., Xue, H., Goyal, M. & Jaeger, H. M. Controlling shear jamming
+in dense suspensions via the particle aspect ratio. Soft matter 15, 3649–3654
+(2019).
+30. Scheller, B. L. & Bousﬁeld, D. W. Newtonian drop impact with a solid surface.
+AIChE J. 41, 1357–1367 (1995).
+31. Lagubeau, G. et al. Spreading dynamics of drop impacts. J. Fluid Mechanics.
+713, 50–60 (2012).
+32. Mitchell, B. R., Klewicki, J. C., Korkolis, Y. P. & Kinsey, B. L. The transient
+force proﬁle of low-speed droplet impact: measurements and model. J. Fluid
+Mechanics. 867, 300–322 (2019).
+33. Landau, L. D., Lifshitz, E. M., Kosevich, A. M. & Pitaevskii, L. P. Theory of
+elasticity: volume 7, vol. 7 (Elsevier, 1986).
+34. Rathee, V., Blair, D. L. & Urbach, J. S. Localized stress ﬂuctuations drive shear
+thickening in dense suspensions. Proceedings of the National Academy of
+Sciences of the United States of America 114, 8740–8745 (2017).
+35. Rathee, V., Blair, D. L. & Urbach, J. S. Localized transient jamming in
+discontinuous shear thickening. J. Rheol. 64, 299–308 (2020).
+36. Rathee, V., Miller, J. M., Blair, D. L. & Urbach, J. S. Structure of propagating
+high stress fronts in a shear thickening suspension. arXiv preprint
+arXiv:2203.02482 (2022).
+37. Han, E., Peters, I. R. & Jaeger, H. M. High-speed ultrasound imaging in dense
+suspensions reveals impact-activated solidiﬁcation due to dynamic shear
+jamming. Nat. commun. 7, 1–8 (2016).
+38. Waitukaitis, S. R. & Jaeger, H. M. Impact-activated solidiﬁcation of dense
+suspensions via dynamic jamming fronts. Nature 487, 205–209 (2012).
+39. Peters, I. R., Majumdar, S. & Jaeger, H. M. Direct observation of dynamic
+shear jamming in dense suspensions. Nature 532, 214–217 (2016).
+40. Han, E., Wyart, M., Peters, I. R. & Jaeger, H. M. Shear fronts in shear-
+thickening suspensions. Phys. Rev. Fluids. 3, 073301 (2018).
+41. Rømcke, O., Peters, I. R. & Hearst, R. J. Getting jammed in all directions:
+Dynamic shear jamming around a cylinder towed through a dense suspension.
+Phys. Rev. Fluids. 6, 063301 (2021).
+42. Liu, A. J. & Nagel, S. R. The jamming transition and the marginally jammed
+solid. Annu. Rev. Conde. Matter Phys. 1, 347–369 (2010).
+43. Richard, D., Clanet, C. & Quéré, D. Contact time of a bouncing drop. Nature
+417, 811–811 (2002).
+ARTICLE
+COMMUNICATIONS PHYSICS | https://doi.org/10.1038/s42005-022-00998-w
+8
+COMMUNICATIONS PHYSICS | (2022) 5:222 | https://doi.org/10.1038/s42005-022-00998-w | www.nature.com/commsphys
+
+===== PAGE 9 =====
+Acknowledgements
+We thank Jeff Richards, Sid Nagel, and Xiang Cheng for useful discussions. This work
+was supported by the National Science Foundation under award number DMR-2004176.
+This work made use of the EPIC facility of Northwestern University’s NUANCE Center,
+which has received support from the SHyNE Resource (NSF ECCS-2025633), the IIN,
+and Northwestern’s MRSEC program (NSF DMR-1720139). We thank the Richards Lab
+at Northwestern University for the use of their rheometry facilities.
+Author contributions
+S.A. contributed to the conception of the work, experimental design, and data acquisition
+and analysis. P.S. contributed to data interpretation and analysis and drafted the
+manuscript. M.M.D. contributed to the conception of the work, data analysis and
+interpretation, and drafted the manuscript.
+Competing interests
+The authors declare no competing interests.
+Additional information
+Supplementary information The online version contains supplementary material
+available at https://doi.org/10.1038/s42005-022-00998-w.
+Correspondence and requests for materials should be addressed to Michelle M. Driscoll.
+Peer review information Communications Physics thanks Leonardo Gordillo and the
+other, anonymous, reviewer(s) for their contribution to the peer review of this work. Peer
+reviewer reports are available.
+Reprints and permission information is available at http://www.nature.com/reprints
+Publisher’s note Springer Nature remains neutral with regard to jurisdictional claims in
+published maps and institutional afﬁliations.
+Open Access This article is licensed under a Creative Commons
+Attribution 4.0 International License, which permits use, sharing,
+adaptation, distribution and reproduction in any medium or format, as long as you give
+appropriate credit to the original author(s) and the source, provide a link to the Creative
+Commons license, and indicate if changes were made. The images or other third party
+material in this article are included in the article’s Creative Commons license, unless
+indicated otherwise in a credit line to the material. If material is not included in the
+article’s Creative Commons license and your intended use is not permitted by statutory
+regulation or exceeds the permitted use, you will need to obtain permission directly from
+the copyright holder. To view a copy of this license, visit http://creativecommons.org/
+licenses/by/4.0/.
+© The Author(s) 2022
+COMMUNICATIONS PHYSICS | https://doi.org/10.1038/s42005-022-00998-w
+ARTICLE
+COMMUNICATIONS PHYSICS | (2022) 5:222 | https://doi.org/10.1038/s42005-022-00998-w | www.nature.com/commsphys
+9

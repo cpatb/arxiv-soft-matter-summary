@@ -1,0 +1,70 @@
+{
+  "IMG_0544": {
+    "n_frames": 70,
+    "polarisation_median": 0.5071667452709954,
+    "polarisation_iqr": [
+      0.39648415960969197,
+      0.636864746846974
+    ],
+    "rotation_median": 0.22732504270929133,
+    "rotation_iqr": [
+      0.11084578750466306,
+      0.40760886647547734
+    ],
+    "state": "swarm",
+    "pol_core_median": 0.5623044055882156,
+    "pol_rind_median": 0.4356722395227286,
+    "speed_core_over_rind": 0.9694702956963498
+  },
+  "IMG_0545": {
+    "n_frames": 69,
+    "polarisation_median": 0.6854466815210226,
+    "polarisation_iqr": [
+      0.5106266277458816,
+      0.7908103001493778
+    ],
+    "rotation_median": 0.0813495612366067,
+    "rotation_iqr": [
+      0.028248726027121075,
+      0.12963639325737017
+    ],
+    "state": "polarised",
+    "pol_core_median": 0.7069314534558201,
+    "pol_rind_median": 0.6256649186118337,
+    "speed_core_over_rind": 0.9635043770089582
+  },
+  "IMG_0546": {
+    "n_frames": 70,
+    "polarisation_median": 0.5007385903418697,
+    "polarisation_iqr": [
+      0.27110345155095056,
+      0.668834582439932
+    ],
+    "rotation_median": 0.4778755594543377,
+    "rotation_iqr": [
+      0.2486942039338662,
+      0.6240487810003996
+    ],
+    "state": "milling",
+    "pol_core_median": 0.5294454108414912,
+    "pol_rind_median": 0.4464185587178208,
+    "speed_core_over_rind": 0.9032216899233562
+  },
+  "IMG_0547": {
+    "n_frames": 67,
+    "polarisation_median": 0.7710015364325697,
+    "polarisation_iqr": [
+      0.5053866512910545,
+      0.8577788244484554
+    ],
+    "rotation_median": 0.0847139702790798,
+    "rotation_iqr": [
+      0.03561366248867774,
+      0.19161718095657243
+    ],
+    "state": "polarised",
+    "pol_core_median": 0.7811434081890603,
+    "pol_rind_median": 0.760737690070326,
+    "speed_core_over_rind": 1.0026381853380908
+  }
+}

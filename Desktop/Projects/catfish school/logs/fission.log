@@ -1,0 +1,15 @@
+IMG_0544: {'n_runs_raw': 10, 'n_episodes_real': 2, 'episode_kinds': {'fission_then_fusion': 2}, 'frac_frames_separated': 0.7197129590544533, 'episode_duration_s_median': 28.211516666666668, 'episode_duration_s_range': [1.4014, 55.021633333333334], 'fraction_ending_in_reunion': 1.0, 'largest_fraction_min_median': 0.6014693245953431, 'max_components': 3, 'solidity_median': 0.8695627072762379}
+IMG_0545: {'n_runs_raw': 18, 'n_episodes_real': 6, 'episode_kinds': {'fusion': 1, 'fission_then_fusion': 5}, 'frac_frames_separated': 0.05782105903834449, 'episode_duration_s_median': 0.33366666666666667, 'episode_duration_s_range': [0.16683333333333333, 0.6673333333333333], 'fraction_ending_in_reunion': 1.0, 'largest_fraction_min_median': 0.739138859833707, 'max_components': 4, 'solidity_median': 0.9015827793605572}
+IMG_0546: {'n_runs_raw': 1, 'n_episodes_real': 1, 'episode_kinds': {'fusion': 1}, 'frac_frames_separated': 0.2027363184079602, 'episode_duration_s_median': 5.438766666666667, 'episode_duration_s_range': [5.438766666666667, 5.438766666666667], 'fraction_ending_in_reunion': 1.0, 'largest_fraction_min_median': 0.5767389122003712, 'max_components': 3, 'solidity_median': 0.8942698002456075}
+IMG_0547: {'n_runs_raw': 3, 'n_episodes_real': 2, 'episode_kinds': {'fission_then_fusion': 2}, 'frac_frames_separated': 0.06209150326797386, 'episode_duration_s_median': 0.8842166666666667, 'episode_duration_s_range': [0.6339666666666667, 1.1344666666666667], 'fraction_ending_in_reunion': 1.0, 'largest_fraction_min_median': 0.6415445847751542, 'max_components': 5, 'solidity_median': 0.9431623554741746}
+
+necking test: {
+  "n_events": 9,
+  "solidity_baseline_median": 0.8195503090952712,
+  "solidity_at_split_median": 0.8072313880069569,
+  "median_drop": -0.014325563629294158,
+  "frac_events_with_drop": 0.3333333333333333,
+  "wilcoxon_p": 0.734375
+}
+
+wrote C:\Users\compl\Desktop\Projects\catfish school\results\fission_analysis.json

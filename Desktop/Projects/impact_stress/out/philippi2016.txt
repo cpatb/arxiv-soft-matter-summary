@@ -1,0 +1,2672 @@
+
+===== PAGE 1 =====
+J. Fluid Mech. (2016), vol. 795, pp. 96–135.
+c⃝Cambridge University Press 2016
+doi:10.1017/jfm.2016.142
+96
+Drop impact on a solid surface: short-time
+self-similarity
+Julien Philippi1, Pierre-Yves Lagrée1 and Arnaud Antkowiak1,†
+1Sorbonne Universités, UPMC Univ Paris 06, CNRS, UMR 7190 Institut Jean Le Rond d’Alembert,
+F-75005 Paris, France
+(Received 22 April 2015; revised 29 January 2016; accepted 16 February 2016;
+ﬁrst published online 13 April 2016)
+The early stages of drop impact onto a solid surface are considered. Detailed
+numerical simulations and detailed asymptotic analysis of the process reveal a
+self-similar structure both for the velocity ﬁeld and the pressure ﬁeld. The latter
+is shown to exhibit a maximum not near the impact point, but rather at the contact
+line. The motion of the contact line is furthermore shown to exhibit a ‘tank-treading’
+motion. These observations are apprehended with the help of a variant of Wagner
+theory for liquid impact. This framework offers a simple analogy where the ﬂuid
+motion within the impacting drop may be viewed as the ﬂow induced by a ﬂat
+rising expanding disk. The theoretical predictions are found to be in very close
+agreement both qualitatively and quantitatively with the numerical observations for
+approximately three decades in time. Interestingly, the inviscid self-similar impact
+pressure and velocities are shown to depend solely on the self-similar variables
+(r/√t, z/√t). The structure of the boundary layer developing along the wet substrate
+is investigated as well. It is found to be in ﬁrst approximation analogous to the
+boundary layer growing in the trail of a shockwave. Interestingly, the corresponding
+boundary layer structure only depends on the impact self-similar variables. This
+allows us to construct a seamless uniform analytical approximation encompassing
+both impact and viscous effects. The depiction of the different dynamical ﬁelds
+enables to quantitatively predict observables of interest, such as the evolution of the
+integral viscous shearing force and of the net normal force.
+Key words: boundary layer structure, drops
+1. Introduction
+The impact of a liquid drop onto a rigid surface results in a rapid sequence of
+events ending, in the inertial limit, in spreading (Eggers et al. 2010) or splashing
+(Stow & Hadﬁeld 1981), interface tearing (Villermaux & Bossa 2011) and ultimate
+fragmentation (Stow & Stainer 1977). A large number of studies have investigated
+the many facets of drop impact, with special attention to the description of its late
+stages (Rein 1993; Yarin & Weiss 1995). The literature on the early stages of impact
+is however scarce in comparison. Detailed experimental data depicting the instants
+following impact can nonetheless be found in the work of Rioboo, Marengo &
+† Email address for correspondence: arnaud.antkowiak@upmc.fr
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 2 =====
+Drop impact on a solid surface: short-time self-similarity
+97
+Tropea (2002), that evidenced a ‘kinematic phase’ where the drop merely resembles
+a truncated sphere and spreads as the square-root of time. This phase precedes the
+apparition of the liquid lamella.
+Probably one of the ﬁrst depictions of the very ﬁrst instants of drop impact dates
+back to Engel (1955). With the help of high-speed cinematography, Engel captured the
+chronology of events triggered by drop impact. He noted in particular the unvarying
+shape of the drop apex during the earliest moments of impact, which might be
+surprising due to the incompressible character of the liquid. Engel put forward the
+possible roles of inertia, viscosity or surface tension to explain this observation.
+Actually, the physical mechanism underpinning this behaviour is best illustrated with
+ﬁgure 1. There, the numerically computed pressure ﬁeld within an impacting drop is
+represented shortly after impact (details to follow in the paper). It is readily seen that
+the structure of the pressure ﬁeld is extremely concentrated near the contact zone, as
+in Hertz’ classic elastic contact problem. Conversely, the outer region is essentially
+pressureless. This strong inhomogeneity in the pressure distribution therefore explains
+why, in the absence of any pressure hindrance, the upper part of the drop freely falls
+even after impact while remaining undeformed.
+The pressure concentration in the early stages of impact was ﬁrst identiﬁed by
+Josserand & Zaleski (2003). From the key remark that the extent of the pressure
+concentration zone scales with the contact radius, these authors conjectured a
+self-similar structure for the pressure ﬁeld and evolution with time as 1/√t – an
+hypothesis conﬁrmed by numerical results. Though sufﬁcient to detect hints of
+self-similarity, numerical simulations were nonetheless unable to reveal the inner
+structure of the contact zone until recently, essentially because of the very large scale
+ratio between this zone and the drop size. The increase of computational performance,
+along with the development of adaptive numerical techniques for two-phase ﬂows
+(Popinet 2009), now allow us to unravel the intimate structure of the contact zone,
+see ﬁgures 1 and 2. These snapshots reveal a quite complex structure for the pressure,
+which counterintuitively exhibits sharp maxima near the contact line, and not on the
+axis as in steady stagnation point ﬂows. Interestingly, this structure is reminiscent
+of typical pressure ﬁeld structures observed in the water entry of solid objects, and
+evidenced by Wagner in the context of alighting seaplanes (Wagner 1932). In such
+problems a solid object impacts a ﬂat liquid surface at a given velocity. As suggested
+by Cointe (1989), drop impact may be viewed as water entry’s opposite, for here
+a liquid object impacts a rigid ﬂat surface at a given velocity (see ﬁgure 3). It is
+therefore likely that the analytical techniques developed since the thirties to describe
+with great precision the ﬂow generated with the impact of an object, and proven to
+be in close agreement with experimental data (Cointe & Armand 1987; Howison,
+Ockendon & Wilson 1991), could be transposed for the drop impact problem. And
+indeed, building upon the analogy between water entry and drop impact, Howison
+et al. (2005) proposed a theoretical investigation of inviscid two-dimensional drop
+impact on a thin ﬂuid layer and described the different regions and scalings of
+importance for the ﬂow dynamics. In particular, they reveal the radius of contact
+between the two liquids as a key length scaling of the problem, analogously to the
+problem of water entry where the wet length of the solid is also crucial (which is
+consistent with the observations of Josserand & Zaleski (2003)).
+The central motivation of the present study is to revisit the problem of a single
+spherical drop impacting a smooth ﬂat solid surface at early times at the light of
+Wagner’s theory of impact, understand the dynamic ﬁelds structure and elucidate
+the short-time self-similar behaviour discerned in earlier studies. To develop a
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 3 =====
+98
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+FIGURE 1. (Colour online) Close-ups of increasing magnitude on the pressure ﬁeld
+developing inside an impacting drop in the inertial limit. The pressure ﬁeld is extracted
+from Navier–Stokes Gerris computations of a drop impacting a solid surface at early times
+(note that the surrounding gas dynamics is computed as well, but not represented here).
+Noticeably the motion is essentially pressureless (and therefore corresponds to a free fall)
+except in a concentrated region in the contact zone. The successive close-ups of pressure
+ﬁeld structure in the contact region reveal a pressure peak near the contact line (the
+physical parameters are here Re = 5000, We = 250, tU/R = 4 × 10−4. The total size of the
+numerical axisymmetric domain is 2R × 2R, and the adaptive mesh has locally a mesh
+density corresponding to 32 768 × 32 768 grid points).
+consistent theory, the approach followed throughout the manuscript will be to confront
+and cross-test systematically the theoretical predictions with detailed and accurate
+numerical simulations performed with a Navier–Stokes multiphase ﬂow solver. As
+a side note, we attempt to make the paper self-contained whenever possible. In
+§ 2 we formulate the hypotheses and theoretical framework of the problem, and
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 4 =====
+Drop impact on a solid surface: short-time self-similarity
+99
+(a)
+(b)
+(c)
+FIGURE 2. (Colour online) Top: time sequence of the pressure ﬁeld developing inside
+an impacting drop (Navier–Stokes Gerris computation, ﬁxed spatial magniﬁcation). Bottom:
+Corresponding trace of the pressure exerted by the drop on the solid substrate. The
+physical parameters for this simulation are Re = 5000 and We = 250. The snapshots
+correspond respectively to times tU/R = 10−4, 10−3 and 10−2.
+R
+(a)
+(b)
+(c)
+U
+FIGURE 3. (Colour online) Sketch of the impacting drop before contact (a), and shortly
+after impact (b). The shape the drop would assume in absence of the wall is outlined with
+a dashed line, and the contact-line position is marked with red dots. This problem may
+be viewed as the dual of the classic water entry of a solid object (c).
+describe the short-time drop impact dynamics in the context of Wagner’s theory.
+We put forward in particular a so-called ‘Lamb analogy’ mirroring the ﬂow within
+the impacting drop with the one induced with a ﬂat rising expanding disk. In § 3
+we demonstrate that the Wagner ﬂow can be recast as a self-similar solution for
+the drop impact problem. The nature of the near-axis stagnation ﬂow and of the
+near-contact-line ﬂow and pressure maxima are also discussed. Numerical results
+obtained with Gerris (Navier–Stokes solver, volume of ﬂuid, adaptive mesh) taking
+into account surface tension, surrounding gas and viscous effects are compared with
+the theoretical prediction. The structure of the boundary layer is examined in § 4
+and is found to be reminiscent of the viscous boundary layer leaved in the trail of
+a shockwave (Mirels analogy). The inviscid Wagner ﬂow and this viscous boundary
+layer approximation are found to depend on the same self-similar variable. This
+allows us to build a uniform, seamless approximation encompassing both impact and
+viscous effects. We conclude in § 5 by discussing the obtained results and the limits
+of the present investigation (such as the role of air) and recount the observables of
+interest, such as the net impacting force of the total viscous shearing force exerted
+by an impacting drop.
+2. Model
+2.1. Theoretical framework & hypotheses
+We consider throughout this study an idealized drop impact where a perfectly spherical
+liquid drop collides with a ﬂat rigid surface. Though classic, this model situation
+relies on a number of physical hypotheses detailed in the following. Starting with
+the initial perfect spherical shape assumption, we may identify several typical causes
+for deviations from sphericity such as capillary drop oscillations during free fall
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 5 =====
+100
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+(Engel 1955; Thoroddsen et al. 2005) or ﬂowing air shaping (Pruppacher & Beard
+1970). Such effects will be disregarded in the following even though they merely
+result in a local curvature radius modiﬁcation in the contact region and hence could
+easily be incorporated in the discussion. The impact ﬂow evolution will be considered
+incompressible. However, the question of the role of compressible effects within the
+liquid should not be eluded when considering impact phenomena. A large body of
+literature has been devoted to acoustic effects within (typically fast) impacting drops.
+Typically, such effects are considered to play a signiﬁcant role over length scales
+of order UR/c during time scales of order UR/c2, where U stands for the impact
+velocity, R for the drop radius and c for the celerity of compressive sound waves
+in the liquid ((U/c)2 ≪(Ut/R) ≪1). Considering a millimetric drop impacting at a
+velocity of the order of 10 m s−1 representative of e.g. a raindrop falling at terminal
+velocity, we estimate that acoustic effects matter only in a micron-sized region over
+a few nanoseconds (see Weiss & Yarin (1999), for a discussion and references). The
+following discussion will therefore be limited to those cases where the impact velocity
+is much lower than the speed of sound, as the falling raindrop, where acoustic effects
+can harmlessly be neglected and an incompressible description remains accurate. The
+high pressure and stresses generated upon impact can result in marked erosion or
+yielding (Rein 1993). Furthermore substrate deformation has recently been shown to
+signiﬁcantly alter drop impact in the limit of very soft (Mangili et al. 2012) or very
+ﬂexible substrates (Antkowiak et al. 2011). None of these effects will be considered
+in the following, yet an estimation of the net force exerted by the impacting drop
+on the underlying substrate will be provided in § 3. Another phenomenon potentially
+responsible for the cushioning of the impact is the thin air layer between the drop and
+the substrate just before impact. Due to lubrication effects, this air layer pressurizes
+and dimples the drop, eventually yielding a tiny entrapped gas bubble in the drop
+(Thoroddsen et al. 2005). This phenomenon along with other roles of surrounding
+gas in impact dynamics will be disregarded in the forthcoming analysis (except where
+explicitly speciﬁed, the starting state for each of the simulations is a drop already
+touching the ground – see appendix A for details) and discussed in the last section.
+Finally the core hypothesis of the present study is the inertia-dominated character
+of impact. In particular, we assume that gravity, capillary and viscous effects are
+small with respect to inertial ones, i.e. Froude Fr = U2/gR, Weber We = ρU2R/σ
+and Reynolds Re = ρUR/µ numbers are all large with respect to unity. Here g
+denotes the gravity, σ the liquid–gas surface tension, ρ the liquid density and µ its
+viscosity. These assumptions underpin the choice a purely inertial description free
+of these effects in the following. However, locally, these phenomena might become
+more important or even dominant, examples being viscosity near the boundaries
+or capillarity in high-curvature regions. In § 4 we will address viscous effects and
+develop a boundary layer correction to the inviscid solution, and capillary effects will
+eventually be discussed in § 5.
+2.2. Governing equations and analogy with the water entry problem
+2.2.1. Problem statement
+We consider a perfectly spherical liquid drop of radius R and density ρ impacting
+normally a ﬂat rigid ground with velocity U, see ﬁgure 3. Neglecting for now
+the development of viscous rotational boundary layers, we assume that the ﬂuid
+motion following impact is irrotational, axisymmetric and can be described with
+the scalar potential φ(r, z), i.e. the ﬂuid velocity u(r, z) satisﬁes u(r, z) = ∇φ(r, z).
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 6 =====
+Drop impact on a solid surface: short-time self-similarity
+101
+Incompressibility requires φ to be a harmonic potential satisfying Laplace’s equation,
+here written in cylindrical coordinates:
+1
+r
+∂
+∂r
+
+r∂φ
+∂r
+
++ ∂2φ
+∂z2 = 0.
+(2.1)
+The liquid dynamics obeys the unsteady form of Bernoulli’s conservation equation:
+∂φ
+∂t + 1
+2|∇φ|2 + p
+ρ = const.
+(2.2)
+This set of equations is completed by appropriate boundary equations. At the wall
+z = 0, the condition of impermeability reads
+∂φ
+∂z = 0
+for 0 ⩽r ⩽d(t),
+(2.3)
+where d(t) stands for the contact-line position, an unknown of the problem. The
+position of the free surface is tracked with the kinematic condition:
+dS
+dt = 0,
+(2.4)
+where S(r, z, t) is a function vanishing on the free surface. Expressing normal stress
+continuity at this interface yields the following dynamic boundary condition:
+p = 0
+at the free surface.
+(2.5)
+Note that atmospheric pressure as here been taken as the reference pressure.
+Anticipating the forthcoming analysis of the contact region, we further note that the
+free fall behaviour outside the contact region can be recast into the following far-ﬁeld
+condition:
+φ →−Uz
+far from the contact region.
+(2.6)
+This condition allows us to identify the constant in (2.2) as U2/2.
+Now non-dimensionalising the problem using the inertial scales R, ρ and U, we
+introduce the following quantities:
+r = R¯r,
+z = R¯z,
+t = R
+U¯t,
+φ = UR ¯φ,
+p = ρU2¯p,
+(2.7a−e)
+and rewrite the equations into their dimensionless counterparts:
+1
+¯r
+∂
+∂¯r
+
+¯r∂¯φ
+∂¯r
+
++ ∂2 ¯φ
+∂¯z2 = 0
+in the liquid,
+(2.8)
+∂¯φ
+∂¯t + 1
+2| ¯∇¯φ|2 + ¯p = 1
+2
+in the liquid,
+(2.9)
+∂¯φ
+∂¯z (¯r, ¯z = 0, ¯t) = 0
+over the wet area ¯r < ¯d(¯t),
+(2.10)
+¯p = 0
+on the free surface,
+(2.11)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 7 =====
+102
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+(a)
+(c)
+(e)
+(b)
+(d)
+( f )
+FIGURE 4. (Colour online) Flow in an impacting drop in the ﬁxed frame and in the drop
+frame computed with Gerris. (a,c,e): Streamlines and pressure map within an impacting
+drop for Re = 5000 and We = 250 in the laboratory frame at different post-impact times
+(¯t = 5 × 10−4, 5 × 10−3 and 10−2). The overall velocity ﬁeld resembles a stagnation
+point ﬂow in a near-wall region whose extent is scaling with the wet area, and a
+uniform downwards ﬂow outside. (b,d,f): Same velocity ﬁeld in a reference frame moving
+with the drop initial velocity, evidencing a bypass motion near the contact line and an
+overacceleration of the free surface towards the wall.
+d ¯S
+d¯t = 0
+on the free surface.
+(2.12)
+Finally the non-dimensional far-ﬁeld condition reads:
+¯φ = −¯z
+far from the contact region.
+(2.13)
+As posed, the problem entirely depends on the wet area extent ¯d(¯t), whose dynamics
+has still to be determined. In the following, we investigate the near-contact-line ﬂow
+to clarify this wetting dynamics.
+2.2.2. Contact-line motion: numerical observations
+To shed light on the contact-line dynamics, detailed numerical simulations of
+impacting drops were carried out with Gerris (see appendix A). Figure 4 represents
+typical streamlines extracted from the simulations, shortly after impact. On the left
+panel it can be seen that the motion within the impacting drop far from the contact
+zone is vertical, uniform and pointing downwards, corresponding merely to the
+free-ﬂight behaviour −Uez. Near the wall however, the ﬂow is deﬂected and exhibits
+a stagnation point-like structure, in a region whose extent scales with the wet area.
+To investigate further the nature of this corrective ﬂow, we represent on the right
+panel of ﬁgure 4 the streamlines in a reference frame moving with the initial velocity
+of the drop. There it appears that the ﬂow winds around the contact line, revealing
+that (i) the liquid near the contact line falls faster than free ﬂight and (ii) rather than
+being pushed by a sweeping motion, the contact line progresses via a tank-treading
+movement, analogous to the rolling motion evidenced in previous studies of advancing
+contact lines (Dussan & Davis 1974; Chen, Ramé & Garoff 1997; Reznik & Yarin
+2002).
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 8 =====
+Drop impact on a solid surface: short-time self-similarity
+103
+(a)
+(b)
+FIGURE 5. (Colour online) Advancing contact line shortly after impact. In the earliest
+moments following impact, the motion of the free surface near the contact zone is
+essentially directed downwards. The sketches show the position of the contact line for two
+successive instants, and illustrate the fact that the horizontal extension of the wet area is
+governed by the vertical movement of the interface.
+These observations therefore suggest that the kinematics of horizontal extension
+for the wet radius is controlled by the vertical motion of the free surface. Figure 5
+illustrates this process, and indicates that the law of motion of the contact line d(t)
+can be obtained from the knowledge of velocity ﬁeld at the free surface. Such a
+kinematic condition expressing the contact between a liquid surface and a solid
+object has actually been used in the context of the water entry of solid objects for
+approximately 80 years, and is currently referred to as the Wagner condition. In the
+following we depict the analogies between these two liquid impact problems, and use
+them to derive a simple ﬂuid mechanical model for the drop impact.
+2.2.3. Analogy with the water entry problem
+The modern understanding of the liquid motion and forces generated by an
+impacting object in water originates in the pioneering work of Wagner in the early
+thirties (Wagner 1932). The primary motivation of Wagner was to provide a detailed
+characterization of the impulsive forces generated with impact – already known to
+be of sufﬁcient amplitude to induce bouncing (ricochet), and even possibly structural
+failure of alighting seaplanes or slammed ships (Nethercote, Mackay & Menon 1986).
+The foremost issue in this problem evidently stems from its highly unsteady and
+nonlinear nature. The central idea of Wagner was to model the ﬂow induced by the
+impact of a ﬂoat or a keel by the one induced by a ﬂat ‘plate’, propelling the ﬂuid
+particles downwards at the ﬂoat or keel velocity, and having an extent growing with
+time as the waterline length. The corresponding ﬂow (‘gleiche Tragﬂügelbewegung’ –
+equivalent aerofoil motion) is typically found to wind around the plate and therefore
+to promote jetting or splashing. The knowledge of this ﬂow ﬁeld then allows Wagner
+to determine the motion of the free surface, and ﬁnally provides the needed condition
+in the determination of the wet length d(t).
+Analogously, for the drop impact problem, our numerical simulations evidence
+similar ﬂow features and winding motion. These observations advocate for the use
+of a water entry analogue description, where the ﬂow induced by drop impact would
+correspond to the one induced by a ﬂat expanding disk in normal incidence, which
+extent is given by the wet area (see ﬁgure 6). Following this vision of drop impact as
+a dual version of the water entry problem, we adopt from now on the corresponding
+formalism to describe the ﬂuid mechanics of impact.
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 9 =====
+104
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+FIGURE 6. (Colour online) In the reference frame of the falling drop, the ﬂow induced
+by impact may be seen as the one induced by a ﬂat rising disk (Lamb disk analogy). The
+winding motion is here represented with orange arrows, and the radial expansion of the
+disk with the wet area is indicated with purple arrows. The motion of the disk itself is
+given by the red arrow.
+FIGURE 7. (Colour online) Scalings in the contact zone. At the earliest times only a very
+small portion (of order ε) of the drop touches the wall. The ﬂuid sets into motion with
+impact is in a region of extent ε in every direction. The air wedge conﬁned between
+the wall and the drop presents an angle of order ε as well. The colour map illustrates
+the pressure distribution. The physical parameters for this simulation are Re = 5000 and
+We = 250. This snapshot corresponds to a non-dimensional time ¯t = 10−3. The position of
+the contact line is here ¯d = 1.73 × 10−3/2.
+2.3. Leading-order description for the drop impact problem
+Interested in the early time behaviour of the impact-induced ﬂow, we set out
+by examining time-dependent solutions of system (2.8)–(2.12) in the vicinity of
+the contact zone. To this end, we introduce ε as a measure of the wet region:
+d(t)/R = O(ε) (see ﬁgure 7). This ε is the fundamental small parameter of our
+problem.
+As typical in two-phase phenomena, the length scales for the dynamical ﬁelds and
+for the geometry of the free surface differ in this problem. Starting by considering the
+space variables ¯r and ¯z on which depend the dynamical ﬁelds (such as the velocity
+potential φ or the pressure p), we introduce the following rescaling: ¯r = εr˜r and ¯z =
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 10 =====
+Drop impact on a solid surface: short-time self-similarity
+105
+εz˜z, where ˜r and ˜z are O(1) quantities and εr and εz are gauge functions. From the
+structure of the Laplace operator, we expect the dynamical ﬁelds to display identical
+length scales in each direction, so that εr = εz = ε.
+Insights into the relevant length scales for the description of the free surface
+geometry can be gained by decomposing the position of the surface into that of a
+translating sphere ¯zS(¯r, ¯t) plus a surface disturbance ¯h(¯r, ¯t) (see ﬁgure 3b). Assuming
+the drop falls with constant velocity, the shape of the unperturbed translating sphere
+obeys ¯r2 + (¯zS −(1 −¯t))2 = 1. Sufﬁciently close to the contact area, we introduce
+gauge functions for the vertical position of the moving sphere ¯zS and the time ¯t:
+εzs˜zs = ε2˜r2/2 −εt˜t. The equation for the sphere surface can be approximated by
+εzS˜zS = (ε2˜r2 −εt˜t)/2. As previously, the determination of these scaling functions
+is obtained by dominant balance arguments: εzS = εt = ε2. Note that at short times
+the intersection radius between the sphere and the impacting plane is given by
+˜rintersect =
+√
+2˜t.
+We remark that as in the original study of Wagner, a scale separation between
+¯zS and ¯z exists (small deadrise angle hypothesis, see e.g. Oliver 2002). This scale
+separation arises because the drop typical radius of curvature (O(1)) is very large in
+comparison with the other length scales of the problem, see ﬁgure 7.
+We now turn to the surface perturbation ¯h(¯r, ¯t), that embodies the impact-induced
+ﬂow. Recalling that ¯h represents a perturbation around a falling sphere, we can express
+the position of the free surface with the following implicit equation: ¯S(¯r, ¯z, ¯t) = ¯z −
+(¯zS −¯h(¯r,¯t)). Introducing an appropriate gauge function εh such that ¯h = εh˜h we obtain
+by dominant balance analysis that εh = ε2. It follows that:
+˜S(˜r, ˜z, ˜t) = ˜z −1
+2 ˜r2 + ˜t + ˜h(˜r, ˜t)
+= 0
+on the free surface.
+(2.14)
+The kinematic boundary condition derives from the previous equation. At the free
+surface, we have:
+d ¯S
+d¯t = 1 + ∂˜h
+∂˜t
+|{z}
+O(1)
+−εφ˜r∂˜φ
+∂˜r
+| {z }
+O(εφ)
++ εφ
+∂˜h
+∂˜r
+∂˜φ
+∂˜r
+|
+{z
+}
+O(εφ)
++ εφ
+ε
+∂˜φ
+∂˜z
+| {z }
+O(εφ/ε)
+= 0,
+(2.15)
+where
+¯φ = εφ ˜φ. It is impossible here to keep all terms at the same order; the
+dominant balance between the vertical velocities ∂˜h/∂˜t and ∂˜φ/∂˜z implies that εφ = ε.
+At leading order, the kinematic boundary condition is therefore reduced to:
+1 + ∂˜φ
+∂˜z + ∂˜h
+∂˜t = 0
+on the free surface.
+(2.16)
+It proves convenient to introduce a translation of the velocity potential such that ˜φ =
+−˜z + ˇφ. This translation merely allows us to analyse the problem in the falling-drop
+reference frame. The kinematic boundary condition is then simply rewritten as:
+∂˜h
+∂˜t = −∂ˇφ
+∂˜z
+on the free surface.
+(2.17)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 11 =====
+106
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+¯r = ε˜r
+¯z = ε˜z
+¯t = ε2˜t
+¯p = ε−1˜p
+¯φ = ε ˜φ
+(¯u, ¯v) = (˜u, ˜v).
+TABLE 1. Résumé of the most important asymptotic scales of the problem.
+Inserting these different scaled variables into Bernoulli’s equation, we obtain:
+εp˜p + 1
+ε
+∂ˇφ
+∂˜t + 1
+2
+
+
+ 
+∂ˇφ
+∂˜r
+!2
++
+ 
+−1 + ∂ˇφ
+∂˜z
+!2
+= 1
+2
+in the liquid,
+(2.18)
+where ¯p = εp˜p. The scale of the pressure, εp = 1/ε, is here seen to be as large as
+the contact zone is small – as expected in an impact problem. At leading order,
+Bernoulli’s equation is therefore reduced to:
+˜p = −∂ˇφ
+∂˜t
+in the liquid.
+(2.19)
+It follows from this equation that the constant pressure Dirichlet boundary condition
+at the free surface p = 0 can be recast as a condition for the potential at the free
+surface: φ = const., where the constant is arbitrary. Without loss of generality, we set
+from now on this constant to zero.
+Finally, as is classic in water wave theory, we exploit the shallowness of the gap
+between the free surface and the plane to transfer the boundary condition at the free
+surface onto the plane (see e.g. Van Dyke 1975, § 3.8).
+Summarizing, using table 1 scalings, the near-ﬁeld model problem takes the
+following expression:
+1
+˜r
+∂
+∂˜r
+ 
+˜r∂ˇφ
+∂˜r
+!
++ ∂2 ˇφ
+∂˜z2 = 0
+in the liquid,
+(2.20)
+−∂ˇφ
+∂˜t = ˜p
+in the liquid,
+(2.21)
+the locus ˜d(˜t) of the contact line is determined with the Wagner condition:
+˜h(˜r, ˜t) = 1
+2 ˜r2 −˜t
+for ˜r = ˜d(˜t),
+(2.22)
+so that the boundary conditions at ˜z = 0 read:
+ˇφ = 0
+for ˜r > ˜d(t),
+(2.23)
+∂˜h
+∂˜t = −∂ˇφ
+∂˜z
+for ˜r > ˜d(t),
+(2.24)
+∂ˇφ
+∂˜z = 1
+for ˜r < ˜d(˜t),
+(2.25)
+and the far-ﬁeld behaviour is given by:
+ˇφ →0
+as ˜r, ˜z →∞
+(2.26)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 12 =====
+Drop impact on a solid surface: short-time self-similarity
+107
+FIGURE 8. (Colour online) Leading-order outer problem for times of order ε2.
+˜h →0
+as ˜r →∞.
+(2.27)
+Finally, the corresponding model geometry is sketched ﬁgure 8. We remark that the
+previous set of equations resembles that of the classic water entry problem, and can
+be solved using the methodology described in e.g. Oliver (2002). In the next section
+however, we will present an alternative method based on self-similar solutions.
+3. Self-similar solutions and numerical simulations
+3.1. A self-similar problem
+To reveal the self-similar nature of our problem, we classically seek scale invariance
+in the following (Darrozès & François 1982). We start by expressing the fact that
+any variable ˜q in (˜r, ˜z, ˜t, ˇφ, ˜h, ˜d, ˜p) can be rewritten as ˜q = λqˆq, where ˆq is a rescaled
+variable and λq a numerical stretching coefﬁcient embodying the change of scale.
+Inserting these variables into the governing equations, it is straightforward to see
+that invariance of Laplace equation through this stretching requires λr = λz. Similarly,
+expressing the invariance of Wagner condition yields λh = λt, λr = √λt and λd = √λt.
+The same operation performed on the additional boundary conditions ﬁnally imposes
+λφ = √λt and λp = 1/√λt. Note that λt remains here as the sole stretching parameter.
+The pressure ﬁeld can be written as an implicit function of time and space as
+follows: F(˜p, ˜r, ˜z, ˜t) = 0. Upon using the previous scale invariance arguments, this
+relation may be rewritten as F(ˆp/√λt, √λtˆr, √λtˆz, λtˆt) = 0. A simple algebraic
+manipulation allows us to remove the λt dependence for all but one variable, so that
+ﬁnally G(
+√
+ˆtˆp, ˆr/
+√
+ˆt, ˆz/
+√
+ˆt, λtˆt) = 0, for any λt. Remarking that for a given ˆt, this
+function has to cancel whatever the choice of the scale λt, it readily appears that the
+last variable is superﬂuous. In other words, a relation linking
+√
+ˆtˆp to ˆr/
+√
+ˆt and ˆz/
+√
+ˆt
+only must exist.
+The pressure ﬁeld may therefore be rewritten explicitly as:
+˜p = 1
+√
+˜t
+P
+ ˜r√
+˜t
+, ˜z√
+˜t
+
+.
+(3.1)
+With a similar reasoning, and upon introducing the self-similar variables ξ = ˜r/
+√
+˜t and
+η = ˜z/
+√
+˜t, we readily obtain:
+ˇφ(˜r, ˜z, ˜t) =
+p
+˜tΦ(ξ, η),
+˜h(˜r, ˜t) = ˜tH(ξ)
+and
+˜d(˜x, ˜t) =
+p
+˜tδ,
+(3.2a−c)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 13 =====
+108
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+where Φ and H are unknown functions of the self-similar variables and δ a constant
+representing the (ﬁxed) position of the contact line in self-similar space. This allows
+us to formulate the self-similar version of the drop impact problem:
+1
+ξ
+∂
+∂ξ
+
+ξ ∂Φ
+∂ξ
+
++ ∂2Φ
+∂η2 = 0
+in the liquid,
+(3.3)
+P(ξ, η) = 1
+2
+
+−Φ(ξ, η) + ξ ∂Φ
+∂ξ + η∂Φ
+∂η
+
+in the liquid,
+(3.4)
+the boundary conditions at η = 0 take the following form:
+H −1
+2ξ ∂H
+∂ξ = −∂Φ
+∂η
+for ξ > δ,
+(3.5)
+∂Φ
+∂η = 1
+for ξ < δ,
+(3.6)
+Φ = 0
+for ξ > δ,
+(3.7)
+the far-ﬁeld behaviour is:
+Φ →0
+as ξ, η →∞
+(3.8)
+H →0
+as ξ →∞,
+(3.9)
+and the self-similar version of Wagner condition is ﬁnally given by:
+H(ξ) = 1
+2ξ 2 −1
+for ξ = δ.
+(3.10)
+This problem can now be solved in several steps.
+3.2. Self-similar potential
+In this geometry, the Laplace equation can be solved with variable separation, leading
+to a family of elementary cylindrical harmonic solutions with an exponential behaviour
+in η and an oscillatory one in ξ. We recompose by summation and obtain:
+Φ(ξ, η) =
+Z ∞
+0
+C(k)J0(kξ)e−kη dk.
+(3.11)
+The weight function C(k) is determined with boundary conditions (3.6) and (3.7),
+leading to the following pair of dual integral equations:
+Z ∞
+0
+kC(k)J0(kξ) dk = −1
+for ξ < δ,
+(3.12a)
+Z ∞
+0
+C(k)J0(kξ) dk = 0
+for ξ > δ.
+(3.12b)
+Solving these dual integral equations using the technique described in Sneddon (1960),
+we obtain a closed-form expression for the weight function:
+C(k) = 2
+π
+δk cos(kδ) −sin(kδ)
+k2
+= 2
+π
+d
+dk
+sin(kδ)
+k
+
+.
+(3.13)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 14 =====
+Drop impact on a solid surface: short-time self-similarity
+109
+Anticipating the description of the contact-line dynamics, we now derive ∂Φ/∂η at
+the substrate level η = 0:
+∂Φ
+∂η = −2
+π
+Z ∞
+0
+kδ cos(kδ) −sin(kδ)
+k2
+J0(kξ)k dk,
+(3.14)
+where we recognize the sum of two Hankel transforms (see e.g. Sneddon 1995,
+table IV, p. 528). This allows us to obtain the following explicit expression for
+∂Φ/∂η for η = 0:
+∂Φ
+∂η =
+
+
+
+
+
+1
+for ξ < δ
+−2
+π
+ 
+δ
+p
+ξ 2 −δ2 −arcsin
+δ
+ξ
+!
+for ξ > δ.
+(3.15)
+This result was originally obtained by Schmieden (1953) in the water entry framework.
+3.3. Wagner condition and contact-line dynamics
+With the help of the vertical velocity expression in the near-wall region just derived,
+we can rewrite the kinematic boundary condition (3.5) as:
+H(ξ) −1
+2ξ ∂H
+∂ξ (ξ) = 2
+π
+ 
+δ
+p
+ξ 2 −δ2 −arcsin
+δ
+ξ
+!
+for ξ > δ.
+(3.16)
+This inhomogeneous differential equation can be solved using variation of parameters,
+i.e. looking for a solution of the form H(ξ) = ξ 2f(ξ). This gives:
+[ f(ξ)]+∞
+δ
+= −2
+π
+Z ∞
+δ
+2
+ξ 3
+ 
+δ
+p
+ξ 2 −δ2 −arcsin
+δ
+ξ
+!
+dξ.
+(3.17)
+Upon using the far-ﬁeld decaying behaviour of H (see (3.9)), this last equation
+reduces to f(δ) = δ−2/2 so that at the contact line the drop deformation is:
+H(δ) = δ2f(δ) = 1
+2.
+(3.18)
+In the self-similar space, the Wagner condition therefore takes the following
+remarkably simple form:
+1
+2 = 1
+2δ2 −1,
+(3.19)
+from which we ﬁnally derive the position of the contact line:
+δ =
+√
+3.
+(3.20)
+We note that this result was found in a non-self-similar setting in the recent
+paper of Riboux & Gordillo (2014), which also presents experimental data in
+excellent agreement with this theoretical prediction. It is interesting to remark that the
+contact-line motion ˜d(˜t) =
+√
+3˜t just predicted within the framework of Wagner theory
+is quite close to the rough truncated sphere approximation ˜rintersect =
+√
+2˜t (Rioboo
+et al. 2002). Indeed ﬁgure 9 reports early post-impact successive positions of the
+contact line extracted from numerical simulations performed with Gerris along with
+our theoretical prediction. Noticeably the superposition between theory and numerical
+results is excellent, at least until the moment of formation of a liquid corolla (here
+indicated with a red dot).
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 15 =====
+110
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+1
+0.1
+0.01
+0.001
+0.01
+0.05
+FIGURE 9. (Colour online) Comparison between the theoretical position of the contact
+line as a function of time deduced from Wagner theory ˜d(˜t) =
+√
+3˜t (dashed line) and the
+position of the contact line extracted from Gerris computations of an impacting drop at
+Re = 5000 and We = 250 (grey dots). The red dot marks the birth of the corolla.
+3.4. Analogy with the normal motion of an expanding disk in an inﬁnite mass of
+liquid
+In § 2.2.3 we proposed to visualize the ﬂow in an impacting drop as analogous to
+the one induced by a ﬂat rising disk expanding radially as the wet area (see also
+ﬁgure 6). We are now in a position to formally justify this water entry analogy. The
+axisymmetric ﬂow induced by ‘the motion of a thin circular disk with velocity U
+normal to its plane, in a inﬁnite mass of liquid’ is for example analysed in Lamb’s
+classic textbook § 101 (Lamb 1932). After deriving some elementary axisymmetric
+solutions of the Laplace equation of the form exp(±kz)J0(kr) in § 100, Lamb
+examined a variety of axisymmetric potential ﬂows. Among these was the one
+(later connected to the ﬂow around a ﬂat circular disk in normal incidence) where
+at the symmetry plane z = 0 the potential takes the value φ = C
+√
+a2 −r2 for r < a
+and φ = 0 for r > a, with a the disk radius. The solution for this problem was stated
+under the following integral representation:
+φ(r, z) = −C
+Z ∞
+0
+e−kzJ0(kr) d
+dk
+sin ka
+k
+
+dk.
+(3.21)
+And from ‘a known theorem in Electrostatics’, Lamb obtained the expression for the
+vertical velocity in the symmetry plane:
+−
+∂φ
+∂z
+
+z=0
+=
+
+
+
+
+
+
+
+1
+2πC
+for r < a,
+C
+
+arcsin
+a
+r
+
+−
+a
+√
+r2 −a2
+
+for r > a.
+(3.22)
+This corresponds precisely to the ﬂow within the impacting drop, after posing C =
+−2/π and a = δ, thereby justifying formally our initial analogy between the impact-
+induced ﬂow with the one associated with a ﬂat rising disk rapidly expanding with the
+wet area. Setting C = 2U/π, Lamb remarked that the above potential indeed describes
+the ﬂow winding around a ﬂat disk moving at velocity U. He further noted that a
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 16 =====
+Drop impact on a solid surface: short-time self-similarity
+111
+simple expression for the ﬂuid half-space kinetic energy could be derived from the
+previous relation:
+Tdisk = 4
+3ρa3U2.
+(3.23)
+This expression can immediately be transposed into the (non-dimensional) kinetic
+energy of the impact-induced ﬂow within the drop:
+˜T = 4
+√
+3˜t3/2,
+(3.24)
+or, equivalently, into its dimensioned counterpart:
+T = 4
+√
+3ρU7/2R3/2t3/2.
+(3.25)
+We emphasize that this expression is derived within the frame of the falling drop
+and, as such, represents the kinetic energy of the defect ﬂow associated with impact.
+Although a direct physical interpretation of this quantity is not straightforward, we will
+see in § 3.7 that the knowledge of this defect kinetic energy will allow for a direct
+determination of the impacting force.
+3.5. Structure of the velocity ﬁeld
+We now investigate the structure of the velocity ﬁeld in the contact region and search
+for exact closed-form expressions and convenient approximations for this ﬁeld.
+3.5.1. Integral representation of the velocity ﬁeld
+In the ﬁxed frame, the velocity ﬁeld ˜u(˜r, ˜z, ˜t) inside the impacting drop can
+formally be derived from the (untranslated) potential −η +Φ. Following the arguments
+developed in § 3.1, this velocity ﬁeld is simply related to the self-similar velocity
+ﬁeld U(ξ, η) via the relation:
+˜u(˜r, ˜z, ˜t) = U(ξ, η),
+(3.26)
+where the components of the self-similar vector ﬁeld U = (Uξ, Uη) are:
+Uξ(ξ, η) = ∂Φ
+∂ξ ,
+(3.27a)
+Uη(ξ, η) = −1 + ∂Φ
+∂η .
+(3.27b)
+Inserting the expression for the self-similar potential determined previously yields the
+following integral representation for the vector ﬁeld components:
+Uξ(ξ, η) = −2
+π
+Z ∞
+0
+√
+3k cos(
+√
+3k) −sin(
+√
+3k)
+k
+e−kηJ1(kξ) dk,
+(3.28a)
+Uη(ξ, η) = −1 −2
+π
+Z ∞
+0
+√
+3k cos(
+√
+3k) −sin(
+√
+3k)
+k
+e−kηJ0(kξ) dk.
+(3.28b)
+A closed-form expression is unfortunately not accessible in the general case. In the
+following however we calculate the value of these integrals at some particular places.
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 17 =====
+112
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+0.6
+(a)
+(b)
+0.5
+1.5
+1.0
+0.5
+0
+0.4
+0.3
+0.2
+0.1
+0.2
+0.4
+0.6
+0.8
+1.0
+0.2
+0.4
+0.6
+0.8
+1.0
+0
+FIGURE 10. (Colour online) (a) Axial velocity proﬁles along the axis extracted from
+Gerris computations at times ¯t = 3 × 10−3, 5 × 10−3, 10−2, 5 × 10−2 and 10−1.
+(b) Comparison between the analytical prediction for the axial velocity given by (3.29)
+(red dashed line) and numerical solutions obtained with Gerris, rescaled in the self-similar
+space (blue solid lines). The physical parameters for this simulation are Re = 5000 and
+We = 250.
+3.5.2. Closed-form expressions for the velocity ﬁeld along the axis and the substrate
+Simple analytical solutions for the velocity ﬁeld can be obtained from (3.28) at
+precise locations. Along the symmetry axis for example, where ξ = 0, the properties
+of integrals of exponentials allow us to write:
+Uη(ξ = 0, η) = −1 + 2
+π
+ 
+arctan
+ √
+3
+η
+!
+−
+√
+3η
+3 + η2
+!
+for η ⩾0.
+(3.29)
+This last result is confronted with numerical velocity proﬁles extracted from
+Gerris computations in ﬁgure 10. The nice agreement between the theoretical solution
+and the numerical proﬁles seen in the self-similar space (ﬁgure 10b) here holds over
+more than a decade in time.
+Analogously, analytical forms for (3.28) can also be obtained along the substrate
+plane η = 0 by exploiting the properties of Hankel transforms (Sneddon 1995). An
+expression for the vertical velocity is already provided by (3.15), after inserting
+δ =
+√
+3. We remark that this analytical solution elucidates the faster-than-free-ﬂight
+motion of the free surface near the contact line discerned in § 2.2.2. Likewise the
+radial velocity distribution across the wet area is found to be:
+Uξ(ξ, η = 0) = 2
+π
+ξ
+p
+3 −ξ 2
+for 0 ⩽ξ <
+√
+3.
+(3.30)
+This unphysical inviscid slip velocity ˜ue(ξ) = Uξ(ξ, η = 0) cannot be observed in our
+simulations encompassing viscous effects. But this quantity is nonetheless relevant for
+it corresponds to the edge velocity of the viscous boundary layer (studied in detail in
+§ 4).
+3.5.3. An unusual stagnation point ﬂow
+In the very vicinity of the origin, the ﬁrst-order power series of the velocity
+ﬁeld (3.28) reads:
+Uξ(ξ, η) ≃
+2
+π
+√
+3
+ξ,
+(3.31a)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 18 =====
+Drop impact on a solid surface: short-time self-similarity
+113
+Uη(ξ, η) ≃−
+4
+π
+√
+3
+η,
+(3.31b)
+or, equivalently, in dimensioned variables:
+ur(r, z, t) ≃
+2
+π
+√
+3
+r
+U
+R
+r√t,
+(3.32a)
+uz(r, z, t) ≃−
+4
+π
+√
+3
+r
+U
+R
+z√t.
+(3.32b)
+Though simple, this peculiar structure for the impact-induced unsteady stagnation
+point ﬂow is nonetheless counterintuitive and could not have been inferred from
+simple dimensional analysis. Noteworthy enough, this result is at variance with
+the typical structure of the later intermediate ﬂow associated with spreading
+¯u ≃(¯r/¯t, −2¯z/¯t) (see e.g. Eggers et al. 2010; Lagubeau et al. 2012; Yarin & Weiss
+1995).
+3.5.4. Beyond the stagnation point: a remark on the overall velocity ﬁeld structure
+The previous approximation for the impact ﬂow is valid in a small region near the
+origin. To further investigate the limits of this representation we show in ﬁgure 11
+different radial velocity proﬁles corresponding to various locations ξ. The collapse of
+the numerical proﬁles taken at various ¯r and ¯t (but such that ¯r/
+√¯t = ˜r/
+√
+˜t is constant
+in each ﬁgure) onto the theoretical proﬁles is again an illustration of the relevance
+of the self-similar representation. But it is also to be noted that while the stagnation
+point ansatz disregards any radial velocity variation in η, the proﬁles exhibit a sensible
+variation along the vertical coordinate η. This variation is best depicted with ﬁgure 12
+where theoretical radial velocity proﬁles divided by ˜ue(ξ) taken at different values ξ
+have been represented. Noteworthy enough, proﬁles corresponding to ξ ≲1 collapse
+to a single curve. We therefore speculate that in this region the radial velocity can
+be approximated by a separated-variable solution such that Uξ(ξ, η) = ue(ξ)f(η) for
+ξ ≲1, where f is a function capturing the whole dependence of the proﬁle with the
+height. For larger values of ξ though, signiﬁcant deviations from this behaviour arise
+and variable separation ceases to hold: Uξ(ξ, η) = ˜ue(ξ)g(ξ, η) for ξ ≳1 where g is
+a function satisfying g(ξ, η = 0) = 1, in order to recover the slip velocity for η = 0.
+We remark that the latter prediction remains particularly accurate across the contact
+region, even close to the contact-line position ξ =
+√
+3.
+3.5.5. Flow pattern, contact-line bypass and Lamb analogy
+We now deﬁne the self-similar stream function Ψ (ξ, η) in the drop reference frame
+from the potential:
+1
+ξ
+∂Ψ
+∂η = ∂Φ
+∂ξ ,
+(3.33a)
+−1
+ξ
+∂Ψ
+∂ξ = ∂Φ
+∂η .
+(3.33b)
+By integration of the previous relations we deduce the following expression for
+Ψ (ξ, η):
+Ψ (ξ, η) = 2
+π
+Z ∞
+0
+√
+3k cos(
+√
+3k) −sin(
+√
+3k)
+k2
+e−kηξJ1(kξ) dk,
+(3.34)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 19 =====
+114
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+1.5
+1.0
+0.5
+0
+0.2
+0.4
+0.6
+0.8
+1.0
+1.5
+1.0
+0.5
+0
+0.2
+0.4
+0.6
+0.8
+1.0
+1.5
+1.0
+0.5
+0
+0.2
+0.4
+0.6
+0.8
+1.0
+1.5
+1.0
+0.5
+0
+0.2
+0.4
+0.6
+0.8
+1.0
+1.5
+1.0
+0.5
+0
+0.2
+0.4
+0.6
+0.8
+1.0
+(a)
+(b)
+(c)
+(d)
+(e)
+FIGURE 11. (Colour online) Self-similar radial velocity as a function of η for ξ = 0.125,
+0.25, 0.5, 1 and 1.5. These velocities are rescaled by the outer solution of the boundary
+layer ˜ue(ξ) given by (3.30). Blue solid lines represent the numerical solutions extracted
+from Gerris computations in the self-similar space for ¯t = 5 × 10−3, 10−2, 5 × 10−2 and 10−1
+(Re = 5000 and We = 250). The red dashed line represents the theoretical solution Uξ(ξ, η)
+given by (3.28a). Note that the boundary layer is so thin that it is almost indistinguishable
+(see also ﬁgure 19).
+up to a constant. Formally, Ψ (ξ, η) is the stream function describing the winding ﬂow
+around a ﬂat rising disk (Lamb 1932, § 108). Figure 13 offers a comparison between
+the streamlines of this Lamb analogy and the ones computed with Gerris for the drop
+impact problem in the self-similar space. A good qualitative agreement between the
+analytical and the numerical streamlines is noticeable, conﬁrming the expanding disk
+analogy followed here. Interestingly, the winding motion around the contact line, as
+well as the falling velocity overshoot near this region, are both captured with this
+analogy and can be correlated with the peculiarities of the winding ﬂow near the edge
+of a rising disk.
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 20 =====
+Drop impact on a solid surface: short-time self-similarity
+115
+1.5
+1.0
+0.5
+0.2
+0.4
+0.6
+0.8
+1.0
+0
+FIGURE 12. Evolution of the analytical self-similar radial velocity given by (3.28a) as a
+function of η for ξ = 0.125, 0.25, 0.5, 1 and 1.5. These velocities are rescaled by the
+outer solution of the boundary layer Uξ(ξ, η = 0) = ˜ue(ξ), equation (3.30).
+FIGURE 13. (Colour online) Comparison between the ﬂow pattern within an impacting
+drop (left) and around a rapidly expanding disk (Lamb analogy, right) in the self-similar
+space. In both cases, the streamlines are represented in the moving frame. The red dots
+represent the theoretical position of the contact line ξ =
+√
+3. The numerical streamlines
+represented on the left are derived from the velocity ﬁeld computed with Gerris at ¯t = 10−3
+(Re = 5000 and We = 250). The theoretical streamlines shown on the right correspond
+to isovalues of Ψ (ξ, η) deﬁned in (3.34) (note the correspondence with Lamb’s ﬁgure
+page 145).
+3.6. Self-similar pressure
+From the knowledge of the velocity potential we are now in a position to derive
+the pressure ﬁeld as the time derivative of the potential. In the self-similar space,
+the pressure ﬁeld is given by (3.4). Figure 14 proposes a comparison between the
+structure of the self-similar pressure extracted from numerical computations performed
+with Gerris and the theoretical prediction. There it can be seen that the overall structure
+of the pressure ﬁeld developing in the impacting drop, and in particular the pressure
+peak in the vicinity of the contact line already pinpointed out in ﬁgure 1, nicely
+matches with the theory. Interestingly, the structure just described is at variance
+with the pressure distribution around a ﬂat disk rising steadily (Lamb’s original
+problem). Indeed, in such a conﬁguration the pressure is expected to be maximal in
+the stagnation point area, whereas in our model problem the pressure peaks near the
+contact line/disk edge. This is a consequence of motion unsteadiness: the pressure is
+here dominated by the ∂ˇφ/∂˜t contribution rather than the steady ( ˜∇ˇφ2)/2 term.
+As in § 3.5.2, closed-form expressions for the pressure can be obtained along the
+axis and the substrate plane. The radial structure of the self-similar pressure across
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 21 =====
+116
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+FIGURE 14. (Colour online) Comparison between the pressure ﬁeld developing inside an
+impacting drop (left) and around a rapidly expanding disk (Lamb analogy, right). The
+pressure ﬁeld represented on the left is extracted from Gerris computations and represented
+in the self-similar space (¯t = 10−3, Re = 5000, We = 250; The isovalues are: 0.12, 0.24,
+0.36, 0.48, 0.6, 0.72, 0.84). The self-similar theoretical pressure ﬁeld represented on the
+right is given by (3.4) (isovalues: 0.13, 0.28, 0.445, 0.57, 0.73, 0.9, 1.2). Though isovalues
+have been slightly changed between the two panels, theoretical and numerical results are
+in a good overall agreement.
+the wet area reads P(ξ, η = 0) = 3/(π
+p
+3 −ξ 2) for 0 ⩽ξ <
+√
+3. This analytical
+prediction is confronted with Gerris numerical results in ﬁgure 15. After a transient
+numerical initialization phase (corresponding to the red curves), the pressure proﬁles
+collapse on the self-similar analytical solutions (blue curves). In accordance with the
+overall pressure ﬁeld structure depicted earlier, the pressure radial proﬁle presents a
+local minimum at ξ = 0 and a maximum in the vicinity of the contact line, that is for
+ξ =
+√
+3 – where the analytical solution exhibits an inverse square-root singularity, as in
+water entry problems (e.g. Cointe 1989; Howison et al. 1991). We note that for later
+times the pressure peak is smoothed out in the numerical simulations (grey curves). As
+this regularization coincides with the birth of the ejecta sheet, we conjecture that this
+fall-off can appropriately be described with a second-order Wagner theory (Korobkin
+2007; Oliver 2007).
+Similarly the expression for the self-similar pressure along the symmetry axis can
+also be obtained analytically: P(ξ = 0, η) = (3
+√
+3)/(π(3 + η2)) for η ⩾0. Figure 16
+compares this last result with rescaled axial pressure proﬁles extracted from numerical
+simulations. There again the agreement between the computations and the theory is
+seen to hold for a large time span.
+The structure of the pressure ﬁeld in the vicinity of the origin can be inferred from
+these last results. Re-expressing the pressure cuts determined in terms of ˜r, ˜z and ˜t,
+we obtain:
+˜p(˜r, ˜z = 0, ˜t) =
+3
+π
+√
+3˜t −˜r2 ,
+(3.35a)
+˜p(˜r = 0, ˜z, ˜t) =
+3
+√
+3˜t
+π(3˜t + ˜z2).
+(3.35b)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 22 =====
+Drop impact on a solid surface: short-time self-similarity
+117
+0
+0.5
+1.0
+1.5
+2.0
+2.5
+3.0
+0
+0.5
+1.0
+1.5
+2.0
+2.5
+3.0
+10
+20
+30
+40
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+(a)
+(b)
+FIGURE 15. (Colour online) (a) Pressure trace on the substrate ¯z = 0 obtained from the
+numerical simulations between ¯t = 5 × 10−4 and 10−1 for Re = 5000 and We = 250. The
+colour code for each decade is the same as in ﬁgure 17. Note that the curves are equally
+distributed within each decade. (b) Same as in the left but in the self-similar space. The
+black dashed curve represent the analytical solution for P(ξ, η = 0).
+0
+0.5
+1.0
+1.5
+0.1
+0.2
+0.3
+0.4
+0.5
+0.6
+FIGURE 16. (Colour online) Pressure along the axis ¯r = 0 obtained with Gerris for ¯t =
+5 × 10−3, 10−2, 5 × 10−2 and 10−1 (same as in ﬁgure 10b) represented in the self-similar
+space (Re = 5000 and We = 250). The red dashed line is the analytical solution for P(ξ =
+0, η). Fluctuations of the pressure around the theoretical prediction is to be related with
+numerical projections errors.
+From these two relations, we deduce the following expansion for the pressure near
+the origin:
+˜p(˜r, ˜z, ˜t) =
+√
+3
+π ˜t−1/2
+
+1 + ˜r2
+6˜t −˜z2
+3˜t
+
++ · · · .
+(3.36)
+This expression provides with a local approximation for ∂ˇφ/∂˜t from which, after
+time integration and space differentiation, we readily recover the stagnation point
+ﬂow structure found earlier: (˜u˜r, ˜u˜z) = 2/(π
+√
+3)(˜r/
+√
+˜t, −2˜z/
+√
+˜t). This near-axis
+behaviour emphasizes again that simple intuitive dimensional analysis suggestion r/t
+and −z/t is here not relevant.
+The leading-order term for the pressure at the origin follows:
+˜p(0, 0, ˜t) =
+√
+3
+π ˜t−1/2,
+or, with dimensions p(0, 0, t) = ρU3/2
+π
+r
+3R
+t .
+(3.37a,b)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 23 =====
+118
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+10–1
+100
+101
+102
+10–4
+10–3
+10–2
+10–1
+100
+FIGURE 17. (Colour online) Time evolution of the pressure ¯p(0, 0, ¯t) measured at the
+origin in the numerical simulations with Gerris (Re = 5000 and We = 250). Note that
+each decade is represented with a different colour. The theoretical prediction ¯p(0, 0, ¯t) =
+(
+√
+3/π)¯t−1/2 is superimposed with a black dashed line.
+This result extends the t−1/2 scaling law proposed by Josserand & Zaleski (2003) on
+the basis of scaling arguments. A comparison between this theoretical prediction and
+Gerris numerical simulations is proposed ﬁgure 17, using the colour code of ﬁgure 15.
+After a numerical transient phase, the pressure rapidly reaches the self-similar regime.
+Remarkably, this short-time similarity regime is nicely captured with Wagner theory
+up to times as large as ¯t = 0.5. At this point, a sharp departure from similarity is
+observed and the pressure promptly drops to zero. The physical mechanisms involved
+in this transition regime are still to be elucidated.
+3.7. Normal force induced by drop impact
+Building on the last set of results, we deduce the total net normal force imparted by
+an impacting drop on the underlying substrate at early times. Integrating the pressure
+on the wet surface, we have:
+˜F(˜t) = 1
+√
+˜t
+ZZ
+S
+P(ξ, η = 0) dS = 2π
+p
+˜t
+Z √
+3
+0
+3ξ
+π
+p
+3 −ξ 2 dξ = 6
+p
+3˜t.
+(3.38)
+The dimensional counterpart of this net total force induced by the drop on the
+substrate therefore reads:
+F(t) = 6
+√
+3ρU5/2R3/2√
+t,
+(3.39)
+where the force is seen to increase as t1/2 for short times. Interestingly, F(t) could
+have been inferred directly from energy arguments, with no knowledge of the pressure
+distribution. Indeed, writing the global kinetic energy conservation for the upper semi-
+inﬁnite space, we have:
+d
+dtT = −
+I
+pu · n dS,
+where T =
+ZZZ ρu2
+2 dV
+
+.
+(3.40)
+In the context of a ﬂat rising disk, the kinetic energy reduces to Tdisk = (4/3)ρa3U2
+(Lamb § 102). This expression can immediately be transposed to the impacting drop
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 24 =====
+Drop impact on a solid surface: short-time self-similarity
+119
+problem so that T = 4
+√
+3ρU7/2R3/2t3/2 (see (3.25) in § 3.4). The power of pressure
+forces then follows as (d/dt)T = 6
+√
+3ρU3R2(Ut/R)1/2. Dividing this power by U, we
+recover exactly the previously obtained result for the net normal total force. This
+alternate derivation of the normal force provides us with yet another illustration of
+the relevance of Lamb’s analogy for the drop impact problem.
+4. Matching with the viscous solution
+The inertial limit (large Reynolds number hypothesis) investigated so far has
+allowed us to model the ﬂow within an impacting drop as the winding motion
+of an inviscid ﬂuid around an expanding disk, appropriately described by an
+harmonic potential obeying the unsteady Bernoulli equation (§ 2.2). Actually the
+agreement between the corresponding theoretical results and numerical Navier–Stokes
+computations carried out with Gerris (encompassing viscous effects) consolidate this
+approximation, see e.g. ﬁgures 10 for velocity, 16 for pressure or 9 for contact-line
+motion comparisons. Presumably, viscous effects are here dominating only in very
+thin boundary layers developing along the wet substrate. And indeed, even if the
+overall agreement between the radial velocity proﬁles and the inviscid solution is
+evident, a careful examination of ﬁgure 11 reveals the presence of these thin layers
+in the very vicinity of the solid wall. Even if spatially conﬁned, these boundary
+layers nonetheless play a key role in e.g. the question of the erosion potential of an
+impacting drop. Consequently we now describe the inner structure of these viscous
+layers and match it to the previously determined outer inviscid solution. Viscous
+shear stresses and total erosion potential are eventually brieﬂy discussed.
+4.1. A simple boundary layer problem?
+Typically, the (inviscid) slip velocity ˜ue(˜r, ˜t) = (2/π)˜r/
+√
+3˜t −˜r2, here ﬁrst introduced
+(3.30), and the no-slip condition at the substrate, trademark of real ﬂuids, are
+reconciled through the introduction of a viscous boundary layer. According to the
+classic boundary layer theory (e.g. Schlichting 1968), the transverse scale of this layer
+is Re−1/2, so that an appropriate inner coordinate ˜Z can be deﬁned via ˜z = Re−1/2 ˜Z.
+The most simple idea at this point is to think that the outer variable scales deﬁned
+in § 2.3 imply that the nonlinear terms of the boundary layer equation are negligible
+when compared to unsteady and viscous terms, so that this equation would simply
+read:
+∂˜Ur
+∂˜t = −∂˜p
+∂˜r + ∂2 ˜Ur
+∂˜Z2 ,
+(4.1)
+where capitalized variables refer to boundary layer quantities. Considering that the
+Euler equation in the inviscid outer domain reduces to ∂˜ue/∂˜t = −(∂˜p/∂˜r), the
+boundary layer equation can be recast as the following diffusion equation for the
+defect velocity:
+∂
+∂˜t( ˜Ur −˜ue) = ∂2
+∂˜Z2 ( ˜Ur −˜ue).
+(4.2)
+The corresponding solution can then be expressed as a convolution between the
+forcing term and the Green function of the heat equation:
+˜Ur = ˜ue(˜r, ˜t) −
+˜Z
+2√π
+Z ˜t
+0
+exp
+ 
+−
+˜Z2
+4(˜t −τ)
+!
+˜ue(˜r, τ)
+(˜t −τ)3/2 dτ.
+(4.3)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 25 =====
+120
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+(a)
+(b)
+FIGURE 18. (Colour online) (a) Sketch of the contact line during its motion and of the
+growing boundary layer in its trail, analogous to that developing behind a shockwave.
+(b) Shockwave-induced boundary layer, reproduced from the German edition of Schlichting
+textbook (Schlichting 1968). Notations are from Schlichting, with a correspondence
+between x and ˜r. Note that in the shockwave case, U∞and Us are both constant.
+Unfortunately, this solution leads to a paradoxical cancelling of shear stresses at
+the wall. We conjecture that this unreasonable result stems from the fact that the
+sharp longitudinal variations associated with the contact-line motion have here been
+disregarded. Speciﬁcally nonlinear terms do balance unsteady terms, at least near
+the contact-line location ˜r =
+√
+3˜t. As a result, the boundary layer actually grows
+from this moving point both in space and time. While a comprehensive analysis of
+this problem demands a careful balance of each term, likely resulting in a nonlinear
+boundary layer problem, beyond the scope of the present study, we nonetheless
+propose in the following an approximation based on an analogy with boundary layers
+developing behind shockwaves.
+4.2. Approximation of the drop impact boundary layer via an analogy with
+shock-induced boundary layers
+We now depict qualitatively the inner viscous structure of the velocity ﬁeld by using
+a simple analogy. First remembering the tank-treading movement in the vicinity of
+the contact line observed and discussed in § 2.2.2, we point out the violent change in
+radial velocity when passing through the contact line. In other words, the contact line
+embodies a neat discontinuity where the slip velocity sees its value suddenly change
+from 0 to ˜ue. Building on this observation, we consider in the following the contact
+line as a kind of shockwave sweeping the substrate, and seeding a boundary layer
+in its trail (see ﬁgure 18). This problem is classic in compressible ﬂows and was
+solved by Mirels (1955) in the context of a shock tube (see Schlichting 1968, for
+more details). In this study, a ﬂuid initially at rest is swept by a shockwave travelling
+at celerity Us in the direction x and instantly acquires an impulse of velocity U∞in
+the process. Behind the normal shockwave is left a growing viscous boundary layer.
+The ansatz for Mirel’s solution is to introduce ηm = z/√t −x/Us as the self-similar
+variable. This variable not only takes into account time variations but also longitudinal
+effects from the shock backwards in x. Disregarding any pressure gradient but
+considering both unsteady and nonlinear effects, the momentum equation may be
+rewritten in terms of ηm and of the velocity U∞f ′(ηm):
+f ′′′(ηm) + 1
+2
+
+ηm −U∞
+Us
+f(ηm)
+
+f ′′(ηm) = 0,
+with f(0) = f ′(0) = 0, and f ′(∞) = 1.
+(4.4)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 26 =====
+Drop impact on a solid surface: short-time self-similarity
+121
+Note that compressible effects have here been absorbed via an appropriate Lees-
+Dorodnitsyn’s transformation (see Stewartson 1964). Two limiting cases clearly
+emerge from the picture. For large U∞/Us (and after a rescaling and a change of
+sign due to the choice of origin), the velocity proﬁle tends to a Blasius proﬁle.
+Conversely, for small values of the velocity ratio, the velocity rather adopts an error
+function proﬁle. Note that proﬁles corresponding to intermediate values of this ratio
+can be found in Schlichting’s textbook.
+From this sound result we may by analogy transpose this approach to the drop
+impact problem (see ﬁgure 18). Obviously the outer solution for the drop impact
+problem is more complex as neither Us nor U∞are constant. The core idea consists in
+drawing a parallel between the shock (at position Ust) and the contact line (at position
+√
+3˜t) on the one hand, and between the steady slip velocity U∞and ˜ue(˜r, ˜t) on the
+other hand. Following this simple analogy the longitudinal velocity is approximated
+with:
+˜Ur(˜r, ˜z, ˜t) =
+2˜r
+π
+√
+3˜t −˜r2 f ′
+ 
+˜z
+2
+p
+˜t −˜r2/3
+√
+Re
+!
+.
+(4.5)
+where f ′ is solution of an equation which is analogous to (4.4). The so-called
+composite solution (Van Dyke 1975), which is an expansion valid in the ideal ﬂuid
+and in the boundary layer, then follows:
+˜ucomp
+r
+= −2
+π
+Z ∞
+0
+√
+3k cos(
+√
+3k) −sin(
+√
+3k)
+k
+exp
+
+−k ˜z√
+˜t
+
+J1
+ k˜r
+√
+˜t
+
+dk
++
+2˜r
+π
+√
+3˜t −˜r2
+ 
+f ′
+ 
+˜z
+2
+p
+˜t −˜r2/3
+√
+Re
+!
+−1
+!
+.
+(4.6)
+In practice we approximated f ′ with the erf function. Figure 19 proposes a comparison
+between the numerical velocity proﬁles extracted from Gerris computations and this
+approximation, which proves to provide a fairly good description for the ﬂow. We also
+tested this prediction for different values of the Reynolds number in the range 250
+to 5000. The actual velocity proﬁles extracted from the simulations are confronted
+ﬁgure 20 with the theoretical prediction. Interestingly, we note that this asymptotic
+result remains accurate even for the lowest values of the Reynolds number. As a side
+note, we remark that replacing the error function with Blasius proﬁle yields a slightly
+more marked deviation between theory and numerical results. That said, we chose not
+to tune the velocity ratio appearing in (4.4) as (i) this is too speculative and (ii) such
+adjustment is certainly beyond the limits of our analogy.
+It is interesting to note that for ξ smaller than
+√
+3, Mirel’s self-similar variable ηm
+tends to Re1/2η = ˜Z/
+√
+˜t, so that the vertical structure for solution (4.5) now simply
+involves erf(Re1/2η/2). Actually, this solution is merely the purely diffusive solution
+of (4.2) for constant forcing (˜ue constant in time).
+From the previous results we may extract several quantities, such as the displacement
+thickness or the locus of isovelocities. The displacement thickness δ1 can readily be
+estimated with f ′ = erf as:
+δ1 =
+1
+√
+Re
+Z +∞
+0
+ 
+1 −
+˜Ur
+˜ue
+!
+d˜Z =
+2
+√π
+√
+Re
+p
+˜t −˜r2/3.
+(4.7)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 27 =====
+122
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+0
+0.2
+0
+0.05
+0.10
+0.15
+0.4
+0.6
+0.8
+1.0
+0
+0.2
+0
+0.05
+0.10
+0.15
+0.4
+0.6
+0.8
+1.0
+0
+0.2
+0
+0.05
+0.10
+0.15
+0.4
+0.6
+0.8
+1.0
+0
+0.2
+0
+0.05
+0.10
+0.15
+0.4
+0.6
+0.8
+1.0
+0
+0.2
+0
+0.05
+0.10
+0.15
+0.4
+0.6
+0.8
+1.0
+(a)
+(b)
+(c)
+(e)
+(d)
+FIGURE 19. (Colour online) Inner boundary layer radial velocity proﬁles at different
+locations ξ : 0.125, 0.25, 0.5, 1 and 1.5. Blue solid lines correspond to numerical solutions
+obtained with Gerris at ¯t = 5 × 10−3, 10−2, 5 × 10−2 and 10−1 for Re = 5000 and We =
+250 and represented in the self-similar space. Note that velocities are rescaled by their
+maximum value. The red dashed lines stand for the theoretical composite solution (4.6)
+blending the self-similar viscous boundary layer solution with the self-similar Wagner
+inviscid solution for impact. The composite solution is also rescaled by the edge velocity
+˜ue(ξ) given by (3.30).
+Similarly, isolines for the velocity can be extracted both for Gerris computations and
+for boundary layer theory. Figure 21 provides with a qualitative comparison between
+theory and numerical results, and it can be remarked that the overall prediction is
+more than just qualitative.
+Though the velocity ratio (2r/π/
+√
+3˜t −˜r2)/(
+√
+3˜t/2/˜t) (counterpart of U∞/Us
+in (4.4)) is inﬁnite near the shock, we note that the agreement between numerical
+and theoretical solutions is actually surprisingly good. We conjecture that whenever
+this ratio decreases to a value lower than one, i.e. near the centre and for large
+times where this ratio behaves as (4˜r)/(3π) so tends to zero, the error function
+approximation emerges as the solution of (4.4). We remark that an in-depth analysis
+of these phenomena demands a more involved description for the boundary layer.
+The Interactive Boundary Layer theory (see e.g. Lagrée 2010), may be a candidate.
+Another promising approach might be the careful boundary layer analysis of Elliott
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 28 =====
+Drop impact on a solid surface: short-time self-similarity
+123
+0
+0.2
+0
+0.1
+0.2
+0.3
+0.4
+0
+0.1
+0.2
+0.3
+0.4
+0.6
+0.8
+1.0
+0
+0.2
+0.4
+0.6
+0.8
+1.0
+0
+0.2
+0
+0.05
+0.10
+0.15
+0
+0.05
+0.10
+0.15
+0.4
+0.6
+0.8
+1.0
+0
+0.2
+0.4
+0.6
+0.8
+1.0
+0
+0.05
+0.10
+0.15
+0
+0.2
+0.4
+0.6
+0.8
+1.0
+(a)
+(b)
+(c)
+(e)
+(d)
+FIGURE 20. (Colour online) Same as ﬁgure 19, but for different Reynolds number Re :
+250, 500, 1250, 2500 and 5000 and at the ﬁxed location in self-similar space ξ = 1.5.
+FIGURE 21. (Colour online) Left: isolines for the radial velocity ˜ur extracted from the
+numerical simulations. Right: theoretical isolines for the radial velocity given by the
+composite expansion ˜ucomp
+r
+. Note that the transverse scale has here been stretched to
+visualize the boundary layer.
+& Smith (2015) with intricate multiple structures. Nonetheless, a deeper analysis of
+the Wagner region (Cointe 1989; Oliver 2002; Korobkin 2007; Oliver 2007) has to
+be performed.
+4.3. Estimation of the shear stress and the total drag
+With this boundary layer solution, we are now in a position to provide an estimation
+of the wall shear stress ˜τ = (1/Re)∂˜Ur/∂˜Z|˜Z=0, i.e. the viscous component of the
+stress which has been disregarded so far. And indeed this quantity is of paramount
+importance as far as raindrop-induced erosion of erodible beds is concerned (Ellison
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 29 =====
+124
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+0
+0.05
+0.10
+0.15
+0.20
+0.25
+0.5
+1.0
+1.5
+10–6
+10–5
+10–4
+10–3
+10–2
+10–1
+100
+10–3
+10–2
+10–1
+100
+(a)
+(b)
+FIGURE 22. (Colour online) (a) Numerical and theoretical shear stress distribution
+underneath the drop, represented in the self-similar space (the numerical data are taken at
+times ¯t = 5 × 10−3, 10−2, 5 × 10−2 and 10−1). (b) Same data represented as a function of
+the distance from the contact line (log plot). This representation reveals a cutoff distance
+∆from which the 1/x singularity is screened. Importantly, the numerical mesh size has
+been chosen to be small enough (1x = 5 × 10−4) to ensure the resolution of the ﬁne-scale
+motion in the vicinity of the contact line.
+1945; Rein 1993; Lagrée 2003; Leguédois et al. 2005). Upon using (4.5) (with the
+same erf approximation for function f ′ as before), we readily obtain:
+˜τ(˜r, ˜t) =
+2
+√
+3˜r
+π3/2Re1/2(3˜t −˜r2).
+(4.8)
+This theoretical prediction is confronted ﬁgure 22 with numerical proﬁles for the
+shear stress extracted from Gerris computations, and is shown to nicely agree with
+observations. From this local distribution for the stress we may infer the total drag
+induced by a drop impact, by integration over the wet area:
+˜D(˜t) =
+Z 2π
+0
+Z √
+3t
+0
+˜τ(˜t)˜r d˜r dθ.
+(4.9)
+Unfortunately this integral diverges due to the 1/x singularity developing in the
+near-contact-line region, and is visible in ﬁgure 22 on the left. Such singularities
+are usually a signature of additional physics in the diverging region which have not
+taken into account in the model. And indeed, ﬁgure 22 on the right reveals that the
+calculated shear stress signiﬁcantly deviates from the theoretical prediction at some
+small distance ∆from the contact-line position to reach a maximum value. Now
+integrating the local shear stress up to ˜r =
+√
+3˜t −∆, where ∆is this small cutoff
+length, we can provide an estimation for the drag at leading order in log(∆):
+˜D(˜t) = 3
+s
+˜t
+πRe
+
+−2 log
+ ∆
+√
+˜t
+
+−4 + log(12)
+
+.
+(4.10)
+Upon noting that this quantity can be dimensionalised with ρU2R2, the expression for
+the total drag in dimensional variables follows:
+D(t) =
+3
+√πµ1/2ρ1/2U2R
+√
+t
+
+
+
+−2 log
+
+
+
+
+∆
+r
+Ut
+R
+
+
+
+−4 + log(12)
+
+
+
+.
+(4.11)
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 30 =====
+Drop impact on a solid surface: short-time self-similarity
+125
+Re
+250
+500
+1250
+2500
+5000
+∆/
+√
+˜t
+0.03–0.05
+0.03–0.06
+0.03–0.05
+0.03
+0.03
+TABLE 2. Cutoff length ∆(illustrated ﬁgure 22b) estimated for different Reynolds
+numbers Re : 250, 500, 1250, 2500 and 5000. Although Re varies over more than a decade,
+the value of ∆/
+√
+˜t is quite insensitive to this variation. This suggests that the physical
+nature of this cutoff length does not rely on viscosity.
+Noticeably, the departure from the theoretical prediction pinpointed out in ﬁgure 22
+on the right seems to occur at a precise location in self-similar variables, therefore
+suggesting a
+√
+˜t time dependence for ∆. From the numerical computations the value
+of ∆/
+√
+˜t can be estimated to be around 0.03. Note that this is obviously a crude
+estimation, which nonetheless allows us to propose the following estimate for the
+impact-induced drag:
+D(t) ≃10.7µ1/2ρ1/2U2R
+√
+t.
+(4.12)
+To further reﬁne this prediction, the true nature of the cutoff length ∆needs to be
+clearly identiﬁed. Several candidates for governing this quantity naturally emerge, with
+for example the viscous 1/Re regularisation length in the vicinity of the contact-line
+region or the inertial matching with the Wagner inner layer of typical size (d(t)/R)2.
+To probe the nature of the cutoff length ∆we performed extra simulations for
+Reynolds number varying over more than a decade. Indeed, should ∆arise from
+viscous effects it should vary appreciably with the Reynolds number. However an
+analysis of these various simulations revealed that ∆hardly changed with varying
+viscosities, as shown in table 2. These preliminary results advocate for an inviscid
+nature of the cutoff length which could be revealed with the next order in the ideal
+ﬂuid expansion. This requires further investigation.
+5. Further comments and conclusion
+Capillary phenomena, as well as possible aerodynamic effects from the surrounding
+gas, have been disregarded so far. In this last part we shall estimate their inﬂuence
+on impact and discuss natural extensions to the present work. A summary and general
+conclusion then follow in § 5.5.
+5.1. Inﬂuence of capillary phenomena
+The Weber number provides us with a global measure of the ratio of available
+kinetic energy to surface energy. For low values of this number (with respect to
+unity), drops typically bounce (Richard & Quéré 2000) while preserving their shape
+or gently spread (Pasandideh-Fard et al. 1996) according to the wetting properties
+of the underlying substrate. Note that even in this regime of droplet deposition, fast
+phenomena associated with the imbalance of surface stresses can set in (Stebnovskii
+1979). When the initial kinetic energy of the drop is comparable with the surface
+energy (We ∼1), a surface wave ﬁeld starts to develop on the drop, shaping it
+into a characteristic liquid pyramid or torus (Renardy et al. 2003). For even higher
+values of the Weber number, such as the inertial limit We ≫1 investigated in the
+present paper, we do not expect capillary phenomena to have a signiﬁcant inﬂuence
+on a global scale, but locally surface tension can still play a dominant role. For
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 31 =====
+126
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+example, the high-curvature turnaround region at the lamella root is typically a place
+where capillarity presumably plays an important role. But due to scale separation, this
+region is invisible at our level of description. Indeed, in classic impact analyses see
+e.g. Oliver (2002), the typical extent of this intermediate Wagner region associated
+with highly curved interfaces is found to be O(ε2), to be compared both with the
+O(ε) size of the main impact region considered throughout this paper (see § 2.3) and
+with the O(ε3) thickness of the lamella. In the framework of our ﬁrst-order theory,
+we therefore do not anticipate appreciable deviations stemming from this zone.
+Conversely, for a correct description of the ejected liquid sheet feeding conditions
+and of the pressure fall-off near the lamella root reported ﬁgure 15, an accurate
+representation of this matching region appears mandatory.
+The contact line is another region where marked effects from capillarity are to
+be expected. Drop impact is characterized with fast motions near the contact line.
+This violent dynamic wetting phenomenon can arguably bring about issues in our
+description of impact. Actually Blake, Bracke & Shikhmurzaev (1999) demonstrated
+that non-local hydrodynamics could play a signiﬁcant role in the dynamic contact
+angle selection. Based on experimental data, Blake et al. further put forward the
+possible ‘mutual interdependence’ between the phenomena in the near contact-line
+region and the far-ﬁeld hydrodynamics. This complex interplay was further conﬁrmed
+in the context of drop impact by Šikalo et al. (2005), especially for the late receding
+phase. Interestingly, these authors demonstrated that the early evolution of the
+dynamic contact angle was quite insensitive to the experimental conditions and
+fairly well captured by the contact angle of a truncated sphere. This nice agreement
+certainly advocates for a predominance of inertial effects over capillary corrections
+emanating from the dynamic contact line, at least in the early stage of impact. And
+indeed, remembering that shortly after impact the ﬂuid motion in the contact area is
+essentially vertical, it appears likely that the point of contact can be determined with
+mere inertial arguments. In our simulations, dynamic effects have been disregarded
+in the description of the contact angle, which has been set to the constant value π/2.
+The agreement between our simulations and the purely inertial theory is again an
+indication of the unimportance of dynamic wetting. It might further be interesting to
+note that the surface energy gained by wetting the solid is of the order of 1/We when
+rescaled by the initial kinetic energy. Again this heuristically rules out any leading
+effect from wetting in the short-term dynamics. This ratio evolves with time though,
+and ultimately wetting phenomena become dominant, as evidenced by the late t1/10
+spreading behaviour consistent with Tanner’s law in the experiments of Rioboo et al.
+(2002) performed with purely wetting liquids.
+5.2. Inﬂuence of ambient air
+For approximately a decade or so, there has been an increasing realization of the role
+played by surrounding air in liquid impact in general, and drop impact in particular
+(Josserand & Thoroddsen 2016). Following key experiments performed by Xu, Zhang
+& Nagel (2005) on air-induced splash triggering, a number of studies have focused on
+the events preluding liquid sheet ejection. The ﬁrst signiﬁcant effect of surrounding
+air is to impart a dimple-like deformation in the bottom most region of the drop (see
+experimental observations of the dimple obtained by Thoroddsen et al. 2005 and X-
+ray ultra-fast imagery of the complex dynamics of this air pocket by Lee, Weon, Je
+& Fezzaa 2012). Smith, Li & Wu (2003) ﬁrst depicted theoretically this process by
+coupling lubrication in the squeezed air ﬁlm and potential ﬂow inside the drop. These
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 32 =====
+Drop impact on a solid surface: short-time self-similarity
+127
+10–1
+100
+101
+102
+10–4
+10–3
+10–2
+10–1
+100
+(a)
+(b)
+FIGURE 23. (Colour online) (a) Time evolution of the pressure as measured under an
+impacting drop with air-induced dimple formation (i.e. bubble entrapment) taken into
+account. The red trace monitors the pressure at the origin. The physical parameters of
+this Gerris simulation are Re = 5000 and We = 250. The superimposed black dashed line
+corresponds to the theoretical solution ¯p(0, 0, ¯t) = (
+√
+3/π)(¯t −¯timpact)−1/2 delayed from
+¯timpact, where ¯timpact is the real impact time (in the numerical simulations, ¯timpact corresponds
+to the time at which liquid and solid are just one grid cell away). (b) Close-up of the
+bottommost point of the drop in the numerical simulation (at ¯t = 1.54 × 10−1). The
+position of the interface is materialised with a blue line. The colour map illustrates
+the distribution of the pressure ﬁeld within the drop and in the gas layer. Noteworthy
+enough the isopressure lines seamlessly cross the interface, revealing the transparency of
+the dimple to pressure. Note that for the sake of clarity, the vertical scale has here been
+magniﬁed by a factor 22.
+authors notably evidenced the presence of off-axis pressure peaks. While more recent
+studies raised doubt about the link between this dimple formation and splash triggering
+per se – that might merely be a secondary independent consequence of the presence of
+surrounding gas (Duchemin & Josserand 2011), this gas pocket is nonetheless formed
+over time scales and length scales overlapping that of the phenomenon reported in the
+present paper (Mani, Mandre & Brenner 2010). It is therefore legitimate to question
+the impact of this air entrapment phenomenon on our results.
+In order to investigate these effects, we performed a simulation of a liquid drop
+approaching a solid substrate, deforming as a result of lubrication pressure rise in the
+ﬁlm, and ﬁnally impacting the substrate. Figure 23 represents the time evolution of the
+pressure exerted on the support at the axis. Considering that air delays the moment
+of impact (Mani et al. 2010), we introduce a time shift timpact corresponding to the
+moment where the drop and the solid are only a grid cell apart. Interestingly, our
+results reveal that the pressure at the origin (measuring now the entrapped bubble
+pressure) is fairly well captured by relation (3.37) after replacing ˜t with the true time
+from impact ˜t −˜timpact, that is:
+˜p(0, 0, ˜t) =
+√
+3
+π (˜t −˜timpact)−1/2.
+(5.1)
+This agreement between our prediction and a simulation incorporating air entrapment
+effects not only validates and extends our results beyond the initial scope of Wagner
+impact theory (disregarding air effects), but also suggests that the results of the present
+manuscript correspond to the far-ﬁeld behaviour of an impacting drop in presence of
+surrounding gas. This observation outlines the appealing prospect of describing both
+the dimple geometry and associated dynamical ﬁelds by analytical means.
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 33 =====
+128
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+5.3. Main results
+In this paper, the short-term dynamics of a drop impacting a rigid substrate has
+been elucidated. A self-similar solution for the impact-induced ﬂow has in particular
+been unravelled and matched to a self-similar viscous boundary layer. This solution
+has been intensively validated with numerical Gerris computations, and this constant
+cross-testing between asymptotic theory and multiphase adaptive ﬂow simulations is
+one of the key features of the present approach. In the course of this investigation,
+several important results have been substantiated. These results allow both for a
+simple yet accurate qualitative depiction of drop impact along with an in-depth
+quantitative understanding of this phenomenon. These key results are summarised in
+the following:
+(i) A fundamental analogy between the water entry of a solid object (Wagner’s
+original problem) and drop impact exists.
+(ii) During the earliest moments post impact, the contact line follows a tank-treading
+motion. There is in particular no contact-line sweeping motion.
+(iii) The impact-induced ﬂow is concentrated in the contact zone, and the far ﬁeld
+merely corresponds to an undisturbed rigid-body motion reducing to a global
+free ﬂight at velocity U. There is no global or large-scale drop deformation
+during impact.
+(iv) The position of the contact line is given by the simple relation d(t) =
+√
+3RUt.
+Though simple, this locus does not correspond to the cut radius of a truncated
+sphere.
+(v) The wet footprint extent of the drop dictates the size of the impact-induced
+perturbed ﬂow.
+(vi) There is a consistent analogy between the impact-induced ﬂow within the drop
+and the ﬂow induced by a ﬂat rising expanding disk (Lamb’s analogy).
+(vii) The impact pressure is to be associated with the unsteady Bernoulli contribution
+−∂tφ. It cannot be inferred from usual inertial steady contribution −ρU2.
+(viii) As a corollary to the previous point, the impact pressure is extremal at the
+contact line. It is not maximal at the stagnation point.
+(ix) A full three-dimensional self-similar solution for the impact-induced ﬂow of an
+inviscid drop exists and matches quantitatively realistic numerical data on drop
+impact.
+(x) Analytical solutions for this ﬂow have been presented in integral forms (with
+some explicit closed-form expressions along some particular locations), see
+table 3 (in dimensional form).
+(xi) An original inviscid stagnation point structure with an unexpected r/√t slip
+velocity develops in the vicinity of the origin. The velocity ﬁeld structure
+markedly differs from the classic r/t prediction occurring for later times.
+(xii) An approximate self-similar solution for the viscous boundary layer seamlessly
+matches with the inviscid impact ﬂow (analogy with Mirels shockwave
+problem).
+(xiii) Self-similar variables have the same structure z/√t both in the outer region and
+in the boundary layer.
+(xiv) From the knowledge of the distribution of the dynamical ﬁelds across the wet
+area, the expressions for the normal and tangential total force on the substrate
+are provided.
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 34 =====
+Drop impact on a solid surface: short-time self-similarity
+129
+(r = 0, z = O(d(t)) > 0+)
+(0 ⩽r < d(t) =
+√
+3RUt, z = 0+)
+p(0, z, t) = 3
+√
+3ρU5/2R3/2
+π
+√t
+3URt + z2
+p(r, 0+, t) =
+3ρU2R
+π
+√
+3URt −r2
+ur(0, z, t) = 0
+ur(r, 0+, t) =
+2Ur
+π
+√
+3URt −r2
+uz(0, z, t) = 2U
+π arctan
+ √
+3URt
+z
+!
+−
+√
+3U3Rtz
+3URt + z2 −U
+uz(r, z, t) = 0
+(d(t) ≫r, d(t) ≫z > 0+)
+(0 ⩽r < d(t) =
+√
+3RUt, z = O(Re−1/2d(t)))
+ur(r, z, t) =
+2
+π
+√
+3
+U1/2R−1/2 r√t
+Ur(r, z, t) =
+2Ur
+π
+√
+3URt −r2
+× erf
+
+
+
+
+
+v
+u
+u
+u
+t
+ρUR
+µ
+
+URt −r2
+3
+ z
+2
+
+
+
+
+
+uz(r, z, t) = −
+4
+π
+√
+3
+U1/2R−1/2 z√t
+τ(r, t) = 2
+√
+3ρ1/2U3/2R1/2µ1/2
+π3/2
+r
+3URt −r2
+p(0, 0, t) = ρU3/2R1/2
+π
+r
+3
+t
+F(t) = 6
+√
+3ρU5/2R3/2√
+t
+D(t) ≃10.7µ1/2ρ1/2U2R
+√
+t
+TABLE 3. Summary of the main results of the paper in dimensioned form. The top part of
+the table refers to ideal ﬂuid results (left: closed-form results along the axis of symmetry,
+right: along the substrate). The left middle part sums up inviscid stagnation point results,
+and the right middle part summarises the viscous boundary layer results. Observables such
+as the net normal force F(t) and tangential force D(t) are also given in the bottom part
+of the table.
+(xv) The asymptotic solution is found to be numerically valid over several decades in
+time up to t = 0.5R/U. This solution was found to be insensitive to air-induced
+dimple formation.
+(xvi) For times of order one, the present results remain at least qualitative.
+5.4. Perspectives
+The results obtained in the present manuscript offer several appealing prospects.
+On the role of surrounding air ﬁrst, the last results of § 5.2 support the idea that
+the dimple geometry and characteristics could be derived analytically, with a far-ﬁeld
+corresponding to the here presented ﬂow. The question of the role of air in suppressing
+the pressure divergence (Josserand, Ray & Zaleski 2015), or in altering the shear
+stress distribution, is also a central point for a correct description of a single drop
+impact action. Similarly, the question of the scope of the present results for impact on
+a liquid ﬁlm or on a soft/erodible substrate is also of interest. Indeed, the analytical
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 35 =====
+130
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+and numerical toolboxes developed here might well be transposed to other rheologies
+(such as Bingham, see Staron et al. (2013) or granular media, (Lagrée, Staron &
+Popinet 2011)). While the inverse-square-root singularity of the pressure is integrable
+and yields a ﬁnite normal force, the sharper singularity observed in the viscous shear
+stress distribution leads to a divergence for the total drag. From the simulations, it
+appears that the singularity is screened over a length scale ∆. As discussed in § 4
+this cutoff length proves to be quite insensitive to variations of the Reynolds number.
+This result suggests that the nature of ∆would be purely inertial. A second-order
+correction of the ideal ﬂuid solution is therefore probably necessary to explain this
+regularisation.
+While the rudimentary description for the viscous boundary layer proposed in the
+manuscript certainly necessitates a reﬁned analysis, the question of inertial effects at
+the Wagner region scale is also worth studying. Not only an in-depth investigation of
+such effects might provide an explanation for the regularisation of the shear stress, but
+it shall shed light over the onset of lamella formation, which still conceals mysteries.
+Finally the process responsible for the loss of self-similarity observed at intermediate
+times is still uncertain: conﬁnement effects arising when the impact-ﬂow length scale
+overlaps with the drop extent, eventual deceleration in the far-ﬁeld region or contact-
+line geometrical departures from the square-root law are all a priori legitimate to
+explain the ﬁnal pressure fall-off, and certainly needs further investigation.
+5.5. To conclude
+Within the numerous limits carefully drawn along this paper, a consistent asymptotic
+description of the dynamics and geometry of a drop impacting a solid surface has been
+proposed. The results may simply be summarised through three analogies: Wagner
+water entry (drop impact being the dual of this problem), Lamb’s disk winding ﬂow
+(that accurately represents the ﬂow induced with the impact) and Mirels shockwave-
+induced boundary layer (remarkably capturing the boundary layer developing in the
+contact-line’s trail). The original strategy developed throughout this paper has been
+to validate these three analogies through a constant confrontation between numerical
+simulations and asymptotic analysis. Our study revealed that very powerful state-of-
+the-art adaptive codes now allow us to probe all the dynamic features of realistic
+violent events such as drop impact, but in the meantime, it also emphasised how
+powerful and useful asymptotic analysis is in providing an in-depth understanding of
+such phenomena and in uncloaking the raw data delivered by the code. Finally, our
+study brought to light some interesting features and observables (such as the particular
+stagnation point structure, pressure distribution, contact-line motion, viscous total drag
+force) never observed to date in simulations or experiments. This certainly arouses the
+exciting prospect of their unveiling in future experimental studies.
+Acknowledgements
+We warmly thank S. Popinet, P. Ray, C. Josserand and S. Zaleski from Institut
+Jean le Rond ∂’Alembert for enlightening discussions on splash phenomena, and
+N. Balmforth from the Department of Mathematics of the University of British
+Columbia for interesting discussions on boundary layers. We acknowledge an
+anonymous referee for interesting suggestions about the nature of the cutoff length ∆.
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 36 =====
+Drop impact on a solid surface: short-time self-similarity
+131
+FIGURE 24. Typical mesh structure reﬁned adaptively by Gerris ﬂow solver during a
+simulation.
+Appendix A
+A.1. Gerris ﬂow solver
+All the numerical simulations were performed with the open-source code Gerris (freely
+downloadable at http://gfs.sourceforge.net – see also Popinet 2003, 2009; Lagrée et al.
+2011, for details). Gerris is a solver of the incompressible Navier–Stokes equations
+taking into account multiple phases and surface tension. The code makes use of a
+ﬁnite-volume approach and of a volume-of-ﬂuid method for an accurate description of
+the transport of the interfaces between two-phase ﬂows. It also features an adaptive
+mesh reﬁnement procedure allowing for both a precise description of ﬂows with large
+scale separation and a reduction of computational costs. Typically in our simulations
+the ﬁnest grid is chosen to be concentrated along free surfaces and within the contact
+zone to fully capture the features of the pressure ﬁeld and of the boundary layers
+(see ﬁgure 24). In these areas the corresponding local resolution usually corresponds
+to 4096 × 4096 but can reach local density as high as 32 768 × 32 768 if needed
+(examples being ﬁgure 1 or ﬁgure 2).
+The simulations carried out in this study all correspond to the impact of a water
+drop in air with a Reynolds number of 5000 and a Weber number of 250. The
+computations were performed in an axisymmetric conﬁguration. We emphasize that
+both liquid and air motions were computed with Gerris, but to be consistent with the
+post-impact theory developed in this paper, the simulations disregarded air cushioning
+and dimple formation (except where explicitly speciﬁed, see § 5.2). To avoid dimple
+formation in this multiphase ﬂow simulation, the initial conﬁguration was set to a
+slightly truncated liquid sphere already touching the solid surface. The liquid was
+initialised with a constant downward velocity. The initial sphere penetration ¯r0 = 10−4
+was at most one grid cell deep (for example the grid spacing is 1x ≃5 × 10−4
+for 4096 × 4096 simulations). Finally a no-slip boundary condition was enforced at
+the substrate level and the contact angle was ﬁxed at π/2. The reliability of the
+results has been thoroughly checked with a convergence study on the reﬁnement
+level, and with particular attention paid to the pressure ﬁeld and the position of the
+contact line convergence. Figure 25 proposes a comparison between the evolution of
+the pressure ﬁeld measured at the origin for two levels of resolution (2048 × 2048
+and 4096 × 4096). For both cases the numerical solution quickly converges to the
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 37 =====
+132
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+10–1
+100
+101
+102
+10–4
+10–3
+10–2
+10–1
+100
+(a)
+10–1
+100
+101
+102
+10–4
+10–3
+10–2
+10–1
+100
+(b)
+FIGURE
+25.
+(Colour
+online)
+Comparison
+between
+the
+pressure
+measured
+in
+the
+Gerris simulations at the origin for two different maximum level of mesh reﬁnement (red
+dots) and the theoretical prediction (black dashed line). The left panel corresponds to
+a simulation where the maximal grid density is 2048 × 2048, and the right panel to
+a simulation where the maximal density is 4096 × 4096 (in both cases the physical
+parameters are Re = 5000 and We = 250). The analytical solution of the pressure is given
+by ¯p(0, 0, ¯t) = (
+√
+3/π)¯t−1/2, see (3.37). After a short transient, both simulations quickly
+reach the same self-similar asymptotic regime.
+0.01
+0.5
+1.0
+5.0
+10
+0.02
+0.05
+0.10
+0.20
+0.50
+FIGURE 26. (Colour online) Close-up of ﬁgure 25(b). Note that the numerical evolution
+for the pressure is slightly above (about 7 %) the analytical solution.
+theoretical solution ¯p(0, 0, ¯t) = (
+√
+3/π)¯t−1/2 (see (3.37)) approximately ¯t = 5 × 10−3
+and leaves the self-similar regime at approximately ¯t = 6 × 10−1. We remark that after
+a transient period, both numerical solutions give consistent information and collapse
+onto the theoretical solution over almost three decades. Note that the occurrence of
+sporadic glitches in the numerical solution (see e.g. ﬁgures 17 and 25 or 26) are to
+be related with the classic difﬁculty of computing the pressure in projection methods,
+such as the one implemented in Gerris (Brown, Cortez & Minion 2001; Popinet 2003).
+We ﬁnally remark that an error of ca. 7 % between the numerical prediction for the
+pressure at the origin and the theoretical prediction was consistently noted in our
+simulations (see ﬁgure 26). The nature of this discrepancy is uncertain however, and
+might either be related to the aforementioned numerical difﬁculties in computing the
+pressure or to the limits of our ﬁrst-order asymptotic description for drop impact.
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 38 =====
+Drop impact on a solid surface: short-time self-similarity
+133
+REFERENCES
+ANTKOWIAK, A., AUDOLY, B., JOSSERAND, C., NEUKIRCH, S. & RIVETTI, M. 2011 Instant
+fabrication and selection of folded structures using drop impact. Proc. Natl Acad. Sci. USA
+108 (26), 10400–10404.
+BLAKE, T. D., BRACKE, M. & SHIKHMURZAEV, Y. D. 1999 Experimental evidence of nonlocal
+hydrodynamic inﬂuence on the dynamic contact angle. Phys. Fluids 11 (8), 1995–2007.
+BROWN, D. L., CORTEZ, R. & MINION, M. L. 2001 Accurate projection methods for the
+incompressible Navier–Stokes equations. J. Comput. Phys. 168 (2), 464–499.
+CHEN, Q., RAMÉ, E. & GAROFF, S. 1997 The velocity ﬁeld near moving contact lines. J. Fluid
+Mech. 337, 49–66.
+COINTE, R. 1989 Two-dimensional water-solid impact. J. Offshore Mech. Arctic Engng 111 (2),
+109–114.
+COINTE, R. & ARMAND, J. L. 1987 Hydrodynamic impact analysis of a cylinder. J. Offshore Mech.
+Arctic Engng 109 (3), 237–243.
+DARROZÈS, J.-S. & FRANÇOIS, C. 1982 Mécanique Des Fluides Incompressibles, Lecture Notes in
+Physics. Springer-Verlag.
+DUCHEMIN, L. & JOSSERAND, C. 2011 Curvature singularity and ﬁlm-skating during drop impact.
+Phys. Fluids 23 (9), 091701.
+DUSSAN, V., ELIZABETH, B. & DAVIS, S. H. 1974 On the motion of a ﬂuid–ﬂuid interface along
+a solid surface. J. Fluid Mech. 65, 71–95.
+EGGERS, J., FONTELOS, M. A., JOSSERAND, C. & ZALESKI, S. 2010 Drop dynamics after impact
+on a solid wall: Theory and simulations. Phys. Fluids 22 (6), 062101.
+ELLIOTT, J. W. & SMITH, F. T. 2015 Ice formation on a smooth or rough cold surface due to the
+impact of a supercooled water droplet. J. Engng Maths 1–30.
+ELLISON, W. D. 1945 Some effects of raindrops and surface-ﬂow on soil erosion and inﬁltration.
+EOS Trans. AGU 26 (3), 415–429.
+ENGEL, O. G. 1955 Waterdrop collisions with solid surfaces. J. Res. Natl Bur. Stand. 54 (5),
+281–298.
+HOWISON, S. D., OCKENDON, J. R., OLIVER, J. M., PURVIS, R. & SMITH, F. T. 2005 Droplet
+impact on a thin ﬂuid layer. J. Fluid Mech. 542 (-1), 1–23.
+HOWISON, S. D., OCKENDON, J. R. & WILSON, S. K. 1991 Incompressible water-entry problems
+at small deadrise angles. J. Fluid Mech. 222, 215–230.
+JOSSERAND, C., RAY, P. & ZALESKI, S. 2015 Droplet impact on a thin liquid ﬁlm: anatomy of the
+splash. (in preparation).
+JOSSERAND, C. & THORODDSEN, S. T. 2016 Drop impact on a solid surface. Annu. Rev. Fluid
+Mech. 48 (1).
+JOSSERAND, C. & ZALESKI, S. 2003 Droplet splashing on a thin liquid ﬁlm. Phys. Fluids 15 (6),
+1650–1657.
+KOROBKIN, A. A. 2007 Second-order wagner theory of wave impact. J. Engng Maths 58 (1–4),
+121–139.
+LAGRÉE, P.-Y. 2003 A triple deck model of ripple formation and evolution. Phys. Fluids 15 (8),
+2355–2368.
+LAGRÉE, P.-Y. 2010 Interactive boundary layers. In Asymptotic Methods in Fluid Mechanics: Survey
+and Recent Advances, CISM International Centre for Mechanical Sciences. Springer.
+LAGRÉE, P.-Y., STARON, L. & POPINET, S. 2011 The granular column collapse as a continuum:
+validity of a two-dimensional Navier–Stokes model with a µ(i)-rheology. J. Fluid Mech. 686,
+378–408.
+LAGUBEAU, G., FONTELOS, M. A., JOSSERAND, C., MAUREL, A., PAGNEUX, V. & PETITJEANS,
+P. 2012 Spreading dynamics of drop impacts. J. Fluid Mech. 713, 50–60.
+LAMB, H. 1932 Hydrodynamics. Cambridge University Press.
+LEE, J. S., WEON, B. M., JE, J. H. & FEZZAA, K. 2012 How does an air ﬁlm evolve into a
+bubble during drop impact? Phys. Rev. Lett. 109, 204501.
+LEGUÉDOIS, S., PLANCHON, O., LEGOUT, C. & LE BISSONNAIS, Y. 2005 Splash projection distance
+for aggregated soils. Soil Sci. Soc. Am. J. 30–37.
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 39 =====
+134
+J. Philippi, P.-Y. Lagrée and A. Antkowiak
+MANGILI, S., ANTONINI, C., MARENGO, M. & AMIRFAZLI, A. 2012 Understanding the drop impact
+phenomenon on soft pdms substrates. Soft Matt. 8, 10045–10054.
+MANI, M., MANDRE, S. & BRENNER, M. P. 2010 Events before droplet splashing on a solid surface.
+J. Fluid Mech. 647 (-1), 163–185.
+MIRELS, H. 1955 laminar boundary layer behind shock advancing into stationary ﬂuid. NACA
+TN 3401, 25.
+NETHERCOTE, W. C. E., MACKAY, M. & MENON, B. C. 1986 Some Warship Slamming Investigations.
+Defence Research Establishment Atlantic.
+OLIVER, J. M. 2002 Water entry and related problems. PhD thesis, University of Oxford.
+OLIVER, J. M. 2007 Second-order wagner theory for two-dimensional water-entry problems at small
+deadrise angles. J. Fluid Mech. 572, 59–86.
+PASANDIDEH-FARD, M., QIAO, Y. M., CHANDRA, S. & MOSTAGHIMI, J. 1996 Capillary effects
+during droplet impact on a solid surface. Phys. Fluids 8 (3), 650–659.
+POPINET, S. 2003 Gerris: a tree-based adaptive solver for the incompressible euler equations in
+complex geometries. J. Comput. Phys. 190 (2), 572–600.
+POPINET, S. 2009 An accurate adaptive solver for surface-tension-driven interfacial ﬂows. J. Comput.
+Phys. 228 (16), 5838–5866.
+PRUPPACHER, H. R. & BEARD, K. V. 1970 A wind tunnel investigation of the internal circulation
+and shape of water drops falling at terminal velocity in air. Q. J. R. Meteorol. Soc. 96 (408),
+247–256.
+REIN, M. 1993 Phenomena of liquid drop impact on solid and liquid surfaces. Fluid Dyn. Res. 12
+(2), 61–93.
+RENARDY, Y., POPINET, S., DUCHEMIN, L., RENARDY, M., ZALESKI, S., JOSSERAND, C.,
+DRUMRIGHT-CLARKE, M. A., RICHARD, D. & QUÉRÉ, D. 2003 Pyramidal and toroidal
+water drops after impact on a solid surface. J. Fluid Mech. 484, 69–83.
+REZNIK, S. N. & YARIN, A. L. 2002 Spreading of a viscous drop due to gravity and capillarity on
+a horizontal or an inclined dry wall. Phys. Fluids 14 (1), 118–132.
+RIBOUX, G. & GORDILLO, J. M. 2014 Experiments of drops impacting a smooth solid surface: A
+model of the critical impact speed for drop splashing. Phys. Rev. Lett. 113, 024507.
+RICHARD, D. & QUÉRÉ, D. 2000 Bouncing water drops. Eur. Phys. Lett. 50 (6), 769–775.
+RIOBOO, R., MARENGO, M. & TROPEA, C. 2002 Time evolution of liquid drop impact onto solid,
+dry surfaces. Exp. Fluids 33 (1), 112–124.
+SCHLICHTING, H. 1968 Boundary-layer Theory. McGraw-Hill.
+SCHMIEDEN, C. 1953 Der Aufschlag von Rotationskörpern auf eine Wasseroberﬂäche. Richard v.
+Mises zum 70. Geburtstag gewidmet. Z. Angew. Math. Mech. 33 (4), 147–151.
+ŠIKALO, Š., WILHELM, H.-D., ROISMAN, I. V., JAKIRLI ´C, S. & TROPEA, C. 2005 Dynamic contact
+angle of spreading droplets: Experiments and simulations. Phys. Fluids 17 (6).
+SMITH, F. T., LI, L. & WU, G. X. 2003 Air cushioning with a lubrication/inviscid balance. J. Fluid
+Mech. 482, 291–318.
+SNEDDON, I. N. 1960 The elementary solution of dual integral equations. Glasgow Math. J. 4,
+108–110.
+SNEDDON, I. N. 1995 Fourier Transforms. Dover.
+STARON, L., LAGRÉE, P.-Y., RAY, P. & POPINET, S. 2013 Scaling laws for the slumping of a
+bingham plastic ﬂuid. J. Rheol. 57 (4).
+STEBNOVSKII, S. V. 1979 Characteristics in the initial stage of the spreading of a drop on a solid
+surface. J. Appl. Mech. Tech. Phys. 20 (1), 66–69.
+STEWARTSON, K. 1964 The Theory of Laminar Boundary Layers in Compressible Fluids, Oxford
+Mathematical Monographs. Clarendon.
+STOW, C. D. & HADFIELD, M. G. 1981 An experimental investigation of ﬂuid ﬂow resulting from
+the impact of a water drop with an unyielding dry surface. Proc. R. Soc. Lond. A 373 (1755),
+419–441.
+STOW, C. D. & STAINER, R. D. 1977 The physical products of a splashing water drop. J. Met.
+Soc. Japan. II 55 (5), 518–532.
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press
+
+===== PAGE 40 =====
+Drop impact on a solid surface: short-time self-similarity
+135
+THORODDSEN, S. T., ETOH, T. G., TAKEHARA, K., OOTSUKA, N. & HATSUKI, Y. 2005 The air
+bubble entrapped under a drop impacting on a solid surface. J. Fluid Mech. 545, 203–212.
+VAN DYKE, M. D. 1975 Perturbation Methods in Fluid Dynamics. Parabolic Press.
+VILLERMAUX, E. & BOSSA, B. 2011 Drop fragmentation on impact. J. Fluid Mech. 668, 412–435.
+WAGNER, H. 1932 Über stoß- und gleitvorgänge an der oberﬂäche von ﬂüssigkeiten. Z. Angew. Math.
+Mech. 12 (4), 193–215.
+WEISS, D. A. & YARIN, A. L. 1999 Single drop impact onto liquid ﬁlms: neck distortion, jetting,
+tiny bubble entrainment, and crown formation. J. Fluid Mech. 385, 229–254.
+XU, L., ZHANG, W. W. & NAGEL, S. R. 2005 Drop splashing on a dry smooth surface. Phys. Rev.
+Lett. 94 (18), 184505–4.
+YARIN, A. L. & WEISS, D. A. 1995 Impact of drops on solid surfaces: self-similar capillary waves,
+and splashing as a new type of kinematic discontinuity. J. Fluid Mech. 283, 141–173.
+https://doi.org/10.1017/jfm.2016.142 Published online by Cambridge University Press

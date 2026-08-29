@@ -1,0 +1,21 @@
+{
+  "clip": "IMG_0545",
+  "n_frames": 1674,
+  "fps": 29.97002997002997,
+  "working_body_px": 20.39393880393777,
+  "n_present": 1643,
+  "n_bl_samples": 1055,
+  "n_events": 30,
+  "elapsed_s": 3514.9146712,
+  "body_length": {
+    "clip": "IMG_0545",
+    "n_samples": 365,
+    "median_px": 14.55846813085924,
+    "iqr_px": [
+      11.71422428793682,
+      18.197874423571225
+    ],
+    "drift_pct": 25.587025886295223,
+    "n_frames_using_fallback": 579
+  }
+}

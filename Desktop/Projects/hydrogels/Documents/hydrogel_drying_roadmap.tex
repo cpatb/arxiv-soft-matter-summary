@@ -1,0 +1,520 @@
+% ============================================================
+%  Hydrogel Drying-Failure Research Roadmap -- Ground-Zero Rebuild
+%  Mode Selection (Crack / Peel / Curl) in Drying PEGDA/PEGMEA Gels
+%  Charlie Burton | Driscoll Lab | Northwestern University
+%  June 2026
+% ============================================================
+\documentclass[12pt,letterpaper]{article}
+\usepackage[left=0.9in,right=0.9in,top=0.9in,bottom=0.9in]{geometry}
+\usepackage{amsmath,amssymb,xcolor,fancyhdr,graphicx,booktabs,mdframed,bm,array,
+            enumitem,longtable}
+\usepackage[hidelinks]{hyperref}
+
+% ---- grey review/background box (from template) ----
+\newmdenv[
+  backgroundcolor=gray!10, linecolor=gray!60, linewidth=0.8pt, roundcorner=4pt,
+  skipabove=8pt, skipbelow=8pt, innertopmargin=6pt, innerbottommargin=6pt,
+  innerleftmargin=8pt, innerrightmargin=8pt]{reviewbox}
+
+% ---- blue intuition box (from template) ----
+\newmdenv[
+  backgroundcolor=blue!5, linecolor=blue!40, linewidth=0.8pt, roundcorner=4pt,
+  skipabove=8pt, skipbelow=8pt, innertopmargin=6pt, innerbottommargin=6pt,
+  innerleftmargin=8pt, innerrightmargin=8pt]{intuitionbox}
+
+% ---- red caution box ----
+\newmdenv[
+  backgroundcolor=red!5, linecolor=red!50, linewidth=0.8pt, roundcorner=4pt,
+  skipabove=8pt, skipbelow=8pt, innertopmargin=6pt, innerbottommargin=6pt,
+  innerleftmargin=8pt, innerrightmargin=8pt]{cautionbox}
+
+% ---- green gap box ----
+\newmdenv[
+  backgroundcolor=green!5, linecolor=green!50!black, linewidth=0.8pt, roundcorner=4pt,
+  skipabove=8pt, skipbelow=8pt, innertopmargin=6pt, innerbottommargin=6pt,
+  innerleftmargin=8pt, innerrightmargin=8pt]{gapbox}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Drying-Failure Roadmap (v4, rebuild)}
+\lhead{Burton \& Driscoll Lab, Northwestern}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+
+\title{\textbf{Hydrogel Drying-Failure Research Roadmap}\\[0.4em]
+\large Mode Selection --- Crack, Peel, and Curl --- in Drying PEGDA/PEGMEA Gels\\[0.2em]
+\normalsize A ground-zero rebuild for a one-month, equipment-light campaign}
+\author{Charlie Burton \quad|\quad Driscoll Lab, Northwestern University}
+\date{June 2026}
+
+% ---- Convenience macros ----
+\newcommand{\Gfrac}{\Gamma}
+\newcommand{\Emod}{E}
+\newcommand{\lG}{\ell_{\Gfrac}}          % network length Gamma/E
+\newcommand{\Dp}{D_{\mathrm{p}}}
+\newcommand{\Jflux}{J_0}
+\newcommand{\nve}{\nabla\varepsilon}
+\newcommand{\chiFH}{\chi}
+\newcommand{\phip}{\phi_{\mathrm{p}}}
+\newcommand{\Bic}{\mathrm{Bi}_c}
+\newcommand{\Bi}{\mathrm{Bi}}
+
+\begin{document}
+\maketitle
+\tableofcontents
+\bigskip
+
+% =====================================================================
+\section*{Purpose and Scope of This Document}
+\addcontentsline{toc}{section}{Purpose and Scope}
+% =====================================================================
+This is the working research plan for the next hydrogel paper, rebuilt from the
+ground up in June 2026. Two facts force the rebuild. First, \emph{all data from
+the Shamah thesis are quarantined} --- untrusted and to be recollected --- which
+removes the empirical spine (the $h\!\approx\!0.5$~mm peel ``plateau,'' the
+$14\times$ acetone/ethanol velocity ratio, the swelling-fracture table) on which
+the previous roadmap and outlook leaned. Second, the campaign is now
+\emph{equipment-light}: a high-speed camera, a temperature-controlled box, an
+analytical balance, UV cure with PEG monomers, and simple dead loads, with only
+\emph{occasional} rheometer/tensile access for cross-validation. The prior Aim~3
+(routine rheometer $+$ pure-shear rig) is replaced by camera-and-dead-load
+mechanics.
+
+The document is scoped to a \textbf{$\sim$one-month} experimental push whose
+\textbf{headline deliverable is the first quantitative crack/peel/curl
+mode-selection phase diagram for a drying \emph{covalent} PEG gel}, with the
+controlling length scales measured independently and camera-first. Risk posture
+is ``balanced'': a clean descriptive dataset is locked early (Week~1), and the
+predictive/quantitative claims are pushed with the remaining time.
+
+% =====================================================================
+\section{The Central Question and Thesis}
+% =====================================================================
+\begin{reviewbox}
+\textbf{Definitive question.} When a swollen covalent PEG network dries, what
+selects whether it relieves stress by \emph{vertical channel cracks},
+\emph{horizontal peeling/exfoliation}, or \emph{whole-layer curling} (the
+``cinnamon roll''), and can that selection be predicted from independently
+measured material and transport length scales rather than described after the
+fact?
+\end{reviewbox}
+
+\noindent Three sharpened sub-questions organize the work:
+\begin{enumerate}[label=\textbf{Q\arabic*.},leftmargin=2.6em,itemsep=1pt]
+\item \textbf{Mode selection.} What sets crack vs.\ peel vs.\ curl?
+\item \textbf{Network control.} How do crosslink density, modulus, and toughness
+set the emergent lengths (peel thickness, crack spacing, curl radius)?
+\item \textbf{Solvent control.} How do volatility, viscosity, and solvent quality
+$\chiFH$ move those lengths?
+\end{enumerate}
+
+\begin{intuitionbox}
+\textbf{Central thesis.} Morphology is a competition between two lengths. The
+\emph{network} fixes a material length $\lG \equiv \Gfrac/\Emod$ (fracture energy
+over modulus; units of length). The \emph{solvent and drying} fix a kinetic
+length --- the drying-front width $w$. Every observable length (peel thickness,
+crack spacing, curl radius) is a function of $\lG$ and $w$, and every mode
+transition is a threshold in their ratio together with the wet/dry toughness
+gradient. Measure $\lG$ and the front, and the phase diagram becomes predictive.
+The point of an equipment-light program is that both quantities are obtainable
+from a camera, a balance, and dead weights.
+\end{intuitionbox}
+
+% =====================================================================
+\section{What Changed, and the Shamah Quarantine}
+% =====================================================================
+\begin{cautionbox}
+\textbf{Data provenance.} Every Shamah-thesis quantity is treated as a
+\emph{hypothesis to test}, not a fact, until independently remeasured:
+the constant peel thickness $h\!\approx\!0.5$~mm; the $\approx\!13.7\times$
+acetone/ethanol crack-velocity ratio; the swelling-fracture table (which
+crosslink ratios survive water); crack-initiation times; and the ``flux is
+everything'' conclusion. Consequence: the previously celebrated agreement
+between $\Dp\Bi^2$ and the $14\times$ ratio was a \emph{fit} to Shamah's number
+and is now void; the corresponding figure must be regenerated from fresh data.
+\end{cautionbox}
+
+The earlier framing also inherits a \textbf{dimensional error} that is corrected
+throughout this document: the drying-front width is $w \sim \Dp/v_f$ (with $v_f$
+a velocity), \emph{not} $w\sim\sqrt{\Dp/v_f}$; the square-root form is valid only
+for a boundary-layer thickness $\sim \ell/\sqrt{\mathrm{Pe}}$.
+
+% =====================================================================
+\section{Novelty and Positioning}
+% =====================================================================
+\begin{gapbox}
+\textbf{The open seam.} Chung, Regev \& Mahadevan (\emph{Soft Matter} 2016), the
+foundational drying-exfoliation paper (PDMS/hexanes), has $\sim$8 citations and
+\emph{zero experimental follow-ups on drying exfoliation of a covalent gel}. No
+PEG drying-fracture paper exists. A three-mode (crack/peel/curl) selection map
+for a drying \emph{covalent, poroelastic} PEG network --- with stress from
+network osmotic deswelling rather than capillary/granular pressure, and with
+\emph{peeling/exfoliation as the under-mapped third mode} --- is open.
+\end{gapbox}
+
+\noindent The novelty is moderate but defensible, and must be carved explicitly
+against two neighbors:
+\begin{itemize}[leftmargin=1.4em,itemsep=1pt]
+\item \textbf{Scoop risk (colloidal).} Meng, Liu, Gan, Pauchard \& Chen,
+``Cracking to curling transition in drying colloidal films,'' \emph{EPJE}
+\textbf{43}, 64 (2020) --- a crack$\leftrightarrow$curl phase diagram, but for
+\emph{particulate} films (capillary stress, only two modes). Differentiate on
+material physics (covalent/poroelastic) and the third (peel) mode.
+\item \textbf{In-house overlap (swelling).} The Driscoll/Szczepanski program owns
+the \emph{swelling} direction and crack \emph{initiation} --- VanZanten et al.,
+\emph{Soft Matter} \textbf{20}, 6742 (2024); Wu et al., \emph{SSRN} 5644468
+(2025), ``Control Parameters for Swelling-induced Fracture.'' Position this work
+as the \textbf{deswelling mirror}: failure-\emph{mode selection}, not transient
+elastic surface patterns.
+\end{itemize}
+
+\begin{reviewbox}
+\textbf{Framing.} Lead with (i)~the deswelling mirror of the well-mapped
+swelling-instability canon, and (ii)~failure-mode selection in a covalent
+poroelastic gel with exfoliation as a new regime. Do \emph{not} sell
+``camera $+$ balance'' as a method novelty --- it is the standard desiccation-crack
+toolkit; sell the minimal-equipment angle as accessibility/reproducibility and
+the science as a \emph{predictive collapse} of camera-measured lengths onto a
+covalent-gel mode boundary. (Watch: Yang/Style/Dufresne, ``Dehydration drives
+damage in freezing of brittle hydrogels,'' \emph{Sci.\ Adv.}\ 2024 --- an elite
+group circling hydrogel dehydration-fracture.)
+\end{reviewbox}
+
+% =====================================================================
+\section{Design: Control Axes and Observables}
+% =====================================================================
+\subsection{Control axes}
+\begin{itemize}[leftmargin=1.4em,itemsep=1pt]
+\item \textbf{Crosslink density} (PEGDA:PEGMEA molar ratio) --- highest leverage;
+sets swelling ratio $Q$, modulus $\Emod$, brittleness, and $\lG$ at once. Levels
+$1{:}99,\,2{:}98,\,5{:}95,\,10{:}90,\,20{:}80,\,30{:}70$.
+\item \textbf{Solvent} --- acetone, ethanol, water, and acetone/ethanol
+\emph{blends} ($0/25/50/75/100$ vol\% acetone).
+\item \textbf{Drying rate} --- box temperature $20/40/60/80\,^\circ$C (raises
+evaporative flux $\Jflux$).
+\item \textbf{Thickness} (secondary) --- $0.5/1/2$~mm for length-scale scalings.
+\item Replicates $n=3$--$4$.
+\end{itemize}
+
+\subsection{Camera-measured observables (per run)}
+Mode (crack/peel/curl); onset time $t_c$; \textbf{peel thickness $h$} (side-view);
+\textbf{crack spacing / polygon area $\Lambda,A_p$} (top-view); \textbf{curl
+radius $\rho$} (arc fit); fragment size $L$; crack velocity $v_c$ (high-speed);
+mass-loss $m(t)$ (balance); side-view half-thickness $H(t)$.
+
+% =====================================================================
+\section{The One-Month Plan}
+% =====================================================================
+\begin{longtable}{@{}p{1.6cm}p{9.2cm}p{4.4cm}@{}}
+\toprule
+\textbf{Week} & \textbf{Action} & \textbf{Unlocks / output}\\
+\midrule\endhead
+0 & Synthesis SOP; thickness molds; camera/box/balance/backlight setup;
+\textbf{solvent-compatibility check} (acetone is marginal for high-MW PEG);
+gravimetric flux calibration $\Jflux(T,\text{blend})$; swelling-equilibration
+curves $Q(t)$ (\S\ref{sec:diff}); recalibrate the in-house model. &
+$\Jflux$, $Q_{\mathrm{eq}}$, $\varepsilon_0$, $\Dp$; re-baseline \\
+1 & \textbf{Safe deliverable:} crosslink sweep in \emph{acetone} at fixed
+thickness/$T$; record all observables; high-speed on fast events. &
+Crack$\to$peel$\to$curl backbone (guaranteed result) \\
+2 & Add ethanol, water, 2--3 blends; add the $T$/drying-rate axis on a reduced
+set; thickness sub-series; begin the mechanism (crack-vs-peel) imaging
+(\S\ref{sec:mech}). & Fill $(\Jflux,\text{crosslink})$ and $(T)$ planes; test
+$A_p\!\propto\!h^{4/3}$, $\rho\!\approx\!h/3\bar\varepsilon$ \\
+3 & \textbf{Mechanics linchpin:} camera $\Emod$ (gravity-sphere indentation),
+dead-load $\Gfrac$ (pure shear), camera-only fractocohesive length; compute
+$\lG$; cross-check on rheometer/tensile. & $\lG=\Gfrac/\Emod$ per crosslink \\
+4 & Synthesis: does $\lG$ predict $h$ and the boundaries (no free parameter)?
+Build $\Bi(t)$ trajectories; test $\Jflux\mu$ scaling via blends; assemble phase
+diagram and collapse plots. & Predictive tests; figures; draft \\
+\bottomrule
+\end{longtable}
+
+% =====================================================================
+\section{Camera-First Mechanics: Measuring $\Emod$, $\Gfrac$, and $\lG$}
+% =====================================================================
+\begin{intuitionbox}
+\textbf{Why this is possible without a rheometer.} A hanging dead weight is a
+drift-free absolute force ($F=mg$), so pure-shear toughness needs no load cell;
+what dead loads cannot give is controlled \emph{velocity}, which only rules out
+the cutting-toughness family. And the \emph{fractocohesive length} is obtainable
+from images alone --- a ratio of lengths, no force at all.
+\end{intuitionbox}
+
+\begin{center}\small
+\begin{tabular}{@{}p{2.4cm}p{6.4cm}p{4.6cm}p{1.6cm}@{}}
+\toprule
+Quantity & Method & Equation & Accuracy \\
+\midrule
+$\Emod$ & Gravity-sphere indentation, optical (Gandin 2021) $+$ finite-thickness
+$\psi$-correction (Long 2011) & $\Emod = 9F/(16R^{1/2}\delta^{3/2})\cdot\psi$,
+$F=(\rho_s-\rho_f)Vg$ & $\sim$10\% \\
+$\Gfrac$ & Pure shear / planar tension, dead-load step-loading $+$ camera
+fiducials (Rivlin--Thomas) & $\Gfrac = W(\lambda_c)\,H_0$ & $\pm$15\% \\
+$\ell_{fc}$ & Notch-length series, rupture stretch vs.\ notch length
+(camera-only, \emph{no force}) & knee of $\lambda_c(c)\approx \ell_{fc}$ &
+factor $\sim$2 \\
+$\varepsilon_0$ & Equilibrium swelling ratio & $\varepsilon_0 = 1-Q_{\mathrm{eq}}^{-1/3}$ (linear) & good \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Key relation: $\lG=\Gfrac/\Emod = \ell_{fc}\cdot f(\lambda_c)$, with
+neo-Hookean $f=(\lambda_c^2+2/\lambda_c-3)/6$. For brittle low-stretch PEGDA
+($\lambda_c\!\approx\!1.1$--$1.5$), $\lG\approx\ell_{fc}$; for stretchy gels $\lG$
+is $4$--$16\times$ larger. Expect $\lG\approx0.1$--$1$~mm.
+
+\begin{cautionbox}
+\textbf{Mechanics pitfalls.} Finite-thickness artifact can reach $\sim$600\% if
+ignored (keep $\delta/h\!\approx\!0.1$--$0.4$, $R/h\!\approx\!0.3$--$6$).
+Equilibrium reads give the \emph{drained} modulus ($\sim$10--40\% below a
+high-frequency rheometer $G'$ --- a real offset to reconcile on the cross-check).
+Swelling$\to$Flory--Rehner modulus is \emph{relative only} unless $\chiFH$ is
+calibrated ($G\propto \tfrac12-\chiFH$ diverges at $\chiFH=0.5$).
+\end{cautionbox}
+
+% =====================================================================
+\section{Protocol A: Diffusivity and Biot Number from the Equilibration Curves}
+\label{sec:diff}
+% =====================================================================
+The Week-0 curves do double duty: they yield the collective (poroelastic)
+diffusivity $\Dp$ \emph{and} the surface transfer $k_m$, and they calibrate the
+in-house solver (\texttt{swelling\_model/diffusion2d.py}), whose
+$D(\phip)=(k/\mu)\,M_{os}$, \texttt{calibrate\_Kperm}, Tanaka--Fillmore form, and
+$\sqrt{t}$/Bi variants already exist.
+
+\begin{intuitionbox}
+The gravimetric curve gives the \emph{collective} $\Dp$, which is
+$\phip$-dependent, so any single number is an average over the traversed range.
+Collect \emph{both} swelling-in-bath and drying-in-air curves; the deswelling
+(high-$\phip$, low-$k$) value is the fracture-relevant one. Report a bracket.
+\end{intuitionbox}
+
+\noindent\textbf{Two model-free extractions} (do both; agreement is the Fickian
+check). For a disc of full thickness $\ell$, radius $\gg$ thickness (axial-1D) or
+rim-sealed:
+\begin{align}
+\text{Early-time } (M_t/M_\infty\lesssim0.6):\quad & \frac{M_t}{M_\infty}=\frac{4}{\ell}\sqrt{\frac{Dt}{\pi}}
+\;\Rightarrow\; D=\pi\!\left(\frac{\text{slope}\cdot\ell}{4}\right)^{\!2},\\
+\text{Long-time (Tanaka--Fillmore):}\quad & \ln\!\Big(1-\frac{M_t}{M_\infty}\Big)=\text{const}-\frac{\pi^2 D}{\ell^2}\,t .
+\end{align}
+If $D_{\text{short}}\neq D_{\text{long}}$, that is the signature of
+$\phip$-dependence (quote both ends). Fitting $M_t/M_\infty\propto t^{\,n}$
+diagnoses the mechanism: $n\!\approx\!0.5$ Fickian; $n\!\approx\!1$ Case~II
+(a moving sharp front --- direct evidence of the self-sharpening the theory
+needs); intermediate is anomalous.
+
+\begin{reviewbox}
+\textbf{Bath vs.\ air --- where Bi hides.} In a solvent \emph{bath} the surface
+sits at liquid equilibrium ($\Bi\to\infty$, diffusion-limited): the initial
+$\sqrt{t}$ slope is effectively infinite and gives clean internal $D$. Drying in
+\emph{air} has finite $k_m$: the initial slope is \emph{finite}, and a naïve
+$\sqrt{t}$ fit returns a too-small $D$. Fit both parameters --- $D$ and $k_m$ ---
+and obtain $\Bi=k_m\ell/D$ as a byproduct, feeding the dynamic-Biot thread
+(\S\ref{sec:biot}). Tell the two regimes apart by whether the initial slope is
+infinite or curves finitely from the origin.
+\end{reviewbox}
+
+\noindent\textbf{Decompose.} Calibrating $K_{\mathrm{perm}}$ to each curve returns
+$D(\phip)=(k/\mu)M_{os}$, splitting each solvent's $D$ into a viscosity factor
+($\propto1/\mu$) and a thermodynamic factor ($M_{os}$, carrying the activity
+correction $(1-2\chiFH\phip)$). This directly tests $D\propto1/\mu$ across
+acetone/ethanol/water, the $\chiFH$-dependence (and exposes acetone's
+marginal-solvent risk if $M_{os}\to0$), and $D$ vs.\ crosslink through
+$k\propto\xi^2\propto\phip^{-m}$. \emph{Pitfalls:} moving boundary ($\ell$ changes
+on swelling --- reference to the dry frame / use the Lagrangian solver); edge
+effects (thin disc or Crank finite-cylinder product solution); consistent blot
+protocol, or a continuous balance for the air curves.
+
+% =====================================================================
+\section{Protocol B: Does Crack Precede Peel, Universally?}
+\label{sec:mech}
+% =====================================================================
+\begin{reviewbox}
+\textbf{The claim under test.} Chung--Mahadevan assert a \emph{causal sequence at
+one site}: a vertical/radial crack nucleates at the free surface \emph{first}, is
+arrested by the wet/dry toughness gradient, and \emph{deflects} into a horizontal
+peel --- one continuous, surface-initiated crack. Three commitments:
+(1)~\emph{order} (vertical before horizontal); (2)~\emph{continuity} (the peel is
+the deflected continuation, not an independent subsurface crack);
+(3)~\emph{initiation depth} (top surface, not subsurface).
+\end{reviewbox}
+
+\noindent Falsify against: \textbf{H1} peel-first/blister (subsurface delamination
+first; cracks segment it later); \textbf{H2} independent nucleation; \textbf{H3}
+\emph{regime-dependent switching} --- the order is not universal. H3 is the
+``agnostic of geometry/solvent/crosslinker?'' question and the likely real
+answer.
+
+\subsection{Side-view observables (all from a high-speed profile)}
+\begin{itemize}[leftmargin=1.4em,itemsep=1pt]
+\item \textbf{Kymograph (workhorse).} A vertical pixel-line through a peel site
+$\to$ a depth--time $(z,t)$ image. It timestamps $t_{\text{crack}}$ and
+$t_{\text{deflect}}$ and reveals whether the crack line \emph{bends}
+(continuity, H0) or a horizontal feature \emph{appears independently} at depth
+(H1).
+\item \textbf{Crack-tip trajectory.} A continuous down-then-turn path confirms
+deflection; a horizontal opening with no prior descent denies it.
+\item \textbf{Initiation depth.} Surface vs.\ subsurface, read directly in
+profile.
+\item \textbf{Front co-location.} The dry skin differs optically from the wet
+interior (enhance with a partitioning dye or crossed polarizers). If the
+deflection depth equals the front position at $t_{\text{deflect}}$, that is
+quantitative support for the toughness-gradient mechanism, not merely the
+kinematic order.
+\end{itemize}
+
+\subsection{Rig, practice, and a causal test}
+Backlit profile; slow the process first (ethanol / low box-$T$) to establish the
+kymograph signatures, then use the Phantom pre-trigger circular buffer for fast
+acetone; auto-trigger on a frame-difference / intensity spike; \emph{synchronize
+a top view} (shared trigger or an LED flash fiducial) so the radial crack (top)
+and the deflection (side) share one clock; fix px/mm per run (no hardcoded
+scale). \textbf{Best geometry:} a ``2.5-D'' drying cell --- a gel slab between two
+glass plates with one open edge, drying laterally --- gives an unobstructed,
+in-focus profile of the front and crack tip under controlled 1-D drying (also
+ideal for Protocol~A). \textbf{Causal test (razor $+$ camera):} pre-cut a shallow
+vertical notch; if peels reliably initiate at the notch, vertical-crack-first
+causality is supported; if they are independent of it, that argues for H1.
+
+\begin{gapbox}
+\textbf{Deliverable: a mechanism map.} Classify each run's ordering
+(\emph{crack}$\to$\emph{peel} / \emph{peel}$\to$\emph{crack} / \emph{simultaneous}
+/ \emph{curl-without-crack}) across geometry $\times$ solvent $\times$ crosslink
+and overlay it on the morphology phase diagram. \emph{Predicted (falsifiable):}
+the crack$\to$peel order is regime-specific --- it holds in the peel regime,
+breaks in the curl regime (compressive buckling, no preceding vertical crack),
+and degenerates in the brittle/high-crosslink regime (cracks that never deflect).
+Mapping the \emph{boundary of validity} of Chung's mechanism is a cleaner result
+than a flat confirm/deny.
+\end{gapbox}
+
+% =====================================================================
+\section{Length Ledger and the Operational Biot Number}
+\label{sec:biot}
+% =====================================================================
+\begin{center}\small
+\begin{tabular}{@{}p{3.3cm}p{4.6cm}p{5.4cm}@{}}
+\toprule
+Length & Scaling & Set by \\
+\midrule
+Network length $\lG$ & $\Gfrac/\Emod$ & crosslink ($\Gfrac,\Emod$) \\
+Front width $w$ & $\Dp/v_f$ \emph{(corrected; not $\sqrt{\cdot}$)} & $\Dp$
+(network), $v_f$ (solvent flux) \\
+Peel thickness $h$ & $\lG^{1/3}w^{2/3}$ (Chung) & $\lG\times w$ \\
+Crack spacing / area & $\Lambda\propto h^{2/3\text{--}1}$, $A_p\propto h^{4/3}$ &
+thickness (modulus-set) \\
+Curl radius $\rho$ & $\approx h/3\bar\varepsilon$ (locked) & $h$, differential
+strain \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The three solvent knobs collapse into one measurable number, the
+drying Biot number $\Bi=k_mH/\Dp$, extracted on the fly from $m(t)$ and $H(t)$.
+With the corrected front width, $w\approx H/\Bi$, so
+$h\propto\Bi^{-2/3}$; the peeling threshold becomes a network-set critical value
+$\Bic\sim (H/\varepsilon_0 R)\sqrt{\lG/R}$, and the failure rate carries an extra
+$\Dp$: rate $\sim \Dp\Bi^2/H^2$.
+
+\begin{cautionbox}
+\textbf{The $\Jflux\mu$ trap (design-critical).} The drying-stress gradient scales
+as $\nve\propto \Jflux\mu/(\Emod k)$ (Scherer; Hennessy--Craster--Matar's
+``drying number'' $Q\propto \Jflux\eta/kE$). But pure acetone and pure ethanol
+\emph{nearly cancel} on this group: (flux ratio $\approx3.9$)$\times$(viscosity
+ratio $0.32/1.07$) $\approx 1.2$ --- the two pure solvents sit on the \emph{same}
+$\Jflux\mu$ contour. \textbf{Blends are therefore essential} to move off the
+contour and test the scaling. Matched surface tensions ($\sim$22--23~mN/m) make
+the pair unusually clean; the confound to model is surface enrichment in ethanol
+during drying (both $\mu$ and $\Jflux$ drift).
+\end{cautionbox}
+
+% =====================================================================
+\section{Falsifiable Predictions}
+% =====================================================================
+\begin{enumerate}[label=\textbf{P\arabic*.},leftmargin=2.4em,itemsep=1pt]
+\item \textbf{Length scale.} Measured $\lG$ (no free parameter) predicts the
+observed peel thickness $h$ and the crack$\leftrightarrow$peel boundary; if $h$
+instead tracks $\Jflux^{-2/3}$ over the blend range, the $\lG$-dominated picture
+is wrong (and that is the headline instead).
+\item \textbf{Mode boundary.} Crack$\to$peel occurs where $\varepsilon_0$ (from
+measured $Q$) drops below the $\sqrt{\lG/h^3}$ threshold.
+\item \textbf{Flux/viscosity.} Lengths collapse on $\Jflux\mu$, not $\Jflux$
+alone --- requires blends.
+\item \textbf{Curl identity.} Curl curvature obeys $\rho\approx h/3\bar\varepsilon$
+(mud peel) or the Euler buckling $L_c$; either is a result.
+\item \textbf{Toughness gradient.} UV-cure-asymmetric gels peel on the
+steeper-gradient face; uniformly cured controls crack symmetrically.
+\item \textbf{Universal $\Bic$.} $\Bi(t^\star)$ at failure collapses to one
+solvent-independent value; if each solvent fails at a different $\Bi$, the
+threshold model is wrong.
+\item \textbf{Mechanism ordering (\S\ref{sec:mech}).} The crack$\to$peel sequence
+is regime-specific, not universal; a single universal ordering across all
+conditions would refute this.
+\end{enumerate}
+
+% =====================================================================
+\section{Risks and Mitigations}
+% =====================================================================
+\begin{center}\small
+\begin{tabular}{@{}p{6.6cm}p{8.4cm}@{}}
+\toprule
+Risk & Mitigation \\
+\midrule
+Acetone may be a poor solvent/precipitant for high-MW PEG ($\chiFH\!\approx\!0.5$,
+MW-dependent) & Week-0 compatibility check; swap solvent or restrict crosslink
+range if it precipitates \\
+$\chiFH$ for PEG--ethanol/--acetone untabulated & Measure $Q_{\mathrm{eq}}$
+directly; do not rely on literature $\chiFH$ \\
+Drying reproducibility (humidity, esp.\ water) & Box for $T$ ($+$ humidity if
+possible); log ambient RH every run \\
+Slow water/curl runs & Overnight time-lapse; accelerate with box $T$ \\
+Pure-shear on swollen strips dries mid-test / grips slip & Solvent-saturated
+atmosphere; wide bonded grips, width $\ge 5$--$10\times H_0$; report equilibrium
+values \\
+Drained vs.\ dynamic modulus offset & Reconcile camera-$\Emod$ (drained) with
+rheometer $G'$ on the cross-check subset \\
+One month is tight & Week-1 acetone mode map is the guaranteed deliverable;
+everything after is upside \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =====================================================================
+\section*{Key References}
+\addcontentsline{toc}{section}{Key References}
+% =====================================================================
+\small
+\begin{itemize}[leftmargin=1.2em,itemsep=0.5pt]
+\item Chung, Regev \& Mahadevan, \emph{Spontaneous exfoliation of a drying gel},
+Soft Matter \textbf{12}, 7855 (2016). --- backbone.
+\item Meng, Liu, Gan, Pauchard \& Chen, \emph{Cracking to curling transition in
+drying colloidal films}, EPJE \textbf{43}, 64 (2020). --- scoop \#1.
+\item VanZanten, Chen, Driscoll \& Szczepanski, Soft Matter \textbf{20}, 6742
+(2024); Wu et al., SSRN 5644468 (2025). --- in-house swelling lineage.
+\item Style, Peppin \& Cocks, \emph{Mud peeling\ldots}, JGR Earth Surf.\
+\textbf{116}, F01025 (2011). --- $\rho\approx h/3\bar\varepsilon$.
+\item Ma, Lowensohn \& Burton, \emph{Universal scaling of polygonal desiccation
+cracks}, PRE \textbf{99}, 012802 (2019). --- $A_p\propto h^{4/3}$.
+\item Singh \& Tirumkudulu, PRL \textbf{98}, 218302 (2007); Tirumkudulu \&
+Russel, Langmuir \textbf{21}, 4938 (2005). --- CCT, $\sigma_c\propto h^{-2/3}$.
+\item Lilin, Ibrahim \& Bischofberger, \emph{Crack densification\ldots}, Sci.\
+Adv.\ \textbf{10}, eadp3746 (2024). --- crack kinetics.
+\item Chen, Wang \& Suo, Extreme Mech.\ Lett.\ \textbf{10}, 50 (2017); Yang, Yin
+\& Suo, JMPS \textbf{131}, 43 (2019); Ma et al., Adv.\ Mater.\ 2311795 (2024). ---
+fractocohesive length.
+\item Gandin et al., Sci.\ Rep.\ \textbf{11}, 22668 (2021); Long et al., Biophys.\
+J.\ \textbf{101}, 643 (2011). --- camera indentation $+$ finite-thickness.
+\item Rivlin \& Thomas, J.\ Polym.\ Sci.\ \textbf{10}, 291 (1953); Long \& Hui,
+Soft Matter \textbf{12}, 8069 (2016). --- pure-shear toughness.
+\item Flory \& Rehner (1943); Merrill et al., Biomaterials \textbf{14}, 1117
+(1993, $\chiFH_{\text{PEG-water}}\!\approx\!0.43$); Akalp \& Bryant, Polymer
+\textbf{66}, 135 (2015). --- swelling thermodynamics.
+\item Tanaka \& Fillmore, JCP \textbf{70}, 1214 (1979); Offeddu et al., AIP Adv.\
+\textbf{8}, 105006 (2018, $k\propto\xi^2$). --- poroelastic $\Dp$.
+\item Hennessy, Craster \& Matar, PRE \textbf{105}, 054602 (2022, drying number);
+Boulogne, Pauchard \& Giorgiutti-Dauphin\'e, Soft Matter \textbf{8}, 8505 (2012);
+Tan et al.\ (2025). --- solvent/cosolvent control.
+\end{itemize}
+
+\end{document}

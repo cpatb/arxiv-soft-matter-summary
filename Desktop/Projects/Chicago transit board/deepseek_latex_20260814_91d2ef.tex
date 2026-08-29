@@ -1,0 +1,755 @@
+\documentclass[11pt]{article}
+
+\usepackage{lmodern}   % Type 1 T1 fonts; without this T1 falls back to EC bitmaps
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage{upquote}  % straight quotes in listings/verbatim (needs T1 + textcomp)
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue,
+  pdftitle={CTA Live Wall Map Build Guide},
+  pdfauthor={DIY Transit Map},
+}
+
+% ---------- Code listing styles ----------
+\lstdefinestyle{arduino}{
+  language=C++,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{orange},
+  breaklines=true,
+  showstringspaces=false,
+  upquote=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  captionpos=b,
+  morekeywords={String, boolean, byte, unsigned, long, uint8_t, uint16_t, uint32_t, CRGB, JsonArray, JsonObject, DynamicJsonDocument, DeserializationError, HTTPClient, WiFiClientSecure}
+}
+
+\lstdefinestyle{python}{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{orange},
+  breaklines=true,
+  showstringspaces=false,
+  upquote=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  captionpos=b
+}
+
+\lstdefinestyle{text}{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  showstringspaces=false,
+  upquote=true,
+  frame=single,
+  captionpos=b
+}
+
+\title{\textbf{Build a Live Chicago CTA Wall Map}\\\large A Step-by-Step Guide for a Cheap ESP32 + WS2812B DIY Project}
+\author{DIY Transit Electronics}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+This guide describes how to build a framed wall map of the Chicago Transit Authority (CTA) ``L'' rail system where a small RGB LED at each station lights up when a train is approaching or has just departed that station. The data comes live from the official CTA Train Tracker API.
+
+The build is intended to be as cheap as possible while still producing a reliable, attractive object. It uses:
+
+\begin{itemize}
+    \item An ESP32 development board as the WiFi microcontroller.
+    \item WS2812B addressable RGB LEDs, one per station.
+    \item A printed or laser-cut schematic map mounted in a shadow box.
+    \item A 5V power supply.
+    \item Free software: Arduino IDE, Python, Inkscape or similar.
+\end{itemize}
+
+You should have basic soldering skills and be comfortable uploading code to an ESP32. This project is for \textbf{personal use}. The CTA map, logo, and data have copyright/trademark restrictions; do not sell the finished item without addressing licensing and API terms.
+
+\section{Bill of Materials}
+
+The total can be around \$70--\$140 depending on what you already own. The table below gives the recommended cheap parts.
+
+% Column widths sum to 14.2cm; with 10 x \tabcolsep (2.1cm) this fits the
+% 16.5cm textwidth left by the 1in margins.
+\begin{longtable}{p{3.2cm} p{4.6cm} p{1.4cm} p{2.0cm} p{3.0cm}}
+\toprule
+\textbf{Item} & \textbf{Specification} & \textbf{Qty} & \textbf{Approx. Cost} & \textbf{Source} \\
+\midrule
+ESP32 Dev Board & WROOM-32, USB-C or micro-USB, 30-pin or 38-pin & 1 & \$4--\$8 & AliExpress, Amazon, eBay \\
+WS2812B LED strip & 30 LED/m, 5V, IP30 non-waterproof, 5m roll (150 LEDs) & 1 & \$12--\$20 & AliExpress, Amazon \\
+Power supply & 5V DC, 10A, barrel jack or screw terminals & 1 & \$10--\$15 & Amazon, AliExpress \\
+Level shifter & 74AHCT125 or 74HCT245 DIP & 1 & \$0.50--\$2 & eBay, local electronics \\
+330 $\Omega$ resistor & 1/4 W, metal film or carbon & 1 & pennies & local or online \\
+1000 $\mu$F capacitor & 10V or higher electrolytic & 1 & \$0.50 & local or online \\
+Hook-up wire & 22 AWG solid core, multiple colors & 5--10 m & \$5 & local or online \\
+Heat shrink tubing & Assorted small diameters & 1 pack & \$3 & local or online \\
+Foam board or plywood & 24$\times$36 inch or larger & 1 & \$3--\$10 & dollar store, art store, hardware store \\
+Printed map & 24$\times$36 inch color print of a simplified CTA L map & 1 & \$10--\$25 & local print shop, FedEx Office \\
+Diffuser material & tracing paper, vellum, or thin white acrylic & 1 sheet & \$2--\$8 & art store or online \\
+Frame/shadow box & 24$\times$36 inch or custom & 1 & \$15--\$40 & IKEA, thrift store, craft store \\
+Solder, flux, glue, tape & Misc consumables & --- & \$10--\$15 & local or online \\
+\bottomrule
+\caption{Cheap BOM for the CTA wall map. Prices are approximate and vary by region.}
+\label{tab:bom}
+\end{longtable}
+
+\subsection*{Tools You Will Need}
+
+\begin{itemize}
+    \item Soldering iron with fine tip
+    \item Solder wire and flux
+    \item Wire strippers
+    \item Multimeter
+    \item Hot glue gun or double-sided tape
+    \item Computer with Arduino IDE
+    \item USB cable for ESP32
+    \item Hobby knife or scissors
+    \item Ruler or straightedge
+\end{itemize}
+
+\section{Step 1: Get the Data Feeds}
+
+\subsection{1.1 CTA Train Tracker API Key}
+
+The live train positions come from CTA's official API. You need a free developer key.
+
+\begin{enumerate}
+    \item Go to \url{https://www.transitchicago.com/developers/traintracker/}.
+    \item Register for a developer account if you do not have one.
+    \item Request access to the \textbf{Train Tracker API}.
+    \item You will receive an API key, usually a string of letters and numbers.
+\end{enumerate}
+
+The key is free for non-commercial use. Read the terms of service. Do not share your key publicly.
+
+\subsection{1.2 CTA GTFS Static Data}
+
+You also need the static schedule and station data, provided in GTFS format.
+
+\begin{itemize}
+    \item Download from: \url{https://www.transitchicago.com/downloads/sch_data/google_transit.zip}
+    \item Extract the ZIP file somewhere on your computer.
+\end{itemize}
+
+The GTFS file contains \texttt{stops.txt}, \texttt{routes.txt}, \texttt{trips.txt}, and \texttt{stop\_times.txt}, which we will use to build a station list.
+
+\section{Step 2: Generate the Station List}
+
+We need a list of every rail station with its CTA \texttt{stop\_id}. The script below downloads the GTFS feed, filters for rail routes, and writes a CSV template.
+
+Create a file named \texttt{prepare\_gtfs.py}:
+
+\begin{lstlisting}[style=python,caption={Python script to extract CTA rail stations from GTFS.},label={lst:prepare_gtfs}]
+import urllib.request
+import zipfile
+import csv
+import io
+import os
+from collections import defaultdict
+
+GTFS_URL = "https://www.transitchicago.com/downloads/sch_data/google_transit.zip"
+OUT_DIR = "cta_gtfs"
+OUT_CSV = "stations_template.csv"
+
+def download_gtfs():
+    print("Downloading GTFS feed...")
+    data = urllib.request.urlopen(GTFS_URL).read()
+    with zipfile.ZipFile(io.BytesIO(data)) as z:
+        z.extractall(OUT_DIR)
+    print(f"Extracted GTFS to {OUT_DIR}")
+
+def read_csv(filename):
+    with open(filename, newline='', encoding='utf-8-sig') as f:
+        return list(csv.DictReader(f))
+
+def main():
+    if not os.path.exists(os.path.join(OUT_DIR, "stops.txt")):
+        download_gtfs()
+
+    routes = read_csv(os.path.join(OUT_DIR, "routes.txt"))
+    trips = read_csv(os.path.join(OUT_DIR, "trips.txt"))
+    stop_times = read_csv(os.path.join(OUT_DIR, "stop_times.txt"))
+    stops = read_csv(os.path.join(OUT_DIR, "stops.txt"))
+
+    # Filter for rail routes. In CTA GTFS, route_type == 1 means subway/metro.
+    rail_routes = [r for r in routes if r.get("route_type") == "1"]
+    if not rail_routes:
+        # Fallback: use known route short names.
+        known = {"Red", "Blue", "Brn", "G", "Org", "Pink", "P", "Y"}
+        rail_routes = [r for r in routes if r.get("route_short_name") in known]
+
+    route_ids = {r["route_id"] for r in rail_routes}
+    route_short_names = {r["route_id"]: r["route_short_name"] for r in rail_routes}
+
+    # Map trip_id to route_id for rail trips only.
+    trip_to_route = {}
+    for t in trips:
+        if t["route_id"] in route_ids:
+            trip_to_route[t["trip_id"]] = t["route_id"]
+
+    stop_to_routes = defaultdict(set)
+    stop_id_to_name = {s["stop_id"]: s["stop_name"] for s in stops}
+
+    # Iterate through stop_times. This may take a minute because the file is large.
+    print("Scanning stop_times.txt...")
+    for st in stop_times:
+        route_id = trip_to_route.get(st["trip_id"])
+        if route_id is not None:
+            stop_id = st["stop_id"]
+            stop_to_routes[stop_id].add(route_id)
+
+    print(f"Found {len(stop_to_routes)} unique rail station IDs.")
+
+    # Write CSV template. You will fill in led_index manually later.
+    with open(OUT_CSV, "w", newline='', encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["line", "stop_id", "stop_name", "led_index"])
+        for stop_id, routes_for_stop in sorted(stop_to_routes.items()):
+            lines = [route_short_names[rid] for rid in routes_for_stop]
+            writer.writerow([",".join(lines), stop_id, stop_id_to_name.get(stop_id, ""), ""])
+
+    print(f"Wrote {OUT_CSV}")
+    print("Open the CSV and fill in the led_index column.")
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+
+Run the script:
+
+\begin{verbatim}
+python prepare_gtfs.py
+\end{verbatim}
+
+This creates \texttt{stations\_template.csv} with columns:
+
+\begin{verbatim}
+line,stop_id,stop_name,led_index
+Red,41090,Jarvis,
+Red,41100,Morse,
+...
+\end{verbatim}
+
+\section{Step 3: Design the Physical Map and Assign LED Indices}
+
+You need a physical map with one LED per station. A geographically accurate map will be too crowded downtown, so a schematic transit map is better.
+
+\subsection{3.1 Create or Obtain a Map}
+
+For a personal project you can trace a simplified CTA map, draw one in Inkscape, or use a map image for personal reference. Keep these points in mind:
+
+\begin{itemize}
+    \item Leave enough space between Loop stations.
+    \item Use a dark background; black or dark charcoal makes LED light pop.
+    \item Mark each station with a small circle or dot.
+    \item Do not use the official CTA logo if you might later sell the item.
+\end{itemize}
+
+A good size is 24$\times$36 inches. You can print the map at a local print shop.
+
+\subsection{3.2 Mount the Map and Mark Holes}
+
+Attach the printed map to a rigid board such as foam board or thin plywood. Poke or drill a small hole at each station location. The holes should be slightly smaller than the LED package diameter, typically 8--10~mm for WS2812B 5050 LEDs.
+
+\subsection{3.3 Number Every Station}
+
+Starting at one end of the map, assign each station a unique integer LED index beginning at 0. Write the number next to each hole on the back of the board. This number is the \texttt{led\_index} in the CSV.
+
+Be systematic. A suggested order:
+
+\begin{enumerate}
+    \item Red Line from Howard to 95th/Dan Ryan
+    \item Blue Line from O'Hare to Forest Park
+    \item Brown Line
+    \item Green Line
+    \item Orange Line
+    \item Pink Line
+    \item Purple Line
+    \item Yellow Line
+    \item Shared Loop stations only once, with one LED per physical station.
+\end{enumerate}
+
+Make sure no two stations share the same index. The total should be around 145--146 unique stations.
+
+\subsection{3.4 Fill in the CSV}
+
+Open \texttt{stations\_template.csv} in a spreadsheet program. For each row, enter the \texttt{led\_index} that you assigned to that station. Save the file.
+
+\section{Step 4: Generate the Arduino Mapping Header}
+
+The ESP32 firmware needs a mapping from CTA \texttt{stop\_id} to LED index. The script below reads your filled CSV and emits a C++ header file.
+
+Create \texttt{make\_mapping.py}:
+
+\begin{lstlisting}[style=python,caption={Python script to generate mapping.h from the filled CSV.},label={lst:make_mapping}]
+import csv
+import sys
+
+def main(csv_file, output_header):
+    rows = []
+    max_led = -1
+
+    with open(csv_file, newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            led_str = row.get("led_index", "").strip()
+            stop_id = row.get("stop_id", "").strip()
+            if led_str == "" or stop_id == "":
+                continue
+            led_index = int(led_str)
+            rows.append((led_index, stop_id))
+            max_led = max(max_led, led_index)
+
+    if not rows:
+        print("Error: no rows with led_index filled in.")
+        sys.exit(1)
+
+    rows.sort()
+
+    with open(output_header, "w", encoding="utf-8") as f:
+        f.write("#ifndef MAPPING_H\n")
+        f.write("#define MAPPING_H\n\n")
+        f.write(f"#define NUM_LEDS {max_led + 1}\n")
+        f.write(f"const int stationCount = {len(rows)};\n\n")
+        f.write("struct StationMap {\n")
+        f.write("  const char* stopId;\n")
+        f.write("  int ledIndex;\n")
+        f.write("};\n\n")
+        f.write("const StationMap stationMap[] = {\n")
+        for led_index, stop_id in rows:
+            f.write(f'  {{"{stop_id}", {led_index}}},\n')
+        f.write("};\n\n")
+        f.write("#endif\n")
+
+    print(f"Wrote {output_header} with {len(rows)} stations, NUM_LEDS={max_led + 1}")
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Usage: python make_mapping.py stations_template.csv mapping.h")
+        sys.exit(1)
+    main(sys.argv[1], sys.argv[2])
+\end{lstlisting}
+
+Run it:
+
+\begin{verbatim}
+python make_mapping.py stations_template.csv mapping.h
+\end{verbatim}
+
+This creates \texttt{mapping.h}. An example of the first few lines:
+
+\begin{lstlisting}[style=arduino,caption={Example generated mapping.h (fragment).},label={lst:mapping_example}]
+#ifndef MAPPING_H
+#define MAPPING_H
+
+#define NUM_LEDS 145
+const int stationCount = 145;
+
+struct StationMap {
+  const char* stopId;
+  int ledIndex;
+};
+
+const StationMap stationMap[] = {
+  {"41090", 0},
+  {"41100", 1},
+  // ... many more ...
+};
+
+#endif
+\end{lstlisting}
+
+\section{Step 5: Prototype with a Few LEDs}
+
+Before building the full map, test the electronics and firmware with a small strip of 5--10 LEDs.
+
+\begin{enumerate}
+    \item Cut a short segment of WS2812B strip containing 5--10 LEDs.
+    \item Solder wires to the 5V, GND, and DIN pads on the input end of the strip.
+    \item Connect the ESP32 to the strip according to the wiring diagram in Section~\ref{sec:wiring}.
+    \item Install the required Arduino libraries.
+    \item Use the firmware in Section~\ref{sec:firmware}, but temporarily set \texttt{NUM\_LEDS} to a small number for the test.
+    \item Upload the code and verify that the LEDs light up when you call \texttt{FastLED.show()}.
+    \item Do not proceed until the prototype works reliably.
+\end{enumerate}
+
+\section{Step 6: Wire and Mount the Full LED Array}
+
+\subsection{6.1 Cut the LED Strip}
+
+You need one WS2812B LED per station. Cut the 5m strip into individual LED segments at the copper pads. The data direction is marked by arrows or \texttt{DIN} and \texttt{DOUT} labels.
+
+\begin{itemize}
+    \item The input side has \texttt{DIN}, 5V, GND.
+    \item The output side has \texttt{DOUT}, 5V, GND.
+    \item You only use the \texttt{DIN} of the first LED and \texttt{DOUT} of each LED to the next \texttt{DIN}.
+\end{itemize}
+
+\subsection{6.2 Solder Extension Wires Between LEDs}
+
+Because the LEDs must be placed at irregular station positions, you cannot use the strip as a continuous line. For each LED:
+
+\begin{itemize}
+    \item Solder three wires to the LED's 5V, GND, and \texttt{DOUT} pads.
+    \item Route those wires to the next LED's 5V, GND, and \texttt{DIN} pads.
+    \item Use 22 AWG wire. Data wire can be thinner; power wires should be at least 22 AWG.
+    \item Keep data wires reasonably short, ideally under 30~cm between LEDs. Use a 330~$\Omega$ resistor in series with the first data input to reduce ringing.
+    \item Use heat shrink tubing to cover solder joints.
+\end{itemize}
+
+This is tedious but cheap.
+
+\subsection{6.3 Mount LEDs Behind the Map}
+
+Position each LED directly behind its station hole. Hot glue works well. Leave a gap of about 1--2~cm between the LED and the map surface so the light diffuses. You can use a spacer layer such as foam board strips or 3D-printed standoffs.
+
+\subsection{6.4 Add Power Injection}
+
+With 145 WS2812B LEDs, voltage drop along the power wires will cause color and brightness problems. Add power injection every 30--40 LEDs.
+
+\begin{itemize}
+    \item Connect the 5V and GND from the power supply to the beginning of the LED chain.
+    \item Run additional 5V and GND wires to points after LEDs 30, 60, 90, and 120.
+    \item Do not connect data at these injection points; only power and ground.
+\end{itemize}
+
+\section{Step 7: Connect the ESP32 and Power Supply}
+\label{sec:wiring}
+
+The ESP32 GPIO output is 3.3~V, but WS2812B data inputs officially expect 5~V logic. A 74AHCT125 level shifter converts 3.3~V to 5~V and prevents many flickering problems.
+
+\begin{figure}[H]
+\centering
+\begin{lstlisting}[style=text,caption={Wiring diagram with 74AHCT125 level shifter.},label={lst:wiring_diagram}]
+5V Power Supply (+) ----[1000uF cap]----> LED strip 5V bus
+5V Power Supply GND (-) ------------------> LED strip GND bus
+
+ESP32 3.3V -------------------------> 74AHCT125 VCC (pin 14)
+ESP32 GND --------------------------> 74AHCT125 GND (pin 7)
+ESP32 GPIO12 --> 330 ohm --> 74AHCT125 1A (pin 2)
+
+74AHCT125 1Y (pin 3) ---------------> First LED DIN
+74AHCT125 1OE (pin 1) --------------> GND
+
+ESP32 GND --------------------------> LED strip GND bus
+\end{lstlisting}
+\end{figure}
+
+If you skip the level shifter, connect the ESP32 GPIO through a 330~$\Omega$ resistor directly to the first LED DIN. This often works for short chains, but if the first LED flickers or shows random colors, use the level shifter.
+
+\subsection{Power Supply Notes}
+
+\begin{itemize}
+    \item Use a 5V DC supply rated at least 4A for low brightness operation.
+    \item A 10A supply is safer for full brightness and future expansion.
+    \item Connect the 1000~$\mu$F capacitor across the 5V and GND terminals close to the LED strip. The capacitor side marked with a stripe or minus sign goes to GND.
+    \item Do not power the LED strip from the ESP32's 5V pin.
+\end{itemize}
+
+\section{Step 8: Install and Configure the Firmware}
+\label{sec:firmware}
+
+\subsection{8.1 Install Arduino IDE and Libraries}
+
+\begin{enumerate}
+    \item Download and install the Arduino IDE from \url{https://www.arduino.cc/en/software}.
+    \item Add ESP32 board support. In Preferences, add the boards manager URL:
+    \begin{quote}
+    \small\url{https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json}
+    \end{quote}
+    Then install \texttt{esp32} by Espressif Systems.
+    \item Install the following libraries from the Library Manager:
+    \begin{itemize}
+        \item \texttt{FastLED}
+        \item \texttt{ArduinoJson}
+    \end{itemize}
+\end{enumerate}
+
+\subsection{8.2 Create the Sketch}
+
+Create a new Arduino sketch named \texttt{cta\_wall\_map}. Copy the code below into the sketch. Place the generated \texttt{mapping.h} file in the same sketch folder.
+
+\begin{lstlisting}[style=arduino,caption={Complete ESP32 Arduino sketch for the CTA wall map.},label={lst:arduino}]
+/*
+  CTA Wall Map - ESP32 + WS2812B
+  Fetches CTA Train Tracker positions and lights station LEDs.
+  Requires mapping.h generated by make_mapping.py
+*/
+
+#include <WiFi.h>
+#include <WiFiClientSecure.h>
+#include <HTTPClient.h>
+#include <FastLED.h>
+#include <ArduinoJson.h>
+#include "mapping.h"
+
+// ---------- User configuration ----------
+const char* ssid = "YOUR_WIFI_SSID";
+const char* password = "YOUR_WIFI_PASSWORD";
+const char* ctaApiKey = "YOUR_CTA_API_KEY";
+
+#define LED_PIN 12
+#define BRIGHTNESS 64        // 0-255, lower is safer/cheaper
+const char* routeCodes = "red,blue,brn,g,org,pink,p,y";
+// ----------------------------------------
+
+CRGB leds[NUM_LEDS];
+String apiUrl = "https://lapi.transitchicago.com/api/1.0/ttpositions.aspx?key="
+                + String(ctaApiKey) + "&rt=" + String(routeCodes) + "&outputType=json";
+
+WiFiClientSecure client;
+HTTPClient http;
+
+int stationToLed(const char* stopId) {
+  for (int i = 0; i < stationCount; i++) {
+    if (strcmp(stationMap[i].stopId, stopId) == 0) {
+      return stationMap[i].ledIndex;
+    }
+  }
+  return -1;
+}
+
+CRGB lineColor(const char* line) {
+  if (strcmp(line, "red") == 0) return CRGB(198, 12, 48);
+  if (strcmp(line, "blue") == 0) return CRGB(0, 161, 222);
+  if (strcmp(line, "brn") == 0) return CRGB(98, 54, 27);
+  if (strcmp(line, "g") == 0) return CRGB(0, 155, 58);
+  if (strcmp(line, "org") == 0) return CRGB(249, 70, 28);
+  if (strcmp(line, "pink") == 0) return CRGB(226, 126, 166);
+  if (strcmp(line, "p") == 0) return CRGB(82, 35, 152);
+  if (strcmp(line, "y") == 0) return CRGB(249, 227, 0);
+  return CRGB(255, 255, 255);
+}
+
+void connectWiFi() {
+  Serial.print("Connecting to WiFi");
+  WiFi.mode(WIFI_STA);
+  WiFi.setAutoReconnect(true);
+  WiFi.begin(ssid, password);
+  unsigned long start = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - start < 20000) {
+    delay(500);
+    Serial.print(".");
+  }
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\nWiFi connected. IP: " + WiFi.localIP().toString());
+  } else {
+    Serial.println("\nWiFi connection failed. Will retry in loop.");
+  }
+}
+
+void fetchAndUpdate() {
+  if (WiFi.status() != WL_CONNECTED) {
+    connectWiFi();
+    if (WiFi.status() != WL_CONNECTED) return;
+  }
+
+  client.setInsecure();  // Skip certificate validation; personal prototype only.
+  http.begin(client, apiUrl);
+  int httpCode = http.GET();
+
+  if (httpCode == HTTP_CODE_OK) {
+    // CTA response can be ~50-100KB. 128KB JSON buffer is safe on ESP32.
+    DynamicJsonDocument doc(128 * 1024);
+    DeserializationError err = deserializeJson(doc, http.getStream());
+
+    if (!err) {
+      FastLED.clear();
+      JsonArray routeArray = doc["ctatt"]["route"].as<JsonArray>();
+
+      for (JsonObject route : routeArray) {
+        const char* line = route["@name"];
+        JsonArray trains = route["train"].as<JsonArray>();
+
+        for (JsonObject train : trains) {
+          const char* nextStaId = train["nextStaId"];
+          int ledIndex = stationToLed(nextStaId);
+          if (ledIndex >= 0 && ledIndex < NUM_LEDS) {
+            // Overwrites if multiple trains at same station.
+            // Optional: add occupancy blending or cycling for shared stations.
+            leds[ledIndex] = lineColor(line);
+          }
+        }
+      }
+
+      FastLED.show();
+      Serial.println("Updated LEDs.");
+    } else {
+      Serial.print("JSON parse error: ");
+      Serial.println(err.c_str());
+    }
+  } else {
+    Serial.printf("HTTP error: %d\n", httpCode);
+  }
+
+  http.end();
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(100);
+
+  FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.setBrightness(BRIGHTNESS);
+  FastLED.clear();
+  FastLED.show();
+
+  connectWiFi();
+}
+
+void loop() {
+  fetchAndUpdate();
+  delay(15000); // CTA data updates roughly every 15-20 seconds
+}
+\end{lstlisting}
+
+\subsection{8.3 Configure the Sketch}
+
+Edit the following lines in the sketch:
+
+\begin{itemize}
+    \item \texttt{ssid} and \texttt{password} to match your WiFi network.
+    \item \texttt{ctaApiKey} to your CTA Train Tracker API key.
+    \item \texttt{LED\_PIN} if you are using a different ESP32 GPIO pin. GPIO12 is a common choice, but avoid pins that conflict with boot modes.
+    \item \texttt{BRIGHTNESS} to a value between 20 and 80 for low heat and low power.
+\end{itemize}
+
+\subsection{8.4 Upload and Test}
+
+Select the correct ESP32 board and port in the Arduino IDE. Click Upload. Open the Serial Monitor at 115200 baud to see debug messages.
+
+If everything works, the LEDs at the next stations of active trains should light in the appropriate line colors.
+
+\section{Step 9: Finish the Frame}
+
+\begin{enumerate}
+    \item Add a diffuser layer between the LEDs and the printed map. Tracing paper or thin white acrylic works well.
+    \item Mount the LED board inside a shadow box or deep frame.
+    \item Use foam board spacers to create a gap between the map and the LEDs so the light spreads evenly.
+    \item Bundle and secure excess wires on the back.
+    \item Drill a hole for the power cable and route the 5V supply outside the frame.
+    \item If the power supply is internal, ensure adequate ventilation and strain relief.
+\end{enumerate}
+
+\section{Step 10: Calibration and Troubleshooting}
+
+\subsection{Common Issues}
+
+\begin{longtable}{p{4.5cm} p{8.5cm}}
+\toprule
+\textbf{Symptom} & \textbf{Likely Cause / Fix} \\
+\midrule
+No LEDs light & Check power supply, common ground between ESP32 and LED strip, data direction. \\
+First LED flickers or random colors & Use 74AHCT125 level shifter; shorten data wire; add 330~$\Omega$ resistor. \\
+LEDs are dim or white-looking & Low power or voltage drop; add power injection; lower brightness. \\
+API returns HTTP 403 & Invalid or inactive API key; check key and API access. \\
+JSON parse error & Increase \texttt{DynamicJsonDocument} size; check URL string. \\
+WiFi disconnects & Move ESP32 closer to router; use \texttt{WiFi.setAutoReconnect(true)}. \\
+Some stations never light & Check that \texttt{stop\_id} in CSV matches CTA API \texttt{nextStaId}; check \texttt{led\_index}. \\
+\bottomrule
+\caption{Basic troubleshooting table.}
+\label{tab:troubleshoot}
+\end{longtable}
+
+\subsection{Improving Shared Station Behavior}
+
+Many Loop stations serve multiple lines. With one LED per station, only the last train written to the LED will be shown. Possible improvements:
+
+\begin{itemize}
+    \item Cycle colors for shared stations every 800~ms.
+    \item Add a second LED at major shared stations.
+    \item Blend colors using an occupancy array.
+\end{itemize}
+
+For a first build, the simple override behavior is acceptable.
+
+\section{Safety and Legal Notes}
+
+\begin{itemize}
+    \item This project uses low voltage, but a 5V 10A supply can still melt wires if shorted. Use insulated connectors, avoid loose wires, and add a fuse if desired.
+    \item Do not leave the device powered unattended until it has been tested for several hours.
+    \item The CTA Train Tracker API is free for non-commercial use. Do not redistribute the data or use it for a commercial product without permission.
+    \item CTA logos and official maps are protected. This guide is for personal/educational use.
+\end{itemize}
+
+\section{Possible Cost-Saving Substitutions}
+
+\begin{itemize}
+    \item Use a 5V 2A phone charger and set \texttt{BRIGHTNESS} to 40 or below. This will likely work if you never display full white.
+    \item Use cardboard and black spray paint instead of foam board and a printed map.
+    \item Skip the frame initially; hang the map with command strips.
+    \item Use individual WS2812B LEDs purchased in bulk if you can find them cheaper than a full strip.
+    \item Use a NodeMCU or Wemos D1 Mini if you already have one, but the ESP32 is recommended for HTTPS and RAM.
+\end{itemize}
+
+\section{Conclusion}
+
+You should now have a functional, live-updating CTA wall map. The build is inexpensive, educational, and visually striking. Once the basic version works, you can add features such as:
+
+\begin{itemize}
+    \item A web portal for WiFi configuration.
+    \item OTA firmware updates.
+    \item A small OLED display showing train ETAs.
+    \item Sound or vibration alerts.
+    \item A custom PCB to replace point-to-point wiring.
+\end{itemize}
+
+Enjoy your build!
+
+\appendix
+
+\section{File Checklist}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{Filename} & \textbf{Purpose} \\
+\midrule
+\texttt{prepare\_gtfs.py} & Extract CTA rail stations from GTFS. \\
+\texttt{stations\_template.csv} & Station list with empty LED index column. \\
+\texttt{make\_mapping.py} & Generate \texttt{mapping.h} from filled CSV. \\
+\texttt{mapping.h} & CTA \texttt{stop\_id} to LED index mapping. \\
+\texttt{cta\_wall\_map.ino} & ESP32 Arduino firmware. \\
+\bottomrule
+\end{tabular}
+\caption{Files used in this project.}
+\label{tab:files}
+\end{table}
+
+\section{Complete Python Scripts}
+
+The scripts are included in Listings~\ref{lst:prepare_gtfs} and \ref{lst:make_mapping}. Save them with the exact filenames and run them as described.
+
+\section{Complete Arduino Sketch}
+
+The Arduino sketch is included in Listing~\ref{lst:arduino}. Place it in a sketch folder with the generated \texttt{mapping.h}.
+
+\end{document}

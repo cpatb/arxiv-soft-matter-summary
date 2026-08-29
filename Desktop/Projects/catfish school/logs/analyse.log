@@ -1,0 +1,128 @@
+    clip  duration_s  n_frames_present  frac_present  body_px_median  body_px_drift_pct  n_bl_samples  size_bl_median size_bl_range  area_bl2_median  aspect_ratio_median  circularity_median  solidity_median  boundary_roughness_median  packing_fraction_median  n_components_max  frac_frames_split  polarisation_median  speed_bl_s_median  xi_bl_median  camera_shift_px_median  camera_ok_frac  camera_to_fish_motion_ratio
+IMG_0544        79.0              2369         1.000            13.9               25.9           734            32.2  [25.7, 36.1]            813.1                 1.76               0.529            0.870                      1.375                    0.776                 3              0.720                0.520              2.434         13.29                    1.05           1.000                         0.94
+IMG_0545        55.8              1643         0.981            14.6               25.6           365            38.3  [23.1, 50.1]           1154.3                 1.53               0.568            0.902                      1.327                    0.836                 4              0.058                0.690              4.523         13.13                    2.84           0.999                         1.29
+IMG_0546        26.8               804         1.000            14.5               24.1           630            33.5  [24.7, 50.3]            880.6                 2.13               0.575            0.894                      1.319                    0.818                 3              0.203                0.472              2.475         17.50                    1.00           1.000                         0.87
+IMG_0547        31.1               918         0.984            14.3               25.4           479            33.4  [31.2, 53.0]            877.4                 2.34               0.651            0.943                      1.239                    0.864                 5              0.062                0.754              3.615         11.97                    1.81           0.998                         1.00
+
+correlation scaling: {
+  "per_clip": {
+    "IMG_0544": {
+      "n_curves": 157,
+      "xi_decay_bl": 5.707303517775124,
+      "zero_crossing_bl": NaN,
+      "C_stays_positive": true,
+      "r_max_bl": 34.188332330669,
+      "r_reliable_bl": 22.474747474747478,
+      "xi_over_rmax": 0.2539429430380841,
+      "saturated": false,
+      "median_size_bl": 32.10763646101396
+    },
+    "IMG_0545": {
+      "n_curves": 108,
+      "xi_decay_bl": 2.3222856357542048,
+      "zero_crossing_bl": NaN,
+      "C_stays_positive": true,
+      "r_max_bl": 39.48820345168731,
+      "r_reliable_bl": 21.969696969696972,
+      "xi_over_rmax": 0.1057040358343293,
+      "saturated": false,
+      "median_size_bl": 38.410735796130865
+    },
+    "IMG_0546": {
+      "n_curves": 53,
+      "xi_decay_bl": 9.336421006822766,
+      "zero_crossing_bl": NaN,
+      "C_stays_positive": true,
+      "r_max_bl": 24.819574767823433,
+      "r_reliable_bl": 22.222222222222225,
+      "xi_over_rmax": 0.4201389453070244,
+      "saturated": false,
+      "median_size_bl": 33.48576280690423
+    },
+    "IMG_0547": {
+      "n_curves": 61,
+      "xi_decay_bl": 2.834332951136747,
+      "zero_crossing_bl": NaN,
+      "C_stays_positive": true,
+      "r_max_bl": 47.065397553346614,
+      "r_reliable_bl": 17.171717171717173,
+      "xi_over_rmax": 0.16505821303678703,
+      "saturated": false,
+      "median_size_bl": 33.5454821938398
+    }
+  },
+  "n_size_bins": 5,
+  "n_curves_per_bin": [
+    76,
+    76,
+    75,
+    76,
+    76
+  ],
+  "bin_size_bl": [
+    26.131042958153436,
+    31.67994843764617,
+    33.63705790536065,
+    35.93151649326521,
+    46.99435132440712
+  ],
+  "bin_xi_bl": [
+    4.3268862713941205,
+    5.465770615482115,
+    4.775633994529028,
+    4.089110437695168,
+    3.6277583754206137
+  ],
+  "loglog_slope": -0.43091938092030974,
+  "loglog_r": -0.5914476185122977,
+  "xi_over_L_median": 0.14197537751266728,
+  "size_range_bl": [
+    26.131042958153436,
+    46.99435132440712
+  ],
+  "size_dynamic_range": 1.798410855612018
+}
+packing profile: {
+  "IMG_0544": {
+    "edge_packing": 0.5507379357025035,
+    "core_packing": 0.9467128848863902,
+    "core_minus_edge": 0.39597494918388665,
+    "n_profiles": 158
+  },
+  "IMG_0545": {
+    "edge_packing": 0.6565158334288534,
+    "core_packing": 0.939353697524712,
+    "core_minus_edge": 0.28283786409585854,
+    "n_profiles": 110
+  },
+  "IMG_0546": {
+    "edge_packing": 0.629022634163579,
+    "core_packing": 0.965299963209433,
+    "core_minus_edge": 0.33627732904585406,
+    "n_profiles": 54
+  },
+  "IMG_0547": {
+    "edge_packing": 0.6083976363162444,
+    "core_packing": 0.9703328785454701,
+    "core_minus_edge": 0.3619352422292257,
+    "n_profiles": 62
+  }
+}
+events: {
+  "IMG_0544": {
+    "n_fission_frames": 15,
+    "n_fusion_frames": 14
+  },
+  "IMG_0545": {
+    "n_fission_frames": 16,
+    "n_fusion_frames": 14
+  },
+  "IMG_0546": {
+    "n_fission_frames": 2,
+    "n_fusion_frames": 1
+  },
+  "IMG_0547": {
+    "n_fission_frames": 12,
+    "n_fusion_frames": 11
+  }
+}

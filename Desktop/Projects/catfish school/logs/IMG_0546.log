@@ -1,0 +1,11 @@
+[IMG_0546] working scale 21.9 px (43s prescan)
+[IMG_0546] 0/804  44s  (44.44 s/frame)
+[IMG_0546] 100/804  279s  (2.79 s/frame)
+[IMG_0546] 200/804  510s  (2.55 s/frame)
+[IMG_0546] 300/804  744s  (2.48 s/frame)
+[IMG_0546] 400/804  979s  (2.45 s/frame)
+[IMG_0546] 500/804  1218s  (2.44 s/frame)
+[IMG_0546] 600/804  1471s  (2.45 s/frame)
+[IMG_0546] 700/804  1718s  (2.45 s/frame)
+[IMG_0546] 800/804  1959s  (2.45 s/frame)
+[IMG_0546] done in 1966s: {'clip': 'IMG_0546', 'n_frames': 804, 'fps': 29.97002997002997, 'working_body_px': 21.892204601264854, 'n_present': 804, 'n_bl_samples': 695, 'n_events': 3, 'elapsed_s': 1966.1832121000007}

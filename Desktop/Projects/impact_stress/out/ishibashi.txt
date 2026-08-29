@@ -1,0 +1,1120 @@
+
+===== PAGE 1 =====
+Effects of electric double layer repulsions on the onset of shear thickening 
+in concentrated colloidal suspensions
+Ryoichi Ishibashi a, Takuya Sugimoto b
+, Ryohei Seto c
+, Motoyoshi Kobayashi b,*
+a Graduate School of Science and Technology, University of Tsukuba, Tsukuba, Ibaraki 305-8572, Japan
+b Institute of Life and Environmental Sciences, University of Tsukuba, Tsukuba, Ibaraki 305-8572, Japan
+c Wenzhou Key Laboratory of Biomaterials and Engineering, Wenzhou Institute, University of Chinese Academy of Sciences, Wenzhou, Zhejiang 325000, China
+G R A P H I C A L A B S T R A C T
+A R T I C L E I N F O
+Keywords:
+Rheology
+Shear-thickening
+Dense suspension
+Electrostatic repulsion
+Critical shear stress
+Critical concentration for critical stress
+A B S T R A C T
+The manifestation of shear thickening in concentrated suspensions is influenced by interparticle forces. To clarify 
+the role of electric double layer (EDL) repulsions, we measured the viscosity of colloidal silica suspensions as a 
+function of shear stress under various salt concentrations (0.1–200 mmol/kg) and particle diameters (2a =
+100–2500 nm), using a refractive index-matching solvent to minimize van der Waals attractions. Increasing salt 
+concentration weakens EDL repulsions, reducing both the shear-thinning slope and the critical shear stress σc at 
+the onset of shear thickening. σc becomes nearly constant above a salt concentration which we term the critical 
+concentration for critical stress (CCCS). This finding suggests that the effects of EDL repulsions on σc disappear 
+above the CCCS, analogous to the critical coagulation concentration (CCC) described by the Derjaguin-Landau- 
+Verwey-Overbeek (DLVO) theory. These trends and the viscosity curves were quantitatively reproduced by 
+dynamic simulations incorporating hydrodynamic, contact, Brownian, and EDL forces. At a low salt concen­
+tration, simulated results reproduced σc∝a−2 observed in the experiments, despite the model using a repulsion 
+that is proportional to a. The theoretical explanation for this relationship remains unclear. These results highlight 
+the need for further investigation into size-dependent effects of DLVO and non-DLVO forces on rheological 
+behavior of concentrated colloidal suspensions.
+* Corresponding author.
+E-mail address: kobayashi.moto.fp@u.tsukuba.ac.jp (M. Kobayashi). 
+Contents lists available at ScienceDirect
+Colloids and Surfaces A: Physicochemical and  
+Engineering Aspects
+journal homepage: www.elsevier.com/locate/colsurfa
+https://doi.org/10.1016/j.colsurfa.2025.139148
+Received 20 September 2025; Received in revised form 7 November 2025; Accepted 1 December 2025  
+Colloids and Surfaces A: Physicochemical and Engineering Aspects 732 (2026) 139148 
+Available online 3 December 2025 
+0927-7757/© 2026 The Authors. Published by Elsevier B.V. This is an open access article under the CC BY license ( http://creativecommons.org/licenses/by/4.0/ ). 
+
+===== PAGE 2 =====
+1. Introduction
+Flows of suspensions, mixture of solid particles and liquid, are 
+ubiquitous in nature and industry [1,2]. As particle concentration in­
+creases, the viscosity η = σ/˙γ of suspension becomes dependent on 
+applied shear rate ˙γ or shear stress σ even when the dispersion medium is 
+Newtonian fluid. Typically, at low ˙γ, concentrated suspensions often 
+show shear thinning, a phenomenon where the viscosity decreases as ˙γ 
+increases. Beyond a critical shear rate ˙γc (or critical shear stress σc), 
+concentrated suspensions undergo shear thickening, a phenomenon 
+where the viscosity rises with increasing ˙γ [3–5]. Shear-thickening sus­
+pensions exhibit impact-induced solidification enabling humans to 
+“walk on water” [6]. Such dramatic stress-dependent behavior makes 
+them applicable for shock absorbers [2]. Under vibration, concentrated 
+suspensions show unique dynamic behaviors such as dancing, bouncing, 
+and climbing up the wall of container [7,8]. Shear thickening behaviors 
+of suspensions intricately depend on various parameters such as particle 
+volume fraction, particle size, particle shape, dispersion medium, and 
+interparticle interactions [9]. To understand the mechanism of shear 
+thickening, studies on simplified model systems—exemplified by sus­
+pensions of monodisperse spherical colloidal particles—are required.
+For colloidal suspensions, electric double layer (EDL) repulsions and 
+van der Waals (vdW) attractions play a role in non-Newtonian behav­
+iors. EDL repulsion is due to the overlapping of ion layers formed around 
+the charged surfaces of particles. VdW attraction between nonpolar 
+material is the consequence of interaction between electric dipoles 
+induced by quantum mechanical fluctuations [10]. Aqueous suspensions 
+of colloidal particles show high viscosity at low ˙γ when stabilized by EDL 
+repulsions. As the shear rate increases, the relative strength of EDL 
+repulsion compared to the shear force decreases, which manifests as 
+shear thinning. Gradual salt addition weakens EDL repulsions and de­
+creases the viscosity at low ˙γ. When salt concentration is raised further, 
+the viscosity reaches a minimum value and then significantly increases 
+due to vdW attractions [11,12]. The aggregation of colloidal particles 
+due to vdW attractions increases the apparent volume fraction and the 
+viscosity of suspensions, and shear-induced breaking of particle aggre­
+gates results in shear thinning [13]. Aqueous suspensions of montmo­
+rillonite at certain particle concentration behave as gel at low and high 
+salt concentrations, and as sol at intermediate salt concentrations [14]. 
+In contrast, semi-dilute suspensions of fibrous particles have been re­
+ported to behave as sol at low and high salt concentrations but as gel at 
+intermediate salt concentrations due to the formation of network 
+structure [15].
+The salt concentration dependences of colloidal suspensions 
+described above can be explained by Derjaguin-Landau-Verwey- 
+Overbeek (DLVO) theory. DLVO theory is widely accepted in colloidal 
+science because the theory can explain the existence of critical salt 
+concentration at the transition point from dispersed to coagulated state 
+(critical coagulation concentration, CCC or critical coagulation ionic 
+strength, CCIS) and the dependence of CCC or CCIS on the ion valence 
+(Schulze-Hardy rule) [10,16–18] or surface charge density [19–21]. In 
+DLVO theory, the net interaction is described as the sum of EDL repul­
+sion and vdW attraction. At low salt concentrations, EDL repulsions 
+prevent particle aggregation. As salt concentration increases, EDL re­
+pulsions become weaker, and thus the coagulation rate increases. 
+Beyond the CCC, EDL repulsions are sufficiently small for vdW attrac­
+tions to dominate. The coagulation rate is almost constant independent 
+of salt concentration above the CCC [18–21]. The pH adjustment to the 
+isoelectric point of the particle surface also weakens EDL repulsions and 
+causes aggregation in the absence of other repulsive forces [22,23]. 
+Concentrated colloidal suspensions show similar salt concentration and 
+pH dependence on the onset of shear thickening. Previous studies have 
+observed the decrease in ˙γc (or σc) [11,24–28] and the hysteresis due to 
+vdW attractions [29] when EDL repulsions are weakened by the addition 
+of salts or pH adjustment.
+For non-aggregated suspensions of spherical particles, scaling laws 
+for ˙γc or σc as a function of particle radius a have been discussed based on 
+a force balance model. The scaling law ˙γc∝a−2 was explained by 
+assuming that EDL repulsions balance hydrodynamic lubrication forces 
+(∝˙γa3/h, h: the distance between particle surfaces) at the transition point 
+from shear thinning to shear thickening [9,30]. In addition to particle 
+size, ˙γc also strongly depends on parameters such as particle concen­
+tration, viscosity of dispersion medium, and temperature. Meanwhile, σc 
+remains almost independent of these parameters, unless interparticle 
+interactions change [25–27,31–34]. Thus, it is more convenient to use σc 
+to discuss the force balance at the onset of shear thickening. Previous 
+studies experimentally confirmed that σc∝a−2 holds under strong EDL 
+repulsion, whereas σc∝a−3 is observed in Brownian suspensions where 
+EDL repulsions are weakened by the addition of electrolytes [4,5,11,25, 
+26,35–37]. Moreover, the relation σc∝a−2 was also observed in the 
+suspensions sterically stabilized by polymers on the particle surface [38, 
+39]. In a simple explanation, σc is the shear stress at which σa2 ≈F 
+where σa2 is shear force and F is the magnitude of the interparticle 
+repulsive force. The above explanation rests on the assumption that the 
+magnitude of EDL repulsion and steric repulsion is independent of 
+particle size, and the Brownian force proportional to a−1 is dominant for 
+the weak repulsion cases. However, the expressions of EDL repulsions 
+generally used in DLVO theory are proportional to the particle radius a, 
+and in that case, the scaling should be σc∝a−1, which is different from 
+the experimental results. The reason for this inconsistency remains un­
+clear [35–37].
+Regarding the mechanism of shear thickening, a hypothesis attrib­
+uting it to shear-induced frictional contacts has been proposed [33, 
+35–38,40–43]. In highly concentrated suspensions, a jump in viscosity 
+with increasing ˙γ, known as discontinuous shear thickening (DST), is 
+often observed. However, previous simulation studies without frictional 
+contacts failed to reproduce DST behavior. Simulations using discrete 
+element method with hydrodynamic lubrication forces (lubrication 
+flow-discrete element method, LF-DEM) have shown that incorporating 
+frictional contacts can reproduce DST behaviors [40,41]. LF-DEM sim­
+ulations demonstrated that the shear-induced contact scenario works 
+even in Brownian suspensions, and revealed the following scaling 
+equation: 
+σc = 5kBT⋅a−3 + 0.01 F∗⋅a−2
+(1) 
+where kB is Boltzmann constant, T is absolute temperature, and F∗is the 
+maximum value of magnitude of EDL repulsions [42]. The magnitude of 
+EDL repulsions can be written as FEDL = F∗exp( −
+h/λ), where λ is the 
+decay length corresponding to the Debye length. Eq. (1) indicates that σc 
+can be expressed as the sum of the Brownian and repulsive contribu­
+tions. In the LF-DEM simulations [42], F∗and λ were treated as inde­
+pendent parameters. However, both of F∗and λ depend on salt 
+concentration in DLVO theory. In addition, F∗was just a fitting param­
+eter independent of particle size in Eq. (1). To discuss the particle size 
+dependence of σc, the size dependence of F∗should be considered. In 
+recent simulation studies dealing with DLVO interactions [44,45], the 
+dependencies on particle size and salt concentration have not been 
+systematically investigated.
+To gain insight into the relationship between σc and EDL repulsions, 
+we systematically measured viscosities and zeta potentials under various 
+salt concentrations and particle sizes for suspensions of monodispersed 
+spherical silica particles dispersed in the refractive index-matching 
+solvent. We compare the experimental values of σc with the calculated 
+values using LF-DEM simulation with the model of EDL repulsion in 
+DLVO theory. Both experimental and simulated results unveil the exis­
+R. Ishibashi et al.                                                                                                                                                                                                                               
+Colloids and Surfaces A: Physicochemical and Engineering Aspects 732 (2026) 139148 
+2 
+
+===== PAGE 3 =====
+tence of minimum salt concentration, above which σc becomes constant, 
+for the first time.
+2. Materials and methods
+2.1. Materials
+Monodispersed spherical silica particles with different diameters, 
+Seahostar KE-P10 (2a = 110 nm), KE-P30 (280 nm), KE-P50 (530 nm), 
+KE-P100 (1060 nm), and KE-P250 (2580 nm) from Nippon Shokubai, 
+were used as solid particles in suspensions. The manufacturer reports 
+that the refractive index of KE-P silica is 1.43, and its true mass density is 
+1.9 g/mL. The powder of silica particles was heated at 120◦C over 20 h 
+to reduce moisture and possible residual lower alcohol remaining from 
+the manufacturing process. The polyethylene glycol 200 (PEG200; Wako 
+Pure Chemical Industries, JIS Special Grade) solutions with dissolved 
+KCl (Wako Pure Chemical Industries, JIS Special Grade), hereafter 
+referred to as KCl-PEG200 solutions, were used as the dispersion me­
+dium. The density of PEG200 ρPEG is 1.13 g/mL, the refractive index is 
+1.46, and the relative permittivity εr is approximately 20 at 25◦C [46]. 
+The viscosities of KCl-PEG200 solutions were measured using a 
+viscometer (microVISC, RheoSense), and the results are shown in 
+Table 1. KCl was added at various concentrations to vary the surface 
+potential and the strength of EDL repulsion. Suspensions of silica par­
+ticles dispersed in PEG200 were used because the matching of refractive 
+indices of silica and PEG can minimize the effects of interparticle vdW 
+forces [10]. The suspensions were prepared by mixing the silica powders 
+and the dispersion medium with a planetary centrifugal mixer (AR-100, 
+Thinky). The particle concentration was 65 wt% in weight fraction, 
+which is about 52 vol% in volume fraction.
+To characterize the zeta potentials and EDL repulsions, values of the 
+Debye-Hückel parameter κ are required. The inverse of κ is called the 
+Debye length, which can be considered as the thickness of EDL. κ is 
+calculated as follows: 
+κ =̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅
+2e2NAI
+ε0εrkBT
+√
+(2) 
+where e is elementary charge, NA is Avogadro constant, and ε0εr is the 
+dielectric constant of the solvent. I =
+( ∑
+iz2
+i ci,b
+)
+/2 is ionic strength, 
+where zi is the valence, and ci,b is molar concentration of i-th ion in bulk.
+Table 1 summarizes the property of KCl-PEG200 solutions. The 
+electrical conductivity of KCl-PEG200 solution was measured using a 
+compact conductivity meter (LAQUAtwin-EC-33B, Horiba). Variations 
+in conductivity reflect differences in ionic strength. Due to the low 
+relative permittivity of PEG200, KCl does not fully dissociate in the 
+medium. Consequently, unlike in aqueous solutions, the concentration 
+of added KCl does not correspond directly to the ionic strength. The 
+values of I and κ in Table 1 were calculated from the association constant 
+KA using the following equation derived by Fuoss [47]: 
+KA =
+αC
+(1 −α)2C2 = 4πd3NA
+3
+exp
+(
+e2
+4πdε0εrkBT
+)
+(3) 
+where α is degree of association, C is molar concentration of electrolyte. 
+d is a parameter indicating the diameter of ion, d = 0.6 nm for KCl [48]. 
+Eq. (3) is for 1:1 electrolyte in a nonpolar solvent.
+2.2. Zeta potential measurements
+To characterize the charging behavior of silica particles in PEG200, 
+zeta potentials of particles were measured as a function of KCl concen­
+tration and particle size. Zeta potential is widely used when calculating 
+the EDL repulsive force. The zeta potential measurements were per­
+formed by colloid vibration current (CVI) method using an electro­
+acoustic zeta potential probe (DT-1202, Dispersion Technology) and by 
+electrophoretic light scattering (ELS) method using a light scattering 
+instrument (Zetasizer Nano, Malvern Panalytical). The zeta potential 
+measurements were performed at 20◦C. The zeta potential values were 
+averaged over five trials.
+In the measurements with CVI method, we used the values of the 
+density, weight fraction, and diameters of the silica particles as the input 
+to the device, as well as the density, relative permittivity, and viscosity 
+of the KCl-PEG200 solution. The values of electrical conductivities were 
+also input so that the output values of κa corresponds to the calculated 
+values using κ−1 shown in Table 1.
+Since ELS method is difficult to apply for concentrated suspensions, 
+the suspensions were diluted to 0.1 wt% for KE-P30, 50, 100, 250 and 
+1 wt% for KE-P10 suspensions with the corresponding KCl concentra­
+tions in PEG200. The measured electrophoretic mobilities were con­
+verted to zeta potentials ζ via Henry-Ohshima equation [49].
+2.3. Viscosity measurements
+The shear rate dependence of steady shear viscosity of suspension 
+was measured under various KCl concentrations and particle sizes. The 
+measurements were performed on a shear-rate-controlled rheometer 
+with concentric double-cylinder geometry (ONRH-1, OhnaTech). The 
+internal diameter of concentric double-cylinder was 19.36 mm, and the 
+external diameter was 21.00 mm. The viscosity measurements were 
+performed at 20◦C. The range of shear rate was 0.01–1000 s−1.
+Starting from the lowest shear rate, the steady shear viscosity was 
+measured while increasing the shear rate by a factor of 101/5 at each 
+step. After the measurements at high shear rate, we measured viscosities 
+again starting from the low shear rate side and confirmed the repro­
+ducibility. For small particles (KE-P10) and low KCl concentration (0.1, 
+1 mmol/kg), even a slight increase in shear rate caused the rapid rise in 
+viscosity near ˙γc, so we used finer shear rate steps. For large particles 
+(KE-P250) and high KCl concentration (100, 200 mmol/kg), ˙γc was low, 
+and the measured viscosity showed noticeable variability at low shear 
+rates. Thus, we adjusted the shear rate range to 0.002–200 s−1 and 
+averaged the measured values from three trials for those conditions. In 
+this study, σc was determined as the shear stress at which the viscosity 
+reached its minimum value before shear thickening.
+2.4. Numerical simulation
+We performed LF-DEM simulations to reproduce the experimental 
+results. The details of simulation method can be found in refs. [40–42]. 
+When the inertial terms can be neglected, the equation of motion for 
+each particle in a concentrated suspension under shear flow reduces to 
+the following force and torque balance equation for a single particle: 
+0 = FH + FC + FB + FEDL
+(4) 
+Table 1 
+Properties of KCl-PEG200 solutions at 20◦C.
+KCl concentration [mmol/kg]
+0.1
+1
+3
+10
+30
+100
+200
+Viscosity [mPa s]
+61.6
+61.8
+61.9
+62.3
+63.9
+69.1
+76.4
+a
+0.007
+0.0624
+0.153
+0.324
+0.511
+0.689
+0.768
+I [mM]
+0.112
+1.06
+2.87
+7.64
+16.6
+35.2
+52.5
+κ−1 [nm]
+14.4
+4.68
+2.84
+1.74
+1.18
+0.81
+0.66
+Electrical conductivity [μS/cm]
+-
+-
+-
+25
+64
+157
+312
+R. Ishibashi et al.                                                                                                                                                                                                                               
+Colloids and Surfaces A: Physicochemical and Engineering Aspects 732 (2026) 139148 
+3 
+
+===== PAGE 4 =====
+where FH is hydrodynamic force, FC is contact force, FB is Brownian 
+force, and FEDL is electric double layer repulsive force. FH is given by FH 
+= −
+(Rstokes +RLub)⋅(U −U∞) + Rʹ
+Lub : E∞, where U is the translational 
+and angular velocities of particles, U∞ is the velocity of the bulk shear 
+flow, E∞ is the strain rate tensor, Rstokes is the term for the Stokes 
+resistance, and RLub and Rʹ
+Lub are the resistance matrices representing 
+the lubrication. U is obtained by substituting the above FH into Eq. (4)
+and solving for U. And then, the positions of particles at the next step are 
+determined via time integration. Macroscopic stress is the sum of con­
+tributions from the background solvent, hydrodynamic, contact, Brow­
+nian, and EDL forces.
+In this computation, the actual lengths were nondimensionalized 
+using a0 = 50 nm as the characteristic length scale. We set the particle 
+radii as a/a0 = 1, 3, 5, 10, and 25. The dimensionless forces were the 
+actual forces divided by kBT/a0. The dimensionless shear rate was Pe0 =
+6πη0˙γa3
+0/(kBT), where η0 = 0.06 Pa s, the viscosity of PEG200 at 20◦C. 
+All the simulations were conducted for 52 vol% suspension with 600 
+particles in a cubic box under rate-controlled shear flow and Lees- 
+Edwards boundary conditions. The calculation was run up to the 
+strain γ = 4 with a time interval Δt = 10−4/˙γ, and the shear stress and 
+viscosity were averaged from γ = 3 to 4. By multiplying the calculated 
+relative viscosity by η0, the viscosity of suspension was obtained. Three 
+calculations were performed with different initial configurations, and 
+the averaged values of shear stress and viscosity are presented in the 
+results.
+RLub and Rʹ
+Lub include terms that diverge as h→0. Therefore, a 
+parameter δ representing surface roughness should be introduced to 
+prevent numerical divergence and to enable interparticle contacts [40, 
+41]. Here, δ was set to δ = 10−3a0. FC includes the normal contact force 
+that inhibits overlapping and the frictional force for tangential sliding. 
+The normal and tangential component of FC follows Coulomb’s law ⃒⃒
+FC,tan⃒⃒≤μ⃒⃒FC,nor⃒⃒, with the frictional coefficient μ, set to μ = 1 in this 
+study. The normal and tangential spring constant, kn and kt, are used to 
+model FC. To avoid trivial rate dependence arising from the spring 
+stiffness, both kn and kt were set to be proportional to the shear rate 
+[40]. In this work, we used kn⋅a2
+0/(kBT) = 6300Pe0 and kt⋅a2
+0/(kBT) =
+3600Pe0.
+Salt concentrations were set to ci,b/ρPEG = 0.1, 0.5, 1, 5, 10, 30, 100, 
+300 mmol/kg (i = 1, 2 for KCl). The EDL repulsive force was modeled 
+using an exponentially decaying form with the decay length λ = κ−1: 
+FEDL = F∗exp( −h/λ) = 2πε0εrψ2
+effκaexp( −κh)
+(5) 
+This expression is derived using linear superposition approximation 
+and the Derjaguin approximation for the interaction between two 
+spherical particles [18]. ψeff is effective surface potential given by: 
+ψeff = 4kBT
+ze tanh
+(zeψs
+4kBT
+)
+(6) 
+where ψs is the surface potential, and z = 1 for KCl. We used ψs calcu­
+lated as: 
+ψs = 2kBT
+ze arcsinh
+(
+zeσscd
+2ε0εrκkBT
+)
+(7) 
+with surface charge density σscd = −1 and −3 mC/m2. This equation is 
+derived by assuming an isolated plate in a symmetrical electrolyte so­
+lution [18]. Although a fixed surface charge density was used in the 
+calculations, the EDL repulsive force in Eq. (5) inherently reflects the 
+interparticle-gap-dependent behavior of surface charge and potential, 
+owing to the linear superposition approximation, which represents an 
+intermediate nature between the constant-surface-charge-density and 
+constant-surface-potential models [50]. The values of ψs were compared 
+with the measured values of zeta potentials in Fig. 1. The values of λ and 
+F∗are shown in Table 2.
+3. Results
+3.1. Salt concentration and particle size dependence of zeta potential
+Fig. 1 presents the zeta potentials of silica particles dispersed in KCl- 
+PEG200 solutions measured by CVI and ELS method. The results of both 
+CVI and ELS measurements demonstrated that silica KE-P particles were 
+negatively charged in PEG200 at low KCl concentrations, and adding 
+KCl decreased the magnitude of zeta potential. Higher salt concentration 
+shortens the Debye length κ−1, which lowers the magnitude of zeta 
+potential and weakens EDL repulsions. The zeta potentials of silica KE-P 
+particles in PEG200 exhibited the KCl concentration dependence, 
+whereas almost no correlation with particle radius was found.
+The measured values of zeta potential were around the theoretical 
+surface potentials calculated by Eq. (7) with σscd = −3 to −1 mC/m2. In 
+the ionic strength range of 1–30 mM, the zeta potentials measured by 
+CVI tended to show greater absolute values than the theoretical surface 
+potentials with σscd = −3 mC/m2, whereas the zeta potentials measured 
+by ELS were between σscd = −3 and −1 mC/m2. At an ionic strength of 
+0.1 mM, both CVI and ELS measurements yielded slightly greater ab­
+solute zeta potential than the absolute surface potential predicted with 
+σscd = −1 mC/m2. It should be noted that the surface charge density may 
+change depending on salt concentration, as in the case of silica particles 
+in water [22,23].
+3.2. Salt concentration and particle size dependence of flow curves
+Figs. 2 and 3 plot the viscosity η of the suspensions of 65 wt% silica 
+and KCl-PEG200 solutions against shear stress σ. We can observe the KCl 
+concentration dependence of flow curves from Fig. 2 and the particle 
+size dependence from Fig. 3. The suspensions exhibit shear thinning at 
+low shear stress and shear thickening at high shear stress. At low shear 
+rates, stress induced by Brownian and EDL forces leads to high viscosity. 
+A yield stress was observed for the suspensions with 2a = 280 nm and 
+530 nm at a KCl concentration of 0.1 mmol/kg due to strong EDL re­
+pulsions. Although crystalline structure may be formed at low shear 
+stress in such condition, the order-disorder transition does not influence 
+the onset of shear thickening [51]. As shear rate increases, the relative 
+contributions of Brownian and EDL forces to macroscopic stress decrease 
+significantly, resulting in shear thinning, although these forces them­
+selves remain essentially independent of shear rate. At the same time, 
+hydrodynamic forces increase almost proportionally with shear rate. 
+Neighboring particles are pushed closer together by shear-driven forces, 
+including hydrodynamic forces and repulsive forces exerted by other 
+surrounding particles. Once these shear-driven forces exceed the 
+Brownian and EDL forces acting between approaching particle pairs, 
+direct frictional contacts are formed, leading to shear thickening [42, 
+45].
+As a general trend, the viscosity at the lowest shear stress in the shear 
+thinning regime is higher for smaller particles (more significant Brow­
+nian motion) and lower KCl concentrations (stronger EDL repulsions). 
+As particle size and KCl concentration increase, Brownian motion and 
+EDL repulsions become less dominant, and thus the shear-thinning slope 
+becomes more gradual. Although the pairwise EDL force scales with 
+particle radius in Eq. (5), the stress due to EDL repulsions should be 
+larger for smaller particles because their typical interparticle gap is 
+reduced. For suspensions with 2a = 2580 nm at high KCl concentra­
+tions, suspensions exhibited a considerable Newtonian regime at low 
+shear stress because the effects of both Brownian and EDL forces were 
+minimal.
+Increasing KCl concentration and particle size shifts the onset of 
+shear thickening to a lower shear stress. This trend has also been 
+R. Ishibashi et al.                                                                                                                                                                                                                               
+Colloids and Surfaces A: Physicochemical and Engineering Aspects 732 (2026) 139148 
+4 
+
+===== PAGE 5 =====
+Fig. 1. Zeta potentials ζ of silica particles dispersed in the KCl-PEG200 solutions plotted against ionic strength I. (a): Zeta potentials of silica particles in the 65 wt% 
+suspensions measured by CVI method. (b): Zeta potentials of silica particles in the diluted suspensions (0.1–1 wt%) measured by ELS method. The solid and broken 
+lines present the surface potential calculated by Eq. (7) with σscd = −1 and −3 mC/m2.
+Table 2 
+Values of λ = κ−1 and F∗= 2πε0εrψ2
+effκa used in the simulations.
+Salt concentration [mmol/kg]
+0.1
+0.5
+1
+5
+10
+30
+100
+300
+I [mM]
+0.113
+0.565
+1.13
+5.65
+11.3
+33.9
+113
+339
+λ/a0
+0.287
+0.128
+0.091
+0.041
+0.029
+0.017
+0.009
+0.005
+F∗⋅
+( a0
+kBT
+)
+⋅
+(a0
+a
+)
+(σscd = −1 mC/m2)
+151
+113
+88.3
+43.3
+31.0
+18.0
+9.9
+5.7
+F∗⋅
+( a0
+kBT
+)
+⋅
+(a0
+a
+)
+(σscd = −3 mC/m2)
+324
+445
+450
+328
+254
+157
+88.3
+51.4
+Fig. 2. KCl concentration dependences of flow curves plotting viscosity η against shear stress σ for the suspensions of 65 wt% silica and KCl-PEG200 solutions. 
+Particle diameter 2a: (a) 110, (b) 280, (c) 530, (d) 1060, and (e) 2580 nm. The solid lines show critical shear stress σc at the onset of shear thickening.
+R. Ishibashi et al.                                                                                                                                                                                                                               
+Colloids and Surfaces A: Physicochemical and Engineering Aspects 732 (2026) 139148 
+5 
+
+===== PAGE 6 =====
+confirmed in previous studies, which explain that at the onset of shear 
+thickening, the shear-driven forces balance Brownian and EDL forces [4, 
+25,26,42]. After shear thickening regime, the measured viscosities 
+dropped, and the measurement stopped due to the limitation of torque 
+measurable with the experimental setup in some cases. For suspensions 
+with 2a = 530, 1060, and 2580 nm, the end of shear thickening was 
+observed. The slope of shear thickening does not strongly depend on KCl 
+concentration, but the maximum viscosities after shear thickening were 
+higher at high KCl concentrations than at low KCl concentrations.
+3.3. Comparison of flow curves between experimental and simulation 
+results
+LF-DEM calculations confirmed shear thinning and shear thickening 
+behavior in the 52 vol% colloidal suspensions, as well as the salt con­
+centration and particle size dependences of flow curves, similar to the 
+experimental findings (see Figs. S1–4). Fig. 4 compares the experimental 
+and simulation results of flow curves at low and high salt concentrations 
+(ionic strength I ≈0.1 and 30 mM). The simulation results for 
+0.1 mmol/kg salt concentration were very close to the experimental 
+results at KCl concentration of 0.1 mmol/kg without fit parameters. A 
+higher surface charge density shifts the flow curves to higher shear stress 
+in the simulations at low salt concentration. In both experiments and 
+simulations, increasing salt concentration reduces the slope of shear 
+thinning and shifts the flow curve towards lower shear stress. These 
+results demonstrate that the LF-DEM calculation appropriately evaluates 
+the effects of EDL repulsions on the flow curve for concentrated colloidal 
+suspension and that the viscosity as a function of shear stress is affected 
+by the Brownian, EDL, and contact forces. At low shear stress, there is no 
+contact, whereas shear-induced contacts appear at high shear stress, as 
+shown in the inset pictures of Fig. 4c.
+Despite the overall agreement, several discrepancies remain. First, 
+for small particles (2a = 100 nm), the simulations did not show the 
+significant decrease in σc with increasing salt concentration that was 
+observed in the experiments. This discrepancy may be due to limitations 
+of the current LF-DEM approach in capturing the influence of Brownian 
+motion under low-shear conditions for small particles. Since the particle 
+motion is governed by the strain, we used a strain-based time dis­
+cretization with a fixed shear-strain increment Δγ per step, and the 
+corresponding physical time step was determined from Δt = Δγ/˙γ. In 
+the low-P´eclet-number regime (Pe = 6πη0˙γa3/(kBT)), where Brownian 
+motion dominates, Δt should ideally be adjusted according to the 
+Brownian timescale. In this work, however, we prioritized computa­
+tional efficiency and adopted the strain-based time step throughout the 
+entire range of Pe examined. Experimental results show that the critical 
+Pe at the onset of shear thickening exceeds 10 for all the particle sizes at 
+Fig. 3. Particle size dependences of flow curves plotting viscosity η against shear stress σ for the suspensions of 65 wt% silica and KCl-PEG200 solutions. KCl 
+concentrations are (a) 0.1, (b) 1, (c) 3, (d) 10, (e) 30, (f) 100, and (g) 200 mmol/kg. The solid lines show critical shear stress σc at the onset of shear thickening.
+R. Ishibashi et al.                                                                                                                                                                                                                               
+Colloids and Surfaces A: Physicochemical and Engineering Aspects 732 (2026) 139148 
+6 
+
+===== PAGE 7 =====
+low salt concentrations, whereas it is near unity for the smallest particle 
+at high salt concentrations (see Fig. S5). Therefore, while the strain- 
+based choice of time step may have affected the results for the small­
+est particles under high-salt conditions, it does not influence our main 
+conclusion regarding the onset of shear thickening. Second, although the 
+slope of shear thinning became more gradual with increasing salt con­
+centration as a general trend, the simulation results at salt concentra­
+tions of 100 and 300 mmol/kg sometimes presented prominent shear 
+thinning compared to those at intermediate salt concentrations (see 
+Fig. S1 and S3). This artificial shear-thinning is probably due to the 
+overestimation of contact forces as a result of the strain-based time step 
+and the smaller magnitude of EDL repulsion at high salt concentrations. 
+Third, the minimum viscosity and the maximum viscosity after shear 
+thickening regime in the simulations did not strongly depend on salt 
+concentration (see Fig. S1 and S3), differing from the experimental re­
+sults. In the experimental results, the minimum viscosity at high salt 
+Fig. 4. Comparisons of flow curves obtained from the experiments (Exp.) and the LF-DEM calculations (Cal.) for the 52 vol% suspensions at low and high salt 
+concentrations (ionic strength I ≈0.1 and 30 mM). Open circles: experimental values at KCl concentration of 0.1 mmol/kg. Cross marks: experimental values at KCl 
+concentration of 100 mmol/kg. Solid lines: calculated values with σscd = −1 mC/m2 at salt concentrations of 0.1 and 30 mmol/kg. Dashed lines: calculated values 
+with σscd = −3 mC/m2 at salt concentrations of 0.1 and 30 mmol/kg. Particle diameter 2a: (a) 110, 100 nm, (b) 280, 300 nm, (c) 530, 500 nm, (d) 1060, 1000 nm, 
+and (e) 2580, 2500 nm. The inset pictures in (c) represent no contact at low σ and interparticle contacts at high σ in the LF-DEM calculation for the low salt 
+concentration case, obtained with an open visualization tool OVITO [60].
+Fig. 5. (a): Relationship between critical shear stress σc at the onset of shear thickening and KCl concentration for the suspensions of 65 wt% silica and KCl-PEG200 
+solutions. The solid lines are drawn to guide the eyes. (b): Comparison of the experimental values (Filled diamonds and triangles) and the LF-DEM calculation results 
+with σscd = −1 mC/m2 (solid lines) for 2a = (530, 500) and (1060, 1000) nm. The error bars show the maximum and minimum values of σc among the three trials and 
+the averaged flow curve. The σc in averaged flow curves can be the maximum or minimum because the viscosity measurements and LF-DEM calculations were 
+conducted in shear rate-controlled mode.
+R. Ishibashi et al.                                                                                                                                                                                                                               
+Colloids and Surfaces A: Physicochemical and Engineering Aspects 732 (2026) 139148 
+7 
+
+===== PAGE 8 =====
+concentrations was higher than at low concentrations particularly for 2a 
+= 2500 nm, whereas the maximum viscosity was higher at high salt 
+concentrations for all particle sizes tested. The salt concentration 
+dependence of the minimum viscosity and the maximum viscosity in the 
+experiment is too large to be attributed to the difference in the viscosity 
+of solvent (see Fig. S6). Increasing δ slightly decreased viscosity, but at δ 
+= 0.1a0 neither the minimum nor the maximum viscosity showed any 
+noticeable dependence on salt concentration, as at δ = 10−3a0 (see 
+Fig. S7). This discrepancy between the simulation and experimental 
+results is discussed in the Discussion section.
+3.4. Salt concentration and particle size dependence of critical shear 
+stress
+Fig. 5a shows the relationship between σc and KCl concentration for 
+the suspensions of 65 wt% silica and KCl-PEG200 solutions. σc is high at 
+low KCl concentrations and decreases with the addition of KCl. At KCl 
+concentrations higher than a certain value (critical salt concentration for 
+critical stress, CCCS), σc becomes nearly independent of salt concen­
+tration except for the case 2a = 2580 nm at KCl concentration of 
+200 mmol/kg, where shear thinning is too weak to determine σc accu­
+rately. At low salt concentration, EDL repulsions are dominant, and the 
+onset of shear thickening is determined by the balance between shear 
+forces and EDL forces. At salt concentrations above the CCCS, the effects 
+of EDL repulsion on σc disappear and the influences of Brownian motion 
+or the non-DLVO forces remain. This interpretation is analogous to the 
+explanation of salt concentration dependence of aggregation rate in 
+colloidal dispersions based on DLVO theory. That is, at salt concentra­
+tions higher than the critical coagulation concentration (CCC), the ef­
+fects of EDL repulsions disappeared and the remaining vdW force only 
+works. The CCCS was observed in various particle sizes in the experi­
+ments, whereas LF-DEM calculations showed the CCCS under somewhat 
+more limited conditions (see Fig. S8). The discrepancy between the 
+experiments and simulations is probably due to the limitation of current 
+simulation framework (for small particles at high salt concentration), 
+and due to the lack of vdW or non-DLVO forces (for large particles at 
+high salt concentration). In the case of 2a = 500 and 1000 nm with σscd 
+= −1 mC/m2, the σc values obtained from the averaged flow curves 
+agreed well with the experimental results and became nearly constant 
+above the CCCS (Fig. 5b), although the values fluctuated in each 
+calculation.
+Fig. 6a and b compare experimental and LF-DEM calculation results 
+of σc as a function of particle radius a at low and high salt concentrations 
+(ionic strength I ≈0.1 and 30 mM). At I ≈0.1 mM, both the experi­
+mental and calculated values with σscd = −1 mC/m2 scaled approxi­
+mately as a−2, whereas the calculated values with σscd = −3 mC/m2 
+scaled as a−1. The good agreement between experimental data and 
+simulation results with σscd = −1 mC/m2 (Fig. 6a) demonstrates that LF- 
+DEM can reproduce the effects of EDL repulsions at a low salt concen­
+tration. However, the scaling σc∝a−2 cannot be explained by the simple 
+force balance model σca2 ≈F∗because F∗is proportional to a. Although 
+the relation σc∝a−1 for σscd = −3 mC/m2 aligns with the scaling pre­
+dicted by σca2 ≈F∗, this trend is not observed experimentally. At I 
+≈30 mM, the experimental results show σc∝a−2.3, indicating that the 
+suspension is not purely Brownian. In contrast, the simulations predict 
+nearly σc∝a−3 for small particles, which corresponds to Brownian sus­
+pension [4]. This discrepancy also suggests that the simulations may 
+overlook non-DLVO forces or overestimate the effects of Brownian 
+motion due to the strain-based time step.
+4. Discussion
+4.1. Scaling law for critical shear stress
+Fig. 7 shows the relationship between σc and particle radius a, from 
+the experimental data for concentrated suspensions of silica and the 
+refractive index-matching solvents including the present and previously 
+published ones. The solid lines in Fig. 7a and b present σc calculated by 
+Eq. (1) with F∗= 0.3 and 0 nN, respectively. For the suspensions of 
+65 wt% silica and KCl-PEG200 solution at a KCl concentration of 
+0.1 mmol/kg, the experimental results agreed well with Eq. (1) by 
+setting F∗= 0.3 nN. In Eq. (5), however, F∗is proportional to a. In the 
+conventional theory, it is inappropriate to assume constant F∗for 
+different particle sizes. It should be noted that Eq. (1) was derived from 
+simulations under a fixed particle diameter without considering the 
+particle size dependence of F∗. Interestingly, in the present study, even 
+though the EDL repulsion proportional to a was incorporated into the 
+calculation, both the experimental values of σc and the calculated values 
+with σscd = −1 mC/m2 scaled with a−2 (Fig. 6a). This result differs from 
+the prediction σc∝a−1 based on a simple force balance, suggesting that 
+Fig. 6. Relationship between critical shear stress σc at the onset of shear thickening and particle radius a. Open circles show experimental results, and open triangles 
+and cross marks show LF-DEM calculation results with σscd = −1 mC/m2 and σscd = −3 mC/m2, respectively. (a): low salt concentration (ionic strength I ≈0.1 mM), 
+(b): high salt concentration (I ≈30 mM).
+R. Ishibashi et al.                                                                                                                                                                                                                               
+Colloids and Surfaces A: Physicochemical and Engineering Aspects 732 (2026) 139148 
+8 
+
+===== PAGE 9 =====
+the onset of shear thickening cannot be determined solely by pairwise 
+force balance and that many-body effects may play an important role. In 
+contrast, the calculated values with σscd = −3 mC/m2 followed the 
+scaling σc∝a−1, implying that the force balance model holds when the 
+EDL repulsion is sufficiently strong. In the experimental system, the 
+observed scaling of σc∝a−2 may result from the coupling between EDL 
+repulsion and Brownian motion, leading to an intermediate scaling 
+behavior between σc∝a−1 and σc∝a−3.
+Another possible explanation for the scaling law is the consideration 
+of a typical interparticle gap. In the previous discussion, it was assumed 
+that the interparticle gap is nearly zero at the onset of shear thickening, 
+and the EDL repulsion at that gap was denoted as F∗. This assumption is 
+based on the scenario where shear thickening occurs due to interparticle 
+contacts. In models that attribute shear thickening to the formation of 
+hydro-cluster due to lubrication forces, the interparticle gap at σ = σc is 
+considered to remain finite [25]. Even if interparticle contact becomes 
+dominant in the shear-thickening regime, it may be reasonable to as­
+sume that hydrodynamic lubrication dominates near the σc. Therefore, 
+the EDL repulsion used in the force balance model should be evaluated 
+at a typical interparticle gap. The typical interparticle gap was calcu­
+lated using Woodcock’s equation [52], which is commonly employed for 
+colloidal dispersions, as follows: 
+hWD = 2a
+(̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅̅
+1
+3πϕ + 5
+6
+√
+−1
+)
+(8) 
+where ϕ is volume fraction of particles. At σ = σc, assuming that the 
+shear force acting on the cross-sectional area of a particle πa2σ is 
+balanced by the interparticle repulsive force F∗exp( −κhWD), the critical 
+stress is given by σc = F∗exp( −κhWD)/(πa2) as indicated by the dashed 
+line in Fig. 7a. Although this scaling law does not clearly follow power- 
+law dependence as observed in the experimental results, the magnitude 
+is of a comparable order within the experimental conditions. This sug­
+gests that even when the EDL repulsion is proportional to a, considering 
+a typical interparticle gap can explain the scaling behavior in the 
+experimental results.
+For the suspensions of silica and the solvents with added electrolytes 
+in Fig. 7b, the experimental results were in good agreement with Eq. (1)
+with F∗= 0. When EDL repulsion is weak, σc is scaled as σc ≈5kBT⋅a−3, 
+scaling law for purely Brownian suspension, independent of dispersion 
+medium and particle concentration. For large particles (2a = 2580 nm) 
+and high salt concentration, σc was larger than 5kBT⋅a−3. This result 
+indicates that gravitational force affects the onset of shear thickening. 
+For parallel-plate geometry, a scaling law for gravity-dominant regime 
+σc ≈2μeffΔρga/15.3 was proposed in the previous study [53], where μeff 
+is an effective static coefficient of friction, Δρ is the density difference 
+between the particles and the dispersion medium, and g is the gravita­
+tional acceleration. A similar scaling law is expected to apply to the 
+double-cylinder geometry as well. At low shear stress, particles sediment 
+due to the density mismatch between the particles and the dispersion 
+medium, which effectively increases the particle concentration and en­
+hances interparticle contacts. At the critical shear stress, if we assume 
+that the shear force πa2σ balances the interparticle static friction force 
+4πa3μeffΔρg/3, we obtain σc∝a as shown by the dashed line in Fig. 7b. In 
+this figure, the particle diameter 2a = 2580 nm is near the boundary 
+between DLVO-dominant and gravity-dominant regimes for silica sus­
+pensions in PEG200.
+4.2. Possible effects of van der Waals forces, solvation, and contact forces
+The discrepancy between the simulation and experimental results 
+may be explained by gravity, vdW attractions, solvation forces, 
+hydrogen bonding, and the salt concentration dependence of frictional 
+forces, which were not considered in the simulations. The higher vis­
+cosity at low shear rate for large particles and high salt concentration 
+(Fig. 4e) is probably due to the gravitational effects, as discussed in the 
+subsection 4.1. Another possibility is the effect of vdW attraction. Since 
+perfect refractive index-matching was not achieved, weak vdW 
+Fig. 7. Scaling law of critical shear stress σc at the onset of shear thickening as a function of particle radius a. Symbols show the experimental values for suspensions 
+of silica particles in the refractive index-matching solvents including data from the present study and previous ones. (a): low electrolyte concentration case. Filled 
+circles: data in the present study for the suspensions of 52 vol% silica and PEG200 with 0.1 mmol/kg KCl. The solid line represents σc = 5kBT⋅a−3 +0.01F∗⋅a−2 with 
+F∗= 0.3 nN, and the dashed line indicates σc = F∗exp( −κhWD)/(πa2) with F∗⋅a2
+0/(kBT) = 151a and κ−1 = 14 nm. (b): high electrolyte concentration case. Cross 
+marks: data in the present study for the suspensions of 52 vol% silica and PEG200 with 100 mmol/kg KCl. Plus signs: data cited from Ref. [11] for the suspensions of 
+46 vol% silica and ethylene glycol with 100 mM NaCl. Open left-pointing triangles: data cited from Ref. [26] for the suspensions of 40–53 vol% silica and tetra­
+hydrofurfuryl alcohol with 66–150 mM HNO3. The solid line represents σc = 5kBT⋅a−3, and the dashed line indicates σc = 4μeffΔρga/3 with μeff = 1 and Δρ 
+= (1.9 −1.13) g/cm3.
+R. Ishibashi et al.                                                                                                                                                                                                                               
+Colloids and Surfaces A: Physicochemical and Engineering Aspects 732 (2026) 139148 
+9 
+
+===== PAGE 10 =====
+attractions may still have been present. According to the Lifshitz theory, 
+the vdW force FvdW between particles dispersed in a medium and the 
+Hamaker constant A are calculated as follows [10]: 
+FvdW =
+a
+12h2
+(̅̅̅̅̅̅̅
+Am
+√
+−̅̅̅̅̅̅
+Ap
+√
+)2
+(9) 
+A = 3kBT
+4
+(εr −1)2
+(εr + 1)2 + 3hνe
+16̅̅̅
+2
+√
+(n2 −1)
+2
+(n2 + 1)3/2
+(10) 
+where h is the Planck constant, νe is the absorption frequency, which 
+typically takes a value of approximately 3 × 1015 s−1, n is the refractive 
+index. Am and Ap are the Hamaker constant of the dispersion medium 
+and the particle, respectively. From these equations, we obtain 
+(̅̅̅̅̅̅̅
+Am
+√
+−̅̅̅̅̅̅
+Ap
+√
+)2 = 2.83 × 10−22 J for the silica–PEG200 system, and 
+(̅̅̅̅̅̅̅
+Am
+√
+−̅̅̅̅̅̅
+Ap
+√
+)2 = 1.88 × 10−21 J for the silica–water system. Although 
+the Hamaker constant for the silica–PEG200 system is approximately 
+one order of magnitude smaller than that for the silica–water system, it 
+is not zero. Thus, vdW attractions might increase the viscosity at high 
+salt concentration in the experiments.
+Solvation force is a short-range repulsive force due to the thin layers 
+of solvent molecules formed on the particle surfaces. The hydrogen 
+bonding occurs between silanol groups (Si-OH) on the silica particle 
+surface and hydroxyl groups (OH) at the end of PEG molecules. As a 
+result, the PEG molecules form the solvation layers on the surface of 
+silica particles, accompanying the solvation force and the stabilized state 
+of silica suspension [54]. Previous studies on aqueous system have re­
+ported the reduction of the hydration force between silica in the pres­
+ence of salt [55], the change in the frictional coefficient of silica surface 
+due to the adsorption of highly or weakly hydrated cations, and the 
+hydrated size dependence of frictional force [56,57]. Variation in elec­
+trolyte species alters hydrated size or permeability of cations into the 
+hydration layer, and these changes are reflected in the macroscopic 
+rheological behaviors of silica suspensions, demonstrating the effects of 
+hydration forces or the short-range repulsions between the cations just 
+outside the hydration layer [28,58]. The hydrogen bonding between 
+particles also affects macroscopic rheology, leading to gelation and 
+shear jamming [54,59]. If increasing salt concentration reduces the 
+solvation forces in our experimental system, the corresponding increase 
+in the frictional forces or interparticle hydrogen bonding may raise the 
+minimum and the maximum viscosity compared with the low-salt case, 
+as shown in Fig. 2. Alternatively, the repulsions between adsorbed cat­
+ions may also have an influence on the viscosity. If the solvation forces 
+remain at high salt concentrations, the scaling law becomes not purely 
+Brownian. For sterically stabilized suspensions, σc∝a−2 holds for the 
+hard sphere limit, and σc∝a−1.75 for compressed semidilute polymer 
+brush layers [39]. Since the solvation force originates from the layer of 
+solvent molecules formed on the particle surface, the scaling law for the 
+solvation force is considered to be similar to that for the steric repulsion 
+induced by polymers. The present result σc∝a−2.3 at high salt concen­
+tration may result from the coupling of solvation, gravitational, and 
+Brownian effects, with the solvation contribution making the exponent 
+closer to −
+2. The hairy layers, known to exhibit non-DLVO effects for 
+silica particles in water [22,23], may also contribute to the scaling law of 
+σc. In the simulations of this study, those non-DLVO effects and the salt 
+concentration dependence of frictional coefficient were not considered. 
+Previous studies carried out simulations incorporating the friction that 
+inhibits rolling and pointed out that the rolling friction can imitate the 
+surface interactions such as hydrogen bonding [43]. Since hydrogen 
+bonding can arise from interparticle contacts formed during sedimen­
+tation or in the shear-thickening regime, it may particularly affect the 
+viscosity and the σc for large particles and high salt concentrations. For 
+better understanding the experimental results, improving the friction 
+contact model would be an effective approach.
+5. Conclusion
+In this study, we measured the steady shear viscosity of concentrated 
+suspensions of colloidal silica particles dispersed in a refractive index- 
+matching solvent as a function of salt concentration and particle size. 
+As salt concentration or particle size increased, both the shear-thinning 
+slope and the critical shear stress σc decreased. We found that σc became 
+constant at high salt concentrations above a critical salt concentration, 
+which we refer to as the critical concentration for critical stress (CCCS). 
+Above the CCCS, the effects of electric double layer (EDL) repulsions on 
+the onset of shear thickening vanished, analogous to the disappearance 
+of EDL repulsions above the critical coagulation concentration (CCC) in 
+DLVO theory. Further analysis of the CCCS would be beneficial for 
+optimizing theory of colloidal interactions in concentrated suspensions 
+and for developing methods to estimate interparticle interactions from 
+rheological measurements. These experimental trends were quantita­
+tively reproduced by LF-DEM simulations for particle diameters 2a of 
+500 and 1000 nm, using the DLVO-based model of EDL repulsion with 
+an appropriate surface charge density. Simulations reproduced the 
+relation σc∝a−2 in the low-salt case, but the theoretical reason behind 
+this scaling equation remains unclear. Because the repulsive force is 
+proportional to the particle diameter, a model in which shear thickening 
+occurs when the shear force balances the EDL repulsion should yield 
+σc∝a−1. To address this unresolved issue, two possible explanations can 
+be considered at present: one is that the EDL repulsion couples with the 
+effect of Brownian motion, and the other is that instead of assuming zero 
+interparticle gap, a typical interparticle gap is introduced. In addition, 
+the discrepancy between experimental and simulation results at high 
+salt concentration suggests the existence of non-DLVO effects. Especially 
+for large particles (2a = 2500 nm) and high salt concentration, gravi­
+tational force may affect viscosity, as expected from the scaling law of 
+σc∝a. Our results indicate the need for further studies to elucidate the 
+behavior of DLVO and non-DLVO forces in sheared concentrated sus­
+pensions: incorporating non-DLVO forces into simulations and con­
+ducting more detailed analysis of the relationship between the size 
+dependence of the repulsive force and the scaling law of σc.
+CRediT authorship contribution statement
+Ryoichi Ishibashi: Writing – original draft, Visualization, Investi­
+gation, Formal analysis, Data curation. Ryohei Seto: Writing – review & 
+editing, Software. Motoyoshi Kobayashi: Writing – review & editing, 
+Validation, Supervision, Resources, Project administration, Methodol­
+ogy, Investigation, Funding acquisition, Formal analysis, Conceptuali­
+zation. Takuya Sugimoto: Writing – review & editing, Investigation.
+Declaration of Competing Interest
+The authors declare no competing interests.
+Acknowledgment
+This research was funded by JSPS KAKENHI (grant number 
+19H03070, 21K14939, 24K17982), Innovative Science and Technology 
+Initiative for Security, ATLA, Japan (Grant Number JPJ004596), and 
+JST SPRING (grant number JPMJSP2124).
+Appendix A. Supporting information
+Supplementary data associated with this article can be found in the 
+online version at doi:10.1016/j.colsurfa.2025.139148.
+Data availability
+Data will be made available on request.
+R. Ishibashi et al.                                                                                                                                                                                                                               
+Colloids and Surfaces A: Physicochemical and Engineering Aspects 732 (2026) 139148 
+10 
+
+===== PAGE 11 =====
+References
+[1] D.J. Jerolmack, K.E. Daniels, Viewing Earth’s surface as a soft-matter landscape, 
+Nat. Rev. Phys. 1 (2019) 716–730.
+[2] M. Wei, K. Lin, L. Sun, Shear thickening fluids and their applications, Mater. Des. 
+216 (2022) 110570.
+[3] N.J. Wagner, J.F. Brady, Shear thickening in colloidal dispersions, Phys. Today 62 
+(2009) 27–32.
+[4] J. Mewis, N.J. Wagner, Colloidal suspension rheology, Cambridge university press 
+Cambridge, 2012.
+[5] E. Brown, H.M. Jaeger, Shear thickening in concentrated suspensions: 
+phenomenology, mechanisms and relations to jamming, Rep. Prog. Phys. 77 (2014) 
+46602.
+[6] N.C. Crawford, L.B. Popp, K.E. Johns, L.M. Caire, B.N. Peterson, M.W. Liberatore, 
+Shear thickening of corn starch suspensions: Does concentration matter? J. Colloid 
+Interface Sci. 396 (2013) 83–89.
+[7] M. Kobayashi, T. Sugimoto, S. Sato, R. Ishibashi, Climbing Colloidal Suspension, 
+Liquids 3 (2023) 40–47.
+[8] M. Kobayashi, T. Sugimoto, R. Ishibashi, S. Sato, Dynamic Behaviors of 
+Concentrated Colloidal Silica Suspensions: Dancing, Bouncing, Solidifying, and 
+Melting Under Vibration, Liquids 5 (2025) 18.
+[9] H.A. Barnes, Shear-thickening (“Dilatancy”) in suspensions of nonaggregating solid 
+particles dispersed in Newtonian liquids, J. Rheol. 33 (1989) 329–366.
+[10] J.N. Israelachvili, Intermolecular and surface forces, Academic press, 2011.
+[11] H. Nakamura, S. Makino, M. Ishii, Effects of electrostatic interaction on rheological 
+behavior and microstructure of concentrated colloidal suspensions, Colloids Surf. A 
+Physicochem. Eng. Asp. 623 (2021) 126576.
+[12] A. Moteki, M. Kobayashi, Rheological behavior of an aqueous suspension of 
+oxidized carbon nanohorn (CNHox), Nanomaterials 14 (2024) 1247.
+[13] M. Kobayashi, Y. Adachi, S. Ooi, On the steady shear viscosity of coagulated 
+suspensions, Nihon Reoroji Gakkaishi 28 (2000) 143–144.
+[14] S. Abend, G. Lagaly, Sol–gel transitions of sodium montmorillonite dispersions, 
+Appl. Clay Sci. 16 (2000) 201–227.
+[15] M. Kobayashi, Y. Sato, T. Sugimoto, Effect of pH and electrolyte concentration on 
+sol–gel state of semi-dilute aqueous cellulose nanofiber suspension: an 
+interpretation based on angle-dependent DLVO theory, Colloid Polym. Sci. 300 
+(2022) 953–960.
+[16] B.V. Derjaguin, L.D. Landau, Theory of the Stability of Strongly Charged Lyophobic 
+Sols and of the Adhesion of Strongly Charged Particles in Solutions of Electrolytes, 
+Acta Physicochim. URSS 14 (1941) 633–662.
+[17] E.J.W. Verwey, J.Th.G. Overbeek, Theory of the Stability of Lyophobic Colloids, 
+Elsevier, 1948.
+[18] M. Elimelech, J. Gregory, X. Jia, Particle deposition and aggregation: 
+measurement, modelling and simulation, Butterworth-Heinemann, 1995.
+[19] G. Trefalt, I. Szilagyi, M. Borkovec, Poisson–Boltzmann description of interaction 
+forces and aggregation rates involving charged colloidal particles in asymmetric 
+electrolytes, J. Colloid Interface Sci. 406 (2013) 111–120.
+[20] G. Trefalt, I. Szilagyi, G. Tellez, M. Borkovec, Colloidal stability in asymmetric 
+electrolytes: Modifications of the Schulze–Hardy rule, Langmuir 33 (2017) 
+1695–1704.
+[21] K. Omija, A. Hakim, K. Masuda, A. Yamaguchi, M. Kobayashi, Effect of counter ion 
+valence and pH on the aggregation and charging of oxidized carbon nanohorn 
+(CNHox) in aqueous solution, Colloids Surf. A Physicochem. Eng. Asp. 619 (2021) 
+126552.
+[22] M. Kobayashi, F. Juillerat, P. Galletto, P. Bowen, M. Borkovec, Aggregation and 
+charging of colloidal silica particles: effect of particle size, Langmuir 21 (2005) 
+5761–5769.
+[23] M. Kobayashi, M. Skarba, P. Galletto, D. Cakara, M. Borkovec, Effects of heat 
+treatment on the aggregation and charging of St¨ober-type silica, J. Colloid 
+Interface Sci. 292 (2005) 139–147.
+[24] G.V. Franks, Z. Zhou, N.J. Duin, D.V. Boger, Effect of interparticle forces on shear 
+thickening of oxide suspensions, J. Rheol. 44 (2000) 759–779.
+[25] B.J. Maranzano, N.J. Wagner, The effects of particle size on reversible shear 
+thickening of concentrated colloidal dispersions, J. Chem. Phys. 114 (2001) 
+10514–10527.
+[26] B.J. Maranzano, N.J. Wagner, The effects of interparticle interactions and particle 
+size on reversible shear thickening: Hard-sphere colloidal dispersions, J. Rheol. 45 
+(2001) 1205–1222.
+[27] L. Shan, Y. Tian, J. Jiang, X. Zhang, Y. Meng, Effects of pH on shear thinning and 
+thickening behaviors of fumed silica suspensions, Colloids Surf. A Physicochem. 
+Eng. Asp. 464 (2015) 1–7.
+[28] N.C. Crawford, B. Yohe, S. Kim, R. Williams, D. Boldridge, M.W. Liberatore, Shear 
+thickening and shear-induced agglomeration of chemical mechanical polishing 
+slurries using electrolytes, Rheol. Acta 52 (2013) 499–513.
+[29] V. Rathee, A. Monti, M.E. Rosti, A.Q. Shen, Shear thickening behavior in dense 
+repulsive and attractive suspensions of hard spheres, Soft Matter 17 (2021) 
+8047–8058.
+[30] W.H. Boersma, J. Laven, H.N. Stein, Shear thickening (dilatancy) in concentrated 
+dispersions, AIChE J. 36 (1990) 321–332.
+[31] H. Nakamura, S. Makino, M. Ishii, Continuous shear thickening and discontinuous 
+shear thickening of concentrated monodispersed silica slurry, Adv. Powder 
+Technol. 31 (2020) 1659–1664.
+[32] S.S. Shenoy, N.J. Wagner, Influence of medium viscosity and adsorbed polymer on 
+the reversible shear thickening transition in concentrated colloidal dispersions, 
+Rheol. Acta 44 (2005) 360–371.
+[33] N.Y.C. Lin, B.M. Guy, M. Hermes, C. Ness, J. Sun, W.C.K. Poon, I. Cohen, 
+Hydrodynamic and contact contributions to continuous shear thickening in 
+colloidal suspensions, Phys. Rev. Lett. 115 (2015) 228304.
+[34] H. Nakamura, S. Makino, M. Ishii, Shear-thickening behavior of concentrated 
+monodispersed colloidal suspensions, Nihon Reoroji Gakkaishi 47 (2019) 9–15.
+[35] M.M. Denn, J.F. Morris, D. Bonn, Shear thickening in concentrated suspensions of 
+smooth spheres in Newtonian suspending fluids, Soft Matter 14 (2018) 170–184.
+[36] J.F. Morris, Shear thickening of concentrated suspensions: Recent developments 
+and relation to other phenomena, Annu. Rev. Fluid Mech. 52 (2020) 121–144.
+[37] J.F. Morris, Progress and challenges in suspension rheology, Rheol. Acta 62 (2023) 
+617–629.
+[38] B.M. Guy, M. Hermes, W.C.K. Poon, Towards a unified description of the rheology 
+of hard-particle suspensions, Phys. Rev. Lett. 115 (2015) 88304.
+[39] H. Kim, M. van der Naald, F.A. Braaten, T.A. Witten, S.J. Rowan, H.M. Jaeger, 
+Shear thickening in suspensions of particles with dynamic brush layers, Soft Matter 
+20 (2024) 6384–6389.
+[40] R. Seto, R. Mari, J.F. Morris, M.M. Denn, Discontinuous shear thickening of 
+frictional hard-sphere suspensions, Phys. Rev. Lett. 111 (2013) 218301.
+[41] R. Mari, R. Seto, J.F. Morris, M.M. Denn, Shear thickening, frictionless and 
+frictional rheologies in non-Brownian suspensions, J. Rheol. 58 (2014) 1693–1724.
+[42] R. Mari, R. Seto, J.F. Morris, M.M. Denn, Discontinuous shear thickening in 
+Brownian suspensions by dynamic simulation, Proc. Natl. Acad. Sci. 112 (2015) 
+15326–15330.
+[43] A. Singh, C. Ness, R. Seto, J.J. de Pablo, H.M. Jaeger, Shear thickening and 
+jamming of dense suspensions: the “roll” of friction, Phys. Rev. Lett. 124 (2020) 
+248005.
+[44] S. Pednekar, J. Chun, J.F. Morris, Simulation of shear thickening in attractive 
+colloidal suspensions, Soft Matter 13 (2017) 1773–1779.
+[45] J. Wang, D. Pan, Effect of DLVO interactions on the rheology and microstructure of 
+non-Brownian suspensions, Acta Mech. Sin. 39 (2023) 322469.
+[46] R.J. Sengwa, S. Sankhla, Characterization of heterogeneous interaction in binary 
+mixtures of ethylene glycol oligomer with water, ethyl alcohol and dioxane by 
+dielectric analysis, J. Mol. Liq. 130 (2007) 119–131.
+[47] R.M. Fuoss, Ionic association. III. The equilibrium between ion pairs and free ions, 
+J. Am. Chem. Soc. 80 (1958) 5059–5061.
+[48] K. Izutsu, Electrochemistry in nonaqueous solutions, John Wiley & Sons, 2009.
+[49] H. Ohshima, A simple expression for Henry’s function for the retardation effect in 
+electrophoresis of spherical colloidal particles, J. Colloid Interface Sci. 168 (1994) 
+269–271.
+[50] H. Ohshima, T. Kondo, Comparison of three models on double layer interaction, 
+J. Colloid Interface Sci. 126 (1988) 382–383.
+[51] J. Lee, Z. Jiang, J. Wang, A.R. Sandy, S. Narayanan, X.-M. Lin, Unraveling the role 
+of order-to-disorder transition in shear thickening suspensions, Phys. Rev. Lett. 120 
+(2018) 28002.
+[52] L. Woodcock, Developments in the Non-Newtonian Rheology of Glass Forming 
+Systems, Lect. Notes Phys. 277 (1987) 113–124, https://doi.org/10.1007/3-540- 
+17801-5_7.
+[53] E. Brown, H.M. Jaeger, The role of dilation and confining stresses in shear 
+thickening of dense suspensions, J. Rheol. 56 (2012) 875–923.
+[54] S.R. Raghavan, H.J. Walls, S.A. Khan, Rheology of silica dispersions in organic 
+liquids: new evidence for solvation forces dictated by hydrogen bonding, Langmuir 
+16 (2000) 7920–7930.
+[55] J.-P. Chapel, Electrolyte species dependent hydration forces between silica 
+surfaces, Langmuir 10 (1994) 4237–4243.
+[56] B.C. Donose, I.U. Vakarelski, K. Higashitani, Silica surfaces lubrication by hydrated 
+cations adsorption from electrolyte solutions, Langmuir 21 (2005) 1834–1839.
+[57] I.U. Vakarelski, N. Teramoto, C.E. McNamee, J.O. Marston, K. Higashitani, Ionic 
+enhancement of silica surface nanowear in electrolyte solutions, Langmuir 28 
+(2012) 16072–16079.
+[58] M. Colic, M.L. Fisher, G.V. Franks, Influence of ion size on short-range repulsive 
+forces between silica surfaces, Langmuir 14 (1998) 6107–6112.
+[59] N.M. James, E. Han, R.A.L. de la Cruz, J. Jureller, H.M. Jaeger, Interparticle 
+hydrogen bonding can elicit shear jamming in dense suspensions, Nat. Mater. 17 
+(2018) 965–970.
+[60] A. Stukowski, Visualization and analysis of atomistic simulation data with 
+OVITO–the Open Visualization Tool, Model. Simul. Mat. Sci. Eng. 18 (2009) 
+15012.
+R. Ishibashi et al.                                                                                                                                                                                                                               
+Colloids and Surfaces A: Physicochemical and Engineering Aspects 732 (2026) 139148 
+11 

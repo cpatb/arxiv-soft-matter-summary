@@ -1,0 +1,6 @@
+IMG_0544: {'n_frames': 22, 'n_shuffles': 880, 'xi_bl_observed': 11.799213604555018, 'xi_bl_shuffled': nan, 'ratio_observed_over_shuffled': nan, 'per_frame_xi_median': 8.951843077630453, 'shuffled_xi_median': 1.4199731059620473, 'shuffled_xi_p95': 2.7344455716699927, 'permutation_p': 0.0}
+IMG_0545: {'n_frames': 22, 'n_shuffles': 880, 'xi_bl_observed': 11.218557056316671, 'xi_bl_shuffled': nan, 'ratio_observed_over_shuffled': nan, 'per_frame_xi_median': 8.049743798024917, 'shuffled_xi_median': 1.380405604179138, 'shuffled_xi_p95': 2.738586324757082, 'permutation_p': 0.0}
+IMG_0546: {'n_frames': 22, 'n_shuffles': 880, 'xi_bl_observed': 14.67283825546781, 'xi_bl_shuffled': nan, 'ratio_observed_over_shuffled': nan, 'per_frame_xi_median': 11.368525845434105, 'shuffled_xi_median': 1.4275930001744035, 'shuffled_xi_p95': 2.8674386528569977, 'permutation_p': 0.0}
+IMG_0547: {'n_frames': 22, 'n_shuffles': 880, 'xi_bl_observed': 12.821988574804822, 'xi_bl_shuffled': nan, 'ratio_observed_over_shuffled': nan, 'per_frame_xi_median': 7.779637973515291, 'shuffled_xi_median': 1.3520076174702844, 'shuffled_xi_p95': 2.85988384073486, 'permutation_p': 0.0}
+
+wrote C:\Users\compl\Desktop\Projects\catfish school\results\correlation_null.json

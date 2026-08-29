@@ -1,0 +1,40 @@
+
+========================================================================
+BODY LENGTH  (the unit everything is divided by)
+========================================================================
+  IMG_0544: BL = 13.86 px   n = 734   IQR 11.6-17.1   aspect 2.56   threshold systematic 3.6%
+  IMG_0545: BL = 14.56 px   n = 365   IQR 11.7-18.2   aspect 2.63   threshold systematic 6.5%
+  IMG_0546: BL = 14.47 px   n = 630   IQR 11.9-17.8   aspect 2.61   threshold systematic 4.5%
+  IMG_0547: BL = 14.26 px   n = 479   IQR 11.8-17.6   aspect 2.83   threshold systematic 2.6%
+
+========================================================================
+PER-CLIP SUMMARY
+========================================================================
+    clip  duration_s  n_frames_present  frac_present  body_px_median  body_px_drift_pct  n_bl_samples  size_bl_median size_bl_range  area_bl2_median  aspect_ratio_median  circularity_median  solidity_median  boundary_roughness_median  packing_fraction_median  n_components_max  frac_frames_split  polarisation_median  speed_bl_s_median  xi_bl_median  camera_shift_px_median  camera_ok_frac  camera_to_fish_motion_ratio
+IMG_0544        79.0              2369         1.000            13.9               25.9           734            32.2  [25.7, 36.1]            813.1                 1.76               0.529            0.870                      1.375                    0.776                 3              0.720                0.520              2.434         13.29                    1.05           1.000                         0.94
+IMG_0545        55.8              1643         0.981            14.6               25.6           365            38.3  [23.1, 50.1]           1154.3                 1.53               0.568            0.902                      1.327                    0.836                 4              0.058                0.690              4.523         13.13                    2.84           0.999                         1.29
+IMG_0546        26.8               804         1.000            14.5               24.1           630            33.5  [24.7, 50.3]            880.6                 2.13               0.575            0.894                      1.319                    0.818                 3              0.203                0.472              2.475         17.50                    1.00           1.000                         0.87
+IMG_0547        31.1               918         0.984            14.3               25.4           479            33.4  [31.2, 53.0]            877.4                 2.34               0.651            0.943                      1.239                    0.864                 5              0.062                0.754              3.615         11.97                    1.81           0.998                         1.00
+
+========================================================================
+COLLECTIVE STATE  (polarisation / rotation / rind vs core)
+========================================================================
+  IMG_0544: Phi = 0.507 [0.40-0.64]   M = 0.227 [0.11-0.41]   -> SWARM
+      Phi rind 0.436 vs core 0.562;  speed core/rind 0.969
+  IMG_0545: Phi = 0.685 [0.51-0.79]   M = 0.081 [0.03-0.13]   -> POLARISED
+      Phi rind 0.626 vs core 0.707;  speed core/rind 0.964
+  IMG_0546: Phi = 0.501 [0.27-0.67]   M = 0.478 [0.25-0.62]   -> MILLING
+      Phi rind 0.446 vs core 0.529;  speed core/rind 0.903
+  IMG_0547: Phi = 0.771 [0.51-0.86]   M = 0.085 [0.04-0.19]   -> POLARISED
+      Phi rind 0.761 vs core 0.781;  speed core/rind 1.003
+
+========================================================================
+CORRELATION  (scale-free test)
+========================================================================
+Traceback (most recent call last):
+  File "C:\Users\compl\Desktop\Projects\catfish school\src\digest.py", line 138, in <module>
+    main()
+  File "C:\Users\compl\Desktop\Projects\catfish school\src\digest.py", line 71, in main
+    print(f"  {k}: xi = {v['xi_bl']:.2f} BL   r_max = {v['r_max_bl']:.1f} BL   "
+                         ~^^^^^^^^^
+KeyError: 'xi_bl'
