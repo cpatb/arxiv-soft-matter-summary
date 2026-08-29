@@ -1,0 +1,11 @@
+FoamFile { version 2.0; format ascii; class volScalarField; object p; }
+dimensions [1 -1 -2 0 0 0 0];
+internalField uniform 101325;
+boundaryField
+{
+    coldWall { type calculated; value uniform 101325; }
+    hotWall  { type calculated; value uniform 101325; }
+    floor    { type calculated; value uniform 101325; }
+    ceiling  { type calculated; value uniform 101325; }
+    frontAndBack { type empty; }
+}

@@ -1,0 +1,33 @@
+FoamFile { version 2.0; format ascii; class dictionary; object controlDict; }
+application     buoyantSimpleFoam;
+startFrom       startTime;
+startTime       0;
+stopAt          endTime;
+endTime         3000;        // SIMPLE iterations (steady)
+deltaT          1;
+writeControl    timeStep;
+writeInterval   500;
+purgeWrite      2;
+writeFormat     ascii;
+writePrecision  7;
+writeCompression off;
+timeFormat      general;
+timePrecision   6;
+runTimeModifiable true;
+
+functions
+{
+    // recirculation proxy: area-averaged T on the cold-aisle wall region.
+    coldFaceT
+    {
+        type            surfaceFieldValue;
+        libs            (fieldFunctionObjects);
+        writeControl    timeStep;
+        writeInterval   100;
+        regionType      patch;
+        name            coldWall;
+        operation       areaAverage;
+        writeFields     false;      // v2606 requires this entry explicitly
+        fields          (T);
+    }
+}

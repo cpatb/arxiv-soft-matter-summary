@@ -1,0 +1,8 @@
+#!/bin/sh
+cd "${0%/*}" || exit 1
+. "${WM_PROJECT_DIR:?source the OpenFOAM bashrc first}/bin/tools/RunFunctions"
+runApplication blockMesh
+runApplication buoyantSimpleFoam
+echo "--- recirculation proxy (cold-wall avg T over iterations) ---"
+cat postProcessing/coldFaceT/0/surfaceFieldValue.dat 2>/dev/null | tail -5
+echo "Open in ParaView with:  paraFoam   (or  touch case.foam && paraview case.foam)"

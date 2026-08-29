@@ -1,0 +1,11 @@
+FoamFile { version 2.0; format ascii; class volScalarField; object T; }
+dimensions [0 0 0 1 0 0 0];
+internalField uniform 300;
+boundaryField
+{
+    coldWall { type fixedValue; value uniform 291; }   // 18 C cold-aisle supply
+    hotWall  { type fixedValue; value uniform 313; }   // 40 C rack exhaust
+    floor    { type zeroGradient; }
+    ceiling  { type zeroGradient; }
+    frontAndBack { type empty; }
+}
