@@ -1,0 +1,41 @@
+{
+  "generated_utc": "2026-08-27T00:49:14+00:00",
+  "archive_identifier": "MarketStreet19064KScan20181016",
+  "archive_details_url": "https://archive.org/details/MarketStreet19064KScan20181016",
+  "archive_title": "A Trip Down Market Street Before the Fire (4K scan, 2018-10-11)",
+  "archive_collections": [
+    "prelinger"
+  ],
+  "archive_uploader": "footage@panix.com",
+  "archive_publicdate": "2018-10-16 23:21:09",
+  "archive_addeddate": "2018-10-16 23:21:09",
+  "film_year": 1906,
+  "us_pd_cutoff_year_at_generation": 1931,
+  "pd_basis": "Published 1906, before the 1931 cutoff (95-year term).",
+  "archive_rights_metadata": {
+    "licenseurl": null,
+    "rights": null,
+    "possible-copyright-status": null
+  },
+  "archive_rights_metadata_present": false,
+  "rights_metadata_note": "archive.org carries NO rights metadata for this item. Absence of a licenseurl is not evidence either way; PD status rests on the publication date alone.",
+  "source_file": {
+    "name": "Market_Street_1906_4K_scan_20181016.mov",
+    "format": "QuickTime",
+    "size": 91674081757,
+    "width": 4096,
+    "height": 3072,
+    "pixels": 12582912,
+    "length": 404.5,
+    "source": "original"
+  },
+  "source_file_url": "https://archive.org/download/MarketStreet19064KScan20181016/Market_Street_1906_4K_scan_20181016.mov",
+  "audio_note": "Original film is silent. Any audio in the published video is added by the channel and must be self-composed or provably clear -- an inherited modern score is a valid Content ID claim and also risks YouTube membership eligibility.",
+  "dispute_note": "'Public domain' is NOT an enumerated YouTube dispute reason. File under 'misidentified or an error was made', and cite: this item URL, the film year above, and the fact that PD footage is ineligible as a Content ID reference (support.google.com/youtube/answer/2605065).",
+  "verification_still_required": [
+    "Confirm the film's publication year from a second source, not archive.org alone.",
+    "Confirm no separately-copyrighted score is embedded in the file you used.",
+    "Confirm this scan is not itself a third party's claimed restoration.",
+    "For 1929-1963 works, check renewal in the Catalog of Copyright Entries."
+  ]
+}

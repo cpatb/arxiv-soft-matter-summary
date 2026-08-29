@@ -1,0 +1,39 @@
+A Trip Down Market Street, 1906 - Restored and Colorized in 4K
+
+ABOUT THE COLOR
+The original film is black and white. Every color you see here is a reconstruction
+inferred by an AI model from the brightness of the original frames -- it is an informed
+guess, not a record of what these colors actually were. Treat the color as illustration
+and the shapes, motion and composition as the historical document. Where a color is
+known from other sources it is noted in the video.
+
+WHAT WAS DONE
+  * Speed corrected from the scan rate to the film's intended projection rate
+  * Brightness flicker reduced (the source is 1906-era nitrate stock)
+  * Colorized per frame, then stabilized across frames so colors do not flicker
+  * Upscaled and lightly denoised
+  * Scored (the original is silent)
+
+No frames were generated, removed, or reordered. Nothing was added to the scene.
+
+SOURCE
+A Trip Down Market Street Before the Fire (4K scan, 2018-10-11)
+Archive.org item: https://archive.org/details/MarketStreet19064KScan20181016
+Collection: prelinger
+File used: Market_Street_1906_4K_scan_20181016.mov (4096x3072, 85.4 GB)
+Scanned/uploaded by: footage@panix.com
+Downloaded and processed 2026-08-26.
+
+RIGHTS
+This film was published in 1906 and is in the public domain in the United States
+(published before 1931; see the Cornell copyright term chart at
+https://copyright.cornell.edu/publicdomain). The restoration was made from the archive
+scan linked above. The colorization is machine-generated and, per U.S. Copyright Office
+guidance on automated restoration, is not claimed as a copyrightable contribution --
+this video is offered without a copyright claim over the underlying footage or its
+colors. Please credit the archive, not me, if you reuse the source.
+
+-- Silver to Color
+
+TAGS (paste into the tags field)
+1906, 1900s, restored film, colorized, public domain film, silent film, film restoration, history, archival footage, AI colorization, 4k restoration, historical footage

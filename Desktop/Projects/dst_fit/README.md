@@ -49,14 +49,14 @@ scripts/gate_g5.py              G5 gate: refusal on data that cannot answer
 scripts/gate_g10.py             G10 gate: sigma* against a measured contact fraction. PASSES
 scripts/make_fig_phim_drift.py  the headline figure
 figures/                        fig_phim_drift.png plus the .md that explains it
-tests/                          149 tests, several against real deposited data
+tests/                          205 tests, several against real deposited data
 ```
 
 ## Install and run
 
 ```
 pip install -e ".[dev]"
-python -m pytest tests -q          # 149 passed
+python -m pytest tests -q          # 205 passed
 python scripts/gate_n1.py          # 0
 python scripts/gate_n2.py          # 0
 python scripts/gate_n3.py          # 0
