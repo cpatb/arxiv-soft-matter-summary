@@ -66,6 +66,14 @@ def main():
               label=f"fitted turbulent  $r^{{-{n_t:.2f}}}$  ($C_P={C_P:.3g}$)")
     ax.loglog(r_mm, tau_lam, "--", color="C3", lw=1.5, label="laminar Watson II  $r^{-5}$")
     ax.axvline(15.0, ls=":", color="grey", label="$r_{max}=15$ mm")
+    # Domain truncation: the profile stops at the outer radial boundary Rdom, where
+    # tau_w is still ~2 Pa.  Without this marker the plot reads as if the curve simply
+    # ended, and the tau_c = 1 Pa contour looks resolved when it is outside the domain.
+    Rdom_mm = info["Rdom"] * 1e3
+    ax.axvline(Rdom_mm, ls="-", color="k", lw=1.3, alpha=0.7,
+               label=f"domain edge $R={Rdom_mm:.0f}$ mm")
+    ax.axhline(1.0, ls="-.", color="C2", lw=1.3,
+               label=r"$\tau_c=1$ Pa (not reached in domain)")
     ax.set_xlabel("radius $r$ (mm)")
     ax.set_ylabel(r"wall shear stress $\tau_w$ (Pa)")
     ax.set_title(f"Impinging-jet wall shear: CFD vs turbulent fit vs laminar $r^{{-5}}$\n"

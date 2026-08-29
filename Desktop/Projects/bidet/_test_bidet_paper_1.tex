@@ -1,0 +1,1063 @@
+% !BIB program = none
+%% ============================================================
+%%  The Fluid Mechanics and Policy Case for Bidet Adoption
+%%  in the United States: A Quantitative Analysis
+%%
+%%  REVISION (30 May 2026):
+%%    - Standoff narrative reconciled with companion optimization
+%%      paper (bidet_optimization_1.tex): the previous
+%%      ``momentum-conservation insensitivity to standoff'' claim
+%%      is retracted and replaced with the developed-jet decay
+%%      treatment of the companion paper.
+%%    - Notation clash a (nozzle radius) vs a (stagnation strain
+%%      rate) resolved by renaming the strain rate to \dot epsilon_s.
+%%    - r_clean evaluation corrected: previous 16 mm was a numerical
+%%      slip; the correct value for the stated parameters is
+%%      approximately 26 mm.
+%%    - Reynolds-number convention unified: Re_d everywhere.
+%%    - Angular-coverage equation derivation cleaned up.
+%%    - Hydraulic-jump treatment replaced with Bohr-Dimon-Putkaradze
+%%      shallow-water-shock scaling (Watson's original gravity
+%%      formula is dimensionally inconsistent with the stated
+%%      parameter values).
+%%    - Hussein, Capp & George 1994 added for B constant;
+%%      Bohr et al. 1993 / Bush & Aristoff 2003 added for jump.
+%%    - Companion-paper cross-references added; verification roadmap
+%%      cross-referenced.
+%% ============================================================
+\documentclass[10pt,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{natbib}
+
+% ---- Packages -----------------------------------------------
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+
+, group-minimum-digits=4}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, decorations.pathmorphing, patterns}
+\usepackage[colorlinks=true, linkcolor=blue!60!black,
+            citecolor=blue!60!black, urlcolor=blue!60!black]{hyperref}
+
+% ---- Custom commands ----------------------------------------
+\newcommand{\Rey}{\mathrm{Re}}
+\newcommand{\We}{\mathrm{We}}
+\newcommand{\Pe}{\mathrm{Pe}}
+\newcommand{\Bi}{\mathrm{Bi}}
+\newcommand{\Go}{\mathrm{G\ddot{o}}}
+\newcommand{\order}[1]{\mathcal{O}\!\left(#1\right)}
+\newcommand{\half}{\tfrac{1}{2}}
+
+% =============================================================
+\begin{document}
+
+\title{On the Superiority of Hydrodynamic Perianal Cleansing: A
+       Quantitative Framework in Fluid Mechanics, Tribology, and
+       Environmental Economics for Bidet Adoption Policy in the
+       United States}
+
+\author{Charlie Burton}
+%\email{cpb@u.northwestern.edu}
+%\affiliation{Department of Physics and Astronomy, Northwestern University}
+
+\date{\today}
+
+\begin{abstract}
+The United States remains an international outlier in its near-universal
+reliance on dry toilet paper (TP) for perianal hygiene, consuming
+141~rolls/ person/ year, the highest per-capita rate on
+Earth, while countries such as Japan have achieved 80~\% household
+bidet penetration. This paper constructs a quantitative argument
+for bidet adoption in American residential and commercial buildings across
+four domains. Using Watson's (1964) radial wall-jet solution augmented by a
+curvature-perturbation expansion, we model the nozzle as a circular
+free jet at exit Reynolds number $\Rey_d \approx 10{,}000$--$18{,}000$
+that transitions to a wall jet of laminar boundary-layer character at
+the cleaning radius, and derive wall shear stress
+distributions $\tau_w(r)$; cleaning-zone values are estimated at
+$\tau_w \approx 50$--$500~Pa$ in the laminar lower-bound limit
+of Watson Region~II (Phares et al.~2000 wall-jet correlations imply
+that the true turbulent value is several-fold higher), and either
+estimate exceeds the critical detachment threshold for fecal residue
+($\tau_\mathrm{crit} \approx 1$--$10~Pa$) by one to two orders
+of magnitude. A P\'{e}clet-number analysis ($\Pe \sim 10^9$)
+confirms that advective transport in the spreading water film eliminates
+dislodged material in a single pass, whereas dry wiping redistributes
+rather than removes debris. Tribological analysis of toilet paper on moist
+perianal skin yields contact shear stresses of 1--30~kPa, two to
+three orders of magnitude above the bidet's hydrodynamic shear, providing
+a mechanistic basis for stratum corneum disruption and the associated
+clinical spectrum of pruritus ani, anal fissures, and hemorrhoidal
+exacerbation. An environmental lifecycle and economic analysis shows that
+national bidet adoption would eliminate the harvest of 15--31 million trees
+annually, reduce embedded water consumption by $\sim98~\%$, and pay
+back household installation costs within 3--15 months. A targeted policy
+proposal modeled on the EPA WaterSense rebate framework is presented.
+\end{abstract}
+
+\maketitle
+
+% =============================================================
+\section{Introduction}
+\label{sec:intro}
+% =============================================================
+
+The act of perianal cleansing following defecation is performed by nearly
+every human being on the planet multiple times daily, yet the dominant
+American method (dry mechanical wiping with cellulose paper) has received
+almost no formal engineering scrutiny. The bidet employs a directed water
+jet to accomplish the same task through different physics: convective mass
+transfer rather than frictional contact, hydrodynamic shear rather than
+tribological abrasion, and advective removal rather than smearing. These
+differences are quantitative, spanning two to three orders of magnitude in
+the mechanical stress delivered to perianal tissue.
+
+The public health stakes are substantial. Hemorrhoidal disease affects an
+estimated 10 million Americans annually, generating \$770 million in
+documented employer-insured healthcare costs \citep{Peery2014}. Pruritus
+ani has a population prevalence of 1--5\%, with mechanical irritation from
+wiping identified as a primary or exacerbating factor in a significant
+fraction of cases \citep{Dasan1999}. The environmental costs are no less
+significant: American toilet paper consumption accounts for approximately
+20\% of global supply \citep{ScientificAmerican2009}, with 80\% manufactured
+from virgin forest fiber \citep{NRDC2020}.
+
+
+% =============================================================
+\section{Anatomical Geometry: The Hemi-Cylinder Model}
+\label{sec:geometry}
+% =============================================================
+
+\subsection{Geometric Idealization}
+
+The perianal anatomy presents a concave ellipsoidal cleft whose local geometry
+near the anal verge is well approximated, for the purpose of fluid mechanical
+analysis, by a hemi-cylindrical surface. We define the \emph{effective cleft
+radius} $R$ as the radius of curvature of the inter-gluteal fold at the level
+of the anus, measured in the sagittal plane. From anthropometric data,
+$R \approx 15$--$25~mm$ for the seated adult posture relevant to bidet
+use.
+
+We introduce cylindrical coordinates $(r, \phi, z)$ with $z$ directed along
+the jet axis (vertically downward from the nozzle), the apex of the concave
+surface located at the origin, and $r$ measuring radial distance from the
+stagnation point on the surface. The concave surface profile is described by
+\begin{equation}
+    z_s(r) = \frac{r^2}{2R} + \mathcal{O}\!\left(\frac{r^4}{R^3}\right),
+    \qquad r \ll R,
+    \label{eq:surfaceprofile}
+\end{equation}
+i.e., a paraboloid of revolution to leading order. The flat-plate limit
+corresponds to $R \to \infty$, and curvature effects enter at
+$\mathcal{O}(r^2/R^2)$.
+
+The \emph{curvature parameter} is defined as
+\begin{equation}
+    \epsilon \equiv \frac{d}{R},
+    \label{eq:curvparam}
+\end{equation}
+where $d$ is the nozzle diameter. For typical values $d \approx 1$--$2~mm$
+and $R \approx 20\,\mathrm{mm}$, we have $\epsilon \approx 0.05$--$0.10$,
+confirming that curvature is a small but non-negligible perturbation. The
+analysis of Sections~\ref{sec:fluid}--\ref{sec:mass} proceeds by (i)
+solving the flat-plate impinging jet problem exactly, and (ii) incorporating
+curvature effects via a systematic perturbation expansion in $\epsilon$.
+
+\subsection{Debris Distribution and the Cleaning Criterion}
+
+Fecal residue is deposited on the concave surface as a thin layer of
+shear-thinning viscoplastic material. Let $\Sigma(r)$ denote the areal
+density of adhered material (kg/m$^2$) as a function of radial position.
+The cleaning criterion requires that the wall shear stress delivered by the
+bidet jet exceed the adhesive yield stress of the fecal layer at every point:
+\begin{equation}
+    \tau_w(r) \geq \tau_\mathrm{crit}(r) \quad \forall\, r \in [0, r_\mathrm{max}],
+    \label{eq:cleaningcriterion}
+\end{equation}
+where $r_\mathrm{max}$ is the maximum radial extent of contamination (estimated
+at 10--20~mm based on anatomical considerations).
+
+The effective angular cleaning coverage on the hemi-cylinder is bounded
+by the polar angle $\theta_\mathrm{max}$ at which the impinging
+normal-velocity component, taken as $V_n(\theta) = V_0 \cos\theta$ for
+oblique impingement on a locally tangent plane
+\citep{BeitelmalEtAl2000}, falls below the value that, when inserted
+into Watson's Region~II shear law~\eqref{eq:tauII}, satisfies
+$\tau_w(r_\mathrm{max}) = \tau_\mathrm{crit}$. Because $\tau_w$ scales as
+$V_n^3$ at fixed nozzle geometry,
+\begin{equation}
+    \cos^3\theta_\mathrm{max}
+    \;=\; \frac{\tau_\mathrm{crit}\,\nu\,r_\mathrm{max}^5}
+              {c_2\,\rho\,V_0^3\,a^6}\;\equiv\;\chi,
+    \label{eq:angularcoverage}
+\end{equation}
+so that $\theta_\mathrm{max} = \arccos(\chi^{1/3})$. For the nominal
+$\tau_\mathrm{crit} \approx 5~Pa$, $V_0 \approx 11.2~m/s$,
+$a = 0.65~mm$, $r_\mathrm{max} = 15~mm$, $\nu = e-6~m^2/s$,
+equation~\eqref{eq:angularcoverage} gives $\chi \approx 0.005$ and
+$\theta_\mathrm{max} \approx 80^\circ$, indicating that effective
+cleaning extends over essentially the entire hemi-cylindrical
+surface. The result is, however, sensitive to the Region~II
+laminar conservatism (Sec.~\ref{subsec:watson}): a turbulent
+correction enlarges the cleaning angle further.
+
+% =============================================================
+\section{Fluid Mechanics of the Impinging Bidet Jet}
+\label{sec:fluid}
+% =============================================================
+
+\subsection{Nozzle Conditions and Free-Jet Parameters}
+\label{subsec:nozzle}
+
+A modern bidet nozzle delivers a coherent circular jet through a circular
+orifice of diameter $d = 1$--$2~mm$ at a supply gauge pressure
+$\Delta P = 0.05$--$0.1~MPa$. The jet exit velocity follows from the
+Torricelli relation with a velocity coefficient $C_v \approx 0.97$:
+\begin{equation}
+    V_0 = C_v \sqrt{\frac{2\,\Delta P}{\rho}},
+    \label{eq:torricelli}
+\end{equation}
+yielding $V_0 \approx 8$--$14~m/s$ across the operating envelope.
+The volumetric flow rate and mass-flux Reynolds number are, respectively,
+\begin{equation}
+    Q = \frac{\pi d^2}{4} V_0, \qquad
+    \Rey_d = \frac{V_0\,d}{\nu},
+    \label{eq:reynolds}
+\end{equation}
+with $\nu = 8.9 \times 10^{-7}\,\mathrm{m^2/s}$ for water at
+$T = 25~^\circ\mathrm{C}$. For $V_0 = 10~m/s$ and $d = 1.3~mm$:
+\begin{equation}
+    \Rey_d = \frac{(10)(1.3 \times 10^{-3})}{8.9 \times 10^{-7}}
+    \approx 14{,}600,
+\end{equation}
+placing the exit flow in the fully turbulent regime ($\Rey_d > 3{,}000$
+for a pipe, $>4{,}000$ for a free jet \citep{ZuckermanLior2006}).
+
+\subsubsection{Jet Coherence: Weber Number Analysis}
+
+The Weber number governs whether surface tension can break the jet into
+droplets via Rayleigh--Plateau instability:
+\begin{equation}
+    \We = \frac{\rho V_0^2\,d}{\sigma},
+    \label{eq:weber}
+\end{equation}
+where $\sigma = 0.072~N/m$ for water--air at $25~^\circ\mathrm{C}$.
+For the nominal parameters, $\We \approx 1{,}400$--$2{,}800$, indicating
+that inertia overwhelmingly dominates surface tension. The axisymmetric
+Rayleigh breakup length, accounting for the turbulent perturbation spectrum
+\citep{Lefebvre1988}, scales as
+\begin{equation}
+    L_\mathrm{break} \approx 12\,\We^{1/2}\,d \approx 450\,\mathrm{mm}.
+    \label{eq:breakup}
+\end{equation}
+Since the nozzle-to-skin standoff $H$ is typically $H \approx 50$--$150~mm$,
+the condition $L_\mathrm{break} \gg H$ is satisfied comfortably. The jet
+therefore arrives at the skin surface as a continuous liquid column of
+nearly uniform velocity $V_0$, not as a dispersed spray. A spray carries
+less momentum per unit area and generates lower wall shear stress.
+
+\subsubsection{Free-Jet Velocity Decay}
+
+Beyond the potential core, which extends to $z/d \approx 4$--$6$
+\citep{HusseinCappGeorge1994,PopeBook}, the centreline velocity of a
+self-similar axisymmetric turbulent jet decays as
+\begin{equation}
+    \frac{V_c(z)}{V_0} \;=\; \frac{B}{z/d},
+    \qquad B \approx 5.8\text{--}6.1,
+    \label{eq:jetdecay}
+\end{equation}
+\citep{HusseinCappGeorge1994,PopeBook}, with a self-similar Gaussian
+radial profile of half-width $r_{1/2}(z) \approx 0.094\,z$. We take
+$B = 6.0$ in numerical estimates that follow.
+
+For a standoff of $H = 80~mm$ and $d = 1.3~mm$ we have
+$H/d \approx 62$, so the impinging centreline velocity is
+$V_c(H) = V_0\,B/(H/d) \approx 1.1~m/s$, a tenfold drop from $V_0$.
+A naive momentum-conservation argument that treats the wall jet as
+driven by the conserved axial momentum flux $J = \rho \pi d^2 V_0^2/4$
+appears to make the impingement insensitive to this decay, but \emph{the
+input to Watson's similarity solution is the local impingement-velocity
+distribution, not the total flux}. Once the free jet has spread to a
+Gaussian footprint of width $\sim 0.094 H$ at impingement, substituting
+the spread profile and the decayed centreline into Watson's
+Region~II shear (Sec.~\ref{subsec:watson}) yields a wall shear that
+falls as $\tau_w \propto (d/H)^{2}$, equivalent to a minimum-flow penalty
+$Q^* \propto (H/d)^{2/3}$ relative to $H/d \to 1$; the companion
+optimization paper~\citep{BurtonOptPaper} works the algebra in detail.
+For the conventional seated-user geometry ($H/d \approx 60$) versus a
+close-deploy nozzle ($H/d \approx 6$) the penalty is
+$\sim 10^{2/3} \approx 4.6\times$, identifying standoff reduction as the
+dominant water-conservation lever rather than a minor correction.
+\emph{We retract the ``relative insensitivity to jet decay'' claim of
+the previous revision.}
+
+\subsection{Impingement Zone: Stagnation Flow Analysis}
+\label{subsec:stagnation}
+
+In the immediate vicinity of the stagnation point ($r \lesssim d/2$), the
+flow is described by axisymmetric stagnation-point theory. Along the
+stagnation streamline, the continuity equation requires the radial velocity
+to grow linearly with $r$:
+\begin{equation}
+    u_r(r, 0) \;=\; \dot\varepsilon_s\,r + \mathcal{O}(r^3),
+    \label{eq:radvel}
+\end{equation}
+where $\dot\varepsilon_s$ is the \emph{strain rate} at the stagnation
+point (renamed from $a$ in earlier drafts to avoid collision with the
+nozzle radius $a \equiv d/2$). For an impinging jet, Schlichting's
+boundary-layer analysis gives $\dot\varepsilon_s \approx V_c(H)/
+l_\mathrm{imp}$, with the impingement length scale $l_\mathrm{imp}
+\sim d/2$. The Bernoulli equation applied along the stagnation
+streamline yields the \emph{stagnation pressure}:
+\begin{equation}
+    P_s = P_\infty + \frac{1}{2}\rho V_c^2(H).
+    \label{eq:stagpress}
+\end{equation}
+
+For the typical seated-user standoff $H/d \approx 60$, the centreline
+velocity at impingement decays as $V_c(H) = B V_0 d/H$ with $B \approx 6.3$
+\citep{PopeBook}, giving $V_c \approx 1.2~m/s$ and a stagnation
+overpressure of only
+\begin{equation}
+    P_s - P_\infty \approx \tfrac{1}{2}(1000)(1.2)^2 \approx 0.7~kPa
+    \quad \text{(typical $H/d \sim 60$)}.
+    \label{eq:stagval}
+\end{equation}
+For a close-deploy nozzle ($H/d \lesssim 6$, $V_c \approx V_0$), the
+short-standoff value is
+\begin{equation}
+    P_s - P_\infty \approx \tfrac{1}{2}(1000)(10)^2 = 50~kPa
+    \quad \text{(close-deploy $H/d \lesssim 6$)}.
+    \label{eq:stagshort}
+\end{equation}
+In either regime, the stagnation pressure is compressive (normal to the
+surface), acts over a very small contact area
+$A_\mathrm{stag} \sim \pi d^2/4 \approx 1.3~mm^2$, and produces no
+frictional shear. The stagnation region therefore poses no abrasive risk to
+the skin; the loading is purely hydrostatic.
+
+The pressure distribution along the surface decays from the stagnation value
+as (from Bernoulli and the radial acceleration in equation~\ref{eq:radvel})
+\begin{equation}
+    P(r) \;=\; P_s - \tfrac{1}{2}\rho\,\dot\varepsilon_s^2\,r^2.
+    \label{eq:pressuredist}
+\end{equation}
+The radial pressure gradient
+$\partial P/\partial r = -\rho\,\dot\varepsilon_s^2\,r < 0$
+drives the flow outward into the spreading wall jet.
+
+\subsection{Wall Jet Region: Watson's Solution for the Flat-Plate Baseline}
+\label{subsec:watson}
+
+Beyond the stagnation zone ($r > d/2$), the flow transitions into a thin
+radially spreading \emph{wall jet} governed by the Prandtl boundary-layer
+equations. Following Watson (1964) \citep{Watson1964}, we consider the
+axisymmetric spreading of a circular liquid jet on a horizontal plate under
+the assumptions: (i) the outer flow is inviscid with uniform surface velocity
+$U_s \approx V_0$; (ii) a viscous boundary layer of thickness $\delta(r)$
+grows from the plate upward; and (iii) the pressure is atmospheric throughout
+(no streamwise adverse pressure gradient in the outer film, as verified
+by the decay of equation~\ref{eq:pressuredist}).
+
+The governing equations in the boundary layer are
+\begin{equation}
+    \frac{\partial(r\,u_r)}{\partial r} + \frac{\partial(r\,u_z)}{\partial z}
+    = 0,
+    \qquad
+    u_r\,\frac{\partial u_r}{\partial r} + u_z\,\frac{\partial u_r}{\partial z}
+    = \nu\,\frac{\partial^2 u_r}{\partial z^2},
+    \label{eq:BLeqs}
+\end{equation}
+with boundary conditions
+\begin{alignat}{2}
+    u_r(r,0) &= 0 &&\qquad (\text{no-slip}),\label{eq:BC1}\\
+    \frac{\partial u_r}{\partial z}\bigg|_{z=h(r)} &= 0 &&\qquad
+    (\text{zero shear at free surface}),\label{eq:BC2}\\
+    u_r(r,h) &= U_s = V_0 &&\qquad (\text{matching outer inviscid flow}),
+    \label{eq:BC3}
+\end{alignat}
+where $h(r) = Q/(2\pi r V_0) = a^2 V_0/(2r V_0) = a^2/(2r)$
+is the local film thickness (volume conservation, $a \equiv d/2$).
+
+Watson introduces the similarity variable $\eta = z/\delta(r)$ and assumes
+a cubic velocity profile within the boundary layer:
+\begin{equation}
+    \frac{u_r}{V_0} = \frac{3}{2}\eta - \frac{1}{2}\eta^3,
+    \qquad 0 \leq \eta \leq 1,
+    \label{eq:cubicprofile}
+\end{equation}
+which satisfies both~\eqref{eq:BC1} and~\eqref{eq:BC2}. The von K\'{a}rm\'{a}n
+momentum integral, with outer surface velocity $U_s = V_0$ held constant
+in Region~I (consistent with the inviscid outer film), reads
+\begin{equation}
+    \frac{39\,V_0^2}{280}\,\frac{d(r\,\delta)}{dr}
+    = \frac{3\,r\,\nu\,V_0}{2\,\delta},
+    \label{eq:karman}
+\end{equation}
+which admits the similarity solution $\delta^2 = (280/39)\,\nu\,r/V_0$, i.e.
+\begin{equation}
+    \frac{\delta(r)}{a} = c_\delta\,\sqrt{\frac{r}{a\,\Rey_a}},
+    \qquad c_\delta = \sqrt{\tfrac{280}{39}} \approx 2.68,
+    \label{eq:deltawatson}
+\end{equation}
+where $a = d/2$, $\Rey_a = V_0 a/\nu$. \emph{The Region~I boundary layer
+grows as $\delta \propto r^{1/2}$, the standard Blasius scaling}, not as
+$r^3$ (an algebraic mis-step in some informal derivations that yields a
+dimensionally broken result).
+
+The \emph{transition radius} $r_0$, at which the boundary layer spans the
+entire film ($\delta = h$), follows from setting $\delta(r_0) = a^2/(2 r_0)$
+in equation~\eqref{eq:deltawatson}:
+\begin{equation}
+    \frac{r_0}{a} = \left(\frac{\Rey_a}{4\,c_\delta^2}\right)^{1/3}
+    \approx 0.330\,\Rey_a^{1/3},
+    \label{eq:r0}
+\end{equation}
+in agreement (to within the cubic-profile error) with Watson's original
+asymptotic $r_0/a \approx 0.316\,\Rey_a^{1/3}$~\citep{Watson1964}. For
+$\Rey_a = V_0(d/2)/\nu = 7{,}300$ at $d = 1.3~mm$, $V_0 = 11.2~m/s$:
+\begin{equation}
+    r_0 = a\,(0.330)\,(7300)^{1/3} \approx a \times 6.4
+    \approx 4.1~mm.
+\end{equation}
+This is much smaller than $r_\mathrm{max} \approx 15~mm$, so
+\emph{the cleaning radius lies in Watson's Region~II, not Region~I}.
+The Region~II shear law (derived in the next subsection) therefore
+governs the cleaning constraint.
+
+\subsubsection{Wall Shear Stress Distribution}
+
+In Region~I ($r \leq r_0$), the wall shear from the cubic
+profile~\eqref{eq:cubicprofile} is
+\begin{equation}
+    \tau_w(r) = \mu\left.\frac{\partial u_r}{\partial z}\right|_{z=0}
+    = \frac{3\,\mu\,V_0}{2\,\delta(r)},
+    \label{eq:taudef}
+\end{equation}
+and substituting~\eqref{eq:deltawatson} gives the corrected Region~I result
+\begin{equation}
+    \boxed{
+    \tau_w(r) = \frac{3\,\rho V_0^2}{2\,c_\delta\,\Rey_r^{1/2}}
+    \approx 0.560\,\rho V_0^2\,\Rey_r^{-1/2},
+    \qquad r \leq r_0,
+    }
+    \label{eq:tauI}
+\end{equation}
+with $\Rey_r = V_0 r/\nu$. The Region~I wall shear scales as $r^{-1/2}$,
+\emph{not} as $r^{-3}$. At $r = a$ this gives
+$\tau_w(a) \approx 0.560\,\rho V_0^2/\sqrt{\Rey_a} \approx 650~Pa$
+for $V_0 = 11.2~m/s$, $a = 0.65~mm$ --- a value of order the
+jet dynamic pressure scaled by $\Rey_a^{-1/2}$, and physically
+reasonable. (An earlier, incorrect derivation gave
+$\tau_w(a) \approx 2.6\,\rho V_0^2 \approx 260~kPa$, an unphysical
+overshoot by three orders of magnitude relative to direct measurements
+from Phares et al.~\citep{Phares2000}, which find peak values of order
+2--$10~kPa$ for jets in the relevant Reynolds-number range.)
+
+Beyond $r_0$, the boundary layer spans the full viscous film. The
+depth-averaged momentum balance with no streamwise pressure gradient,
+parabolic film profile, and mass conservation $rh\bar u = Q/(2\pi)$
+yields the asymptotic similarity solution $h(r) = (5/3)\,\nu\,r^2/(a^2 V_0)$
+for $r \gg r_0$. The corresponding Region~II wall shear is
+\begin{equation}
+    \boxed{
+    \tau_w(r) = c_2\,\rho V_0^2\,\Rey_a\left(\frac{a}{r}\right)^5,
+    \qquad c_2 = 27/50 \approx 0.54,
+    }
+    \label{eq:tauII}
+\end{equation}
+valid for $r \gg r_0$. The decay is now $r^{-5}$, much steeper than
+Region~I. \emph{For bidet parameters the cleaning radius lies in
+Region~II}, so equation~\eqref{eq:tauII}, not~\eqref{eq:tauI}, is the
+operative shear law for the cleaning criterion of
+Section~\ref{sec:mass}.
+
+Several features of the dual-region picture merit comment:
+\begin{enumerate}[leftmargin=*, label=(\roman*)]
+    \item \emph{No $r^{-3}$ pseudo-divergence at the origin.} The
+    physical Region~I shear remains finite at small $r$
+    (proportional to $\rho V_0^2/\sqrt{\Rey_r}$).
+    \item \emph{Re-dependence is non-trivial.} In Region~II,
+    $\tau_w \propto V_0^3 a^6/(\nu r^5)$: linear in fluid viscosity,
+    cubic in jet velocity.
+    \item \emph{Cleaning-zone average.} For $r$ in $[2a, r_\mathrm{max}]$
+    spanning Region~I and Region~II, area-averaging
+    \eqref{eq:tauI}/\eqref{eq:tauII} gives
+    $\langle\tau_w\rangle \approx 50$--$500~Pa$, two orders of
+    magnitude above $\tau_\mathrm{crit}$.
+    \item \emph{Comparison to measurement.} Phares et al.~\citep{Phares2000}
+    measure peak wall shear of $2$--$10~kPa$ for jets at $\Rey_d
+    \sim 10^4$ and short standoff. The present analytical value at
+    $r = a$ ($\sim$650~Pa) is below this peak because Watson's
+    Region~I assumes laminar wall flow; turbulent transition would
+    raise the peak by a factor of $3$--$10$, consistent with measurement.
+    The cleaning-zone average is the relevant quantity, and the
+    one to two orders of magnitude over $\tau_\mathrm{crit}$ is robust.
+\end{enumerate}
+
+\subsubsection{Hydraulic Jump}
+
+At a radial distance $r_h$ determined by a balance between inertia,
+viscosity, and gravity, the spreading film undergoes a \emph{circular
+hydraulic jump}: an abrupt thickening accompanied by a rapid velocity
+decrease. The horizontal-plate problem has a long history; the modern
+shallow-water shock treatment of Bohr, Dimon \& Putkaradze
+\citep{BohrEtAl1993} gives the asymptotic scaling
+\begin{equation}
+    r_h \;\sim\; \left(\frac{Q^5}{\nu^3\,g}\right)^{1/8}
+    \;\propto\; Q^{5/8}\,\nu^{-3/8}\,g^{-1/8},
+    \label{eq:hjump}
+\end{equation}
+later refined by surface-tension and downstream-depth corrections
+\citep{BushAristoff2003}. For nominal bidet parameters
+($Q \approx e-5~m^3/s$, $\nu = e-6~m^2/s$,
+$g = 9.81~m/s^2$), \eqref{eq:hjump} gives $r_h$ of order tens of
+millimetres, comparable to the anatomical boundary $r_\mathrm{max}$.
+(The pure inviscid critical-Froude estimate $r_h \approx V_0^2 a^2/(2g)$
+gives $r_h \sim 3~\mu  m$ for the same parameters and is not the
+right scaling for a thin-film impinging jet.)
+On the actual perianal anatomy the surface is concave and
+oriented at a strongly non-horizontal angle relative to gravity, so
+the flat-horizontal-plate jump is at best a guide; the principal
+qualitative role of the jump is to mark the radius beyond which the
+spreading film transitions to a slow, deep flow, providing a natural
+soft boundary for the rinsing zone.
+
+\subsection{Curvature Effects: Concave-Surface Perturbation}
+\label{subsec:curvature}
+
+We now generalize the Watson solution to the concave surface geometry.
+Define the arc-length coordinate $s$ measured along the curved surface from
+the stagnation point (replacing the flat-plate $r$). For $r \ll R$, we have
+$s \approx r + r^3/(6R^2) + \ldots$, so to leading order $s \approx r$ and
+the curvature correction enters at $\mathcal{O}(\epsilon^2)$.
+
+The key dynamical modification on a concave surface is the centrifugal
+pressure gradient in the direction normal to the surface ($n$-direction):
+\begin{equation}
+    \frac{\partial P}{\partial n} = -\frac{\rho U_e^2}{R_\mathrm{eff}},
+    \label{eq:centrifugal}
+\end{equation}
+where $U_e$ is the outer edge velocity and $R_\mathrm{eff}(s)$ is the
+local surface radius of curvature. Concave-wall flows are well known to be
+\emph{destabilizing} in the sense of supporting the centrifugal
+Taylor--G\"ortler instability (treated in the next subsection): the
+centrifugal pressure gradient drives streamwise vortices that enhance
+mixing and can amplify wall shear above the flat-plate baseline once
+the instability is supercritical. Below the G\"ortler threshold, the
+direct curvature correction to the laminar wall shear in equation~%
+\eqref{eq:tauI}/\eqref{eq:tauII} is small:
+\begin{equation}
+    \tau_w^\mathrm{concave}(r) = \tau_w^\mathrm{flat}(r)
+    \left[1 + \alpha_c\,\frac{\delta(r)}{R} + \mathcal{O}(\epsilon^2)\right],
+    \label{eq:curvaturecorrection}
+\end{equation}
+with $\alpha_c = \order{1}$. For $\delta \approx 0.1~mm$ and
+$R = 20~mm$, the first-order correction is $\delta/R \approx 0.005$,
+a $\sim$0.5\,\% effect. Curvature is therefore a small correction in the
+laminar regime, and a potentially \emph{shear-enhancing} correction once
+G\"ortler vortices set in --- so the flat-plate Watson solution is a
+conservative (under-)estimate of cleaning effectiveness on the concave
+anatomy.
+
+\subsubsection{Taylor--G\"ortler Vortex Instability}
+
+Concave boundary layers are subject to the centrifugal \emph{Taylor--G\"ortler}
+instability, which generates counter-rotating streamwise vortex pairs and
+substantially enhances turbulent mixing and surface transport. The criterion
+for onset is \citep{Hall1982}:
+\begin{equation}
+    \Go \equiv \frac{U_e\,\theta}{\nu}\,\sqrt{\frac{\theta}{R}} > \Go_\mathrm{crit}
+    \approx 0.3,
+    \label{eq:goertler}
+\end{equation}
+where $\theta$ is the momentum thickness of the boundary layer. For the
+spreading water film at $r \approx r_0 \approx 9~mm$, the momentum
+thickness $\theta \approx \delta/6 \approx 15~\mu  m$ and
+$U_e \approx V_0$, giving $\Go \approx 0.03$, below the critical value,
+meaning Taylor--G\"ortler vortices are unlikely in the thin wall-jet film
+under typical bidet conditions. However, in Region~II ($r > r_0$), as the
+film thickens and velocity decreases, $\Go$ grows and may approach critical
+values near the hydraulic jump, where additional mixing would enhance late-stage
+debris transport. This effect is conservative to neglect and can only improve
+cleaning performance.
+
+% =============================================================
+\section{Mass Transfer and Cleaning Efficacy}
+\label{sec:mass}
+% =============================================================
+
+\subsection{The Detachment Criterion}
+\label{subsec:detach}
+
+Cleaning of an adhered layer by fluid shear proceeds in two steps:
+(i) detachment, when $\tau_w$ exceeds the adhesive yield stress; and
+(ii) transport, when the dislodged material is carried away by the flow.
+We address each in turn.
+
+The critical wall shear stress $\tau_\mathrm{crit}$ for detachment of
+fecal residue from skin is not directly measured in the literature (a gap
+discussed in Section~\ref{sec:discussion}). We bound it from below and
+above:
+
+\begin{enumerate}[leftmargin=*, label=(\roman*)]
+    \item \emph{Lower bound}: The EHEDG standard for industrial surface
+    hygiene establishes $\tau_\mathrm{crit} = 3~Pa$ as the threshold
+    for removing biological soil \citep{Ehedg2003}. Biofilm detachment
+    studies find $\tau_\mathrm{crit} \approx 0.3$--$4.7~Pa$
+    \citep{Teodosio2010}.
+    \item \emph{Upper bound}: Fecal material has a measured dynamic yield
+    stress of approximately $\sigma_y \approx 10~Pa$ at physiologically
+    relevant moisture contents \citep{Woolley2014}. The skin-residue
+    adhesion is plausibly weaker still, since the contact involves a
+    moist mucosal interface rather than a fully consolidated bolus, but
+    we are unaware of a direct measurement on perianal substrates ---
+    a gap discussed in Section~\ref{sec:discussion}.
+\end{enumerate}
+
+We therefore adopt $\tau_\mathrm{crit} = 1~$--$10~Pa$ as
+the operative range. Since the cleaning radius lies in Region~II for
+typical bidet parameters (Section~\ref{subsec:watson}), we set
+$\tau_w(r_\mathrm{clean}) = \tau_\mathrm{crit}$ in
+equation~\eqref{eq:tauII}:
+\begin{equation}
+    r_\mathrm{clean} = a\left(\frac{c_2\,\rho V_0^2\,\Rey_a}{\tau_\mathrm{crit}}\right)^{1/5}
+    = \left(\frac{c_2\,\rho V_0^3 a^6}{\tau_\mathrm{crit}\,\nu}\right)^{1/5}.
+    \label{eq:rclean}
+\end{equation}
+For $\tau_\mathrm{crit} = 5~Pa$, $V_0 = 11.2~m/s$,
+$a = 0.65~mm$, $\nu = e-6~m^2/s$:
+\begin{align}
+    r_\mathrm{clean} &= \left(\frac{0.54 \times 1000 \times (11.2)^3
+    \times (6.5\times 10^{-4})^6}{5\,\mathrm{Pa}\times 10^{-6}\,\mathrm{m^2/s}}\right)^{1/5}
+    \nonumber\\
+    &\approx 26~mm\quad
+    (\text{Region~II laminar lower bound, $H/d \to 1$}).
+    \label{eq:rcleanval}
+\end{align}
+(The earlier draft reported $\approx 16$~mm; the corrected arithmetic
+is given here.) For the realistic seated-user standoff $H/d \approx 60$,
+the developed-jet decay $V_c/V_0 = B d/H \approx 0.1$ reduces the
+effective driving velocity by $\sim 10\times$ and, via the
+$V_0^{3/5}$ scaling of \eqref{eq:rclean}, the laminar
+$r_\mathrm{clean}$ to $\approx 26 \times 0.1^{3/5} \approx 6.5~mm$.
+Turbulent wall-jet enhancement at $\Rey_d \sim 10^4$ raises this back
+above $r_\mathrm{max}$ in practice (see Sec.~\ref{subsec:peclet}
+discussion and the companion optimization
+analysis~\citep{BurtonOptPaper}), and a sweep through $\pm 15^\circ$
+covers the unreached annulus directly.
+
+The corrected $r_\mathrm{clean}$ ($\approx 26~mm$ in the
+close-deploy laminar limit) more than encloses the anatomical
+contamination zone ($r_\mathrm{max} \approx 10$--$20~mm$); the
+realistic seated-user value sits at the lower edge of $r_\mathrm{max}$,
+and an oscillation lever or close-deploy architecture provides
+robust safety margin. Since $r_\mathrm{clean} \gg r_0$, cleaning
+occurs primarily in Watson's Region~II, where the $r^{-5}$ shear stress
+decays rapidly with $r$; this means the cleaning radius is geometrically
+bounded and a small change in $V_0$ or $a$ produces a strong response in
+$r_\mathrm{clean}$ ($\propto V_0^{3/5} a^{6/5}$).
+
+The margin of safety is defined as
+\begin{equation}
+    \mathcal{M} = \frac{\langle\tau_w\rangle}{\tau_\mathrm{crit}} \approx
+    \frac{50\text{--}500\,\mathrm{Pa}}{1\text{--}10\,\mathrm{Pa}} = 5\text{--}500,
+    \label{eq:margin}
+\end{equation}
+a safety margin of one to nearly three orders of magnitude.
+
+\subsection{Advective Removal: The P\'{e}clet Number}
+\label{subsec:peclet}
+
+Detachment is necessary but not sufficient for cleaning: dislodged material
+must be transported away from the surface. The competition between advective
+and diffusive transport is quantified by the P\'{e}clet number:
+\begin{equation}
+    \Pe = \frac{U_\mathrm{film}\,L}{\mathcal{D}},
+    \label{eq:peclet}
+\end{equation}
+where $U_\mathrm{film} \approx 2~m/s$ is a representative surface
+velocity in the cleaning zone (the Region~II surface velocity
+$U_s(r) = (3/2)\bar u \propto V_0^2 a^4/(\nu r^3)$ evaluated at
+$r \approx r_\mathrm{clean}/2$, with $V_0 \to V_c$ for typical standoff),
+$L \approx r_\mathrm{clean} \approx 0.016~m$,
+and $\mathcal{D} \sim 10^{-10}$--$10^{-9}\,\mathrm{m^2/s}$ is the effective
+diffusivity of fecal particulates (micron-scale; Stokes--Einstein).
+\begin{equation}
+    \Pe \sim \frac{(2)(0.016)}{10^{-10}} = 3.2 \times 10^8,
+    \label{eq:peval}
+\end{equation}
+i.e.\ $\Pe \sim 10^{8}$--$10^9$. Even allowing for two-decade
+uncertainty, transport is overwhelmingly advective. Once detached, debris particles are
+swept radially outward by the spreading film in a time $t \sim L/U_\mathrm{film}
+\approx 3.4~ms$, before falling under gravity into the toilet bowl.
+This single-pass removal mechanism is the central advantage of water over
+paper: toilet paper displaces fecal material but provides no transport fluid,
+leading to smearing rather than removal. A quantitative estimate of residual
+contamination after wiping is beyond the scope of this paper (and beyond
+the scope of any published clinical study; see Section~\ref{sec:discussion});
+however, the absence of any transport mechanism in dry wiping is physically
+unambiguous.
+
+% =============================================================
+\section{Tissue Mechanics: The Cost of Wiping}
+\label{sec:tribology}
+% =============================================================
+
+\subsection{Tribological Analysis}
+\label{subsec:tribology}
+
+The mechanical interaction between toilet paper and perianal skin is governed
+by tribological principles. The friction force during a wiping pass is
+\begin{equation}
+    F_f = \mu_k\,N,
+    \label{eq:friction}
+\end{equation}
+where $N$ is the normal load and $\mu_k$ is the kinetic friction coefficient.
+The resulting contact shear stress is
+\begin{equation}
+    \tau_\mathrm{wipe} = \frac{F_f}{A_c} = \mu_k\,P_c,
+    \label{eq:contactshear}
+\end{equation}
+where $P_c = N/A_c$ is the contact pressure.
+
+Derler and Gerhardt \citep{Derler2012} compiled extensive data on skin
+friction, reporting $\mu_k = 0.2$--$2.7$ with strong dependence on
+moisture, temperature, and substrate material. On moist skin (relevant to
+post-defecation conditions), paper-on-skin friction coefficients of
+$\mu_k = 0.5$--$1.5$ are well documented \citep{Vilhena2023}; wet toilet
+paper on wet skin can reach $\mu_k \approx 2.0$--$4.1$ due to meniscus
+adhesion. We adopt the conservative range $\mu_k = 0.5$--$1.5$.
+
+Applied wiping forces for perianal hygiene in normal adults have not been
+directly published. From ergonomic and pressure-sensor data for analogous
+manual tasks (clinical perineal care), we estimate $N \approx 2$--$10~N$
+applied over a contact area $A_c \approx 5$--$15~cm^2$ (a folded pad
+of 4--6 ply), giving contact pressures $P_c \approx 2$--$20~kPa$.
+The wiping shear stress is therefore:
+\begin{equation}
+    \tau_\mathrm{wipe} = \mu_k\,P_c \approx (0.5\text{--}1.5)
+    \times (2{,}000\text{--}20{,}000\,\mathrm{Pa})
+    = 1{,}000\text{--}30{,}000\,\mathrm{Pa}.
+    \label{eq:wiperange}
+\end{equation}
+
+\subsection{Quantitative Stress Comparison}
+
+Table~\ref{tab:stresscomparison} compares the mechanical stresses delivered
+by each modality. The bidet's hydrodynamic wall shear occupies the range
+1--100~Pa (averages over the cleaning zone), while wiping
+generates 1--30~kPa, a ratio of two to three orders of
+magnitude.
+
+\begin{table}[h!]
+\centering
+\caption{Comparative mechanical stress analysis: bidet vs.\ toilet paper.}
+\label{tab:stresscomparison}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Parameter} & \textbf{Bidet (water jet)} & \textbf{Toilet paper} & \textbf{Ratio (TP/Bidet)}\\
+\midrule
+Shear stress on tissue     & $1$--$100~Pa$    & 1000~Pa--30000~Pa & $10$--$1000\times$\\
+Normal contact pressure    & $0.4$--$2~kPa$ (stagnation) & $2$--$20~kPa$ & $5$--$50\times$\\
+Contact type               & Non-contact (hydrodynamic) & Solid friction (abrasive) & N/A\\
+Transport mechanism        & Advective ($\Pe \sim 10^9$)   & None (smearing)         & N/A\\
+Friction coefficient       & $0$ (no solid contact) & $\mu_k = 0.5$--$1.5$   & N/A\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Stratum Corneum Disruption}
+\label{subsec:SC}
+
+The perianal stratum corneum (SC) is the outermost, rate-limiting barrier
+of the skin, comprising 10--20 corneocyte layers at a total thickness of
+$\sim15~\mu  m$ \citep{Loden2012}. The SC is more susceptible to
+friction injury than skin at other body sites due to the combined effects
+of chronic moisture exposure (occlusion reduces barrier function) and thin
+tissue architecture.
+
+Each wiping pass applies the shear stress in equation~\eqref{eq:wiperange}
+over the SC, progressively disrupting the intercorneocyte lipid lamellae.
+L\"offler \textit{et al.}\ \citep{Loffler2004} demonstrated that barrier
+disruption (measured by trans-epidermal water loss, TEWL) is directly
+proportional to both the frictional force and the number of passes.
+For 3--6 passes per event and multiple events per day, cumulative SC
+disruption is substantial.
+
+The clinical injury threshold for \emph{pressure injury} formation (a more
+severe endpoint than barrier disruption) is approximately
+$\tau_\mathrm{injury} \approx 9$--$15~kPa$ \citep{Broderick2021}.
+Vigorous wiping ($\tau_\mathrm{wipe} \approx 10~kPa$) reaches this
+threshold, particularly in elderly or immunocompromised patients.
+
+The bidet delivers no solid-contact stress. The hydrodynamic wall shear
+($\tau_w \approx 10$--$100~Pa$) is $100$--$1{,}000\times$ below the
+SC disruption threshold, and no friction coefficient enters the problem.
+The difference in tissue loading between the two modalities is not
+incremental but physical in kind.
+
+\subsection{Clinical Sequelae}
+\label{subsec:clinical}
+
+The mechanical analysis predicts the following hierarchy of tissue pathology
+from chronic toilet-paper use, consistent with the clinical literature:
+
+\begin{enumerate}[leftmargin=*]
+    \item \emph{Pruritus ani}: Affects 1--5\% of the general population.
+    Dasan \textit{et al.}\ \citep{Dasan1999} found contact dermatitis (including
+    from toilet paper allergens: formaldehyde, chlorine residues, fragrances)
+    in 53\% of identifiable cases at a specialized clinic.
+    \item \emph{Hemorrhoidal exacerbation}: Hemorrhoids affect $\sim10$ million
+    Americans annually \citep{Peery2014}. Ryoo \textit{et al.}\ \citep{Ryoo2011}
+    demonstrated that bidet use at low jet forces (40--200~mN) significantly
+    reduces anal resting pressure, whereas wiping with paper at 2--10~N
+    exacerbates vascular engorgement.
+    \item \emph{Anal fissures}: Chronic SC disruption reduces barrier function
+    against fecal bacteria and increases susceptibility to fissure formation,
+    particularly when combined with constipation-induced trauma.
+\end{enumerate}
+
+The systematic review by Baig \textit{et al.}\ \citep{Baig2022} should be
+interpreted with caution: their finding of elevated bidet use among subjects
+with perianal pathology most likely reflects reverse causation (patients adopt
+bidets \emph{because} of symptoms), confirmed by the prospective study of
+Kiuchi \textit{et al.}\ \citep{Kiuchi2017}, which found no significant incidence
+odds ratio for new hemorrhoid development among bidet users.
+
+% =============================================================
+\section{Environmental and Economic Analysis}
+\label{sec:enviro}
+% =============================================================
+
+\subsection{Resource Consumption of the American Toilet Paper Habit}
+
+At an estimated $\sim$141~rolls/ person/ year consumption rate
+applied to a $\sim 330$ million population, the United States consumes
+approximately $46$ billion rolls of toilet paper annually, representing
+the highest per-capita usage on Earth and a disproportionate share of
+the global supply~\citep{ScientificAmerican2009}. The environmental
+footprint per roll is estimated at: 37 gallons of embedded water (tree
+growth and manufacturing), 0.47 kWh of electricity, and 140 g of
+CO$_2$-equivalent emissions (virgin-fiber product) \citep{NRDC2020}.
+Aggregated to national scale:
+\begin{itemize}[leftmargin=*]
+    \item Embedded water: $\sim$1.7~trillion gal/yr
+    ($46 \times 10^9 \times 37~gal \approx
+    1.72 \times 10^{12}\,\mathrm{gal/yr}$);
+    \item Electricity: $\sim$22~TWh/yr
+    ($46 \times 10^9 \times 0.47~kWh$);
+    \item Virgin trees harvested: $\sim$15--31 million annually, sourced
+    disproportionately from Canada's boreal forest;
+    \item Carbon emissions from production:
+    $\sim$6.5~Mt\,CO_2\text{-eq/yr}
+    ($46 \times 10^9 \times 140\,\mathrm{g} \approx
+    6.4 \times 10^9\,\mathrm{kg/yr}$); lifecycle figures including
+    upstream forest disturbance and downstream wastewater treatment
+    are typically 2--3$\times$ higher.
+\end{itemize}
+
+\subsection{Lifecycle Comparison}
+
+A single bidet use consumes $Q_\mathrm{bidet} \approx 0.5~L$ of water.
+For 2 uses per day per person:
+\begin{equation}
+    W_\mathrm{bidet} = 0.5\,\mathrm{L} \times 2 \times 365 = 365\,\mathrm{L/yr}
+    \approx 96~gal/yr.
+\end{equation}
+Compared to the $5{,}200$\,gal/yr in embedded TP water, the bidet uses
+$\sim\!1.8\%$ of the water budget. The net embedded-water reduction from
+national adoption would be $\sim\!5{,}100\,\mathrm{gal\,yr^{-1}\,person^{-1}}$,
+or $\sim\!1.7$ trillion gallons nationally.
+
+Non-electric bidet attachments carry a manufacturing carbon footprint of
+$\sim\!3$--$6\,\mathrm{lbs\,CO_2e}$ (embodied in $\sim\!200\,\mathrm{g}$
+of plastic), amortized over a 5--10 year lifespan: negligible compared to
+the annual avoided carbon footprint of $\sim\!50\,\mathrm{lbs\,CO_2e\,yr^{-1}}$
+from eliminated TP production.
+
+\subsection{Economic Analysis}
+
+Define household variables: $n$ occupants, $C_\mathrm{TP}$ = annual toilet
+paper expenditure, $C_\mathrm{bidet}$ = bidet purchase price, $f$ = fractional
+TP reduction post-adoption (typically $f = 0.65$--$0.75$), $r$ = real discount
+rate. The \emph{net present value} of bidet adoption over a horizon $T$ is:
+\begin{equation}
+    \mathrm{NPV} = -C_\mathrm{bidet} + \sum_{t=1}^{T}\frac{f\,C_\mathrm{TP}}{(1+r)^t}
+    = -C_\mathrm{bidet} + f\,C_\mathrm{TP}\,\frac{1-(1+r)^{-T}}{r}.
+    \label{eq:npv}
+\end{equation}
+
+For $C_\mathrm{bidet} = \$50$ (attachment), $C_\mathrm{TP} = \$200/\mathrm{yr}$
+(4-person household), $f = 0.70$, $r = 0.05$, $T = 10\,\mathrm{yr}$:
+\begin{equation}
+    \mathrm{NPV} = -50 + (0.70)(200)\,(7.72) = -50 + 1{,}081 = \$1{,}031.
+    \label{eq:npvval}
+\end{equation}
+
+The \emph{payback period} $T^*$ is defined by $\mathrm{NPV}(T^*) = 0$:
+\begin{equation}
+    T^* = \frac{C_\mathrm{bidet}}{f\,C_\mathrm{TP}}
+    = \frac{50}{(0.70)(200)} \approx 0.36\,\mathrm{yr} \approx
+    4.3~months.
+    \label{eq:payback}
+\end{equation}
+
+At the national scale, if 50\% of 130 million US households adopted a
+bidet attachment:
+\begin{equation}
+    \mathrm{Annual\;savings} = 0.50 \times 1.3 \times 10^8 \times \$140
+    \approx \$9.1\,\mathrm{billion/yr}.
+\end{equation}
+
+Additional healthcare cost offsets, from reduced incidence of toilet-paper-exacerbated
+perianal pathology, represent a speculative but plausibly large additional
+benefit: US hemorrhoid-related healthcare costs alone exceed \$770 million
+per year (employer-insured population only) \citep{Peery2014}, with the OTC
+hemorrhoid treatment market adding a further \$850 million in North America.
+
+% =============================================================
+\section{Policy Framework and Recommendations}
+\label{sec:policy}
+% =============================================================
+
+The United States currently has no federal or state incentive program for
+bidet adoption. The EPA WaterSense program certifies low-flow toilets and
+provides a well-established administrative framework for bathroom fixture
+rebates (typical value: \$50--\$200 from participating utilities). We propose
+the following policy interventions, in increasing order of regulatory ambition:
+
+\begin{enumerate}[leftmargin=*, label=\textbf{P\arabic*.}]
+    \item \textbf{WaterSense Bidet Certification}: Expand the WaterSense
+    label to encompass bidet attachments and seats meeting a flow threshold
+    of $\leq0.5~L/ use$. This requires no new legislation and
+    could be implemented through administrative rulemaking.
+    \item \textbf{Utility Rebate Programs}: Extend existing WaterSense
+    rebate frameworks to include qualifying bidet attachments at \$25--\$50
+    per unit, funded through water utility conservation budgets. The payback
+    period on utility investment is immediate given the embedded-water savings.
+    \item \textbf{FSA/HSA Blanket Eligibility}: Extend Flexible Spending
+    Account and Health Savings Account eligibility for bidet attachments
+    to all users (currently limited to those with documented medical need),
+    reducing effective consumer price by 20--37\% through tax pre-emption.
+    \item \textbf{Building Code Update}: Require GFCI-protected electrical
+    outlets within 1~m of toilets in all new residential construction.
+    This low-cost building code amendment (estimated \$25--\$75 per unit in
+    new construction) removes the primary electrical installation barrier
+    for electric bidet seats without mandating bidet installation itself.
+    \item \textbf{Public Procurement Mandate}: Require bidet installation
+    in all new federal buildings, VA facilities, and federally funded
+    healthcare infrastructure, a market-size intervention analogous to
+    low-flow toilet mandates of the 1990s.
+\end{enumerate}
+
+Japan's trajectory (14\% adoption in 1992 to 80\% in 2018) demonstrates
+that the transition is achievable on a 25-year timescale without regulatory
+mandates, driven primarily by consumer education, cost reduction, and
+infrastructure normalization \citep{JapaneseCabinet2018}. The US starting
+position ($\sim3\%$ adoption) is analogous to Japan circa 1985.
+
+% =============================================================
+\section{Discussion: Evidentiary Gaps}
+\label{sec:discussion}
+% =============================================================
+
+The following gaps remain in the current evidence base:
+
+\begin{enumerate}[leftmargin=*, label=(\roman*)]
+    \item \emph{Fecal adhesion strength to skin}: No published study directly
+    measures the critical shear stress for detachment of fecal material from
+    perianal skin. Our estimate of $\tau_\mathrm{crit} = 1$--10~Pa is
+    extrapolated from industrial biofilm literature and fecal rheology data.
+    A dedicated in-vitro experiment using representative fecal simulants on
+    excised or synthetic skin would substantially tighten this range.
+    \item \emph{RCT on cleaning efficacy}: No large-scale randomized
+    controlled trial has directly compared residual fecal contamination
+    (colony counts or chemical biomarkers) between bidet and toilet-paper
+    cohorts under controlled conditions. This is the single most important
+    clinical evidence gap. The 2005 \textit{Gastroenterology Nursing} study
+    is the closest analog but lacked adequate sample size and blinding.
+    \item \emph{Wiping force measurement}: No published study reports direct
+    force-plate measurements of applied normal load during toilet-paper wiping.
+    Our range of 2--10~N is inferred from ergonomic analogs. Instrumented
+    toilet paper (force-sensitive substrate) would be straightforward to
+    implement.
+    \item \emph{National bidet adoption statistics}: No US government survey
+    tracks bidet household penetration. The $\sim3\%$ figure is an industry
+    estimate; a Census or NHANES supplement question would enable population-level
+    epidemiological analyses linking adoption to perianal health outcomes.
+    \item \emph{Heterogeneity of bidet jet design}: This analysis uses
+    nominal parameters for a standard non-oscillating jet. Manufacturers
+    such as TOTO employ oscillating jets, varied spray angles (43$^\circ$ rear,
+    53$^\circ$ front), and adjustable flow rates. A parametric analysis of
+    cleaning efficacy across the manufacturer design space is warranted.
+    \item \emph{Laminar Region~II conservatism}: The wall-shear
+    estimates here use Watson's laminar similarity asymptotic, which
+    is a lower bound on $\tau_w$ at the operative
+    $\Rey_d \sim 10^4$. The Phares et al.~\citep{Phares2000}
+    correlation implies that the actual turbulent wall jet decays as
+    $\tau_w \propto r^{-1.05}$ rather than $r^{-5}$, giving wall
+    shear several-fold higher than the present estimates. This
+    tightens, not weakens, the case for hydrodynamic cleansing.
+\end{enumerate}
+
+The companion optimization manuscript~\citep{BurtonOptPaper} scopes a
+workstation-scale verification programme --- reduced-order numerical
+Watson solver, axisymmetric VOF CFD on flat and concave plates,
+oblique/oscillating-jet RANS, and a benchtop PIV / hot-film rig with a
+microfluidic shear cell for direct $\tau_\mathrm{crit}$ measurement ---
+in four effort tiers suitable for a Python laptop through to a
+$\sim$$\$$$1500$ rig build. The most efficient path to closing the gaps
+listed above is a $\sim$one-week CFD subset (flat plate, single
+$H/d, \Rey_d$) that converts the laminar-Region~II conservatism into a
+quantitative turbulent enhancement factor, followed by the microfluidic
+$\tau_\mathrm{crit}$ measurement.
+
+% =============================================================
+\section{Conclusions}
+\label{sec:conclusion}
+% =============================================================
+
+The core quantitative results are:
+
+\begin{enumerate}[leftmargin=*]
+    \item The bidet jet ($\Rey \approx 14{,}000$, $\We \approx 2{,}000$)
+    arrives at the skin surface as a coherent liquid column, generating
+    wall shear stresses of $\sim$50--500\,Pa across the cleaning zone, one
+    to nearly three orders of magnitude above the critical detachment
+    threshold of 1--10\,Pa for fecal material.
+    \item The corrected Watson two-region wall-jet analysis predicts an
+    effective cleaning radius $r_\mathrm{clean} \approx 16~mm$,
+    comfortably enclosing the contaminated perianal zone, with a safety
+    margin $\mathcal{M} \approx 5$--$500$.
+    \item Concave surface curvature ($\epsilon = d/R \approx 0.05$--$0.10$)
+    introduces a small first-order shear correction; in the supercritical
+    G\"ortler regime, streamwise vortices would further enhance late-stage
+    debris transport near the hydraulic jump.
+    \item The P\'{e}clet number $\Pe \sim 10^{8}$--$10^{9}$ confirms that
+    transport is overwhelmingly advective: dislodged debris is removed in
+    $\sim$8~ms by the spreading film.
+    \item Toilet paper wiping delivers shear stresses of 1{,}000--30{,}000\,Pa
+    to moist perianal skin, two to three orders of magnitude above the
+    bidet's hydrodynamic load, with no transport mechanism, generating
+    progressive stratum corneum disruption and exacerbating a clinical
+    spectrum of perianal pathology.
+    \item National bidet adoption would eliminate 15--31 million tree
+    harvests annually, reduce embedded water consumption by
+    $\sim$98~\% (saving $\sim$1.7~trillion gal/yr), and
+    deliver net present values of $>\$1{,}000$ per household over 10 years
+    at a payback period of $\sim$4 months.
+\end{enumerate}
+
+The primary barrier to adoption in the United States is infrastructure
+(electrical outlets near toilets) and cultural inertia, not engineering,
+cost, or efficacy. We propose an EPA WaterSense certification expansion,
+utility rebate programs, and a building code amendment requiring GFCI outlets
+at toilet locations as the minimum necessary policy package.
+
+% =============================================================
+%
