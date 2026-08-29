@@ -19,7 +19,7 @@ dc_thermal.py        reduced-order model: rack heat balance, recirculation influ
                      matrix B, chiller/fan/pump power, PUE; generic_hall() builder
 optimize_cooling.py  SLSQP minimize PUE over (supply temp, provisioning) s.t. ASHRAE
                      inlet limit; writes fig1_inlet_map.png, fig2_containment_sweep.png
-test_dc_thermal.py   analytic-limit + conservation validation (11/11 pass)
+test_dc_thermal.py   analytic-limit + conservation validation (16/16 pass)
 cfd/                 Tier 1: de Vahl Davis-validated 2D buoyant solver that measures
                      the recirculation curve φ(η) the model now uses by default
 openfoam/            Tier 2 scaffold: a v1 toolchain-validation run + read_openfoam.py
@@ -29,14 +29,14 @@ requirements.txt
 ## Run
 ```
 pip install -r requirements.txt --break-system-packages
-python test_dc_thermal.py      # 11/11 checks
+python test_dc_thermal.py      # 16/16 checks
 python optimize_cooling.py     # prints the optimum, writes the two figures
 ```
 
 ## Representative result
-Generic 20-rack, 200 kW hall, containment η=0.30: baseline PUE 1.320 → **optimized 1.236
+Generic 20-rack, 200 kW hall, containment η=0.30: baseline PUE 1.320 → **optimized 1.235
 (26% cooling-energy cut)** by raising supply 18→21 °C until the hottest rack sits on the
-27 °C limit. **Containment ROI, at fixed design airflow: PUE 1.294→1.281 as η 0→1
+27 °C limit. **Containment ROI, at fixed design airflow: PUE 1.293→1.280 as η 0→1
 (ΔPUE 0.0126), with the supply temperature it unlocks rising 23.0→26.0 °C.**
 
 > **Airflow branch corrected 2026-08-29: the optimizer had been buying fan savings that
@@ -56,9 +56,40 @@ Generic 20-rack, 200 kW hall, containment η=0.30: baseline PUE 1.320 → **opti
 > Its ΔPUE 0.0126 supersedes the 0.022 quoted below. Both curves are drawn in
 > `fig2_containment_sweep.png`; the flat one is shown, not hidden.
 >
-> ⚠ **Do not read the *p* < 1 optimum as a recommendation yet** — see `DESIGN.md` §8. The
-> airflow axis is still one-sided (over-provisioning carries no thermal benefit in this
-> model) and server-fan power is not charged, which is the classic way a model games PUE.
+> ⚠ **The *p* < 1 optimum still leans on a one-sided airflow axis** — see `DESIGN.md` §8.
+> Over-provisioning carries no thermal benefit in this model, so the optimizer can only ever
+> want less airflow.
+
+> **Server-fan power is now charged, and PUE is no longer the only objective (2026-08-29).**
+> Cutting CRAH airflow raises inlet temperatures, server fans ramp, and that power lands
+> *inside* PUE's IT denominator — so a model that omits it can lower the ratio while raising
+> the hall's bill. `dc_thermal` now adds a ramp of 0.4 % of rack IT power per K above a
+> 25 °C knee (published measurements give 0.35–0.5 %/°C in the 23–30 °C band and 7–20 %
+> total over 15→35 °C), charges the chiller for it, and exposes `total_kw()` alongside
+> `pue()`. `optimize(..., objective="total")` ranks by energy instead of by ratio.
+>
+> **How much does the gaming matter here? Extra hall power from optimizing PUE rather than
+> energy:**
+>
+> | ramp %/K | T_allow 27 | 32 | 35 | 40 |
+> |---|---|---|---|---|
+> | 0.35 | 0.00 kW | 0.00 | 0.07 | 0.45 |
+> | **0.40** | **0.00 kW** | 0.15 | 0.54 | 1.34 |
+> | 0.50 | 0.25 kW | 1.48 | 2.56 | 4.19 |
+> | 0.75 | 1.44 kW | 5.57 | 8.34 | 12.03 |
+> | 1.00 | 2.62 kW | 9.64 | 14.12 | 19.87 |
+>
+> At the mid-band coefficient and ASHRAE's 27 °C *recommended* limit the two objectives
+> agree: **the inlet constraint, not the objective, is what closes the hole.** It opens on
+> the *allowable* envelopes (A1 32 °C, A2 35 °C, A3 40 °C) and at the steep end of the
+> published ramp, where the lowest-PUE design in the whole study — **PUE 1.197** at
+> 1.0 %/K and T_allow 35 — gets there by moving **20 kW, 10 % of nominal IT**, into the
+> denominator, and burns 14 kW more than the energy optimum.
+>
+> The practical reading: **PUE is safe as an objective for this hall only while the 27 °C
+> recommended limit is held.** Relax to an allowable envelope and you must rank on kW.
+> Which regime a real hall is in depends on its ramp coefficient, so that is the constant
+> to pin first.
 
 > **Numbers restated 2026-08-09 under the CFD-calibrated recirculation curve.** The
 > paragraph above previously read *optimized 1.22, 31% cut, supply 18→22 °C, sweep

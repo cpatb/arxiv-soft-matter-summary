@@ -14,13 +14,13 @@ temperature raised until the hottest rack sits exactly on the 27 °C limit
 
 | η | 0.0 | 0.3 | 0.5 | 1.0 |
 |---|---|---|---|---|
-| PUE | 1.2939 | 1.2875 | 1.2849 | 1.2813 |
+| PUE | 1.2929 | 1.2865 | 1.2839 | 1.2803 |
 | supply T (°C) | 23.01 | 24.47 | 25.09 | 26.00 |
 
 ΔPUE across the full sweep is **0.0126**.
 
 **Grey, "free airflow"**: PUE minimized over both (T_s, *p*) at each η
-(`containment_sweep()`). It is flat at 1.2355 to 13 decimal places. That is not a plotting
+(`containment_sweep()`). It is flat at 1.2351 to 13 decimal places. That is not a plotting
 error and not a solver failure. At the free optimum *p* ≈ 0.684, so the mass-balance floor
 on recirculation, φ ≥ 1 − *p* = 0.316, exceeds the geometric term φ(η)·(1 + under) for
 **every** η in [0, 1] (it ranges 0.094 to 0.309). Once the floor binds, η drops out of the
@@ -51,6 +51,10 @@ x-axes are anchored at η = 0. No axis is log-scaled.
   on the `p_min` = 0.6 bound with a recirculated fraction of 0.23 where conservation
   demands 0.40, and the free-airflow sweep ran 1.2270 → 1.2046 (ΔPUE 0.0224). That curve
   is superseded.
+- Server-fan power IS charged as of 2026-08-29 (0.4 % of rack IT per K above a 25 °C
+  knee), so these PUE values already include it. At the 27 °C limit the ramp costs 1.60 kW,
+  0.80 % of nominal IT, and minimizing PUE and minimizing kW give the same design. That
+  stops being true on the allowable envelopes; see `DESIGN.md` §8.
 - The off-diagonal rack-to-rack coupling in `B` is still uncalibrated (2D CFD gives φ(η)
   only), so absolute hotspot temperatures, and hence the exact supply temperatures in
   panel (b), are indicative rather than predictive.

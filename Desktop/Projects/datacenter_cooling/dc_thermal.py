@@ -36,6 +36,24 @@ CP = 1006.0      # J/(kg K)
 # 'linear': the original placeholder base_recirc*(1-eta) -> 0 at eta=1 (over-credits containment).
 CFD_RECIRC = dict(floor=0.007, amp=0.228, tau=0.790)
 
+# ---- server-fan ramp ----
+# Server fans hold a floor speed until the inlet reaches a knee near 25 C, then
+# ramp to hold junction temperature. Published measurements put the room-wide
+# sensitivity at 0.35-0.5 % of server power per K in the 23-30 C ASHRAE band, and
+# 7-20 % total over 15 -> 35 C (which is 0.35-1.0 %/K averaged over that wider
+# span, consistent with a knee partway through it). 0.4 %/K is taken as the
+# mid-band value; T_RAMP is the knee.
+#
+# This term matters because it lands INSIDE the IT denominator of PUE. Cutting
+# CRAH airflow raises inlet temperatures, server fans take up the work, and PUE
+# improves while the hall burns more. Any model that optimizes PUE without it will
+# recommend under-blowing. Sources are listed in DESIGN.md Sec. 8.
+#
+# NOT to be confused with ASHRAE's x-factor, which is a hardware FAILURE-RATE
+# multiplier versus inlet temperature, not a power term.
+SERVER_FAN_RAMP = 0.004      # fraction of rack IT power per K above T_RAMP
+T_RAMP = 25.0                # C, inlet temperature at which server fans start ramping
+
 
 def recirc_fraction(eta, model="cfd", base_recirc=0.28):
     eta = float(np.clip(eta, 0.0, 1.0))
@@ -50,8 +68,11 @@ class Hall:
 
     def __init__(self, rack_kw, dT_rack=13.0, base_recirc=0.28, coupling_len=1.5,
                  containment=0.0, cop_ref=5.0, cop_slope=0.15, T_ref=18.0,
-                 fan_kw_rated=None, T_allow=27.0, p_min=0.6, recirc_model="cfd"):
+                 fan_kw_rated=None, T_allow=27.0, p_min=0.6, recirc_model="cfd",
+                 fan_ramp=SERVER_FAN_RAMP, T_ramp=T_RAMP):
         self.recirc_model = recirc_model               # 'cfd' (calibrated) or 'linear' (placeholder)
+        self.fan_ramp = float(fan_ramp)                # server-fan power, fraction of IT per K
+        self.T_ramp = float(T_ramp)                    # inlet temp at which server fans ramp
         self.Q = np.asarray(rack_kw, float)            # per-rack IT load [kW]
         self.n = self.Q.size
         self.dT_rack = float(dT_rack)                  # server air-side rise [K]
@@ -101,6 +122,19 @@ class Hall:
         rise = np.linalg.solve(np.eye(self.n) - B, B @ d)
         return T_supply + rise                          # [C], per rack
 
+    # ---- IT side ----
+    def it_kw(self, T_supply, provisioning):
+        """IT power including the server-fan ramp. See SERVER_FAN.
+
+        Server fans hold a floor speed until their inlet reaches T_ramp, then speed
+        up to hold junction temperature. That power is inside the IT denominator of
+        PUE, so a model that omits it can lower PUE by making the racks hotter --
+        which is exactly what the airflow variable does.
+        """
+        Tin = self.rack_inlet_temps(T_supply, provisioning)
+        excess = np.maximum(0.0, Tin - self.T_ramp)      # per rack, K above the knee
+        return float(np.sum(self.Q * (1.0 + self.fan_ramp * excess)))
+
     # ---- cooling plant ----
     def cop(self, T_supply):
         return max(1.5, self.cop_ref + self.cop_slope * (T_supply - self.T_ref))
@@ -108,27 +142,45 @@ class Hall:
     def fan_kw(self, provisioning):
         return self.fan_kw_rated * provisioning ** 3    # affinity law
 
-    def chiller_kw(self, T_supply):
-        return self.Q.sum() / self.cop(T_supply)        # heat removed = IT load
+    def chiller_kw(self, T_supply, provisioning=1.0):
+        # Heat removed is the FULL IT draw, server-fan ramp included: that power is
+        # dissipated in the hall like any other watt.
+        return self.it_kw(T_supply, provisioning) / self.cop(T_supply)
 
     def cooling_kw(self, T_supply, provisioning):
         pumps = 0.02 * self.Q.sum()                     # small ~constant parasitic
-        return self.fan_kw(provisioning) + self.chiller_kw(T_supply) + pumps
+        return (self.fan_kw(provisioning)
+                + self.chiller_kw(T_supply, provisioning) + pumps)
 
     def pue(self, T_supply, provisioning):
-        return 1.0 + self.cooling_kw(T_supply, provisioning) / self.Q.sum()
+        """Total facility power / IT power.
+
+        Both terms move with the server-fan ramp, and they move the ratio in
+        OPPOSITE directions -- which is the whole problem with PUE as an objective.
+        Use total_kw() to rank designs by energy.
+        """
+        it = self.it_kw(T_supply, provisioning)
+        return (it + self.cooling_kw(T_supply, provisioning)) / it
+
+    def total_kw(self, T_supply, provisioning):
+        """Total facility power [kW]. The honest objective; PUE is a ratio."""
+        return self.it_kw(T_supply, provisioning) + self.cooling_kw(T_supply, provisioning)
 
     def evaluate(self, T_supply, provisioning):
         Tin = self.rack_inlet_temps(T_supply, provisioning)
+        it = self.it_kw(T_supply, provisioning)
         return {
             "T_supply": T_supply, "provisioning": provisioning,
             "rack_inlet_C": Tin, "hottest_C": float(Tin.max()),
             "margin_C": float(self.T_allow - Tin.max()),
             "COP": self.cop(T_supply),
             "fan_kW": self.fan_kw(provisioning),
-            "chiller_kW": self.chiller_kw(T_supply),
+            "chiller_kW": self.chiller_kw(T_supply, provisioning),
             "cooling_kW": self.cooling_kw(T_supply, provisioning),
-            "IT_kW": float(self.Q.sum()),
+            "IT_nominal_kW": float(self.Q.sum()),
+            "IT_kW": it,
+            "server_fan_kW": it - float(self.Q.sum()),
+            "total_kW": self.total_kw(T_supply, provisioning),
             "PUE": self.pue(T_supply, provisioning),
         }
 

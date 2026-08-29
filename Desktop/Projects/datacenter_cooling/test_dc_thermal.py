@@ -64,12 +64,56 @@ def test_underprovisioning_is_penalised_not_free():
 
 
 def test_energy_balance_closure():
-    # chiller must remove exactly the IT heat; PUE identity must hold
+    # chiller must remove exactly the IT heat -- including the server-fan ramp,
+    # which is dissipated in the hall like any other watt -- and the PUE identity
+    # must hold against the SAME IT number in numerator and denominator.
     h = generic_hall(seed=3)
-    ev = h.evaluate(T_supply=18.0, provisioning=1.0)
-    assert abs(ev["chiller_kW"] * ev["COP"] - ev["IT_kW"]) < 1e-6
-    pue_check = (ev["IT_kW"] + ev["cooling_kW"]) / ev["IT_kW"]
-    assert abs(pue_check - ev["PUE"]) < 1e-9
+    for T_s in (18.0, 26.0, 30.0):
+        ev = h.evaluate(T_supply=T_s, provisioning=1.0)
+        assert abs(ev["chiller_kW"] * ev["COP"] - ev["IT_kW"]) < 1e-6
+        pue_check = (ev["IT_kW"] + ev["cooling_kW"]) / ev["IT_kW"]
+        assert abs(pue_check - ev["PUE"]) < 1e-9
+        assert abs(ev["total_kW"] - (ev["IT_kW"] + ev["cooling_kW"])) < 1e-9
+        assert abs(ev["IT_kW"] - ev["IT_nominal_kW"] - ev["server_fan_kW"]) < 1e-9
+
+
+def test_server_fan_ramp_is_off_below_the_knee_and_monotone_above():
+    h = generic_hall(containment=0.3, seed=1)
+    # cold supply: every inlet is below T_ramp, so IT is the nominal load
+    cold = h.evaluate(T_supply=14.0, provisioning=1.0)
+    assert cold["hottest_C"] < h.T_ramp, "fixture too warm to test the floor"
+    assert abs(cold["server_fan_kW"]) < 1e-12, "fans must not ramp below the knee"
+    # above it, fan power rises with supply temperature and never falls
+    draws = [h.evaluate(T, 1.0)["server_fan_kW"] for T in (24.0, 26.0, 28.0, 30.0)]
+    assert draws[0] >= 0.0
+    assert all(b > a for a, b in zip(draws, draws[1:])), draws
+
+
+def test_pue_objective_never_beats_energy_objective_on_energy():
+    # By construction the energy optimum minimises total power, so optimising PUE
+    # can only match or lose on kW. If this ever flips, the objective wiring is wrong.
+    for T_allow in (27.0, 32.0, 35.0, 40.0):
+        h = generic_hall(containment=0.3, seed=1, T_allow=T_allow)
+        pue_opt = h.evaluate(*optimize(h, objective="pue").x)
+        kw_opt = h.evaluate(*optimize(h, objective="total").x)
+        assert pue_opt["total_kW"] >= kw_opt["total_kW"] - 1e-6, (
+            f"T_allow={T_allow}: PUE optimum drew LESS power than the energy optimum")
+
+
+def test_pue_can_be_gamed_when_the_ramp_is_steep():
+    # The point of charging server-fan power: at the top of the published ramp range
+    # and on a relaxed inlet envelope, the design with the BEST PUE is not the one
+    # that burns the least. If this test stops failing to find a gap, the term has
+    # been neutered.
+    h = generic_hall(containment=0.3, seed=1, T_allow=35.0, fan_ramp=0.010)
+    pue_opt = h.evaluate(*optimize(h, objective="pue").x)
+    kw_opt = h.evaluate(*optimize(h, objective="total").x)
+    assert pue_opt["PUE"] < kw_opt["PUE"] - 1e-4, "the PUE optimum should look better on PUE"
+    assert pue_opt["total_kW"] > kw_opt["total_kW"] + 1.0, (
+        "the PUE optimum should cost real kW; got "
+        f"{pue_opt['total_kW']:.2f} vs {kw_opt['total_kW']:.2f}")
+    assert pue_opt["server_fan_kW"] > kw_opt["server_fan_kW"], (
+        "the gap must come from server-fan power moving into the IT denominator")
 
 
 def test_cop_and_fan_monotonic():
