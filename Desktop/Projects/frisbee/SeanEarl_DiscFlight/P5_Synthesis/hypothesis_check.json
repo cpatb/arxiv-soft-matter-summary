@@ -2,9 +2,9 @@
   {
     "hypothesis": "H1a_gradient",
     "verdict": "SUPPORTED",
-    "Q_west": 0.04752329021018891,
-    "Q_east": 0.04098801207479326,
-    "normalised_gradient": 1.499664169727113
+    "Q_west": 0.05004501936215594,
+    "Q_east": 0.03843695649069543,
+    "normalised_gradient": 1.1418245122974313
   },
   {
     "hypothesis": "H1_speed_profile",
@@ -18,24 +18,24 @@
     "verdict": "NOT TESTABLE",
     "reason": "hammer still-air range 12.1 m vs 25 m scoring target; success rate is structurally zero",
     "hammer": 0.0,
-    "backhand": 0.06675925925925925
+    "backhand": 0.06046296296296297
   },
   {
     "hypothesis": "H2a_patchier",
-    "verdict": "CONTRADICTED",
+    "verdict": "SUPPORTED",
     "cv_by_heading": {
-      "90": 0.18877824145815045,
-      "210": 0.2522060010218821,
-      "270": 0.2520342442655135
+      "90": 0.2551315509566748,
+      "210": 0.2421110965826232,
+      "270": 0.2788238245788068
     }
   },
   {
     "hypothesis": "H2b_forehand_benefits",
     "verdict": "CONTRADICTED",
     "forehand_minus_backhand": {
-      "90": 0.032222222222222235,
-      "210": 0.017962962962962972,
-      "270": 0.02074074074074074
+      "90": 0.04481481481481481,
+      "210": 0.029444444444444468,
+      "270": 0.027962962962962953
     }
   },
   {
@@ -43,9 +43,9 @@
     "verdict": "PARTIALLY SUPPORTED",
     "reason": "210 deg has the highest mean Q, but no heading is resolved as the best: 90 vs 210 not separable at alpha=0.05 (paired t and Wilcoxon, Holm-corrected over the 3 comparisons, n=12 common launch points). What the test does support is that 270 deg is the worst.",
     "mean_Q_by_heading": {
-      "90": 0.04425565114249109,
-      "210": 0.04828789471825446,
-      "270": 0.035635054281
+      "90": 0.044240987926425675,
+      "210": 0.048289634668730104,
+      "270": 0.03243225331148212
     },
     "highest_mean_heading": 210,
     "best_supported": null,

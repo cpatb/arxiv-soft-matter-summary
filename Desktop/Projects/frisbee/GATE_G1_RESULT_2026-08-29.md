@@ -97,7 +97,7 @@ python gust_model_comparison.py --field ../P3_CFD/flow_fields.npz \
 ```
 ~16 min on 20 workers. No cells dropped, no pairs lost, no scale clipping in either arm.
 
-## The separate blocker this run exposed
+## The separate blocker this run exposed (RESOLVED same day, see RERUN_2026-08-29.md)
 
 `P4_Coupling/landing_stats.npz` is dated 2026-07-26 03:19; `monte_carlo.py` is dated
 14:19 the same day: **eleven hours later**. The artifact therefore predates the frame fix
@@ -127,7 +127,11 @@ chain consistently:
 bash SeanEarl_DiscFlight/runDownstream.sh 20 150
 ```
 
-97,200 trajectories at the ~19.5 traj/s measured here. It was not run in this session
-because it moves every downstream number, and the paired-significance verdict
-(`worst_supported: 270`) could move with them, that is a result the author should be
-present for.
+97,200 trajectories at the ~19.5 traj/s measured here.
+
+**It was run.** `rerunMonteCarloOnward.sh` regenerated steps 3-8 in about 110 minutes,
+holding `flow_fields.npz` fixed so the Monte Carlo was the only variable. The artifact now
+records `gust_model = sweeping` along with a full `prov_*` block, and **every verdict
+survived**: 90 vs 210 still not resolved (p 0.206 -> 0.203), 270 still worst and now more
+firmly so (p 0.031 -> 0.022 and 0.026 -> 0.0038). 17 of 58 results macros moved, none were
+added or removed. Full detail in `RERUN_2026-08-29.md`.
