@@ -80,6 +80,24 @@
   \newcommand{\QbestWorstRatio}{\MISSINGNUM}\newcommand{\BlockedMean}{\MISSINGNUM}%
   \newcommand{\QbyHeadingTable}{\MISSINGNUM}\newcommand{\SRbyThrowTable}{\MISSINGNUM}%
 }
+\IfFileExists{SeanEarl_DiscFlight/P5_Synthesis/significance_generated.tex}{%
+  \input{SeanEarl_DiscFlight/P5_Synthesis/significance_generated}%
+}{%
+  \newcommand{\QsigNlaunch}{\MISSINGNUM}\newcommand{\QsigNboot}{\MISSINGNUM}%
+  \newcommand{\QsigAlpha}{\MISSINGNUM}%
+  \newcommand{\QdiffNineZerovsTwoOneZero}{\MISSINGNUM}%
+  \newcommand{\QciNineZerovsTwoOneZero}{\MISSINGNUM}%
+  \newcommand{\QptNineZerovsTwoOneZero}{\MISSINGNUM}%
+  \newcommand{\QfavourNineZerovsTwoOneZero}{\MISSINGNUM}%
+  \newcommand{\QresolvedNineZerovsTwoOneZero}{\MISSINGNUM}%
+  \newcommand{\QciNineZerovsTwoSevenZero}{\MISSINGNUM}%
+  \newcommand{\QptNineZerovsTwoSevenZero}{\MISSINGNUM}%
+  \newcommand{\QfavourNineZerovsTwoSevenZero}{\MISSINGNUM}%
+  \newcommand{\QciTwoOneZerovsTwoSevenZero}{\MISSINGNUM}%
+  \newcommand{\QptTwoOneZerovsTwoSevenZero}{\MISSINGNUM}%
+  \newcommand{\QfavourTwoOneZerovsTwoSevenZero}{\MISSINGNUM}%
+  \newcommand{\QworstSupported}{\MISSINGNUM}\newcommand{\QbestSupported}{\MISSINGNUM}%
+}
 \IfFileExists{SeanEarl_DiscFlight/P5_Synthesis/vertical_generated.tex}{%
   \input{SeanEarl_DiscFlight/P5_Synthesis/vertical_generated}%
 }{%
@@ -727,11 +745,40 @@ accelerating past Campus Towers; the field itself lies in its wake.}
 \subsection{Throwability}
 
 Combining the wind, turbulence and simulated-success factors of
-Eq.~\ref{eq:Q} gives $\bar Q = \QbestMean$ at the best computed heading
-($\QbestHeading^\circ$) against $\QworstMean$ at the worst
+Eq.~\ref{eq:Q} gives $\bar Q = \QbestMean$ at the highest-scoring computed
+heading ($\QbestHeading^\circ$) against $\QworstMean$ at the lowest
 ($\QworstHeading^\circ$) --- a ratio of \QbestWorstRatio. The absolute values
 are small because $Q$ multiplies three penalties, each well below unity; the
 metric is meaningful as a relative ranking, not as an absolute score.
+
+\emph{Only part of that ranking is statistically resolvable, and the paired test
+is reported here rather than the raw ordering.} Because all three headings are
+evaluated at the same \QsigNlaunch{} launch points, the headings can be compared
+pairwise per launch point, which removes the spatial variation common to all of
+them --- and that variation dominates: the across-field standard deviation of
+$\bar Q$ is 9 to 14 times the Monte Carlo standard error at every heading, so an
+unpaired comparison would be swamped by it. Bootstrapping over launch points
+(\QsigNboot{} resamples, $\alpha = \QsigAlpha$):
+
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item $270^\circ$ is worse than $90^\circ$ (paired difference
+    \QciNineZerovsTwoSevenZero, $p = \QptNineZerovsTwoSevenZero$, favoured at
+    \QfavourNineZerovsTwoSevenZero{} launch points) and worse than $210^\circ$
+    (\QciTwoOneZerovsTwoSevenZero, $p = \QptTwoOneZerovsTwoSevenZero$,
+    \QfavourTwoOneZerovsTwoSevenZero). Both are resolved.
+  \item $90^\circ$ and $210^\circ$ are \QresolvedNineZerovsTwoOneZero:
+    the paired difference is \QdiffNineZerovsTwoOneZero{} with confidence
+    interval \QciNineZerovsTwoOneZero{} spanning zero
+    ($p = \QptNineZerovsTwoOneZero$), and the sign is not even consistent across
+    the field --- $210^\circ$ is favoured at only
+    \QfavourNineZerovsTwoOneZero{} of the launch points.
+\end{itemize}
+
+\noindent So the defensible statement is about the worst heading, not the best:
+\textbf{$\QworstSupported^\circ$ is the worst of the three, and no best heading
+is resolvable} ($\QbestSupported$). The mean ranking is reported above for
+completeness, but the gap between the top two is smaller than the uncertainty on
+it.
 
 The Monte Carlo comprised \NtotalThrows{} trajectories: \NlaunchPoints{} launch
 points over the playing surface $\times$ \Ndirections{} inflow directions
@@ -863,9 +910,13 @@ occupies.}
 
 \subsection{The hypotheses, tested}
 
-The draft made three falsifiable predictions. Two are supported, two of the
-sub-claims are contradicted, and one turns out not to be testable with the
-scoring rule chosen. \emph{The contradictions are reported as findings.}
+The draft made three falsifiable predictions, which decompose into five testable
+sub-claims. One is supported, two are contradicted, one is only partially
+supported --- its ordering holds in the mean but not under a paired test --- and
+one turns out not to be testable with the scoring rule chosen. \emph{The
+contradictions and the non-resolution are reported as findings.} The verdicts
+here are the ones recorded in \texttt{hypothesis\_check.json}; the two are
+generated from the same run and are meant to be read together.
 
 \begin{enumerate}[leftmargin=*,itemsep=4pt]
   \item \textbf{Easterly $Q$ gradient across the field --- SUPPORTED.} At
@@ -906,13 +957,24 @@ scoring rule chosen. \emph{The contradictions are reported as findings.}
     outperform the backhand at every computed heading, but the direction
     dependence runs opposite to the prediction.
 
-  \item \textbf{Best conditions at a light SSW --- SUPPORTED.} Of the three
-    computed headings, $210^\circ$ gives the highest mean throwability
-    ($\bar Q = \QmeanHTwoOneZero$) against $\QmeanHNineZero$ for the easterly
-    and $\QmeanHTwoSevenZero$ for the westerly. This is the prevailing sector at
-    this site, so the meteorological and playability optima do coincide --- with
-    the caveat that three samples cannot locate an optimum, only rank three
-    candidates.
+  \item \textbf{Best conditions at a light SSW --- PARTIALLY SUPPORTED.} The SSW does
+    give the highest mean throwability of the three computed headings
+    ($\bar Q = \QmeanHTwoOneZero$ against $\QmeanHNineZero$ for the easterly and
+    $\QmeanHTwoSevenZero$ for the westerly), but that ordering does not survive
+    a paired test over the \QsigNlaunch{} launch points. The SSW--easterly
+    difference is \QdiffNineZerovsTwoOneZero{} with a confidence interval of
+    \QciNineZerovsTwoOneZero{} that spans zero
+    ($p = \QptNineZerovsTwoOneZero$), and the SSW is favoured at only
+    \QfavourNineZerovsTwoOneZero{} launch points --- so the sign is not
+    consistent across the field, let alone the magnitude.
+    \emph{What the data does support is the negative:} the westerly
+    ($\QworstSupported^\circ$) is worse than both other headings, resolved in
+    each case ($p = \QptNineZerovsTwoSevenZero$ and
+    $\QptTwoOneZerovsTwoSevenZero$). No best heading is resolvable
+    ($\QbestSupported$). The original caveat --- that three samples can rank
+    candidates but not locate an optimum --- turns out to have been too
+    generous: with this many launch points they cannot reliably rank the top
+    two either.
 \end{enumerate}
 
 \section{Discussion}
@@ -1038,11 +1100,16 @@ sideline --- inverted the paper's central mechanism.
     was designed around, but Campus Towers, a 45 m block 9 m off the eastern
     sideline.
 
-  \item Of the three computed headings the prevailing SSW ($\QbestHeading^\circ$)
-    is the most throwable ($\bar Q = \QbestMean$) and the westerly
-    ($\QworstHeading^\circ$) the least ($\QworstMean$). Two of the draft's
-    predictions were contradicted and one proved untestable with the chosen
-    scoring rule; all are reported as findings.
+  \item Of the three computed headings the westerly ($\QworstSupported^\circ$)
+    is the least throwable ($\bar Q = \QworstMean$), and that is resolved
+    against both of the others by a paired bootstrap over launch points. The
+    remaining two cannot be separated ($p = \QptNineZerovsTwoOneZero$, interval
+    \QciNineZerovsTwoOneZero{} spanning zero), so \textbf{no best heading is
+    claimed} ($\QbestSupported$) even though the prevailing SSW has the highest
+    mean. Two of the draft's predictions were contradicted, one --- that the
+    best conditions come at a light SSW --- is not resolvable with this design,
+    and one proved untestable with the chosen scoring rule; all are reported as
+    findings.
 
   \item \textbf{The CFD is not grid-converged at disc altitude}
     (\S\ref{sec:cfdvalid}). The magnitude of the sheltering is robust across

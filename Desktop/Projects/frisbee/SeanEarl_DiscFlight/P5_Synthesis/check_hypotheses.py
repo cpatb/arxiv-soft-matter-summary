@@ -17,19 +17,27 @@ H2. Westerly cases (270 +/- 30 deg) show patchier Q with sheltered "throw
 
 H3. The best-condition wind direction for canonical 25 m throws is a light
     SSW (~210 deg), aligning with prevailing climatology.
+
+H3 is decided by the paired significance test in q_significance.py, not by the
+bare ordering of three means. Ranking three overlapping means is not a result
+until the ranking survives its own noise, and here it only half does: 270 deg
+is resolved as the worst, while 90 and 210 are not separable.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 
 import numpy as np
 
 
 def verdict(ok, msg):
-    tag = {True: "SUPPORTED", False: "CONTRADICTED", None: "NOT TESTABLE"}[ok]
-    return f"[{tag:13s}] {msg}"
+    """Format a verdict line. `ok` is True/False/None or an explicit tag."""
+    tag = ok if isinstance(ok, str) else {
+        True: "SUPPORTED", False: "CONTRADICTED", None: "NOT TESTABLE"}[ok]
+    return f"[{tag:19s}] {msg}"
 
 
 def main():
@@ -37,6 +45,9 @@ def main():
     ap.add_argument("--Q", default="Q.npz")
     ap.add_argument("--fields", default="../P3_CFD/flow_fields.npz")
     ap.add_argument("--landings", default="../P4_Coupling/landing_stats.npz")
+    ap.add_argument("--significance", default="q_significance.json",
+                    help="paired-test verdicts from q_significance.py; H3 is "
+                         "decided from these, not from the raw ordering")
     ap.add_argument("--out-json", default="hypothesis_check.json")
     args = ap.parse_args()
 
@@ -45,7 +56,7 @@ def main():
     L = np.load(args.landings, allow_pickle=False)
 
     Q = Qd["Q"]
-    x, y, headings = Qd["x"], Qd["y"], Qd["headings"]
+    x, headings = Qd["x"], Qd["headings"]
     throws = [str(t) for t in L["throws"]]
     results = []
 
@@ -138,7 +149,7 @@ def main():
                                        max(np.nanmean(Q[..., i]), 1e-12))
                for i in range(len(headings))}
         ok = cv_w >= max(cvs.values()) - 1e-9
-        print(verdict(ok, f"spatial CV of Q by heading: "
+        print(verdict(ok, "spatial CV of Q by heading: "
                           + ", ".join(f"{k}:{v:.3f}" for k, v in cvs.items())))
         results.append(dict(hypothesis="H2a_patchier",
                             verdict="SUPPORTED" if ok else "CONTRADICTED",
@@ -168,16 +179,62 @@ def main():
     print("-" * 78)
     mean_by_h = {int(h): float(np.nanmean(Q[..., i]))
                  for i, h in enumerate(headings)}
-    best = max(mean_by_h, key=mean_by_h.get)
-    ok = abs(best - 210) <= 30
-    print(verdict(ok, "mean Q by heading: "
-                      + ", ".join(f"{k}:{v:.4f}" for k, v in mean_by_h.items())
-                      + f"  -> best = {best} deg"))
-    print("    NOTE: 'best' means best OF THE COMPUTED HEADINGS only.")
-    results.append(dict(hypothesis="H3_best_is_SSW",
-                        verdict="SUPPORTED" if ok else "CONTRADICTED",
-                        mean_Q_by_heading=mean_by_h, best_heading=best,
-                        caveat="best of the computed subset only"))
+    highest = max(mean_by_h, key=mean_by_h.get)
+    print("mean Q by heading: "
+          + ", ".join(f"{k}:{v:.4f}" for k, v in mean_by_h.items())
+          + f"  -> highest mean = {highest} deg")
+    print("    NOTE: 'highest mean' is over THE COMPUTED HEADINGS only.")
+
+    # The ordering of three overlapping means is not a result until it survives
+    # its own noise, so the verdict is taken from the paired test in
+    # q_significance.py rather than from the bare ranking. Without that file the
+    # verdict is NOT TESTABLE, never SUPPORTED: an untested ordering must not be
+    # able to read as a confirmed one just because the analysis was skipped.
+    sig_path = Path(args.significance)
+    if not sig_path.exists():
+        print(verdict(None, f"{sig_path} absent -- run q_significance.py; the "
+                            f"ordering of three means is not evidence on its own"))
+        results.append(dict(hypothesis="H3_best_is_SSW",
+                            verdict="NOT TESTABLE",
+                            reason=f"{sig_path.name} absent; the paired "
+                                   f"launch-point test that decides this "
+                                   f"hypothesis has not been run",
+                            mean_Q_by_heading=mean_by_h,
+                            highest_mean_heading=highest))
+    else:
+        S = json.loads(sig_path.read_text())
+        verd = S["verdict"]
+        best_sup = verd.get("best_supported")
+        worst_sup = verd.get("worst_supported")
+        unresolved = [f"{p['a']} vs {p['b']}" for p in S["pairs"]
+                      if not p["resolved"]]
+        if best_sup is None:
+            tag = "PARTIALLY SUPPORTED"
+        elif abs(int(best_sup) - 210) <= 30:
+            tag = "SUPPORTED"
+        else:
+            tag = "CONTRADICTED"
+        reason = (
+            f"{highest} deg has the highest mean Q, but no heading is resolved "
+            f"as the best: {', '.join(unresolved)} not separable at "
+            f"alpha={S['alpha']} (paired t and Wilcoxon, Holm-corrected over "
+            f"the {len(S['pairs'])} comparisons, n={S['pairs'][0]['n']} common "
+            f"launch points). What the test does support is that "
+            f"{worst_sup} deg is the worst."
+            if best_sup is None else
+            f"{best_sup} deg is resolved as the best of the computed headings.")
+        print(verdict(tag, reason))
+        results.append(dict(hypothesis="H3_best_is_SSW",
+                            verdict=tag,
+                            reason=reason,
+                            mean_Q_by_heading=mean_by_h,
+                            highest_mean_heading=highest,
+                            best_supported=best_sup,
+                            worst_supported=worst_sup,
+                            unresolved_pairs=unresolved,
+                            caveat="ranking is over the computed subset only, "
+                                   "and only the worst is statistically "
+                                   "resolved"))
 
     with open(args.out_json, "w") as fh:
         json.dump(results, fh, indent=2)

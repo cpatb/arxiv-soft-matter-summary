@@ -45,28 +45,45 @@ python3 monte_carlo.py \
 echo
 echo "############ 4. throwability metric"
 cd ../P5_Synthesis
+# --exclude-throws hammer is REQUIRED to reproduce the committed Q.npz. The
+# hammer's fixed 25 m scoring target is unreachable for a throw whose modelled
+# range is ~11 m, so its 0% success rate measures the target choice, not the
+# wind. Omitting the flag here (as this script previously did) silently
+# produces a Q smaller by a factor of ~1.5 than the one in the manuscript.
+# NB: whether the hammer belongs in the study at all is a separate, open
+# question -- see the hammer item in the hardening brief's WP4.
 python3 throwability.py \
     --fields ../P3_CFD/flow_fields.npz \
     --landings ../P4_Coupling/landing_stats.npz \
+    --exclude-throws hammer \
     --u-ref 5.0 --out Q.npz 2>&1 | tail -20
 
 echo
-echo "############ 5. hypothesis check"
+echo "############ 5. is the direction ordering resolved?"
+# Must run BEFORE the hypothesis check, which takes its H3 verdict from
+# q_significance.json rather than from the bare ordering of three means.
+python3 q_significance.py \
+    --Q Q.npz --landing ../P4_Coupling/landing_stats.npz \
+    --tex significance_generated.tex --json q_significance.json 2>&1 | tail -25
+
+echo
+echo "############ 6. hypothesis check"
 python3 check_hypotheses.py \
     --Q Q.npz --fields ../P3_CFD/flow_fields.npz \
     --landings ../P4_Coupling/landing_stats.npz \
+    --significance q_significance.json \
     --out-json hypothesis_check.json 2>&1 | tail -40 || \
     echo "!! HYPOTHESIS CHECK FAILED -- continuing"
 
 echo
-echo "############ 6. figures"
+echo "############ 7. figures"
 mkdir -p figs
 python3 plot_throwability_map.py Q.npz --outdir figs 2>&1 | tail -5
 python3 paper_figures.py --Q Q.npz --fields ../P3_CFD/flow_fields.npz \
     --outdir figs 2>&1 | tail -5
 
 echo
-echo "############ 7. generated results macros"
+echo "############ 8. generated results macros"
 python3 make_results_tex.py \
     --Q Q.npz --fields ../P3_CFD/flow_fields.npz \
     --landings ../P4_Coupling/landing_stats.npz \

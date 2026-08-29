@@ -40,13 +40,19 @@
   },
   {
     "hypothesis": "H3_best_is_SSW",
-    "verdict": "SUPPORTED",
+    "verdict": "PARTIALLY SUPPORTED",
+    "reason": "210 deg has the highest mean Q, but no heading is resolved as the best: 90 vs 210 not separable at alpha=0.05 (paired t and Wilcoxon, Holm-corrected over the 3 comparisons, n=12 common launch points). What the test does support is that 270 deg is the worst.",
     "mean_Q_by_heading": {
       "90": 0.04425565114249109,
       "210": 0.04828789471825446,
       "270": 0.035635054281
     },
-    "best_heading": 210,
-    "caveat": "best of the computed subset only"
+    "highest_mean_heading": 210,
+    "best_supported": null,
+    "worst_supported": 270,
+    "unresolved_pairs": [
+      "90 vs 210"
+    ],
+    "caveat": "ranking is over the computed subset only, and only the worst is statistically resolved"
   }
 ]

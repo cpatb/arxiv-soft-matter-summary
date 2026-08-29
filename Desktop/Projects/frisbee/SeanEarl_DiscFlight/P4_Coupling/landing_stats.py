@@ -28,13 +28,26 @@ def summarize(npz_path: str):
     print("bearings:", d["bearings"])
 
     print()
-    print("Mean drift across all launch points, per heading, per throw:")
-    drift = d["landing_mean"]  # (nx, ny, nh, nt, nb, 3)
+    print("Mean landing bias, throw frame, averaged over launch points and")
+    print("bearings (downrange = along the throw, cross = thrower's left):")
+    # MUST use landing_bias, not landing_mean. `landing_mean` is an ABSOLUTE
+    # world-frame position, so averaging it over a 65 m launch grid and six
+    # bearings returns the centroid of the launch grid plus a rotation-averaged
+    # range vector -- a number with no interpretation at all, which is what
+    # this function used to print under the label "mean drift".
+    if "landing_bias" not in d.files:
+        print("  landing_bias not present: this artifact predates the frame")
+        print("  fix (see README 'Output schema'). Re-run monte_carlo.py.")
+        return
+    bias = d["landing_bias"]                       # (nx, ny, nh, nt, nb, 2)
     for ih, h in enumerate(d["headings"]):
         for it, throw in enumerate(d["throws"]):
-            ave = drift[:, :, ih, it, :, :2].mean(axis=(0, 1, 2))
+            b = bias[:, :, ih, it, :, :]
+            ave = np.nanmean(b, axis=(0, 1, 2))
+            sd = np.nanstd(b, axis=(0, 1, 2))
             print(f"  heading {h}°  throw {str(throw):20s}  "
-                  f"mean landing dx={ave[0]:.2f} dy={ave[1]:.2f}")
+                  f"downrange {ave[0]:+.2f} +- {sd[0]:.2f} m   "
+                  f"cross {ave[1]:+.2f} +- {sd[1]:.2f} m")
 
 
 def main():

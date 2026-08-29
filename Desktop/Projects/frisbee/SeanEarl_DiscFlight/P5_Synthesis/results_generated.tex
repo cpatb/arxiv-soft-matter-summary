@@ -45,6 +45,13 @@
 \newcommand{\SRmeanHTwoOneZero}{7.2}
 \newcommand{\SRmeanHTwoSevenZero}{6.2}
 \newcommand{\BlockedMean}{10.2}
+\newcommand{\SRexcluded}{9.4}
+\newcommand{\SRallthrows}{6.3}
+\newcommand{\SRexcludedThrows}{hammer}
+\newcommand{\SRkeptThrows}{right backhand, right forehand}
+\newcommand{\SRkeptHNineZero}{8.3}
+\newcommand{\SRkeptHTwoOneZero}{10.8}
+\newcommand{\SRkeptHTwoSevenZero}{9.2}
 \newcommand{\ABLdrift}{0.7}
 \newcommand{\ABLverdict}{PASS}
 \newcommand{\ConvFine}{13.7}
@@ -61,12 +68,12 @@
 $\theta_{\text{wind}}$ & $\bar Q$ & $Q_{\min}$ & $Q_{\max}$ & $\overline{|U_{2\text{m}}|}$ & $\bar I_{2\text{m}}$ & $\bar S$ \\
  & & & & (m\,s$^{-1}$) & & (\%) \\
 \midrule
-$90^\circ$ & 0.0443 & 0.0303 & 0.0563 & 1.21 & 0.40 & 5.5 \\
-$210^\circ$ & 0.0483 & 0.0261 & 0.0643 & 1.42 & 0.39 & 7.2 \\
-$270^\circ$ & 0.0356 & 0.0131 & 0.0471 & 1.40 & 0.46 & 6.2 \\
+$90^\circ$ & 0.0443 & 0.0303 & 0.0563 & 1.21 & 0.40 & 8.3 \\
+$210^\circ$ & 0.0483 & 0.0261 & 0.0643 & 1.42 & 0.39 & 10.8 \\
+$270^\circ$ & 0.0356 & 0.0131 & 0.0471 & 1.40 & 0.46 & 9.2 \\
 \bottomrule
 \end{tabular}
-\caption{Throwability and its inputs, averaged over the playing surface, for each computed inflow direction. $\bar S$ is the simulated delivery rate within \TargetRadius~m of a \TargetRange~m target.}
+\caption{Throwability and its inputs, averaged over the playing surface, for each computed inflow direction. $\bar S$ is the simulated delivery rate within \TargetRadius~m of a \TargetRange~m target. $\bar S$ is taken over the throw types that enter $Q$ (\SRkeptThrows); \SRexcludedThrows{} is excluded, because a fixed \TargetRange~m scoring target is unreachable for a throw of that characteristic range, so its delivery rate measures the target choice rather than the wind. Over all throw types $\bar S$ would be \SRallthrows\%, which does not multiply out to the $Q$ in column~2.}
 \label{tab:Qbyheading}
 \end{table}
 }

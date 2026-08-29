@@ -51,15 +51,41 @@ python monte_carlo.py \
 
 ## Output schema (landing_stats.npz)
 
-Keyed array entries:
-- `success_rate[i_launch, i_heading, i_throw_type, i_bearing]`  — 0–1
-- `landing_mean[..., 2]`        — (Δx, Δy) from target, m
-- `landing_cov[..., 2, 2]`      — covariance of landing distribution, m²
-- `ellipse_axes[..., 2]`        — 90% containment semi-major/minor, m
-- `launch_grid[..., 3]`         — launch point coords
-- `headings_deg[...]`
-- `throw_types[...]`
-- `bearings_deg[...]`
+All arrays are indexed `[i_launch_x, i_launch_y, i_heading, i_throw_type,
+i_bearing]` with any component axes appended. The authoritative, machine-
+readable version of this table is written into every artifact as the
+`schema_frames` entry; if the two ever disagree, `schema_frames` is right.
+
+**Reference frames — these are not interchangeable.**
+
+| entry | frame | population |
+|---|---|---|
+| `landing_mean[..., 3]` | **world** (absolute site x, y, z in m) | delivered |
+| `landing_bias[..., 2]` | **throw** (downrange−25 m, crossrange), m | delivered |
+| `target_xy[..., 2]` | **world**; `launch_xy + R·(cos b, sin b)` | — |
+| `landing_cov[..., 2, 2]` | world-aligned axes; translation-invariant | delivered |
+| `ellipse_axes[..., 2]` | 90% containment semi-major/minor, m | delivered |
+| `success_rate[...]` | fraction within `target_radius_m` of `target_xy` | valid |
+
+`landing_mean` is **not** an offset from the target. It is an absolute
+position. An earlier version of this file described it as "(Δx, Δy) from
+target", and a downstream reader who believed that reconstructed the target as
+a fixed point at bearing 0 and measured 25–50 m of bias that does not exist.
+Use `landing_bias`, or subtract the saved `target_xy`.
+
+Populations: `valid` = reached the ground inside `t_max`; `delivered` = valid
+and not landing inside a building footprint. Dispersion statistics use
+`delivered`, because the 6-DOF model has no collision detection and the landing
+point of a blocked throw describes no physical trajectory. `success_rate` uses
+`valid`, because a throw into a building is a failed delivery rather than a
+missing observation. `n_valid`, `n_delivered`, `n_airborne` and
+`blocked_fraction` are all saved so the two denominators are reconstructable.
+
+Scalars: `launch_x`, `launch_y`, `launch_z`, `headings`, `throws`, `bearings`,
+`n_throws`, `seed`, `target_range_m`, `target_radius_m`, `field_source`,
+`gusts_enabled`, `coeff_set`, plus the `prov_*` provenance block (git SHA,
+library versions, SHA-256 of the input field, integrator tolerances, and the
+realised gust-model parameters).
 
 ## Status (2026-07-26) — validated end-to-end on a stub field
 

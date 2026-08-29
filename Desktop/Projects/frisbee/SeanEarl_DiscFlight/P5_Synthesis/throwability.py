@@ -195,8 +195,20 @@ def main():
         allow_stub=args.allow_stub,
         exclude_throws=tuple(args.exclude_throws))
 
+    # Record WHICH throws fed the success factor. Without this the artifact
+    # cannot be distinguished from one built over all throws, and the two
+    # differ by a factor of ~1.5 in Q. The shipped Q.npz was in fact built with
+    # `--exclude-throws hammer` while runDownstream.sh passed no such flag, so
+    # the committed script did not reproduce the committed artifact.
+    all_throws = [str(t) for t in np.load(args.landings)["throws"]]
+    excluded = [t for t in all_throws if t in tuple(args.exclude_throws)]
     np.savez_compressed(args.out, Q=Q, x=x, y=y, headings=h,
-                        u_ref=args.u_ref, **parts)
+                        u_ref=args.u_ref,
+                        excluded_throws=np.array(excluded, dtype="U32"),
+                        kept_throws=np.array(
+                            [t for t in all_throws if t not in excluded],
+                            dtype="U32"),
+                        **parts)
     print(f"wrote {args.out}: Q shape {Q.shape}, "
           f"range [{np.nanmin(Q):.4f}, {np.nanmax(Q):.4f}]")
     print(f"  {'heading':>8s} {'Q_mean':>8s} {'Q_min':>8s} {'Q_max':>8s} "

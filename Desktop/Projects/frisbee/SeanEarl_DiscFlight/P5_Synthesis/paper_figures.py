@@ -171,16 +171,52 @@ def fig3_cfd_snapshots(outdir: Path, fields_npz: str | None):
     plt.close(fig)
 
 
-def fig4_throwability(outdir: Path, Q_npz: str | None):
-    """Throwability heatmap at best vs worst heading."""
+def _significance_caption(sig_json):
+    """One line stating which parts of the direction ordering the test resolves.
+
+    Built from q_significance.json, never typed. A figure is pixels: no macro
+    guard in the manuscript can see inside it, so an earlier version of this
+    function labelling one panel "best" asserted --- in a place the generated-
+    macro convention could not reach --- exactly the claim the paired test
+    declines to support. The wording therefore has to come from the verdict.
+    """
+    if sig_json is None or not Path(sig_json).exists():
+        return None
+    import json
+    S = json.loads(Path(sig_json).read_text())
+    v = S["verdict"]
+    unresolved = [f"{p['a']}$^\\circ$ vs {p['b']}$^\\circ$" for p in S["pairs"]
+                  if not p["resolved"]]
+    bits = []
+    if v.get("worst_supported") is not None:
+        bits.append(f"paired test over {S['pairs'][0]['n']} common launch "
+                    f"points resolves {int(v['worst_supported'])}$^\\circ$ as "
+                    f"the worst")
+    if v.get("best_supported") is None:
+        bits.append("no heading is resolved as the best"
+                    + (f" ({', '.join(unresolved)} not separable)"
+                       if unresolved else ""))
+    else:
+        bits.append(f"{int(v['best_supported'])}$^\\circ$ is resolved as the "
+                    f"best")
+    return "; ".join(bits) + "."
+
+
+def fig4_throwability(outdir: Path, Q_npz: str | None, sig_json=None):
+    """Throwability heatmap, one panel per computed heading.
+
+    Deliberately NOT a best-vs-worst pair. Ranking three overlapping means is
+    not a result until it survives its own noise, and here it only half does,
+    so the figure shows every computed heading and lets the sub-title state
+    what the test actually resolved.
+    """
     if Q_npz is None or not Path(Q_npz).exists():
         print("  [fig4] no Q.npz provided; skipping")
         return
     d = np.load(Q_npz)
     Q = d["Q"]; x = d["x"]; y = d["y"]; h = d["headings"]
     mean_by_heading = np.nanmean(Q, axis=(0, 1))
-    best_h = h[np.nanargmax(mean_by_heading)]
-    worst_h = h[np.nanargmin(mean_by_heading)]
+    order = np.argsort([int(hh) for hh in h])
     XX, YY = np.meshgrid(x, y, indexing="ij")
 
     # Scale the colour range to the data. Q is a product of three penalties, so
@@ -189,20 +225,26 @@ def fig4_throwability(outdir: Path, Q_npz: str | None):
     vmax = float(np.nanmax(Q))
     vmax = 1.0 if not np.isfinite(vmax) or vmax <= 0 else vmax
 
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(10, 4))
-    for ax, hh, lbl in ((a1, best_h, "best"), (a2, worst_h, "worst")):
-        ih = int(np.argmin(np.abs(h - hh)))
+    # The playing surface is ~78 x 25 m, so an equal-aspect panel is a wide
+    # strip; stack the headings vertically and share one colour bar, otherwise
+    # the panels shrink to slivers beside three redundant bars.
+    n = len(order)
+    fig, axes = plt.subplots(n, 1, figsize=(7.5, 1.9 * n + 1.0), squeeze=False)
+    for ax, ih in zip(axes[:, 0], order):
+        ih = int(ih)
         cf = ax.contourf(XX, YY, Q[..., ih], levels=np.linspace(0, vmax, 11),
                          cmap="viridis", vmin=0, vmax=vmax)
-        ax.set_title(f"{lbl}: $\\theta_{{wind}} = {int(hh)}^\\circ$ "
-                     f"($\\bar{{Q}}$ = {mean_by_heading[ih]:.3f})")
+        ax.set_title(f"$\\theta_{{wind}} = {int(h[ih])}^\\circ$ "
+                     f"($\\bar{{Q}}$ = {mean_by_heading[ih]:.3f})", fontsize=10)
         ax.set_aspect("equal")
-        ax.set_xlabel("x (East), m")
         ax.set_ylabel("y (North), m")
-        plt.colorbar(cf, ax=ax, label="Q")
-    fig.suptitle("Throwability metric at best (left) vs. worst (right) wind heading")
-    fig.tight_layout()
+    axes[-1, 0].set_xlabel("x (East), m")
+    fig.colorbar(cf, ax=axes.ravel().tolist(), shrink=0.85, label="$Q$")
+    title = "Throwability $Q$ at 2 m AGL over the playing surface"
+    note = _significance_caption(sig_json)
+    fig.suptitle(title if note is None else f"{title}\n{note}", fontsize=10)
     fig.savefig(outdir / "fig4_throwability.png", dpi=200, bbox_inches="tight")
+    plt.close(fig)
 
 
 def main():
@@ -212,13 +254,22 @@ def main():
     ap.add_argument("--outdir", default="figs")
     ap.add_argument("--geometry", default=None,
                     help="P2 site_geometry.json for the real site map")
+    ap.add_argument("--significance", default="q_significance.json",
+                    help="q_significance.py verdicts; fig4 states what the "
+                         "direction ordering test resolved")
+    ap.add_argument("--only", default=None,
+                    help="regenerate a single figure (fig1|fig2|fig3|fig4)")
     args = ap.parse_args()
 
     outdir = Path(args.outdir); outdir.mkdir(parents=True, exist_ok=True)
-    fig1_site_map(outdir, args.geometry)
-    fig2_trajectories(outdir)
-    fig3_cfd_snapshots(outdir, args.fields)
-    fig4_throwability(outdir, args.Q)
+    if args.only in (None, "fig1"):
+        fig1_site_map(outdir, args.geometry)
+    if args.only in (None, "fig2"):
+        fig2_trajectories(outdir)
+    if args.only in (None, "fig3"):
+        fig3_cfd_snapshots(outdir, args.fields)
+    if args.only in (None, "fig4"):
+        fig4_throwability(outdir, args.Q, args.significance)
     print(f"figures saved under {outdir}/")
 
 

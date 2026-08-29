@@ -150,6 +150,28 @@ def main():
         out.append(macro("BlockedMean",
                          fmt(100 * float(np.nanmean(L["blocked_fraction"])), 1)))
 
+    # The success factor that Q was ACTUALLY built from, and the all-throws
+    # mean, kept as separate macros so the two can never be confused again.
+    # tab:Qbyheading previously printed the all-throws mean beside a Q computed
+    # from the hammer-excluded one: a reader multiplying the printed row got Q
+    # wrong by a factor of ~1.5 and would reasonably conclude the pipeline was
+    # broken.
+    excluded = [str(t) for t in Qd["excluded_throws"]] \
+        if "excluded_throws" in Qd.files else []
+    kept_idx = [i for i, t in enumerate(throws) if t not in excluded]
+    out.append(macro("SRexcluded",
+                     fmt(100 * float(np.nanmean(Qd["success_rate"])), 1)))
+    out.append(macro("SRallthrows",
+                     fmt(100 * float(np.nanmean(sr)), 1)))
+    out.append(macro("SRexcludedThrows",
+                     ", ".join(t.replace("_", " ") for t in excluded)
+                     or "none"))
+    out.append(macro("SRkeptThrows",
+                     ", ".join(throws[i].replace("_", " ") for i in kept_idx)))
+    for i, h in enumerate(headings):
+        v = float(np.nanmean(sr[:, :, i][..., kept_idx, :]))
+        out.append(macro(f"SRkeptH{digits_to_letters(h)}", fmt(100 * v, 1)))
+
     # ---------------- validation verdicts --------------------------------
     if Path(args.validation).exists():
         V = json.loads(Path(args.validation).read_text())
@@ -190,15 +212,27 @@ def main():
             kk = F[f"dir_{h:03d}__k"][:, :, zk][np.ix_(fx, fy)]
             im = fmt(float((np.sqrt(2 * np.maximum(kk, 0) / 3) /
                             np.maximum(sub, 1e-3)).mean()), 2)
-        s = 100 * float(np.nanmean(sr[:, :, i, :, :]))
+        # The SAME success factor Q was built from -- read straight out of
+        # Q.npz rather than recomputed here over a different set of throws.
+        s = 100 * float(np.nanmean(Qd["success_rate"][..., i]))
         tbl.append(f"${h}^\\circ$ & {fmt(meanQ[h],4)} & {fmt(minQ[h],4)} & "
                    f"{fmt(maxQ[h],4)} & {um} & {im} & {fmt(s,1)} \\\\\n")
     tbl.append("\\bottomrule\n\\end{tabular}\n")
+    excl_note = (
+        f" $\\bar S$ is taken over the throw types that enter $Q$ "
+        f"(\\SRkeptThrows); \\SRexcludedThrows{{}} "
+        f"{'is' if len(excluded) == 1 else 'are'} excluded, because a fixed "
+        f"\\TargetRange~m scoring target is unreachable for a throw of that "
+        f"characteristic range, so its delivery rate measures the target "
+        f"choice rather than the wind. Over all throw types $\\bar S$ would be "
+        f"\\SRallthrows\\%, which does not multiply out to the $Q$ in "
+        f"column~2."
+    ) if excluded else ""
     tbl.append("\\caption{Throwability and its inputs, averaged over the "
                "playing surface, for each computed inflow direction. "
                "$\\bar S$ is the simulated delivery rate within "
-               "\\TargetRadius~m of a \\TargetRange~m target.}\n"
-               "\\label{tab:Qbyheading}\n\\end{table}\n")
+               "\\TargetRadius~m of a \\TargetRange~m target." + excl_note +
+               "}\n\\label{tab:Qbyheading}\n\\end{table}\n")
     out.append("\\newcommand{\\QbyHeadingTable}{%\n" + "".join(tbl) + "}\n")
 
     # ---------------- success-rate-by-throw table --------------------------
