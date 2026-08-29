@@ -118,8 +118,9 @@ run or a modelling decision:
    server fans ramp, and that power lands *inside* the IT denominator, PUE improves while
    hall energy worsens. This is the textbook way a cooling model games PUE.
 
-Until those close, quote the fixed-*p* containment ROI, not the free optimum. That is now
-what `optimize_cooling.py` prints and what `fig2` draws.
+Gap (2) was then **closed the same day** (see §9). Gap (1) stands, so quote the fixed-*p*
+containment ROI, not the free optimum. That is what `optimize_cooling.py` prints and what
+`fig2` draws.
 
 `fig2_containment_sweep.png` was rebuilt to your standing figure rules: two panels, no
 titles, short legend, PUE anchored at its physical floor of 1.0 rather than the data range,
@@ -371,3 +372,66 @@ turns "0.5-1.6 on these two deposits" into a claim about dense suspensions.
    three different ones for you) and `[INSERT REPOSITORY URL/DOI]`. Plus four items the
    reviser deliberately deferred (§(a)-(d) in the file header).
 5. **Datacenter: the airflow modelling decision** in §3 above.
+
+---
+
+## 9. Implementation: what was built after the audit
+
+### Datacenter: server-fan power is charged, and PUE turns out to be conditionally safe
+
+Gap (2) above is closed. `dc_thermal` now adds a server-fan ramp of 0.4% of rack IT power
+per K above a 25 °C inlet knee, applied per rack against its own inlet temperature, and
+charges the chiller for it. `pue()` puts the ramped IT in both numerator and denominator;
+`total_kw()` sits beside it; `optimize(..., objective="total")` ranks by energy.
+
+Constants are published measurements: 0.35-0.5 %/K room-wide sensitivity across the
+23-30 °C ASHRAE band, 7-20% total server-power increase over 15 to 35 °C, air volume
+1.2-2.5x over the same span, ramp knee near 25 °C. **ASHRAE's x-factor is not this** and is
+the wrong thing to reach for: it is a hardware failure-rate multiplier versus inlet
+temperature, with no power content.
+
+The finding is more useful than the term. Extra hall power from optimizing PUE rather than
+energy:
+
+| ramp %/K | T_allow 27 | 32 | 35 | 40 |
+|---|---|---|---|---|
+| 0.35 | 0.00 kW | 0.00 | 0.07 | 0.45 |
+| **0.40** | **0.00 kW** | 0.15 | 0.54 | 1.34 |
+| 0.50 | 0.25 kW | 1.48 | 2.56 | 4.19 |
+| 0.75 | 1.44 kW | 5.57 | 8.34 | 12.03 |
+| 1.00 | 2.62 kW | 9.64 | 14.12 | 19.87 |
+
+At the mid-band coefficient and ASHRAE's 27 °C **recommended** limit the two objectives
+pick the same design: **the inlet constraint, not the objective, is what prevents the
+gaming.** The gap opens on the **allowable** envelopes and at the steep end of the ramp,
+where the lowest-PUE design in the whole study, **PUE 1.197** at 1.0 %/K and T_allow 35,
+buys that number by moving **20 kW, 10% of nominal IT**, into the denominator and burns
+14 kW more than the energy optimum.
+
+So PUE is a safe objective for this hall only while the 27 °C recommended limit holds.
+That also names the first constant to ask a real company for: their ramp coefficient.
+
+Headline moves 1.236 → 1.235, cooling cut 26.4 → 25.9%. Tests 13 → 16, including one that
+would catch the term being neutered.
+
+### Bidet: the CFD domain is being widened to R = 50 mm
+
+`gen_case.py` had `Rdom` hardcoded at 25 mm. It is now a parameter, and the radial cell
+count scales with the span so widening cannot silently coarsen the wall jet. The grading is
+re-solved to hold the **first cell width** fixed at the 7.0512 µm the validated mesh
+produces, rather than holding the growth rate, which would have compounded over the extra
+cells and driven the first cell to 0.2 µm. At the default radius the generator reproduces
+the 2026-07-25 `blockMeshDict` **byte for byte**, which is the regression check that makes
+the widened run comparable.
+
+`compare_domain_extent.py` does the two-part test: the wide case must agree with the narrow
+one on the 2-25 mm overlap (otherwise the outflow boundary was reaching into the interior
+and neither case means anything), and only then is the τ_c = 1 Pa root read directly off
+the computed field and compared with the paper's two extrapolations (39.14 and 34.75 mm).
+
+### Frisbee: the stale downstream chain is being regenerated
+
+`rerunMonteCarloOnward.sh` re-runs `runDownstream.sh` steps 3-8 and deliberately skips
+steps 1-2, so `flow_fields.npz` stays byte-identical to the field both the manuscript and
+GATE G1 were computed on. The Monte Carlo is then the only variable that moves, which is
+the point. Everything it replaces is backed up to `_pre_rerun_2026-08-29/` first.

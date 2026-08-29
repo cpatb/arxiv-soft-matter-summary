@@ -40,12 +40,21 @@ def V0_of_Re(Re):
     return Re * NU / D
 
 
-def geom(H_over_d):
-    """Return domain sizes in metres."""
+RDOM_DEFAULT = 25.0e-3        # radial extent >= 20 mm (cleaning radius r_max = 15 mm)
+
+
+def geom(H_over_d, Rdom=RDOM_DEFAULT):
+    """Return domain sizes in metres.
+
+    Rdom was fixed at 25 mm for the 2026-07-25 sweep. That is only ~1.7 r_max, and
+    tau_w has fallen just to 1.957 Pa at the outer boundary, so the tau_c = 1 Pa
+    cleaning contour lies OUTSIDE the domain and the paper can only bound it
+    (r > 25 mm) or extrapolate the fitted closure to it. Rdom is a parameter so
+    that case can be re-run on a domain wide enough to compute it directly.
+    """
     H = H_over_d * D
     Rjet = D / 2.0
-    Rdom = 25.0e-3            # radial extent >= 20 mm (cleaning radius r_max = 15 mm)
-    return H, Rjet, Rdom
+    return H, Rjet, float(Rdom)
 
 
 def head(cls, obj):
@@ -65,15 +74,65 @@ def write(path, txt):
         f.write(txt)
 
 
+def _first_cell(length, n, expansion):
+    """Width of the first cell of a blockMesh simpleGrading block.
+
+    blockMesh's expansionRatio is last/first cell width, so the per-cell ratio is
+    q = expansion**(1/(n-1)) and the block is a geometric series of n terms.
+    """
+    if n <= 1:
+        return float(length)
+    q = expansion ** (1.0 / (n - 1))
+    return float(length) * (q - 1.0) / (q ** n - 1.0) if abs(q - 1.0) > 1e-15 \
+        else float(length) / n
+
+
+def _grading_for_first_cell(length, n, first, tol=1e-14, iters=200):
+    """Inverse of _first_cell: the expansionRatio giving `first` over `length`.
+
+    Monotone in q, so bisect on the per-cell ratio rather than trusting a solver.
+    Bracketed well above any grading this mesh uses.
+    """
+    if n <= 1:
+        return 1.0
+    lo, hi = 1.0 + 1e-12, 2.0
+    while _first_cell(length, n, hi ** (n - 1)) > first and hi < 1e6:
+        hi *= 2.0
+    for _ in range(iters):
+        mid = 0.5 * (lo + hi)
+        if _first_cell(length, n, mid ** (n - 1)) > first:
+            lo = mid
+        else:
+            hi = mid
+        if hi - lo < tol:
+            break
+    return float((0.5 * (lo + hi)) ** (n - 1))
+
+
 def blockmesh(H, Rjet, Rdom, refine):
     """Two radial blocks (jet, outer), 1 wedge cell thick, graded to the plate."""
     # cell counts (base), scaled by refine
     nx   = int(120 * refine)     # axial (0 -> H), graded fine at the plate
     nrj  = int(16  * refine)     # radial across the jet   [0, Rjet]
-    nro  = int(240 * refine)     # radial outer            [Rjet, Rdom]
+    # Radial outer [Rjet, Rdom]. The count scales with the span so that widening the
+    # domain does not silently coarsen the wall jet: at the default 25 mm this is the
+    # original 240, and a 50 mm domain gets 485.
+    span_scale = (Rdom - Rjet) / (RDOM_DEFAULT - D / 2.0)
+    nro_default = int(240 * refine)
+    nro  = int(round(nro_default * span_scale))
     # grading (expansionRatio = last/first cell width)
     gx   = 0.02                  # cluster cells at the plate (x = H, the "end")
-    gro  = 60.0                  # radial cells grow outward (fine near impingement)
+    # Widening the domain must not move the FIRST radial cell, which is what resolves
+    # the near-impingement peak where tau_w is 390 Pa. So hold the first-cell width at
+    # whatever the 25 mm mesh produces and re-solve the grading for the longer block.
+    # Preserving the per-cell growth rate instead would compound over the extra cells
+    # and drive the first cell to 0.2 um, which buys nothing and wrecks the aspect
+    # ratio. At the default Rdom this returns exactly 60.0, so the validated 2026-07-25
+    # mesh is reproduced bit for bit.
+    # Rounded to 10 significant figures so the default case writes "60.0" rather than
+    # the solver's 59.9999999999796 and its blockMeshDict stays byte-identical to the
+    # validated 2026-07-25 one.
+    gro  = float(f"{_grading_for_first_cell(Rdom - Rjet, nro, _first_cell(RDOM_DEFAULT - D / 2.0, nro_default, 60.0)):.10g}")
 
     def v(x, r):  # two wedge vertices (-z, +z) for axial x, radius r
         y = r * COS
@@ -452,12 +511,17 @@ def main():
     Re = float(sys.argv[1])
     Hd = float(sys.argv[2])
     refine = float(sys.argv[3]) if len(sys.argv) > 3 else 1.0
+    Rdom_mm = float(sys.argv[4]) if len(sys.argv) > 4 else RDOM_DEFAULT * 1e3
     V0 = V0_of_Re(Re)
-    H, Rjet, Rdom = geom(Hd)
+    H, Rjet, Rdom = geom(Hd, Rdom_mm * 1e-3)
     k, omega = turb_inlet(V0)
     endTime = 3000
 
+    # A widened domain gets its own tag, so it can never overwrite the 2026-07-25
+    # sweep the manuscript's numbers are read from.
     tag = f"case_Re{int(Re)}_H{int(Hd)}" + ("" if refine == 1.0 else f"_r{int(refine)}")
+    if abs(Rdom - RDOM_DEFAULT) > 1e-12:
+        tag += f"_R{int(round(Rdom_mm))}"
     case = os.path.join(os.path.dirname(os.path.abspath(__file__)), tag)
     for sub in ("0", "constant", "system"):
         os.makedirs(os.path.join(case, sub), exist_ok=True)
