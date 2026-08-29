@@ -18,3 +18,8 @@ dist/
 
 # Gate and test run output, regenerable.
 logs/
+
+# Build artifacts.
+build/
+dist/
+*.whl

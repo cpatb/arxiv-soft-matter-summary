@@ -50,7 +50,14 @@ from dst_fit.joint import aic_from_residuals, fit_series  # noqa: E402
 
 DATA_DIR = Path(r"C:\Users\compl\Desktop\Projects\Corn Starch Bulk Rheology AM")
 
-PHI0_MIN, PHI0_MAX = 0.55, 0.71  # G6c
+# G6c is RETIRED as of 2026-08-29. It gated the fitted phi_0 against a plausible
+# range, but phi_0 is not fitted any more and never should have been: the model is
+# exactly covariant under a common rescaling of (phi, phi_m, phi_0), so freeing it
+# added a flat direction and the "fitted phi_0 = 0.6912 +/- 924.4" it was judging
+# was arithmetic noise off a singular normal matrix. A gate on an unidentifiable
+# parameter tests nothing. Recorded here rather than deleted, because the gate
+# passing for two days is part of what this package is supposed to catch.
+PHIM_ERR_MAX = 0.05  # G6a
 R2_MIN = 0.99  # G6d
 
 
@@ -99,14 +106,21 @@ def main() -> int:
         if not shared_ss:
             continue  # gates apply to the fully shared model
 
-        if not (np.isfinite(jf.stderr["phi_0"]) and np.isfinite(jf.stderr["phi_m"])):
-            failures.append("G6a: shared-parameter standard errors are not finite")
+        # G6a asked only that the errors be finite, which a singular matrix
+        # supplies happily. It now asks that the shared phi_m be determined to
+        # better than the spread the whole package exists to explain: phi_m runs
+        # 0.49 to 0.58 across single-curve fits, so an error above 0.05 means the
+        # joint fit has not pinned it either and "finite" would be the wrong word.
+        if not np.isfinite(jf.stderr["phi_m"]):
+            failures.append("G6a: the shared phi_m has no finite standard error")
+        elif jf.stderr["phi_m"] > PHIM_ERR_MAX:
+            failures.append(
+                f"G6a: shared phi_m = {jf.phi_m:.4f} +/- {jf.stderr['phi_m']:.4f}, "
+                f"an error above {PHIM_ERR_MAX} and so not a determination"
+            )
         if d_aic >= 0:
             failures.append(f"G6b: joint AIC is worse by {d_aic:+.1f}")
-        if not (PHI0_MIN <= jf.phi_0 <= PHI0_MAX):
-            failures.append(
-                f"G6c: fitted phi_0 = {jf.phi_0:.4f}, outside [{PHI0_MIN}, {PHI0_MAX}]"
-            )
+        # G6c retired; see the note at the top of this file.
         if r2 < R2_MIN:
             failures.append(f"G6d: phi vs nominal r2 = {r2:.5f}, below {R2_MIN}")
 

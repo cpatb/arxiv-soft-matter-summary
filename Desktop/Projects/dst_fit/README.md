@@ -12,22 +12,48 @@ The part that matters is the second half. Fitting a four-parameter closure to a
 single flow curve almost always succeeds and often means nothing, because the
 parameters trade off against each other. `dst-fit` is built to say so.
 
+## Install
+
+```
+pip install dst-fit
+```
+
+Python 3.10+. Requires numpy, scipy and pandas; `xlrd` and `openpyxl` come along
+for reading TRIOS exports.
+
 ## Status
 
-Units N1 to N7 of the spec are done, plus G4, G5 and G10. Six gates pass, four
-fail, and the four failures are the result rather than a blocker.
+Version 0.1.0. Units N1 to N7 of the spec are done, plus G4, G5, G10, G11 and
+G12. **Thirteen gates: eight pass, five fail, and the five failures are the
+result rather than a blocker.**
 
-**What running all ten established, in one paragraph.** Wyart-Cates has two
-halves and they do not fare the same. Its **onset stress is real**: `sigma*`
-inferred from the curvature of a flow curve agrees within a factor of two with
-an independent shear-reversal measurement of where frictional contacts take
-over, on two different materials (G10). Its **jamming fraction is not
-measurable from one flow curve**: `phi` and `phi_m` enter only through
-`phi/phi_J`, so near jamming a curve pins the ratio and neither number, and
-independent fits of one material return `phi_m` values that no single value can
-reconcile (N4, N6, G4). That is not an error-bar artefact: profile likelihood
-and a correlation-aware block bootstrap widen the intervals by at most 1.8x
-where 9x to 14x would be needed (N7).
+**What running them established, in three paragraphs.** Wyart-Cates has two
+halves and they do not fare the same.
+
+Its **onset stress is real**: `sigma*` inferred from the curvature of a flow
+curve agrees within a factor of two with an independent shear-reversal
+measurement of where frictional contacts take over, on two different materials
+(G10). Its **jamming fraction is not measurable from one flow curve**: `phi` and
+`phi_m` enter only through `phi/phi_J`, so near jamming a curve pins the ratio
+and neither number, and independent fits of one material return `phi_m` values
+that no single value can reconcile (N4, N6, G4). That is not an error-bar
+artefact: profile likelihood and a correlation-aware block bootstrap widen the
+intervals by at most 1.8x where 9x to 14x would be needed (N7).
+
+**And `phi_0` is not a hard-to-measure parameter, it is a gauge choice.** The
+model is exactly covariant under `(phi, phi_m, phi_0) -> c (phi, phi_m, phi_0)`,
+so only `phi_m/phi_0` is ever determined by a flow curve. Sweeping `phi_0` and
+finding the answer unchanged is algebra, not evidence — a trap this package fell
+into twice and now tests against.
+
+**A third parameter escapes the degeneracy, and a transient is where it lives.**
+`gamma_0`, the strain over which the frictional network rebuilds, is absent from
+a steady flow curve entirely: at steady state the relaxation law's left-hand side
+is zero. Fitted from shear-reversal transients it comes to **0.54 to 1.59 on
+2 um silica and 0.71 to 1.64 on 1.4 um PMMA**, and it is invariant to the whole
+packing degeneracy rather than merely insensitive to it (G11). The same records
+show the model cannot reach the post-reversal dip at all, which bounds where a
+Wyart-Cates closure can be trusted in a transient solver.
 
 ```
 src/dst_fit/io_trios.py         TRIOS flow-sweep reader
@@ -36,7 +62,8 @@ src/dst_fit/models.py           five constitutive models, all eta(sigma)
 src/dst_fit/fitting.py          multi-start least squares with linearised uncertainty
 src/dst_fit/identifiability.py  degeneracy, misspecification, cross-curve consistency
 src/dst_fit/profiling.py        profile likelihood, block bootstrap, interval intersection
-src/dst_fit/joint.py            whole-series fit with shared phi_m, phi_0, sigma*
+src/dst_fit/joint.py            whole-series fit with shared phi_m and sigma* (phi_0 fixed)
+src/dst_fit/transient.py        the strain clock: shear-reversal recovery, fitted in f
 scripts/gate_n1.py              N1 gate: ingest and units
 scripts/gate_n2.py              N2 / G1 gate: recovery, coverage, censoring
 scripts/gate_n3.py              N3 / G2 gate: misspecification, with its control
@@ -416,21 +443,44 @@ across all six curves, gives each curve only its own `phi`, and lets AIC decide.
 | model | k | rmse (log eta) | AIC | phi vs nominal r2 |
 |---|---|---|---|---|
 | six independent fits | 18 | 0.1617 | **-193.6** | **0.99925** |
-| joint, shared sigma* | 9 | 0.2891 | -138.4 | 0.95931 |
-| joint, per-curve sigma* | 14 | 0.2661 | -138.8 | 0.96429 |
+| joint, shared sigma* | 8 | 0.2891 | -140.4 | 0.95931 |
+| joint, per-curve sigma* | 13 | 0.2661 | -140.8 | 0.96429 |
 
-**The joint model loses by 55 AIC and the residual nearly doubles.** Pre-registered
+**The joint model loses by 53 AIC and the residual nearly doubles.** Pre-registered
 G6b wanted AIC(joint) < AIC(independent) and G6d wanted the external phi check to
-survive at r2 >= 0.99. Both fail. Freeing `phi_0` does not rescue a shared
-`phi_m`, so the drift was never about `phi_0`.
+survive at r2 >= 0.99. Both fail. A shared `phi_m` is not rescued by anything
+here, so the drift was never about `phi_0`.
 
-One more thing the run showed, which the gate was too weak to catch. The shared
-fit returns `phi_0 = 0.691 +/- 924` and `phi_m = 0.595 +/- 796`. Those errors are
-not typos: with a shared `sigma*` the two packing fractions are almost perfectly
-traded off, since they enter only through the same interpolation. G6a asked only
-that the errors be *finite*, and finite is not the same as meaningful. The gate
-passed on a fit that determines nothing. Recorded rather than quietly fixed; the
-overall verdict does not depend on it, because G6b and G6d fail on their own.
+### The version of this that was wrong, and what it cost
+
+Until 2026-08-29 this table read k = 9 and 14, an AIC of -138.4, and a loss of 55.
+`joint.py` freed `phi_0` alongside `phi_m` and a per-curve `phi`, and the passage
+here reported `phi_0 = 0.691 +/- 924` and `phi_m = 0.595 +/- 796` as evidence that
+"the two packing fractions are almost perfectly traded off".
+
+That description was too kind to itself. They are not *almost* traded off; the
+trade is **exact**. Wyart-Cates is covariant under
+`(phi, phi_m, phi_0) -> c (phi, phi_m, phi_0)`, since `phi_J` is homogeneous of
+degree one and the three enter only through `phi/phi_J`. Freeing all of them adds
+a **provably flat direction**. Measured afterwards: scaling the triple moves every
+predicted viscosity by 2e-15, and the residual Jacobian's smallest singular value
+is 1.5e-5 against a largest of 119, with a null vector along
+`(phi_0, phi_m, 0, phi)`.
+
+`np.linalg.inv` does not raise on a numerically singular matrix, so `+/- 924` was
+arithmetic noise being printed as an uncertainty, and `n_params` counted a
+parameter that does nothing, making every joint AIC 2 too high.
+
+`phi_0` is now a fixed constant, the covariance is formed with `pinvh` behind a
+rank check that raises, and the shared fit reports **`phi_m = 0.5511 +/- 0.0040`**
+— an error bar that means what it says. G6c, which gated the fitted `phi_0`
+against a plausible range, is retired: it was judging an unidentifiable number.
+
+**What changed in the conclusions: nothing.** The rmse (0.2891) and the external
+check (r2 = 0.95931) are *identical* before and after, to every digit printed,
+because a flat parameter buys no fitting freedom. Only the parameter count, the
+AIC, and the error bars moved. That invariance is itself the confirmation that
+the diagnosis was right.
 
 ### Where that leaves the corn starch
 

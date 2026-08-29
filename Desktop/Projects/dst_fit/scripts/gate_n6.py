@@ -229,12 +229,16 @@ def main() -> int:
     indep_residuals = np.concatenate([r["fit"].residuals for r in rows])
     indep_aic = aic_from_residuals(indep_residuals, 3 * len(rows))
     print(f"\n    joint fit, one phi_m and one sigma* for all {len(rows)} curves "
-          f"(phi_0 free, as in N5):")
+          f"(phi_0 fixed at the published value, as in N5):")
     print(f"      independent: k={3 * len(rows)} n={indep_residuals.size} "
           f"rmse={float(np.sqrt(np.mean(indep_residuals ** 2))):.4f} AIC={indep_aic:.1f}")
     try:
-        jf = fit_series(curves, shared_sigma_star=True, eta_s=c.eta_s, n=c.n,
-                        beta=c.beta, n_starts=16)
+        # phi_0 must be passed: it is a fixed constant now, and its default is
+        # water/RCP 0.64, not Richards' 0.546. When it was a free parameter the
+        # omission was harmless; once fixed, leaving it out silently fits this
+        # material in the wrong gauge.
+        jf = fit_series(curves, shared_sigma_star=True, phi_0=c.phi_0,
+                        eta_s=c.eta_s, n=c.n, beta=c.beta, n_starts=16)
     except RuntimeError as exc:
         print(f"      joint fit failed to converge: {exc}")
     else:

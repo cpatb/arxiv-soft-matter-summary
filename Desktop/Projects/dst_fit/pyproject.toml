@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dst-fit"
-version = "0.0.1"
+version = "0.1.0"
 description = "Constitutive identification for dense and shear-thickening suspensions, with an honest identifiability verdict"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = { file = "LICENSE" }
 authors = [{ name = "Charlie Burton" }]
 keywords = ["rheology", "suspension", "shear thickening", "constitutive model"]
 classifiers = [
@@ -18,13 +18,17 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=1.24",
+    # scipy is not optional: optimize, stats, linalg, ndimage and special are all
+    # used on the main code path. It was missing from this list until 0.1.0, so a
+    # fresh install imported fine and then raised on the first fit.
+    "scipy>=1.10",
     "pandas>=2.0",
     "xlrd>=2.0",       # legacy .xls, which is what TRIOS exports
     "openpyxl>=3.1",   # .xlsx, used by the test fixtures
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7.4"]
+dev = ["pytest>=7.4", "ruff>=0.5"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

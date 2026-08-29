@@ -65,4 +65,6 @@ __all__ = [
     "weighted_mean",
 ]
 
-__version__ = "0.0.4"
+# Single source of truth is pyproject.toml; tests/test_packaging.py fails if the
+# two drift. They were 0.0.1 and 0.0.4 simultaneously before that test existed.
+__version__ = "0.1.0"
