@@ -1,0 +1,69 @@
+# This repository is rooted at the home directory, so an unscoped `git add -A`
+# would otherwise stage ~/.ssh, ~/.claude.json, ~/AppData and everything else.
+# The rules below ignore the home directory by default and re-include only the
+# paths this repository actually tracks.
+#
+# NOTE: the file `gitignore` (no leading dot) next to this one predates it and
+# was never read by git -- git only honours `.gitignore`. Its Python/venv/.env
+# rules are folded in at the bottom.
+
+/*
+
+# The ignore file itself, which `/*` would otherwise exclude.
+!/.gitignore
+
+!/Desktop/
+!/GITHUB_SETUP.md
+!/LICENSE
+!/README.md
+!/arxiv_daily_summary.py
+!/gitignore
+!/requirements.txt
+!/run_arxiv_summary.bat
+!/run_arxiv_summary.ps1
+
+# Within Desktop, only the Projects working area is tracked.
+/Desktop/*
+!/Desktop/Projects/
+
+# ---- from the superseded `gitignore` ----
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+venv/
+ENV/
+env/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Secrets
+.env
+*.pem
+*.key
+id_rsa*
+
+# ---- LaTeX build artifacts (regenerable; never the .tex/.bib/.pdf) ----
+*.aux
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.bcf
+*.run.xml
+*.blg
