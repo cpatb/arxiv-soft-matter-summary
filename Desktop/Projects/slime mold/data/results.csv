@@ -1,0 +1,5 @@
+network,TL_km,TC_cost,MD_km,FT,n_edges,connected
+MST,147.0,105.3,26.95,0.000,114,True
+Steiner,147.0,105.3,26.95,0.000,114,True
+Hub-and-spoke,132.9,98.9,19.23,0.000,95,True
+Physarum g=1.3,256.2,181.0,18.81,0.892,185,True

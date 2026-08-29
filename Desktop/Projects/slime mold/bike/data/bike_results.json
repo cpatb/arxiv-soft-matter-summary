@@ -1,0 +1,95 @@
+{
+  "facility_miles": {
+    "Protected Bike Lane": 68.74,
+    "Buffered Bike Lane": 106.46,
+    "Bike Lane": 138.49,
+    "Neighborhood Greenway": 85.23,
+    "Marked Shared Lane": 46.98
+  },
+  "ideal_metrics": {
+    "TL": 228.74,
+    "TC": 149.721,
+    "MD": 12.073,
+    "FT": 0.883,
+    "connected": true,
+    "n_edges": 266,
+    "n_term": 72
+  },
+  "aligned_km": 144.2,
+  "gap_km": 84.5,
+  "threshold_km": 0.45,
+  "gamma": 1.2,
+  "spacing_km": 1.1,
+  "top_gaps": [
+    {
+      "label": "Pilsen, Bridgeport",
+      "length_km": 15.6,
+      "flux": 2.7,
+      "equity": 0.57,
+      "score": 2.8
+    },
+    {
+      "label": "Bronzeville, UChicago_HydePark",
+      "length_km": 10.8,
+      "flux": 1.0,
+      "equity": 0.58,
+      "score": 1.0
+    },
+    {
+      "label": "Austin, BelmontCragin",
+      "length_km": 10.3,
+      "flux": 0.8,
+      "equity": 0.92,
+      "score": 1.0
+    },
+    {
+      "label": "Bridgeport, Bronzeville",
+      "length_km": 3.3,
+      "flux": 0.6,
+      "equity": 0.57,
+      "score": 0.7
+    },
+    {
+      "label": "Uptown, Edgewater",
+      "length_km": 5.3,
+      "flux": 0.9,
+      "equity": 0.25,
+      "score": 0.7
+    },
+    {
+      "label": "Roseland",
+      "length_km": 5.5,
+      "flux": 0.3,
+      "equity": 0.9,
+      "score": 0.4
+    },
+    {
+      "label": "NorthLawndale",
+      "length_km": 3.2,
+      "flux": 0.3,
+      "equity": 0.95,
+      "score": 0.4
+    },
+    {
+      "label": "Englewood",
+      "length_km": 1.8,
+      "flux": 0.2,
+      "equity": 0.95,
+      "score": 0.3
+    },
+    {
+      "label": "Loop_Job, McCormick",
+      "length_km": 2.2,
+      "flux": 0.4,
+      "equity": 0.3,
+      "score": 0.3
+    },
+    {
+      "label": "WickerPark",
+      "length_km": 3.2,
+      "flux": 0.5,
+      "equity": 0.15,
+      "score": 0.3
+    }
+  ]
+}

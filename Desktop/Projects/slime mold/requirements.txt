@@ -1,0 +1,31 @@
+# Pinned environment for the Chicago Physarum network study.
+#
+# WHAT THIS FILE CAN AND CANNOT PROMISE, because one row of Table 1 needs the
+# distinction. These are the versions present when the manuscript was finalised
+# (2026-08-09), and every number in the paper reproduces under them EXCEPT the
+# Steiner-tree row, which predates this environment.
+#
+# The Steiner row is tabulated as TL = 145.2 km, MD = 29.29 km -- the genuine
+# output of the original run. Under networkx 3.6.1,
+# `steiner_tree(..., method="mehlhorn")` returns the same tree as the metric-
+# closure terminal MST on this candidate graph, so the two tree baselines
+# coincide at TL = 147.0 km, MD = 26.9 km. A reader re-running today will see
+# 147.0, not 145.2.
+#
+# That is a library-version artifact, not a change in the model, and no
+# conclusion depends on it: both baselines are FT = 0 trees that the Physarum
+# family dominates on MD and FT. It is documented in the manuscript itself as a
+# footnote to Table 1, so the paper does not depend on anyone reading this file.
+#
+# The networkx version used for the ORIGINAL Steiner run was not recorded at the
+# time and cannot be recovered, which is exactly why the footnote exists rather
+# than a pin. Do not silently "fix" Table 1 to 147.0 -- the tabulated values are
+# real output, and overwriting them would misrepresent the run that produced
+# them.
+
+networkx==3.6.1
+numpy==2.4.2
+scipy==1.17.1
+matplotlib==3.10.8
+pandas==2.3.3
+shapely==2.1.2
