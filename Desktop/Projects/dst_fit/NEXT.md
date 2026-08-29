@@ -91,6 +91,14 @@ below by X, unbounded above" where that is the truth.
 
 ## The next job, in order
 
+**A worked session plan with effort, ordering and decision points is in
+`PLAN_2026-08-29.md`.** Read that instead if you are about to start work; the list
+below is the same items with more background and less sequencing.
+
+**The one strategic item is restricting each series to its authors' steady curves
+(plan item 3). It can change what the product claims, so it comes before the spec
+rewrite.**
+
 ### 1. Fix `joint.py`. It is rank-deficient by exactly one and prints nonsense.
 
 **Verified twice tonight, not a suspicion.** `fit_series` frees `phi_0`, `phi_m`
