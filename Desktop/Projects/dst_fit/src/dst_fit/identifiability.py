@@ -85,6 +85,7 @@ class Assessment:
     systematic_amplitude: float = 0.0
     systematic_fraction: float = 0.0
     profiles: tuple = ()
+    at_bound: tuple[str, ...] = ()
 
     @property
     def identifiable(self) -> bool:
@@ -108,11 +109,24 @@ class Assessment:
     @property
     def usable(self) -> bool:
         """Both questions answered yes. Anything else needs the verdict read."""
-        return self.identifiable and self.well_specified
+        return self.identifiable and self.well_specified and not self.at_bound
 
     def verdict(self) -> str:
         name = self.fit.model.name
         lines: list[str] = []
+
+        # Said first and unconditionally: a constrained optimum is not a
+        # measurement, and nothing below it means anything if this fired.
+        if self.at_bound:
+            which = ", ".join(self.at_bound)
+            lines.append(
+                f"{which} sat on a parameter bound, so this fit is a constrained "
+                f"optimum rather than a measurement. The cost surface was still "
+                f"descending when the optimiser ran out of room, which means the "
+                f"value is a property of the bound and its standard error is not "
+                f"an uncertainty. Widen the bound, or accept that this curve does "
+                f"not determine {which}."
+            )
 
         if self.structurally_wrong:
             lines.append(
@@ -551,6 +565,7 @@ def assess(
 
     n_runs, z, p = runs_test(fit.residuals)
     amplitude, fraction = systematic_misfit(fit.residuals)
+    at_bound = fit.parameters_at_bound()
 
     profiles: list = []
     if profile:
@@ -589,4 +604,5 @@ def assess(
         systematic_amplitude=amplitude,
         systematic_fraction=fraction,
         profiles=tuple(profiles),
+        at_bound=at_bound,
     )

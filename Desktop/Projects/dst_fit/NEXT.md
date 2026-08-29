@@ -25,7 +25,10 @@ python scripts/gate_g5.py     # 0
 python scripts/gate_g10.py    # 0  <- sigma* vs a measured contact fraction
 python scripts/gate_g11.py    # 1  <- NEW. Only G11c fails; see below
 python scripts/gate_g12.py    # 0  <- NEW. Lin's solvent viscosities, and the 179x
+python scripts/gate_n8.py     # 1  <- NEW. Steady-subset restriction; N8c fails
 python scripts/audit_verdicts.py   # 0, prints a table. Not a gate
+python scripts/probe_gauge_dependence.py   # prints two tables. Not a gate
+python scripts/probe_two_clock.py          # prints a table. Not a gate
 ```
 
 The gates needing the DataShare deposits are n6, n7, g4, g10, g11, g12 and the
@@ -95,9 +98,10 @@ below by X, unbounded above" where that is the truth.
 `PLAN_2026-08-29.md`.** Read that instead if you are about to start work; the list
 below is the same items with more background and less sequencing.
 
-**The one strategic item is restricting each series to its authors' steady curves
-(plan item 3). It can change what the product claims, so it comes before the spec
-rewrite.**
+**Plan items 1, 2 and 3 are DONE as of 2026-08-29.** Item 3 fired its kill
+criterion: see `STEADY_SUBSET_2026-08-29.md` and `scripts/gate_n8.py`. The
+headline survives but the dramatic version of it does not, so **the spec must be
+written around the weaker claim** in that file's section 3, not the old one.
 
 ### 1. Fix `joint.py`. It is rank-deficient by exactly one and prints nonsense.
 

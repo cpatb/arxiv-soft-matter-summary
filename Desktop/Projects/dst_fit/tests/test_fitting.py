@@ -5,7 +5,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from dst_fit.fitting import fit_model, synthetic_curve
+from dst_fit.fitting import FitResult, fit_model, synthetic_curve
 from dst_fit.models import WYART_CATES, get_model, thickening_branch
 
 SIGMA = np.logspace(-2, 3, 40)
@@ -98,3 +98,67 @@ def test_thickening_branch_composes_with_the_fitter():
     br = thickening_branch(eta)
     r = fit_model(get_model("ellis"), sigma, eta, branch=br)
     assert r.n_points == eta.size - br.start
+
+
+# --------------------------------------------------------------------------
+# bound-hitting fits are constrained optima, not measurements
+# --------------------------------------------------------------------------
+def test_parameters_at_bound_flags_a_parameter_sitting_on_its_bound():
+    """The real case: Guy's 19% curve returns phi_m = 0.3000, the lower bound."""
+
+
+    lo, _hi = WYART_CATES.bounds
+    params = np.array([0.40, lo[1], 5.0])  # phi_m pinned at its lower bound
+    fit = FitResult(
+        model=WYART_CATES,
+        params=params,
+        stderr=np.array([0.01, 2.4, 0.5]),
+        cov=np.eye(3),
+        corr=np.eye(3),
+        residuals=np.zeros(20),
+        n_points=20,
+        success=True,
+        message="synthetic",
+    )
+    assert fit.parameters_at_bound() == ("phi_m",)
+
+
+def test_parameters_at_bound_is_quiet_on_an_ordinary_fit():
+    """sigma_star = 5 must not be flagged just because its bounds span 9 decades.
+
+    A span-relative test in linear space calls anything below 10 "at the lower
+    bound", because 1e-4 of (1e5 - 1e-4) is 10. The check is done in log space
+    for a parameter bounded over decades; this is the test that caught it.
+    """
+
+
+    fit = FitResult(
+        model=WYART_CATES,
+        params=np.array([0.45, 0.55, 5.0]),
+        stderr=np.array([0.01, 0.01, 0.5]),
+        cov=np.eye(3),
+        corr=np.eye(3),
+        residuals=np.zeros(20),
+        n_points=20,
+        success=True,
+        message="synthetic",
+    )
+    assert fit.parameters_at_bound() == ()
+
+
+def test_parameters_at_bound_catches_a_scale_parameter_at_its_log_bound():
+
+
+    lo, _ = WYART_CATES.bounds
+    fit = FitResult(
+        model=WYART_CATES,
+        params=np.array([0.45, 0.55, lo[2]]),
+        stderr=np.array([0.01, 0.01, 1e3]),
+        cov=np.eye(3),
+        corr=np.eye(3),
+        residuals=np.zeros(20),
+        n_points=20,
+        success=True,
+        message="synthetic",
+    )
+    assert "sigma_star" in fit.parameters_at_bound()

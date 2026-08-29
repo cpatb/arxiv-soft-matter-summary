@@ -64,6 +64,46 @@ class FitResult:
             for name, p, e in zip(self.model.param_names, self.params, self.stderr)
         }
 
+    def parameters_at_bound(self, tol: float = 1e-4) -> tuple[str, ...]:
+        """Names of parameters sitting on one of their bounds.
+
+        A bound-hitting fit is a *constrained* optimum. The cost surface was still
+        descending when the optimiser ran out of room, so the returned value is a
+        property of the bound, not of the data, and its standard error is
+        meaningless: the quadratic approximation is taken at a point that is not a
+        stationary point.
+
+        This is not hypothetical. Guy et al.'s d = 3770 nm 19% curve fits to
+        ``phi_m = 0.3000 +/- 2.3768``, which is exactly the lower bound with an
+        error bar seven times the plausible range of the quantity. At ``phi``
+        around 0.10 that suspension barely thickens, so the curve carries no
+        information about ``phi_m`` and the fitter returned the bound instead of
+        refusing. Counting it as a measurement dragged a cross-curve consistency
+        test from 3-of-4 to 1-of-5.
+
+        ``tol`` is a fraction of the parameter's own bound range, measured **in
+        log space for a parameter whose bounds span more than two decades** and
+        linearly otherwise. That distinction is not cosmetic. ``sigma_star`` is
+        bounded over 1e-4 to 1e5, so a linear span-relative test calls anything
+        below 10 "at the lower bound", which flags every ordinary fit. A packing
+        fraction bounded over 0.3 to 0.64 has to be judged linearly, because zero
+        is not a meaningful origin for it.
+        """
+        lo = np.asarray(self.model.bounds[0], dtype=float)
+        hi = np.asarray(self.model.bounds[1], dtype=float)
+        p = np.asarray(self.params, dtype=float)
+
+        logarithmic = (lo > 0) & (hi > 0) & (hi / np.where(lo > 0, lo, 1.0) > 100.0)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            lo_c = np.where(logarithmic, np.log10(np.maximum(lo, 1e-300)), lo)
+            hi_c = np.where(logarithmic, np.log10(np.maximum(hi, 1e-300)), hi)
+            p_c = np.where(logarithmic, np.log10(np.maximum(p, 1e-300)), p)
+
+        span = np.where(hi_c > lo_c, hi_c - lo_c, 1.0)
+        near = (np.abs(p_c - lo_c) <= tol * span) | (np.abs(p_c - hi_c) <= tol * span)
+        near &= np.isfinite(p_c)
+        return tuple(n for n, flag in zip(self.model.param_names, near) if flag)
+
     def worst_correlation(self) -> tuple[str, str, float]:
         """The most strongly correlated parameter pair, by absolute value."""
         c = np.abs(self.corr - np.eye(self.n_free))
