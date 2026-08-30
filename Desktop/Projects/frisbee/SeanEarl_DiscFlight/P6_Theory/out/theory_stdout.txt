@@ -1,0 +1,102 @@
+54 cells from sweep_speed.json
+
+[Q1] sigma_gust ~ Uref^p        (theory: p = 1 exactly)
+   heading  90  right_backhand   p = 1.104  CI [1.042, 1.211]  r2 0.9959   (still-air floor 7.77 m)
+   heading  90  right_forehand   p = 1.001  CI [0.996, 1.012]  r2 0.9999   (still-air floor 7.37 m)
+   heading 210  right_backhand   p = 1.027  CI [0.985, 1.089]  r2 0.9975   (still-air floor 7.77 m)
+   heading 210  right_forehand   p = 0.889  CI [0.846, 0.908]  r2 0.9988   (still-air floor 7.37 m)
+   heading 270  right_backhand   p = 1.171  CI [0.989, 1.423]  r2 0.9769   (still-air floor 7.77 m)
+   heading 270  right_forehand   p = 1.260  CI [1.126, 1.469]  r2 0.9896   (still-air floor 7.37 m)
+
+[Q1b] mean-wind bias ~ Uref^q   (theory: q = 1 if the flight is unchanged)
+   heading  90  right_backhand   q = 0.892  CI [0.809, 0.945]  r2 0.9965
+   heading  90  right_forehand   q = 0.848  CI [0.757, 0.909]  r2 0.9954
+   heading 210  right_backhand   q = 0.950  CI [0.930, 0.961]  r2 0.9998
+   heading 210  right_forehand   q = 0.878  CI [0.808, 0.924]  r2 0.9975
+   heading 270  right_backhand   q = 0.984  CI [0.977, 0.998]  r2 0.9999
+   heading 270  right_forehand   q = 1.119  CI [1.027, 1.265]  r2 0.9930
+
+[Q2] magnitude: predicted / measured
+   ballistic  median 3.27x  [2.02, 5.03]
+   tracer     median 0.43x  [0.28, 0.55]
+   geometric mean of the two laws: 1.20x
+
+[Q3] shape: log(measured) = a + b log(predicted); b = 1 means the law tracks the
+     data as flight and wind change, whatever its prefactor
+   flight span over the sweep: L_f x1.69  V_d x1.27  T_f x1.85  sigma_u x42.64   |  the two laws separate by x2.13
+   ballistic  b = 1.075  CI [0.990, 1.175]  r2 0.9086  n 48   prefactor needed 0.306x   residual scatter 1.391x   SHAPE OK
+   tracer     b = 1.061  CI [0.978, 1.162]  r2 0.9215  n 48   prefactor needed 2.352x   residual scatter 1.355x   SHAPE OK
+
+[Q3] discriminating exponents at Uref = 5.0 m/s
+   (needs >= 3 throw types in the sweep; run with the full catalogue)
+
+[Q4a] wind vs thrower: sigma_wind = c*Uref, and where it overtakes the release scatter
+    head throw             c (m per m/s) sigma_release  U* (m/s)  lin resid
+      90 right_backhand           0.3788          7.77      20.5       3.5%
+      90 right_forehand           0.2787          7.37      26.5       5.9%
+     210 right_backhand           0.4980          7.77      15.6       4.0%
+     210 right_forehand           0.5802          7.37      12.7      11.4%
+     270 right_backhand           0.5805          7.77      13.4      12.8%
+     270 right_forehand           0.8504          7.37       8.7      26.3%
+   U* scales linearly with the assumed release scatter: a thrower with half this
+   scatter reaches U* at half the wind speed. The release distribution is NOT
+   calibrated against a measured player -- see crossover_speed's docstring.
+
+[Q4] error budget at r_target = 3.0 m
+    Uref  head throw             thrower    bias   shear    gust   total  wind%     Pi  band
+     0.0    90 right_backhand       7.77    0.00    0.00    0.00    7.77    0.0   2.59  unreliable
+     1.0    90 right_backhand       7.77    0.30    0.16    0.19    7.78    0.2   2.59  unreliable
+     2.0    90 right_backhand       7.77    0.59    0.31    0.38    7.81    1.0   2.60  unreliable
+     3.5    90 right_backhand       7.77    1.00    0.55    0.67    7.88    2.8   2.63  unreliable
+     5.0    90 right_backhand       7.77    1.40    0.78    0.97    7.99    5.5   2.66  unreliable
+     7.0    90 right_backhand       7.77    1.89    1.11    1.40    8.19   10.1   2.73  unreliable
+    10.0    90 right_backhand       7.77    2.57    1.62    2.09    8.60   18.3   2.87  unreliable
+    14.0    90 right_backhand       7.77    3.33    2.37    3.10    9.31   30.3   3.10  unreliable
+    20.0    90 right_backhand       7.77    4.18    3.63    5.46   10.99   50.0   3.66  unreliable
+     0.0   210 right_backhand       7.77    0.00    0.00    0.00    7.77    0.0   2.59  unreliable
+     1.0   210 right_backhand       7.77    0.30    0.34    0.32    7.79    0.5   2.60  unreliable
+     2.0   210 right_backhand       7.77    0.59    0.67    0.64    7.85    2.0   2.62  unreliable
+     3.5   210 right_backhand       7.77    1.01    1.14    1.12    8.00    5.6   2.67  unreliable
+     5.0   210 right_backhand       7.77    1.42    1.57    1.59    8.21   10.4   2.74  unreliable
+     7.0   210 right_backhand       7.77    1.94    2.10    2.26    8.58   18.0   2.86  unreliable
+    10.0   210 right_backhand       7.77    2.68    2.78    3.31    9.29   30.0   3.10  unreliable
+    14.0   210 right_backhand       7.77    3.64    3.48    4.34   10.23   42.3   3.41  unreliable
+    20.0   210 right_backhand       7.77    5.25    4.02    7.50   12.67   62.4   4.22  not a throw
+     0.0   270 right_backhand       7.77    0.00    0.00    0.00    7.77    0.0   2.59  unreliable
+     1.0   270 right_backhand       7.77    0.33    0.32    0.29    7.79    0.5   2.60  unreliable
+     2.0   270 right_backhand       7.77    0.64    0.62    0.56    7.84    1.8   2.61  unreliable
+     3.5   270 right_backhand       7.77    1.10    1.04    0.97    7.98    5.1   2.66  unreliable
+     5.0   270 right_backhand       7.77    1.56    1.41    1.38    8.17    9.5   2.72  unreliable
+     7.0   270 right_backhand       7.77    2.18    1.83    1.93    8.50   16.4   2.83  unreliable
+    10.0   270 right_backhand       7.77    3.11    2.30    2.85    9.14   27.6   3.05  unreliable
+    14.0   270 right_backhand       7.77    4.31    2.68    6.24   11.18   51.7   3.73  unreliable
+    20.0   270 right_backhand       7.77    6.28    3.48   10.28   14.75   72.2   4.92  not a throw
+     0.0    90 right_forehand       7.37    0.00    0.00    0.00    7.37    0.0   2.46  unreliable
+     1.0    90 right_forehand       7.37    0.17    0.19    0.20    7.38    0.2   2.46  unreliable
+     2.0    90 right_forehand       7.37    0.33    0.37    0.39    7.40    0.7   2.47  unreliable
+     3.5    90 right_forehand       7.37    0.56    0.64    0.68    7.45    2.1   2.48  unreliable
+     5.0    90 right_forehand       7.37    0.76    0.90    0.98    7.53    4.1   2.51  unreliable
+     7.0    90 right_forehand       7.37    1.01    1.23    1.38    7.67    7.5   2.56  unreliable
+    10.0    90 right_forehand       7.37    1.34    1.68    2.00    7.93   13.7   2.64  unreliable
+    14.0    90 right_forehand       7.37    1.70    2.22    2.80    8.37   22.3   2.79  unreliable
+    20.0    90 right_forehand       7.37    2.13    2.94    3.92    9.11   34.5   3.04  unreliable
+     0.0   210 right_forehand       7.37    0.00    0.00    0.00    7.37    0.0   2.46  unreliable
+     1.0   210 right_forehand       7.37    0.64    0.36    0.31    7.42    1.2   2.47  unreliable
+     2.0   210 right_forehand       7.37    1.25    0.70    0.60    7.53    4.3   2.51  unreliable
+     3.5   210 right_forehand       7.37    2.12    1.14    1.01    7.82   11.1   2.61  unreliable
+     5.0   210 right_forehand       7.37    2.92    1.54    1.38    8.20   19.1   2.73  unreliable
+     7.0   210 right_forehand       7.37    3.91    1.98    1.80    8.76   29.3   2.92  unreliable
+    10.0   210 right_forehand       7.37    5.24    2.54    2.39    9.69   42.2   3.23  unreliable
+    14.0   210 right_forehand       7.37    6.80    3.15    3.23   10.99   55.0   3.66  unreliable
+    20.0   210 right_forehand       7.37    8.84    3.91    4.76   13.05   68.1   4.35  not a throw
+     0.0   270 right_forehand       7.37    0.00    0.00    0.00    7.37    0.0   2.46  unreliable
+     1.0   270 right_forehand       7.37    0.31    0.23    0.35    7.39    0.5   2.46  unreliable
+     2.0   270 right_forehand       7.37    0.62    0.45    0.73    7.45    2.0   2.48  unreliable
+     3.5   270 right_forehand       7.37    1.08    0.81    1.35    7.61    6.3   2.54  unreliable
+     5.0   270 right_forehand       7.37    1.56    1.17    2.02    7.89   12.7   2.63  unreliable
+     7.0   270 right_forehand       7.37    2.23    1.67    3.07    8.46   24.1   2.82  unreliable
+    10.0   270 right_forehand       7.37    3.39    2.48    5.11    9.90   44.6   3.30  unreliable
+    14.0   270 right_forehand       7.37    5.35    3.81    8.76   13.19   68.8   4.40  not a throw
+    20.0   270 right_forehand       7.37    9.43    6.42   16.29   21.21   87.9   7.07  not a throw
+
+wrote C:\Users\compl\Desktop\Projects\frisbee\SeanEarl_DiscFlight\P6_Theory\out\theory_results.json and figures in C:\Users\compl\Desktop\Projects\frisbee\SeanEarl_DiscFlight\P6_Theory\figs
