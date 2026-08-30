@@ -1,8 +1,16 @@
-"""Render the 270-vs-210 Monte Carlo ensemble fan over the real site geometry.
+"""Render Monte Carlo ensemble fans over the real site geometry, one per wind condition.
 
-This is the picture behind the paper's one resolved directional claim: 270 deg
-(westerly, urban) is the worst of the three computed headings, resolved against both
-others (p = 0.023 and 0.0052 after Holm correction), while 90 vs 210 is not separable.
+The camera is FIXED behind the thrower, on the mean flight axis measured from the
+ensemble actually flown, so the whole flight stays in frame from release to landing and
+nothing that moves in the picture is the camera. Rendering one heading per clip lets the
+three computed wind conditions be compared like for like; passing several headings
+overlays them in one clip instead.
+
+NOTE ON THE DIRECTIONAL CLAIM. These clips are rendered on the production field, which
+is what the manuscript reports. That field resolves 270 deg as the worst of the three
+headings (p = 0.023 and 0.0052), but that verdict does NOT survive a mesh refinement --
+see GRID_INDEPENDENCE_2026-08-30.md. Read the clips as "what the reported field looks
+like", not as evidence that the headings differ.
 
 WHAT IS AND IS NOT DATA HERE
 ----------------------------
@@ -49,7 +57,8 @@ ROOT = HERE.parent
 sys.path.insert(0, str(ROOT / "P1_AnalyticalModel"))
 sys.path.insert(0, str(ROOT / "P4_Coupling"))
 
-# The two headings the paper actually resolves against each other.
+# Default clip: the two headings the paper compares against each other. Override with
+# --headings to render a single wind condition, or all three.
 HEADINGS = (210, 270)
 HEADING_LABEL = {90: "90 deg  easterly, over-lake",
                  210: "210 deg  SSW, prevailing",
@@ -62,8 +71,12 @@ THROW = "right_backhand"
 SEED = 20260829
 TRACK_SAMPLES = 72      # points kept per trajectory for rendering, see fly_ensemble
 
-# Colour per heading: 210 is the better one, 270 the worse.
-COLOUR = {210: (0.30, 0.69, 0.94), 270: (0.97, 0.45, 0.33)}
+# Colour per heading, kept fixed across every clip so the same wind condition is the
+# same colour whether it is rendered alone or overlaid on another.
+DEFAULT_COLOUR = {90: (0.55, 0.82, 0.60),     # easterly, over-lake
+                  210: (0.30, 0.69, 0.94),    # SSW, prevailing
+                  270: (0.97, 0.45, 0.33)}    # westerly, urban
+COLOUR = dict(DEFAULT_COLOUR)
 BLOCKED_COLOUR = (0.55, 0.16, 0.20)
 
 PITCH_X = (-31.0, 47.0)
@@ -176,7 +189,7 @@ def build_scene(args):
         print(f"  !! {stl} missing -- rendering without buildings")
 
     # --- ground, coloured by disc-altitude wind speed ------------------------
-    field_path = ROOT / "P3_CFD" / "flow_fields.npz"
+    field_path = Path(args.field) if args.field else ROOT / "P3_CFD" / "flow_fields.npz"
     ground = ground_speed_texture(field_path, args.ground_heading)
     pl.add_mesh(ground, scalars="speed", cmap="cividis", opacity=0.92,
                 nan_opacity=0.0, show_scalar_bar=True,
@@ -195,7 +208,7 @@ def build_scene(args):
 
     # --- the ensembles -------------------------------------------------------
     ensembles = {}
-    for h in HEADINGS:
+    for h in args.headings:
         print(f"  flying {args.n_throws} throws at heading {h} deg ...")
         tracks, landings, blocked = fly_ensemble(h, args.n_throws, field_path)
         ensembles[h] = (tracks, landings, blocked)
@@ -288,7 +301,7 @@ def add_landings(pl, ensembles, alpha, args):
 def caption(pl, ensembles, args):
     """Caption built from the ensemble actually rendered, not typed in."""
     lines = []
-    for h in HEADINGS:
+    for h in ensembles:
         tracks, landings, blocked = ensembles[h]
         good = landings[~blocked]
         if len(good) >= 3:
@@ -300,7 +313,9 @@ def caption(pl, ensembles, args):
                      f"blocked {100 * blocked.mean():.0f}%")
     pl.add_text("\n".join(lines), position="upper_left", font_size=11,
                 color="#dfe7f0", name="caption")
-    pl.add_text(f"{args.n_throws} throws per heading  |  6-DOF x RANS x sweeping gusts",
+    src = Path(args.field).name if args.field else "flow_fields.npz"
+    pl.add_text(f"{args.n_throws} throws per condition  |  6-DOF x RANS x sweeping "
+                f"gusts  |  {src}",
                 position="lower_left", font_size=9, color="#8fa0b3", name="sub")
 
 
@@ -309,16 +324,40 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--n-throws", type=int, default=60)
     ap.add_argument("--fps", type=int, default=30)
-    ap.add_argument("--seconds", type=float, default=14.0)
+    ap.add_argument("--seconds", type=float, default=12.0)
     ap.add_argument("--width", type=int, default=1920)
     ap.add_argument("--height", type=int, default=1080)
     ap.add_argument("--tube-radius", type=float, default=0.32)
-    ap.add_argument("--ground-heading", type=int, default=270,
-                    help="which heading's wind field paints the ground")
+    ap.add_argument("--ground-heading", type=int, default=None,
+                    help="which heading's wind field paints the ground "
+                         "(default: the first heading rendered)")
+    ap.add_argument("--headings", nargs="+", type=int, default=list(HEADINGS),
+                    help="wind conditions to render in this clip. One heading "
+                         "gives a single-condition video; two or more overlay them "
+                         "for comparison.")
+    ap.add_argument("--field", default=None,
+                    help="flow field npz (default: the production field the "
+                         "manuscript reports)")
+    ap.add_argument("--name", default="ensemble_fan",
+                    help="output basename, so several wind conditions can be "
+                         "rendered side by side without overwriting each other")
+    # Fixed behind-the-thrower camera.
+    ap.add_argument("--cam-back", type=float, default=38.0,
+                    help="metres behind the launch point, along the flight axis")
+    ap.add_argument("--cam-height", type=float, default=25.0,
+                    help="camera height in metres")
+    ap.add_argument("--focus-frac", type=float, default=0.55,
+                    help="focus this fraction of the way down the flight")
+    ap.add_argument("--focus-z", type=float, default=1.5)
     ap.add_argument("--outdir", default="video")
     ap.add_argument("--preview", action="store_true", help="one still, no video")
     ap.add_argument("--interactive", action="store_true")
     args = ap.parse_args()
+
+    for h in args.headings:
+        COLOUR.setdefault(h, (0.65, 0.78, 0.55))
+    if args.ground_heading is None:
+        args.ground_heading = args.headings[0]
 
     outdir = HERE / args.outdir
     frames = outdir / "frames"
@@ -326,26 +365,52 @@ def main():
 
     pl, ensembles = build_scene(args)
 
-    # Camera: a low three-quarter view down the pitch, which is where the
-    # Campus Towers wake and the landing scatter are both visible.
-# Midpoint of the mean flight: launch (-12, -5) to a mean landing near
-    # (-3.3, 16.5), so the camera frames the arc rather than the whole campus.
-    focus = np.array([-7.5, 6.0, 3.5])
+    def thrower_camera():
+        """Fixed camera behind the thrower, looking down the mean flight axis.
 
-    def set_camera(az_deg, elev=22.0, dist=70.0):
-        a = np.radians(az_deg)
-        e = np.radians(elev)
-        pos = focus + dist * np.array([np.cos(a) * np.cos(e),
-                                       np.sin(a) * np.cos(e),
-                                       np.sin(e)])
+        The axis is measured from the ensemble that was actually flown -- launch
+        point to mean landing -- not assumed from the nominal bearing, because the
+        wind deflects the flight by several degrees and the amount differs per
+        heading. So the camera sits behind the thrower for the throw as the wind
+        actually shapes it, which is the whole point of the view.
+
+        Fixed for the entire clip: no orbit. The full flight stays in frame from
+        release to landing, and nothing that moves in the picture is the camera.
+        """
+        launch = LAUNCH.astype(float)
+        # Pool the landings of every heading being rendered, so a multi-heading
+        # comparison gets one shared camera rather than one that favours a heading.
+        lands = np.vstack([np.asarray(ens[1])[~np.asarray(ens[2])][:, :2]
+                           for ens in ensembles.values()
+                           if (~np.asarray(ens[2])).any()])
+        mean_land = lands.mean(axis=0)
+
+        axis = mean_land - launch[:2]
+        span = float(np.linalg.norm(axis))
+        axis = axis / max(span, 1e-9)
+
+        # Focus part-way down the flight so both ends sit inside the frame.
+        focus = np.array([launch[0] + axis[0] * span * args.focus_frac,
+                          launch[1] + axis[1] * span * args.focus_frac,
+                          args.focus_z])
+        # Camera behind the launch point, along the reversed flight axis.
+        pos = np.array([launch[0] - axis[0] * args.cam_back,
+                        launch[1] - axis[1] * args.cam_back,
+                        args.cam_height])
         pl.camera_position = [tuple(pos), tuple(focus), (0, 0, 1)]
+        return launch, mean_land, span
+
+    launch, mean_land, span = thrower_camera()
+    print(f"  camera: fixed behind the thrower, {args.cam_back:.0f} m back and "
+          f"{args.cam_height:.0f} m up,")
+    print(f"          looking down a {span:.1f} m mean flight axis toward "
+          f"({mean_land[0]:+.1f}, {mean_land[1]:+.1f})")
 
     if args.preview:
-        set_camera(-26.0, elev=15.0, dist=68.0)
         add_tracks(pl, ensembles, 1.0, args)
         add_landings(pl, ensembles, 1.0, args)
         caption(pl, ensembles, args)
-        still = outdir / "ensemble_fan_still.png"
+        still = outdir / f"{args.name}_still.png"
         pl.screenshot(str(still))
         print(f"wrote {still}")
         return
@@ -354,14 +419,10 @@ def main():
     print(f"  rendering {n_frames} frames at {args.width}x{args.height} ...")
     for i in range(n_frames):
         u = i / max(1, n_frames - 1)
-        # Flight grows over the first 55%, landings settle over the next 25%,
-        # and the camera orbits throughout.
+        # Flight grows over the first 55%, landings settle over the next 25%.
+        # The camera does not move.
         frac = min(1.0, u / 0.55)
         alpha = 0.0 if u < 0.55 else min(1.0, (u - 0.55) / 0.25)
-        # Orbit through broadside (-26 deg) so the arc is read as an arc,
-        # ending slightly downrange of the landing scatter.
-        set_camera(-62.0 + 62.0 * u, elev=11.0 + 13.0 * u,
-                   dist=78.0 - 12.0 * u)
         add_tracks(pl, ensembles, frac, args)
         if alpha > 0:
             add_landings(pl, ensembles, alpha, args)
@@ -370,7 +431,7 @@ def main():
         if i % 25 == 0:
             print(f"    frame {i}/{n_frames}")
 
-    mp4 = outdir / "ensemble_fan.mp4"
+    mp4 = outdir / f"{args.name}.mp4"
     cmd = ["ffmpeg", "-y", "-framerate", str(args.fps),
            "-i", str(frames / "f%04d.png"),
            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18",
