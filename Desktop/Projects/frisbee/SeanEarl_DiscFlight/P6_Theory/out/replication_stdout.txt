@@ -1,0 +1,58 @@
+180 cells from sweep_flight2.json
+acceptance rule (pre-registered): ballistic CI excludes 1.0 and lies below it
+  in >= 5 of the (launch, Uref) blocks; blocks separating the two laws by < 1.6x are not counted.
+
+by launch point x wind speed (headings pooled)
+  block                                  n   sep            ballistic b               tracer b
+  (-12.0, 5.0, 1.5) 10.0                26  2.83  0.685 [0.578,0.823] REJ  0.960 [0.802,1.147] ok 
+  (-12.0, 5.0, 1.5) 20.0                23  3.84  0.533 [0.398,0.649] REJ  0.800 [0.597,0.961] REJ
+  (-12.0, 5.0, 1.5) 5.0                 29  2.97  0.703 [0.590,0.821] REJ  0.988 [0.825,1.171] ok 
+  (-28.0, 2.5, 1.5) 10.0                29  3.96  0.669 [0.503,0.825] REJ  0.935 [0.589,1.229] ok 
+  (-28.0, 2.5, 1.5) 20.0                27  5.05  0.659 [0.509,0.813] REJ  0.938 [0.564,1.270] ok 
+  (-28.0, 2.5, 1.5) 5.0                 30  3.38  0.761 [0.624,0.901] REJ  1.109 [0.812,1.374] ok 
+
+by launch point x wind speed x heading
+  block                                  n   sep            ballistic b               tracer b
+  (-12.0, 5.0, 1.5) 10.0 270            14  2.27  0.839 [0.589,1.163] ok   1.312 [0.926,1.799] ok 
+  (-12.0, 5.0, 1.5) 10.0 90             12  2.58  0.861 [0.705,1.056] ok   1.307 [1.069,1.565] REJ
+  (-12.0, 5.0, 1.5) 20.0 270            13  2.64  0.637 [0.379,1.006] ok   0.999 [0.570,1.624] ok 
+  (-12.0, 5.0, 1.5) 20.0 90             10  2.99  0.809 [0.649,1.034] ok   1.285 [1.069,1.594] REJ
+  (-12.0, 5.0, 1.5) 5.0 270             15  2.49  0.657 [0.503,0.800] REJ  1.035 [0.810,1.277] ok 
+  (-12.0, 5.0, 1.5) 5.0 90              14  2.97  0.860 [0.653,1.024] ok   1.321 [0.988,1.615] ok 
+  (-28.0, 2.5, 1.5) 10.0 270            14  3.65  0.684 [0.388,0.907] REJ  1.219 [0.529,1.748] ok 
+  (-28.0, 2.5, 1.5) 10.0 90             15  3.38  0.843 [0.627,1.053] ok   1.526 [1.110,1.985] REJ
+  (-28.0, 2.5, 1.5) 20.0 270            13  3.75  0.763 [0.414,1.031] ok   1.255 [0.177,2.006] ok 
+  (-28.0, 2.5, 1.5) 20.0 90             14  4.20  0.813 [0.648,1.016] ok   1.521 [1.188,1.996] REJ
+  (-28.0, 2.5, 1.5) 5.0 270             15  3.35  0.787 [0.559,1.021] ok   1.433 [0.982,1.941] ok 
+  (-28.0, 2.5, 1.5) 5.0 90              15  3.11  0.803 [0.553,1.008] ok   1.455 [0.977,1.917] ok 
+
+  informative blocks: 6 of 6
+  ballistic rejected LOW in 6 of 6
+  tracer rejected in 1 of 6
+  !! BOTH laws rejected in 1 block(s) -- the problem there is upstream of both:
+       [(-12.0, 5.0, 1.5), 20.0]
+
+  VERDICT: the ballistic-law rejection is REPLICATED (6/6 informative blocks, rule needs >= 5)
+
+  sign test on the slope point estimates:
+    launch x Uref            ballistic  slope 0.533-0.761 (mean 0.668), below 1.0 in 6/6, p = 0.0312
+    launch x Uref            tracer     slope 0.800-1.109 (mean 0.955), below 1.0 in 5/6, p = 0.2188
+    launch x Uref x heading  ballistic  slope 0.637-0.861 (mean 0.780), below 1.0 in 12/12, p = 0.0005
+    launch x Uref x heading  tracer     slope 0.999-1.526 (mean 1.306), below 1.0 in 1/12, p = 0.0063
+
+    ballistic sits below 1.0 at both aggregation levels: True
+    !! the TRACER law's verdict FLIPS between the two levels (mean slope 0.955 pooled over heading vs 1.306 within heading). Its survival is therefore a property of the grouping, not a result.
+       The safe statement is that the measurement is INTERMEDIATE between the two laws, and that only the ballistic one is rejected consistently.
+
+  bracketing: is the measurement between the two predictions?
+    launch x Uref            ballistic < 1 < tracer in 1/6 blocks; |ln b| ballistic 0.409 vs tracer 0.085 -> tracer closer
+                             geometric mean of the two predictions: slope 0.799 (|ln| 0.230)
+    launch x Uref x heading  ballistic < 1 < tracer in 11/12 blocks; |ln b| ballistic 0.254 vs tracer 0.259 -> ballistic closer
+                             geometric mean of the two predictions: slope 1.008 (|ln| 0.091)
+    !! WHICH LAW IS CLOSER FLIPS BETWEEN THE TWO LEVELS. Only the ballistic law's
+       DIRECTION of error is stable. Reporting a winner would be reporting a grouping.
+
+  ballistic slope across informative blocks: 0.533 to 0.761 (mean 0.668)
+  prefactor it would need:                    0.254 to 0.366 (spread 1.44x)
+
+wrote C:\Users\compl\Desktop\Projects\frisbee\SeanEarl_DiscFlight\P6_Theory\out\replication.json

@@ -1,0 +1,160 @@
+{
+  "heading": 270,
+  "gates": {
+    "G-W1": {
+      "what": "mean sigma_u over the east third, disc band",
+      "rule": "<= 0.75 x baseline",
+      "threshold": 0.75,
+      "direction": "below"
+    },
+    "G-W2": {
+      "what": "mean sigma_u over each third, disc band",
+      "rule": "<= 1.10 x baseline in every third",
+      "threshold": 1.1,
+      "direction": "below"
+    },
+    "G-W3": {
+      "what": "pitch-mean horizontal |U|, disc band",
+      "rule": ">= 0.50 x baseline",
+      "threshold": 0.5,
+      "direction": "above"
+    },
+    "G-W4": {
+      "what": "pitch-max |d sigma_u/dz| inside the disc band",
+      "rule": "<= 1.50 x baseline",
+      "threshold": 1.5,
+      "direction": "below"
+    },
+    "G-W5": {
+      "what": "paired landing dispersion of the standard throw",
+      "rule": "< 1.00 x baseline",
+      "threshold": 1.0,
+      "direction": "below"
+    },
+    "G-W6": {
+      "what": "G-W2 and G-W3 at theta_wind 90 and 210",
+      "rule": "both pass at both headings",
+      "threshold": null,
+      "direction": null
+    }
+  },
+  "designs": {
+    "W1": {
+      "name": "shelterbelt",
+      "x": 21.0,
+      "height": 5.0,
+      "k_r": 3.0,
+      "idea": "a porous fence on the east-third boundary, sheltering the affected zone from upwind in the classic shelterbelt way"
+    },
+    "W2": {
+      "name": "tower deflector",
+      "x": 52.0,
+      "height": 10.0,
+      "k_r": 3.0,
+      "idea": "a porous screen 4 m in front of Campus Towers' windward face, breaking the stagnation up before it forms rather than shielding the field from it"
+    },
+    "W3": {
+      "name": "low open spoiler",
+      "x": 30.0,
+      "height": 3.0,
+      "k_r": 1.78,
+      "idea": "a low, more open barrier meant to lift the shear layer above the disc band instead of blocking the flow"
+    }
+  },
+  "results": [
+    {
+      "design": "W1",
+      "baseline": {
+        "n_cells": 3549,
+        "z_band": [
+          1.0,
+          6.0
+        ],
+        "sigma_u_west": 0.438259724261435,
+        "sigma_u_middle": 0.5206108140568607,
+        "sigma_u_east": 0.748433397142807,
+        "sigma_u_east_third": 0.748433397142807,
+        "sigma_u_pitch": 0.5691013118203676,
+        "U_pitch": 1.3036321458090718,
+        "dsigma_dz_max": 0.14368650949948947,
+        "dsigma_dz_p95": 0.12435273308048378
+      },
+      "design_field": {
+        "n_cells": 3549,
+        "z_band": [
+          1.0,
+          6.0
+        ],
+        "sigma_u_west": 0.47319718408720307,
+        "sigma_u_middle": 0.5446309415088713,
+        "sigma_u_east": 0.7198244363939379,
+        "sigma_u_east_third": 0.7198244363939379,
+        "sigma_u_pitch": 0.5792175206633374,
+        "U_pitch": 1.2339697048688887,
+        "dsigma_dz_max": 0.15096445725662078,
+        "dsigma_dz_p95": 0.12718829431025652
+      },
+      "gates": {
+        "G-W1": {
+          "value": 0.9617748742131422,
+          "threshold": 0.75,
+          "passes": false,
+          "detail": "east-third sigma_u 0.748 -> 0.720 m/s"
+        },
+        "G-W2": {
+          "value": 1.0797186186447898,
+          "threshold": 1.1,
+          "passes": true,
+          "detail": "worst third is west at x1.080"
+        },
+        "G-W3": {
+          "value": 0.9465628082552777,
+          "threshold": 0.5,
+          "passes": true,
+          "detail": "pitch |U| 1.304 -> 1.234 m/s"
+        },
+        "G-W4": {
+          "value": 1.050651573223422,
+          "threshold": 1.5,
+          "passes": true,
+          "detail": "max |dsigma/dz| 0.1437 -> 0.1510 1/s"
+        },
+        "G-W5": {
+          "value": 0.9782966415370814,
+          "threshold": 1.0,
+          "passes": true,
+          "detail": "(+11,+2) 8.34 -> 8.07 m; (+30,+2) 5.70 -> 5.64 m",
+          "per_launch": [
+            {
+              "sigma_base": 8.343468065232706,
+              "blocked_base": 0.0,
+              "n_good_base": 64,
+              "sigma_design": 8.073366301326455,
+              "blocked_design": 0.0,
+              "n_good_design": 64,
+              "launch": [
+                11.0,
+                2.5
+              ]
+            },
+            {
+              "sigma_base": 5.7010328864290845,
+              "blocked_base": 0.234375,
+              "n_good_base": 49,
+              "sigma_design": 5.638128396119783,
+              "blocked_design": 0.28125,
+              "n_good_design": 46,
+              "launch": [
+                30.5,
+                2.5
+              ]
+            }
+          ]
+        }
+      },
+      "passes_all": false,
+      "n_passed": 4,
+      "n_gates": 5
+    }
+  ]
+}

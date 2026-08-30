@@ -44,7 +44,17 @@ if [ -z "$NCELL" ] || [ "$NCELL" -lt 50 ]; then
     exit 3
 fi
 
-echo "=== decomposePar ($NP) ==="   ; decomposePar -force  > log.decomposePar 2>&1
+# decomposeParDict is inherited from the production case and hardcodes 11
+# subdomains. decomposePar honours the DICT and mpirun honours -np, so running
+# with any other count produces 11 processor directories and then a fatal
+# "specifies 11 processors but job was started with N ranks" -- after the mesh
+# and the porous zone have already been built. Reconcile them here rather than
+# discover it 6 minutes in.
+echo "=== decomposePar ($NP) ==="
+sed -i "s/^numberOfSubdomains .*/numberOfSubdomains  $NP;/" system/decomposeParDict
+grep -E "^numberOfSubdomains" system/decomposeParDict
+rm -rf processor*
+decomposePar -force  > log.decomposePar 2>&1
 echo "=== simpleFoam ==="
 mpirun -np "$NP" simpleFoam -parallel > log.simpleFoam 2>&1 || true
 grep -E "^Time = " log.simpleFoam | tail -1

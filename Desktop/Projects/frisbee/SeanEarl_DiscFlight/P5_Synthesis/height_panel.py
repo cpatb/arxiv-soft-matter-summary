@@ -42,13 +42,15 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 
+BASE_UREF = 5.0          # every CFD case in P3_CFD is solved at this speed
+
 BG = "#0b0f14"
 FG = "#cfd8e3"
 DIM = "#5d6b7d"
 
 
 def sigma_u_profile(heading, vertical_npz=None, pitch_x=(-31.0, 47.0),
-                    pitch_y=(-10.0, 15.0), z_max=60.0):
+                    pitch_y=(-10.0, 15.0), z_max=60.0, u_ref=None):
     """Isotropic-equivalent sigma_u = sqrt(2k/3) vs height over the pitch.
 
     Averaged over the playing surface only. The full sampling box extends into
@@ -71,11 +73,18 @@ def sigma_u_profile(heading, vertical_npz=None, pitch_x=(-31.0, 47.0),
     msk = ~solid[np.ix_(ix, iy)]
     prof = np.array([np.nanmean(sub[:, :, kz][msk]) for kz in range(len(z))])
     keep = z <= z_max
-    return z[keep], np.sqrt(np.maximum(2.0 / 3.0 * prof[keep], 0.0))
+    sig = np.sqrt(np.maximum(2.0 / 3.0 * prof[keep], 0.0))
+    # sigma_u ~ Uref exactly under the RANS scaling, so a clip rendered at a
+    # different wind speed must scale this curve too. Without it the panel
+    # showed the 5 m/s turbulence profile beside trajectories flown in 15 m/s
+    # wind -- the two halves of the same figure describing different days.
+    if u_ref is not None:
+        sig = sig * (float(u_ref) / BASE_UREF)
+    return z[keep], sig
 
 
 def render_panel(tracks, frac, launch, axis, heading, colour, px=(660, 380),
-                 dpi=110, z_lim=None, x_lim=None, sigma_cache={}):
+                 dpi=110, z_lim=None, x_lim=None, u_ref=None, sigma_cache={}):
     """Return an (H, W, 4) uint8 RGBA image of the two-panel inset.
 
     `frac` is the same flight fraction the 3-D view is drawn at, so the profile
@@ -85,9 +94,10 @@ def render_panel(tracks, frac, launch, axis, heading, colour, px=(660, 380),
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
 
-    if heading not in sigma_cache:
-        sigma_cache[heading] = sigma_u_profile(heading)
-    zp, sig = sigma_cache[heading]
+    key = (heading, u_ref)
+    if key not in sigma_cache:
+        sigma_cache[key] = sigma_u_profile(heading, u_ref=u_ref)
+    zp, sig = sigma_cache[key]
 
     w, h = px
     fig = plt.figure(figsize=(w / dpi, h / dpi), dpi=dpi, facecolor=BG)

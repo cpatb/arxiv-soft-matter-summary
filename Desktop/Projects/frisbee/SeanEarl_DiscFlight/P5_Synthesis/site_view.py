@@ -144,9 +144,27 @@ def assert_launch_clear(field_npz, launch=LAUNCH, headings=(90, 210, 270)):
     return True
 
 
-VIEW_NOTE = {
-    "thrower":  "west end of Sean Earl Field  |  looking EAST toward the lake",
-    "wide":     "behind the west end  |  looking EAST toward the lake",
-    "sideline": "south touchline  |  looking NORTH across the flight, "
-                "so height reads directly",
-}
+def view_note(camera, launch):
+    """Describe the viewpoint from the launch point actually used.
+
+    The first version hardcoded "west end of Sean Earl Field" and kept saying
+    it after the launch point became a command-line option -- so a clip thrown
+    from three-quarters of the way down the pitch was captioned as if it came
+    from the goal line. The position is now computed.
+    """
+    x = float(launch[0])
+    frac = (x - PITCH_X[0]) / (PITCH_X[1] - PITCH_X[0])
+    if frac < 0.15:
+        where = "west end of Sean Earl Field"
+    elif frac < 0.40:
+        where = f"{frac:.0%} down the field from the west end"
+    elif frac < 0.60:
+        where = "midfield"
+    elif frac < 0.85:
+        where = f"{frac:.0%} down the field, in the eastern half"
+    else:
+        where = "east end, under Campus Towers"
+    if camera == "sideline":
+        return (f"south touchline abeam {where}  |  looking NORTH across the "
+                "flight, so height reads directly")
+    return f"{where}  |  looking EAST toward the lake"

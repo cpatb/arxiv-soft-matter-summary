@@ -245,6 +245,48 @@ Two things would sharpen it: repeating at a second wind speed (the shape test
 should be speed-independent, and if it is not, something else is wrong), and
 repeating from a launch point away from the Campus Towers wake.
 
+### It replicates over wind speed and launch point -- but it does not crown the tracer law
+
+The single-block result above is exactly the kind that turns out to be a
+property of its cell, so it was re-run over a factorial: `Uref` = 5, 10 and
+20 m/s, two launch points, two headings, the same 5 x 3 release grid, 180 cells.
+
+The second launch point was chosen on measured evidence rather than
+convenience. At matched `sigma_u` the path-averaged integral length is 6.74 m at
+(-28, +2.5) and 3.32 m at (-12, +5), so `N = L_f/L` roughly **doubles** between
+them -- and `N` is the argument of the function under test. The nearest
+production-grid points to the original, (-25, +/-5), sit within 4 % of it in `L`
+and would have replicated nothing.
+
+The acceptance rule was fixed before the numbers were looked at: the ballistic
+CI must exclude 1.0 and lie below it in at least 5 of the 6 (launch, `Uref`)
+blocks, with blocks separating the two laws by less than 1.6x not counted.
+
+**Result: 6 of 6.** Ballistic slope 0.533 to 0.761, mean 0.668 -- the original
+single-block 0.671 sits dead centre. Splitting further by heading, the slope is
+below 1.0 in **12 of 12** sub-blocks (sign test p = 0.0005), even where the
+individual CI is wide enough to cover it.
+
+**But the tracer law does not therefore win, and saying so would be reporting a
+grouping rather than a result.** Its mean slope is 0.955 pooled over heading and
+**1.306** within heading -- it flips sides. Measuring distance as |ln b|, the
+tracer is much closer at the coarse level (0.085 vs 0.409) and the two are
+*tied* at the fine level (0.259 vs 0.254). The analysis prints that flip as a
+warning rather than quoting the flattering half.
+
+What is stable is the **direction**: in 11 of 12 fine blocks the measurement is
+bracketed, ballistic < 1 < tracer. Neither a single time integral nor a double
+one describes this disc; it sits between them. That is what a body of finite
+Stokes number with aerodynamic restoring should do -- neither following the
+eddies nor responding to them as a free ballistic mass -- and the geometric mean
+of the two predictions happens to track the data with slope 1.008 at the fine
+level. That last number is an **observation, not a law**: nothing derives it,
+and it should be treated as a hint about where the missing physics sits rather
+than as a closure.
+
+One block, (-12, +5) at 20 m/s, rejects *both* laws. The rule flagged it rather
+than scoring it, which is what it was written to do.
+
 ### The separate `L_f` and `V_d` exponents are NOT usable from this design
 
 The brief's WP2 P2 asks for `σ ~ L_f^1.7` against `L_f^0.5`, and `σ ~ V_d^-3`

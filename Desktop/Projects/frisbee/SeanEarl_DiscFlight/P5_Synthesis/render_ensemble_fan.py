@@ -115,8 +115,26 @@ BLOCKED_COLOUR = (0.55, 0.16, 0.20)
 PITCH_X, PITCH_Y = sv.PITCH_X, sv.PITCH_Y
 
 
+def _draw(rng, mean, std, rng_range):
+    """Draw one release angle: uniform over `rng_range` if given, else normal.
+
+    A Gaussian release scatter is the right model for ONE thrower repeating ONE
+    throw, which is what the production sweep needed. It is the wrong model for
+    showing what the site does to a RANGE of throws: 95% of its draws sit
+    within +/-2 sigma of a single nominal angle, so a fan built from it shows
+    one throw blurred rather than the envelope of throws a player actually has.
+    A uniform sweep over a stated range is an envelope, and it is labelled as
+    one in the caption so nobody reads it as a probability.
+    """
+    if rng_range is None:
+        return rng.normal(mean, std)
+    lo, hi = rng_range
+    return rng.uniform(lo, hi)
+
+
 def fly_ensemble(heading, n_throws, field_path, throw, launch, bearing,
-                 seed=SEED):
+                 seed=SEED, u_ref=None, elev_range=None, bearing_range=None,
+                 roll_range=None):
     """Fly `n_throws` from the same launch point, returning full trajectories.
 
     Uses monte_carlo's own gust model and integrator settings and the release
@@ -134,6 +152,14 @@ def fly_ensemble(heading, n_throws, field_path, throw, launch, bearing,
     dist = cat[throw]
 
     field = mc._get_field(str(field_path), heading)
+    if u_ref is not None:
+        # Re-express the whole solution at a different reference wind speed.
+        # Legal because P6_Theory/wind_scaling.py measured it: the identical
+        # mesh re-solved at 2.5/5/10 m/s reproduces itself to a median 0.06-0.14%
+        # of RMS over the pitch once the expected powers are divided out.
+        sys.path.insert(0, str(ROOT / "P6_Theory"))
+        from wind_scaling import ScaledField
+        field = ScaledField(field, float(u_ref))
     rng = np.random.default_rng(seed)
 
     tracks, landings, blocked = [], [], []
@@ -145,12 +171,14 @@ def fly_ensemble(heading, n_throws, field_path, throw, launch, bearing,
         r0, v0, q0, w0 = d6.build_initial_conditions(
             launch_pos=launch,
             speed=rng.normal(dist["speed_mean"], dist["speed_std"]),
-            heading_deg=bearing,
-            elevation_deg=rng.normal(dist["elevation_mean"],
-                                     dist["elevation_std"]),
+            heading_deg=bearing + (0.0 if bearing_range is None
+                                   else rng.uniform(*bearing_range)),
+            elevation_deg=_draw(rng, dist["elevation_mean"],
+                                dist["elevation_std"], elev_range),
             release_alpha_deg=rng.normal(dist["release_alpha_mean"],
                                          dist["release_alpha_std"]),
-            roll_deg=rng.normal(dist["roll_mean"], dist["roll_std"]),
+            roll_deg=_draw(rng, dist["roll_mean"], dist["roll_std"],
+                           roll_range),
             spin_rad_s=max(20.0, rng.normal(dist["spin_mean"],
                                             dist["spin_std"])),
             handedness=dist["handedness"])
@@ -227,8 +255,12 @@ def confidence_ellipse(points, n_sigma=2.4477):
     return circle @ np.diag(n_sigma * np.sqrt(np.maximum(vals, 0))) @ vecs.T + mu
 
 
-def ground_speed_texture(field_path, heading):
-    """Horizontal wind speed at z = 2 m, as a structured grid for the ground."""
+def ground_speed_texture(field_path, heading, u_ref=None):
+    """Horizontal wind speed at z = 2 m, as a structured grid for the ground.
+
+    `u_ref` rescales it, for the same reason the sigma_u panel is rescaled: the
+    ground colour and the trajectories have to describe the same wind.
+    """
     import pyvista as pv
     from conventions import disc_altitude_index, horizontal_speed
 
@@ -236,6 +268,8 @@ def ground_speed_texture(field_path, heading):
     x, y = F["x"], F["y"]
     zk, _, _ = disc_altitude_index(F["z"], 2.0)
     spd = horizontal_speed(F[f"dir_{int(heading):03d}__U"][:, :, zk, :])
+    if u_ref is not None:
+        spd = spd * (float(u_ref) / 5.0)      # U ~ Uref, exactly
     solid = F[f"dir_{int(heading):03d}__solid"]
 
     grid = pv.StructuredGrid()
@@ -269,7 +303,7 @@ def build_scene(args):
     field_path = Path(args.field) if args.field else ROOT / "P3_CFD" / "flow_fields.npz"
     sv.assert_launch_clear(field_path, args.launch, args.headings)
 
-    ground = ground_speed_texture(field_path, args.ground_heading)
+    ground = ground_speed_texture(field_path, args.ground_heading, args.u_ref)
     # Clip the colour range at `--speed-max`. The full box reaches ~4.5 m/s in
     # accelerated corners well off the pitch; letting those set the scale
     # flattens the 0-2 m/s range the disc actually flies in, which is the range
@@ -301,7 +335,8 @@ def build_scene(args):
         print(f"  flying {args.n_throws} {args.throw} at heading {h} deg ...")
         tracks, landings, blocked = fly_ensemble(
             h, args.n_throws, field_path, args.throw, args.launch,
-            args.bearing)
+            args.bearing, u_ref=args.u_ref, elev_range=args.elev_range,
+            bearing_range=args.bearing_range, roll_range=args.roll_range)
         ensembles[h] = (tracks, landings, blocked)
         print(f"    {int((~blocked).sum())} delivered, {int(blocked.sum())} blocked")
 
@@ -422,14 +457,33 @@ def caption(pl, ensembles, args, launch, axis):
     W, H = args.width, args.height
     pl.add_text("\n".join(lines), position=(int(0.020 * W), int(0.950 * H)),
                 font_size=11, color="#dfe7f0", name="caption")
-    pl.add_text(sv.VIEW_NOTE[args.camera],
+    pl.add_text(sv.view_note(args.camera, args.launch),
                 position=(int(0.020 * W), int(0.912 * H)),
                 font_size=10, color="#8fa0b3", name="viewnote")
     src = Path(args.field).name if args.field else "flow_fields.npz"
-    pl.add_text(f"{args.n_throws} x {args.throw}  |  6-DOF x RANS x sweeping "
-                f"gusts  |  {src}  |  camera: {args.camera}",
-                position=(int(0.020 * W), int(0.022 * H)),
+    swept = []
+    if args.elev_range:
+        swept.append(f"elev {args.elev_range[0]:g} to {args.elev_range[1]:g} deg")
+    if args.bearing_range:
+        swept.append(f"aim {args.bearing_range[0]:+g} to "
+                     f"{args.bearing_range[1]:+g} deg")
+    if args.roll_range:
+        swept.append(f"bank {args.roll_range[0]:+g} to "
+                     f"{args.roll_range[1]:+g} deg")
+    sweep_txt = ("  |  swept uniformly: " + ", ".join(swept)) if swept else ""
+    u_txt = (f"  |  Uref {args.u_ref:g} m/s" if args.u_ref is not None
+             else "  |  Uref 5 m/s")
+    line1 = (f"{args.n_throws} x {args.throw}  |  6-DOF x RANS x sweeping "
+             f"gusts  |  {src}{u_txt}")
+    line2 = (f"launch ({args.launch[0]:+.0f}, {args.launch[1]:+.0f})  |  "
+             f"camera: {args.camera}{sweep_txt}")
+    # Two lines, and both above the colour bar: on one line this ran under the
+    # height inset and the sweep description was invisible in exactly the clips
+    # whose whole point was the sweep.
+    pl.add_text(line1, position=(int(0.020 * W), int(0.150 * H)),
                 font_size=9, color="#8fa0b3", name="sub")
+    pl.add_text(line2, position=(int(0.020 * W), int(0.122 * H)),
+                font_size=9, color="#8fa0b3", name="sub2")
 
 
 def main():
@@ -441,8 +495,34 @@ def main():
     ap.add_argument("--width", type=int, default=1920)
     ap.add_argument("--height", type=int, default=1080)
     ap.add_argument("--tube-radius", type=float, default=0.32)
-    ap.add_argument("--speed-max", type=float, default=3.5,
-                    help="upper end of the ground colour scale, m/s")
+    ap.add_argument("--launch", nargs=2, type=float, default=None,
+                    metavar=("X", "Y"),
+                    help="release point, site-frame x y in metres "
+                         "(default: site_view.LAUNCH, 3 m inside the western "
+                         "goal line on the centreline)")
+    ap.add_argument("--u-ref", type=float, default=None,
+                    help="reference wind speed at 10 m, m/s. The CFD is solved "
+                         "at 5.0; other values rescale it, which "
+                         "P6_Theory/wind_scaling.py measured to be legal to "
+                         "0.15%% over 2.5-10 m/s")
+    ap.add_argument("--elev-range", nargs=2, type=float, default=None,
+                    metavar=("LO", "HI"),
+                    help="sweep the VERTICAL release angle uniformly over this "
+                         "range, deg, instead of drawing it from the throw's "
+                         "own Gaussian")
+    ap.add_argument("--bearing-range", nargs=2, type=float, default=None,
+                    metavar=("LO", "HI"),
+                    help="sweep the HORIZONTAL release angle uniformly over "
+                         "this offset range about --bearing, deg")
+    ap.add_argument("--roll-range", nargs=2, type=float, default=None,
+                    metavar=("LO", "HI"),
+                    help="sweep the release bank angle (hyzer/anhyzer) "
+                         "uniformly over this range, deg")
+    ap.add_argument("--speed-max", type=float, default=None,
+                    help="upper end of the ground colour scale, m/s. Default "
+                         "is 3.5 at the CFD's own 5 m/s and scales with "
+                         "--u-ref, so the colour means the same fraction of "
+                         "the reference wind in every clip of a speed set")
     ap.add_argument("--ground-heading", type=int, default=None)
     ap.add_argument("--headings", nargs="+", type=int, default=list(HEADINGS))
     ap.add_argument("--field", default=None)
@@ -467,7 +547,13 @@ def main():
     ap.add_argument("--interactive", action="store_true")
     args = ap.parse_args()
 
-    args.launch = LAUNCH
+    args.launch = (np.array([args.launch[0], args.launch[1], LAUNCH[2]])
+                   if args.launch else LAUNCH)
+    if args.speed_max is None:
+        # Scaled, not fixed. A speed set rendered on one fixed colour range
+        # would saturate every clip above the lowest wind speed and the ground
+        # would carry no information in four of them.
+        args.speed_max = 3.5 * ((args.u_ref / 5.0) if args.u_ref else 1.0)
     for h in args.headings:
         COLOUR.setdefault(h, (0.65, 0.78, 0.55))
     if args.ground_heading is None:
@@ -508,7 +594,7 @@ def main():
             hp.composite(str(path),
                          hp.render_panel(ensembles[panel_h][0], frac,
                                          args.launch, axis, panel_h,
-                                         COLOUR[panel_h]))
+                                         COLOUR[panel_h], u_ref=args.u_ref))
 
     if args.preview:
         draw(1.0, 1.0)

@@ -321,8 +321,18 @@ def run(args):
     spins = args.spins if args.spins else [None]
     rspeeds = args.release_speeds if args.release_speeds else [None]
     elevs = args.elevations if args.elevations else [None]
+    if args.launches:
+        if len(args.launches) % 2:
+            raise SystemExit("--launches takes x y pairs")
+        launches = [(args.launches[i], args.launches[i + 1], args.launch_z)
+                    for i in range(0, len(args.launches), 2)]
+    else:
+        launches = [tuple(launch)]
+    for lp in launches:
+        sv.assert_launch_clear(args.field, np.asarray(lp, float), args.headings)
     cells = list(itertools.product(args.headings, args.u_refs, args.throws,
-                                   args.bearings, spins, rspeeds, elevs))
+                                   args.bearings, spins, rspeeds, elevs,
+                                   launches))
     print(f"{len(cells)} cells x {args.n_throws} throws x 3 arms = "
           f"{len(cells) * args.n_throws * 3} integrations")
 
@@ -330,16 +340,17 @@ def run(args):
     rows = []
     with ProcessPoolExecutor(max_workers=args.workers) as ex:
         from concurrent.futures import as_completed
-        futs = {ex.submit(_worker, (h, u, th, br, launch, args.field,
-                                    args.n_throws, sp, rs, el)):
-                (h, u, th, br, sp, rs, el)
-                for (h, u, th, br, sp, rs, el) in cells}
+        futs = {ex.submit(_worker, (h, u, th, br, np.asarray(lp, float),
+                                    args.field, args.n_throws, sp, rs, el)):
+                (h, u, th, br, sp, rs, el, lp)
+                for (h, u, th, br, sp, rs, el, lp) in cells}
         for n, f in enumerate(as_completed(futs), 1):
             rows.append(f.result())
             if n % 10 == 0 or n == len(cells):
                 print(f"  {n}/{len(cells)} cells  "
                       f"({time.time() - t0:.0f} s)")
-    rows.sort(key=lambda r: (r["heading"], r["throw"], r["bearing"],
+    rows.sort(key=lambda r: (r["launch"], r["heading"], r["throw"],
+                             r["bearing"],
                              r["spin"] if r["spin"] is not None else -1.0,
                              r["u_ref"]))
     return rows
@@ -356,7 +367,8 @@ def _worker(spec):
                bearing=float(bearing), n_throws=int(n_throws),
                spin=(float(spin) if spin is not None else None),
                release_speed=(float(rspeed) if rspeed is not None else None),
-               elevation=(float(elev) if elev is not None else None))
+               elevation=(float(elev) if elev is not None else None),
+               launch=[round(float(v), 3) for v in np.asarray(launch, float)])
     for arm, o in cell.items():
         for k2, v in arm_stats(o, launch_xy, e_down, e_cross).items():
             row[f"{arm}__{k2}"] = v
@@ -382,6 +394,13 @@ def main():
     ap.add_argument("--throws", nargs="+", default=list(THROWS))
     ap.add_argument("--bearings", nargs="+", type=float, default=list(BEARINGS))
     ap.add_argument("--n-throws", type=int, default=N_THROWS)
+    ap.add_argument("--launches", nargs="+", type=float, default=None,
+                    metavar="X Y",
+                    help="release points as flat x y pairs, m in the site "
+                         "frame; omit to use site_view.LAUNCH. Every point is "
+                         "asserted clear of buildings in every heading before "
+                         "any flying happens.")
+    ap.add_argument("--launch-z", type=float, default=1.5)
     ap.add_argument("--release-speeds", nargs="+", type=float, default=None,
                     help="override mean release speed, m/s")
     ap.add_argument("--elevations", nargs="+", type=float, default=None,
@@ -401,7 +420,8 @@ def main():
         meta=dict(field=args.field, u_refs=args.u_refs, headings=args.headings,
                   throws=args.throws, bearings=args.bearings,
                   spins=args.spins, release_speeds=args.release_speeds,
-                  elevations=args.elevations,
+                  elevations=args.elevations, launches=args.launches,
+                  launch_z=args.launch_z,
                   n_throws=args.n_throws, seed=SEED, t_max=T_MAX,
                   gust_model="sweeping"),
         rows=rows), indent=2))
