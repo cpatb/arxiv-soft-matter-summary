@@ -41,3 +41,6 @@ SeanEarl_DiscFlight/P5_Synthesis/video/frames/
 # by the cases/ rule). The numbers that matter are in GRID_INDEPENDENCE_2026-08-30.md.
 SeanEarl_DiscFlight/P3_CFD/log.*
 SeanEarl_DiscFlight/P4_Coupling/log.*
+
+# regenerable intermediate written by z_ceiling_test.py
+SeanEarl_DiscFlight/P6_Theory/out/_truncated_z6.npz

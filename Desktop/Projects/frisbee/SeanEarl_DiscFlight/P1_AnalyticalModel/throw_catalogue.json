@@ -1,0 +1,38 @@
+{
+  "pass_15m": {
+    "speed_mean": 10.5264,
+    "elevation_mean": 4.0,
+    "spin_mean": 85.0,
+    "target_range_m": 15.0,
+    "achieved_median_range_m": 14.993,
+    "range_p10_m": 10.54,
+    "range_p90_m": 22.39,
+    "n_draws": 60,
+    "seed": 20260830,
+    "wind": "none (still air)"
+  },
+  "huck_50m": {
+    "speed_mean": 24.7959,
+    "elevation_mean": 14.0,
+    "spin_mean": 115.0,
+    "target_range_m": 50.0,
+    "achieved_median_range_m": 50.013,
+    "range_p10_m": 38.53,
+    "range_p90_m": 63.38,
+    "n_draws": 60,
+    "seed": 20260830,
+    "wind": "none (still air)"
+  },
+  "pull_65m": {
+    "speed_mean": 33.0479,
+    "elevation_mean": 22.0,
+    "spin_mean": 125.0,
+    "target_range_m": 65.0,
+    "achieved_median_range_m": 64.996,
+    "range_p10_m": 35.76,
+    "range_p90_m": 82.72,
+    "n_draws": 60,
+    "seed": 20260830,
+    "wind": "none (still air)"
+  }
+}

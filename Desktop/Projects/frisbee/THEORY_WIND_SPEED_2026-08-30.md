@@ -7,9 +7,18 @@ adds the wind-speed axis and asks what a general theory of disc flight in wind
 would have to say. Sean Earl Field becomes the worked example rather than the
 subject.
 
-Three things came out of it. One is a gate that makes the whole axis affordable.
-One is a law that works better than it has any right to. One is a result about
-which nobody has been asking the right question.
+Four things came out of it:
+
+- **a gate that makes the whole axis affordable** — one CFD solve per direction
+  covers every wind speed, measured to 0.15 % over a 4× range;
+- **the wind-speed law holds**, and it collapses a site-direction-throw onto a
+  single sensitivity coefficient;
+- **the project's own ballistic dispersion law is rejected** by its own 6-DOF
+  model once the flight is allowed to vary, while the tracer law it displaced
+  is not;
+- **and at the wind speed this whole project was computed at, the thrower is
+  most of the error, not the wind** — a comparison the pipeline could not make
+  because it had no still-air arm.
 
 ---
 
@@ -198,10 +207,52 @@ scatter. The analysis reports that ratio with the verdict and refuses to call
 the test informative below 1.6×, because a discriminator that passes both
 candidates has discriminated nothing.
 
-Separating them needs the flight varied hard, which is what
-`--release-speeds`/`--elevations` are for and what
-`P1_AnalyticalModel/throw_catalogue.py` calibrates a range ladder for. That is
-the brief's WP2 P2 and it is the obvious next step.
+Separating them needs the flight varied hard. That was then done.
+
+### Varying the flight rejects the ballistic law and spares the tracer one
+
+A second sweep holds the wind at `Uref` = 10 m/s and varies the release instead:
+five release speeds (10–26 m/s) crossed with three elevations (4°, 12°, 20°), at
+two headings, 40 throws per cell. That spans `L_f` = 13.2 to 70.7 m, `V_d` = 5.5
+to 14.4 m/s, `T_f` = 1.80 to 7.37 s and `N` = 1.7 to 10.2 — and the two laws'
+predictions now separate by **3.96×**, against a residual scatter of 1.62×.
+
+| law | slope b | 95 % CI | prefactor needed | verdict |
+|---|---|---|---|---|
+| ballistic `Φ(N)` | **0.671** | [0.522, 0.818] | 0.281× | **shape rejected** |
+| tracer `1/√N` | 0.950 | [0.640, 1.218] | 2.861× | not rejected |
+
+**The brief's ballistic law is rejected by the project's own 6-DOF model once
+the flight is allowed to vary, and the tracer law it displaced is not.** A slope
+of 0.67 means the ballistic law over-responds: it predicts the dispersion
+growing faster with flight length than the model delivers, and no choice of `κ`
+fixes that.
+
+This is one sweep at one launch point and one wind speed, with 30 cells and a
+1.6× residual scatter, so it is a finding to act on and not a settled verdict.
+Two things would sharpen it: repeating at a second wind speed (the shape test
+should be speed-independent, and if it is not, something else is wrong), and
+repeating from a launch point away from the Campus Towers wake.
+
+### The separate `L_f` and `V_d` exponents are NOT usable from this design
+
+The brief's WP2 P2 asks for `σ ~ L_f^1.7` against `L_f^0.5`, and `σ ~ V_d^-3`
+against `V_d^-1`, fitted separately. Fitting them here gives `L_f` exponent
++1.17 [0.93, 1.42] and +1.13 [0.95, 1.37] at the two headings — between the two
+predictions and excluding both — and a `V_d` exponent of **+1.9**, where both
+laws predict a negative one.
+
+Those numbers should not be quoted. Raising the release speed raises `L_f` and
+`V_d` together: they correlate at **r = +0.79 in log space**, and the four-term
+log-log design matrix has a **condition number of 705**. The multivariate fit
+returns `T_f^+4.2 V_d^+2.6 L_f^-2.7` with r² = 0.92 — a good fit made of
+individually meaningless coefficients, which is what collinearity does. The
+"+1.9 on `V_d`" is `L_f`'s effect wearing `V_d`'s label.
+
+The shape test is immune to this because it never separates the predictors: it
+tests each law's own combination of them as a single number. Getting the
+individual exponents would need a design that moves `L_f` at fixed `V_d`, which
+means compensating elevation against release speed rather than crossing them.
 
 ### A gap in one of the brief's formulas
 
@@ -228,18 +279,103 @@ drifts with `N` and is now recomputed at each cell's own `N`.
 
 ---
 
-## 4. What is open
+### Spin is not the explanation, and "more spin in wind" is not supported
 
-- **The discriminating test has not been run at enough flight variation.** The
-  release-speed × elevation sweep is the instrument; the throw-length catalogue
-  (`pass_15m` at 10.53 m/s → 15.0 m; `huck_50m` at 24.80 m/s → 50.0 m) is the
-  other.
-- **Why the ballistic law over-predicts by 3×.** The first candidate is that its
-  derivation contains no spin: a disc is a gyroscope, and a gust's rolling
-  moment precesses into a heading change a quarter cycle later, so gyroscopic
-  stiffness should suppress exactly the response the law integrates. The sweep
-  now carries a `--spins` axis to test it. This is question 3 of
-  `FRISBEE_GENERALIZATION.md`.
+The standing candidate for the ballistic law's failure was that its derivation
+contains no spin. A disc is a gyroscope; a gust's rolling moment precesses into
+a heading change a quarter cycle later, so a faster-spinning disc should be
+stiffer against exactly the perturbation the law integrates. That is question 3
+of `FRISBEE_GENERALIZATION.md`, which notes it would explain why coaches teach
+more spin in wind — "currently folklore".
+
+Sweeping the release spin from 50 to 200 rad/s at two headings and two wind
+speeds, everything else held and the release draws paired:
+
+| wind from | Uref | `σ_gust ~ spin^p` | 200 vs 50 rad/s |
+|---|---|---|---|
+| 90° | 5 | +0.02 [−0.01, +0.06] | 1.03× |
+| 90° | 10 | +0.03 [+0.02, +0.05] | 1.05× |
+| 270° | 5 | +0.07 [+0.01, +0.15] | 1.12× |
+| 270° | 10 | +0.07 [−0.03, +0.17] | 1.10× |
+
+**A fourfold change in spin moves the gust dispersion by 3–12 %, and in the
+wrong direction** — more spin gives very slightly *more* scatter, not less. The
+folklore is not reproduced, gyroscopic stiffness is not the missing factor, and
+the ballistic law's 3× over-prediction is still unexplained.
+
+One caveat that has to go with the null: spin enters this model through the
+rate-damping and gyroscopic terms of `disc_6dof`, and if those under-represent
+the real coupling the null is a property of the model rather than of a disc.
+What can be said is that spin is not the free parameter that reconciles the law
+with the model it is being tested against.
+
+## 4. Throw direction: the obvious analysis has the sign backwards
+
+The natural next axis is the throw's bearing relative to the wind. It has two
+traps and this site sets off both.
+
+**The relative angle must be measured against the local disc-altitude wind, not
+the synoptic direction.** At the release point the two differ by
+
+| `theta_wind` | local flow blows toward | synoptic | difference |
+|---|---|---|---|
+| 90° easterly | 6.9° | 180° | **−173°** |
+| 210° SSW | 114.6° | 60° | +55° |
+| 270° westerly | 240.4° | 0° | −120° |
+
+The easterly case is a near-perfect **reversal**. The release point sits in the
+Campus Towers wake, where the near-ground return flow runs back toward the
+building, so a throw that is upwind of the synoptic easterly is *downwind* of
+the air the disc is actually in. An analysis built on the met-station direction
+would have the sign backwards for a third of the headings here — and a
+met-station direction is exactly what a field study would have.
+
+This is the same mechanism as the paper's headline (Campus Towers, not the
+lakefront boundary layer, controls disc-altitude flow) seen from a new angle,
+and it sharpens it: the building does not merely shelter the pitch, it
+**re-points** the wind the disc flies in.
+
+**A fixed launch point confounds bearing with the site.** The thrower stands at
+the west end, so a westward throw flies into the built-up campus: the fraction
+of throws landing inside a building runs 0 % to 62 % across the eight bearings,
+median 4 %. Twenty-five of forty-eight cells are measuring architecture rather
+than wind and are dropped; the count is reported rather than a curve being drawn
+through all of them. Fixing this needs the sweep repeated over launch points,
+which is what the production 12-point grid is for and which was not done here.
+
+On what survives, compared **within** each heading — each has its own local wind
+speed (0.59 to 2.23 m/s), so pooling would mix an amplitude axis into an angle
+axis — the ordering is the physical one. At `Uref` = 10 m/s, the total wind
+contribution rises from the most nearly downwind cell to the most nearly upwind
+one by **1.24× to 1.92×**, and the upwind cases lose range badly: the 210°
+heading's most upwind clean cell throws **19.4 m where the downwind one throws
+28.6 m**, a 32 % shortfall on the same release.
+
+## 5. The z = 6 m ceiling turns out not to matter, for these throws
+
+The render's z-coverage guard found that `flow_fields.npz` stops at z = 6 m
+while a 27 m backhand ensemble peaks at 6.6 m, so part of the production sweep
+flies on wind clamped at its 6 m value. Tested properly — `vertical_fields.npz`
+truncated at 6 m against the same file untruncated, so the horizontal resolution
+and the solution are identical and only the ceiling differs, on paired throws:
+
+**worst mean per-throw landing shift 0.000 m; worst single-throw shift 0.003 m.**
+
+2–4 % of throws break 6 m and by at most 0.12 m, so a null was the likely
+outcome and this bounds it rather than discovering it. The question is closed
+**for throws of this length only** — a huck reaching 15 m would sit far outside
+the box, and the renderer now refuses to fly one on the production field rather
+than leaving it to be noticed.
+
+## 6. What is open
+
+- **The ballistic-law rejection needs a second wind speed and a second launch
+  point.** The shape test should be wind-speed independent; if it is not, the
+  problem is upstream of both laws.
+- **The separate `L_f` and `V_d` exponents need a decorrelated design** —
+  compensating elevation against release speed rather than crossing them.
+- **Why the ballistic law over-predicts by 3× and over-responds by 1.5×** is now
+  genuinely open: spin, the standing candidate, has been tested and ruled out.
 - **The release-scatter floor is uncalibrated** and it sets every absolute number
   in the error budget. One afternoon of measured throws would fix it, and it is
   cheaper than any of the CFD.

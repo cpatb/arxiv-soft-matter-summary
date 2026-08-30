@@ -1,0 +1,46 @@
+release-point wind direction, local vs synoptic:
+  theta_wind  90: local blows toward    6.9 deg (|U| 0.65 m/s), synoptic  180.0 deg, difference  -173.1 deg
+  theta_wind 210: local blows toward  114.6 deg (|U| 2.23 m/s), synoptic   60.0 deg, difference   +54.6 deg
+  theta_wind 270: local blows toward  240.4 deg (|U| 0.59 m/s), synoptic    0.0 deg, difference  -119.6 deg
+
+blocked fraction across 48 cells: min 0%, median 4%, max 62%
+23 cells kept at <= 2% blocked
+
+  theta_wind 90, local |U| = 0.65 m/s (8 unblocked cells)
+     Uref    rel    bias sig_wind sig_gust   total   range
+      5.0     -7    1.40     0.78     0.97    1.88    29.0
+      5.0     38    1.07     1.40     1.37    2.23    28.1
+      5.0    -52    1.51     1.03     1.18    2.18    28.1
+      5.0     83    1.65     1.74     1.49    2.83    28.2
+     10.0     -7    2.57     1.62     2.09    3.68    30.0
+     10.0     38    2.77     3.66     3.82    5.97    27.3
+     10.0    -52    3.12     1.95     2.73    4.58    28.2
+     10.0     83    4.15     3.89     4.18    7.06    28.0
+
+  theta_wind 210, local |U| = 2.23 m/s (9 unblocked cells)
+     Uref    rel    bias sig_wind sig_gust   total   range
+      5.0    -25    1.00     1.73     2.29    3.04    28.7
+      5.0    -70    1.07     1.59     1.89    2.69    28.7
+      5.0   -115    1.42     1.57     1.59    2.65    27.3
+      5.0   -160    2.76     1.16     1.68    3.43    25.1
+     10.0    -25    0.83     3.22     4.73    5.79    28.6
+     10.0    -70    1.07     2.85     4.13    5.13    28.9
+     10.0   -115    2.68     2.78     3.31    5.09    26.7
+     10.0    155    9.19     2.51     4.68   10.61    19.4
+     10.0   -160    5.63     2.15     3.88    7.17    22.4
+
+  theta_wind 270, local |U| = 0.59 m/s (6 unblocked cells)
+     Uref    rel    bias sig_wind sig_gust   total   range
+      5.0    120    1.56     1.41     1.38    2.52    27.6
+      5.0   -150    2.25     2.48     1.62    3.72    26.4
+      5.0    165    1.99     1.80     1.50    3.07    27.2
+     10.0    120    3.11     2.30     2.85    4.80    27.4
+     10.0   -150    6.44     5.84     5.00   10.03    24.7
+     10.0    165    4.60     2.83     3.23    6.29    26.9
+
+  downwind vs upwind, within each heading at Uref = 10 m/s:
+     90: |rel|   7 deg ->  3.68 m   |rel|  83 deg ->  7.06 m   ratio 1.92x
+    210: |rel|  25 deg ->  5.79 m   |rel| 160 deg ->  7.17 m   ratio 1.24x
+    270: |rel| 120 deg ->  4.80 m   |rel| 165 deg ->  6.29 m   ratio 1.31x
+
+wrote C:\Users\compl\Desktop\Projects\frisbee\SeanEarl_DiscFlight\P6_Theory\out\bearing_results.json

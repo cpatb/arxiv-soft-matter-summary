@@ -180,7 +180,12 @@ def fit_exponent(x, y):
     x, y = np.asarray(x, float), np.asarray(y, float)
     ok = np.isfinite(x) & np.isfinite(y) & (x > 0) & (y > 0)
     x, y = x[ok], y[ok]
-    if len(x) < 3:
+    # A power-law fit needs at least three points AND at least two distinct
+    # abscissae. A sweep that varies only one axis reaches here with every x
+    # equal; polyfit then returns a meaningless slope and the bootstrap draws
+    # no usable resample at all, which used to surface as an IndexError deep in
+    # np.percentile rather than as "this fit is not defined".
+    if len(x) < 3 or len(np.unique(x)) < 2:
         return float("nan"), float("nan"), float("nan"), float("nan")
     lx, ly = np.log(x), np.log(y)
     p, c = np.polyfit(lx, ly, 1)

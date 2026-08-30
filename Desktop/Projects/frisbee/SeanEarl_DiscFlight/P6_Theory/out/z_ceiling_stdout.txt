@@ -1,0 +1,16 @@
+truncated vertical_fields.npz: 24 levels -> 8, top z = 6.0 m
+  heading  90 right_backhand   apex 3.69 m (max 6.11), 2% of throws break 6 m
+      per-throw landing shift 0.000 m mean, 0.001 m max, 0.000 m p95; group centroid moves 0.000 m on a 29.4 m throw
+  heading  90 right_forehand   apex 2.91 m (max 5.62), 0% of throws break 6 m
+      per-throw landing shift 0.000 m mean, 0.000 m max, 0.000 m p95; group centroid moves 0.000 m on a 29.1 m throw
+  heading 210 right_backhand   apex 3.73 m (max 6.12), 4% of throws break 6 m
+      per-throw landing shift 0.000 m mean, 0.003 m max, 0.000 m p95; group centroid moves 0.000 m on a 27.9 m throw
+  heading 210 right_forehand   apex 2.81 m (max 5.51), 0% of throws break 6 m
+      per-throw landing shift 0.000 m mean, 0.000 m max, 0.000 m p95; group centroid moves 0.000 m on a 26.5 m throw
+  heading 270 right_backhand   apex 3.55 m (max 5.69), 0% of throws break 6 m
+      per-throw landing shift 0.000 m mean, 0.000 m max, 0.000 m p95; group centroid moves 0.000 m on a 27.8 m throw
+  heading 270 right_forehand   apex 2.93 m (max 5.27), 0% of throws break 6 m
+      per-throw landing shift 0.000 m mean, 0.000 m max, 0.000 m p95; group centroid moves 0.000 m on a 29.5 m throw
+
+Worst mean per-throw shift 0.000 m = 0.00% of the shortest mean range.
+wrote C:\Users\compl\Desktop\Projects\frisbee\SeanEarl_DiscFlight\P6_Theory\out\z_ceiling.json

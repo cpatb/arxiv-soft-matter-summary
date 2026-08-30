@@ -75,7 +75,7 @@ def wind_speed_law(rows, u_min=1.0):
     for (h, th, sp), rs in group(rows, "heading", "throw", "spin").items():
         u = np.array([r["u_ref"] for r in rs])
         m = u >= u_min
-        if m.sum() < 3:
+        if m.sum() < 3 or len(np.unique(u[m])) < 3:
             continue
         rec = dict(heading=h, throw=th, spin=sp, u_ref=list(u[m]))
         for name, key in (("sigma_gust", "gust__sigma"),
@@ -420,9 +420,13 @@ def figures(rows, budget, comp, outdir):
                               ("tracer", "tracer  " + r"$1/\sqrt{N}$", "#1f77b4")):
             ax.scatter(m, [c[key] for c in comp], s=16, alpha=0.7,
                        color=col, label=lab)
-        lim = [0.5 * min(m.min(), 1e-3) or 1e-3,
-               2.0 * max(m.max(), max(c["ballistic"] for c in comp))]
-        lim = [max(lim[0], 1e-3), lim[1]]
+        # Limits from the data on BOTH axes. The first version anchored the
+        # lower end at 1e-3 m, which is three decades below anything plotted
+        # and squashed every point into the top-right corner.
+        allv = np.concatenate([m] + [np.array([c[k] for c in comp])
+                                     for k in ("ballistic", "tracer")])
+        allv = allv[np.isfinite(allv) & (allv > 0)]
+        lim = [0.6 * float(allv.min()), 1.7 * float(allv.max())]
         ax.plot(lim, lim, color="#333", lw=1.0, ls="--")
         # Log axes: the quantity spans well over a decade across the sweep.
         ax.set_xscale("log")
