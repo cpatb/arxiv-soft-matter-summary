@@ -104,3 +104,22 @@ throws on wind clamped at its 6 m value. The vertical sampling reaches z = 100 m
 at 2 m horizontal spacing instead of 1 m: coarser in plan, but the flight never
 leaves it. `render_ensemble_fan.py` refuses to render a clamped flight unless
 explicitly told to, so this is enforced rather than remembered.
+
+## The scatter figure in the caption is censored where throws are blocked
+
+The caption's `scatter` is fitted to the DELIVERED throws only, because a throw
+that ends inside a building has no meaningful landing point. That makes the
+number an underestimate wherever the blocked fraction is large, and it is
+largest exactly where the flying is worst:
+
+| clip | launch | blocked | scatter |
+|---|---|---|---|
+| `q1_west_end` | (-28, +2) | 0 % | 8.0 m |
+| `q3_midfield` | (+11, +2) | 1 % | 9.29 m |
+| `q4_turbulent_zone` | (+30, +2) | **10 %** | 7.72 m |
+
+`q4` reports a *smaller* scatter than `q3` while being obviously the harder
+place to throw from. It is not: the 10 % that hit Campus Towers are the long
+throws, and removing them truncates the distribution. Read the blocked
+percentage and the scatter together, and prefer the blocked percentage as the
+difficulty measure at the eastern end.

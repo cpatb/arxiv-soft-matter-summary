@@ -103,3 +103,34 @@ DESIGNS = {
                idea="a low, more open barrier meant to lift the shear layer "
                     "above the disc band instead of blocking the flow"),
 }
+
+
+# ---------------------------------------------------------------------------
+# W4, added after W1-W3 had all failed G-W1, to test WHY rather than to keep
+# guessing. Not a fourth guess: a measurement-driven hypothesis test.
+#
+# The upstream influence of Campus Towers, measured on the baseline field, is
+# 56 m -- the disc-band sigma_u begins rising 10% above the pitch minimum at
+# x = 0 and the tower face is at x = +56. Against H = 44.8 m that is **1.25 H**,
+# which is the textbook upstream influence length of a bluff body. The three
+# barriers tried are 3, 5 and 10 m tall, i.e. **0.07, 0.11 and 0.22 H**: each
+# intercepts only the bottom fifth or less of a disturbance whose length scale
+# is set by a 45 m block.
+#
+# So the hypothesis is that a barrier must be a substantial fraction of H to
+# move this zone at all, and W4 tests it at 25 m = 0.56 H, in the same place as
+# W2. If W4 also fails G-W1, the conclusion is that the zone is not fixable by
+# a barrier at any plausible scale and the honest recommendation is to use the
+# field differently. If it passes, the design question becomes an architectural
+# one about how tall a screen anybody would build.
+#
+# The prediction is recorded before the case has solved.
+DESIGNS["W4"] = dict(name="tall tower screen", x=52.0, height=25.0, k_r=3.00,
+                     idea="the same position as W2 at 0.56 H instead of 0.22 H, "
+                          "testing whether the barrier must scale with the "
+                          "building rather than with the disc band")
+UPSTREAM_INFLUENCE = dict(onset_x_m=0.0, tower_face_x_m=56.0,
+                          length_m=56.0, tower_height_m=44.8,
+                          length_over_H=1.25,
+                          barrier_H_ratio={"W3": 0.07, "W1": 0.11,
+                                           "W2": 0.22, "W4": 0.56})
