@@ -30,8 +30,12 @@ SeanEarl_DiscFlight/_pre_rerun_*/
 SeanEarl_DiscFlight/_pre_horiz_*/
 
 # Render frames: hundreds of PNGs, regenerable from render_ensemble_fan.py.
-# The finished mp4 and the still are kept.
 SeanEarl_DiscFlight/P5_Synthesis/video/frames/
+
+# The finished render IS kept. The home-level .gitignore carries a blanket `*.mp4`
+# (added after a 360 MB source video), which silently excluded this 5 MB figure-grade
+# output; this negation re-includes just this one directory.
+!SeanEarl_DiscFlight/P5_Synthesis/video/*.mp4
 
 # Top-level OpenFOAM/run logs from the grid study (cases/*/log.* are already covered
 # by the cases/ rule). The numbers that matter are in GRID_INDEPENDENCE_2026-08-30.md.
