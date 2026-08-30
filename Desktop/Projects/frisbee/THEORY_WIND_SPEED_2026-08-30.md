@@ -228,6 +228,17 @@ of 0.67 means the ballistic law over-responds: it predicts the dispersion
 growing faster with flight length than the model delivers, and no choice of `κ`
 fixes that.
 
+Checked for the obvious escapes. The flights stay inside the field the whole
+time — apex 1.7 to 12.6 m against a box that reaches 100 m — so nothing is
+flying on clamped wind. And dropping the cells whose throws end inside buildings
+does not rescue the law:
+
+| cells kept | n | laws separate by | ballistic b | tracer b |
+|---|---|---|---|---|
+| all | 30 | 3.96× | 0.671 [0.522, 0.818] | 0.950 [0.640, 1.218] |
+| blocked ≤ 10 % | 29 | 3.96× | 0.669 [0.500, 0.823] | 0.935 [0.585, 1.229] |
+| blocked ≤ 2 % | 23 | 3.48× | 0.606 [0.401, 0.780] | 0.780 [0.340, 1.125] |
+
 This is one sweep at one launch point and one wind speed, with 30 cells and a
 1.6× residual scatter, so it is a finding to act on and not a settled verdict.
 Two things would sharpen it: repeating at a second wind speed (the shape test
