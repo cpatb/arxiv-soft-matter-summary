@@ -25,3 +25,15 @@ SeanEarl_DiscFlight/P4_Coupling/*.orig
 
 # rerunMonteCarloOnward.sh's safety copy; git already holds the state it saves.
 SeanEarl_DiscFlight/_pre_rerun_*/
+
+# Pre-change safety copies; git already holds the state they save.
+SeanEarl_DiscFlight/_pre_horiz_*/
+
+# Render frames: hundreds of PNGs, regenerable from render_ensemble_fan.py.
+# The finished mp4 and the still are kept.
+SeanEarl_DiscFlight/P5_Synthesis/video/frames/
+
+# Top-level OpenFOAM/run logs from the grid study (cases/*/log.* are already covered
+# by the cases/ rule). The numbers that matter are in GRID_INDEPENDENCE_2026-08-30.md.
+SeanEarl_DiscFlight/P3_CFD/log.*
+SeanEarl_DiscFlight/P4_Coupling/log.*

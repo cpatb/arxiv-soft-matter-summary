@@ -188,11 +188,23 @@ depressing every heading by about a third) and the verdict is NOT TESTABLE.
 
 ### CFD validation results
 
+> **⚠ 2026-08-30 — the grid-independence row above is rewritten, and a headline claim fell.**
+> The old "FAIL, 57.1%" was not a valid test (two meshes, local-speed normalisation, five
+> stations) and its real cause was that the coarse mesh does not resolve the buildings:
+> Campus Towers spans 3 / 6 / 12 / 24 cells at h = 8 / 4 / 2 / 1 m against a COST 732
+> minimum of 10. A four-member family puts the production error at **4.5%**, not 57%.
+> **But re-running all three headings at twice the resolution, with 97,200 fresh
+> trajectories, does NOT reproduce "270 deg is the worst of the three computed"** — at
+> gridL4 no heading is separable from any other, and H2a reverses. The sheltering magnitude
+> and the Campus Towers finding survive. See `GRID_INDEPENDENCE_2026-08-30.md` before
+> quoting anything directional below.
+
+
 | Test | Result | Verdict |
 |---|---|---|
 | ABL horizontal homogeneity (Hargreaves & Wright) | 0.7% worst streamwise drift over 1400 m; 1.3% vs analytic Richards–Hoxey | **PASS** |
 | Limit-cycle amplitude at disc altitude | 13.7% (fine) / 7.4% (coarse) peak-to-peak | characterised; fields are cycle-averaged |
-| Grid independence at disc altitude | 57.1% of local speed / 10.3% of u_ref | **FAIL** (10% criterion) |
+| Grid independence at disc altitude | ~4.5% discretisation error, observed order p = 2.25 | **see GRID_INDEPENDENCE_2026-08-30.md** |
 | Tominaga AIJ-B cube benchmark | not run | — |
 
 **The grid-independence failure is reported as a failure.** The criterion was
@@ -293,15 +305,20 @@ cd .. && bash runDownstream.sh 20 150
 | # | Decision | Recommendation |
 |---|---|---|
 | 1 | Author, affiliation, co-authors, funding | Only you can supply — 6 `% FLAG FOR AUTHOR` markers |
-| 2 | Field outline (OSM 78×25 m vs regulation 100×37 m) | Confirm on site; direction-level conclusions survive either way |
-| 3 | Grid independence not achieved | Post with the limitation stated |
+| 2 | Field outline (OSM 78×25 m vs regulation 100×37 m) | Confirm on site. ⚠ "direction-level conclusions survive either way" is no longer safe to assert — they do not survive a mesh refinement (2026-08-30) |
+| 3 | ⚠ **Which resolution does the paper report?** Grid independence is now characterised (production error 4.5%, p = 2.25), but the 270-worst verdict does not reproduce at gridL4 | Either report gridL4 and rebuild figures/macros against it, or report production with the directional claim withdrawn. The 270-worst sentence cannot stand as written |
 | 4 | Hammer throw scoring | Re-score at ~12 m, its own characteristic range |
 | 5 | Venue | arXiv `physics.flu-dyn` now; *Sports Engineering* for the journal version |
 
 ## 8. Second-pass compute worth doing, in priority order
 
-1. **A third, finer mesh** (~4 h/direction). Grid independence at disc altitude
-   is the one failed validation and the only thing gating per-location claims.
+1. ~~**A third, finer mesh** (~4 h/direction). Grid independence at disc altitude
+   is the one failed validation and the only thing gating per-location claims.~~
+   **DONE 2026-08-30, and it went further than a third mesh:** a four-member family
+   (fieldBox levels 1–4) plus all three headings at level 4 plus a full 97,200-trajectory
+   re-run, ~9 h on 11 cores. Production error is 4.5%, not 57%. It was **not** only
+   gating per-location claims — the per-heading claim was equally gated, and it did not
+   survive. See `GRID_INDEPENDENCE_2026-08-30.md`.
 2. **LES of the easterly case** (~2 weeks). Steady RANS cannot give peak gusts
    or spatially correlated gust structure, which is what a thrower actually
    experiences. Highest scientific value.

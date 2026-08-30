@@ -11,30 +11,30 @@
 \newcommand{\TargetRange}{25}
 \newcommand{\QbestHeading}{210}
 \newcommand{\QworstHeading}{270}
-\newcommand{\QbestMean}{0.0483}
-\newcommand{\QworstMean}{0.0324}
+\newcommand{\QbestMean}{0.0481}
+\newcommand{\QworstMean}{0.0321}
 \newcommand{\QbestWorstRatio}{1.5}
 \newcommand{\QmeanHNineZero}{0.0442}
 \newcommand{\QmaxHNineZero}{0.0646}
-\newcommand{\QminHNineZero}{0.0251}
-\newcommand{\QmeanHTwoOneZero}{0.0483}
+\newcommand{\QminHNineZero}{0.0252}
+\newcommand{\QmeanHTwoOneZero}{0.0481}
 \newcommand{\QmaxHTwoOneZero}{0.0733}
 \newcommand{\QminHTwoOneZero}{0.0311}
-\newcommand{\QmeanHTwoSevenZero}{0.0324}
+\newcommand{\QmeanHTwoSevenZero}{0.0321}
 \newcommand{\QmaxHTwoSevenZero}{0.0499}
-\newcommand{\QminHTwoSevenZero}{0.0124}
+\newcommand{\QminHTwoSevenZero}{0.0089}
 \newcommand{\UfieldMeanHNineZero}{1.21}
 \newcommand{\UfieldMinHNineZero}{0.02}
 \newcommand{\UfieldMaxHNineZero}{2.05}
-\newcommand{\IfieldMeanHNineZero}{0.40}
-\newcommand{\UfieldMeanHTwoOneZero}{1.42}
-\newcommand{\UfieldMinHTwoOneZero}{0.07}
-\newcommand{\UfieldMaxHTwoOneZero}{3.07}
-\newcommand{\IfieldMeanHTwoOneZero}{0.39}
-\newcommand{\UfieldMeanHTwoSevenZero}{1.40}
-\newcommand{\UfieldMinHTwoSevenZero}{0.12}
+\newcommand{\IfieldMeanHNineZero}{0.41}
+\newcommand{\UfieldMeanHTwoOneZero}{1.40}
+\newcommand{\UfieldMinHTwoOneZero}{0.06}
+\newcommand{\UfieldMaxHTwoOneZero}{3.03}
+\newcommand{\IfieldMeanHTwoOneZero}{0.40}
+\newcommand{\UfieldMeanHTwoSevenZero}{1.39}
+\newcommand{\UfieldMinHTwoSevenZero}{0.06}
 \newcommand{\UfieldMaxHTwoSevenZero}{2.67}
-\newcommand{\IfieldMeanHTwoSevenZero}{0.46}
+\newcommand{\IfieldMeanHTwoSevenZero}{0.48}
 \newcommand{\Uref}{5}
 \newcommand{\UfieldFracMin}{24}
 \newcommand{\UfieldFracMax}{28}
@@ -68,9 +68,9 @@
 $\theta_{\text{wind}}$ & $\bar Q$ & $Q_{\min}$ & $Q_{\max}$ & $\overline{|U_{2\text{m}}|}$ & $\bar I_{2\text{m}}$ & $\bar S$ \\
  & & & & (m\,s$^{-1}$) & & (\%) \\
 \midrule
-$90^\circ$ & 0.0442 & 0.0251 & 0.0646 & 1.21 & 0.40 & 8.3 \\
-$210^\circ$ & 0.0483 & 0.0311 & 0.0733 & 1.42 & 0.39 & 10.8 \\
-$270^\circ$ & 0.0324 & 0.0124 & 0.0499 & 1.40 & 0.46 & 8.5 \\
+$90^\circ$ & 0.0442 & 0.0252 & 0.0646 & 1.21 & 0.41 & 8.3 \\
+$210^\circ$ & 0.0481 & 0.0311 & 0.0733 & 1.40 & 0.40 & 10.8 \\
+$270^\circ$ & 0.0321 & 0.0089 & 0.0499 & 1.39 & 0.48 & 8.5 \\
 \bottomrule
 \end{tabular}
 \caption{Throwability and its inputs, averaged over the playing surface, for each computed inflow direction. $\bar S$ is the simulated delivery rate within \TargetRadius~m of a \TargetRange~m target. $\bar S$ is taken over the throw types that enter $Q$ (\SRkeptThrows); \SRexcludedThrows{} is excluded, because a fixed \TargetRange~m scoring target is unreachable for a throw of that characteristic range, so its delivery rate measures the target choice rather than the wind. Over all throw types $\bar S$ would be \SRallthrows\%, which does not multiply out to the $Q$ in column~2.}

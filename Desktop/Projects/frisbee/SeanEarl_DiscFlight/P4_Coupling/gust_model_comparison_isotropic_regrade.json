@@ -1,0 +1,78 @@
+{
+  "source": "gust_model_comparison_isotropic.json",
+  "law": "ballistic double-integral, Phi(N), brief section C5 lines 274-306",
+  "superseded_law": "tracer sigma ~ sigma_u T / sqrt(N), Taylor 1921",
+  "measurement": {
+    "sigma_turb_temporal": 2.433826279729101,
+    "sigma_turb_sweeping": 1.3026133900615036,
+    "ratio": 1.8684179805753314,
+    "ci95": [
+      1.7890892140603034,
+      1.9552735874145382
+    ],
+    "n_boot": 20000,
+    "n_cells": 108,
+    "bootstrap_seed": 20260829
+  },
+  "old_grading_tracer": {
+    "band": [
+      2.0,
+      2.6
+    ],
+    "verdict": "BELOW BAND: fell 1.87x, less than the predicted 2.0-2.6x",
+    "N_from_ratio_squared": 3.4909857501371993,
+    "why_invalid": "assumes sigma ~ 1/sqrt(N), the tracer law that section C5 of the same brief falsifies for this body (St ~ 8.5)"
+  },
+  "corrected_grading_ballistic": {
+    "N_conventions": {
+      "disc_band_L_6.2m": 4.0,
+      "two_metre_L_4.4m": 5.6,
+      "transverse_L22": 11.3
+    },
+    "predicted_ratio_per_convention": {
+      "disc_band_L_6.2m": 1.4989710036504105,
+      "two_metre_L_4.4m": 1.674650629633291,
+      "transverse_L22": 2.207807251383011
+    },
+    "band": [
+      1.4989710036504105,
+      2.207807251383011
+    ],
+    "inside_band": true,
+    "N_inverted_through_phi": 7.517120373935496,
+    "N_ci95": [
+      6.711907097988025,
+      8.432272929103469
+    ]
+  },
+  "wp2_p1_criterion": {
+    "band": [
+      1.1764705882352942,
+      1.8181818181818181
+    ],
+    "passes": false,
+    "source": "CLAUDE_CODE_FRISBEE_HARDENING.md line 599"
+  },
+  "downstream_reach": {
+    "turb_share_of_landing_variance": 0.02,
+    "total_variance_change_frac": -0.01427095914120704,
+    "total_sigma_change_frac": -0.007161120393246789
+  },
+  "reconciled_criterion": {
+    "R_predicted": 1.903959456406862,
+    "R_measured": 1.8684179805753314,
+    "deviation": -0.018667139004421962,
+    "within_tolerance": true,
+    "tolerance": 0.2,
+    "N_mean": 8.926453092879322,
+    "N_median": 7.760301076430476,
+    "N_range": [
+      3.703344275960039,
+      19.811296470225486
+    ],
+    "chord_mean_m": 26.54437920679981,
+    "scale_mean_m": 3.2988295209977476,
+    "landing_source": "landing_stats.npz"
+  },
+  "verdict": "PASS on the reconciled criterion (isotropic arm): Phi(N) at the REALISED N = 8.9 predicts R = 1.904 against a measured 1.868, a deviation of -1.9%, inside GATE G2's +/-20%. The realised correlation length (3.30 m) is none of the brief's three conventions, so N was measured, not chosen. Both superseded bands are also satisfied except WP2 P1."
+}

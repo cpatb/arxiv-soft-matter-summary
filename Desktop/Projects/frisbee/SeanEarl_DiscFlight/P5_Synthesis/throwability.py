@@ -38,18 +38,29 @@ import argparse
 
 import numpy as np
 
+from conventions import (disc_altitude_index, horizontal_speed,  # noqa: E402
+                         u_ref_from_field)
+
+# Divide-by-zero floor for a speed in m/s. Far below any physical wind, and shared
+# with make_results_tex.py so the two cannot drift.
+SPEED_FLOOR = 1e-3
+
 
 def wind_factor(U_2m, U_ref):
-    """Wind-magnitude penalty, clipped to [0, 1]."""
-    mag = np.linalg.norm(U_2m, axis=-1)
+    """Wind-magnitude penalty, clipped to [0, 1].
+
+    Uses the HORIZONTAL speed, because it is normalised by U_ref, which is horizontal
+    by construction. See conventions.horizontal_speed.
+    """
+    mag = horizontal_speed(U_2m)
     return np.clip(1.0 - mag / U_ref, 0.0, 1.0)
 
 
 def turbulence_intensity(k_2m, U_2m, I_cap=1.0):
     """I = sqrt(2k/3) / |U|, with a defined value where |U| -> 0."""
     sigma = np.sqrt(2.0 * np.maximum(k_2m, 0.0) / 3.0)
-    mag = np.linalg.norm(U_2m, axis=-1)
-    return np.where(mag > 1e-3, sigma / np.maximum(mag, 1e-3), I_cap)
+    mag = horizontal_speed(U_2m)
+    return np.where(mag > SPEED_FLOOR, sigma / np.maximum(mag, SPEED_FLOOR), I_cap)
 
 
 def turbulence_factor(k_2m, U_2m, I_cap=1.0):
@@ -110,6 +121,11 @@ def compute_Q(fields_npz, landings_npz, U_ref, field_average_wind=False,
         print(f"  excluding throw type(s) {dropped} from the success factor")
 
     headings = L["headings"]
+
+    # The reference speed must come from the field that was actually solved, not from
+    # a default that happens to agree. Raises on any mismatch (audit F4).
+    U_ref = u_ref_from_field(F, [int(h) for h in headings], expected=U_ref)
+
     launch_x, launch_y = L["launch_x"], L["launch_y"]
     nx, ny, nh = len(launch_x), len(launch_y), len(headings)
 
@@ -119,9 +135,12 @@ def compute_Q(fields_npz, landings_npz, U_ref, field_average_wind=False,
     sr_all = np.full((nx, ny, nh), np.nan)
     I_all = np.full((nx, ny, nh), np.nan)
 
-    zk = int(np.argmin(np.abs(F["z"] - 2.0)))
-    if not np.isclose(F["z"][zk], 2.0, atol=0.51):
-        print(f"  note: nearest sampled altitude to 2 m is {F['z'][zk]:.2f} m")
+    zk, z_off, z_ok = disc_altitude_index(F["z"], 2.0)
+    if not z_ok:
+        raise ValueError(
+            f"nearest sampled altitude to 2 m is {float(F['z'][zk]):.2f} m, "
+            f"{z_off:.2f} m away -- further than half the grid spacing. Re-sample "
+            f"the field at 2 m rather than quoting a different altitude as one.")
 
     XX, YY = np.meshgrid(launch_x, launch_y, indexing="ij")
     pts = np.column_stack([XX.ravel(), YY.ravel()])

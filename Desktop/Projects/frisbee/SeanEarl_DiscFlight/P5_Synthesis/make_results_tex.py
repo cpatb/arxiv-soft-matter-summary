@@ -28,6 +28,10 @@ from pathlib import Path
 
 import numpy as np
 
+from conventions import (disc_altitude_index, horizontal_speed, pitch_mask,
+                         u_ref_from_field)
+from throwability import SPEED_FLOOR
+
 
 _DIGIT_WORDS = {"0": "Zero", "1": "One", "2": "Two", "3": "Three",
                 "4": "Four", "5": "Five", "6": "Six", "7": "Seven",
@@ -110,24 +114,25 @@ def main():
     # ---------------- disc-altitude wind ---------------------------------
     # Reference speed of the ABL inlet at 10 m; the sheltering fraction below
     # is quoted against it, so it must match the value used to drive the CFD.
-    U_REF = 5.0
-    zk = int(np.argmin(np.abs(F["z"] - 2.0)))
+    U_REF = u_ref_from_field(F, headings)
+    zk, _z_off, _z_ok = disc_altitude_index(F["z"], 2.0)
+    if not _z_ok:
+        raise ValueError(f"nearest sampled altitude to 2 m is {float(F['z'][zk]):.2f} m")
     shelter_frac = []
     for h in headings:
         key = f"dir_{h:03d}__U"
         if key not in F.files:
             continue
-        mag = np.linalg.norm(F[key][:, :, zk, :], axis=-1)
+        mag = horizontal_speed(F[key][:, :, zk, :])
         # restrict to the playing surface
-        fx = (F["x"] >= -31) & (F["x"] <= 47)
-        fy = (F["y"] >= -10) & (F["y"] <= 15)
+        fx, fy = pitch_mask(F["x"], F["y"])
         sub = mag[np.ix_(fx, fy)]
         out.append(macro(f"UfieldMeanH{digits_to_letters(h)}", fmt(float(sub.mean()), 2)))
         out.append(macro(f"UfieldMinH{digits_to_letters(h)}", fmt(float(sub.min()), 2)))
         out.append(macro(f"UfieldMaxH{digits_to_letters(h)}", fmt(float(sub.max()), 2)))
         kk = F[f"dir_{h:03d}__k"][:, :, zk]
         ksub = kk[np.ix_(fx, fy)]
-        I = np.sqrt(2 * np.maximum(ksub, 0) / 3) / np.maximum(sub, 1e-3)
+        I = np.sqrt(2 * np.maximum(ksub, 0) / 3) / np.maximum(sub, SPEED_FLOOR)
         out.append(macro(f"IfieldMeanH{digits_to_letters(h)}", fmt(float(I.mean()), 2)))
         shelter_frac.append(float(sub.mean()) / U_REF)
     out.append(macro("Uref", fmt(U_REF, 0)))
@@ -204,14 +209,13 @@ def main():
         um = "n/a"
         im = "n/a"
         if key in F.files:
-            mag = np.linalg.norm(F[key][:, :, zk, :], axis=-1)
-            fx = (F["x"] >= -31) & (F["x"] <= 47)
-            fy = (F["y"] >= -10) & (F["y"] <= 15)
+            mag = horizontal_speed(F[key][:, :, zk, :])
+            fx, fy = pitch_mask(F["x"], F["y"])
             sub = mag[np.ix_(fx, fy)]
             um = fmt(float(sub.mean()), 2)
             kk = F[f"dir_{h:03d}__k"][:, :, zk][np.ix_(fx, fy)]
             im = fmt(float((np.sqrt(2 * np.maximum(kk, 0) / 3) /
-                            np.maximum(sub, 1e-3)).mean()), 2)
+                            np.maximum(sub, SPEED_FLOOR)).mean()), 2)
         # The SAME success factor Q was built from -- read straight out of
         # Q.npz rather than recomputed here over a different set of throws.
         s = 100 * float(np.nanmean(Qd["success_rate"][..., i]))

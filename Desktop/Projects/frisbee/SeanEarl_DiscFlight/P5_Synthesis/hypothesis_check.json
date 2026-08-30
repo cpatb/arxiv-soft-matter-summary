@@ -2,9 +2,9 @@
   {
     "hypothesis": "H1a_gradient",
     "verdict": "SUPPORTED",
-    "Q_west": 0.05004501936215594,
-    "Q_east": 0.03843695649069543,
-    "normalised_gradient": 1.1418245122974313
+    "Q_west": 0.05002188769587381,
+    "Q_east": 0.03846999913474729,
+    "normalised_gradient": 1.1359899114127114
   },
   {
     "hypothesis": "H1_speed_profile",
@@ -24,9 +24,9 @@
     "hypothesis": "H2a_patchier",
     "verdict": "SUPPORTED",
     "cv_by_heading": {
-      "90": 0.2551315509566748,
-      "210": 0.2421110965826232,
-      "270": 0.2788238245788068
+      "90": 0.2547919395102459,
+      "210": 0.24531714103523852,
+      "270": 0.30196458487649064
     }
   },
   {
@@ -43,9 +43,9 @@
     "verdict": "PARTIALLY SUPPORTED",
     "reason": "210 deg has the highest mean Q, but no heading is resolved as the best: 90 vs 210 not separable at alpha=0.05 (paired t and Wilcoxon, Holm-corrected over the 3 comparisons, n=12 common launch points). What the test does support is that 270 deg is the worst.",
     "mean_Q_by_heading": {
-      "90": 0.044240987926425675,
-      "210": 0.048289634668730104,
-      "270": 0.03243225331148212
+      "90": 0.044245943415310546,
+      "210": 0.04814267693756733,
+      "270": 0.03210498650794769
     },
     "highest_mean_heading": 210,
     "best_supported": null,

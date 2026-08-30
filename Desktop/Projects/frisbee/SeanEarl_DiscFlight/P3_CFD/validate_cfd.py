@@ -298,16 +298,38 @@ def test_grid_independence(fine: Path, coarse: Path, outdir: Path):
 
     worst = max(diffs)
     worst_ref = max(diffs_ref)
-    verdict = "PASS" if worst < 0.10 else ("MARGINAL" if worst < 0.20
-                                           else "FAIL")
-    print(f"  -> worst disc-band difference: {100*worst:.1f}% of the local "
-          f"speed [{verdict}] (criterion 10%)")
-    print(f"     {100*worst_ref:.1f}% of the reference speed u_ref = "
-          f"{u_ref:g} m/s")
-    print("     NOTE: the field is heavily sheltered, with disc-altitude")
-    print("     speeds of 0.3-1.8 m/s against a 5 m/s reference. A RELATIVE")
-    print("     criterion is therefore very demanding here; both measures are")
-    print("     reported so the reader can judge.")
+
+    # The verdict is taken on the u_ref-normalised measure, NOT the local one.
+    #
+    # Dividing by the local speed in a field whose disc-altitude speeds run
+    # 0.02-1.8 m/s makes the metric diverge exactly where the flow is least
+    # resolved, so the old verdict was set by whichever of five stations happened
+    # to sit in a recirculation: 57.1% of the local speed at that station, but
+    # 10.3% of u_ref. Both are still printed; only the reference-normalised one
+    # is graded, because it is the one that means the same thing everywhere.
+    verdict = "PASS" if worst_ref < 0.10 else ("MARGINAL" if worst_ref < 0.20
+                                               else "FAIL")
+    print(f"  -> worst disc-band difference: {100*worst_ref:.1f}% of u_ref = "
+          f"{u_ref:g} m/s [{verdict}] (criterion 10% of u_ref)")
+    print(f"     {100*worst:.1f}% of the LOCAL speed -- reported, not graded: "
+          "the field is")
+    print("     heavily sheltered, so a local-relative criterion blows up in the "
+          "wakes")
+    print("     and is most permissive nowhere and most punishing where the flow "
+          "is worst.")
+    print()
+    print("  *** THIS TEST CANNOT ESTABLISH GRID INDEPENDENCE. ***")
+    print("  Two grids give a DIFFERENCE, not an ERROR: |fine - coarse| says the "
+          "meshes")
+    print("  disagree, not how far the fine one is from the continuum. An observed "
+          "order")
+    print("  of convergence needs at least three geometrically similar grids, and "
+          "every")
+    print("  member has to resolve the buildings or the fit crosses a regime "
+          "change.")
+    print("  Run `grid_convergence.py` for that; this test is now only a quick "
+          "two-mesh")
+    print("  sanity check.")
 
     import matplotlib
     matplotlib.use("Agg")

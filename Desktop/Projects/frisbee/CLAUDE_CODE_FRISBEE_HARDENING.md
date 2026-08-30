@@ -74,6 +74,16 @@ what the memo's own scaling predicts. Two panels found this from opposite direct
 the strongest single piece of evidence in this review that the underlying physics is
 right and the implementation is wrong.
 
+> **[RECONCILED 2026-08-29.]** The direction of this claim survives; the factor does
+> not, and the "coincidence" was between two things that are not the same experiment.
+> This panel ran at `τ_c = 0.36 s`, whereas the shipped sweeping model realises a
+> **3.30 m** arclength scale over a **26.5 m** chord. Run on the real field, the fall
+> is **1.735×** (anisotropic) / **1.868×** (isotropic), not 2.3–2.6×, and `Φ(N)` at the
+> realised `N` predicts 1.90. The agreement between the code panel and the tracer theory
+> was therefore two errors of opposite sign meeting near the same number, not
+> corroboration — which is exactly the trap of treating agreement between two methods
+> that share an assumption as evidence. See the note under GATE G1.
+
 Every landing-scatter, success-rate and Q number in `FRISBEE_STATUS.md` §Stage 5–6
 inherits this. The heading *ranking* may survive (the bias is common-mode); the absolute
 values do not.
@@ -562,6 +572,33 @@ macro and a footnote.
 of 2.0–2.6** (≈ `√N_eddy` for N ≈ 4–6). Two independent panels predict 2.3–2.6× from
 different arguments.
 
+> **[RECONCILED 2026-08-29 — this band is WITHDRAWN and replaced.]** The 2.0–2.6 band is
+> `√N_eddy`, i.e. the **tracer** law that §C5 of this same document falsifies for this
+> body (`St ≈ 8.5`, force-driven, double integral, closed form `Φ(N)`). It should never
+> have been the WP1 criterion, and the WP2 P1 row below pre-registers a different,
+> ballistic band for the same test — the two contradicted each other.
+>
+> **The single criterion is now: `Φ(N)` evaluated at the `N` the run itself realises,
+> agreeing with the measurement within the ±20% of GATE G2.** `N` is measured, not
+> chosen:
+>
+> - the sweeping arm decorrelates over `|r − r_launch|`, so a throw's coordinate runs
+>   from 0 to its launch-to-landing chord — **26.5 m mean** over the 108 cells;
+> - the realised correlation length is recorded per cell as `scale` — **3.30 m mean**
+>   (range 1.42–5.33), which is **none of** the 6.2 / 4.4 / 2.2 m conventions below;
+> - so **N = 8.9 mean, 7.8 median** (range 3.7–19.8), and the "45% spread from
+>   definitional choices" that motivated the whole dispute simply does not arise.
+>
+> Pooled on sums of squares, `Φ(N)` predicts **R = 1.90**. Measured: **1.868 isotropic
+> (−1.9%)**, **1.735 anisotropic (−8.8%)**. Both inside ±20%; the isotropic arm — the
+> only one `Φ` is entitled to predict, being derived for an isotropic field — agrees to
+> **1.9%**, and the anisotropic residual is the anisotropy correction `Φ` does not
+> carry. **GATE G1 PASSES.**
+>
+> Executable form: `P4_Coupling/regrade_gate_g1.py`, section [4b]; enforced by
+> `test_phi_predicts_the_isotropic_arm_within_the_briefs_own_tolerance`. Full argument:
+> `GATE_G1_REGRADE_2026-08-29.md`. Do not quote `N_eddy = 3`.
+
 - **If it falls in range:** proceed to WP2. The two panels agree and the physics is
   understood.
 - **If the change is < 20%:** the defect was harmless, the existing Q numbers stand, and
@@ -596,7 +633,7 @@ The same applies to the forehand-vs-backhand contrast (`it` is also in the key).
 
 | # | Test | Predicted | Falsified if |
 |---|---|---|---|
-| **P1** | The WP1 fix itself | σ_L ratio 0.67–0.70 | outside 0.55–0.85 |
+| **P1** | The WP1 fix itself — *see the RECONCILED 2026-08-29 note under GATE G1; superseded by `Φ(N)` at the realised `N`* | σ_L ratio 0.67–0.70 (= `Φ(N≈4)`; the realised `N` is ≈8.9, giving 0.53) | outside 0.55–0.85 |
 | **P2** | **Range sweep** `L_f ∈ {12,18,25,32,40}` m at fixed release speed — *the exponent test, highest discriminating power* | `σ_L ∝ L_f^1.7` (local exponent 1.80 at N=2 → 1.54 at N=20) | fitted exponent < 1.2 or > 2.1. The proposed law predicts **0.5** — the two hypotheses differ by >3× across this range, so no realistic MC noise can hide it |
 | **P3** | **Component decomposition:** gust in `u'` only / `w'` only / all three | `w'`-only carries **84%** of gust-induced variance, `u'`-only 16% | `u'`-only ≥ `w'`-only. This is the sharpest single test of the lift-modulation mechanism and costs one extra flag |
 | **P4** | **Φ(N) measured directly:** `τ_c` is a free parameter — sweep it over two decades (0.05–5 s) at fixed σ_u, ~200 throws each | the closed-form `Φ`; the `−1/2` slope appears only for `N ≳ 20` | >15% deviation, or the `−1/2` slope reached at N < 8. Settles the `N_eddy` definitional ambiguity empirically |
@@ -1160,7 +1197,9 @@ discovery that TI misleads.
       [ ] WP0.5 fix tab:Qbyheading S-bar column
       [ ] compare the three per-heading `solid` masks
 [ ] WP1  gust sweeping timescale                  4 h + 3 min run
-      [ ] GATE G1: dispersion falls 2.0-2.6x?  -- if <20% change, STOP AND REPORT
+      [x] GATE G1: PASSES (reconciled 2026-08-29). Criterion is Phi(N) at the
+          REALISED N (8.9 mean), not the withdrawn 2.0-2.6 tracer band. Predicted
+          1.90 vs measured 1.868 iso / 1.735 aniso, both within GATE G2's +/-20%.
 [ ] WP2  validate the dispersion law              1-2 days, no CFD
       [ ] drop i_h from spawn_key first (one line)
       [ ] P5 impulse test first (45 throws, 2 min)

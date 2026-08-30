@@ -139,6 +139,22 @@ RESOLUTIONS = {
                        maxcells=8_000_000),
     "fine":       dict(dxy=12.0, dz1=3.0, surf=(1, 2), near=2, field=3, feat=2,
                        maxcells=16_000_000),
+    # --- Grid-convergence family, added 2026-08-29 -----------------------------
+    # `coarse` and `production` are a clean factor-2 pair, but TWO grids give a
+    # DIFFERENCE, not an ERROR: they cannot yield an observed order or a
+    # Richardson extrapolation. These two extend that pair into a four-member
+    # family that moves ONLY the fieldBox level, exactly as the note above
+    # requires, so the meshes stay geometrically similar and GCI is defined:
+    #
+    #     gridL1  field=1   8.0 x 2.0 m      gridL4  field=4   1.0 x 0.25 m
+    #     coarse  field=2   4.0 x 1.0 m      production field=3  2.0 x 0.50 m
+    #
+    # `fine` is NOT a member: it moves dxy and near as well, so it is a
+    # different mesh family and must not be used in a Richardson fit.
+    "gridL1":     dict(dxy=16.0, dz1=4.0, surf=(1, 2), near=1, field=1, feat=2,
+                       maxcells=4_000_000),
+    "gridL4":     dict(dxy=16.0, dz1=4.0, surf=(1, 2), near=1, field=4, feat=2,
+                       maxcells=16_000_000),
 }
 
 

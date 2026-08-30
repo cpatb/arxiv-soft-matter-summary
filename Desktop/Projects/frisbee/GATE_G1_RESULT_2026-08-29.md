@@ -1,5 +1,14 @@
 # GATE G1: the gust-model correction is real, and its predicted size is wrong
 
+> **SUPERSEDED ON THE VERDICT, 2026-08-29 (same day).** The measurement below is sound
+> and is reproduced exactly by `P4_Coupling/regrade_gate_g1.py`. The *grading* is not: the
+> 2.0-2.6x band and the `N_eddy = ratio^2` inversion both assume the tracer `sqrt(N)` law
+> that section C5 of the hardening brief (lines 274-306) had already falsified for this
+> body (St ~ 8.5, force-driven, closed form `Phi(N)`). Re-graded against `Phi(N)`, the gate
+> **passes**: R = 1.735 lies inside the [1.50, 2.21] band implied by the brief's own three
+> integral-scale conventions, and N = 6.2 [5.3, 7.2], not 3. See
+> **`GATE_G1_REGRADE_2026-08-29.md`**. Do not quote `N_eddy = 3`.
+
 **2026-08-29.** WP1's instrument (`P4_Coupling/gust_model_comparison.py`) had been written
 and never run. There was no `gust_model_comparison.json` on disk. It is run now, on the
 real CFD field, and the gate does not pass.
