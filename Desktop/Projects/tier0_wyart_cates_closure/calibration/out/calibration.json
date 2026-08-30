@@ -1,0 +1,930 @@
+{
+  "guy_404": {
+    "dataset": "guy_404",
+    "material": "Guy 2015 PMMA d=404 nm",
+    "source": "PRL 115, 088304 (2015); arXiv:1506.09041; DataShare 10283/834",
+    "phi_units": "volume",
+    "constants": {
+      "eta_s": 0.0024,
+      "phi_0": 0.6076,
+      "n": 2.2,
+      "beta": 1.0
+    },
+    "phi_m_published": 0.558,
+    "n_curves": 5,
+    "n_usable": 5,
+    "curves": [
+      {
+        "label": "47%",
+        "phi_known": 0.45952,
+        "pe_lowest": 0.0009229301258054179,
+        "plateau_admitted": false,
+        "plateau_reason": "Brownian, Pe < 1",
+        "eta_r_lowest": 50.62041666666667,
+        "phi_plateau": NaN,
+        "phi_free": 0.4313409335427974,
+        "phi_free_err": 0.00023573061456074493,
+        "phi_m_free": 0.5631287849609095,
+        "phi_m_free_err": 0.0031996921638777283,
+        "sigma_star_free": 302.36931079121337,
+        "sigma_star_free_err": 23.846470110778906,
+        "rmse_free": 0.0019030615854442347,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.5318681262596473,
+        "phi_m_pinned_err": NaN,
+        "sigma_star_pinned": 16398.351658050993,
+        "sigma_star_pinned_err": NaN,
+        "rmse_pinned": 0.33932042094845255,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "53%",
+        "phi_known": 0.51968,
+        "pe_lowest": 0.0032352212383265043,
+        "plateau_admitted": false,
+        "plateau_reason": "Brownian, Pe < 1",
+        "eta_r_lowest": 697.7777779166668,
+        "phi_plateau": NaN,
+        "phi_free": 0.4979661371563772,
+        "phi_free_err": 0.0005456678208856348,
+        "phi_m_free": 0.5628572569698483,
+        "phi_m_free_err": 0.0029216180118327483,
+        "sigma_star_free": 711.4999435459516,
+        "sigma_star_free_err": 67.69850904271591,
+        "rmse_free": 0.010422954061954362,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.606577954984939,
+        "phi_m_pinned_err": NaN,
+        "sigma_star_pinned": 32806.15930184699,
+        "sigma_star_pinned_err": NaN,
+        "rmse_pinned": 0.31624416301919744,
+        "at_bound_pinned": [
+          "phi_m"
+        ],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "54.5%",
+        "phi_known": 0.53632,
+        "pe_lowest": 0.00022962329954539387,
+        "plateau_admitted": false,
+        "plateau_reason": "Brownian, Pe < 1",
+        "eta_r_lowest": 28904.083333333336,
+        "phi_plateau": NaN,
+        "phi_free": 0.5282134148383951,
+        "phi_free_err": 0.0007045641953629541,
+        "phi_m_free": 0.5628950467002661,
+        "phi_m_free_err": 0.0010692466852380454,
+        "sigma_star_free": 1058.1252536392967,
+        "sigma_star_free_err": 72.66791113325154,
+        "rmse_free": 0.0251616807367111,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.5627481492956622,
+        "phi_m_pinned_err": 0.010990594020465727,
+        "sigma_star_pinned": 2108.3213125426223,
+        "sigma_star_pinned_err": 715.7091410631436,
+        "rmse_pinned": 0.13028535013668918,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "56%",
+        "phi_known": 0.55616,
+        "pe_lowest": 0.0009264304139033672,
+        "plateau_admitted": false,
+        "plateau_reason": "Brownian, Pe < 1",
+        "eta_r_lowest": 24080.15,
+        "phi_plateau": NaN,
+        "phi_free": 0.5417201372477611,
+        "phi_free_err": 0.0028565439493975957,
+        "phi_m_free": 0.5537486695926952,
+        "phi_m_free_err": 0.002633160713897475,
+        "sigma_star_free": 514.1664464553169,
+        "sigma_star_free_err": 58.5923763873105,
+        "rmse_free": 0.05843667169945811,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.5661388906102303,
+        "phi_m_pinned_err": 0.0022257008766671236,
+        "sigma_star_pinned": 969.7078703452825,
+        "sigma_star_pinned_err": 148.9066237911712,
+        "rmse_pinned": 0.17754011895192348,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "58%",
+        "phi_known": 0.5696,
+        "pe_lowest": 0.0009313939008185042,
+        "plateau_admitted": false,
+        "plateau_reason": "Brownian, Pe < 1",
+        "eta_r_lowest": 63564.08333333292,
+        "phi_plateau": NaN,
+        "phi_free": 0.5532037398276071,
+        "phi_free_err": 0.0037018395302212204,
+        "phi_m_free": 0.5596089519991496,
+        "phi_m_free_err": 0.0036349804093556647,
+        "sigma_star_free": 199.2896926630627,
+        "sigma_star_free_err": 24.57682785865939,
+        "rmse_free": 0.056114843082948354,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.5754270866498109,
+        "phi_m_pinned_err": 0.0005878790319381396,
+        "sigma_star_pinned": 391.9700375105915,
+        "sigma_star_pinned_err": 34.225941033680755,
+        "rmse_pinned": 0.15766325985210058,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      }
+    ],
+    "n_steady": 4,
+    "steady_labels": [
+      "47%",
+      "53%",
+      "54.5%",
+      "56%"
+    ],
+    "transfer_free": {
+      "slope": 1.1328966098679105,
+      "intercept": -0.08797055901979532,
+      "r2": 0.9894677511974969,
+      "n_curves": 5,
+      "phi_x": 0.07765100385466966,
+      "slope_ci": [
+        0.7372239442009989,
+        1.2600977726548914
+      ],
+      "intercept_ci": [
+        -0.14827941287586294,
+        0.13269261138103944
+      ],
+      "phi_x_ci": [
+        -0.17998955734522606,
+        0.11766561049071128
+      ],
+      "residual_max": 0.008588864053832634
+    },
+    "n_plateau_admitted": 0,
+    "plateau_labels": [],
+    "verdict_band_free": {
+      "lo": 0.5537486695926952,
+      "hi": 0.5631287849609095,
+      "width": 0.009380115368214259,
+      "n": 5
+    },
+    "verdict_band_pinned": {
+      "lo": 0.5318681262596473,
+      "hi": 0.606577954984939,
+      "width": 0.07470982872529175,
+      "n": 5
+    },
+    "transfer_free_steady": {
+      "slope": 1.1737648715410252,
+      "intercept": -0.10810614657219529,
+      "r2": 0.9902870439389917,
+      "n_curves": 4,
+      "phi_x": 0.09210204632403397,
+      "slope_ci": [
+        0.6807823795043337,
+        1.8177450530058794
+      ],
+      "intercept_ci": [
+        -0.4466796119897183,
+        0.16309620906263103
+      ],
+      "phi_x_ci": [
+        -0.23957172508104374,
+        0.24573281673966052
+      ],
+      "residual_max": 0.006805985505707768
+    },
+    "n_plateau_admitted_steady": 0,
+    "plateau_labels_steady": [],
+    "verdict_band_free_steady": {
+      "lo": 0.5537486695926952,
+      "hi": 0.5631287849609095,
+      "width": 0.009380115368214259,
+      "n": 4
+    },
+    "verdict_band_pinned_steady": {
+      "lo": 0.5318681262596473,
+      "hi": 0.606577954984939,
+      "width": 0.07470982872529175,
+      "n": 4
+    },
+    "band_null_random4": {
+      "k": 4,
+      "n_subsets": 5,
+      "mean": 0.00816131123479471,
+      "min": 0.003519832961759839,
+      "max": 0.009380115368214259
+    },
+    "refused_by_fitter": [
+      "40%",
+      "59%",
+      "61%"
+    ]
+  },
+  "guy_3770": {
+    "dataset": "guy_3770",
+    "material": "Guy 2015 PMMA d=3770 nm",
+    "source": "PRL 115, 088304 (2015); arXiv:1506.09041; DataShare 10283/834",
+    "phi_units": "volume",
+    "constants": {
+      "eta_s": 0.00283,
+      "phi_0": 0.6123,
+      "n": 2.2,
+      "beta": 1.0
+    },
+    "phi_m_published": 0.558,
+    "n_curves": 7,
+    "n_usable": 6,
+    "curves": [
+      {
+        "label": "19%",
+        "phi_known": 0.1856,
+        "pe_lowest": 156.78543499405677,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 1.9964664310954061,
+        "phi_plateau": 0.16512087011107213,
+        "phi_free": 0.10082010897470965,
+        "phi_free_err": 0.7991117494738623,
+        "phi_m_free": 0.30000000000000004,
+        "phi_m_free_err": 2.3768096021673277,
+        "sigma_star_free": 0.001109672707491763,
+        "sigma_star_free_err": 0.01800930765476393,
+        "rmse_free": 0.03127649623893883,
+        "at_bound_free": [
+          "phi_m"
+        ],
+        "phi_m_pinned": 0.5536131289848125,
+        "phi_m_pinned_err": 0.004635224674176794,
+        "sigma_star_pinned": 0.010649493881621582,
+        "sigma_star_pinned_err": 0.005255944129917241,
+        "rmse_pinned": 0.034834714265087864,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "41%",
+        "phi_known": 0.4096,
+        "pe_lowest": 51.02170087942186,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 8.162544169611307,
+        "phi_plateau": 0.3765248103247114,
+        "phi_free": 0.3746288424934362,
+        "phi_free_err": 0.0005199248640694275,
+        "phi_m_free": 0.5398035546443051,
+        "phi_m_free_err": 0.0010729683513916583,
+        "sigma_star_free": 8.583344884149415,
+        "sigma_star_free_err": 0.44059224368892536,
+        "rmse_free": 0.01599817383927978,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.5791196178202078,
+        "phi_m_pinned_err": 0.04499927342613492,
+        "sigma_star_pinned": 85.48932105835506,
+        "sigma_star_pinned_err": 185.79487648449447,
+        "rmse_pinned": 0.25079354303990203,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "47%",
+        "phi_known": 0.46656,
+        "pe_lowest": 28.345389377456595,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 14.664310954063605,
+        "phi_plateau": 0.43164693989634717,
+        "phi_free": 0.4255709553264127,
+        "phi_free_err": 0.0008304240978885857,
+        "phi_m_free": 0.5297161041126165,
+        "phi_m_free_err": 0.0012478564444859705,
+        "sigma_star_free": 10.113192337070373,
+        "sigma_star_free_err": 0.5466553417455261,
+        "rmse_free": 0.030770094177304134,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.5736695590962222,
+        "phi_m_pinned_err": 0.020227742324066492,
+        "sigma_star_pinned": 65.77416211642557,
+        "sigma_star_pinned_err": 81.82802422807192,
+        "rmse_pinned": 0.3682309632371085,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "51%",
+        "phi_known": 0.51008,
+        "pe_lowest": 11.426735092787188,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 27.45583038869258,
+        "phi_plateau": 0.47645631662947824,
+        "phi_free": 0.47683188249807296,
+        "phi_free_err": 0.0005156510976254827,
+        "phi_m_free": 0.5315082441234775,
+        "phi_m_free_err": 0.0007246966463552098,
+        "sigma_star_free": 10.958147210130438,
+        "sigma_star_free_err": 0.38463478011846586,
+        "rmse_free": 0.03632591169468062,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.56435093929596,
+        "phi_m_pinned_err": 0.009547714041593394,
+        "sigma_star_pinned": 37.58664314516253,
+        "sigma_star_pinned_err": 24.04888052409498,
+        "rmse_pinned": 0.4708199362853131,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "54%",
+        "phi_known": 0.53632,
+        "pe_lowest": 4.473256761129869,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 69.96466431095406,
+        "phi_plateau": 0.5235061253891427,
+        "phi_free": 0.5178843845705349,
+        "phi_free_err": 0.0010795279260481466,
+        "phi_m_free": 0.5429335987256355,
+        "phi_m_free_err": 0.0011285352597481212,
+        "sigma_star_free": 9.706237739508365,
+        "sigma_star_free_err": 0.4502704152404481,
+        "rmse_free": 0.05833859731984107,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.5608768428750626,
+        "phi_m_pinned_err": 0.001913049326489309,
+        "sigma_star_pinned": 18.195842297389586,
+        "sigma_star_pinned_err": 3.2689954930286884,
+        "rmse_pinned": 0.26154956290065307,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "56%",
+        "phi_known": 0.56128,
+        "pe_lowest": 2.7105278592192863,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 115.54770318021201,
+        "phi_plateau": 0.5416120350387624,
+        "phi_free": 0.5555869015138882,
+        "phi_free_err": 0.001954408824331123,
+        "phi_m_free": 0.567721224345529,
+        "phi_m_free_err": 0.0020060547074978972,
+        "sigma_star_free": 8.394081569504854,
+        "sigma_star_free_err": 1.078288439439965,
+        "rmse_free": 0.21071798037006528,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.5731418808525434,
+        "phi_m_pinned_err": 0.000763750260819667,
+        "sigma_star_pinned": 11.070917114356924,
+        "sigma_star_pinned_err": 1.363112815049712,
+        "rmse_pinned": 0.24812884217692738,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "58%",
+        "phi_known": 0.5824,
+        "pe_lowest": 2.063898664046058,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 480.565371024735,
+        "phi_plateau": 0.575318385880562,
+        "phi_free": 0.5862837093729121,
+        "phi_free_err": 0.0013035531994103461,
+        "phi_m_free": 0.5875833450094796,
+        "phi_m_free_err": 0.0012889515207597673,
+        "sigma_star_free": 26.690708985013853,
+        "sigma_star_free_err": 3.3305115257889844,
+        "rmse_free": 0.32357722435798825,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.583852389580913,
+        "phi_m_pinned_err": 0.00023543052623257158,
+        "sigma_star_pinned": 20.49015744728643,
+        "sigma_star_pinned_err": 2.033731171988215,
+        "rmse_pinned": 0.36785850288273714,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      }
+    ],
+    "n_steady": 4,
+    "steady_labels": [
+      "41%",
+      "47%",
+      "51%",
+      "54%"
+    ],
+    "transfer_free": {
+      "slope": 1.240082276075195,
+      "intercept": -0.14426720040292507,
+      "r2": 0.986873718035355,
+      "n_curves": 6,
+      "phi_x": 0.11633679731277533,
+      "slope_ci": [
+        1.092772699028223,
+        1.5182129457772175
+      ],
+      "intercept_ci": [
+        -0.29725208892867555,
+        -0.07692871620357473
+      ],
+      "phi_x_ci": [
+        0.06999938925029806,
+        0.1958142560976473
+      ],
+      "residual_max": 0.011442084479437398
+    },
+    "n_plateau_admitted": 7,
+    "plateau_labels": [
+      "19%",
+      "41%",
+      "47%",
+      "51%",
+      "54%",
+      "56%",
+      "58%"
+    ],
+    "transfer_plateau": {
+      "slope": 1.0204134797427802,
+      "intercept": -0.03257655524238386,
+      "r2": 0.9941288971967531,
+      "n_curves": 7,
+      "phi_x": 0.031924857804304554,
+      "slope_ci": [
+        0.9761640054757313,
+        1.265331969030713
+      ],
+      "intercept_ci": [
+        -0.16328224028483349,
+        -0.017563846684932313
+      ],
+      "phi_x_ci": [
+        0.017961995190683668,
+        0.12847356401586796
+      ],
+      "residual_max": 0.01360613052075077
+    },
+    "verdict_band_free": {
+      "lo": 0.5297161041126165,
+      "hi": 0.5875833450094796,
+      "width": 0.057867240896863126,
+      "n": 6
+    },
+    "verdict_band_pinned": {
+      "lo": 0.5608768428750626,
+      "hi": 0.583852389580913,
+      "width": 0.022975546705850447,
+      "n": 6
+    },
+    "transfer_free_steady": {
+      "slope": 1.1146513393866309,
+      "intercept": -0.08701700354067618,
+      "r2": 0.9867182843758441,
+      "n_curves": 4,
+      "phi_x": 0.07806656706532089,
+      "slope_ci": [
+        0.8943488910283807,
+        1.56450084117614
+      ],
+      "intercept_ci": [
+        -0.3211887065690526,
+        0.008303536728211408
+      ],
+      "phi_x_ci": [
+        -0.009284449068487646,
+        0.20529788039461425
+      ],
+      "residual_max": 0.0074637700371375515
+    },
+    "n_plateau_admitted_steady": 5,
+    "plateau_labels_steady": [
+      "19%",
+      "41%",
+      "47%",
+      "51%",
+      "54%"
+    ],
+    "transfer_plateau_steady": {
+      "slope": 0.9901024638933518,
+      "intercept": -0.02280786958613139,
+      "r2": 0.9951151697967602,
+      "n_curves": 5,
+      "phi_x": 0.023035867920623745,
+      "slope_ci": [
+        0.9469125829885661,
+        1.3167887828669103
+      ],
+      "intercept_ci": [
+        -0.18271403463803887,
+        -0.010739446968369938
+      ],
+      "phi_x_ci": [
+        0.011348327070263918,
+        0.13875728363985163
+      ],
+      "residual_max": 0.015302241539991601
+    },
+    "verdict_band_free_steady": {
+      "lo": 0.5297161041126165,
+      "hi": 0.5429335987256355,
+      "width": 0.01321749461301902,
+      "n": 4
+    },
+    "verdict_band_pinned_steady": {
+      "lo": 0.5608768428750626,
+      "hi": 0.5791196178202078,
+      "width": 0.018242774945145257,
+      "n": 4
+    },
+    "band_null_random4": {
+      "k": 4,
+      "n_subsets": 15,
+      "mean": 0.048443624929211164,
+      "min": 0.01321749461301902,
+      "max": 0.057867240896863126
+    },
+    "refused_by_fitter": []
+  },
+  "richards_cornstarch": {
+    "dataset": "richards_cornstarch",
+    "material": "Richards 2019 cornstarch / 50 wt% glycerol-water",
+    "source": "PRL 123, 038004 (2019); arXiv:1902.07655; DataShare 10283/3357",
+    "phi_units": "weight",
+    "constants": {
+      "eta_s": 0.006,
+      "phi_0": 0.546,
+      "n": 2.0,
+      "beta": 0.94
+    },
+    "phi_m_published": 0.457,
+    "n_curves": 7,
+    "n_usable": 7,
+    "curves": [
+      {
+        "label": "38wt%",
+        "phi_known": 0.38,
+        "pe_lowest": 646.8197691283053,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 11.063559779673831,
+        "phi_plateau": 0.381848370100886,
+        "phi_free": 0.3684583442867778,
+        "phi_free_err": 0.0007750902215231332,
+        "phi_m_free": 0.447989558982244,
+        "phi_m_free_err": 0.0009700916938197037,
+        "sigma_star_free": 3.828258719721214,
+        "sigma_star_free_err": 0.1320996056242528,
+        "rmse_free": 0.01916975760922882,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.4597326287664993,
+        "phi_m_pinned_err": 0.0022174008275403986,
+        "sigma_star_pinned": 5.638100128877192,
+        "sigma_star_pinned_err": 0.5405073902419517,
+        "rmse_pinned": 0.0688376115963134,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "40wt%",
+        "phi_known": 0.4,
+        "pe_lowest": 502.2621756271482,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 14.301673500730258,
+        "phi_plateau": 0.4016226011536427,
+        "phi_free": 0.3938999798454328,
+        "phi_free_err": 0.0010336852793821618,
+        "phi_m_free": 0.4474581895195418,
+        "phi_m_free_err": 0.0012153366259842094,
+        "sigma_star_free": 4.777800722891741,
+        "sigma_star_free_err": 0.2062587785201165,
+        "rmse_free": 0.03245927742081048,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.4531533831187597,
+        "phi_m_pinned_err": 0.001188740757566588,
+        "sigma_star_pinned": 5.7797604240182805,
+        "sigma_star_pinned_err": 0.3008757895413461,
+        "rmse_pinned": 0.05293953026470648,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "42wt%",
+        "phi_known": 0.42,
+        "pe_lowest": 350.2057097652497,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 20.592430207661533,
+        "phi_plateau": 0.4256797179412686,
+        "phi_free": 0.4215784958737724,
+        "phi_free_err": 0.0015451079289345558,
+        "phi_m_free": 0.4530862572962037,
+        "phi_m_free_err": 0.001662494905671827,
+        "sigma_star_free": 6.974845315596987,
+        "sigma_star_free_err": 0.40553701937069675,
+        "rmse_free": 0.06817019086778789,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.45155410713386546,
+        "phi_m_pinned_err": 0.0006204637457452784,
+        "sigma_star_pinned": 6.671751314795628,
+        "sigma_star_pinned_err": 0.27952540208738047,
+        "rmse_pinned": 0.06935575141593586,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "44wt%",
+        "phi_known": 0.44,
+        "pe_lowest": 255.1473688906621,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 28.333911340561595,
+        "phi_plateau": 0.4434255073878253,
+        "phi_free": 0.44232621540728123,
+        "phi_free_err": 0.0019676464777695565,
+        "phi_m_free": 0.4592591030721612,
+        "phi_m_free_err": 0.0020212025227609566,
+        "sigma_star_free": 8.141949420317083,
+        "sigma_star_free_err": 0.5855186780005427,
+        "rmse_free": 0.10899576772317865,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.4570552815774429,
+        "phi_m_pinned_err": 0.0006337492486779151,
+        "sigma_star_pinned": 7.628783057816448,
+        "sigma_star_pinned_err": 0.39381287216623,
+        "rmse_pinned": 0.11144854310097133,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "46wt%",
+        "phi_known": 0.46,
+        "pe_lowest": 157.27125669881346,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 46.08345300699632,
+        "phi_plateau": 0.46556961711086536,
+        "phi_free": 0.46285772161587274,
+        "phi_free_err": 0.0014299059612491243,
+        "phi_m_free": 0.4721480873253435,
+        "phi_m_free_err": 0.0014353394870743423,
+        "sigma_star_free": 7.086152637949077,
+        "sigma_star_free_err": 0.39182621124000155,
+        "rmse_free": 0.10168003524652688,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.4694051530715779,
+        "phi_m_pinned_err": 0.0003552778635846206,
+        "sigma_star_pinned": 6.5235692210878975,
+        "sigma_star_pinned_err": 0.2649652377487154,
+        "rmse_pinned": 0.10791474037144097,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "48wt%",
+        "phi_known": 0.48,
+        "pe_lowest": 66.6975399051389,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 108.90596241365145,
+        "phi_plateau": 0.493680110984242,
+        "phi_free": 0.4811920096286541,
+        "phi_free_err": 0.0011168682845096216,
+        "phi_m_free": 0.48703118717011473,
+        "phi_m_free_err": 0.001107029708120655,
+        "sigma_star_free": 4.842576083662416,
+        "sigma_star_free_err": 0.21472810728276032,
+        "rmse_free": 0.0807254365276737,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.4858634864589742,
+        "phi_m_pinned_err": 0.0001548615045150105,
+        "sigma_star_pinned": 4.66449213496011,
+        "sigma_star_pinned_err": 0.12684034751865053,
+        "rmse_pinned": 0.08239879665710718,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      },
+      {
+        "label": "50wt%",
+        "phi_known": 0.5,
+        "pe_lowest": 20.60665393725601,
+        "plateau_admitted": true,
+        "plateau_reason": "non-Brownian, Pe >= 1",
+        "eta_r_lowest": 352.932431440954,
+        "phi_plateau": 0.5169365705877266,
+        "phi_free": 0.5013370273872253,
+        "phi_free_err": 0.00229722078267881,
+        "phi_m_free": 0.5069680824252313,
+        "phi_m_free_err": 0.0022756731497043507,
+        "sigma_star_free": 2.4852297092726574,
+        "sigma_star_free_err": 0.2903673237687855,
+        "rmse_free": 0.15029077358729157,
+        "at_bound_free": [],
+        "phi_m_pinned": 0.505649250729428,
+        "phi_m_pinned_err": 0.0001903529343999282,
+        "sigma_star_pinned": 2.3407135464306905,
+        "sigma_star_pinned_err": 0.12171584055720946,
+        "rmse_pinned": 0.15123751936728203,
+        "at_bound_pinned": [],
+        "jams_free": false,
+        "jams_pinned": false,
+        "sigma_jam_free": Infinity,
+        "sigma_jam_pinned": Infinity
+      }
+    ],
+    "n_steady": 4,
+    "steady_labels": [
+      "38wt%",
+      "40wt%",
+      "42wt%",
+      "44wt%"
+    ],
+    "transfer_free": {
+      "slope": 1.0973202403747953,
+      "intercept": -0.044013792329907556,
+      "r2": 0.9945677692917235,
+      "n_curves": 7,
+      "phi_x": 0.040110252878297795,
+      "slope_ci": [
+        0.9885360477902168,
+        1.2035868517823896
+      ],
+      "intercept_ci": [
+        -0.08789053436080994,
+        0.0071033744377498225
+      ],
+      "phi_x_ci": [
+        -0.007185751550111687,
+        0.07302659847156122
+      ],
+      "residual_max": 0.004717787246265925
+    },
+    "n_plateau_admitted": 7,
+    "plateau_labels": [
+      "38wt%",
+      "40wt%",
+      "42wt%",
+      "44wt%",
+      "46wt%",
+      "48wt%",
+      "50wt%"
+    ],
+    "transfer_plateau": {
+      "slope": 1.1236955719487793,
+      "intercept": -0.047459980905111776,
+      "r2": 0.996897929670458,
+      "n_curves": 7,
+      "phi_x": 0.0422356215418771,
+      "slope_ci": [
+        1.0399256579623521,
+        1.181181729207327
+      ],
+      "intercept_ci": [
+        -0.07391882954994301,
+        -0.013200803713900476
+      ],
+      "phi_x_ci": [
+        0.012687901036812622,
+        0.0626737519391948
+      ],
+      "residual_max": 0.0038703650804613465
+    },
+    "verdict_band_free": {
+      "lo": 0.4474581895195418,
+      "hi": 0.5069680824252313,
+      "width": 0.05950989290568948,
+      "n": 7
+    },
+    "verdict_band_pinned": {
+      "lo": 0.45155410713386546,
+      "hi": 0.505649250729428,
+      "width": 0.054095143595562556,
+      "n": 7
+    },
+    "transfer_free_steady": {
+      "slope": 1.2464106469492504,
+      "intercept": -0.10446260639587653,
+      "r2": 0.9968844457189328,
+      "n_curves": 4,
+      "phi_x": 0.08381074620275598,
+      "slope_ci": [
+        1.0373859766754439,
+        1.3839258014169864
+      ],
+      "intercept_ci": [
+        -0.1596703407213616,
+        -0.014123614329914045
+      ],
+      "phi_x_ci": [
+        0.013614618519498987,
+        0.11537492874103286
+      ],
+      "residual_max": 0.0025486305509637153
+    },
+    "n_plateau_admitted_steady": 4,
+    "plateau_labels_steady": [
+      "38wt%",
+      "40wt%",
+      "42wt%",
+      "44wt%"
+    ],
+    "transfer_plateau_steady": {
+      "slope": 1.0439426432422185,
+      "intercept": -0.014872434583403786,
+      "r2": 0.9969626339509701,
+      "n_curves": 4,
+      "phi_x": 0.01424640968512773,
+      "slope_ci": [
+        0.8872894723278407,
+        1.2028558393813027
+      ],
+      "intercept_ci": [
+        -0.0795197345988784,
+        0.05301813956357588
+      ],
+      "phi_x_ci": [
+        -0.059752923050558224,
+        0.0661091146548201
+      ],
+      "residual_max": 0.0020962423629405924
+    },
+    "verdict_band_free_steady": {
+      "lo": 0.4474581895195418,
+      "hi": 0.4592591030721612,
+      "width": 0.011800913552619419,
+      "n": 4
+    },
+    "verdict_band_pinned_steady": {
+      "lo": 0.45155410713386546,
+      "hi": 0.4597326287664993,
+      "width": 0.008178521632633828,
+      "n": 4
+    },
+    "band_null_random4": {
+      "k": 4,
+      "n_subsets": 35,
+      "mean": 0.047338898860258743,
+      "min": 0.011800913552619419,
+      "max": 0.05950989290568948
+    },
+    "refused_by_fitter": []
+  }
+}

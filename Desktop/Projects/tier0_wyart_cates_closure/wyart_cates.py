@@ -81,13 +81,22 @@ def jamming_fraction(f, phi0=PHI0_DEFAULT, phi_m=PHI_M_DEFAULT):
     return (1.0 - f) * phi0 + f * phi_m
 
 
-def relative_viscosity(phi, f, phi0=PHI0_DEFAULT, phi_m=PHI_M_DEFAULT):
-    """eta_r(phi, f) = (1 - phi/phi_J)^(-2); +inf once phi >= phi_J (jammed)."""
+def relative_viscosity(phi, f, phi0=PHI0_DEFAULT, phi_m=PHI_M_DEFAULT, n=2.0):
+    """eta_r(phi, f) = (1 - phi/phi_J)^(-n); +inf once phi >= phi_J (jammed).
+
+    ``n`` defaults to 2, the Maron-Pierce / Krieger-Dougherty value this module
+    was written at and which its gates are pinned to. It is a *parameter* and
+    not a constant because a phi_m fitted at one exponent cannot be evaluated at
+    another: Guy, Hermes & Poon fit n = 2.2(2) to their own upper branch, and
+    using their phi_m at n = 2 understates the divergence by about 2.4x at the
+    gaps this calibration works in. Pass the exponent the parameters were
+    fitted at.
+    """
     phi_J = jamming_fraction(f, phi0, phi_m)
     phi = np.asarray(phi, dtype=float)
     gap = 1.0 - phi / phi_J
     with np.errstate(divide="ignore", invalid="ignore"):
-        eta_r = np.where(gap > 0, gap ** (-2.0), np.inf)
+        eta_r = np.where(gap > 0, gap ** (-float(n)), np.inf)
     return eta_r
 
 

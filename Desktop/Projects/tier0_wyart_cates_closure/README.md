@@ -60,11 +60,54 @@ python diff_calibrate.py      # differentiable calibration -> recovered params +
 
 Requires `numpy`, `scipy`, `matplotlib`, `torch` (CPU is fine).
 
+## Calibration against real flow curves (`calibration/`, 2026-08-30)
+
+The open item below is closed, and mostly with a negative. Full argument:
+**`CALIBRATION_2026-08-30.md`**.
+
+```
+python calibration/calibrate.py          # fits three published datasets -> out/calibration.json
+python calibration/report.py             # the verdict tables + out/calibration_transfer.png
+python calibration/synthetic_control.py  # the control that clears the fitter
+python -m pytest calibration/test_calibration.py -q     # 30 passed
+```
+
+Three of the six parameters are not in a steady flow curve at all (`tau`,
+`f_res`, `sigma_yield`), and of the rest only `sigma_star` transfers cleanly
+into a solver.
+
+The inferred `phi` runs *above* the packing the sample was made at -- slope 1.02
+to 1.25 in all ten regressions, and a synthetic control at each curve's own
+measured noise clears the fitter -- but only two of the eight testable
+regressions exclude the identity, so the map is **supported, not established**.
+`phi_m` is worse: however four curves of one material are chosen, its band is at
+least 0.012 and typically 0.048, i.e. **6x to 24x** the tolerance a suspension's
+volume fraction is set to. That band does not straddle this programme's own
+`phi` = 0.44; it bites between 0.53 and 0.59.
+
+Whether the half a flow curve *does* measure matters during an impact depends
+entirely on the stress gauge. On `rho k U0^2` -- a total stress -- `sigma_star`
+is saturated. On the **deviatoric** wall shear, which is what reaches the
+particle network under undrained loading and which this lab's own
+`impact_stress` brief establishes is the right comparator, it is not: `f` runs
+0.95 to 0.98 and the residual activation moves `phi_J` by ~30% of the `phi_m`
+band. **Both halves are in play.**
+
+The first draft of the brief concluded otherwise on three of these points; three
+independent reviews caught it, and `CALIBRATION_2026-08-30.md` section 7 records
+exactly what changed.
+
+![calibration transfer](calibration/out/calibration_transfer.png)
+
 ## Status / next steps (from the Simulations MOC)
 
 - [x] Reproduce the DST-vs-yield bulk-rheology contrast as a sanity gate (Gate 1).
 - [x] Encode the reversibility (retention-vs-recovery) switch (Gate 2).
-- [ ] Calibrate `(phi, phi_m, sigma_star, sigma_yield, f_res, tau)` to real flow curves.
+- [x] Calibrate `(phi, phi_m, sigma_star, sigma_yield, f_res, tau)` to real flow
+      curves. Done 2026-08-30, and the answer is that most of them cannot be.
+- [ ] Get `phi_m` from a measurement that is not a steady flow curve: the
+      oscillation branch of Richards et al., a confining-pressure jamming point,
+      or compression. **This is now the blocking item, and it is a bench item.**
 - [ ] Couple the closure into the existing Herschel–Bulkley Basilisk drop sim and check
       that `t_jam`, `r_jam`, and retention split in the right direction (Tier-0 macro).
 - [ ] Add κ ∝ a² onset-timescale lever (silica jams ~15× earlier) as a second discriminator.

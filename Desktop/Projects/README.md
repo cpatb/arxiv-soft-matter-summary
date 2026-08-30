@@ -44,7 +44,8 @@ where it stands now.
 | `dst_fit/` | Constitutive identification for dense suspensions, with an identifiability verdict. |
 | `datacenter_cooling/` | Reduced-order data-hall cooling optimizer, plus 2D CFD calibration. |
 | `axidrop/` | Benchmarks and tolerances over the Basilisk suite. |
-| `tier0_wyart_cates_closure/` | Tier-0 Wyart-Cates closure. |
+| `tier0_wyart_cates_closure/` | Tier-0 Wyart-Cates closure, plus `calibration/` -- what a flow curve can and cannot hand a solver. |
+| `onset_clocks/` | Elimination audit: which dimensionless group sets the arrested footprint of an impacting suspension drop. |
 | `impact_stress/` | Wagner / shear-stress toolkit for drop impact. |
 | `hydrogels/` | Drying-fracture program: napari wrinkle pipeline plus the roadmap LaTeX. |
 | `silver_to_color/` | Chunked video colourization pipeline. |

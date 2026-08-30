@@ -1,0 +1,126 @@
+====================================================================================================
+TIER-0 CALIBRATION VERDICT
+====================================================================================================
+
+Impact stress scale, Sigma = rho k U0^2 with rho = 1440 kg/m^3, U0 = 1.15 m/s, k = 2 to 12:
+    3,809 to 22,853 Pa
+
+1. Does one flow curve fix the volume fraction the solver advects?
+   Bootstrap over curves. The identity is slope 1, intercept 0.
+
+   --- all usable curves ---
+   Guy 2015 PMMA d=404 nm  (5 curves)
+      free fit : slope 1.133 [0.737, 1.260]   intercept -0.0880 [-0.1483, +0.1327]   -> contains the identity
+      plateau  : refused, 0 curve(s) non-Brownian at the lowest stress sampled
+   Guy 2015 PMMA d=3770 nm  (6 curves)
+      free fit : slope 1.240 [1.093, 1.518]   intercept -0.1443 [-0.2973, -0.0769]   -> EXCLUDES the identity
+      plateau  : slope 1.020 [0.976, 1.265]   intercept -0.0326 [-0.1633, -0.0176]   -> EXCLUDES the identity
+   Richards 2019 cornstarch / 50 wt% glycerol-water  (7 curves)
+      free fit : slope 1.097 [0.989, 1.204]   intercept -0.0440 [-0.0879, +0.0071]   -> contains the identity
+      plateau  : slope 1.124 [1.040, 1.181]   intercept -0.0475 [-0.0739, -0.0132]   -> EXCLUDES the identity
+
+   --- the source lab's own steady subset ---
+   Guy 2015 PMMA d=404 nm  (4 curves)
+      free fit : slope 1.174 [0.681, 1.818]   intercept -0.1081 [-0.4467, +0.1631]   -> contains the identity
+      plateau  : refused, 0 curve(s) non-Brownian at the lowest stress sampled
+   Guy 2015 PMMA d=3770 nm  (4 curves)
+      free fit : slope 1.115 [0.894, 1.565]   intercept -0.0870 [-0.3212, +0.0083]   -> contains the identity
+      plateau  : slope 0.990 [0.947, 1.317]   intercept -0.0228 [-0.1827, -0.0107]   -> EXCLUDES the identity
+   Richards 2019 cornstarch / 50 wt% glycerol-water  (4 curves)
+      free fit : slope 1.246 [1.037, 1.384]   intercept -0.1045 [-0.1597, -0.0141]   -> EXCLUDES the identity
+      plateau  : slope 1.044 [0.887, 1.203]   intercept -0.0149 [-0.0795, +0.0530]   -> contains the identity
+
+2. Is the half of the model a flow curve DOES measure in play during impact?
+
+   Reported on BOTH stress gauges, because they disagree and the choice is
+   not a detail. rho k U0^2 is a TOTAL stress; under undrained loading the
+   pore fluid carries the isotropic part, so the deviatoric (wall shear)
+   gauge is the one that reaches the particle network. The lab's own
+   impact_stress/STRESS_AND_DILATANCY_BRIEF.md establishes this for this
+   geometry and measures the ratio at 5 to 10x.
+
+   --- inertial gauge ---
+   Guy 2015 PMMA d=404 nm                        sigma* =      613 Pa  ( 0.8 dec below impact)  f = 0.8514-0.9735  phi_J - phi_m = 0.00665 vs band 0.0094 ( 70.9%)  NOT saturated
+   Guy 2015 PMMA d=3770 nm                       sigma* =     9.91 Pa  ( 2.6 dec below impact)  f = 0.9974-0.9996  phi_J - phi_m = 0.00020 vs band 0.0132 (  1.5%)  SATURATED
+   Richards 2019 cornstarch / 50 wt% glycerol-w  sigma* =     5.88 Pa  ( 2.8 dec below impact)  f = 0.9977-0.9996  phi_J - phi_m = 0.00022 vs band 0.0118 (  1.8%)  SATURATED
+   boundary sigma* above which the activation half stops being saturated,
+   from each material's own band:
+      Guy 2015 PMMA d=404 nm                            80.7 Pa
+      Guy 2015 PMMA d=3770 nm                           66.3 Pa
+      Richards 2019 cornstarch / 50 wt% glycer          35.8 Pa
+
+   --- deviatoric gauge ---
+   Guy 2015 PMMA d=404 nm                        sigma* =      613 Pa  (-0.5 dec below impact)  f = 0.0400-0.2001  phi_J - phi_m = 0.04293 vs band 0.0094 (457.7%)  NOT saturated
+   Guy 2015 PMMA d=3770 nm                       sigma* =     9.91 Pa  ( 1.3 dec below impact)  f = 0.9493-0.9743  phi_J - phi_m = 0.00389 vs band 0.0132 ( 29.4%)  NOT saturated
+   Richards 2019 cornstarch / 50 wt% glycerol-w  sigma* =     5.88 Pa  ( 1.5 dec below impact)  f = 0.9627-0.9804  phi_J - phi_m = 0.00356 vs band 0.0118 ( 30.2%)  NOT saturated
+   boundary sigma* above which the activation half stops being saturated,
+   from each material's own band:
+      Guy 2015 PMMA d=404 nm                             4.0 Pa
+      Guy 2015 PMMA d=3770 nm                            3.3 Pa
+      Richards 2019 cornstarch / 50 wt% glycer           1.8 Pa
+
+3. What the phi_m band does to the impact prediction
+
+   material                           subset protocol         phi_m band   n    width  x tol
+   Guy 2015 PMMA d=404 nm                all     free [0.5537, 0.5631]   5   0.0094      5
+                                         all   pinned [0.5319, 0.6066]   5   0.0747     37
+                                      steady     free [0.5537, 0.5631]   4   0.0094      5
+                                      steady   pinned [0.5319, 0.6066]   4   0.0747     37
+   Guy 2015 PMMA d=3770 nm               all     free [0.5297, 0.5876]   6   0.0579     29
+                                         all   pinned [0.5609, 0.5839]   6   0.0230     11
+                                      steady     free [0.5297, 0.5429]   4   0.0132      7
+                                      steady   pinned [0.5609, 0.5791]   4   0.0182      9
+   Richards 2019 cornstarch / 50 w       all     free [0.4475, 0.5070]   7   0.0595     30
+                                         all   pinned [0.4516, 0.5056]   7   0.0541     27
+                                      steady     free [0.4475, 0.4593]   4   0.0118      6
+                                      steady   pinned [0.4516, 0.4597]   4   0.0082      4
+
+   'x tol' is the band width divided by the 0.002 volume-fraction tolerance the retake campaign holds itself to.
+
+4. Does the phi_m band straddle a packing anyone actually works at?
+
+   Evaluating the model at the band's own midpoint makes the verdict flip by
+   construction and tests nothing. So ask first whether the drop-impact
+   programme's own packing lands inside any of these bands.
+
+   Guy 2015 PMMA d=404 nm                        all [0.5537, 0.5631]  phi = 0.44 is outside
+   Guy 2015 PMMA d=404 nm                     steady [0.5537, 0.5631]  phi = 0.44 is outside
+   Guy 2015 PMMA d=3770 nm                       all [0.5297, 0.5876]  phi = 0.44 is outside
+   Guy 2015 PMMA d=3770 nm                    steady [0.5297, 0.5429]  phi = 0.44 is outside
+   Richards 2019 cornstarch / 50 wt% glycer      all [0.4475, 0.5070]  phi = 0.44 is outside
+   Richards 2019 cornstarch / 50 wt% glycer   steady [0.4475, 0.4593]  phi = 0.44 is outside
+
+   phi = 0.44 sits below every band. For this programme's own
+   material the calibration does not straddle the verdict; the band bites for
+   anyone working between 0.53 and 0.59 (PMMA) or 0.45 and 0.51 (corn starch).
+
+   Band width against the null of a random subset of the same size:
+      Guy 2015 PMMA d=404 nm                    steady 0.0094   random-4: mean 0.0082, min 0.0035, max 0.0094
+      Guy 2015 PMMA d=3770 nm                   steady 0.0132   random-4: mean 0.0484, min 0.0132, max 0.0579
+      Richards 2019 cornstarch / 50 wt% glycer  steady 0.0118   random-4: mean 0.0473, min 0.0118, max 0.0595
+
+   The steady subset is the LOWEST-phi block, and phi_m rises with phi, so it
+   is the tightest subset available whatever steadiness has to do with it --
+   for two of the three it IS the minimum over all subsets of that size. The
+   defensible statement is the null's floor: however four curves of one
+   material are chosen, the band is at least ~0.012 and typically ~0.048,
+   i.e. 6x to 24x the 0.002 tolerance phi is set to.
+
+   The model at each band's midpoint, for completeness:
+
+   Guy 2015 PMMA d=404 nm at phi = 0.5584
+      phi_m = 0.5537 -> eta_r  8.024e+04, jams False
+      phi_m = 0.5631 -> eta_r       5569, jams False
+      verdict flips: False   over a window 0.0094 wide (5x the phi tolerance)
+
+   Guy 2015 PMMA d=3770 nm at phi = 0.5363
+      phi_m = 0.5297 -> eta_r        inf, jams True
+      phi_m = 0.5429 -> eta_r  1.537e+04, jams False
+      verdict flips: True   over a window 0.0132 wide (7x the phi tolerance)
+
+   Richards 2019 cornstarch / 50 wt% glycerol-water at phi = 0.4534
+      phi_m = 0.4475 -> eta_r        inf, jams True
+      phi_m = 0.4593 -> eta_r       5678, jams False
+      verdict flips: True   over a window 0.0118 wide (6x the phi tolerance)
+
+wrote C:\Users\compl\Desktop\Projects\tier0_wyart_cates_closure\calibration\out\calibration_transfer.png

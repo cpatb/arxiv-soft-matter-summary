@@ -1,0 +1,80 @@
+========================================================================================================
+WHAT ARRESTS AN IMPACTING SUSPENSION DROP?  An elimination audit
+========================================================================================================
+
+Data: 75 rows -> 73 used (2 dropped for a bounded beta_p: ['interval', 'lower_bound'], 0 non-finite)
+  phi levels  [0.4, 0.44, 0.48, 0.5]
+  salt levels [0.0, 10.0, 50.0, 100.0] mM
+  u0  0.75 to 2.59 m/s (3.46x)
+  d0  1.79 to 2.56 mm
+  RESPONSE beta_p 0.309 to 1.962  (6.35x, log-range 1.849)
+  arrested by beta_p < 0.9 beta_eq: 63 of 73
+
+--------------------------------------------------------------------------------------------------------
+1. CAN THIS MATERIAL SHEAR-JAM AT ALL, BY THE REPO'S OWN CALIBRATION?
+--------------------------------------------------------------------------------------------------------
+   Jamming needs phi_J(f) to reach phi, i.e. f_jam = (phi0-phi)/(phi0-phiM) < 1.
+      phi   f_jam required   can jam?   n
+     0.40           1.6447      NEVER   7
+     0.44           1.4254      NEVER   53
+     0.48           1.2061      NEVER   10
+     0.50           1.0965      NEVER   3
+
+   phi0 = 0.7, phiM = 0.5176 (Github/Drop Impact/closure/params_fitted.yaml)
+   Every packing in this dataset needs f > 1 to jam. The model says these
+   drops cannot shear-jam at any stress. They demonstrably arrest.
+
+--------------------------------------------------------------------------------------------------------
+2. THE MODEL'S OWN VISCOSITY, ACROSS THE WHOLE DATASET
+--------------------------------------------------------------------------------------------------------
+   f at the impact stress:  0.993541 to 0.999780
+   eta the closure predicts: 0.09168 to 3.91528 Pa.s   (42.7073x over the whole set)
+   measured beta_p:          0.309 to 1.962   (6.35x)
+
+   But that 42.7x is almost all phi, not stress. At the single packing
+   phi = 0.44 (53 drops), over a 2.26x range of impact speed:
+      the closure's viscosity moves 1.0076x
+      the measured footprint moves  3.71x
+
+   Ratio: the response outruns the closure's stress response by 174x in log terms.
+
+--------------------------------------------------------------------------------------------------------
+3. ELIMINATION AUDIT
+--------------------------------------------------------------------------------------------------------
+   FALSIFIED: drops whose group agrees to 5% still span more than half the
+              total log-range of beta_p.
+   STRAINED : the group would need |d ln beta_p / d ln G| > 10.
+
+   f_shear (deviatoric gauge)               range      1.04x  exponent needed    43.37  ties@5% retain  1.00 (max 1.00,  2628 pairs)  @20%  1.00  rho -0.253  FALSIFIED
+   f_transient (strain clock, gamma_0=0.54) range       1.2x  exponent needed    10.22  ties@5% retain  0.93 (max 0.93,  2381 pairs)  @20%  1.00  rho +0.057  FALSIFIED
+   f_transient (strain clock, gamma_0=1.64) range      2.14x  exponent needed     2.44  ties@5% retain  0.39 (max 0.72,   989 pairs)  @20%  0.73  rho +0.289  survives
+   f_shear (deviatoric, sigma* x7.53 for salt) range      2.01x  exponent needed     2.65  ties@5% retain  0.60 (max 0.92,   991 pairs)  @20%  0.68  rho -0.253  FALSIFIED
+   kappa^-1 / a (Debye)                     range       100x  exponent needed     0.40  ties@5% retain  1.05 (max 1.00,   890 pairs)  @20%  1.05  rho +0.087  FALSIFIED
+   pore Deborah (contact length)            range      3.54x  exponent needed     1.46  ties@5% retain  0.37 (max 0.97,   351 pairs)  @20%  0.42  rho -0.517  survives
+   <tau>/sigma* (deviatoric gauge)          range      4.57x  exponent needed     1.22  ties@5% retain  0.48 (max 0.89,   519 pairs)  @20%  0.82  rho -0.253  survives
+   f_impact (k=2)                           range      1.01x  exponent needed   295.32  ties@5% retain  1.00 (max 1.00,  2628 pairs)  @20%  1.00  rho +0.067  FALSIFIED
+   f_impact (k=12)                          range         1x  exponent needed  3533.39  ties@5% retain  1.00 (max 1.00,  2628 pairs)  @20%  1.00  rho +0.067  FALSIFIED
+   f_impact (k=1/2, no added mass)          range      1.04x  exponent needed    43.28  ties@5% retain  1.00 (max 1.00,  2628 pairs)  @20%  1.00  rho +0.067  FALSIFIED
+   f_impact (k=2, sigma* x7.53 for salt)    range      1.11x  exponent needed    18.02  ties@5% retain  0.97 (max 1.00,  2556 pairs)  @20%  1.00  rho +0.067  FALSIFIED
+   Sigma/sigma* (k=2)                       range      11.5x  exponent needed     0.76  ties@5% retain  0.77 (max 0.92,   557 pairs)  @20%  0.82  rho +0.067  FALSIFIED
+   jamming deficit (phi0-phi)/(phi0-phiM)   range       1.5x  exponent needed     4.56  ties@5% retain  0.43 (max 0.71,  1447 pairs)  @20%  0.82  rho +0.708  survives
+   gammadot D0 (convention A) [1/s]         range      3.42x  exponent needed     1.50  ties@5% retain  0.75 (max 0.99,   545 pairs)  @20%  0.77  rho +0.167  FALSIFIED
+   gammadot Lc (Mobaseri) [1/s]             range      14.9x  exponent needed     0.68  ties@5% retain  0.33 (max 0.60,   378 pairs)  @20%  0.44  rho +0.202  survives
+   strain in one impact, convention A       range         1x  exponent needed 4162864622847200.50  ties@5% retain  1.00 (max 1.00,  2628 pairs)  @20%  1.00  rho -0.233  FALSIFIED
+   strain in one impact, Lc                 range      6.04x  exponent needed     1.03  ties@5% retain  0.31 (max 0.60,   538 pairs)  @20%  0.33  rho +0.286  survives
+   Re                                       range      7.17x  exponent needed     0.94  ties@5% retain  0.30 (max 0.60,   296 pairs)  @20%  0.34  rho +0.190  survives
+   We                                       range      12.2x  exponent needed     0.74  ties@5% retain  0.74 (max 0.96,   404 pairs)  @20%  0.82  rho +0.015  FALSIFIED
+   St (particle)                            range      3.42x  exponent needed     1.50  ties@5% retain  0.75 (max 0.99,   545 pairs)  @20%  0.77  rho +0.167  FALSIFIED
+   Pe (particle)                            range      3.42x  exponent needed     1.50  ties@5% retain  0.75 (max 0.99,   545 pairs)  @20%  0.77  rho +0.167  FALSIFIED
+
+   survives:
+      jamming deficit (phi0-phi)/(phi0-phiM)   (rho +0.708, p 2.5e-12, needs exponent 4.56)
+      pore Deborah (contact length)   (rho -0.517, p 2.8e-06, needs exponent 1.46)
+      f_transient (strain clock, gamma_0=1.64)   (rho +0.289, p 0.014, needs exponent 2.44)
+      strain in one impact, Lc   (rho +0.286, p 0.015, needs exponent 1.03)
+      <tau>/sigma* (deviatoric gauge)   (rho -0.253, p 0.031, needs exponent 1.22)
+      gammadot Lc (Mobaseri) [1/s]   (rho +0.202, p 0.09, needs exponent 0.68)
+      Re   (rho +0.190, p 0.11, needs exponent 0.94)
+
+wrote C:\Users\compl\Desktop\Projects\onset_clocks\out\audit.json
+wrote C:\Users\compl\Desktop\Projects\onset_clocks\out\elimination_audit.png

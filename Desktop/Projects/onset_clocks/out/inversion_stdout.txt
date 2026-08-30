@@ -1,0 +1,82 @@
+====================================================================================================
+WHAT phi_m WOULD THE FOOTPRINTS NEED?
+====================================================================================================
+
+The closure as fitted: phi0 = 0.7, phiM = 0.5176, eta_s = 0.004736 Pa.s, sigma* = 44.23 Pa
+Its fully frictional viscosity at phi = 0.44: 0.2107 Pa.s -- the most the model can ever give.
+
+beta_p noise floor used as the 'holds still' bar: 6.7% (within-cell replicate CV)
+Restricted to arrested drops (beta_p < 0.9 beta_eq): 63 of 73
+
+----------------------------------------------------------------------------------------------------
+SPREAD EXPONENT p=4   (beta ~ Re^(1/4))
+----------------------------------------------------------------------------------------------------
+  implied viscosity: 0.5695 to 408 Pa.s
+  the closure's ceiling (f = 1) at phi = 0.44: 0.2107 Pa.s
+  gap, implied / ceiling: 2.70x to 522x; 63 of 63 drops are ABOVE the ceiling
+
+  required phi_m: 0.4166 to 0.4970  (span 0.0804 = 40x the phi tolerance)
+  median 0.4422, against the fitted 0.5176
+
+  DOES IT HOLD STILL? drift of required phi_m within each (phi, salt) cell:
+    phi 0.44,     0 mM, n=15, u0 x2.01: rho -0.050 (p 0.860), span 0.0390 =  19.5x tol, slope -0.0151 per m/s
+    phi 0.44,    50 mM, n=11, u0 x1.52: rho +0.555 (p 0.077), span 0.0027 =   1.3x tol, slope +0.0015 per m/s
+    phi 0.44,   100 mM, n=12, u0 x2.26: rho +0.776 (p 0.003), span 0.0054 =   2.7x tol, slope +0.0035 per m/s
+    phi 0.48,     0 mM, n=10, u0 x1.86: rho +0.758 (p 0.011), span 0.0050 =   2.5x tol, slope +0.0042 per m/s
+
+    4 cells with a velocity lever. Required phi_m spans 0.0027 to 0.0390 within a cell,
+    i.e. 1x to 20x the tolerance phi is set to, at FIXED phi and FIXED salt.
+    sign of the drift: 3 positive, 1 negative out of 4
+
+  ACROSS SALT at phi = 0.44, matched on velocity where possible:
+        0 mM: n=15  median phi_m required 0.4443  [0.4381, 0.4771]
+       10 mM: n= 6  median phi_m required 0.4437  [0.4429, 0.4445]
+       50 mM: n=11  median phi_m required 0.4410  [0.4392, 0.4419]
+      100 mM: n=12  median phi_m required 0.4418  [0.4376, 0.4430]
+    span of the medians: 0.0033 = 2x the tolerance
+
+  PREFACTOR SENSITIVITY  (eta = C rho U0 D0 / beta^p):
+    C =   0.01: median required phi_m = 0.5038
+    C =   0.10: median required phi_m = 0.4556
+    C =   1.00: median required phi_m = 0.4422
+    C =  10.00: median required phi_m = 0.4393
+    C = 100.00: median required phi_m = 0.4384
+    over 4 decades of C the median moves 0.0654, against a 0.0754 gap to the fitted value.
+
+----------------------------------------------------------------------------------------------------
+SPREAD EXPONENT p=5   (beta ~ Re^(1/5))
+----------------------------------------------------------------------------------------------------
+  implied viscosity: 0.3551 to 1321 Pa.s
+  the closure's ceiling (f = 1) at phi = 0.44: 0.2107 Pa.s
+  gap, implied / ceiling: 1.69x to 1013x; 63 of 63 drops are ABOVE the ceiling
+
+  required phi_m: 0.4200 to 0.4962  (span 0.0762 = 38x the phi tolerance)
+  median 0.4414, against the fitted 0.5176
+
+  DOES IT HOLD STILL? drift of required phi_m within each (phi, salt) cell:
+    phi 0.44,     0 mM, n=15, u0 x2.01: rho -0.050 (p 0.860), span 0.0541 =  27.0x tol, slope -0.0217 per m/s
+    phi 0.44,    50 mM, n=11, u0 x1.52: rho +0.709 (p 0.015), span 0.0028 =   1.4x tol, slope +0.0018 per m/s
+    phi 0.44,   100 mM, n=12, u0 x2.26: rho +0.790 (p 0.002), span 0.0058 =   2.9x tol, slope +0.0038 per m/s
+    phi 0.48,     0 mM, n=10, u0 x1.86: rho +0.758 (p 0.011), span 0.0050 =   2.5x tol, slope +0.0044 per m/s
+
+    4 cells with a velocity lever. Required phi_m spans 0.0028 to 0.0541 within a cell,
+    i.e. 1x to 27x the tolerance phi is set to, at FIXED phi and FIXED salt.
+    sign of the drift: 3 positive, 1 negative out of 4
+
+  ACROSS SALT at phi = 0.44, matched on velocity where possible:
+        0 mM: n=15  median phi_m required 0.4434  [0.4368, 0.4909]
+       10 mM: n= 6  median phi_m required 0.4428  [0.4420, 0.4436]
+       50 mM: n=11  median phi_m required 0.4401  [0.4382, 0.4410]
+      100 mM: n=12  median phi_m required 0.4409  [0.4363, 0.4421]
+    span of the medians: 0.0033 = 2x the tolerance
+
+  PREFACTOR SENSITIVITY  (eta = C rho U0 D0 / beta^p):
+    C =   0.01: median required phi_m = 0.4891
+    C =   0.10: median required phi_m = 0.4526
+    C =   1.00: median required phi_m = 0.4414
+    C =  10.00: median required phi_m = 0.4390
+    C = 100.00: median required phi_m = 0.4383
+    over 4 decades of C the median moves 0.0509, against a 0.0762 gap to the fitted value.
+
+wrote C:\Users\compl\Desktop\Projects\onset_clocks\out\inversion.json
+wrote C:\Users\compl\Desktop\Projects\onset_clocks\out\inversion.png

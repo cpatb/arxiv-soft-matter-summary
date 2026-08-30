@@ -1,0 +1,33 @@
+================================================================================================
+ROBUSTNESS TO A WITHDRAWN CALIBRATION
+================================================================================================
+
+si_fit was withdrawn 2026-08-26; E:heology was retracted 2026-07-29.
+So the question is not 'what are the parameters' but 'over what range
+of them does each conclusion hold'.
+
+  eta_s   1.000 to 4.736 mPa.s (water -> the withdrawn fit)
+  phi_0   0.5306 to 0.7
+  phi_m   0.44 to 0.58
+  sigma*  4.42 to 442.3 Pa (fitted x0.1 to x10)
+
+224 valid corners of a 4^4 grid (corners with phi_0 <= phi_m are skipped: the model thins there).
+
+C1  'no packing in this dataset can shear-jam'
+      holds on 96 of 224 corners (43%)
+      it fails only where phi_m <= 0.4867, i.e. at or below the packings that arrest
+
+C2  'the stress-activation clock cannot span the response' (f range < 6.35)
+      holds on 224 of 224 corners (100%)
+      f range over the box: 1.00x to 2.81x
+      widest at sigma* = 442.3 Pa (the top of the swept range)
+
+C3  'every arrested drop demands more viscosity than f = 1 allows'
+      holds on 96 of 224 corners (43%)
+      fails only where phi_m <= 0.4867, i.e. where the model jams outright and has no finite ceiling
+
+C4  'drops arrest at marginal jamming: |phi_J - phi| stays small'
+      worst offset over the box: 0.0574  (median over corners 0.0432)
+      it depends only on eta_s, and only as eta_s^(1/2)
+
+wrote C:\Users\compl\Desktop\Projects\onset_clocks\out\robustness.json
