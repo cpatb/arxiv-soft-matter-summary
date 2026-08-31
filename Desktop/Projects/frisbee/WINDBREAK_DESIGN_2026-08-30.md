@@ -63,8 +63,8 @@ estimate, quoted as such, not measured here.
 |---|---|---|
 | **G-W1** | mean σ_u over the east third, disc band | ≤ **0.75×** baseline |
 | **G-W2** | mean σ_u over *each* third, disc band | ≤ 1.10× baseline everywhere |
-| **G-W3** | pitch-mean horizontal \|U\|, disc band | ≥ 0.50× baseline |
-| **G-W4** | pitch-max \|∂σ_u/∂z\| inside the disc band | ≤ 1.50× baseline |
+| **G-W3** | pitch-mean horizontal speed, disc band | >= 0.50x baseline |
+| **G-W4** | pitch-max vertical gradient of sigma_u in the disc band | <= 1.50x baseline |
 | **G-W5** | flown landing dispersion, paired | < 1.00× baseline |
 | **G-W6** | G-W2 and G-W3 at 90° and 210° | both pass at both |
 
@@ -95,8 +95,8 @@ building's near field.
 |---|---|---|
 | G-W1 | **FAIL** | east-third σ_u 0.748 → 0.720 m/s, **×0.962** against a ×0.75 target |
 | G-W2 | PASS | worst third is the **west**, at ×1.080 |
-| G-W3 | PASS | pitch \|U\| 1.304 → 1.234 m/s, ×0.947 |
-| G-W4 | PASS | max \|∂σ_u/∂z\| 0.1437 → 0.1510 s⁻¹, ×1.051 |
+| G-W3 | PASS | pitch speed 1.304 → 1.234 m/s, ×0.947 |
+| G-W4 | PASS | max vertical gradient of sigma_u 0.1437 -> 0.1510 1/s, x1.051 |
 | G-W5 | PASS | flown σ 8.34 → 8.07 m and 5.70 → 5.64 m, ×0.978 |
 
 A 3.8 % reduction where 25 % was asked for.
@@ -197,7 +197,68 @@ not an attempt to make something work; it closes the last door, so that "no
 barrier fixes this" is a tested statement rather than three porous designs and
 an assumption.
 
-*(W5 result to follow; `P6_Theory/out/windbreak.json` carries every gate value.)*
+### W5: the best reduction, and it fails three gates to get it
+
+| gate | verdict | measured |
+|---|---|---|
+| G-W1 | **FAIL** | east-third σ_u 0.748 → 0.685, **×0.915** — the best of the five, still far from ×0.75 |
+| G-W2 | **FAIL** | west third **×1.130** |
+| G-W3 | PASS | pitch speed ×0.960 |
+| G-W4 | PASS | shear **×0.972** |
+| G-W5 | **FAIL** | flown ×1.000 — 8.34 → 8.09 m at one launch, 5.70 → **5.88** at the other |
+
+**My second prediction was also wrong.** G-W4 exists specifically to catch a
+near-solid fence trading a stagnation zone for a shear layer in the disc band,
+and W5 does not do that: ∂σ_u/∂z actually *falls* slightly, ×0.972. The
+solid fence's failure mode here is not vertical shear. It is a horizontal
+redistribution — it takes 8.5 % off the east third and puts 13 % onto the west,
+and the discs it is meant to help do not fly any better.
+
+## 7. The conclusion: this zone is not barrier-fixable
+
+Five architectures spanning position (+21 to +52 m), height (3 to 25 m) and
+resistance (k_r 1.78 to 20, β ≈ 0.6 to 0.22):
+
+| design | benefit (east third) | harm (worst third) | flown |
+|---|---|---|---|
+| W5 near-solid | **8.5 %** | **+13.0 %** | ×1.000 |
+| W3 low spoiler | 4.6 % | +6.6 % | ×0.999 |
+| W1 shelterbelt | 3.8 % | +8.0 % | ×0.978 |
+| W4 tall screen | 3.5 % | −0.3 % | ×0.994 |
+| W2 tower deflector | 3.1 % | −0.4 % | ×0.978 |
+| | *target 25 %* | *≤ 10 %* | *< 1.00* |
+
+Benefit and harm move together at a slope of about **0.69 % of benefit per 1 %
+of harm** among the designs that do any harm at all. Extrapolating the best
+trade-off to the 25 % target puts the harm near **38 %**, three times the worst
+already measured — and that extrapolation is generous, since it assumes the
+frontier stays linear.
+
+**The honest recommendation is that a barrier is the wrong instrument.** The
+disturbance over the eastern third is the upstream influence of a 45 m building's
+total blockage, and nothing porous or solid placed in that field at a plausible
+scale removes it without taking more from the rest of the pitch than it gives.
+
+What follows from that is a usage recommendation rather than a construction one:
+**the western two-thirds of Sean Earl Field is the quiet part under a westerly**
+— disc-band σ_u 0.44 against 0.75 m/s — and moving the drill, the pull line or
+the scoring zone west is free and achieves more than any of the five structures.
+That is not a satisfying answer for someone who wanted to build something, but
+it is what five production CFD runs and six pre-registered gates say.
+
+## 8. Two predictions recorded and both falsified
+
+Worth keeping visible, because both wrong guesses were more informative than the
+right ones would have been:
+
+1. **Height.** Predicted that a barrier must be a substantial fraction of the
+   building's height. W4 at 0.56 H reproduced W2 at 0.22 H to 0.4 %. The
+   mechanism is not interception, and had the prediction held the answer would
+   have been the uninteresting "build it taller".
+2. **Shear.** Predicted that a near-solid fence would swap a stagnation zone for
+   a disc-band shear layer, per the shelterbelt literature and this project's
+   own headline. W5's ∂σ_u/∂z *fell*. The solid fence redistributes turbulence
+   horizontally here, not vertically.
 
 ---
 

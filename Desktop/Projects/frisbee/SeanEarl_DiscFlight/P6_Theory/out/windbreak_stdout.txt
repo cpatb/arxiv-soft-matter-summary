@@ -35,10 +35,20 @@
     G-W5  PASS  x0.994 vs 1.0   (+11,+2) 8.34 -> 8.27 m; (+30,+2) 5.70 -> 5.69 m
     -> 4/5 gates, DOES NOT PASS
 
-NO DESIGN PASSES. 4 evaluated, best 4/5 gates.
+=== W5  near-solid fence: x = +21 m, H = 6 m, k_r = 20.00 ===
+    the last knob: resistance rather than height or position. beta ~ 0.22, the design the shelterbelt literature says should swap a stagnation zone for a shear layer in the disc band
+    G-W1  FAIL  x0.915 vs 0.75   east-third sigma_u 0.748 -> 0.685 m/s
+    G-W2  FAIL  x1.130 vs 1.1   worst third is west at x1.130
+    G-W3  PASS  x0.960 vs 0.5   pitch |U| 1.304 -> 1.251 m/s
+    G-W4  PASS  x0.972 vs 1.5   max |dsigma/dz| 0.1437 -> 0.1397 1/s
+    G-W5  FAIL  x1.000 vs 1.0   (+11,+2) 8.34 -> 8.09 m; (+30,+2) 5.70 -> 5.88 m
+    -> 2/5 gates, DOES NOT PASS
+
+NO DESIGN PASSES. 5 evaluated, best 4/5 gates.
   ranked by harm done, since none achieved the goal:
     W2  G-W1 x0.969  worst-third sigma_u x0.996  shear x0.965  flown x0.978
     W4  G-W1 x0.965  worst-third sigma_u x0.997  shear x0.967  flown x0.994
     W3  G-W1 x0.954  worst-third sigma_u x1.066  shear x1.040  flown x0.999
     W1  G-W1 x0.962  worst-third sigma_u x1.080  shear x1.051  flown x0.978
+    W5  G-W1 x0.915  worst-third sigma_u x1.130  shear x0.972  flown x1.000
 wrote C:\Users\compl\Desktop\Projects\frisbee\SeanEarl_DiscFlight\P6_Theory\out\windbreak.json
