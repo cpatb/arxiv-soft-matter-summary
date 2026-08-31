@@ -48,7 +48,7 @@ from scipy.sparse.linalg import splu
 class AisleCell:
     def __init__(self, N=70, H_room=1.0, eta=0.5, Ra=1e4, Pr=0.71,
                  part_halfwidth=0.03, flux=0.0,
-                 inlet=(0.10, 0.40), outlet=(0.60, 0.90)):
+                 inlet=(0.10, 0.40), outlet=(0.60, 0.90), tracer_diff=0.02):
         self.nx = N
         self.ny = max(6, int(round(N * H_room)))
         self.dx = 1.0 / (self.nx - 1)
@@ -69,6 +69,14 @@ class AisleCell:
         # --- forced through-flow: boundary streamfunction and opening masks ---
         self.flux = float(flux)
         self.inlet, self.outlet = tuple(inlet), tuple(outlet)
+        # Diffusivity of the exhaust tracer, in the same units as the thermal one,
+        # which is 1 by the nondimensionalisation. The historical value 0.02 makes the
+        # tracer a Lewis-50 scalar: it follows the flow and barely diffuses, which is
+        # what made it a useful cross-check on an advective signal -- and what makes it
+        # blind to a diffusive one. Exposing it turns that from a caveat into a
+        # measurement: an ADVECTED signal is Lewis-independent, a DIFFUSED one scales
+        # with this number, so sweeping it separates the two.
+        self.tracer_diff = float(tracer_diff)
         self._build_boundary_psi()
 
         self.T = np.zeros((self.ny, self.nx)); self.T[:, 0] = 0.0; self.T[:, -1] = 1.0
@@ -240,7 +248,8 @@ class AisleCell:
         self._fill_solid_zero_flux(Tn, sol)            # adiabatic partition (no source/sink)
         # tracer: released at hot wall, absorbed (reset) at cold wall
         Cn = self.C.copy()
-        Cn[1:-1, 1:-1] = self.C[1:-1, 1:-1] + dt * (-self._adv(self.C) + 0.02 * self._lap(self.C))
+        Cn[1:-1, 1:-1] = self.C[1:-1, 1:-1] + dt * (
+            -self._adv(self.C) + self.tracer_diff * self._lap(self.C))
         Cn[:, -1] = 1.0; Cn[:, 0] = 0.0
         Cn[0, :] = Cn[1, :]; Cn[-1, :] = Cn[-2, :]
         if self.flux != 0.0:

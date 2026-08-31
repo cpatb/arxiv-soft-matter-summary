@@ -58,11 +58,39 @@ def anchor(Ra: float, n: int) -> float:
     key = f"Ra={Ra:.6g},N={n}"
     if key not in cache:
         a = AisleCell(N=n, eta=0.0, Ra=Ra)
-        its = a.solve(max_iter=60000)
+        its = solve_to_phi(a)
         cache[key] = {"Q1": float(np.abs(a.psi).max()), "iters": int(its),
                       "phi_eta0": a.recirc_fraction()}
         json.dump(cache, open(ANCHOR, "w"), indent=2)
     return float(cache[key]["Q1"])
+
+
+def solve_to_phi(cell, max_steps=40000, every=1000, tol=8e-4, min_steps=6000):
+    """March to a converged phi, the same criterion run_calibration.py used.
+
+    AisleCell.solve() converges on the passive tracer C, which relaxes on a much
+    longer timescale than the flow does -- at N = 40 it does not reach tol = 2e-5
+    inside 120,000 steps even at flux = 0, so every point would run to the cap and
+    the sweep would take a day. phi is measured from T, not C, and it settles in
+    well under 10,000 steps. Same criterion, same cadence, same tolerance as the
+    eta-only calibration already in cfd_recirc.json, so the two sweeps are
+    comparable point for point.
+    """
+    import numpy as _np
+    h = min(cell.dx, cell.dy)
+    u_scale = _np.sqrt(cell.Ra * cell.Pr) + cell.forced_velocity() + 1.0
+    dt = 0.35 * min(h * h / (4 * max(cell.Pr, 1.0)), h / u_scale)
+    prev = 0.0
+    for n in range(1, max_steps + 1):
+        cell.step(dt)
+        if n % every == 0:
+            if not _np.isfinite(cell.T).all():
+                raise FloatingPointError("diverged")
+            phi = cell.recirc_fraction()
+            if n >= min_steps and abs(phi - prev) < tol:
+                return n
+            prev = phi
+    return max_steps
 
 
 def main() -> None:
@@ -79,7 +107,7 @@ def main() -> None:
             a = AisleCell(N=N, H_room=1.0, eta=eta, Ra=RA,
                           flux=p * Q1, inlet=INLET, outlet=OUTLET)
             try:
-                its = a.solve(max_iter=120000, tol=2e-5)
+                its = solve_to_phi(a)
             except FloatingPointError:
                 print(f"  eta={eta} p={p} DIVERGED -- recorded as such, not dropped")
                 results.append({"eta": eta, "p": p, "Ra": RA, "N": N, "Q1": Q1,

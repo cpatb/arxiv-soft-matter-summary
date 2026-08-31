@@ -36,6 +36,50 @@ CP = 1006.0      # J/(kg K)
 # 'linear': the original placeholder base_recirc*(1-eta) -> 0 at eta=1 (over-credits containment).
 CFD_RECIRC = dict(floor=0.007, amp=0.228, tau=0.790)
 
+# ---- recirculation vs containment AND airflow provisioning ----
+# 'cfd2d_p': calibrated 2026-08-31 from cfd/cfd_provisioning.json -- the same solver,
+#        now with a forced through-flow (floor supply grille under the cold aisle,
+#        ceiling return over the hot aisle). 48 cells, 0 diverged. This is the fix for
+#        DESIGN.md Sec. 8 gap (1): over-provisioning DOES suppress recirculation, by a
+#        factor of 5.5 between p = 0 and p = 1 at zero containment, where the model
+#        above credits it with nothing at all.
+#
+# The table is the measurement, not a fit. A three-parameter dilution law
+# (phi0 exp(-eta/tau) / (1 + p/k) + floor) was tried and is recorded in
+# cfd/cfd_provisioning_fit.json; it is not used, because its `floor` fits to its own
+# lower bound and its worst cell is off by four orders of magnitude. The floor it is
+# trying to absorb is eta-dependent -- at eta = 0 there is no partition and the hot
+# wall conducts straight to the inlet face -- and one additive constant cannot be
+# both that and zero.
+#
+# TWO THINGS THIS TABLE IS NOT
+#   1. Its `p` is anchored on the CELL's own buoyant circulation: p = flux / Q_1 with
+#      Q_1 = max|psi| of the buoyancy-only solution at eta = 0. Identifying that with
+#      the hall's provisioning ratio is an ASSUMPTION and it has not been tested.
+#      What transfers is the SHAPE of phi(p) -- that it falls steeply and then
+#      saturates -- not the location of p = 1. `P_ANCHOR_SCALE` exists so the
+#      identification can be moved and the conclusions re-checked; it is not a knob to
+#      tune against an answer.
+#   2. It is a Ra = 4e3 laminar cavity. A hall is Ra ~ 1e9-1e12. cfd/run_floor_probe.py
+#      shows the eta -> 1 "7% recirculation floor" in CFD_RECIRC is thermal DIFFUSION,
+#      not recirculated air: sweeping the tracer's diffusivity at eta = 0.95 moves the
+#      signal from 0.0025 (Le = 50) to 0.06945 (Le = 1), where it reproduces the
+#      temperature channel to five decimals, while the same sweep at eta = 0 moves it
+#      by 0.4%. An advected signal is Lewis-independent; a diffused one is proportional
+#      to the diffusivity. So the floor -- and the "containment ROI flattens" reading
+#      built on it -- is a low-Rayleigh artefact and does not belong in a hall.
+CFD_P_ETA = (0.0, 0.2, 0.4, 0.6, 0.8, 0.95)
+CFD_P_P = (0.0, 0.25, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0)
+CFD_P_PHI = (
+    (0.2411, 0.1216, 0.0862, 0.0435, 0.0272, 0.0226, 0.0211, 0.0213),
+    (0.1897, 0.0772, 0.0496, 0.0179, 0.0063, 0.0028, 0.0011, 0.0006),
+    (0.1382, 0.0582, 0.0332, 0.0091, 0.0022, 0.0006, 0.0001, 0.0000),
+    (0.1163, 0.0530, 0.0272, 0.0060, 0.0012, 0.0003, 0.0000, 0.0000),
+    (0.1007, 0.0385, 0.0147, 0.0020, 0.0003, 0.0001, 0.0000, 0.0000),
+    (0.0729, 0.0144, 0.0030, 0.0002, 0.0000, 0.0000, 0.0000, 0.0000),
+)
+P_ANCHOR_SCALE = 1.0   # hall p -> cavity p. See note 1 above. Not a tuning knob.
+
 # ---- server-fan ramp ----
 # Server fans hold a floor speed until the inlet reaches a knee near 25 C, then
 # ramp to hold junction temperature. Published measurements put the room-wide
@@ -55,12 +99,43 @@ SERVER_FAN_RAMP = 0.004      # fraction of rack IT power per K above T_RAMP
 T_RAMP = 25.0                # C, inlet temperature at which server fans start ramping
 
 
-def recirc_fraction(eta, model="cfd", base_recirc=0.28):
+def recirc_fraction(eta, model="cfd", base_recirc=0.28, provisioning=1.0):
+    """Geometric recirculated fraction at containment ``eta``.
+
+    ``provisioning`` is used only by the ``cfd2d_p`` model; the older two ignore it,
+    which is precisely the defect that model exists to fix.
+    """
     eta = float(np.clip(eta, 0.0, 1.0))
+    if model == "cfd2d_p":
+        return _recirc_grid(eta, float(provisioning))
     if model == "cfd":
         c = CFD_RECIRC
         return c["floor"] + c["amp"] * np.exp(-eta / c["tau"])
     return base_recirc * (1.0 - eta)          # legacy linear placeholder
+
+
+def _recirc_grid(eta, p):
+    """Bilinear interpolation of the measured phi(eta, p) table.
+
+    Clamped, not extrapolated, on both axes. Above p = 4 the table is already flat
+    (0.0213 at eta = 0, 0.0000 elsewhere), so holding it is the measurement rather
+    than an assumption; below eta = 0 and above eta = 0.95 there is nothing to
+    extrapolate into, and mass balance -- not this table -- is what sets the small-p
+    behaviour in `influence_matrix`.
+    """
+    e = np.clip(eta, CFD_P_ETA[0], CFD_P_ETA[-1])
+    q = np.clip(p * P_ANCHOR_SCALE, CFD_P_P[0], CFD_P_P[-1])
+    ie = int(np.searchsorted(CFD_P_ETA, e, side="right") - 1)
+    ie = min(max(ie, 0), len(CFD_P_ETA) - 2)
+    iq = int(np.searchsorted(CFD_P_P, q, side="right") - 1)
+    iq = min(max(iq, 0), len(CFD_P_P) - 2)
+    te = (e - CFD_P_ETA[ie]) / (CFD_P_ETA[ie + 1] - CFD_P_ETA[ie])
+    tq = (q - CFD_P_P[iq]) / (CFD_P_P[iq + 1] - CFD_P_P[iq])
+    g = CFD_P_PHI
+    return float(
+        (1 - te) * ((1 - tq) * g[ie][iq] + tq * g[ie][iq + 1])
+        + te * ((1 - tq) * g[ie + 1][iq] + tq * g[ie + 1][iq + 1])
+    )
 
 
 class Hall:
@@ -111,7 +186,17 @@ class Hall:
         """
         p = float(provisioning)
         under = max(0.0, 1.0 - p)                       # airflow deficit amplifies recirc
-        phi = recirc_fraction(self.containment, self.recirc_model, self.base_recirc) * (1.0 + under)
+        if self.recirc_model == "cfd2d_p":
+            # The p dependence is measured, so it must NOT also be applied by hand:
+            # multiplying the table by (1 + under) would count under-provisioning
+            # twice. The mass-balance floor still applies -- the cavity has no rack
+            # fan, so nothing in the CFD knows that a hall short of supply air must
+            # make the difference up from the hot aisle.
+            phi = recirc_fraction(self.containment, self.recirc_model,
+                                  self.base_recirc, provisioning=p)
+        else:
+            phi = recirc_fraction(self.containment, self.recirc_model,
+                                  self.base_recirc) * (1.0 + under)
         phi = max(phi, under)                           # mass balance, see docstring
         phi = np.clip(phi, 0.0, 0.95)
         return phi * self._W

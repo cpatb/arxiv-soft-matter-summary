@@ -126,6 +126,28 @@ This sits in your **applied-optimization / fluids-adjacent** track (nearer the b
      objective for this hall only while the 27 C recommended limit holds.** The ramp
      coefficient is the constant to pin first for any real hall.
 
+  **Gap (1) is CLOSED, 2026-08-31, and the answer is that it was not what pinned the
+  optimizer.** `PROVISIONING_2026-08-31.md`. The 2D solver gained a through-flow (it had
+  none, which is why it had no `p`), a 48-cell `phi(eta, p)` sweep ran with 0
+  divergences, and over-provisioning turns out to suppress recirculation by 5.5x between
+  `p = 0` and `p = 1`. Feeding that back moves the free optimum by **nothing** -- 21.02 C,
+  `p` = 0.685, PUE 1.2351, identical to five digits under `linear`, `cfd` and the new
+  `cfd2d_p`, and identical again across a 16x sweep of the `p` anchor -- because the
+  optimum sits below design airflow where the mass-balance floor `1 - p` dominates every
+  geometric term. The `p^3` fan cost also keeps it from wanting the new upside.
+
+  **Two other things came out of it and both are corrections to this file.** The
+  containment ROI at design airflow falls 5.7x, 0.0126 to **0.0022**, and is *exactly
+  zero* below design airflow at every anchor. And the "~7% recirculation floor" that
+  §8's first bullet and the Tier-1 headline rest on is **thermal diffusion, not
+  recirculated air**: sweeping the tracer's diffusivity at `eta` = 0.95 moves the signal
+  from 0.0025 at Le = 50 to 0.06945 at Le = 1, where it reproduces the temperature
+  channel to five decimals, while the same sweep at `eta` = 0 moves it 0.4%. An advected
+  signal is Lewis-independent. This cell runs at Ra = 4e3-1e5; a hall is 1e9-1e12, so
+  that floor does not transfer and neither does the ROI flattening built on it.
+
+  Original text follows.
+
   Gap (1) still stands, so the optimizer can only ever want *less* airflow. The mass-balance
   floor added 2026-08-29 (`phi >= 1-p`) stops the worst of it and moves the optimum off the
   `p_min` bound to an interior `p = 0.69`, but until (1) is closed, **report the containment
