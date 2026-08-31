@@ -36,8 +36,13 @@ FORCED AIRFLOW (added 2026-08-31)
 Poisson for the streamfunction is solved with a sparse-LU factorization of the 5-point
 Laplacian with the internal solid baked in as psi=0 Dirichlet (the fast DST solver cannot
 represent an internal solid). Reduces to the de Vahl Davis cavity when the partition height
-is zero -- checked in test_aisle.py, which did not exist until 2026-08-31 despite this
-docstring having claimed it since the file was written.
+is zero; that benchmark is checked in test_buoyant2d.py, against `Cavity`.
+
+This docstring claimed "checked in test_aisle.py" from the day it was written until
+2026-08-31, and test_aisle.py did not exist. It does now, and it checks the things that
+are actually this file's: the stored calibration is reproduced at flux = 0, the net flux
+is conserved through every horizontal cut, a partition standing on a non-zero streamline
+is refused, and the Lewis-number pair that separates advection from conduction.
 """
 from __future__ import annotations
 import numpy as np
