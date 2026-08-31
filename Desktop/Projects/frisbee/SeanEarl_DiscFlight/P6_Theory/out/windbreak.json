@@ -350,6 +350,100 @@
       "passes_all": false,
       "n_passed": 4,
       "n_gates": 5
+    },
+    {
+      "design": "W4",
+      "baseline": {
+        "n_cells": 3549,
+        "z_band": [
+          1.0,
+          6.0
+        ],
+        "sigma_u_west": 0.438259724261435,
+        "sigma_u_middle": 0.5206108140568607,
+        "sigma_u_east": 0.748433397142807,
+        "sigma_u_east_third": 0.748433397142807,
+        "sigma_u_pitch": 0.5691013118203676,
+        "U_pitch": 1.3036321458090718,
+        "dsigma_dz_max": 0.14368650949948947,
+        "dsigma_dz_p95": 0.12435273308048378
+      },
+      "design_field": {
+        "n_cells": 3549,
+        "z_band": [
+          1.0,
+          6.0
+        ],
+        "sigma_u_west": 0.4371327548156234,
+        "sigma_u_middle": 0.5114917694238637,
+        "sigma_u_east": 0.7221524817704368,
+        "sigma_u_east_third": 0.7221524817704368,
+        "sigma_u_pitch": 0.5569256686699746,
+        "U_pitch": 1.277117030844091,
+        "dsigma_dz_max": 0.13900631300152444,
+        "dsigma_dz_p95": 0.11890114030990204
+      },
+      "gates": {
+        "G-W1": {
+          "value": 0.9648854320602217,
+          "threshold": 0.75,
+          "passes": false,
+          "detail": "east-third sigma_u 0.748 -> 0.722 m/s"
+        },
+        "G-W2": {
+          "value": 0.9974285352191311,
+          "threshold": 1.1,
+          "passes": true,
+          "detail": "worst third is west at x0.997"
+        },
+        "G-W3": {
+          "value": 0.9796605851963516,
+          "threshold": 0.5,
+          "passes": true,
+          "detail": "pitch |U| 1.304 -> 1.277 m/s"
+        },
+        "G-W4": {
+          "value": 0.9674277250225661,
+          "threshold": 1.5,
+          "passes": true,
+          "detail": "max |dsigma/dz| 0.1437 -> 0.1390 1/s"
+        },
+        "G-W5": {
+          "value": 0.9944949455960226,
+          "threshold": 1.0,
+          "passes": true,
+          "detail": "(+11,+2) 8.34 -> 8.27 m; (+30,+2) 5.70 -> 5.69 m",
+          "per_launch": [
+            {
+              "sigma_base": 8.343468065232706,
+              "blocked_base": 0.0,
+              "n_good_base": 64,
+              "sigma_design": 8.274754797825722,
+              "blocked_design": 0.0,
+              "n_good_design": 64,
+              "launch": [
+                11.0,
+                2.5
+              ]
+            },
+            {
+              "sigma_base": 5.7010328864290845,
+              "blocked_base": 0.234375,
+              "n_good_base": 49,
+              "sigma_design": 5.685215185048702,
+              "blocked_design": 0.265625,
+              "n_good_design": 47,
+              "launch": [
+                30.5,
+                2.5
+              ]
+            }
+          ]
+        }
+      },
+      "passes_all": false,
+      "n_passed": 4,
+      "n_gates": 5
     }
   ]
 }

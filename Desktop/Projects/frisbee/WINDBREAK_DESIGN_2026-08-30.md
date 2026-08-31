@@ -123,10 +123,81 @@ than W2 being added after W1 disappointed.
 
 ---
 
-## 4. Results for W2 and W3
+## 4. All three architectures land in the same place
 
-*(Filled in when the cases finish; see `P6_Theory/out/windbreak.json`, which is
-written by `evaluate_windbreak.py` and carries every gate value.)*
+| design | position | H | H/H_tower | k_r | **G-W1** | worst third (G-W2) | shear (G-W4) | flown (G-W5) |
+|---|---|---|---|---|---|---|---|---|
+| W1 shelterbelt | +21 m | 5 m | 0.11 | 3.00 | ×0.962 | **×1.080** | ×1.051 | ×0.978 |
+| W2 tower deflector | +52 m | 10 m | 0.22 | 3.00 | ×0.969 | ×0.996 | ×0.965 | ×0.978 |
+| W3 low open spoiler | +30 m | 3 m | 0.07 | 1.78 | ×0.954 | ×1.066 | ×1.040 | ×0.999 |
+| | | | | *target* | **×0.75** | ≤ ×1.10 | ≤ ×1.50 | < ×1.00 |
+
+**Every one fails G-W1, and they all fail it by the same amount.** A 3–5 %
+reduction where 25 % was asked for. Position (+21, +30, +52 m), height (3, 5,
+10 m) and porosity (k_r 1.78 vs 3.00) barely move the answer: the spread between
+the three designs is smaller than the distance any of them is from the goal.
+
+The four-curve profile figure shows the mechanism. Each design puts a **local
+notch** in σ_u at its own fence, the flow recovers within about 15 m, and every
+curve has rejoined the baseline before x = +35 where the peak actually is. Even
+W2, sitting 4 m off the tower's windward face, does not reduce the peak.
+
+W1 and W3 additionally **raise** σ_u over the west and middle thirds (+8.0 % and
++6.6 %) — the project's own thesis reproduced in a controlled experiment: the
+barrier removed mean wind and added turbulence, over the part of the pitch that
+had been quietest. W2 is the only one that harms nothing, and it is also the
+only one placed where the flow is already disturbed.
+
+## 5. The height hypothesis, pre-registered and then falsified
+
+All three failing at once is a pattern, so it got a hypothesis rather than a
+fourth guess. Measured on the baseline field: disc-band σ_u begins rising 10 %
+above the pitch minimum at x = 0 and the tower face is at x = +56, so the
+**upstream influence is 56 m = 1.25 H** against H = 44.8 m — the textbook value
+for a bluff body. The three barriers are 0.07, 0.11 and 0.22 H. Each intercepts
+at most the bottom fifth of a disturbance whose length scale is set by a 45 m
+block.
+
+Prediction: a barrier must be a substantial fraction of H to matter. **W4** put
+the same screen as W2 at **25 m = 0.56 H**. The reasoning and the prediction were
+committed before the case solved.
+
+| | H | H/H_tower | east-third σ_u |
+|---|---|---|---|
+| baseline | — | — | 0.748 m/s |
+| W2 | 10 m | 0.22 | 0.725 |
+| **W4** | **25 m** | **0.56** | **0.722** |
+
+**The prediction is wrong.** Tripling the barrier height moved east-third σ_u by
+0.4 %, and W4's profile lies on top of W2's across the entire pitch.
+
+The revised explanation is more restrictive than the one it replaces, and it
+follows from what a porous screen can and cannot do. The disturbance over the
+pitch is the **upstream influence of the tower's own blockage**: a 45 m solid
+block spanning the field width decelerates and lifts the approaching flow, and
+that is a far-field consequence of total obstruction. A porous screen placed in
+front of it — at any height — barely changes the total blockage the flow sees,
+so it cannot undo the field that blockage creates. A barrier placed further
+upwind (W1, W3) is not in the causal path at all; it only adds its own local
+disturbance to a part of the pitch that was fine.
+
+Being wrong here was more informative than being right would have been. Had W4
+worked, the answer would have been "build a taller screen". Because it did not,
+the answer is that the mechanism is not interception.
+
+## 6. The last knob: resistance
+
+One thing is still untested. Every barrier so far is porous at k_r = 1.78–3.00
+(β ≈ 0.5–0.6). **W5** is near-solid, k_r = 20 (β ≈ 0.22), at the east-third
+boundary where a barrier has the best geometric chance of shielding the target.
+
+This is deliberately the design the shelterbelt literature and this project's
+own headline both say should fail, and G-W4 exists to catch it. Running it is
+not an attempt to make something work; it closes the last door, so that "no
+barrier fixes this" is a tested statement rather than three porous designs and
+an assumption.
+
+*(W5 result to follow; `P6_Theory/out/windbreak.json` carries every gate value.)*
 
 ---
 

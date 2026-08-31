@@ -134,3 +134,32 @@ UPSTREAM_INFLUENCE = dict(onset_x_m=0.0, tower_face_x_m=56.0,
                           length_over_H=1.25,
                           barrier_H_ratio={"W3": 0.07, "W1": 0.11,
                                            "W2": 0.22, "W4": 0.56})
+
+
+# ---------------------------------------------------------------------------
+# W4 FALSIFIED THE HEIGHT HYPOTHESIS. At 25 m (0.56 H) it gives east-third
+# sigma_u = 0.722 m/s against W2's 0.725 at 10 m (0.22 H) -- tripling the
+# barrier height changed nothing, and the two profiles lie on top of each other
+# across the whole pitch. The prediction recorded above was wrong.
+#
+# W5 tests the one remaining knob: RESISTANCE. Every barrier so far has been
+# porous at k_r = 1.78-3.0 (optical porosity ~0.5-0.6). W5 is near-solid,
+# k_r = 20 (beta ~ 0.22), at the east-third boundary where a barrier has the
+# best geometric chance of shielding the target.
+#
+# This is deliberately the design the shelterbelt literature and this project's
+# own headline both say should FAIL, and G-W4 exists to catch it: a solid fence
+# should trade the stagnation zone for a shear layer inside the 1-6 m disc band.
+# Running it is not an attempt to make something work; it is closing the last
+# door, so that "no barrier fixes this" is a tested statement rather than three
+# porous designs and an assumption.
+#
+# Two outcomes, both useful. If W5 also fails G-W1, the zone is not barrier-
+# fixable at any resistance or height and the honest recommendation is to use
+# the field differently. If W5 passes G-W1 but fails G-W4, that is the
+# literature's own trade-off measured on this site.
+DESIGNS["W5"] = dict(name="near-solid fence", x=21.0, height=6.0, k_r=20.00,
+                     idea="the last knob: resistance rather than height or "
+                          "position. beta ~ 0.22, the design the shelterbelt "
+                          "literature says should swap a stagnation zone for a "
+                          "shear layer in the disc band")
