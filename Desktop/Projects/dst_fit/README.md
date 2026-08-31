@@ -830,15 +830,61 @@ Gaussian assumption: is there a single `phi_m` inside every curve's interval?
 | series | intervals used | verdict |
 |---|---|---|
 | Guy PMMA, 6 curves | profile | no; gap 0.0523, at most 2 of 6 agree |
-| Guy PMMA, 6 curves | block bootstrap | no; gap 0.0508, at most 2 of 6 agree |
+| Guy PMMA, 6 curves | block bootstrap | no; gap 0.0505, at most 2 of 6 agree |
 | Richards corn starch, 7 curves | profile | no; gap 0.0516, at most 3 of 7 agree |
-| Richards corn starch, 7 curves | block bootstrap | no; gap 0.0482, at most 3 of 7 agree |
+| Richards corn starch, 7 curves | block bootstrap | no; gap 0.0475, at most 3 of 7 agree |
 
 The gate computes what it would take to reconcile them, rather than leaving it
-to be eyeballed: **every interval would have to be 9.3x to 14.1x wider** to admit
+to be eyeballed: **every interval would have to be 8.7x to 12.3x wider** to admit
 a single `phi_m`, depending on the series and the method. **Fixing the one
 defensible flaw in them makes them 1.8x wider.** The spread is not an error-bar
 artefact, and after this it is not worth asking again.
+
+> Those two ratios were 9.3x to 14.1x before 2026-08-31, when the interval
+> machinery was corrected on two counts (below). Nothing else in this section
+> moved, and no verdict changed.
+
+### The two Wald rulers, and the shrunken residuals
+
+Every "how many times wider than Wald" number above is a ratio, so its
+denominator has to be one thing. It was two. `Profile.wald_width` measured
+itself against `2 sqrt(F(1, dof)) se` and `BootstrapInterval.wald_width` against
+the asymptotic `2 x 1.95996 se` -- 4.9% apart at `dof` 26 and 31% at `dof` 5, and
+the comparison between those two widenings is exactly what this gate's argument
+turns on. Both now go through one `wald_width(stderr, dof, level)`, on the
+finite-sample ruler, because the profile interval they are compared against is
+itself a finite-sample construction.
+
+Unifying the ruler exposed a second thing hiding inside it. Fitted residuals are
+shrunk -- `E[SSR] = sigma^2 (n - k)` -- so a bootstrap that resamples them is
+under-dispersed by `sqrt((n - k) / n)`, 5.1% at `n = 30, k = 3`, while the Wald
+standard error it is compared against divides by `n - k` and is not. The
+residuals are now rescaled by `sqrt(n / (n - k))`.
+
+`scripts/probe_bootstrap_calibration.py` is the check, and it is worth reading
+for what it *predicts* rather than what it fits. On data drawn from the model
+with iid noise, a correctly calibrated percentile bootstrap does not read 1.00
+against Wald; it reads `z / t`, because a percentile interval cuts at the
+sampling distribution's own quantiles and a Wald interval cuts at `t`. Two exact
+factors, no free parameters:
+
+| | predicted | measured, median of 40 realisations |
+|---|---|---|
+| widening, residuals not rescaled | `z/t x sqrt(1-k/n)` = 0.9062 | 0.8927 |
+| widening, residuals rescaled | `z/t` = 0.9552 | 0.9412 |
+| `sd(bootstrap) / se(Wald)`, not rescaled | `sqrt(1-k/n)` = 0.9487 | 0.9439 |
+| `sd(bootstrap) / se(Wald)`, rescaled | 1.0000 | 0.9949 |
+
+The residual 1.5% on the two widenings is realisation noise: a 10-seed
+subsample moves the median by +/-0.02.
+
+**And the hypothesis that motivated the work is refuted.** The session plan
+blamed the sub-Wald iid control on resamples being refitted single-start from a
+generic guess instead of warm-starting from the full-data optimum. Warm-starting
+was implemented -- it is the right thing to do regardless -- and it moves the
+median widening by less than 0.0001. The shortfall was arithmetic, in both of
+its parts. `test_warm_start_is_not_what_sets_the_interval_width` keeps that from
+quietly reversing.
 
 ---
 

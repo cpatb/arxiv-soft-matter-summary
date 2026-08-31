@@ -144,7 +144,8 @@ ever measured. Sweep `beta` instead, which moves `sigma*` by 15% over 0.8 to 1.2
 - **A bias the block bootstrap cannot see.** Refitting each curve on the top and
   bottom three-quarters of its own stress branch moves `phi_m` by +0.7 to +12.4
   Wald sigma, **always positive**. No resampling of residuals estimates a bias, so
-  N7's margin against the needed 9.3-14.1x is a factor of ~1.5, not ~7. The
+  N7's margin against the needed 8.7-12.3x (9.3-14.1x before the 2026-08-31
+  interval corrections) is a factor of ~1.5, not ~7. The
   degeneracy result is untouched.
 - **N7 compares two different rulers.** `Profile.wald_width` uses
   `2 sqrt(f_crit) se` and `BootstrapInterval.wald_width` uses `2 x 1.95996 se`,

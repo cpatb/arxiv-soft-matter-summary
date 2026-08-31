@@ -57,6 +57,31 @@ from scipy.stats import f as f_dist
 from dst_fit.fitting import _PENALTY, FitResult, fit_model
 from dst_fit.models import Model, get_model
 
+
+def wald_width(stderr: float, dof: int, level: float = 0.95) -> float:
+    """Two-sided Wald interval width at ``level``, on the finite-sample ruler.
+
+    ``2 * t_{dof, 1-a/2} * se``, and ``t_{dof, 1-a/2}**2 == F(1, dof)`` evaluated
+    at ``level`` -- the same critical value :func:`profile_likelihood` cuts the
+    profile at. Every "how many times wider than Wald" number in this package
+    goes through here.
+
+    It has to. The profile interval and the bootstrap interval used to measure
+    themselves against two *different* Wald intervals: the profile against
+    ``2 sqrt(F(1, dof)) se`` and the bootstrap against the asymptotic
+    ``2 x 1.95996 se``. Those differ by 4.9% at ``dof = 26`` and 31% at
+    ``dof = 5``, and the comparison between the two widenings is exactly what
+    gate N7's argument turns on, so the two rulers had to become one.
+
+    The finite-sample ruler is the one kept, because the profile interval it is
+    being compared against is itself a finite-sample construction (Bates &
+    Watts ch. 6). Choosing the asymptotic ``z`` instead would be defensible on
+    its own, but not while the other interval uses ``F``.
+    """
+    if dof < 1:
+        raise ValueError(f"wald_width: dof = {dof}; there is no scale to compare against")
+    return float(2.0 * np.sqrt(f_dist.ppf(level, 1, dof)) * stderr)
+
 # Below this rmse in log viscosity the residuals are float64 rounding, the
 # denominator of the F statistic is meaningless, and the interval collapses to a
 # width set by arithmetic rather than by data. Refuse rather than return it.
@@ -102,10 +127,13 @@ class Profile:
         return self.upper - self.lower
 
     @property
+    def dof(self) -> int:
+        return int(self.n_points - self.n_free)
+
+    @property
     def wald_width(self) -> float:
         """Width of the two-sided Wald interval at the same confidence level."""
-        z = np.sqrt(self.f_crit)
-        return float(2.0 * z * self.wald_stderr)
+        return wald_width(self.wald_stderr, self.dof, self.level)
 
     @property
     def widening(self) -> float:
@@ -427,6 +455,7 @@ class BootstrapInterval:
     block_length: int
     n_runs: int
     n_points: int
+    n_free: int
     wald_stderr: float
 
     @property
@@ -434,8 +463,12 @@ class BootstrapInterval:
         return self.upper - self.lower
 
     @property
+    def dof(self) -> int:
+        return int(self.n_points - self.n_free)
+
+    @property
     def wald_width(self) -> float:
-        return float(2.0 * 1.959963984540054 * self.wald_stderr)
+        return wald_width(self.wald_stderr, self.dof, self.level)
 
     @property
     def widening(self) -> float:
@@ -495,6 +528,9 @@ def block_bootstrap(
     block_length: int | None = None,
     seed: int = 0,
     n_starts: int = 12,
+    boot_starts: int = 3,
+    warm_start: bool = True,
+    rescale_residuals: bool = True,
 ) -> BootstrapInterval:
     """Percentile interval for ``param`` from a moving-block residual bootstrap.
 
@@ -511,6 +547,16 @@ def block_bootstrap(
     :func:`block_length_from_runs`. Setting it to 1 recovers the ordinary
     residual bootstrap, i.e. the independence assumption, and is the control
     worth running: the gap between the two is the price of that assumption.
+
+    Each resample is fitted from the full-data optimum first (``start=``), then
+    from the heuristic guess and ``boot_starts - 1`` random restarts, and the
+    best of those is kept. Before that, resamples were fitted single-start from
+    the generic heuristic, which is why the iid control came back *narrower*
+    than Wald: a control that cannot reproduce Wald under Wald's own assumption
+    is not calibrated, and the shortfall was in the optimiser, not the noise.
+    ``warm_start=False`` with ``boot_starts=1`` reproduces that old behaviour
+    exactly, which is what ``scripts/probe_bootstrap_calibration.py`` compares
+    against; it is a control, not a setting anyone should use.
 
     A percentile interval is used rather than basic or BCa. It is the
     conventional default, it respects the parameter's bounds automatically, and
@@ -534,6 +580,19 @@ def block_bootstrap(
 
     resid = np.asarray(fit.residuals, dtype=float)
     n = int(sigma.size)
+    # Fitted residuals are shrunk: E[SSR] = sigma^2 (n - k), so their sample sd
+    # underestimates the noise sd by sqrt((n - k) / n) and every resample drawn
+    # from them is under-dispersed by the same factor. At n = 30, k = 3 that is
+    # 5.1%, and it lands directly on the interval width. The Wald standard error
+    # this interval is compared against divides SSR by (n - k) and so does not
+    # have the bias, which is what makes the two comparable only after this
+    # rescaling. This is the standard correction for a residual bootstrap; the
+    # leverage-by-leverage version (1/sqrt(1 - h_ii)) is finer but needs the hat
+    # matrix of a nonlinear fit, and the uniform factor removes the mean effect.
+    if rescale_residuals:
+        k_free = int(mdl.n_params)
+        if n > k_free:
+            resid = resid * np.sqrt(n / (n - k_free))
     if resid.size != n:
         raise ValueError(
             f"block_bootstrap: {resid.size} residuals for {n} points; the fit passed "
@@ -567,7 +626,14 @@ def block_bootstrap(
         r_star = np.concatenate([resid[s : s + L] for s in starts])[:n]
         eta_star = pred * np.exp(r_star)
         try:
-            boot = fit_model(mdl, sigma[usable], eta_star[usable], n_starts=1, seed=0)
+            boot = fit_model(
+                mdl,
+                sigma[usable],
+                eta_star[usable],
+                n_starts=boot_starts,
+                seed=0,
+                start=fit.params if warm_start else None,
+            )
         except (RuntimeError, ValueError):
             continue
         # A resample that pins the parameter on a bound is kept, not dropped:
@@ -594,5 +660,6 @@ def block_bootstrap(
         block_length=L,
         n_runs=n_runs,
         n_points=n,
+        n_free=int(mdl.n_params),
         wald_stderr=float(fit.stderr[index]),
     )

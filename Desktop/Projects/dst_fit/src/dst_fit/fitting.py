@@ -187,6 +187,7 @@ def fit_model(
     branch: slice | None = None,
     n_starts: int = 8,
     seed: int = 0,
+    start: np.ndarray | None = None,
 ) -> FitResult:
     """Fit ``model`` to a measured (stress, viscosity) pair.
 
@@ -200,6 +201,15 @@ def fit_model(
         are drawn log-uniformly inside the bounds with a fixed seed, so the
         result is reproducible. Single-start fits of these models are known to
         be initial-guess sensitive.
+    start
+        An extra starting point tried *before* the heuristic one and counted on
+        top of ``n_starts``. Its use is bootstrap resampling: a resample is a
+        perturbation of the data the full fit was made on, so the full fit's
+        parameters are the best available guess, and starting a resample from
+        the generic heuristic instead throws that away. Doing so made the iid
+        control interval come back *narrower* than Wald -- an optimiser
+        artefact, since a resample that converges to a worse optimum reports a
+        parameter closer to wherever the generic start led, not a real spread.
     """
     mdl: Model = get_model(model) if isinstance(model, str) else model
     sigma = np.asarray(stress, dtype=float)
@@ -223,7 +233,8 @@ def fit_model(
     lo, hi = np.array(mdl.bounds[0]), np.array(mdl.bounds[1])
 
     rng = np.random.default_rng(seed)
-    starts = [_initial_guess(mdl, sigma, eta)]
+    starts = [] if start is None else [np.asarray(start, dtype=float)]
+    starts.append(_initial_guess(mdl, sigma, eta))
     for _ in range(max(0, n_starts - 1)):
         u = rng.uniform(size=mdl.n_params)
         starts.append(np.exp(np.log(np.maximum(lo, 1e-12)) + u * (np.log(hi) - np.log(np.maximum(lo, 1e-12)))))
