@@ -36,8 +36,22 @@ python optimize_cooling.py     # prints the optimum, writes the two figures
 ## Representative result
 Generic 20-rack, 200 kW hall, containment η=0.30: baseline PUE 1.320 → **optimized 1.235
 (26% cooling-energy cut)** by raising supply 18→21 °C until the hottest rack sits on the
-27 °C limit. **Containment ROI, at fixed design airflow: PUE 1.293→1.280 as η 0→1
-(ΔPUE 0.0126), with the supply temperature it unlocks rising 23.0→26.0 °C.**
+27 °C limit. **Containment ROI, at fixed design airflow: PUE 1.279→1.277 as η 0→1
+(ΔPUE 0.0022), with the supply temperature it unlocks rising 26.4→27.0 °C.**
+
+> **That ROI was ΔPUE 0.0126 until 2026-08-31, when the CFD gained an airflow axis**
+> (`PROVISIONING_2026-08-31.md`). The 2D solver had no through-flow, so it had no
+> provisioning ratio `p` in it and the eta-only curve was being applied at design
+> airflow. With `p` measured, the cold aisle at design airflow is already flooded and
+> containment has little left to remove — and below design airflow the ROI is *exactly
+> zero* at every anchor, because mass balance pins `B`. Two more things came out of it:
+> **the free optimum did not move at all** (21.02 °C, p = 0.685, PUE 1.2351, identical
+> to five digits under all three recirculation models and across a 16× sweep of the p
+> anchor), and **the "~7% recirculation floor" is thermal diffusion, not recirculated
+> air** — sweeping the tracer's diffusivity at η = 0.95 takes the signal from 0.0025 at
+> Le = 50 to 0.06945 at Le = 1, where it reproduces the temperature channel to five
+> decimals, while the same sweep at η = 0 moves it 0.4%. This cell runs at Ra = 4×10³;
+> a hall is 10⁹–10¹².
 
 > **Airflow branch corrected 2026-08-29: the optimizer had been buying fan savings that
 > violate mass conservation.** `provisioning` is defined as supplied/demanded airflow, and
