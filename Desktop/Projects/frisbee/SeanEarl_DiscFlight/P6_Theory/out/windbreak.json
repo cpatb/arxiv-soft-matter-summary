@@ -59,6 +59,13 @@
       "height": 3.0,
       "k_r": 1.78,
       "idea": "a low, more open barrier meant to lift the shear layer above the disc band instead of blocking the flow"
+    },
+    "W4": {
+      "name": "tall tower screen",
+      "x": 52.0,
+      "height": 25.0,
+      "k_r": 3.0,
+      "idea": "the same position as W2 at 0.56 H instead of 0.22 H, testing whether the barrier must scale with the building rather than with the disc band"
     }
   },
   "results": [
@@ -144,6 +151,194 @@
               "sigma_design": 5.638128396119783,
               "blocked_design": 0.28125,
               "n_good_design": 46,
+              "launch": [
+                30.5,
+                2.5
+              ]
+            }
+          ]
+        }
+      },
+      "passes_all": false,
+      "n_passed": 4,
+      "n_gates": 5
+    },
+    {
+      "design": "W2",
+      "baseline": {
+        "n_cells": 3549,
+        "z_band": [
+          1.0,
+          6.0
+        ],
+        "sigma_u_west": 0.438259724261435,
+        "sigma_u_middle": 0.5206108140568607,
+        "sigma_u_east": 0.748433397142807,
+        "sigma_u_east_third": 0.748433397142807,
+        "sigma_u_pitch": 0.5691013118203676,
+        "U_pitch": 1.3036321458090718,
+        "dsigma_dz_max": 0.14368650949948947,
+        "dsigma_dz_p95": 0.12435273308048378
+      },
+      "design_field": {
+        "n_cells": 3549,
+        "z_band": [
+          1.0,
+          6.0
+        ],
+        "sigma_u_west": 0.4365257722185954,
+        "sigma_u_middle": 0.5108240445226553,
+        "sigma_u_east": 0.7253064302662396,
+        "sigma_u_east_third": 0.7253064302662396,
+        "sigma_u_pitch": 0.5575520823358301,
+        "U_pitch": 1.256051391859301,
+        "dsigma_dz_max": 0.13862924657258868,
+        "dsigma_dz_p95": 0.11993190052664135
+      },
+      "gates": {
+        "G-W1": {
+          "value": 0.969099499080538,
+          "threshold": 0.75,
+          "passes": false,
+          "detail": "east-third sigma_u 0.748 -> 0.725 m/s"
+        },
+        "G-W2": {
+          "value": 0.9960435514676561,
+          "threshold": 1.1,
+          "passes": true,
+          "detail": "worst third is west at x0.996"
+        },
+        "G-W3": {
+          "value": 0.9635013956178253,
+          "threshold": 0.5,
+          "passes": true,
+          "detail": "pitch |U| 1.304 -> 1.256 m/s"
+        },
+        "G-W4": {
+          "value": 0.9648034951609792,
+          "threshold": 1.5,
+          "passes": true,
+          "detail": "max |dsigma/dz| 0.1437 -> 0.1386 1/s"
+        },
+        "G-W5": {
+          "value": 0.9776364203400665,
+          "threshold": 1.0,
+          "passes": true,
+          "detail": "(+11,+2) 8.34 -> 8.23 m; (+30,+2) 5.70 -> 5.52 m",
+          "per_launch": [
+            {
+              "sigma_base": 8.343468065232706,
+              "blocked_base": 0.0,
+              "n_good_base": 64,
+              "sigma_design": 8.228544676135334,
+              "blocked_design": 0.0,
+              "n_good_design": 64,
+              "launch": [
+                11.0,
+                2.5
+              ]
+            },
+            {
+              "sigma_base": 5.7010328864290845,
+              "blocked_base": 0.234375,
+              "n_good_base": 49,
+              "sigma_design": 5.524568221499753,
+              "blocked_design": 0.28125,
+              "n_good_design": 46,
+              "launch": [
+                30.5,
+                2.5
+              ]
+            }
+          ]
+        }
+      },
+      "passes_all": false,
+      "n_passed": 4,
+      "n_gates": 5
+    },
+    {
+      "design": "W3",
+      "baseline": {
+        "n_cells": 3549,
+        "z_band": [
+          1.0,
+          6.0
+        ],
+        "sigma_u_west": 0.438259724261435,
+        "sigma_u_middle": 0.5206108140568607,
+        "sigma_u_east": 0.748433397142807,
+        "sigma_u_east_third": 0.748433397142807,
+        "sigma_u_pitch": 0.5691013118203676,
+        "U_pitch": 1.3036321458090718,
+        "dsigma_dz_max": 0.14368650949948947,
+        "dsigma_dz_p95": 0.12435273308048378
+      },
+      "design_field": {
+        "n_cells": 3549,
+        "z_band": [
+          1.0,
+          6.0
+        ],
+        "sigma_u_west": 0.4670663516719319,
+        "sigma_u_middle": 0.5520275036812405,
+        "sigma_u_east": 0.7141380198006094,
+        "sigma_u_east_third": 0.7141380198006094,
+        "sigma_u_pitch": 0.577743958384594,
+        "U_pitch": 1.2219718825173813,
+        "dsigma_dz_max": 0.14947426447008472,
+        "dsigma_dz_p95": 0.12726455620321508
+      },
+      "gates": {
+        "G-W1": {
+          "value": 0.9541771151940541,
+          "threshold": 0.75,
+          "passes": false,
+          "detail": "east-third sigma_u 0.748 -> 0.714 m/s"
+        },
+        "G-W2": {
+          "value": 1.065729579552496,
+          "threshold": 1.1,
+          "passes": true,
+          "detail": "worst third is west at x1.066"
+        },
+        "G-W3": {
+          "value": 0.9373594279995222,
+          "threshold": 0.5,
+          "passes": true,
+          "detail": "pitch |U| 1.304 -> 1.222 m/s"
+        },
+        "G-W4": {
+          "value": 1.0402804340557512,
+          "threshold": 1.5,
+          "passes": true,
+          "detail": "max |dsigma/dz| 0.1437 -> 0.1495 1/s"
+        },
+        "G-W5": {
+          "value": 0.9989069868286277,
+          "threshold": 1.0,
+          "passes": true,
+          "detail": "(+11,+2) 8.34 -> 8.03 m; (+30,+2) 5.70 -> 5.90 m",
+          "per_launch": [
+            {
+              "sigma_base": 8.343468065232706,
+              "blocked_base": 0.0,
+              "n_good_base": 64,
+              "sigma_design": 8.033364790749207,
+              "blocked_design": 0.0,
+              "n_good_design": 64,
+              "launch": [
+                11.0,
+                2.5
+              ]
+            },
+            {
+              "sigma_base": 5.7010328864290845,
+              "blocked_base": 0.234375,
+              "n_good_base": 49,
+              "sigma_design": 5.900461658800961,
+              "blocked_design": 0.265625,
+              "n_good_design": 47,
               "launch": [
                 30.5,
                 2.5

@@ -1,0 +1,34 @@
+
+=== W1  shelterbelt: x = +21 m, H = 5 m, k_r = 3.00 ===
+    a porous fence on the east-third boundary, sheltering the affected zone from upwind in the classic shelterbelt way
+    G-W1  FAIL  x0.962 vs 0.75   east-third sigma_u 0.748 -> 0.720 m/s
+    G-W2  PASS  x1.080 vs 1.1   worst third is west at x1.080
+    G-W3  PASS  x0.947 vs 0.5   pitch |U| 1.304 -> 1.234 m/s
+    G-W4  PASS  x1.051 vs 1.5   max |dsigma/dz| 0.1437 -> 0.1510 1/s
+    G-W5  PASS  x0.978 vs 1.0   (+11,+2) 8.34 -> 8.07 m; (+30,+2) 5.70 -> 5.64 m
+    -> 4/5 gates, DOES NOT PASS
+
+=== W2  tower deflector: x = +52 m, H = 10 m, k_r = 3.00 ===
+    a porous screen 4 m in front of Campus Towers' windward face, breaking the stagnation up before it forms rather than shielding the field from it
+    G-W1  FAIL  x0.969 vs 0.75   east-third sigma_u 0.748 -> 0.725 m/s
+    G-W2  PASS  x0.996 vs 1.1   worst third is west at x0.996
+    G-W3  PASS  x0.964 vs 0.5   pitch |U| 1.304 -> 1.256 m/s
+    G-W4  PASS  x0.965 vs 1.5   max |dsigma/dz| 0.1437 -> 0.1386 1/s
+    G-W5  PASS  x0.978 vs 1.0   (+11,+2) 8.34 -> 8.23 m; (+30,+2) 5.70 -> 5.52 m
+    -> 4/5 gates, DOES NOT PASS
+
+=== W3  low open spoiler: x = +30 m, H = 3 m, k_r = 1.78 ===
+    a low, more open barrier meant to lift the shear layer above the disc band instead of blocking the flow
+    G-W1  FAIL  x0.954 vs 0.75   east-third sigma_u 0.748 -> 0.714 m/s
+    G-W2  PASS  x1.066 vs 1.1   worst third is west at x1.066
+    G-W3  PASS  x0.937 vs 0.5   pitch |U| 1.304 -> 1.222 m/s
+    G-W4  PASS  x1.040 vs 1.5   max |dsigma/dz| 0.1437 -> 0.1495 1/s
+    G-W5  PASS  x0.999 vs 1.0   (+11,+2) 8.34 -> 8.03 m; (+30,+2) 5.70 -> 5.90 m
+    -> 4/5 gates, DOES NOT PASS
+
+NO DESIGN PASSES. 3 evaluated, best 4/5 gates.
+  ranked by harm done, since none achieved the goal:
+    W2  G-W1 x0.969  worst-third sigma_u x0.996  shear x0.965  flown x0.978
+    W3  G-W1 x0.954  worst-third sigma_u x1.066  shear x1.040  flown x0.999
+    W1  G-W1 x0.962  worst-third sigma_u x1.080  shear x1.051  flown x0.978
+wrote C:\Users\compl\Desktop\Projects\frisbee\SeanEarl_DiscFlight\P6_Theory\out\windbreak.json

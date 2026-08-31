@@ -229,10 +229,27 @@ def main():
         results.append(r)
 
     if results:
-        best = max(results, key=lambda r: (r["passes_all"], r["n_passed"],
-                                           -r["gates"]["G-W1"]["value"]))
-        print(f"\nBest of {len(results)}: {best['design']} "
-              f"({best['n_passed']}/{best['n_gates']} gates)")
+        passing = [r for r in results if r["passes_all"]]
+        if passing:
+            best = max(passing, key=lambda r: -r["gates"]["G-W1"]["value"])
+            print(f"\nPASSES: {best['design']} "
+                  f"({best['n_passed']}/{best['n_gates']} gates)")
+        else:
+            # Do not crown a design that failed the gate the study exists for.
+            # Ranking failures by G-W1 alone named W1 "best" on a 0.7% edge in a
+            # gate both miss by 20 points, while W1 RAISES sigma_u by 8% over
+            # the west third and W2 raises it nowhere. Rank by harm instead, and
+            # say plainly that nothing passed.
+            print(f"\nNO DESIGN PASSES. {len(results)} evaluated, best "
+                  f"{max(r['n_passed'] for r in results)}/"
+                  f"{results[0]['n_gates']} gates.")
+            print("  ranked by harm done, since none achieved the goal:")
+            for r in sorted(results, key=lambda r: r["gates"]["G-W2"]["value"]):
+                g5 = r["gates"].get("G-W5", {}).get("value", float("nan"))
+                print(f"    {r['design']}  G-W1 x{r['gates']['G-W1']['value']:.3f}"
+                      f"  worst-third sigma_u x{r['gates']['G-W2']['value']:.3f}"
+                      f"  shear x{r['gates']['G-W4']['value']:.3f}"
+                      f"  flown x{g5:.3f}")
     Path(args.out).write_text(json.dumps(
         dict(heading=args.heading, gates=GATES, designs=DESIGNS,
              results=results), indent=2))
