@@ -262,7 +262,7 @@ right ones would have been:
 
 ---
 
-## 5. Limitations that travel with any verdict here
+## 9. Limitations that travel with any verdict here
 
 - **The porous zone is 4 m thick**, two production cells, not a physically thin
   screen. The resistance is set from the thickness so a thicker zone with a

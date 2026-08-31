@@ -3,13 +3,19 @@ test_q_significance.py -- checks for the Q-ordering significance analysis.
 
 Run from P5_Synthesis:  python -m pytest test_q_significance.py -q
 """
+from pathlib import Path
+
 import numpy as np
 import pytest
 
 import q_significance as qs
 
-Q_NPZ = "Q.npz"
-LANDING_NPZ = "../P4_Coupling/landing_stats.npz"
+# Anchored to this file, not to the working directory, so the suite is runnable
+# from the repo root (`python -m pytest` in SeanEarl_DiscFlight) as well as from
+# P5_Synthesis.  Before this, four tests errored and three failed at the root.
+_HERE = Path(__file__).resolve().parent
+Q_NPZ = str(_HERE / "Q.npz")
+LANDING_NPZ = str(_HERE.parent / "P4_Coupling" / "landing_stats.npz")
 
 
 # --------------------------------------------------------------------------- #
