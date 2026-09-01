@@ -18,6 +18,33 @@ analysed with the **pebble game**; order parameter `f_rig` (fraction of particle
 clusters) scales as `(φ − φ_c)^β` with 2D-percolation exponents, susceptibility
 `χ_rig ~ |φ − φ_c|^(−γ)`, finite-size `ν ≈ 1.33`.
 
+⚠ **FULL TEXT READ 2026-09-01. Their Table 2 changes how their result must be compared.**
+Their polydisperse systems are five **normal** distributions with skewness *exactly 0*, at
+`α = s.d./⟨a⟩` = 0.072, 0.133, 0.187, 0.267, 0.320, plus **one** lognormal at `α` = 0.374
+with `s` = 0.694. So the non-monotonic `φ_J^μ` they report is measured on a **zero-skew**
+family over `α ≤ 0.32`. The like-for-like comparison from this project is the **uniform**
+family, not the lognormal, and made that way the two results agree: the zero-skew increment
+`dφ_J/dCV` peaks near CV ≈ 0.3 and collapses (+0.0093 → +0.0001), while the lognormal's
+keeps growing. **Their non-monotonicity is plausibly a property of zero-skew distributions,
+and the tail is what keeps `φ_J` climbing.** `REPORT_2026-08-31.md` §5 carried the wrong
+comparison until this was read and is corrected.
+
+Three more things the full text settles:
+
+- Their `σ` = 25 and 100 are in the high-stress limit where shear jamming is nearly
+  stress-independent; `μ` = 0.5, `N` = 1000, 2D, `k_t` = 0.9 `k_n`.
+- **The lower-viscosity-with-polydispersity result is well established and they cite it as
+  such** (refs 11, 17, 24, 37, 48): at fixed `φ`, bidisperse suspensions have lower
+  viscosity than monodisperse, decreasing monotonically with the size ratio. This is the
+  direction of the author's bench observation, and it is not new.
+- **Wyart–Cates FAILS for PMMA suspensions with a predominant fraction of large particles**
+  (Guy et al. [24]). Relevant to any WC closure applied to a broad distribution.
+- "The rheology of a polydisperse suspension is identical to that of a **statistically
+  equivalent bidisperse** suspension" is established for viscosity, normal stresses, particle
+  pressures and packing efficiency (refs 15, 47, 48, 23). That is consistent with this
+  project's finding that CV alone is not sufficient above CV ≈ 0.2: the "statistical
+  equivalence" mapping must match more than one moment.
+
 **This is the closest published work to this project's Phase 2/3, and it carries two
 findings that bear directly on my anchors:**
 
