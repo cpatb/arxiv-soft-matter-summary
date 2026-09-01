@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+
+# Per-worker sweep console logs. The scientific content lives in the .jsonl
+# records and the *_verdict.txt files; these are the interleaved stdout of up to
+# 12 parallel workers and regenerate on any re-run.
+out/*_w[0-9][0-9].log
+out/calib_cost.log
+out/diag_*.log
+out/phase4_impact.log

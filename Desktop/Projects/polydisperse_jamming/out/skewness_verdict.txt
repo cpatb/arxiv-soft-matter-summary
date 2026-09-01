@@ -1,0 +1,217 @@
+==============================================================================
+SKEWNESS vs POLYDISPERSITY
+==============================================================================
+
+A lognormal's skewness is set by its CV: S = (3 + CV^2)*CV.
+A uniform PSD has S = 0 at every CV.
+So at MATCHED CV the two families differ only in skewness (and higher
+moments), and Desmond & Weeks (PRE 90, 022204) warn that skewness can
+outweigh polydispersity for phi_RCP.
+
+   CV  S(lognormal)  S(uniform)
+ 0.00         0.000       0.000
+ 0.10         0.301       0.000
+ 0.20         0.608       0.000
+ 0.30         0.927       0.000
+ 0.40         1.264       0.000
+ 0.50         1.625       0.000
+
+phi_J at matched CV and mu_p = 0.30
+     CV   lognormal     uniform      diff       sd   n_sd  verdict
+   0.00      0.5745      0.5751   +0.0006   0.0010   0.59  agree
+   0.10      0.5781      0.5790   +0.0008   0.0015   0.56  agree
+   0.20      0.5881      0.5866   -0.0014   0.0016   0.90  agree
+   0.30      0.6040      0.5959   -0.0081   0.0025   3.24  DIFFER
+   0.40      0.6196      0.5960   -0.0235   0.0027   8.82  DIFFER
+   0.50      0.6369      0.5979   -0.0389   0.0051   7.65  DIFFER
+
+structural observables at matched CV, mu_p and p_hat
+  observable                            CV    p_hat   lognorm   uniform   n_sd  verdict
+  Z over all grains                   0.10    3e-05    4.1387    4.1671   1.13  agree
+  rattler fraction (k=2, true rattlers)  0.10    3e-05    0.1073    0.1062   0.24  agree
+  rattler fraction (k=3)              0.10    3e-05    0.1327    0.1242   1.36  agree
+  Z over backbone (k=2)               0.10    3e-05    4.6358    4.6589   3.75  DIFFER
+  Z over backbone (k=3)               0.10    3e-05    4.6544    4.6724   3.27  DIFFER
+  largest backbone component (k=2)    0.10    3e-05    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.10    3e-05    0.5778    0.5779   0.02  agree
+  contact-force CV                    0.10    3e-05    0.7358    0.7289   0.43  agree
+  contact-force tail slope            0.10    3e-05   -1.5230   -1.5180   0.04  agree
+  Z over all grains                   0.10    1e-04    4.2809    4.2102   1.28  agree
+  rattler fraction (k=2, true rattlers)  0.10    1e-04    0.0913    0.1058   1.74  agree
+  rattler fraction (k=3)              0.10    1e-04    0.1156    0.1260   0.80  agree
+  Z over backbone (k=2)               0.10    1e-04    4.7053    4.7065   0.05  agree
+  Z over backbone (k=3)               0.10    1e-04    4.7252    4.7228   0.10  agree
+  largest backbone component (k=2)    0.10    1e-04    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.10    1e-04    0.5785    0.5792   0.30  agree
+  contact-force CV                    0.10    1e-04    0.7234    0.7321   0.39  agree
+  contact-force tail slope            0.10    1e-04   -1.6247   -1.4861   1.90  agree
+  Z over all grains                   0.10    3e-04    4.3978    4.3631   0.82  agree
+  rattler fraction (k=2, true rattlers)  0.10    3e-04    0.0900    0.0931   0.56  agree
+  rattler fraction (k=3)              0.10    3e-04    0.1107    0.1151   0.85  agree
+  Z over backbone (k=2)               0.10    3e-04    4.8311    4.8097   0.63  agree
+  Z over backbone (k=3)               0.10    3e-04    4.8503    4.8297   0.64  agree
+  largest backbone component (k=2)    0.10    3e-04    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.10    3e-04    0.5875    0.5893   0.93  agree
+  contact-force CV                    0.10    3e-04    0.6490    0.6531   0.44  agree
+  contact-force tail slope            0.10    3e-04   -2.0002   -1.9188   0.67  agree
+  Z over all grains                   0.10    1e-03    4.7871    4.7827   0.11  agree
+  rattler fraction (k=2, true rattlers)  0.10    1e-03    0.0591    0.0613   0.48  agree
+  rattler fraction (k=3)              0.10    1e-03    0.0760    0.0822   1.23  agree
+  Z over backbone (k=2)               0.10    1e-03    5.0860    5.0942   0.28  agree
+  Z over backbone (k=3)               0.10    1e-03    5.1058    5.1189   0.53  agree
+  largest backbone component (k=2)    0.10    1e-03    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.10    1e-03    0.5974    0.5973   0.03  agree
+  contact-force CV                    0.10    1e-03    0.6063    0.5984   0.89  agree
+  contact-force tail slope            0.10    1e-03   -2.3115   -2.3281   0.14  agree
+  Z over all grains                   0.20    3e-05    3.8013    3.8133   0.17  agree
+  rattler fraction (k=2, true rattlers)  0.20    3e-05    0.1773    0.1753   0.19  agree
+  rattler fraction (k=3)              0.20    3e-05    0.2056    0.2004   0.48  agree
+  Z over backbone (k=2)               0.20    3e-05    4.6155    4.6225   0.15  agree
+  Z over backbone (k=3)               0.20    3e-05    4.6379    4.6419   0.09  agree
+  largest backbone component (k=2)    0.20    3e-05    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.20    3e-05    0.5875    0.5869   0.54  agree
+  contact-force CV                    0.20    3e-05    0.7530    0.7727   0.65  agree
+  contact-force tail slope            0.20    3e-05   -1.4895   -1.3891   1.28  agree
+  Z over all grains                   0.20    1e-04    3.9916    3.8644   2.28  DIFFER
+  rattler fraction (k=2, true rattlers)  0.20    1e-04    0.1509    0.1742   1.79  agree
+  rattler fraction (k=3)              0.20    1e-04    0.1758    0.2016   1.77  agree
+  Z over backbone (k=2)               0.20    1e-04    4.6972    4.6750   1.99  agree
+  Z over backbone (k=3)               0.20    1e-04    4.7182    4.6988   1.93  agree
+  largest backbone component (k=2)    0.20    1e-04    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.20    1e-04    0.5905    0.5883   1.71  agree
+  contact-force CV                    0.20    1e-04    0.8105    0.7734   1.14  agree
+  contact-force tail slope            0.20    1e-04   -1.3380   -1.3890   0.28  agree
+  Z over all grains                   0.20    3e-04    4.0689    4.0182   0.97  agree
+  rattler fraction (k=2, true rattlers)  0.20    3e-04    0.1551    0.1622   0.66  agree
+  rattler fraction (k=3)              0.20    3e-04    0.1804    0.1931   1.31  agree
+  Z over backbone (k=2)               0.20    3e-04    4.8139    4.7899   0.97  agree
+  Z over backbone (k=3)               0.20    3e-04    4.8389    4.8201   0.80  agree
+  largest backbone component (k=2)    0.20    3e-04    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.20    3e-04    0.5956    0.5927   0.89  agree
+  contact-force CV                    0.20    3e-04    0.6881    0.7391   1.77  agree
+  contact-force tail slope            0.20    3e-04   -1.7814   -1.5064   1.91  agree
+  Z over all grains                   0.20    1e-03    4.5027    4.3818   1.91  agree
+  rattler fraction (k=2, true rattlers)  0.20    1e-03    0.1171    0.1309   1.15  agree
+  rattler fraction (k=3)              0.20    1e-03    0.1371    0.1560   1.65  agree
+  Z over backbone (k=2)               0.20    1e-03    5.0979    5.0365   2.96  DIFFER
+  Z over backbone (k=3)               0.20    1e-03    5.1234    5.0674   2.97  DIFFER
+  largest backbone component (k=2)    0.20    1e-03    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.20    1e-03    0.6091    0.6048   4.15  DIFFER
+  contact-force CV                    0.20    1e-03    0.6573    0.6503   0.40  agree
+  contact-force tail slope            0.20    1e-03   -1.7999   -2.1920   5.88  DIFFER
+  Z over all grains                   0.30    3e-05    3.2467    3.2058   0.49  agree
+  rattler fraction (k=2, true rattlers)  0.30    3e-05    0.2871    0.3022   1.15  agree
+  rattler fraction (k=3)              0.30    3e-05    0.3260    0.3360   0.52  agree
+  Z over backbone (k=2)               0.30    3e-05    4.5411    4.5851   1.00  agree
+  Z over backbone (k=3)               0.30    3e-05    4.5733    4.6156   1.03  agree
+  largest backbone component (k=2)    0.30    3e-05    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.30    3e-05    0.6052    0.5964   3.00  DIFFER
+  contact-force CV                    0.30    3e-05    0.8661    0.7914   3.77  DIFFER
+  contact-force tail slope            0.30    3e-05   -1.1310   -1.3857   6.20  DIFFER
+  Z over all grains                   0.30    1e-04    3.3071    3.2924   0.15  agree
+  rattler fraction (k=2, true rattlers)  0.30    1e-04    0.2860    0.2880   0.11  agree
+  rattler fraction (k=3)              0.30    1e-04    0.3256    0.3209   0.27  agree
+  Z over backbone (k=2)               0.30    1e-04    4.6234    4.6216   0.09  agree
+  Z over backbone (k=3)               0.30    1e-04    4.6625    4.6517   0.46  agree
+  largest backbone component (k=2)    0.30    1e-04    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.30    1e-04    0.6032    0.5966   1.93  agree
+  contact-force CV                    0.30    1e-04    0.8338    0.8281   0.21  agree
+  contact-force tail slope            0.30    1e-04   -1.2933   -1.2717   0.29  agree
+  Z over all grains                   0.30    3e-04    3.5076    3.4582   0.75  agree
+  rattler fraction (k=2, true rattlers)  0.30    3e-04    0.2640    0.2776   1.03  agree
+  rattler fraction (k=3)              0.30    3e-04    0.2927    0.3056   1.02  agree
+  Z over backbone (k=2)               0.30    3e-04    4.7596    4.7776   1.16  agree
+  Z over backbone (k=3)               0.30    3e-04    4.7911    4.8096   0.99  agree
+  largest backbone component (k=2)    0.30    3e-04    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.30    3e-04    0.6108    0.6021   4.23  DIFFER
+  contact-force CV                    0.30    3e-04    0.8277    0.7733   1.59  agree
+  contact-force tail slope            0.30    3e-04   -1.3465   -1.4155   0.67  agree
+  Z over all grains                   0.30    1e-03    3.9182    3.8658   0.64  agree
+  rattler fraction (k=2, true rattlers)  0.30    1e-03    0.2211    0.2342   0.80  agree
+  rattler fraction (k=3)              0.30    1e-03    0.2518    0.2702   1.61  agree
+  Z over backbone (k=2)               0.30    1e-03    5.0286    5.0367   0.49  agree
+  Z over backbone (k=3)               0.30    1e-03    5.0708    5.0901   1.23  agree
+  largest backbone component (k=2)    0.30    1e-03    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.30    1e-03    0.6194    0.6119   3.86  DIFFER
+  contact-force CV                    0.30    1e-03    0.7290    0.6910   1.82  agree
+  contact-force tail slope            0.30    1e-03   -1.5625   -1.8545   2.45  DIFFER
+  Z over all grains                   0.40    1e-04    2.7569    2.8858   1.63  agree
+  rattler fraction (k=2, true rattlers)  0.40    1e-04    0.4036    0.3789   1.63  agree
+  rattler fraction (k=3)              0.40    1e-04    0.4436    0.4140   1.59  agree
+  Z over backbone (k=2)               0.40    1e-04    4.5969    4.6370   1.22  agree
+  Z over backbone (k=3)               0.40    1e-04    4.6433    4.6768   1.18  agree
+  largest backbone component (k=2)    0.40    1e-04    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.40    1e-04    0.6209    0.5978  10.26  DIFFER
+  contact-force CV                    0.40    1e-04    0.9570    0.7816   3.61  DIFFER
+  contact-force tail slope            0.40    1e-04   -1.0479   -1.4809   3.13  DIFFER
+  Z over all grains                   0.40    3e-04    2.9787    2.9516   0.24  agree
+  rattler fraction (k=2, true rattlers)  0.40    3e-04    0.3711    0.3824   0.55  agree
+  rattler fraction (k=3)              0.40    3e-04    0.4078    0.4124   0.19  agree
+  Z over backbone (k=2)               0.40    3e-04    4.7238    4.7709   1.22  agree
+  Z over backbone (k=3)               0.40    3e-04    4.7694    4.8110   1.21  agree
+  largest backbone component (k=2)    0.40    3e-04    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.40    3e-04    0.6239    0.6036   6.23  DIFFER
+  contact-force CV                    0.40    3e-04    0.9334    0.7520   4.35  DIFFER
+  contact-force tail slope            0.40    3e-04   -1.1722   -1.4385   3.53  DIFFER
+  Z over all grains                   0.40    1e-03    3.2400    3.3311   0.93  agree
+  rattler fraction (k=2, true rattlers)  0.40    1e-03    0.3442    0.3384   0.32  agree
+  rattler fraction (k=3)              0.40    1e-03    0.3800    0.3693   0.56  agree
+  Z over backbone (k=2)               0.40    1e-03    4.9372    5.0264   2.34  DIFFER
+  Z over backbone (k=3)               0.40    1e-03    4.9923    5.0767   2.96  DIFFER
+  largest backbone component (k=2)    0.40    1e-03    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.40    1e-03    0.6336    0.6160   7.36  DIFFER
+  contact-force CV                    0.40    1e-03    0.8639    0.6838   8.51  DIFFER
+  contact-force tail slope            0.40    1e-03   -1.1837   -1.8752   6.23  DIFFER
+  Z over all grains                   0.50    3e-04    2.4716    2.6058   0.85  agree
+  rattler fraction (k=2, true rattlers)  0.50    3e-04    0.4704    0.4536   0.51  agree
+  rattler fraction (k=3)              0.50    3e-04    0.5158    0.4796   1.22  agree
+  Z over backbone (k=2)               0.50    3e-04    4.6489    4.7590   9.47  DIFFER
+  Z over backbone (k=3)               0.50    3e-04    4.7121    4.7977   6.38  DIFFER
+  largest backbone component (k=2)    0.50    3e-04    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.50    3e-04    0.6416    0.6033  10.40  DIFFER
+  contact-force CV                    0.50    3e-04    1.0499    0.8185   7.41  DIFFER
+  contact-force tail slope            0.50    3e-04   -0.9436   -1.2712   3.35  DIFFER
+  Z over all grains                   0.50    1e-03    2.7338    2.9120   1.87  agree
+  rattler fraction (k=2, true rattlers)  0.50    1e-03    0.4476    0.4231   1.42  agree
+  rattler fraction (k=3)              0.50    1e-03    0.4842    0.4491   1.97  agree
+  Z over backbone (k=2)               0.50    1e-03    4.9220    5.0373   3.08  DIFFER
+  Z over backbone (k=3)               0.50    1e-03    4.9879    5.0863   2.42  DIFFER
+  largest backbone component (k=2)    0.50    1e-03    1.0000    1.0000   0.00  agree
+  packing fraction at fixed p_hat     0.50    1e-03    0.6489    0.6157  20.42  DIFFER
+  contact-force CV                    0.50    1e-03    0.9505    0.7084  11.29  DIFFER
+  contact-force tail slope            0.50    1e-03   -1.1329   -1.7376   4.47  DIFFER
+
+==============================================================================
+VERDICT
+==============================================================================
+  structural comparisons: 119/153 agree within 2.0 sd
+
+  phi_J comparisons: 3/6 agree within 2.0 sd
+
+  PER OBSERVABLE -- this is where the answer actually lives:
+    Z over all grains                      16/17 agree -> CV-driven
+    rattler fraction (k=2, true rattlers)  17/17 agree -> CV-driven
+    rattler fraction (k=3)                 17/17 agree -> CV-driven
+    Z over backbone (k=2)                  12/17 agree -> SKEWNESS-sensitive
+    Z over backbone (k=3)                  12/17 agree -> SKEWNESS-sensitive
+    largest backbone component (k=2)       17/17 agree -> CV-driven
+    packing fraction at fixed p_hat        8/17 agree -> SKEWNESS-sensitive
+    contact-force CV                       11/17 agree -> SKEWNESS-sensitive
+    contact-force tail slope               9/17 agree -> SKEWNESS-sensitive
+
+  => The split is the result, and it is not uniform:
+     CV-DRIVEN (families agree, so skewness is not the cause):
+       - Z over all grains
+       - rattler fraction (k=2, true rattlers)
+       - rattler fraction (k=3)
+       - largest backbone component (k=2)
+     SKEWNESS-SENSITIVE (families differ at matched CV):
+       - Z over backbone (k=2)
+       - Z over backbone (k=3)
+       - packing fraction at fixed p_hat
+       - contact-force CV
+       - contact-force tail slope
+     Desmond & Weeks warned exactly this for packing density,
+     and it is reproduced here for FRICTIONAL packings. Any
+     claim about these observables must name the distribution
+     family, not just the CV.

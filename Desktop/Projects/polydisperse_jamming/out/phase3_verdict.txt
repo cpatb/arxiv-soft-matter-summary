@@ -1,0 +1,192 @@
+==============================================================================
+PHASE 3 -- structure at matched mechanical state (M3)
+==============================================================================
+
+Matching: equal p_hat = p/E and equal mu_p. Matching on d32 is automatic,
+because a DEM packing is scale-invariant -- see the module docstring.
+An observable is MOVED only if |effect| > 2.0 x pooled seed sd.
+
+--- lognormal, mu_p = 0.00, p_hat = 1.0e-04 (CV values [0.0, 0.1, 0.2, 0.3, 0.4], seeds [3, 3, 3, 2, 1]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         5.9738    4.6080   -1.3658    0.0287  47.53  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0140    0.2360   +0.2220    0.0044  50.32  MOVED, monotone
+  rattler fraction (k=3)                    0.0147    0.2400   +0.2253    0.0039  57.32  MOVED, monotone
+  Z over backbone (k=2)                     6.0568    6.0105   -0.0463    0.0162   2.86  MOVED
+  Z over backbone (k=3)                     6.0581    6.0228   -0.0353    0.0154   2.29  MOVED
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.6346    0.6713   +0.0367    0.0009  38.83  MOVED, monotone
+  contact-force CV                          0.7301    0.8750   +0.1449    0.0155   9.34  MOVED, monotone
+  contact-force tail slope                 -1.5962   -1.1350   +0.4612    0.0520   8.86  MOVED, monotone
+
+--- lognormal, mu_p = 0.00, p_hat = 3.0e-04 (CV values [0.0, 0.1, 0.2, 0.3, 0.4, 0.5], seeds [3, 3, 3, 2, 1, 1]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         6.0973    4.4627   -1.6347    0.0538  30.38  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0142    0.2733   +0.2591    0.0063  41.24  MOVED, monotone
+  rattler fraction (k=3)                    0.0147    0.2793   +0.2647    0.0060  43.90  MOVED, monotone
+  Z over backbone (k=2)                     6.1816    6.1101   -0.0715    0.0334   2.14  MOVED
+  Z over backbone (k=3)                     6.1831    6.1277   -0.0554    0.0333   1.66  not resolved
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.6358    0.6866   +0.0508    0.0019  26.46  MOVED, monotone
+  contact-force CV                          0.7102    0.9000   +0.1898    0.0175  10.83  MOVED, monotone
+  contact-force tail slope                 -1.8314   -1.1507   +0.6807    0.1023   6.65  MOVED, monotone
+
+--- lognormal, mu_p = 0.00, p_hat = 1.0e-03 (CV values [0.0, 0.1, 0.2, 0.3, 0.4, 0.5], seeds [3, 3, 3, 3, 3, 3]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         6.3756    4.6422   -1.7333    0.0510  34.01  MOVED
+  rattler fraction (k=2, true rattlers)     0.0076    0.2771   +0.2696    0.0061  44.00  MOVED, monotone
+  rattler fraction (k=3)                    0.0087    0.2807   +0.2720    0.0068  39.93  MOVED, monotone
+  Z over backbone (k=2)                     6.4223    6.4047   -0.0176    0.0426   0.41  not resolved
+  Z over backbone (k=3)                     6.4250    6.4172   -0.0078    0.0386   0.20  not resolved
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.6414    0.6966   +0.0552    0.0019  28.85  MOVED, monotone
+  contact-force CV                          0.7129    0.9628   +0.2499    0.0219  11.39  MOVED, monotone
+  contact-force tail slope                 -1.6167   -1.0736   +0.5431    0.0596   9.11  MOVED, monotone
+
+--- lognormal, mu_p = 0.30, p_hat = 3.0e-05 (CV values [0.0, 0.1, 0.2, 0.3], seeds [3, 3, 3, 3]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         4.2764    3.2467   -1.0298    0.0539  19.11  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0824    0.2871   +0.2047    0.0076  26.87  MOVED, monotone
+  rattler fraction (k=3)                    0.1044    0.3260   +0.2216    0.0114  19.40  MOVED, monotone
+  Z over backbone (k=2)                     4.6583    4.5411   -0.1172    0.0332   3.53  MOVED, monotone
+  Z over backbone (k=3)                     4.6744    4.5733   -0.1011    0.0306   3.30  MOVED, monotone
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.5754    0.6052   +0.0298    0.0018  16.44  MOVED, monotone
+  contact-force CV                          0.7297    0.8661   +0.1363    0.0223   6.10  MOVED, monotone
+  contact-force tail slope                 -1.5088   -1.1310   +0.3777    0.0765   4.94  MOVED
+
+--- lognormal, mu_p = 0.30, p_hat = 1.0e-04 (CV values [0.0, 0.1, 0.2, 0.3, 0.4, 0.5], seeds [3, 3, 3, 3, 3, 3]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         4.3311    2.1502   -2.1809    0.0855  25.51  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0798    0.5284   +0.4487    0.0172  26.10  MOVED, monotone
+  rattler fraction (k=3)                    0.0991    0.5738   +0.4747    0.0165  28.83  MOVED, monotone
+  Z over backbone (k=2)                     4.7032    4.5316   -0.1716    0.0243   7.06  MOVED
+  Z over backbone (k=3)                     4.7182    4.5916   -0.1267    0.0230   5.50  MOVED
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.5744    0.6373   +0.0629    0.0029  21.54  MOVED, monotone
+  contact-force CV                          0.6957    1.0734   +0.3777    0.0234  16.15  MOVED, monotone
+  contact-force tail slope                 -1.6120   -0.9058   +0.7062    0.0978   7.22  MOVED
+
+--- lognormal, mu_p = 0.30, p_hat = 3.0e-04 (CV values [0.0, 0.1, 0.2, 0.3, 0.4, 0.5], seeds [3, 3, 3, 3, 3, 3]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         4.5227    2.4716   -2.0511    0.0792  25.89  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0676    0.4704   +0.4029    0.0144  28.04  MOVED, monotone
+  rattler fraction (k=3)                    0.0880    0.5158   +0.4278    0.0147  29.16  MOVED, monotone
+  Z over backbone (k=2)                     4.8493    4.6489   -0.2004    0.0299   6.70  MOVED, monotone
+  Z over backbone (k=3)                     4.8683    4.7121   -0.1563    0.0282   5.54  MOVED, monotone
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.5833    0.6416   +0.0583    0.0019  30.46  MOVED, monotone
+  contact-force CV                          0.6375    1.0499   +0.4124    0.0330  12.49  MOVED, monotone
+  contact-force tail slope                 -2.0241   -0.9436   +1.0805    0.0889  12.15  MOVED, monotone
+
+--- lognormal, mu_p = 0.30, p_hat = 1.0e-03 (CV values [0.0, 0.1, 0.2, 0.3, 0.4, 0.5], seeds [3, 3, 3, 3, 3, 3]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         4.9107    2.7338   -2.1769    0.0797  27.32  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0393    0.4476   +0.4082    0.0141  28.87  MOVED, monotone
+  rattler fraction (k=3)                    0.0540    0.4842   +0.4302    0.0135  31.95  MOVED, monotone
+  Z over backbone (k=2)                     5.1111    4.9220   -0.1891    0.0305   6.21  MOVED
+  Z over backbone (k=3)                     5.1283    4.9879   -0.1404    0.0292   4.82  MOVED
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.5947    0.6489   +0.0543    0.0021  25.39  MOVED, monotone
+  contact-force CV                          0.5884    0.9505   +0.3621    0.0138  26.33  MOVED, monotone
+  contact-force tail slope                 -2.5108   -1.1329   +1.3778    0.0598  23.05  MOVED, monotone
+
+--- uniform, mu_p = 0.00, p_hat = 1.0e-04 (CV values [0.0, 0.1, 0.2, 0.3, 0.4], seeds [3, 3, 3, 2, 1]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         5.9982    4.4707   -1.5276    0.0799  19.12  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0127    0.2627   +0.2500    0.0098  25.50  MOVED, monotone
+  rattler fraction (k=3)                    0.0133    0.2647   +0.2513    0.0095  26.44  MOVED, monotone
+  Z over backbone (k=2)                     6.0729    6.0542   -0.0186    0.0294   0.63  not resolved
+  Z over backbone (k=3)                     6.0743    6.0598   -0.0144    0.0294   0.49  not resolved
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.6336    0.6522   +0.0186    0.0018  10.15  MOVED, monotone
+  contact-force CV                          0.7241    0.7936   +0.0695    0.0179   3.88  MOVED
+  contact-force tail slope                 -1.6559   -1.3039   +0.3520    0.0751   4.69  MOVED, monotone
+
+--- uniform, mu_p = 0.00, p_hat = 3.0e-04 (CV values [0.0, 0.1, 0.2, 0.3, 0.4], seeds [3, 3, 3, 3, 3]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         6.0973    4.7222   -1.3751    0.0593  23.19  MOVED
+  rattler fraction (k=2, true rattlers)     0.0142    0.2389   +0.2247    0.0065  34.60  MOVED, monotone
+  rattler fraction (k=3)                    0.0147    0.2413   +0.2267    0.0066  34.55  MOVED, monotone
+  Z over backbone (k=2)                     6.1816    6.1932   +0.0116    0.0345   0.34  not resolved
+  Z over backbone (k=3)                     6.1831    6.2003   +0.0172    0.0332   0.52  not resolved
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.6358    0.6596   +0.0238    0.0010  24.25  MOVED, monotone
+  contact-force CV                          0.7102    0.8224   +0.1122    0.0158   7.10  MOVED, monotone
+  contact-force tail slope                 -1.8314   -1.2743   +0.5571    0.0933   5.97  MOVED
+
+--- uniform, mu_p = 0.00, p_hat = 1.0e-03 (CV values [0.0, 0.1, 0.2, 0.3, 0.4, 0.5], seeds [3, 3, 3, 3, 3, 2]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         6.4187    4.3700   -2.0487    0.0505  40.53  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0071    0.3193   +0.3122    0.0038  81.54  MOVED, monotone
+  rattler fraction (k=3)                    0.0076    0.3207   +0.3131    0.0042  74.72  MOVED, monotone
+  Z over backbone (k=2)                     6.4638    6.4023   -0.0615    0.0457   1.35  not resolved
+  Z over backbone (k=3)                     6.4649    6.4070   -0.0578    0.0445   1.30  not resolved
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.6412    0.6673   +0.0261    0.0011  23.69  MOVED, monotone
+  contact-force CV                          0.7074    0.8335   +0.1261    0.0169   7.47  MOVED, monotone
+  contact-force tail slope                 -1.6921   -1.2347   +0.4574    0.0485   9.43  MOVED, monotone
+
+--- uniform, mu_p = 0.30, p_hat = 3.0e-05 (CV values [0.0, 0.1, 0.2, 0.3, 0.4], seeds [3, 3, 3, 3, 2]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         4.2764    2.7467   -1.5298    0.0444  34.49  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0824    0.4030   +0.3206    0.0087  36.94  MOVED, monotone
+  rattler fraction (k=3)                    0.1044    0.4300   +0.3256    0.0091  35.93  MOVED, monotone
+  Z over backbone (k=2)                     4.6583    4.5975   -0.0608    0.0200   3.05  MOVED
+  Z over backbone (k=3)                     4.6744    4.6258   -0.0486    0.0191   2.54  MOVED
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.5754    0.5967   +0.0214    0.0022   9.51  MOVED, monotone
+  contact-force CV                          0.7297    0.7936   +0.0639    0.0178   3.60  MOVED
+  contact-force tail slope                 -1.5088   -1.3321   +0.1767    0.0805   2.20  MOVED
+
+--- uniform, mu_p = 0.30, p_hat = 1.0e-04 (CV values [0.0, 0.1, 0.2, 0.3, 0.4], seeds [3, 3, 3, 3, 3]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         4.3404    2.8858   -1.4547    0.0640  22.73  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0771    0.3789   +0.3018    0.0119  25.46  MOVED, monotone
+  rattler fraction (k=3)                    0.0962    0.4140   +0.3178    0.0136  23.45  MOVED, monotone
+  Z over backbone (k=2)                     4.7001    4.6370   -0.0632    0.0215   2.94  MOVED
+  Z over backbone (k=3)                     4.7149    4.6768   -0.0382    0.0232   1.65  not resolved
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.5756    0.5978   +0.0222    0.0019  11.52  MOVED, monotone
+  contact-force CV                          0.6974    0.7816   +0.0842    0.0349   2.41  MOVED
+  contact-force tail slope                 -1.6431   -1.4809   +0.1622    0.1325   1.22  not resolved
+
+--- uniform, mu_p = 0.30, p_hat = 3.0e-04 (CV values [0.0, 0.1, 0.2, 0.3, 0.4, 0.5], seeds [3, 3, 3, 3, 3, 3]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         4.5227    2.6058   -1.9169    0.0810  23.65  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0676    0.4536   +0.3860    0.0157  24.58  MOVED, monotone
+  rattler fraction (k=3)                    0.0880    0.4796   +0.3916    0.0149  26.31  MOVED, monotone
+  Z over backbone (k=2)                     4.8493    4.7590   -0.0903    0.0182   4.96  MOVED, monotone
+  Z over backbone (k=3)                     4.8683    4.7977   -0.0706    0.0197   3.59  MOVED
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.5833    0.6033   +0.0199    0.0031   6.43  MOVED
+  contact-force CV                          0.6375    0.8185   +0.1811    0.0200   9.06  MOVED
+  contact-force tail slope                 -2.0241   -1.2712   +0.7530    0.1215   6.20  MOVED
+
+--- uniform, mu_p = 0.30, p_hat = 1.0e-03 (CV values [0.0, 0.1, 0.2, 0.3, 0.4, 0.5], seeds [3, 3, 3, 3, 3, 3]) ---
+  observable                                 CV=lo     CV=hi    effect   seed sd   n_sd  verdict
+  Z over all grains                         4.9120    2.9120   -2.0000    0.0673  29.74  MOVED, monotone
+  rattler fraction (k=2, true rattlers)     0.0404    0.4231   +0.3827    0.0102  37.59  MOVED, monotone
+  rattler fraction (k=3)                    0.0556    0.4491   +0.3936    0.0113  34.71  MOVED, monotone
+  Z over backbone (k=2)                     5.1185    5.0373   -0.0812    0.0304   2.67  MOVED
+  Z over backbone (k=3)                     5.1363    5.0863   -0.0500    0.0259   1.93  not resolved
+  largest backbone component (k=2)          1.0000    1.0000   +0.0000    0.0000   0.00  CONSTANT
+  packing fraction at fixed p_hat           0.5940    0.6157   +0.0218    0.0017  12.59  MOVED
+  contact-force CV                          0.5853    0.7084   +0.1231    0.0179   6.88  MOVED
+  contact-force tail slope                 -2.4800   -1.7376   +0.7424    0.1466   5.06  MOVED
+
+==============================================================================
+M3 VERDICT, pooled over matched cells
+==============================================================================
+  Z over all grains                      MOVED in 14/14 matched cells
+  rattler fraction (k=2, true rattlers)  MOVED in 14/14 matched cells
+  rattler fraction (k=3)                 MOVED in 14/14 matched cells
+  Z over backbone (k=2)                  MOVED in 10/14 matched cells
+  Z over backbone (k=3)                  MOVED in 7/14 matched cells
+  largest backbone component (k=2)       MOVED in 0/14 matched cells
+  packing fraction at fixed p_hat        MOVED in 14/14 matched cells
+  contact-force CV                       MOVED in 14/14 matched cells
+  contact-force tail slope               MOVED in 13/14 matched cells
+
+=> A residual CV dependence SURVIVES matching on the
+   mechanical state. M3 is not refuted; see which observables
+   moved and whether they moved monotonically.
