@@ -44,6 +44,7 @@ import numpy as np
 __all__ = [
     "LogNormalPSD",
     "UniformPSD",
+    "BidispersePSD",
     "make_psd",
     "lognormal_skewness",
     "moment_ratio_d32_d10",
@@ -304,13 +305,94 @@ class UniformPSD:
     radii_for_yade = LogNormalPSD.radii_for_yade
 
 
+@dataclass(frozen=True)
+class BidispersePSD:
+    """A symmetric 50:50 BIDISPERSE distribution at a fixed NUMBER mean.
+
+    Half the grains at d10*(1-CV), half at d10*(1+CV). By construction the number mean
+    is exactly d10, the coefficient of variation is exactly `cv`, and the skewness is
+    exactly 0 -- the same two moments as `UniformPSD`, but with all the weight at the
+    extremes instead of spread across the interval.
+
+    This is the third family, and it exists to test a claim the literature treats as
+    established: that a polydisperse suspension behaves like a "statistically equivalent
+    bidisperse" one (Singh, Tyagi & Santra arXiv:2510.16464 and refs therein, for
+    viscosity, normal stresses, particle pressures and packing efficiency). If matching
+    two moments were sufficient, uniform and bidisperse at the same CV would agree.
+    Where they disagree, the equivalence needs more than two moments -- which is the
+    same conclusion the lognormal-vs-uniform comparison reaches from the other side.
+
+    Size ratio is d_large/d_small = (1+CV)/(1-CV), so CV < 1 keeps diameters positive.
+    """
+
+    d10: float
+    cv: float
+
+    def __post_init__(self) -> None:
+        if self.d10 <= 0:
+            raise ValueError(f"d10 must be > 0 m, got {self.d10}")
+        if self.cv < 0:
+            raise ValueError(f"cv must be >= 0, got {self.cv}")
+        if self.cv >= 1.0:
+            raise ValueError(
+                f"a symmetric bidisperse PSD needs CV < 1 for positive diameters, "
+                f"got {self.cv}")
+
+    @property
+    def size_ratio(self) -> float:
+        """d_large / d_small, the quantity the bidisperse literature reports."""
+        if self.cv == 0:
+            return 1.0
+        return float((1.0 + self.cv) / (1.0 - self.cv))
+
+    def moment(self, n: int) -> float:
+        """<d^n>, exact: the mean of the two atoms."""
+        lo = self.d10 * (1.0 - self.cv)
+        hi = self.d10 * (1.0 + self.cv)
+        return float(0.5 * (lo**n + hi**n))
+
+    @property
+    def d32(self) -> float:
+        return self.moment(3) / self.moment(2)
+
+    @property
+    def d43(self) -> float:
+        return self.moment(4) / self.moment(3)
+
+    @property
+    def d50(self) -> float:
+        return float(self.d10)          # symmetric
+
+    def sample(self, n: int, rng: np.random.Generator, *, truncate=None) -> np.ndarray:
+        """Draw `n` diameters. `truncate` is accepted and IGNORED: the distribution is
+        already bounded, and truncating it would distort the two moments it exists to
+        hold fixed."""
+        if n <= 0:
+            raise ValueError(f"n must be > 0, got {n}")
+        if self.cv == 0.0:
+            return np.full(n, self.d10, dtype=float)
+        lo = self.d10 * (1.0 - self.cv)
+        hi = self.d10 * (1.0 + self.cv)
+        # Exactly half large, half small, then shuffled: an EXACT 50:50 split rather
+        # than a binomial one, so the realised CV does not fluctuate with the seed.
+        out = np.concatenate([np.full(n // 2, lo), np.full(n - n // 2, hi)])
+        rng.shuffle(out)
+        return out
+
+    realised_moments = LogNormalPSD.realised_moments
+    radii_for_yade = LogNormalPSD.radii_for_yade
+
+
 def make_psd(family: str, d10: float, cv: float):
-    """Factory. `family` is "lognormal" or "uniform"."""
+    """Factory. `family` is "lognormal", "uniform" or "bidisperse"."""
     if family == "lognormal":
         return LogNormalPSD(d10=d10, cv=cv)
     if family == "uniform":
         return UniformPSD(d10=d10, cv=cv)
-    raise ValueError(f"unknown PSD family {family!r}; use 'lognormal' or 'uniform'")
+    if family == "bidisperse":
+        return BidispersePSD(d10=d10, cv=cv)
+    raise ValueError(
+        f"unknown PSD family {family!r}; use 'lognormal', 'uniform' or 'bidisperse'")
 
 
 def summarise_cv_ladder(d10: float, cvs, phi: float) -> str:

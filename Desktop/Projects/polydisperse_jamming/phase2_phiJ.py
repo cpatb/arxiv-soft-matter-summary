@@ -144,7 +144,7 @@ def main() -> int:
     ap.add_argument("--nshards", type=int, default=1,
                     help="total number of workers; cells are dealt round-robin")
     ap.add_argument("--family", default="lognormal",
-                    choices=["lognormal", "uniform"],
+                    choices=["lognormal", "uniform", "bidisperse"],
                     help="PSD family; uniform has skewness 0 at every CV")
     ap.add_argument("--n", type=int, default=0, help="override N")
     ap.add_argument("--mus", default="",

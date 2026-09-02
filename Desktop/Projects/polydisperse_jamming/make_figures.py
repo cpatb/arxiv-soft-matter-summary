@@ -310,13 +310,94 @@ def fig_boundary():
          "which is a plottable number. Spacing carries no meaning.")
 
 
+# --------------------------------------------------------------------------
+# F5 -- the cohesion ladder: how much tension a rebound needs
+# --------------------------------------------------------------------------
+def fig_cohesion():
+    rows = read_csv(os.path.join(OUT, "phase6_summary.csv"))
+    if not rows:
+        print("  F5 skipped: no phase6_summary.csv")
+        return
+    fig, ax = plt.subplots(figsize=(3.6, 2.8))
+    out_rows = []
+    for i, cv in enumerate(sorted({r["cv"] for r in rows})):
+        g = sorted([r for r in rows if r["cv"] == cv], key=lambda x: x["C"])
+        x = np.array([max(r["C"], 0.3) for r in g])   # 0 plotted at 0.3, see the .md
+        y = np.array([r["cor"] for r in g])
+        e = np.array([r.get("cor_sd", np.nan) for r in g], float)
+        ax.errorbar(x, y, yerr=e, marker="o", ms=4, lw=1.2, capsize=2,
+                    color=COL[i % len(COL)], label=f"CV = {cv:g}")
+        for r in g:
+            out_rows.append({"cv": cv, "C": r["C"], "cor": r["cor"],
+                             "cor_sd": r.get("cor_sd"), "spread": r["spread"],
+                             "n": r.get("n")})
+    ax.axhline(0.0, lw=0.8, color="k")
+    ax.axhline(0.8189, ls=":", lw=0.9, color="grey")
+    ax.set_xscale("log")
+    ax.set_xlabel("C = sigma_coh / (rho U0^2)")
+    ax.set_ylabel("coefficient of restitution")
+    ax.set_ylim(-0.1, 0.9)
+    ax.legend(frameon=False, fontsize=7)
+    save(fig, "F5_cohesion_ladder", out_rows,
+         "COR against bond strength in units of the impact stress. Dotted line = the "
+         "0.8189 an elastic sphere returns through this damping (test_cor_anchor). "
+         "C = 0 is plotted at 0.3 so it appears on a log axis; it is exactly zero.")
+
+
+# --------------------------------------------------------------------------
+# F6 -- the jamming gate: was the aggregate still a solid when it hit?
+# --------------------------------------------------------------------------
+def fig_retention():
+    import glob
+    import json
+    pts = []
+    for pat, lab in (("phase5*.jsonl", "Phase 5: p_cap = p_imp/50"),
+                     ("phase7*.jsonl", "Phase 7: p_cap = p_carve")):
+        for f in glob.glob(os.path.join(OUT, pat)):
+            with open(f, encoding="utf-8") as fh:
+                for line in fh:
+                    try:
+                        r = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if r.get("failed"):
+                        continue
+                    zc = r.get("z_carved", r.get("z_initial"))
+                    zl = r.get("z_launch")
+                    if zc and zl is not None and zc > 0:
+                        pts.append({"set": lab, "cv": r["cv"],
+                                    "carve_p_hat": r.get("carve_p_hat", np.nan),
+                                    "retention": zl / zc})
+    if not pts:
+        print("  F6 skipped: no retention data")
+        return
+    fig, ax = plt.subplots(figsize=(3.6, 2.8))
+    sets = sorted({p["set"] for p in pts})
+    for i, sname in enumerate(sets):
+        v = np.array([p["retention"] for p in pts if p["set"] == sname], float)
+        v = v[np.isfinite(v)]
+        ax.hist(v, bins=np.linspace(0, 1.3, 27), alpha=0.6,
+                color=COL[i % len(COL)], label=f"{sname}  (n={v.size})")
+    ax.axvline(0.80, ls="--", lw=1.0, color="k")
+    ax.set_xlabel("Z_launch / Z_carved")
+    ax.set_ylabel("cells")
+    ax.set_xlim(0, 1.3)
+    ax.set_ylim(0, None)
+    ax.legend(frameon=False, fontsize=6)
+    save(fig, "F6_jamming_gate", pts,
+         "Coordination retained between carving and launch, BEFORE any impact. "
+         "Dashed line = the 0.80 gate. Phase 5 confined ~100x too weakly and the "
+         "aggregates came apart on release; Phase 7 confines at the carve pressure.")
+
+
 def md5(path: str) -> str:
     with open(path, "rb") as fh:
         return hashlib.md5(fh.read()).hexdigest()
 
 
 def build():
-    for f in (fig_phiJ, fig_amplification, fig_structure, fig_boundary):
+    for f in (fig_phiJ, fig_amplification, fig_structure, fig_boundary,
+              fig_cohesion, fig_retention):
         try:
             f()
         except Exception as exc:      # noqa: BLE001

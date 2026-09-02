@@ -1,0 +1,60 @@
+================================================================================
+PHASE 6 -- the cohesion ladder
+================================================================================
+
+C = sigma_coh / (rho u0^2), the bond strength in units of the impact stress.
+Reference points: the cohesionless aggregate gives |COR| <= 0.035, and one
+perfectly elastic sphere through this same damping gives COR = 0.819.
+
+--- CV = 0 ---
+        C   n       COR       sd   spread   KE kept  Z init  Z peak
+        0   2   -0.0038   0.0025    2.712    0.0378    4.21    0.66
+        1   2   -0.0036   0.0006    2.712    0.0376    4.21    0.63
+        3   2   -0.0028   0.0049    2.782    0.0391    4.21    0.64
+       10   2   -0.0047   0.0040    2.719    0.0385    4.21    0.64
+       30   3   -0.0072   0.0033    2.710    0.0355    4.17    1.69
+      100   3   +0.0684   0.1105    1.061    0.0217    4.17    4.29
+      300   3   +0.3521   0.1255    1.016    0.1379    4.17    4.42
+     1000   3   +0.4746   0.0372    1.012    0.2289    4.17    4.43
+     3000   3   +0.5190   0.0204    1.013    0.2723    4.17    4.43
+
+--- CV = 0.25 ---
+        C   n       COR       sd   spread   KE kept  Z init  Z peak
+       30   3   +0.0007   0.0028    3.105    0.0455    3.54    0.93
+      100   3   +0.0153   0.0024    2.544    0.0204    3.54    3.29
+      300   3   +0.2412   0.0761    1.165    0.0661    3.54    3.87
+     1000   3   +0.2906   0.0801    1.104    0.0923    3.54    3.92
+     3000   2   +0.3721   0.0207    1.152    0.1417    3.55    3.95
+
+--- CV = 0.5 ---
+        C   n       COR       sd   spread   KE kept  Z init  Z peak
+        0   2   +0.0262   0.0006    4.028    0.0926    2.25    0.76
+        1   2   +0.0252   0.0089    4.030    0.0938    2.25    0.76
+        3   2   +0.0295   0.0017    4.013    0.0925    2.25    0.76
+       10   2   +0.0173   0.0067    3.843    0.0924    2.25    0.78
+       30   3   +0.0276   0.0042    3.905    0.0880    2.25    0.86
+      100   3   +0.0289   0.0048    3.255    0.0504    2.25    1.82
+      300   3   +0.0923   0.0965    2.615    0.0404    2.25    2.38
+     1000   3   +0.1146   0.0973    2.715    0.0224    2.25    2.60
+     3000   1   +0.0603      nan    3.554    0.0175    2.12    2.53
+
+================================================================================
+CHECKS
+================================================================================
+  DISCRIMINATING NEGATIVE (C = 0 must not rebound, |COR| <= 0.05):
+    worst |COR| at C = 0 is 0.0262 -> PASS
+
+  POSITIVE CONTROL (some C must give COR >= 0.15):
+    PASS -- rebound appears at C = 300 and above
+    CV = 0: threshold bracketed by C = 100 to 300
+    CV = 0.25: threshold bracketed by C = 100 to 300
+    CV = 0.5: no crossing inside the ladder
+
+  => The absence of rebound in the cohesionless runs is attributable
+     to the absence of TENSILE STRENGTH, not to the machinery. A
+     jammed drop that bounces needs a bond strength of at least
+     ~300x the impact stress rho*U0^2, supplied by something this
+     model does not contain: capillary bridges, adhesion, or a
+     stress-activated network with genuine tensile capacity.
+
+  PHASE6_PASS

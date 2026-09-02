@@ -41,6 +41,12 @@ result here is free of M1 by construction, not by matching (SPEC §11.7).
 | `measure.py` | pure functions of a contact graph: rattlers, backbone, fabric, force stats |
 | `phase2_phiJ.py` | the `φ_J(CV, μ_p)` sweep, resumable, shardable |
 | `phase4_impact.py` | a carved aggregate in a free / capillary / caged boundary, driven into a wall |
+| `phase5_phase_diagram.py` | the impact number `J = ρU₀²/p_carve` swept over 4.4 decades |
+| `phase6_cohesion.py` | the cohesion ladder: how much tensile strength a rebound needs |
+| `phase7_confined.py` | the corrected impact run, confined at `p_cap = p_carve` with a jamming gate |
+| `test_cor_anchor.py` | **positive control**: can this pipeline measure a rebound at all? |
+| `diag_carve_release.py` | is the spreading the impact, or the release from carving? |
+| `diag_convergence.py` | is the non-converged set a biased sample? |
 | `analyse_phase2.py` | φ_J extrapolation and the M2 verdict |
 | `analyse_phase3.py` | structure at matched mechanical state, the M3 verdict |
 | `analyse_phase4.py` | boundary-condition comparison |
@@ -91,6 +97,22 @@ Code flows Windows → WSL (`~/pj`); results flow back to `out/` and `figures/`.
   8 workers × 2 threads gave load 42 on 16 physical cores.
 - **`si_fit` is withdrawn**, do not calibrate anything here against the lab's silica
   closure parameters.
+- **Confine the carved aggregate at the pressure it was carved at.** Phases 4 and 5 held
+  it at `p_imp/Λ`, ~100× weaker, so a third of the cells expanded out of contact before
+  impact. `phase7_confined.py` sets `p_cap = p_carve` and gates on
+  `Z_launch/Z_carved ≥ 0.8`. Always check that gate before reading an impact result.
+- **COR needs both a sign convention and a positive control.** `cor = -v_z/u0` reports a
+  perfect bounce as −1; and a COR of ~0 means nothing until you have shown the pipeline
+  can register a rebound (`test_cor_anchor.py`: 0.819 for an elastic sphere at the
+  production damping).
+- **A rebound needs coherence as well as recoil.** Scoring COR alone counted shattered
+  aggregates whose fragments recoiled. Require `spread < 1.5` too.
+- **`pkill -f <pattern>` through `wsl.exe -e bash -lc` matches the invoking shell's own
+  command line** and kills the launcher. Put the kill in a script file
+  (`scripts/stop_phase5.sh`).
+- **Never write a matplotlib mathtext label through a shell heredoc.** `ho` and `m`
+  become carriage returns and silently split the source line. Plain ASCII labels, or the
+  Edit tool.
 
 ## Provenance and limits
 

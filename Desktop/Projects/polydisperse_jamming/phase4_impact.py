@@ -77,6 +77,17 @@ SHELL_FRACTION = 0.85     # grains beyond this fraction of r_max feel the capill
 # settle, Z_initial = 0.00). 1e-4 is just above jamming, so the aggregate is
 # coherent but not pre-stressed.
 CARVE_P_HAT = 1e-4
+
+# The controlling group for whether an impact fluidises a pack or bounces off it is
+# the impact stress against the pack's own confining stress:
+#
+#     J = p_imp / p_carve = (rho U0^2 / E) / (p / E) = rho U0^2 / p
+#
+# J << 1  the pack is stiff compared with the impact  -> expect elastic response
+# J >> 1  the impact overwhelms the confinement       -> expect fluidisation, spread
+#
+# The first Phase-4 sweep ran ONE u0 (0.02) and ONE carve pressure (1e-4), i.e. a single
+# J = 4, and found no rebound anywhere. That is one point, not a phase diagram.
 N_PROBES = 100
 SETTLE_STEPS = 300        # short: the free aggregate disintegrates if given longer
 
@@ -90,6 +101,8 @@ class ImpactState:
     bc: str
     lam: float
     u0: float
+    carve_p_hat: float = float("nan")
+    j_impact: float = float("nan")   # rho u0^2 / p_carve
     n_grains: int = 0
     cv_realised: float = float("nan")
     d32_realised: float = float("nan")
@@ -107,7 +120,8 @@ class ImpactState:
     force_tail_peak: float = float("nan")
     fmax_peak: float = float("nan")
     t_peak: float = float("nan")
-    cor: float = float("nan")
+    cor: float = float("nan")          # +1 = perfect rebound; see cor_convention
+    cor_convention: str = ""
     ke_ratio: float = float("nan")
     spread: float = float("nan")
     exploded: bool = False
@@ -119,7 +133,7 @@ class ImpactState:
         return json.dumps(asdict(self), sort_keys=True)
 
 
-def carve_aggregate(cv, mu_p, n_parent, seed, young=1.0):
+def carve_aggregate(cv, mu_p, n_parent, seed, young=1.0, carve_p_hat=None):
     """Compress a periodic pack, then return the grains inside a sphere.
 
     Returns (positions, radii, phi_parent, moments). Uses the SAME validated
@@ -130,8 +144,9 @@ def carve_aggregate(cv, mu_p, n_parent, seed, young=1.0):
     from packing import build_and_compress
     from psd import LogNormalPSD
 
-    st = build_and_compress(cv=cv, mu_p=mu_p, p_hat=CARVE_P_HAT, n=n_parent,
-                            seed=seed, young=young, verbose=False)
+    st = build_and_compress(cv=cv, mu_p=mu_p,
+                            p_hat=CARVE_P_HAT if carve_p_hat is None else carve_p_hat,
+                            n=n_parent, seed=seed, young=young, verbose=False)
     pos, rad = [], []
     for b in O.bodies:
         if b is None:
@@ -157,7 +172,7 @@ def carve_aggregate(cv, mu_p, n_parent, seed, young=1.0):
     return pos[keep] - centre, rad[keep], st.phi, mom
 
 
-def run_impact(cv, mu_p, seed, n_parent, bc, lam, u0, young=1.0):
+def run_impact(cv, mu_p, seed, n_parent, bc, lam, u0, young=1.0, carve_p_hat=None):
     """One carved aggregate, one boundary condition, one impact."""
     from yade import O, utils
 
@@ -165,7 +180,10 @@ def run_impact(cv, mu_p, seed, n_parent, bc, lam, u0, young=1.0):
     st = ImpactState(cv=cv, mu_p=mu_p, seed=seed, n_parent=n_parent, bc=bc,
                      lam=lam, u0=u0)
 
-    pos, rad, phi_parent, mom = carve_aggregate(cv, mu_p, n_parent, seed, young)
+    cph = CARVE_P_HAT if carve_p_hat is None else carve_p_hat
+    st.carve_p_hat = cph
+    st.j_impact = (u0 ** 2 / young) / cph
+    pos, rad, phi_parent, mom = carve_aggregate(cv, mu_p, n_parent, seed, young, cph)
     if pos.shape[0] < 50:
         st.notes.append(f"carve produced only {pos.shape[0]} grains")
         return st
@@ -296,14 +314,22 @@ def run_impact(cv, mu_p, seed, n_parent, bc, lam, u0, young=1.0):
     st.z_final = float(series[-1]["z_all"]) if series else float("nan")
 
     v = _com_vel(O, grain_ids)
-    st.cor = float(-v[2] / u0)
+    # COR sign convention. The aggregate is launched at v_z = -u0, so a clean rebound
+    # leaves it at v_z = +u0 and the coefficient of restitution is +v_z/u0. The first
+    # version used -v_z/u0, which reported a perfect bounce as -1. Caught by
+    # test_cor_anchor.py: an undamped elastic sphere came back at -1.0009.
+    #
+    # `cor_convention` is stamped so that records written by runs already in flight
+    # (which lack the field and carry the OLD sign) can be negated on read.
+    st.cor = float(v[2] / u0)
+    st.cor_convention = "positive_is_rebound"
     st.ke_ratio = float(_ke(O, grain_ids) / ke0) if ke0 > 0 else float("nan")
     lat = _lateral(O, grain_ids)
     st.spread = float(lat / d0_lat) if d0_lat > 0 else float("nan")
     st.wall_s = time.time() - t_start
 
     print(f"  cv={cv:.2f} bc={bc:9s} lam={lam:8.4g} N={st.n_grains} "
-          f"I={st.i_inertial:.4f} -> Zi={st.z_initial:.2f} Zl={st.z_launch:.2f} Zpk={st.z_peak:.2f} "
+          f"J={st.j_impact:.3g} I={st.i_inertial:.4f} -> Zi={st.z_initial:.2f} Zl={st.z_launch:.2f} Zpk={st.z_peak:.2f} "
           f"rat={st.rattler_frac_peak:.3f} span={st.largest_frac_peak:.3f} "
           f"COR={st.cor:+.3f} spread={st.spread:.3f} "
           f"{'EXPLODED ' if st.exploded else ''}{st.wall_s:.0f}s", flush=True)
