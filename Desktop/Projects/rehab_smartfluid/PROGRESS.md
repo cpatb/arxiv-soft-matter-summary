@@ -1,10 +1,10 @@
-# rehab_smartfluid — progress ledger
+# rehab_smartfluid progress ledger
 
 Newest first. Records what failed and why, not only what worked.
 
 ---
 
-## 2026-09-01 — layer 3, and closed forms behind the layer-2 map
+## 2026-09-01: layer 3, and closed forms behind the layer-2 map
 
 **Done**
 
@@ -67,7 +67,7 @@ Newest first. Records what failed and why, not only what worked.
 
 ---
 
-## 2026-08-31 — phase 0 opens
+## 2026-08-31: phase 0 opens
 
 **Done**
 
