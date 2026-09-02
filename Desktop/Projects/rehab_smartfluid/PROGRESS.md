@@ -17,7 +17,8 @@ Newest first. Records what failed and why, not only what worked.
   `sigma*`. Three properties established: no instantaneous force authority
   (relative degree one), bandwidth `omega_c = gamma_dot/gamma_0` that rises with
   speed, and **zero authority at rest**.
-- `CONTROL_2026-09-01.md`. The bandwidth result and what it means for the product.
+- `CONTROL_2026-09-01.md` + `scripts/run_control_study.py` + figure. The bandwidth
+  result, the closed-loop tracking study, and what both mean for the product.
 - 19 tests pass from the repo root.
 
 **Changed a conclusion**
@@ -34,6 +35,11 @@ Newest first. Records what failed and why, not only what worked.
   which is a material-selection target rather than a control-design one.
 - **`A` is the same number twice.** It counts the material's strain budget and the
   actuator's time constants in an event. Layers 2 and 3 fail together.
+- **The closed loop needs about 10x more strain than the material does.** Passive
+  shortfall is gone by `A* = 4.6-7.7`; closed-loop tracking error is still 8.6% at
+  `phi = 0.40` and 22% at `phi = 0.50` when `A = 13`, and needs `A ~ 44` for 5%.
+  Not expected. The passive crossover asks whether a step reaches its peak; the
+  controller lags a *moving* demand, so its error survives the material settling.
 
 **Failed, and why**
 
