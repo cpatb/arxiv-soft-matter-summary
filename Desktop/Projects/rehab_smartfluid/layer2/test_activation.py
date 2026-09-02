@@ -245,3 +245,21 @@ def test_jamming_caps_the_reachable_shear_rate():
     assert np.all(np.diff(values) < 0), f"reachable rate must fall with phi: {rate_max}"
     assert rate_max[0.44] > 80.0, "a dilute packing must reach the gait band"
     assert rate_max[0.54] < 10.0, "at phi_m the material jams below the gait band"
+
+
+def test_plateau_equals_steady_algebra():
+    """A -> 0 must give eta(0)/eta(f_steady), computed with no integration at all.
+
+    Derived in derivations/SHORTFALL_ASYMPTOTICS.md sec 3. This is the strongest
+    anchor in the file: both sides of the comparison come from steady-state
+    algebra, so it checks the integrator against something outside itself rather
+    than against another call to itself.
+    """
+    for phi in (0.40, 0.46, 0.50, 0.52):
+        mat = STFMaterial(phi=phi, phi_m=0.54, sigma_star=50.0,
+                          eta_s=ETA_S_ONSET, gamma_0=1.0)
+        integrated, _, _ = quasi_steady_ratio(
+            GAMMA_DOT_REF, 1e-6 * mat.gamma_0 / GAMMA_DOT_REF, mat)
+        f_s = float(mat.f_steady(steady_stress(GAMMA_DOT_REF, mat)))
+        closed = float(mat.viscosity(0.0)) / float(mat.viscosity(f_s))
+        assert integrated == pytest.approx(closed, rel=1e-5), (phi, integrated, closed)
