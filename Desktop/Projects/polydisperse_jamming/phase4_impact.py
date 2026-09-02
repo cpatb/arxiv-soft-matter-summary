@@ -230,8 +230,12 @@ def run_impact(cv, mu_p, seed, n_parent, bc, lam, u0, young=1.0, carve_p_hat=Non
     wall_id = O.bodies.append(utils.wall(wall_z, axis=2, sense=1))
 
     # --- capillary body force, applied EVERY STEP via PyRunner ---------------
+    # p_imp is REDUCED (p/E). The confining force needs an ABSOLUTE stress, so p_cap is
+    # multiplied by `young`. Identical at young = 1, which is all production used; see the
+    # note in phase7_confined.py and test_scale_invariance.py.
     p_imp = u0**2 / young
-    p_cap = (p_imp / lam) if (bc == "capillary" and math.isfinite(lam) and lam > 0) else 0.0
+    p_cap = ((p_imp / lam) * young
+             if (bc == "capillary" and math.isfinite(lam) and lam > 0) else 0.0)
 
     state = {"p_cap": p_cap, "ids": grain_ids}
 

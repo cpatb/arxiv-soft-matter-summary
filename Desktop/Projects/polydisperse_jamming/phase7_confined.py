@@ -92,7 +92,14 @@ def run_confined(cv, mu_p, seed, n_parent, carve_p_hat, u0, young=1.0):
     O.bodies.append(utils.wall(-r_agg - 1.0, axis=2, sense=1))
 
     # THE FIX: confine at the pressure the pack was carved at.
-    p_cap = carve_p_hat
+    #
+    # `carve_p_hat` is REDUCED pressure p/E, a dimensionless number. The confining force
+    # below needs an ABSOLUTE stress, so it must be multiplied by `young`. Omitting that
+    # made the confinement correct only at young = 1 -- which every production cell used,
+    # so the error was invisible until test_scale_invariance.py swept the stiffness and
+    # found z_retention varying by 24-68 seed scatters across two decades of E while
+    # z_carved stayed invariant to 1.0. Static packing was fine; the dynamics were not.
+    p_cap = carve_p_hat * young
     p_imp = u0**2 / young
     state = {"p": p_cap, "ids": ids}
 

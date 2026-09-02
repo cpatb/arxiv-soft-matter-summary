@@ -151,6 +151,8 @@ def main() -> int:
                     help="comma-separated mu_p values, overriding MU_LADDER")
     ap.add_argument("--cvs", default="",
                     help="comma-separated CV values, overriding CV_LADDER")
+    ap.add_argument("--seeds", default="",
+                    help="comma-separated seeds, overriding SEEDS")
     args = ap.parse_args()
 
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -161,6 +163,8 @@ def main() -> int:
         mus = tuple(float(x) for x in args.mus.split(','))
     if args.cvs:
         cvs = tuple(float(x) for x in args.cvs.split(','))
+    if args.seeds:
+        seeds = tuple(int(x) for x in args.seeds.split(','))
     seeds = (1,) if args.quick else SEEDS
     ladder = (1e-3, 3e-4, 1e-4) if args.quick else P_HAT_LADDER
 

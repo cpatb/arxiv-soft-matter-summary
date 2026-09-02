@@ -1,0 +1,57 @@
+================================================================================
+FINITE SIZE: does anything move between N = 1500 and N = 3000?
+================================================================================
+
+30 matched cells (same cv, mu_p, p_hat, seed).
+Differences are given in units of the N = 1500 SEED SCATTER, because that
+is the noise a claim already tolerates. |diff| > 1 seed sd means the
+observable is N-sensitive at the level the claims are quoted to.
+
+  observable                           mean diff  max |diff|  median sd  max |d|/sd  verdict
+  packing fraction at fixed p_hat       +0.00141     0.00911    0.00218        4.18  N-SENSITIVE
+  Z over all grains                     +0.03293     0.35467    0.08160        4.35  N-SENSITIVE
+  rattler fraction (k=2)                -0.00460     0.08167    0.01206        6.77  N-SENSITIVE
+  Z over backbone (k=2)                 +0.01791     0.12375    0.02484        4.98  N-SENSITIVE
+  rattler fraction (k=3)                -0.00562     0.06133    0.01236        4.96  N-SENSITIVE
+  Z over backbone (k=3)                 +0.01682     0.11427    0.02636        4.33  N-SENSITIVE
+
+================================================================================
+N SHIFT AGAINST THE EFFECT EACH CLAIM RESTS ON
+================================================================================
+  claim                         effect  max N shift  shift/effect  verdict
+  C1 rattlers rise              0.1940       0.0817          0.42  *** AT RISK ***
+  C1 backbone Z does not        0.0820       0.1238          1.51  *** NOT SUPPORTED ***
+  C3/C4 phi_J shift             0.0623       0.0091          0.15  SAFE
+
+  A claim is SAFE if the worst finite-size shift is under a third of the
+  effect it asserts; AT RISK if the shift is a comparable size, because
+  then doubling N again could plausibly absorb the effect.
+
+================================================================================
+DOES THE CV TREND SURVIVE? (the comparison that actually decides it)
+================================================================================
+  A finite-size offset common to all CV cancels in the CV difference.
+  So the test is whether the SLOPE across CV is the same at both N.
+
+  observable                      trend @1500  trend @3000    ratio  verdict
+  packing fraction at fixed p_hat      +0.0609      +0.0600     0.98  TREND HOLDS
+  Z over all grains                   -2.0076      -2.0533     1.02  TREND HOLDS
+  rattler fraction (k=2)              +0.4052      +0.4140     1.02  TREND HOLDS
+  Z over backbone (k=2)               -0.1158      -0.0970     0.84  TREND HOLDS
+  rattler fraction (k=3)              +0.4293      +0.4333     1.01  TREND HOLDS
+  Z over backbone (k=3)               -0.0687      -0.0537     0.78  TREND HOLDS
+
+  'TREND HOLDS' = same sign and within a factor of 2 at double the
+  system size. That is the condition a CV claim needs; matching the
+  absolute value at both N is a stricter and unnecessary requirement.
+
+================================================================================
+VERDICT
+================================================================================
+  At least one observable moves by more than the seed scatter when N
+  doubles. Any claim resting on it needs an N ladder before it can be
+  quoted, and the affected rows are marked N-SENSITIVE above.
+
+  Note this tests the DIFFERENCES the claims use, not the absolute phi_J,
+  whose extrapolation is separately flagged (free exponent b = 0.549
+  against a pre-registered [0.6, 1.6]).

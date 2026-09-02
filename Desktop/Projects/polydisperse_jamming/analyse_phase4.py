@@ -63,6 +63,14 @@ def load() -> list[dict]:
                     continue
                 k = r.get("key")
                 if k:
+                    # Same negate-on-read the Phase-5 loader applies. All Phase-4
+                    # records predate the cor_convention stamp and carry cor = -v_z/u0,
+                    # which reports a rebound as negative. Numerically inert here (every
+                    # Phase-4 COR is ~0) but it is the same bug class fixed elsewhere.
+                    if r.get("cor_convention") != "positive_is_rebound":
+                        if isinstance(r.get("cor"), (int, float)):
+                            r["cor"] = -r["cor"]
+                        r["cor_convention"] = "negated_on_read"
                     by_key[k] = r
     print(f"N: {n_lines} lines -> {len(by_key)} unique cells "
           f"({dropped_failed} failed, {dropped_boom} exploded, dropped)")

@@ -37,7 +37,14 @@ from psd import lognormal_skewness
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "out")
 
-AGREE_IN_SCATTERS = 2.0     # families "agree" if they differ by less than this many sd
+AGREE_IN_SCATTERS = 2.0     # legacy bar; the Welch test below supersedes it
+
+# The |diff| / mean(sd) statistic used here originally is not a test statistic:
+# it divides by the per-seed scatter rather than the standard error of the
+# difference of means, understating it by sqrt(2/3) = 0.82 at n = 3, and compares
+# against a fixed 2.0 instead of a t-critical value for the df. Both comparisons
+# are now printed so the change is visible.
+from analyse_families import welch  # noqa: E402
 
 
 def main() -> int:
@@ -91,7 +98,9 @@ def main() -> int:
         d = un["phi_J"] - ln["phi_J"]
         sd = float(np.nanmean([ln["phi_J_sd"], un["phi_J_sd"]]))
         n_sd = abs(d) / sd if sd > 0 else float("inf")
-        agree = n_sd < AGREE_IN_SCATTERS
+        t, df, tc = welch(ln["phi_J"], ln["phi_J_sd"], int(ln.get("n_seeds", 3)),
+                          un["phi_J"], un["phi_J_sd"], int(un.get("n_seeds", 3)))
+        agree = not (np.isfinite(t) and np.isfinite(tc) and abs(t) > tc)
         phiJ_agree.append(agree)
         lines.append(f"  {cv:5.2f} {ln['phi_J']:11.4f} {un['phi_J']:11.4f} "
                      f"{d:+9.4f} {sd:8.4f} {n_sd:6.2f}  "

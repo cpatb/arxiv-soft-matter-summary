@@ -32,6 +32,30 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "out")
 AGREE_SD = 2.0
 
+def welch(mean_a, sd_a, n_a, mean_b, sd_b, n_b):
+    """Welch's t for two small samples, with the df its critical value needs.
+
+    The first version of this comparison used  |diff| / mean(sd_a, sd_b), which is not a
+    test statistic: it divides by the per-seed scatter instead of the standard error of
+    the DIFFERENCE OF MEANS. For n = 3 per arm the correct denominator is smaller by
+    sqrt(2/3) = 0.82, so that version understated the statistic by ~22%, and it compared
+    against a fixed 2.0 rather than a t-critical value for the tiny df.
+
+    Returns (t, df, t_crit_95). A difference is resolved only if |t| > t_crit.
+    """
+    import numpy as _np
+    from scipy import stats as _st
+    if not all(_np.isfinite([mean_a, sd_a, mean_b, sd_b])) or n_a < 2 or n_b < 2:
+        return float("nan"), float("nan"), float("nan")
+    va, vb = sd_a**2 / n_a, sd_b**2 / n_b
+    se = _np.sqrt(va + vb)
+    if se <= 0:
+        return float("inf"), float("nan"), float("nan")
+    t = (mean_b - mean_a) / se
+    df = (va + vb) ** 2 / (va**2 / (n_a - 1) + vb**2 / (n_b - 1))
+    return float(t), float(df), float(_st.t.ppf(0.975, df))
+
+
 
 def main() -> int:
     fp = os.path.join(OUT, "phase2_summary.csv")
@@ -97,8 +121,10 @@ def main() -> int:
         # the sharp pair
         if "uniform" in present and "bidisperse" in present:
             lines.append("  UNIFORM vs BIDISPERSE -- matched on mean, CV, skewness AND d32:")
+            lines.append("  Welch t on the difference of means, against the two-sided 95%")
+            lines.append("  critical value for its own df. |t| > t_crit = resolved difference.")
             lines.append(f"    {'CV':>5} {'uniform':>10} {'bidisperse':>11} "
-                         f"{'diff':>9} {'sd':>8} {'n_sd':>6}  verdict")
+                         f"{'diff':>9} {'t':>7} {'df':>6} {'t_crit':>7}  verdict")
             n_dis = n_tot = 0
             for cv in cvs:
                 u = next((r for r in g_all if r["family"] == "uniform"
@@ -108,19 +134,22 @@ def main() -> int:
                 if not u or not b:
                     continue
                 d = b["phi_J"] - u["phi_J"]
-                sd = float(np.nanmean([u["phi_J_sd"], b["phi_J_sd"]]))
-                n_sd = abs(d) / sd if sd > 0 else float("inf")
-                agree = n_sd < AGREE_SD
+                t, df, tc = welch(u["phi_J"], u["phi_J_sd"], int(u.get("n_seeds", 3)),
+                                  b["phi_J"], b["phi_J_sd"], int(b.get("n_seeds", 3)))
+                agree = not (np.isfinite(t) and np.isfinite(tc) and abs(t) > tc)
                 n_tot += 1
                 n_dis += 0 if agree else 1
                 lines.append(f"    {cv:5.2f} {u['phi_J']:10.4f} {b['phi_J']:11.4f} "
-                             f"{d:+9.4f} {sd:8.4f} {n_sd:6.2f}  "
-                             f"{'agree' if agree else 'DIFFER'}")
+                             f"{d:+9.4f} {t:+7.2f} {df:6.1f} {tc:7.2f}  "
+                             f"{'not resolved' if agree else 'DIFFER'}")
             lines.append("")
             lines.append("=" * 82)
             lines.append("VERDICT")
             lines.append("=" * 82)
-            lines.append(f"  {n_tot - n_dis}/{n_tot} CV values agree within {AGREE_SD} sd")
+            lines.append(f"  {n_tot - n_dis}/{n_tot} CV values show NO RESOLVED difference")
+            lines.append("  (a failure to resolve, on n = 3 seeds per arm, is not a proof")
+            lines.append("   of identity -- it bounds any real difference, it does not")
+            lines.append("   exclude one)")
             if n_dis > n_tot / 2:
                 lines.append("  => MATCHED MOMENTS DO NOT DETERMINE phi_J. Two distributions")
                 lines.append("     agreeing on the number mean, CV, skewness and the Sauter")

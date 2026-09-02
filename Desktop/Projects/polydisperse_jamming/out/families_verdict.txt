@@ -42,18 +42,23 @@ phi_J at mu_p = 0.30
    0.50      0.5890 +/- 0.0035      0.6369 +/- 0.0048      0.5979 +/- 0.0054
 
   UNIFORM vs BIDISPERSE -- matched on mean, CV, skewness AND d32:
-       CV    uniform  bidisperse      diff       sd   n_sd  verdict
-     0.00     0.5751      0.5751   +0.0000   0.0014   0.00  agree
-     0.10     0.5790      0.5765   -0.0024   0.0018   1.38  agree
-     0.20     0.5866      0.5872   +0.0005   0.0021   0.25  agree
-     0.30     0.5959      0.5966   +0.0007   0.0026   0.27  agree
-     0.40     0.5960      0.5941   -0.0019   0.0018   1.11  agree
-     0.50     0.5979      0.5890   -0.0089   0.0045   1.99  agree
+  Welch t on the difference of means, against the two-sided 95%
+  critical value for its own df. |t| > t_crit = resolved difference.
+       CV    uniform  bidisperse      diff       t     df  t_crit  verdict
+     0.00     0.5751      0.5751   +0.0000   +0.00    4.0    2.78  not resolved
+     0.10     0.5790      0.5765   -0.0024   -1.67    3.7    2.87  not resolved
+     0.20     0.5866      0.5872   +0.0005   +0.30    3.2    3.08  not resolved
+     0.30     0.5959      0.5966   +0.0007   +0.33    3.7    2.88  not resolved
+     0.40     0.5960      0.5941   -0.0019   -1.28    2.9    3.26  not resolved
+     0.50     0.5979      0.5890   -0.0089   -2.39    3.4    2.98  not resolved
 
 ==================================================================================
 VERDICT
 ==================================================================================
-  6/6 CV values agree within 2.0 sd
+  6/6 CV values show NO RESOLVED difference
+  (a failure to resolve, on n = 3 seeds per arm, is not a proof
+   of identity -- it bounds any real difference, it does not
+   exclude one)
   => The two zero-skew families agree. Matching the first
      three moments plus d32 is sufficient for phi_J, and the
      lognormal's departure is attributable to its skewness
