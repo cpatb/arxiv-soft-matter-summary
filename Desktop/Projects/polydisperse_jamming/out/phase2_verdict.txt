@@ -9,9 +9,9 @@ GATE: a ladder counts only if its phi range exceeds 2.0x the seed scatter AND it
 MONOTONE in p. phi_J + c*p^b is monotonic by construction, so a
 non-monotonic ladder cannot be described by it at any b. The
 frictionless ladders go down/up/down and one returned b = 0.248.
-  median seed scatter in phi = 0.00165 (from 82 replicated cells)
-  ladders with a free-exponent fit: 35; 18 excluded (0 flat, 18 non-monotonic)
-  b_free over 17 INFORMATIVE ladders: median 0.549  mean 0.481  IQR [0.352, 0.668]
+  median seed scatter in phi = 0.00178 (from 106 replicated cells)
+  ladders with a free-exponent fit: 53; 30 excluded (0 flat, 30 non-monotonic)
+  b_free over 23 INFORMATIVE ladders: median 0.549  mean 0.497  IQR [0.356, 0.666]
   -> FAIL (bar: median b in [0.6, 1.6])
   (excluded ladders would have given median b = 0.993 -- printed so the exclusion is visible)
    NOTE: that median is not a measurement and must not be read
@@ -25,6 +25,12 @@ frictionless ladders go down/up/down and one returned b = 0.248.
 
 phi_J by family, CV and friction (mean over seeds)
     family   mu_p  cv_nom  cv_real     d32   n    phi_J       sd
+bidisperse   0.30    0.00    0.000   1.000   3   0.5751   0.0014
+bidisperse   0.30    0.10    0.100   1.020   3   0.5765   0.0020
+bidisperse   0.30    0.20    0.200   1.077   3   0.5872   0.0015
+bidisperse   0.30    0.30    0.300   1.165   3   0.5966   0.0030
+bidisperse   0.30    0.40    0.400   1.276   3   0.5941   0.0011
+bidisperse   0.30    0.50    0.500   1.400   3   0.5890   0.0035
  lognormal   0.00    0.00    0.000   1.000   3   0.6332   0.0002
  lognormal   0.00    0.10    0.100   1.018   3   0.6375   0.0003
  lognormal   0.00    0.20    0.200   1.076   3   0.6454   0.0007
@@ -53,6 +59,28 @@ phi_J by family, CV and friction (mean over seeds)
 
 ANCHOR A1 (frictionless monodisperse RCP = 0.64 +/- 0.02): measured 0.6332 -> PASS
 ANCHOR A4 (phi_J falls monotonically with mu_p): ['0.0:0.6332', '0.3:0.5745', '1.0:0.5590', '3.0:0.5574'] -> PASS
+
+--- family = bidisperse, mu_p = 0.30 ---
+ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.500 gives phi_J 0.5751 -> 0.5890, Delta = +0.0139
+    seed scatter (max sd) = 0.0035; Delta/scatter = 3.98
+    M2 effect on eta ~ (phi_J - phi)^-2.
+    Ratio is eta(high CV) / eta(low CV). phi_J RISES with CV, so the
+    high-CV pack is FURTHER from jamming and the ratio is BELOW 1 --
+    i.e. polydispersity THINS the suspension, which is the direction
+    of the bench observation. The ratio runs to 0, never to infinity.
+         phi  (phiJlo-phi)  (phiJhi-phi)  eta_hi/eta_lo  decades
+        0.40        0.1751        0.1890          0.858   -0.066
+        0.44        0.1351        0.1490          0.822   -0.085
+        0.48        0.0951        0.1090          0.761   -0.118
+        0.50        0.0751        0.0890          0.712   -0.147
+        0.52        0.0551        0.0690          0.638   -0.195
+        0.55        0.0251        0.0390          0.415   -0.382
+        0.58   ABOVE phi_J -- already jammed
+        0.60   ABOVE phi_J -- already jammed
+    phi at which the shift is worth ONE DECADE of thinning: 0.5687
+    (that is BELOW phi_J(low CV) = 0.5751, so it is reachable)
+    at the lab's phi = 0.44 the effect is 0.822x (-0.085 decades)
+    -> M2 VERDICT: INSUFFICIENT at the lab's phi = 0.44 -- the shift is real and well-resolved, but worth only 0.82x there, not a decade. A decade needs phi >= 0.569.
 
 --- family = lognormal, mu_p = 0.00 ---
 ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.479 gives phi_J 0.6332 -> 0.6833, Delta = +0.0502
