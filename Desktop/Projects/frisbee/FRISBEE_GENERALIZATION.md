@@ -140,13 +140,50 @@ and propose threshold bands the way Lawson did for pedestrians. Wind engineering
 has no projectile-sport standard. Writing the first defensible one is a
 genuinely high-impact move, and it makes every future site study comparable.
 
-### 3. Does gyroscopic stiffness buy gust immunity?
-A disc is a gyroscope; a gust's rolling moment precesses into a *heading* change
-90° later. Higher spin ⇒ stiffer ⇒ smaller deflection per gust. There should be
-a critical spin rate above which turbulence effects are materially suppressed.
-**Probe:** cheap — sweep release spin in the existing 6-DOF model at fixed
-release velocity. If it holds, it explains *why* coaches teach "more spin" in
-wind, which is currently folklore. Novel, and entirely within reach today.
+### 3. ~~Does gyroscopic stiffness buy gust immunity?~~ — ANSWERED, and the answer is no
+
+> ⚠ **Rewritten 2026-09-03 (WP4b item 7). This was still posed as an open hypothesis
+> after it had been measured and refuted.** The probe below was run on 2026-08-30
+> (`THEORY_WIND_SPEED_2026-08-30.md`, §"Spin is not the explanation") and the memo was
+> never updated.
+>
+> ⚠ **The hardening brief's own restatement of this item is also wrong and must not be
+> copied.** It says to report "no threshold, `ω*` inside the human range, total scatter
+> increases with spin, cross-range scatter falls as ≈ `ω^−0.21`". There is no `ω*` in the
+> measurement and no negative exponent anywhere in it. Use the numbers below.
+
+**The original hypothesis.** A disc is a gyroscope; a gust's rolling moment precesses into
+a *heading* change a quarter cycle later, so higher spin ⇒ stiffer ⇒ smaller deflection per
+gust, and there should be a critical spin rate above which turbulence is materially
+suppressed. If it held, it would explain why coaches teach "more spin" in wind, which is
+currently folklore.
+
+**The measurement.** Release spin swept 50 → 200 rad s⁻¹ at two headings and two wind
+speeds, everything else held and the release draws **paired**:
+
+| wind from | `Uref` | fitted `σ_gust ~ spin^p` | 200 vs 50 rad s⁻¹ |
+|---|---|---|---|
+| 90° | 5 | +0.02 [−0.01, +0.06] | 1.03× |
+| 90° | 10 | +0.03 [+0.02, +0.05] | 1.05× |
+| 270° | 5 | +0.07 [+0.01, +0.15] | 1.12× |
+| 270° | 10 | +0.07 [−0.03, +0.17] | 1.10× |
+
+**A fourfold change in spin moves the gust dispersion by 3–12%, and in the wrong
+direction** — more spin gives very slightly *more* scatter, not less. There is no
+threshold, no knee, and no immunity. **The folklore is not reproduced.**
+
+**The caveat that has to travel with the null.** Spin enters this model only through the
+rate-damping and gyroscopic terms of `disc_6dof`. If those under-represent the real
+coupling, the null is a property of the model rather than of a disc. What can be said
+without qualification is that spin is not a free parameter that reconciles the ballistic
+dispersion law with the 6-DOF model it is tested against.
+
+⚠ **Do not upgrade this to "spin does not matter in wind."** Sasakawa & Sakurai (*Sports
+Biomechanics* **7**(3):311–321, 2008) measured 17 players at statistically
+indistinguishable release speeds (21.7 vs 20.7 m s⁻¹) and found distance 51.4 vs 29.5 m
+with spin 81 vs 59 rad s⁻¹. Spin matters enormously for *range*. This null is about
+**gust-induced scatter at fixed flight**, which is a different question, and running that
+measured comparison through this model is the outstanding validation test (GATE G5, §4).
 
 ### 4. Do throw types re-rank under turbulence?
 The hypothesis check already found forehand beating backhand at *every* heading
@@ -168,11 +205,49 @@ the disc's own flight envelope, it is universal. Distinguishing them requires
 one more site — the cheapest real generalisation test available.
 
 ### 7. Null result worth reporting: shear is not the hazard
-I expected vertical shear to be the disc-specific villain (a gyroscope in shear
-should misbehave). The data says otherwise: the sheltered pitch has *lower*
-near-ground shear (0.02–0.06 s⁻¹ over the disc band) than the open-fetch control
-(up to 1.5 s⁻¹ near the ground, a log profile). Shelter flattens the profile.
-The hazard is σ_u, not `∂U/∂z`. Reporting this stops the next group chasing it.
+
+**The conclusion is right. The argument was not, and it is replaced here** (rewritten
+2026-09-03, WP4b item 8).
+
+> ⚠ **The retired argument.** It compared the sheltered pitch's 0.02–0.06 s⁻¹ against the
+> control's "up to 1.5 s⁻¹". That 1.5 s⁻¹ is the control's value at z = 0.5 m — *below*
+> the disc band — and the control's near-ground profile is a wall-function interpolation
+> anyway. Comparing a disc-band number against a below-band interpolated one is not a
+> comparison. It also quietly dropped the sign: the 270° shear over the disc band is
+> **−0.018 s⁻¹**, i.e. the profile is *inverted* there, which a range written as
+> "0.02–0.06" hides.
+
+**The argument that works, and it needs no control case at all.** Shear reaches the disc
+through the velocity difference **across the disc diameter**, `ΔU = (∂U/∂z)·d` with
+`d = 0.269 m` (`P1_AnalyticalModel/coefficients.py:516`, Potts & Crowther Table 3-1). Put
+that beside the gust velocity the same disc sees, `σ_u`. Both are disc-band quantities
+from `vertical_generated.tex`, so this is a like-for-like ratio:
+
+| θ_wind | `∂U/∂z` (s⁻¹) | `ΔU = (∂U/∂z)·d` (m/s) | `σ_u` (m/s) | `σ_u / ΔU` |
+|---|---|---|---|---|
+| 90° | +0.024 | 0.0065 | 0.34 | **53×** |
+| 210° | +0.057 | 0.0153 | 0.56 | **37×** |
+| 270° | −0.018 | 0.0048 | 0.59 | **122×** |
+
+**The gust-induced rolling moment is 37 to 122 times the shear-induced one**, at every
+computed heading. That is the null, and it is now a statement about magnitudes the disc
+actually experiences rather than about two incomparable profile numbers.
+
+⚠ **Three caveats, because the number is large enough to be over-read.**
+
+1. **This holds in the *sheltered* case.** Shelter is what flattens the profile; in open
+   fetch `∂U/∂z` at 2 m is an order of magnitude larger and the two terms become
+   comparable. The null is about this site, not about discs.
+2. **There is a second shear channel and it is not in the table.** The mean wind changes
+   over the trajectory's own height excursion, which is metres rather than the 0.27 m of
+   the disc. That term is comparable to `σ_u` — but it is **deterministic and therefore
+   learnable**, exactly like mean wind, so it is a bias a thrower can aim off rather than a
+   variance they cannot.
+3. ⚠ The hardening brief states this ratio as "~20×", using `σ_u = 0.36`. That 0.36 is the
+   **turbulence intensity** at 210°, not `σ_u`; the actual `σ_u` there is 0.56 m/s. Use the
+   table above.
+
+Reporting this stops the next group chasing shear.
 
 ## 5. What would make the current paper materially stronger
 

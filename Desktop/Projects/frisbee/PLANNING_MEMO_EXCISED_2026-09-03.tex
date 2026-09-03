@@ -1,0 +1,112 @@
+% PLANNING_MEMO_EXCISED_2026-09-03.tex
+%
+% WP4b item 2. The feasibility memo and the project plan, including the 14-week work
+% breakdown and the risks-and-mitigations table, removed from
+% Project1_Frisbee_LoyolaWind_PAPER.REVIEWED.tex on 2026-09-03 and kept here rather than
+% deleted.
+%
+% ONE THING WAS LOAD-BEARING AND HAS BEEN CARRIED FORWARD RATHER THAN EXCISED WITH THE
+% REST: the GATE G5 correction of 2026-09-02, which replaced the feasibility table's claim
+% that coupling a CFD field into a disc trajectory is "not done in published literature".
+% That correction now lives in the Introduction, where it belongs, and in
+% GATE_G5_PRIOR_ART_2026-09-02.md. If this file is ever re-read, do NOT restore the
+% table's original wording -- it is prior art twice over.
+%
+% Nothing else here is cited by the paper. The cross-references that pointed into it
+% (sec:feas, sec:plan, sec:feasibility-verdict) were rewritten as prose in the same commit.
+
+\section{Feasibility check}
+\label{sec:feas}
+
+\subsection{What the notes propose}
+
+\begin{quote}
+(1) Analytical treatment of ideal conditions for throwing a frisbee.\\
+(2) Build a realistic 3D map of the terrain surrounding Loyola field --- houses, buildings --- simulate wind off the lake spanning 180$^\circ$, generate 3D flow fields across the turf to capture vortices.\\
+\emph{Goal:} determine the best conditions for this constrained terrain that best allow for frisbee.\\
+\emph{Tools:} OpenFOAM or COMSOL.
+\end{quote}
+
+\subsection{Verdict}
+\label{sec:feasibility-verdict}
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{0.32\linewidth}p{0.15\linewidth}p{0.48\linewidth}@{}}
+\toprule
+\textbf{Component} & \textbf{Verdict} & \textbf{Why} \\
+\midrule
+Analytical 6-DOF disc model & Solid & Hummel (2003), Crowther \& Potts (2007) give a complete validated 6-DOF formulation with measured coefficients. \\
+RANS urban CFD, 13 wind directions $\times$ 15$^\circ$ & Tractable & $\sim$3--10 M cells, 2--8 h per direction on 32 cores, total 1--4 days. Standard COST 732 / AIJ practice; OpenFOAM \texttt{simpleFoam} with k-$\omega$ SST. \\
+LES of the same domain & Not realistic for full sweep & $\Delta x \sim 1$--$2$ m near buildings $\Rightarrow$ 50--200 M cells per case. Single direction is feasible (weeks). \\
+Coupling CFD wind field into disc trajectory & Established elsewhere; new for a disc & % REVIEW [GATE G5, 2026-09-02]: the previous entry claimed this was "not done in published literature" and called it the novelty hook. It is prior art. Kakimpa, Hargreaves \& Owen (JWEIA 111, 2012, Parts I--II) couple a CFD field to 6-DOF rigid-body dynamics for windborne debris; the construction is standard in exterior ballistics as "CFD/RBD"; and US 11{,}052{,}285 B2 (priority 2016) claims stadium wind sensors $\to$ CFD $\to$ gridded 3-D wind vectors $\to$ interpolation into a ball-trajectory model. See GATE\_G5\_PRIOR\_ART\_2026-09-02.md.
+Coupling a CFD field to 6-DOF rigid-body dynamics is established --- Kakimpa \emph{et al.}\ (2012) for windborne debris, ``CFD/RBD'' in exterior ballistics, and US 11{,}052{,}285 B2 (2016) for a ball in a stadium --- but every one of those carries a \emph{single} field to a \emph{single} trajectory. The disc-golf codes of Lukes \emph{et al.}\ (2022) and Giljarhus \emph{et al.}\ (2022) use a uniform freestream. \emph{What is new here is carrying a spatially resolved turbulent field through to a landing-point distribution.} \\
+Throwability metric over the field & Tractable as descriptive optimization & Not real-time forecasting; compute mean velocity + TKE at disc altitude, then evaluate trajectory robustness for canonical throws. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Items in your notes that need adjustment}
+
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item \textbf{``Loyola field''} --- your phrasing (``off the lake'') uniquely matches \emph{Sean Earl Field} on the Lake Shore Campus, $\sim$150--250 m from Lake Michigan, not Hoyne Field (a mile inland). \textbf{Confirmed by you: Sean Earl.}
+  \item \textbf{``180$^\circ$ span''} --- Sean Earl's lake-facing side is roughly east; a meaningful ``off-lake'' sweep is NNE through ESE ($\sim$90$^\circ$ centered on east). A full 180$^\circ$ is fine if you also characterize the prevailing westerly (off-land) cases for contrast --- think of it as two regimes, not one continuous sweep.
+  \item \textbf{``Range finder'' to build the 3D map} --- you don't need a personal LiDAR pass. USGS 3DEP / Illinois Height Modernization Program covers Cook County at 1--8 pts/m$^2$; Microsoft GlobalMLBuildingFootprints + USGS 2023 building-heights release explicitly include Chicago. A handheld rangefinder is useful only for spot-checking the 5--10 buildings nearest the field.
+  \item \textbf{``OpenFOAM or COMSOL''} --- pick OpenFOAM. The urban-CFD literature (Blocken, Tominaga, COST 732 community) is overwhelmingly OpenFOAM-based; \texttt{snappyHexMesh} handles dirty STL of campus buildings well; you'll have peer-reviewed cases to validate against.
+\end{itemize}
+
+\subsection{The biggest unstated gap}
+
+You do not have a \emph{bridging quantity} that turns a CFD flow field into a throw-quality score. The paper needs one. \S\ref{sec:throwability} proposes a ``throwability metric'' $Q(\mathbf{x}, \theta_{\text{wind}})$ combining mean wind magnitude, turbulence intensity at disc altitude, and predicted lateral trajectory drift for the canonical throws.
+
+\section{Project plan}
+\label{sec:plan}
+
+\subsection{Work breakdown ($\approx$14 weeks, single researcher)}
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}llp{0.55\linewidth}@{}}
+\toprule
+\textbf{Phase} & \textbf{Weeks} & \textbf{Output} \\
+\midrule
+P0 --- Setup & 1 & OpenFOAM 11 or v2406 installed; Python disc-trajectory simulator stub; QGIS workflow for LiDAR $\to$ STL. \\
+P1 --- Analytical disc model & 2--3 & 6-DOF integrator (Python, scipy \texttt{solve\_ivp}). Validated against Hummel (2003) Fig.\ 5-1 throw reconstructions. \\
+P2 --- Geometry build & 4 & STL of $\sim$250 m radius around Sean Earl Field, $\sim$5--10 named buildings + tree-canopy proxy. \\
+P3 --- RANS CFD sweep & 5--8 & 13 steady-state runs (15$^\circ$ increments). \texttt{simpleFoam} + k-$\omega$ SST + Richards--Hoxey ABL inlet. Output: $U_{\text{mean}}, k$ sampled to 1, 2, 3 m AGL. \\
+P4 --- Coupled trajectory & 9--11 & Trilinear-interpolated CFD into 6-DOF disc model. Monte Carlo over launch, heading, spin, release $\alpha$ ($10^4$ throws per direction). \\
+P5 --- Synthesis \& manuscript & 12--14 & Throwability map $Q(\mathbf{x}, \theta_{\text{wind}})$; paper revision; figures. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Compute and storage}
+
+Workstation target: 32 physical cores, 128 GB RAM, $\sim$2 TB scratch SSD. On 16-core / 64 GB expect $\sim$2$\times$ wall-clock and one wind direction per overnight job. Disk budget: $\sim$50 GB per RANS case ($\sim$700 GB for the sweep). LES would multiply by 20--50$\times$.
+
+\subsection{Inputs (all free/accessible)}
+
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item \emph{Building footprints/heights:} Cook County GIS, Microsoft GlobalMLBuildingFootprints (ODbL), USGS Overture Maps 2023, OpenStreetMap.
+  \item \emph{LiDAR DEM:} USGS 3DEP / Illinois Height Modernization Program (1--8 pts/m$^2$).
+  \item \emph{Wind reference:} NWS O'Hare 1991--2020 normals; NOAA GLERL Wilson Avenue Crib (shoreline calibration); Northerly Island ASOS.
+  \item \emph{Disc aerodynamic coefficients:} Hummel (2003) Tables 3-1/3-2; Crowther \& Potts (2007).
+\end{itemize}
+
+\subsection{Risks \& mitigations}
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{0.46\linewidth}p{0.46\linewidth}@{}}
+\toprule
+\textbf{Risk} & \textbf{Mitigation} \\
+\midrule
+k-$\omega$ SST under-predicts rooftop separation at sharp roof corners (well-known). & Validate one direction against a LES spot check; follow Blocken (2018) on RANS limits. Don't claim peak/fluctuating quantities --- report means + TKE only. \\
+Disc-coefficient uncertainty at off-design $\alpha$ ($>20^\circ$). & Restrict throw library to $\alpha \in [-5^\circ, +20^\circ]$; flag hammer (high-$\alpha$) results as exploratory. \\
+Horizontal inhomogeneity of ABL inlet (Hargreaves \& Wright 2007). & Use Yang et al.\ (2009) corrected wall functions; verify inlet profile preserved upstream of buildings. \\
+Sean Earl is not a competition-grade Ultimate field. & Reframe as a methods paper using Sean Earl as exemplar; methodology generalizes. \\
+Reviewers ask for measurement validation. & Use Tominaga (2008) AIJ-B cube benchmark for the CFD; cite Hummel's marker-tracked flights for the disc model. Both are public. \\
+\bottomrule
+\end{tabular}
+\end{center}
+

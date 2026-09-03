@@ -10,6 +10,9 @@
 \usepackage{xcolor}
 \usepackage{tcolorbox}
 \usepackage{hyperref}
+% 2026-09-03: `xurl` allows URL line breaks anywhere, which clears the 17 pt overfull box
+% the bibliography's EPQS link was producing. Loaded after hyperref, as it requires.
+\usepackage{xurl}
 \usepackage[protrusion=true,expansion=false]{microtype}
 \usepackage{titlesec}
 \usepackage{fancyhdr}
@@ -52,7 +55,23 @@
 \setlength{\parindent}{0pt}
 
 \title{\bfseries Disc Flight in a Lakefront Internal Boundary Layer:\\Coupling Analytical Frisbee Aerodynamics with Site-Specific Urban CFD\\over Loyola University's Sean Earl Field}
-\author{charlie\\\small affiliation TBD}
+% WP4b [2026-09-03]: "charlie / affiliation TBD" printed on page 1 of every build and was
+% the last thing manuscript_ready.py flagged. It is a LOOKUP, not a decision: the author
+% settled it on 2026-07-23 and it was never propagated here.
+%   bidet_optimization_1.JOURNAL.tex:72 --
+%     "AUTHOR-CONFIRMED 2026-07-23: Department of Physics and Astronomy is the canonical
+%      affiliation (chosen over the Mechanical Eng. / Chemical & Biomolecular Eng.
+%      variants that appear in other files). Email cpb@u.northwestern.edu confirmed for
+%      publication."
+% Corroborated by the drop-impact collaboration manuscript
+% (Github/Drop Impact/lit_rheology_impact_2026-08-25/pdfs/src_2601/manuscript.tex), which
+% gives "Department of Physics and Astronomy, Northwestern University, Evanston, IL 60208".
+% FLAG FOR AUTHOR: co-authors and funding acknowledgement are still absent, and this is a
+% Loyola SITE studied from a Northwestern affiliation -- confirm that is what you want on
+% the title page before submission.
+\author{Charlie Burton\\
+  \small Department of Physics and Astronomy, Northwestern University\\
+  \small \texttt{cpb@u.northwestern.edu}}
 \date{Draft v0.1 \ $\cdot$\ \today}
 
 % ---------------------------------------------------------------------------
@@ -70,6 +89,11 @@
   \newcommand{\GridDiff}{\MISSINGNUM}\newcommand{\GridDiffUref}{\MISSINGNUM}%
   \newcommand{\GridVerdict}{\MISSINGNUM}\newcommand{\ConvFine}{\MISSINGNUM}%
   \newcommand{\ConvCoarse}{\MISSINGNUM}\newcommand{\Uref}{\MISSINGNUM}%
+  % WP4b item 10 [2026-09-03]: the convergence test was the only one in
+  % cfd_validation.json recording "verdict": "FAIL" and the only one with no macro to
+  % print it, while ABLverdict and GridVerdict both existed. Emitted now.
+  \newcommand{\ConvVerdict}{\MISSINGNUM}%
+  \newcommand{\ConvFineVerdict}{\MISSINGNUM}\newcommand{\ConvCoarseVerdict}{\MISSINGNUM}%
   \newcommand{\UfieldFracMin}{\MISSINGNUM}\newcommand{\UfieldFracMax}{\MISSINGNUM}%
   \newcommand{\Ndirections}{\MISSINGNUM}\newcommand{\DirectionList}{\MISSINGNUM}%
   \newcommand{\NtotalThrows}{\MISSINGNUM}\newcommand{\NthrowsPerCell}{\MISSINGNUM}%
@@ -114,118 +138,27 @@
 \begin{document}
 \maketitle
 
-\noindent\textbf{Companion document:} \emph{Project1\_AnalyticalTreatment.tex} (rigorous 6-DOF derivation, stability, gyroscopic precession).
+% WP4b item 9 [2026-09-03]: the companion document is NOT submittable as it stands -- it is
+% parameterised on an idealised uniform disc (I_p = mr^2/4, I_s = mr^2/2) while the code
+% runs on Hummel's measured Table 3-1 inertias, so its boxed precession result is 1.42x too
+% fast and its turn/fade angle is 6.7 deg against the code's 8.81-9.00 deg. Advertising it
+% here would mean the paper's stated model is not the model that produced the results.
+% Restore this line only after the companion is rewritten against coefficients.py.
+%\noindent\textbf{Companion document:} \emph{Project1\_AnalyticalTreatment.tex} (rigorous 6-DOF derivation, stability, gyroscopic precession).
+\noindent\textbf{Companion document:} \emph{withheld.} An analytical 6-DOF treatment exists
+but is parameterised on an idealised uniform disc rather than the measured inertias this
+study integrates, and is not submitted with this paper; see
+\texttt{Project1\_AnalyticalTreatment.md} for the specific discrepancies.
 
+% WP4b item 2 [2026-09-03]: this block described a three-layer document whose first two
+% layers are now in PLANNING_MEMO_EXCISED_2026-09-03.tex. Rewritten to describe what is
+% actually here; the "status of this version" box went with the sections it was hedging.
 \section*{How to read this document}
 
-Three layers stacked: \textbf{feasibility memo} (\S\ref{sec:feas}), \textbf{project plan} (\S\ref{sec:plan}), and \textbf{paper first draft} (\S\ref{sec:abstract} onward). Read \S\ref{sec:feas} first; if you disagree with the scope changes proposed there, the draft from \S\ref{sec:abstract} onward needs to be reframed.
-
-\begin{tcolorbox}[colback=boxbg,colframe=accent,boxrule=0.6pt,left=6pt,
-                  right=6pt,top=4pt,bottom=4pt]
-\small\textbf{Status of this version.} \S\ref{sec:feas} and \S\ref{sec:plan}
-are the \emph{original planning memo} and are retained unedited as a record of
-intent. Where the executed work departs from them --- and it does, in the
-number of CFD directions, the solver version, the building heights and the site
-description --- \textbf{the paper sections from \S\ref{sec:abstract} onward are
-authoritative}, and \S\ref{sec:limits} states the delivered scope explicitly.
-All numbers quoted from \S\ref{sec:abstract} onward come from a converged run
-or a passing test; nothing is projected.
-\end{tcolorbox}
-
-\section{Feasibility check}
-\label{sec:feas}
-
-\subsection{What the notes propose}
-
-\begin{quote}
-(1) Analytical treatment of ideal conditions for throwing a frisbee.\\
-(2) Build a realistic 3D map of the terrain surrounding Loyola field --- houses, buildings --- simulate wind off the lake spanning 180$^\circ$, generate 3D flow fields across the turf to capture vortices.\\
-\emph{Goal:} determine the best conditions for this constrained terrain that best allow for frisbee.\\
-\emph{Tools:} OpenFOAM or COMSOL.
-\end{quote}
-
-\subsection{Verdict}
-\label{sec:feasibility-verdict}
-
-\begin{center}
-\footnotesize
-\begin{tabular}{@{}p{0.32\linewidth}p{0.15\linewidth}p{0.48\linewidth}@{}}
-\toprule
-\textbf{Component} & \textbf{Verdict} & \textbf{Why} \\
-\midrule
-Analytical 6-DOF disc model & Solid & Hummel (2003), Crowther \& Potts (2007) give a complete validated 6-DOF formulation with measured coefficients. \\
-RANS urban CFD, 13 wind directions $\times$ 15$^\circ$ & Tractable & $\sim$3--10 M cells, 2--8 h per direction on 32 cores, total 1--4 days. Standard COST 732 / AIJ practice; OpenFOAM \texttt{simpleFoam} with k-$\omega$ SST. \\
-LES of the same domain & Not realistic for full sweep & $\Delta x \sim 1$--$2$ m near buildings $\Rightarrow$ 50--200 M cells per case. Single direction is feasible (weeks). \\
-Coupling CFD wind field into disc trajectory & Established elsewhere; new for a disc & % REVIEW [GATE G5, 2026-09-02]: the previous entry claimed this was "not done in published literature" and called it the novelty hook. It is prior art. Kakimpa, Hargreaves \& Owen (JWEIA 111, 2012, Parts I--II) couple a CFD field to 6-DOF rigid-body dynamics for windborne debris; the construction is standard in exterior ballistics as "CFD/RBD"; and US 11{,}052{,}285 B2 (priority 2016) claims stadium wind sensors $\to$ CFD $\to$ gridded 3-D wind vectors $\to$ interpolation into a ball-trajectory model. See GATE\_G5\_PRIOR\_ART\_2026-09-02.md.
-Coupling a CFD field to 6-DOF rigid-body dynamics is established --- Kakimpa \emph{et al.}\ (2012) for windborne debris, ``CFD/RBD'' in exterior ballistics, and US 11{,}052{,}285 B2 (2016) for a ball in a stadium --- but every one of those carries a \emph{single} field to a \emph{single} trajectory. The disc-golf codes of Lukes \emph{et al.}\ (2022) and Giljarhus \emph{et al.}\ (2022) use a uniform freestream. \emph{What is new here is carrying a spatially resolved turbulent field through to a landing-point distribution.} \\
-Throwability metric over the field & Tractable as descriptive optimization & Not real-time forecasting; compute mean velocity + TKE at disc altitude, then evaluate trajectory robustness for canonical throws. \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\subsection{Items in your notes that need adjustment}
-
-\begin{itemize}[leftmargin=*,itemsep=2pt]
-  \item \textbf{``Loyola field''} --- your phrasing (``off the lake'') uniquely matches \emph{Sean Earl Field} on the Lake Shore Campus, $\sim$150--250 m from Lake Michigan, not Hoyne Field (a mile inland). \textbf{Confirmed by you: Sean Earl.}
-  \item \textbf{``180$^\circ$ span''} --- Sean Earl's lake-facing side is roughly east; a meaningful ``off-lake'' sweep is NNE through ESE ($\sim$90$^\circ$ centered on east). A full 180$^\circ$ is fine if you also characterize the prevailing westerly (off-land) cases for contrast --- think of it as two regimes, not one continuous sweep.
-  \item \textbf{``Range finder'' to build the 3D map} --- you don't need a personal LiDAR pass. USGS 3DEP / Illinois Height Modernization Program covers Cook County at 1--8 pts/m$^2$; Microsoft GlobalMLBuildingFootprints + USGS 2023 building-heights release explicitly include Chicago. A handheld rangefinder is useful only for spot-checking the 5--10 buildings nearest the field.
-  \item \textbf{``OpenFOAM or COMSOL''} --- pick OpenFOAM. The urban-CFD literature (Blocken, Tominaga, COST 732 community) is overwhelmingly OpenFOAM-based; \texttt{snappyHexMesh} handles dirty STL of campus buildings well; you'll have peer-reviewed cases to validate against.
-\end{itemize}
-
-\subsection{The biggest unstated gap}
-
-You do not have a \emph{bridging quantity} that turns a CFD flow field into a throw-quality score. The paper needs one. \S\ref{sec:throwability} proposes a ``throwability metric'' $Q(\mathbf{x}, \theta_{\text{wind}})$ combining mean wind magnitude, turbulence intensity at disc altitude, and predicted lateral trajectory drift for the canonical throws.
-
-\section{Project plan}
-\label{sec:plan}
-
-\subsection{Work breakdown ($\approx$14 weeks, single researcher)}
-
-\begin{center}
-\footnotesize
-\begin{tabular}{@{}llp{0.55\linewidth}@{}}
-\toprule
-\textbf{Phase} & \textbf{Weeks} & \textbf{Output} \\
-\midrule
-P0 --- Setup & 1 & OpenFOAM 11 or v2406 installed; Python disc-trajectory simulator stub; QGIS workflow for LiDAR $\to$ STL. \\
-P1 --- Analytical disc model & 2--3 & 6-DOF integrator (Python, scipy \texttt{solve\_ivp}). Validated against Hummel (2003) Fig.\ 5-1 throw reconstructions. \\
-P2 --- Geometry build & 4 & STL of $\sim$250 m radius around Sean Earl Field, $\sim$5--10 named buildings + tree-canopy proxy. \\
-P3 --- RANS CFD sweep & 5--8 & 13 steady-state runs (15$^\circ$ increments). \texttt{simpleFoam} + k-$\omega$ SST + Richards--Hoxey ABL inlet. Output: $U_{\text{mean}}, k$ sampled to 1, 2, 3 m AGL. \\
-P4 --- Coupled trajectory & 9--11 & Trilinear-interpolated CFD into 6-DOF disc model. Monte Carlo over launch, heading, spin, release $\alpha$ ($10^4$ throws per direction). \\
-P5 --- Synthesis \& manuscript & 12--14 & Throwability map $Q(\mathbf{x}, \theta_{\text{wind}})$; paper revision; figures. \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\subsection{Compute and storage}
-
-Workstation target: 32 physical cores, 128 GB RAM, $\sim$2 TB scratch SSD. On 16-core / 64 GB expect $\sim$2$\times$ wall-clock and one wind direction per overnight job. Disk budget: $\sim$50 GB per RANS case ($\sim$700 GB for the sweep). LES would multiply by 20--50$\times$.
-
-\subsection{Inputs (all free/accessible)}
-
-\begin{itemize}[leftmargin=*,itemsep=2pt]
-  \item \emph{Building footprints/heights:} Cook County GIS, Microsoft GlobalMLBuildingFootprints (ODbL), USGS Overture Maps 2023, OpenStreetMap.
-  \item \emph{LiDAR DEM:} USGS 3DEP / Illinois Height Modernization Program (1--8 pts/m$^2$).
-  \item \emph{Wind reference:} NWS O'Hare 1991--2020 normals; NOAA GLERL Wilson Avenue Crib (shoreline calibration); Northerly Island ASOS.
-  \item \emph{Disc aerodynamic coefficients:} Hummel (2003) Tables 3-1/3-2; Crowther \& Potts (2007).
-\end{itemize}
-
-\subsection{Risks \& mitigations}
-
-\begin{center}
-\footnotesize
-\begin{tabular}{@{}p{0.46\linewidth}p{0.46\linewidth}@{}}
-\toprule
-\textbf{Risk} & \textbf{Mitigation} \\
-\midrule
-k-$\omega$ SST under-predicts rooftop separation at sharp roof corners (well-known). & Validate one direction against a LES spot check; follow Blocken (2018) on RANS limits. Don't claim peak/fluctuating quantities --- report means + TKE only. \\
-Disc-coefficient uncertainty at off-design $\alpha$ ($>20^\circ$). & Restrict throw library to $\alpha \in [-5^\circ, +20^\circ]$; flag hammer (high-$\alpha$) results as exploratory. \\
-Horizontal inhomogeneity of ABL inlet (Hargreaves \& Wright 2007). & Use Yang et al.\ (2009) corrected wall functions; verify inlet profile preserved upstream of buildings. \\
-Sean Earl is not a competition-grade Ultimate field. & Reframe as a methods paper using Sean Earl as exemplar; methodology generalizes. \\
-Reviewers ask for measurement validation. & Use Tominaga (2008) AIJ-B cube benchmark for the CFD; cite Hummel's marker-tracked flights for the disc model. Both are public. \\
-\bottomrule
-\end{tabular}
-\end{center}
+This is a draft paper, not a project report. \S\ref{sec:limits} states the delivered scope
+explicitly and should be read alongside the results: several things the study set out to do
+were not done, and it says which. Every number quoted comes from a converged run or a
+passing test; nothing is projected.
 
 \section{Abstract (draft)}
 \label{sec:abstract}
@@ -298,12 +231,20 @@ The present work fills that gap. We choose Sean Earl Field at Loyola University 
 % method. `P4_Coupling/cfd_field.py` reads a PRECOMPUTED RANS field and trilinearly
 % interpolates it into the trajectory right-hand side; the disc exerts no influence on
 % the flow. The coupling is one-way, and a referee would find that in one file.
-  \item A one-way coupling of a spatially resolved environmental-CFD wind field, plus a synthetic gust field, to a validated 6-DOF disc-flight model, carried through to a \emph{landing-point distribution} rather than a single predicted trajectory. The coupling itself is established for other bodies (see \S\ref{sec:feasibility-verdict}); the disc and the distribution are what is new.
+  \item A one-way coupling of a spatially resolved environmental-CFD wind field, plus a synthetic gust field, to a validated 6-DOF disc-flight model, carried through to a \emph{landing-point distribution} rather than a single predicted trajectory. The coupling itself is established for other bodies --- Kakimpa \emph{et al.} (2012) for windborne debris, and US 11{,}052{,}285\,B2 (2016) for a ball in a stadium --- and neither the disc nor the distribution is.
   \item A ``throwability metric'' $Q(\mathbf{x}, \theta_{\text{wind}})$ that compresses the spatial CFD field plus trajectory uncertainty into an actionable single scalar per (launch position, wind heading).
-  \item A case study identifying the lakefront internal boundary layer as the dominant local control on Ultimate-disc flight at the chosen site.
+% WP4b item 1 [2026-09-03]: RETRACTED. This contribution named the lakefront internal
+% boundary layer as the dominant control -- the premise the study FALSIFIED -- and so
+% contradicted the abstract and the conclusions in the same PDF. Replaced by what was found.
+  \item A case study in which that premise \emph{fails}: the study was designed around the
+  lakefront internal boundary layer as the dominant local control, and finds instead that a
+  45\,m building nine metres off the sideline sets the flow in the disc band. The negative
+  result is the site-specific contribution, and it is a magnitude statement both meshes
+  agree on.
 \end{enumerate}
 
 \section{Analytical disc aerodynamics (summary)}
+\label{sec:analytical}
 
 Full derivation in the companion document. The disc carries a 6-DOF state $(\mathbf{x}, \mathbf{v}, \psi, \theta, \phi_s, p, q, \Omega)$ governed by Newton's equation (\ref{eq:trans-summary}) plus Euler's equation for a symmetric rotor (\ref{eq:rot-summary}). In the high-spin limit relevant to all real throws, the transverse angular rates are slaved algebraically to the applied aerodynamic moments,
 \begin{equation}
@@ -379,8 +320,24 @@ Launch sideslip is therefore shed only slowly, and predicted crosswind drift is
 about a quarter of the naive full-advection estimate $U_c T$. We verified that
 this is a physics-model gap rather than a numerical artefact: a uniform wind is
 exactly Galilean-equivalent to a shifted release velocity in this
-implementation, to $10^{-8}$ m. \textbf{Crosswind drift from this model should
-be read as a lower bound.}
+implementation, to $10^{-8}$ m.
+% WP4b item 5 [2026-09-03]: "lower bound" RETRACTED, in all three places it appeared
+% (here, the limitations section, and P1_AnalyticalModel/README.md). It confused two
+% different omissions. Missing yaw stiffness is one-sided; a missing Robins-Magnus force
+% is not, because it flips sign with the spin direction, i.e. with backhand vs forehand.
+% The magnitudes the hardening brief quotes for C_S could not be resolved to a source in
+% this tree, so the argument below is made on SIGN alone, which needs no coefficient.
+\textbf{Crosswind drift from this model is uncertain in sign, not bounded
+below.} Two distinct terms are missing and they do not act the same way. The absent
+$C_S(\alpha)$ removes \emph{yaw stiffness}, which is one-sided: with it the disc would
+weathercock and shed sideslip faster. But the model also omits the Robins--Magnus side
+force, which goes as $\boldsymbol{\omega} \times \mathbf{v}$ and therefore \emph{reverses
+with the spin direction} --- a backhand and a forehand spin opposite ways, so the same
+crosswind produces a lateral force of opposite sign for the two throws. Its contribution
+is handedness- and throw-type-dependent, so it can add to the modelled drift or subtract
+from it. Lateral predictions from this model should be read as \emph{unvalidated in sign};
+adding $C_S(\alpha)$ and checking against measured flights is the next step, not a
+correction that can be signed \emph{a priori}.
 
 \section{Site description: Sean Earl Field}
 
@@ -630,11 +587,24 @@ production cases, where the mismatch \emph{is} the shoreline roughness
 transition) the profile is supposed to evolve and the test would measure the
 intended physics rather than numerical error.
 
+% WP4b item 11 [2026-09-03]: \ABLverdict{PASS} is real but its name promises more than
+% the artifact delivers, and the gap is exact rather than rhetorical. cfd_validation.json
+% records this test with "eval_band": [6.0, 100.0] and z0_inlet = z0_ground = 0.001, i.e.
+% a SMOOTH wall evaluated from 6 m upward -- and the disc band is 1-6 m. The band the
+% verdict covers therefore BEGINS where the band the paper reports ENDS. Stated in the
+% text rather than left to the macro name.
 Profiles were compared at five fetches from 50 m to 1400 m, evaluated above the
 first wall-function cell centre. The worst streamwise drift in mean velocity is
 \ABLdrift\% (\ABLverdict), and the profiles depart from the analytic
 Richards--Hoxey curve by 1.3\%; turbulent kinetic energy holds to within about
-7\% of $u_*^2/\sqrt{C_\mu}$. Sampling below the first cell centre is not
+7\% of $u_*^2/\sqrt{C_\mu}$.
+\textbf{That \ABLverdict{} is scoped narrowly and the scope should be read with it.} The
+test evaluates over $6\,\text{m} \le z \le 100$ m on a case whose ground roughness was set
+equal to the inlet's, i.e.\ a smooth wall. The disc band this paper reports on is 1--6 m,
+so the evaluation band \emph{begins where the reported band ends}, and the roughness that
+makes the site what it is was deliberately removed for the test. The verdict is evidence
+that the inlet profile advects without numerical decay aloft; it is \emph{not} evidence
+that the disc-band flow is right, and no result in \S\ref{sec:results} rests on it. Sampling below the first cell centre is not
 meaningful with wall functions --- it interpolates toward the no-slip wall
 value --- and is excluded.
 
@@ -687,8 +657,14 @@ project plan specified. Reporting that target as met would be false; reporting
 the run as simply ``unconverged'' would be equally misleading, because the
 residual has stopped falling for a physical reason rather than a numerical one.
 
-We therefore assess convergence on the quantity we actually report. Velocity
-probes at disc altitude over the field oscillate by \ConvFine\% peak-to-peak
+% WP4b item 10 [2026-09-03]: the artifact's own verdict is now printed rather than
+% characterised. cfd_validation.json records "verdict": "FAIL" for BOTH meshes on this
+% test; it was the only test with no verdict macro, which is the one place a reader could
+% not check the prose against the record.
+We therefore assess convergence on the quantity we actually report, and we state the
+result the validation record carries: \textbf{this test is recorded as
+\ConvVerdict{}}, on both meshes (\ConvFineVerdict{} fine, \ConvCoarseVerdict{} coarse).
+Velocity probes at disc altitude over the field oscillate by \ConvFine\% peak-to-peak
 on the production mesh and \ConvCoarse\% on the coarse mesh, with no
 downward trend. Because a single iterate is an arbitrary phase of that cycle,
 all reported fields are \textbf{time averages} of $\mathbf{U}$, $k$ and
@@ -756,10 +732,38 @@ accelerating past Campus Towers; the field itself lies in its wake.}
 
 \subsection{Throwability}
 
-Combining the wind, turbulence and simulated-success factors of
-Eq.~\ref{eq:Q} gives $\bar Q = \QbestMean$ at the highest-scoring computed
-heading ($\QbestHeading^\circ$) against $\QworstMean$ at the lowest
-($\QworstHeading^\circ$) --- a ratio of \QbestWorstRatio. The absolute values
+% WP4b item 3 [2026-09-03]: this paragraph used to LEAD with the best/worst heading and
+% the \QbestWorstRatio, and only then concede that most of the ranking is not resolvable.
+% The order is now reversed, because the leading statement a reader remembers should be
+% the one that survives. The mesh comparison below is new and it is the reason: the
+% fine-vs-coarse difference at ONE heading exceeds the entire spread across three.
+All three computed directions give 2 m mean speeds of \UfieldFracMin--\UfieldFracMax\%
+of the 10 m reference and $\bar Q$ within mutual uncertainty: \textbf{the site is
+uniformly sheltered and, at the resolution of this study, direction-insensitive.}
+The field-mean $|U_{2\text{m}}|$ is 1.21, 1.40 and 1.39\,m\,s$^{-1}$ at $90^\circ$,
+$210^\circ$ and $270^\circ$ (Table~\ref{tab:Qbyheading}) --- a spread of
+0.19\,m\,s$^{-1}$ across all three headings. The fine-versus-coarse mesh difference in
+that same quantity at a \emph{single} heading is
+% grid_sign_check.py (P3_CFD), heading 090, canonical pitch_mask and horizontal_speed:
+% fine 1.2057 m/s vs coarse 0.9930 m/s. Written to P3_CFD/grid_sign_check.json.
+\textbf{0.21\,m\,s$^{-1}$} (1.21 against 0.99\,m\,s$^{-1}$ at $90^\circ$), so
+discretisation error for one heading exceeds the physical signal across all three. The
+formal grid-independence test is a different and harsher measurement --- five point
+stations, each compared over the disc band rather than averaged over the pitch --- and it
+fails: worst station difference \GridDiff\% relative, \GridDiffUref\% of
+$U_{\text{ref}}$, verdict \GridVerdict.
+
+\textbf{And the mesh error has a known sign, which makes the shelter number
+conservative rather than flattering.} Refining raises the disc-band speed --- the fine
+mesh is 21.4\% faster than the coarse at $90^\circ$ --- so if that trend continues under
+further refinement the \UfieldFracMin--\UfieldFracMax\% is \emph{biased low} and this
+study errs toward \emph{overstating} shelter. (One heading only:
+\texttt{flow\_fields\_coarse090.npz} is the only coarse field retained, so the sign is
+established at $90^\circ$ and assumed, not shown, at the other two.)
+
+For completeness, and subject to everything above, the mean ranking gives
+$\bar Q = \QbestMean$ at $\QbestHeading^\circ$ against $\QworstMean$ at
+$\QworstHeading^\circ$. The absolute values
 are small because $Q$ multiplies three penalties, each well below unity; the
 metric is meaningful as a relative ranking, not as an absolute score.
 
@@ -836,17 +840,35 @@ three-dimensional fluid mask: the plan-view mask used for the disc band is
 correct there, where every building spans the whole $1$--$6$~m stack, but it
 would wrongly discard good free-stream flow above roof level.
 
-\paragraph{Shelter is not protection.}
+% WP4b item 4 [2026-09-03]: "shelter is not protection" is retracted AS WRITTEN and
+% restated with the condition that makes it true. The old version leaned on the TI rise
+% (a factor of 2-3) as if it were the penalty. It is not: TI = sigma_u / U, and the mean
+% is what collapsed. The 90 deg column proves it arithmetically out of this paper's own
+% macros, so the correction needs no new computation.
+\paragraph{Shelter is not protection --- when it raises $\sigma_u$.}
 The empty-fetch case of \S\ref{sec:cfdvalid} doubles as a no-buildings
 counterfactual: the identical inflow profile over identical ground, without the
 campus. Comparing the two at $2$~m over the pitch separates what the buildings
 took away from what they added. They removed mean wind, cutting it to
-\VertUratioRange{} of the unobstructed value. They did not remove the
-fluctuation. Measured as $\sigma_u = \sqrt{2k/3}$, the buildings left it at
-\VertSigRatioRange{} of the control --- that is, in two of the three directions
-they \emph{increased} it by about half. Turbulence intensity over the pitch is
-\VertTIpitchRange{} against \VertTIcontrol{} for the same wind over open fetch,
-a factor of two to three.
+\VertUratioRange{} of the unobstructed value. Measured as
+$\sigma_u = \sqrt{2k/3}$, they left the fluctuation at \VertSigRatioRange{} of the
+control: \emph{raised} by about half at $210^\circ$ and $270^\circ$
+(\VertSigRatioHTwoOneZero, \VertSigRatioHTwoSevenZero), and \emph{lowered} at
+$90^\circ$ (\VertSigRatioHNineZero).
+
+\textbf{That last column is why turbulence intensity is the wrong diagnostic here, and we
+state it against ourselves.} TI over the pitch is \VertTIpitchRange{} against
+\VertTIcontrol{} over open fetch --- the factor of two to three that an earlier version of
+this paper reported as the headline. But at $90^\circ$ TI rises from \VertTIcontrol{} to
+\VertTIpitchHNineZero{} while $\sigma_u$ \emph{falls} to \VertSigRatioHNineZero{} of the
+control, and the rise is arithmetically the denominator: $\sigma$-ratio over $U$-ratio is
+$\VertSigRatioHNineZero/\VertUratioHNineZero = 2.07$ against a measured TI ratio of
+$\VertTIpitchHNineZero/\VertTIcontrol = 2.08$. Dividing by a collapsing mean wind
+manufactures a factor of two where the physical disturbance the disc responds to has, in
+that direction, slightly \emph{decreased}. A disc has never heard of $U$; the group it
+responds to is $\sigma_u/V_d$. \textbf{So the claim holds at $210^\circ$ and $270^\circ$,
+where $\sigma_u$ genuinely rose, and does not hold at $90^\circ$ --- and no version of it
+should be argued from TI.}
 
 This distinction matters because the two components are not equally damaging.
 A steady crosswind is a \emph{bias}: it displaces every throw the same way, and
@@ -953,7 +975,14 @@ generated from the same run and are meant to be read together.
     invites the reading that wind destroys it. That reading would be wrong. The
     hammer's still-air range in this model is 12.1 m and the scoring target is
     \TargetRange~m downrange; its success rate is structurally zero whatever the
-    wind does. The number measures the scoring rule, not the physics. The hammer
+    wind does. The number measures the scoring rule, not the physics.
+    % WP4b item 6 [2026-09-03]: and the 12.1 m is itself an artefact, which is worth
+    % stating here rather than only in the author-decisions section.
+    \textbf{And 12.1 m is itself a clamp artefact}: with the hammer released at
+    $\mathcal{N}(11, 1.5)$ m\,s$^{-1}$, $v^2/g = 12.3$ m, so the modelled hammer is an
+    unpowered point mass to within 2\% --- the coefficient table is edge-clamped at
+    $+30^\circ$ and the hammer is released at $+40^\circ$, so it generates no lift at all.
+    The hammer
     is therefore excluded from the success factor in Eq.~\ref{eq:Q} --- leaving
     it in depressed $Q$ at every heading by about a third --- and no claim is
     made about hammer sensitivity to wind. Testing it properly needs a target at
@@ -1017,15 +1046,21 @@ wrong mechanism --- and would have got the sign argument backwards without
 noticing, because the gradient's \emph{existence} agrees with the hypothesis
 even though its \emph{direction} refutes the stated mechanism.
 
-\paragraph{Shelter is not protection, and that is the transferable claim.}
+% WP4b item 4 [2026-09-03]: restated in the discussion to match the corrected version in
+% the results, and the "no accepted criterion" sentence narrowed per GATE G5 -- the
+% urban-air-mobility literature does write site-resolved criteria for flying bodies.
+\paragraph{Shelter changes the character of the disturbance, and only sometimes its size.}
 The counterfactual of \S\ref{sec:vertical} sharpens the point above into
-something that should hold well beyond this site. The buildings cut mean wind
-over the pitch to \VertUratioRange{} of its unobstructed value while leaving
-$\sigma_u$ at \VertSigRatioRange{} of the control --- raising it outright in two
-of three directions --- so turbulence intensity runs \VertTIpitchRange{} against
-\VertTIcontrol{} over open fetch. Shelter did not remove the disturbance; it
-changed its character, from a bias a thrower can aim off into a variance they
-cannot.
+something that should hold beyond this site, provided it is stated with the
+condition attached. The buildings cut mean wind over the pitch to
+\VertUratioRange{} of its unobstructed value while leaving $\sigma_u$ at
+\VertSigRatioRange{} of the control. In two of three directions they raised
+$\sigma_u$ outright, and there shelter genuinely converted a bias a thrower can aim
+off into a variance they cannot. In the third ($90^\circ$) they lowered it, and the
+apparent penalty is an artefact of normalising by the collapsed mean.
+\textbf{The transferable claim is therefore conditional: shelter is not protection
+\emph{when it raises $\sigma_u$}, and turbulence intensity cannot tell you whether it
+did.}
 
 We think this reframes what "a sheltered pitch" means for projectile sports.
 Urban wind engineering has a mature criterion tradition --- Lawson, NEN 8100,
@@ -1033,9 +1068,15 @@ the COST~732 framework --- but it is built around \emph{pedestrian} comfort and
 safety, which is a mean-speed-and-exceedance question for a person standing
 still. A thrown object is a different problem: it integrates the flow along a
 path for a couple of seconds, so it is the fluctuation on that path, not the
-mean at chest height, that decides where it lands. There is at present no
-accepted playability criterion for a sports field, and the results here suggest
-one is needed, because the two criteria can rank the same site oppositely.
+mean at chest height, that decides where it lands. Criteria for \emph{flying}
+bodies do now exist --- the urban-air-mobility literature builds site-resolved
+wind-speed and turbulence thresholds for drones and air taxis --- but they are
+thresholds on a \emph{controlled} vehicle, one that can hold a path or decline to
+fly. A thrown disc is unguided after release, so the quantity is the variance of
+where it lands rather than an exceedance, and there is no accepted playability
+criterion of that kind for a sports field. The results here suggest one is needed,
+because a pedestrian criterion and a projectile criterion can rank the same site
+oppositely.
 
 The dimensionless framing of \S\ref{sec:vertical} is what makes this portable.
 Placing an object in $(T_L/T_f,\; L_f/L)$ space predicts its sensitivity without
@@ -1139,8 +1180,9 @@ it from the methods.
 
 \paragraph{CFD directions.} \textbf{Three} inflow directions were computed:
 $\theta_{\text{wind}} = 90^\circ$, $210^\circ$ and $270^\circ$. The
-thirteen-direction, $15^\circ$-increment sweep described in the project plan
-(\S\ref{sec:plan}) \textbf{was not run}. The three directions were chosen to
+thirteen-direction, $15^\circ$-increment sweep described in the original
+planning memo (excised from this document; see
+\texttt{PLANNING\_MEMO\_EXCISED\_2026-09-03.tex}) \textbf{was not run}. The three directions were chosen to
 span the three regimes the study hypothesises --- over-lake easterly,
 prevailing SSW, and over-campus westerly --- and they are sufficient to
 \emph{contrast} those regimes, but they cannot resolve the direction-dependence
@@ -1177,9 +1219,11 @@ remains future work.
 only: no peak gusts, and no spatially correlated gust structure. The gust model
 is temporally correlated but spatially uniform along the trajectory at any
 instant, isotropic (RANS $k$ carries no anisotropy), and Gaussian, so extreme
-gusts are under-represented. The disc model has no rim side-force term, so
-predicted crosswind drift is a lower bound. Ground is flat and no tree canopy is
-included. The hammer throw is exploratory: it spends most of its flight outside
+gusts are under-represented. The disc model has neither a rim side-force term
+$C_S(\alpha)$ nor a Robins--Magnus side force; the first removes yaw stiffness (one-sided)
+but the second reverses with spin direction, so \textbf{predicted crosswind drift is
+uncertain in sign, not a lower bound} --- see \S\ref{sec:analytical}. Ground is flat and
+no tree canopy is included. The hammer throw is exploratory: it spends most of its flight outside
 the angle-of-attack range over which the tabulated coefficients exist.
 
 \section{Author decisions}
@@ -1209,13 +1253,32 @@ the present results support. Each remains the author's to overrule.
     right comparison points; the CFD prediction at those points is already in
     \texttt{flow\_fields.npz}.}
 
-  \item \textbf{Hammer throw.} Retained but reported as \textbf{exploratory}.
-    It is the throw most affected by wind and the one whose coefficients are
-    least well supported: a hammer spends most of its flight well outside the
-    $-10^\circ$ to $+30^\circ$ band over which the tabulated Potts \& Crowther
-    coefficients exist, so its trajectories rely on edge-clamped values. Its
-    numbers are reported separately from backhand and forehand and are not used
-    in any headline claim.
+% WP4b item 6 [2026-09-03]: this default is REJECTED. "Exploratory" implies a weak
+% result; what the model has for the hammer is no aerodynamic result at all, and the
+% still-air range is the evidence. See the amendment.
+  \item \textbf{Hammer throw.} \emph{Previous default: retained but reported as
+    \textbf{exploratory}, on the grounds that a hammer spends most of its flight well
+    outside the $-10^\circ$ to $+30^\circ$ band over which the tabulated Potts \&
+    Crowther coefficients exist, so its trajectories rely on edge-clamped values.}
+
+    \textbf{That default is withdrawn, because ``exploratory'' overstates what is
+    there.} The model's still-air hammer range is 12.1 m. The hammer release speed is
+    $\mathcal{N}(11, 1.5)$ m\,s$^{-1}$, and $v^2/g = 11^2/9.81 = 12.3$ m. \textbf{The
+    modelled hammer is, to within 2\%, an unpowered point mass.} That is what
+    edge-clamping the coefficient table at $+30^\circ$ produces for a throw released at
+    $\alpha_0 = +40^\circ$: no lift, no pitching moment, no aerodynamics --- so 12.1 m is
+    a clamp artefact and not a model result, and it is also why the success rate is
+    structurally zero (\S\ref{sec:results}) whatever the wind does. A number that
+    reproduces $v^2/g$ is not evidence about a disc.
+
+    \textbf{Two admissible options, and ``report it as exploratory'' is not one of
+    them.} \emph{(a)} Drop the hammer from the paper entirely; the backhand and forehand
+    results do not depend on it. \emph{(b)} Keep it only after extending the coefficient
+    table past stall \emph{and} re-parameterising the release --- a real hammer leaves the
+    hand at roughly 18--21 m\,s$^{-1}$, not 11 --- and then re-running. \emph{\% FLAG FOR
+    AUTHOR: (a) costs nothing and is the default we recommend; (b) is a genuine piece of
+    work and would make the hammer the most interesting throw in the study rather than the
+    weakest.}
 
   \item \textbf{Authorship and affiliation.}
     \emph{\% FLAG FOR AUTHOR: author name, department, affiliation, co-authors

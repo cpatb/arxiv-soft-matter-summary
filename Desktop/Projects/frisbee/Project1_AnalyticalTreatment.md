@@ -4,6 +4,58 @@
 **Companion to:** *Project 1 — Disc Flight in a Lakefront Internal Boundary Layer.*
 **Status:** v0.1, 2026-05-29.
 
+---
+
+> # 🔴 DO NOT POST THIS DOCUMENT. IT DESCRIBES A DIFFERENT DISC FROM THE ONE THAT RAN.
+>
+> **WP4b item 9, 2026-09-03.** This is not a list of typos. The treatment calls itself
+> *"the ground truth against which the numerical 6-DOF integrator and the coupled CFD
+> simulator are validated"*, and it is not: it is parameterised on an **idealised uniform
+> disc**, while `P1_AnalyticalModel/coefficients.py` runs on Hummel's **measured** Table 3-1
+> values. If this ships as the paper's supplement, the paper's stated model is not the
+> model that produced its results.
+>
+> Each item below was checked against the code in this session, and two of them correct
+> numbers the hardening brief itself got wrong.
+>
+> **1. The inertias in eq (2) are the uniform-disc idealisation, and the code says so
+> explicitly.** Eq (1)–(2) take `I_p = ¼mr² = 7.97e-4` and `I_s = ½mr² = 1.59e-3`, hence
+> `I_s = 2 I_p`. `coefficients.py:504–512` records the measured values as
+> `I_s = 2.35e-3`, `I_p = 1.22e-3` — *32% and 35% above* these — and states in the same
+> docstring that the uniform-disc idealisation **"overestimates turn and fade by roughly
+> 50%"**. On the real disc `I_s/I_p = 1.926`, so even the identity `I_s = 2I_p` that eq (26)
+> is derived through is off by 3.7%.
+>
+> **2. The boxed precession result, eq (26), and therefore eq (46), is 1.42× too fast.**
+> Euler's equations for an axisymmetric body give steady precession
+> `p = −M/((I_s − I_p) Ω)`. Eq (26) writes `p = −M/(I_p Ω)`, which is correct *only* under
+> `I_s − I_p = I_p`, i.e. only for a uniform disc. With measured inertias
+> `I_s − I_p = 1.13e-3` against the treatment's `I_p = 7.97e-4`, so **the treatment's
+> precession rate is 1.418× the correct one** — consistent with the code's own "roughly
+> 50%" estimate.
+> ⚠ **The hardening brief states this as "2.08× too fast". That factor is not reproducible
+> from either inertia set and should not be quoted;** 1.42× is, and the arithmetic is one
+> line.
+>
+> **3. Three of the five errors the README says were fixed are still here.**
+> - **The `(α − α₀)` convention**, eqs (11) and (14). `coefficients.py:48` states that the
+>   moment coefficient is linear in **`α` itself, not `α − α₀`**, and that `α₀` "is NOT a
+>   free parameter — it is the zero-lift angle `−C_L0/C_Lα`" (line 31).
+> - **The `d/(2V)` rate non-dimensionalisation**, eqs (14)–(15).
+> - **The turn/fade transition, eq (28).** It gives `α_M* = 6.7°` and calls it *"this
+>   single number... organizes the entire turn-and-fade pattern"*. The code's trim angle is
+>   **8.81–9.00°** (`coefficients.py:46, 471`: *"alpha_trim 9.00 vs 9 deg"*, and
+>   *"P&C gives CL(8.81 deg) = 0.665"*). The number the document builds its narrative on is
+>   the wrong one, and it recurs at eqs (38), (40) and in §"how to throw".
+>
+> **What to do.** Either rewrite it against `coefficients.py` — measured inertias,
+> `α`-linear moment, correct precession denominator — or exclude it from the submission.
+> **The manuscript's front matter currently advertises it as the companion document; that
+> line must go if the document does not get rewritten.** Until one of those happens, treat
+> every boxed result here as pedagogically useful and quantitatively wrong.
+
+---
+
 This document derives, from first principles, the six-degree-of-freedom dynamics, steady-glide solutions, linear stability theory, and gyroscopic-precession behavior of a spinning rigid disc in flight, together with the closed-form effects of a steady non-uniform wind. The treatment is set up to be cited in the methods/theory section of the manuscript and to serve as the ground truth against which the numerical 6-DOF integrator and the coupled CFD simulator are validated.
 
 Notation follows Hummel (2003) / Crowther & Potts (2007) where compatible, with several modernizations for clarity.

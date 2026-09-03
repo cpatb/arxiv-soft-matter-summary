@@ -180,6 +180,7 @@ def main():
     # ---------------- validation verdicts --------------------------------
     if Path(args.validation).exists():
         V = json.loads(Path(args.validation).read_text())
+        conv_verdicts: list[str] = []
         for r in V:
             t = r.get("test", "")
             if t == "abl_homogeneity":
@@ -196,6 +197,18 @@ def main():
                 nm = "Fine" if "coarse" not in r.get("case", "") else "Coarse"
                 out.append(macro(f"Conv{nm}",
                                  fmt(100 * r["worst_pk_pk"], 1)))
+                # WP4b item 10 [2026-09-03]: this branch emitted the two NUMBERS and no
+                # verdict, while `abl_homogeneity` and `grid_independence` above both
+                # emit one. So the only test in cfd_validation.json that records
+                # "verdict": "FAIL" was also the only one with no macro to print it, and
+                # the prose was left to characterise it in words. Emit it.
+                out.append(macro(f"Conv{nm}Verdict", r["verdict"]))
+                conv_verdicts.append(r["verdict"])
+        # A single macro for the pair: FAIL if either mesh fails, so the paper cannot
+        # quote a pass because one of the two happened to be quieter.
+        if conv_verdicts:
+            out.append(macro("ConvVerdict",
+                             "FAIL" if "FAIL" in conv_verdicts else "PASS"))
 
     # ---------------- Q table ---------------------------------------------
     tbl = ["\n\\begin{table}[H]\n\\centering\\small\n",

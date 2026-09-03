@@ -109,11 +109,21 @@ coefficients with long-flight damping, a hybrid matching no published result.
 ## Known model limitations (carry into the paper)
 
 - **No side-force coefficient `CS(α)`** for rim asymmetry. Consequence: the
-  model has no yaw stiffness, so launch sideslip is shed only slowly and
-  **crosswind drift is a lower bound** — about a quarter of the naive `U_c·T`
-  full-advection estimate at 5 m/s. Do not quote crosswind drift as
-  well-validated. (The Galilean-invariance test confirms the wind coupling
-  itself is exact, so this is a physics-model gap, not a numerical bug.)
+  model has no yaw stiffness, so launch sideslip is shed only slowly, and predicted
+  crosswind drift comes out at about a quarter of the naive `U_c·T` full-advection
+  estimate at 5 m/s. Do not quote crosswind drift as well-validated. (The
+  Galilean-invariance test confirms the wind coupling itself is exact, so this is a
+  physics-model gap, not a numerical bug.)
+  - ⚠ **RETRACTED 2026-09-03 (WP4b item 5): this used to say crosswind drift is a
+    "lower bound", and that conflates two different omissions.** Missing yaw stiffness
+    is one-sided — with `CS(α)` the disc would weathercock and shed sideslip faster.
+    But the model also omits the **Robins–Magnus** side force, which goes as
+    `ω × v` and therefore **reverses with the spin direction**: a backhand and a
+    forehand spin opposite ways, so the same crosswind gives a lateral force of
+    opposite sign for the two throws. The net effect is handedness- and
+    throw-type-dependent and can add to the modelled drift or subtract from it.
+    **Lateral predictions are uncertain in sign, not bounded below.** The same
+    retraction is applied at two places in the manuscript.
 - **Angle-of-attack range.** The tabulated curves span −10°…+30°; a realistic
   flight reaches ~33° in its final second, so ~7% of samples are clamped to the
   table edge. The linear sets are far worse (44% out of range, α to 47°).

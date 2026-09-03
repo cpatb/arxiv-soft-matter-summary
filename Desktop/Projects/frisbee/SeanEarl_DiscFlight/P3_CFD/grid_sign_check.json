@@ -1,0 +1,12 @@
+{
+  "heading": 90,
+  "z_target_m": 2.0,
+  "z_used_fine_m": 2.0,
+  "z_used_coarse_m": 2.0,
+  "U_fine_ms": 1.205743433050881,
+  "U_coarse_ms": 0.9930071831604738,
+  "fine_minus_coarse_ms": 0.21273624989040718,
+  "fine_minus_coarse_pct_of_coarse": 21.423435147097845,
+  "fine_is_faster": true,
+  "caveat": "heading 090 only; the only coarse field stored"
+}
