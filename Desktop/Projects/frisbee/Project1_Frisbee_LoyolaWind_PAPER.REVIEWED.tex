@@ -145,6 +145,7 @@ or a passing test; nothing is projected.
 \end{quote}
 
 \subsection{Verdict}
+\label{sec:feasibility-verdict}
 
 \begin{center}
 \footnotesize
@@ -155,7 +156,8 @@ or a passing test; nothing is projected.
 Analytical 6-DOF disc model & Solid & Hummel (2003), Crowther \& Potts (2007) give a complete validated 6-DOF formulation with measured coefficients. \\
 RANS urban CFD, 13 wind directions $\times$ 15$^\circ$ & Tractable & $\sim$3--10 M cells, 2--8 h per direction on 32 cores, total 1--4 days. Standard COST 732 / AIJ practice; OpenFOAM \texttt{simpleFoam} with k-$\omega$ SST. \\
 LES of the same domain & Not realistic for full sweep & $\Delta x \sim 1$--$2$ m near buildings $\Rightarrow$ 50--200 M cells per case. Single direction is feasible (weeks). \\
-Coupling CFD wind field into disc trajectory & Novel and tractable & Not done in published literature; the Lukes et al.\ (2022) disc-golf code uses uniform freestream. \emph{This is the novelty hook.} \\
+Coupling CFD wind field into disc trajectory & Established elsewhere; new for a disc & % REVIEW [GATE G5, 2026-09-02]: the previous entry claimed this was "not done in published literature" and called it the novelty hook. It is prior art. Kakimpa, Hargreaves \& Owen (JWEIA 111, 2012, Parts I--II) couple a CFD field to 6-DOF rigid-body dynamics for windborne debris; the construction is standard in exterior ballistics as "CFD/RBD"; and US 11{,}052{,}285 B2 (priority 2016) claims stadium wind sensors $\to$ CFD $\to$ gridded 3-D wind vectors $\to$ interpolation into a ball-trajectory model. See GATE\_G5\_PRIOR\_ART\_2026-09-02.md.
+Coupling a CFD field to 6-DOF rigid-body dynamics is established --- Kakimpa \emph{et al.}\ (2012) for windborne debris, ``CFD/RBD'' in exterior ballistics, and US 11{,}052{,}285 B2 (2016) for a ball in a stadium --- but every one of those carries a \emph{single} field to a \emph{single} trajectory. The disc-golf codes of Lukes \emph{et al.}\ (2022) and Giljarhus \emph{et al.}\ (2022) use a uniform freestream. \emph{What is new here is carrying a spatially resolved turbulent field through to a landing-point distribution.} \\
 Throwability metric over the field & Tractable as descriptive optimization & Not real-time forecasting; compute mean velocity + TKE at disc altitude, then evaluate trajectory robustness for canonical throws. \\
 \bottomrule
 \end{tabular}
@@ -280,13 +282,23 @@ The Frisbee is one of the most-studied non-airfoil aerodynamic objects in sports
 
 Yet every published disc-trajectory study assumes a spatially uniform, steady freestream. As Lukes et al.\ (2022) explicitly note, ``the biggest uncertainty in trajectory experiments is the wind environment.'' This uncertainty is not noise to be averaged away: outdoor disc sports --- Ultimate, disc golf --- are played in geographically structured turbulent flow. A throw whose intended landing zone lies in a sheltered eddy behind a building experiences a categorically different flow than the same throw 20 m to the side.
 
-Independently, the urban-CFD community has developed mature best-practice guidance for site-specific pedestrian-level wind: the COST Action 732 guidebook (Franke et al.\ 2007), the AIJ guidelines (Tominaga et al.\ 2008), and the 50-year retrospective of Blocken (2014). Standard practice uses steady RANS with k-$\omega$ SST or realizable k-$\varepsilon$ on \texttt{snappyHexMesh}-generated meshes of $\sim 10^7$ cells, with Richards--Hoxey atmospheric inlets. This work has shaped pedestrian-comfort regulation in dozens of cities, but to our knowledge has never been applied to outdoor sports trajectory prediction.
+Independently, the urban-CFD community has developed mature best-practice guidance for site-specific pedestrian-level wind: the COST Action 732 guidebook (Franke et al.\ 2007), the AIJ guidelines (Tominaga et al.\ 2008), and the 50-year retrospective of Blocken (2014). Standard practice uses steady RANS with k-$\omega$ SST or realizable k-$\varepsilon$ on \texttt{snappyHexMesh}-generated meshes of $\sim 10^7$ cells, with Richards--Hoxey atmospheric inlets. % REVIEW [GATE G5, 2026-09-02]: "never applied to outdoor sports trajectory prediction" was
+% false --- US 11,052,285 B2 applies exactly this to a ball in a stadium --- and the
+% companion claim in FRISBEE_GENERALIZATION.md that nobody has written a projectile
+% criterion is refuted by the urban-air-mobility literature. Both narrowed here to the
+% distinction that actually holds: threshold-on-a-controlled-vehicle vs variance-of-an-
+% unguided-projectile.
+This work has shaped pedestrian-comfort regulation in dozens of cities. It has been carried into flight only recently, and in two forms that are not the present one. Stadium-scale systems interpolate a CFD wind field into a ball-trajectory model to predict a \emph{single} flight (US 11{,}052{,}285 B2, priority 2016), and the urban-air-mobility literature builds site-resolved wind-speed and turbulence-intensity \emph{thresholds} for flying vehicles (Watkins \emph{et al.}\ 2010; Drones \textbf{9}(5):362, 2025). Both describe bodies that are either predicted deterministically or actively controlled. A thrown disc is neither: it is unguided after release, so the quantity of interest is not an exceedance threshold but the \emph{variance of where it lands}, and the group that organises it is $\sigma_u/V_d$ --- the fluctuation against the disc's own airspeed --- rather than the turbulence intensity $\sigma_u/U$ that a station-keeping criterion uses.
 
 The present work fills that gap. We choose Sean Earl Field at Loyola University Chicago's Lake Shore Campus as a study site because it offers an unusually clean physical setup: the field sits within $\sim$250 m of Lake Michigan, with no major intervening built obstacle to the east, behind it a typical low-rise urban-campus block to the west. Easterly winds therefore arrive after $\sim$80 km of unbroken over-water fetch ($z_0 \approx 0.001$ m), pass through a sharp roughness transition at the shoreline, and develop a shallow internal boundary layer over the field. Westerly winds arrive through the campus block. The site cleanly separates two regimes (smooth-fetch and urban-fetch) within a 180$^\circ$ heading sweep.
 
 \textbf{Our contributions:}
 \begin{enumerate}[leftmargin=*,itemsep=2pt]
-  \item The first published two-way coupling of an environmental-CFD wind field to a validated 6-DOF disc-flight model.
+% REVIEW [GATE G5, 2026-09-02]: "two-way" was factually wrong about this project's own
+% method. `P4_Coupling/cfd_field.py` reads a PRECOMPUTED RANS field and trilinearly
+% interpolates it into the trajectory right-hand side; the disc exerts no influence on
+% the flow. The coupling is one-way, and a referee would find that in one file.
+  \item A one-way coupling of a spatially resolved environmental-CFD wind field, plus a synthetic gust field, to a validated 6-DOF disc-flight model, carried through to a \emph{landing-point distribution} rather than a single predicted trajectory. The coupling itself is established for other bodies (see \S\ref{sec:feasibility-verdict}); the disc and the distribution are what is new.
   \item A ``throwability metric'' $Q(\mathbf{x}, \theta_{\text{wind}})$ that compresses the spatial CFD field plus trajectory uncertainty into an actionable single scalar per (launch position, wind heading).
   \item A case study identifying the lakefront internal boundary layer as the dominant local control on Ultimate-disc flight at the chosen site.
 \end{enumerate}

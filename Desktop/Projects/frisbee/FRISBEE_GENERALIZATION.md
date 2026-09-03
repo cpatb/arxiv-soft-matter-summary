@@ -32,7 +32,24 @@ This is the counterintuitive part and it is the paper's most transferable
 claim. It is also *not* what urban wind engineering optimises for: the COST 732
 / Lawson / NEN 8100 tradition is built around **pedestrian** comfort and safety,
 which is a mean-and-gust-exceedance criterion for a person standing still.
-Nobody has written down the equivalent criterion for a *projectile*.
+
+> ⚠ **NARROWED 2026-09-02 by GATE G5** (`GATE_G5_PRIOR_ART_2026-09-02.md`). This
+> paragraph used to end *"Nobody has written down the equivalent criterion for a
+> projectile."* That is refutable from a single search. The urban-air-mobility
+> literature has built exactly such criteria since about 2020 — site-resolved,
+> CFD-derived thresholds on wind speed, shear and turbulence intensity for flying
+> bodies (Watkins *et al.*, *Int. J. Micro Air Vehicles* **2**(2):55–68, 2010;
+> *Drones* **9**(5):362, 2025, `10.3390/drones9050362`; and two 2026 urban-air-mobility
+> reviews). **Do not claim the gap; claim the distinction.**
+>
+> The distinction is real and it is sharper than the original claim. Every one of
+> those criteria is a **threshold on a controlled vehicle** — a go/no-go on whether
+> a drone can hold station or a pilot can hold a path. A thrown disc is **unguided
+> after release**, so there is no control loop to threshold: the quantity of
+> interest is the **variance of the terminal position**, and the organising group is
+> `σ_u/V_d` (fluctuation against the body's own airspeed) rather than the turbulence
+> intensity `σ_u/U` a station-keeping criterion uses. That is the same argument §2
+> below makes independently from `V_d/U ≈ 8–10`.
 
 ## 2. Why the disc cares — the dimensionless framing
 
