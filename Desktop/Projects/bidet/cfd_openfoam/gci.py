@@ -83,6 +83,12 @@ FAMILIES = {
                ("case_Re10000_H6", 1.0)],
     "coarse": [("case_Re10000_H6_r2", 2.0), ("case_Re10000_H6", 1.0),
                ("case_Re10000_H6_r0", 0.5)],
+    # Same triplet, but with the refine = 2 grid taken from the run that was allowed to
+    # reach residualControl (extend_r2.sh, converged at iteration 5105) instead of the
+    # one that stopped at the 3000-iteration cap. Comparing this family against `coarse`
+    # is how much of the "grid effect" was really iteration count.
+    "coarse_conv": [("case_Re10000_H6_r2_ext", 2.0), ("case_Re10000_H6", 1.0),
+                    ("case_Re10000_H6_r0", 0.5)],
 }
 
 # (key in the fit_closure record, label)
@@ -99,14 +105,24 @@ RESIDUAL_TARGET = 1e-5          # the residualControl set in system/fvSolution
 
 def n_cells(case: str) -> int:
     """Cell count from blockMesh's own log -- not recomputed from gen_case.py."""
-    path = os.path.join(HERE, case, "log.blockMesh")
-    with open(path, encoding="utf-8", errors="replace") as fh:
-        for line in fh:
-            # blockMesh prints "  nCells: 122880". Match the label exactly rather than a
-            # bare "cells:", which also hits the polyMesh constructor signature above it.
-            if line.strip().startswith("nCells:"):
-                return int(line.split(":")[1].strip())
-    raise RuntimeError("no nCells line in " + path)
+    # A restarted case (`_ext`) has no blockMesh log of its own -- it reuses the mesh --
+    # so fall back to the sibling it was restarted from. Never guess from gen_case.py's
+    # arithmetic: the whole point of reading the log is that the mesh is what blockMesh
+    # actually built.
+    candidates = [os.path.join(HERE, case, "log.blockMesh")]
+    if case.endswith("_ext"):
+        candidates.append(os.path.join(HERE, case[:-4], "log.blockMesh"))
+    for path in candidates:
+        if not os.path.exists(path):
+            continue
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            for line in fh:
+                # blockMesh prints "  nCells: 122880". Match the label exactly rather
+                # than a bare "cells:", which also hits the polyMesh constructor
+                # signature printed above it.
+                if line.strip().startswith("nCells:"):
+                    return int(line.split(":")[1].strip())
+    raise RuntimeError("no nCells line found for %s (tried %s)" % (case, candidates))
 
 
 def iterative_state(case: str) -> dict:
