@@ -35,11 +35,19 @@
 #
 # Cost note: N = 6000 cells are ~4x an N = 1500 cell. Run last so the matched-N block
 # lands first and is usable on its own.
+#
+# SCOPE TRIMMED 2026-09-03 after measuring the cost: N = 3000 cells run 40-60 min each, so
+# the original 5-block plan (2 CVs, 3 families at N=3000, 2 at N=6000) needed ~10 h. The
+# decisive comparison is the MATCHED-N contrast at the CV where the effect is largest, so
+# this now runs CV = 0.5 only at N = 3000 for all three families. CV = 0.4 keeps its
+# existing N = 1500 data, and the N = 6000 convergence rung is NOT run -- recorded as not
+# done rather than quietly dropped.
 set -u
 NSHARDS="${1:-11}"
+CVS="${2:-0.5}"
 SRC=/mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming
 mkdir -p ~/pj/out
-cp -r "$SRC"/*.py "$SRC"/scripts ~/pj/ 2>/dev/null
+cp "$SRC"/*.py ~/pj/ 2>/dev/null    # NOT scripts/: would rewrite this file mid-run
 find ~/pj -maxdepth 2 -name "*.py" -o -maxdepth 2 -name "*.sh" | xargs -r sed -i 's/\r$//'
 cd ~/pj || exit 1
 source scripts/env.sh
@@ -52,7 +60,7 @@ run_block () {           # family  N  tag
   for i in $(seq 0 $((NSHARDS - 1))); do
     LOG=~/pj/out/fs_${tag}_w$(printf "%02d" "$i").log
     stdbuf -oL python3 -u phase2_phiJ.py \
-        --family "$fam" --n "$n" --cvs 0.4,0.5 --seeds 1,2,3 --mus 0.3 \
+        --family "$fam" --n "$n" --cvs "$CVS" --seeds 1,2,3 --mus 0.3 \
         --tag "$tag" --shard "$i" --nshards "$NSHARDS" > "$LOG" 2>&1 &
     pids+=($!)
   done
@@ -66,8 +74,7 @@ run_block uniform    3000 n3k_uniform
 run_block bidisperse 3000 n3k_bidisperse
 run_block lognormal  3000 n3k_lognormal
 
-# B. the convergence rung, lognormal only
-run_block lognormal  6000 n6k_lognormal
-run_block uniform    6000 n6k_uniform
+# B. NOT RUN this session: the N = 6000 convergence rung. See the scope note above.
+# run_block lognormal  6000 n6k_lognormal
 
 echo "=== ALL FINITE-SIZE BLOCKS FINISHED ==="
