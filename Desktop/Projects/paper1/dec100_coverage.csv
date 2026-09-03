@@ -1,0 +1,277 @@
+session,cell,drop,has_dec100,path
+400_mesh_si_sphere_19AUG26,cornstarch/u0_2,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\cornstarch\u0_2\side\measurements
+400_mesh_si_sphere_19AUG26,highVF/u0_2,1,0,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\highVF\u0_2\side\measurements
+400_mesh_si_sphere_19AUG26,highVF/u0_2,2,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\highVF\u0_2\side\measurements
+400_mesh_si_sphere_19AUG26,highVF/u0_2.5,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\highVF\u0_2.5\side\measurements
+400_mesh_si_sphere_19AUG26,highVF/u0_3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\highVF\u0_3\side\measurements
+400_mesh_si_sphere_19AUG26,lowestVF/u0_2,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\lowestVF\u0_2\side\measurements
+400_mesh_si_sphere_19AUG26,lowestVF/u0_2.5,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\lowestVF\u0_2.5\side\measurements
+400_mesh_si_sphere_19AUG26,lowestVF/u0_3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\lowestVF\u0_3\side\measurements
+400_mesh_si_sphere_19AUG26,lowestVF/u0_3,2,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\lowestVF\u0_3\side\measurements
+400_mesh_si_sphere_19AUG26,lowVF/u0_2.5,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\lowVF\u0_2.5\side\measurements
+400_mesh_si_sphere_19AUG26,lowVF/u0_3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\lowVF\u0_3\side\measurements
+400_mesh_si_sphere_19AUG26,medVF/u0_2.5,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\medVF\u0_2.5\side\measurements
+400_mesh_si_sphere_19AUG26,medVF/u0_3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\medVF\u0_3\side\measurements
+400_mesh_si_sphere_19AUG26,newtonian/u0_2,1,0,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\newtonian\u0_2\side\measurements
+400_mesh_si_sphere_19AUG26,newtonian/u0_2.5,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\newtonian\u0_2.5\side\measurements
+400_mesh_si_sphere_19AUG26,newtonian/u0_3,1,0,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\newtonian\u0_3\side\measurements
+400_mesh_si_sphere_19AUG26,stober_0.42VF/u0_2,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\stober_0.42VF\u0_2\side\measurements
+400_mesh_si_sphere_19AUG26,stober_0.44VF/u0_2.5,1,1,E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\stober_0.44VF\u0_2.5\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_1,1,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_1,2,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_1,3,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_1,4,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_1,5,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_3,1,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_3,2,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_3,3,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_3,4,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_3,5,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_5,1,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_5\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_5,2,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_5\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_5,3,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_5\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_5,4,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_5\side\measurements
+800 nm silica sphere 0.1 VF 06MAR26,Silica/u0_5,5,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.1 VF 06MAR26\Silica\u0_5\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_1,1,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_1,2,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_1,3,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_1,4,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_1,5,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_1,6,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_2,1,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_2,2,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_2,3,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_2,4,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_2,5,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_2,6,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_3,2,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_3,3,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_3,4,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_3,5,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_3,6,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_4,1,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_4\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_4,2,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_4\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_4,3,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_4\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_4,4,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_4\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_4,5,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_4\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_4,6,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_4\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_5,2,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_5\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_5,3,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_5\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_5,4,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_5\side\measurements
+800 nm silica sphere 0.44 VF 04MAR26,Silica/u0_5,5,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_5\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_1,1,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_1,2,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_1,3,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_1,4,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_1,5,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_2,1,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_2,2,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_2,3,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_2,4,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_2,5,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_3,2,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_3,3,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_3,4,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_3,5,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_3,6,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_3,7,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_4,1,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_4\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_4,2,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_4\side\measurements
+800 nm silica sphere 0.48 VF 04MAR26,Silica/u0_4,3,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_4\side\measurements
+800 nm silica sphere 0.5 VF 06MAR26,Silica/u0_1,1,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.5 VF 06MAR26,Silica/u0_1,2,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.5 VF 06MAR26,Silica/u0_1,3,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.5 VF 06MAR26,Silica/u0_1,4,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.5 VF 06MAR26,Silica/u0_1,5,1,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_1\side\measurements
+800 nm silica sphere 0.5 VF 06MAR26,Silica/u0_2,1,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.5 VF 06MAR26,Silica/u0_2,2,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.5 VF 06MAR26,Silica/u0_2,3,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_2\side\measurements
+800 nm silica sphere 0.5 VF 06MAR26,Silica/u0_3,1,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.5 VF 06MAR26,Silica/u0_3,2,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_3\side\measurements
+800 nm silica sphere 0.5 VF 06MAR26,Silica/u0_3,3,0,E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_3\side\measurements
+Granular Silica Spheres 0.40 VF 12JUN26,Silica/u0_3,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Granular Silica Spheres 0.40 VF 12JUN26\Silica\u0_3\side\measurements
+Granular Silica Spheres 0.40 VF 12JUN26,Silica/u0_3,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Granular Silica Spheres 0.40 VF 12JUN26\Silica\u0_3\side\measurements
+Granular Silica Spheres 0.40 VF 12JUN26,Silica/u0_3,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Granular Silica Spheres 0.40 VF 12JUN26\Silica\u0_3\side\measurements
+Granular Silica Spheres 0.40 VF 12JUN26,Silica/u0_3,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Granular Silica Spheres 0.40 VF 12JUN26\Silica\u0_3\side\measurements
+Granular Silica Spheres 0.40 VF 12JUN26,Silica/u0_3,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Granular Silica Spheres 0.40 VF 12JUN26\Silica\u0_3\side\measurements
+Granular Silica Spheres 0.40 VF 12JUN26,Silica/u0_3,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Granular Silica Spheres 0.40 VF 12JUN26\Silica\u0_3\side\measurements
+Granular Silica Spheres 0.40 VF 12JUN26,Silica/u0_3,7,1,E:\CPB\Driscoll\Silica Colloid Drop\Granular Silica Spheres 0.40 VF 12JUN26\Silica\u0_3\side\measurements
+Granular Silica Spheres 0.40 VF 12JUN26,Silica/u0_3,8,1,E:\CPB\Driscoll\Silica Colloid Drop\Granular Silica Spheres 0.40 VF 12JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_1,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_1,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_1,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_1,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_1,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_2,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_2,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_2,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_2,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_2,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_3,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_3,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_3,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_3,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_3,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_4,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_4,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_4,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_4,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_4,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_5,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_5,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_5,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_5,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.42 VF 23JUL26,Silica/u0_5,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.42 VF 23JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,newtonian_control/u0_1.5,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\newtonian_control\u0_1.5\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,newtonian_control/u0_2.3,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\newtonian_control\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,newtonian_control/u0_2.6,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\newtonian_control\u0_2.6\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_1,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_1,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_1,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_1,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_1,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_1,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_2.3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_2.3,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_2.3,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_2.3,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_2.3,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_2.3,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_3,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_3,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_3,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_3,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_3,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_3,7,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_4,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_4,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_4,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_4,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_4,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_4,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_4.5,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_4.5,2,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_4.5,3,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 10 mM LiCl 24JUN26,Silica/u0_4.5,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 10 mM LiCl 24JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_1,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_1,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_1,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_1,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_1,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_2.3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_2.3,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_2.3,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_2.3,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_2.3,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_2.3,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_3,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_3,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_3,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_3,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_3,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_4,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_4,2,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_4,3,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_4,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_4,5,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_4.5,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_4.5,2,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_4.5,3,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 100 mM LiCl 23JUN26,Silica/u0_4.5,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_1,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_1,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_1,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_1,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_1,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_2.3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_2.3,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_2.3,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_2.3,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_2.3,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_2.3\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_3,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_3,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_3,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_3,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_3,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_4,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_4,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_4,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_4,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_4,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_4.5,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_4.5,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_4.5,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 23JUN26,Silica/u0_4.5,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 23JUN26\Silica\u0_4.5\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_1,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_1,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_1,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_1,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_1,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_1,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_2,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_2,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_2,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_2,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_2,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_2,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_3,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_3,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_3,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_3,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_3,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_3,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_4,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_4,2,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_4,3,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_4,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_4,5,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_4,6,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_5,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_5,2,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_5,3,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.44 VF 50 mM LiCl 13JUL26,Silica/u0_5,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_1,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_1,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_1,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_1,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_1\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_2,1,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_2,2,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_2,3,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_2,4,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_2,5,1,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_2\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_3,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_3,2,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_3,3,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_3,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_3,5,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_3,6,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_3\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_4,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_4,2,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_4,3,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_4,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_4,5,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_4,6,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_4\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_5,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_5,2,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_5,3,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_5,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_5\side\measurements
+Silica Colloid 0.45 VF 24JUL26,Silica/u0_5,5,0,E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.45 VF 24JUL26\Silica\u0_5\side\measurements
+Silicone Dioxide 0.28 VF 12JUN26,Silica/u0_3,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.28 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.28 VF 12JUN26,Silica/u0_3,2,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.28 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.28 VF 12JUN26,Silica/u0_3,3,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.28 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.28 VF 12JUN26,Silica/u0_3,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.28 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.32 VF 12JUN26,Silica/u0_3,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.32 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.32 VF 12JUN26,Silica/u0_3,2,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.32 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.32 VF 12JUN26,Silica/u0_3,3,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.32 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.32 VF 12JUN26,Silica/u0_3,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.32 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.35 VF 12JUN26,Silica/u0_3,1,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.35 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.35 VF 12JUN26,Silica/u0_3,2,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.35 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.35 VF 12JUN26,Silica/u0_3,3,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.35 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.35 VF 12JUN26,Silica/u0_3,4,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.35 VF 12JUN26\Silica\u0_3\side\measurements
+Silicone Dioxide 0.35 VF 12JUN26,Silica/u0_3,5,0,E:\CPB\Driscoll\Silica Colloid Drop\Silicone Dioxide 0.35 VF 12JUN26\Silica\u0_3\side\measurements

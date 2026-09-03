@@ -1,0 +1,66 @@
+base recordings (drop*_profiles.csv, excluding _bak_reprocess): 276
+with dec100: 183    without: 93
+cells: 38 complete, 20 entirely without dec100, 10 with a within-cell gap
+
+WHOLE CELLS WITH NO dec100 -- configured before their drops, so this cannot be
+outcome-caused, and it is a coverage statement rather than a selection one:
+  400_mesh_si_sphere_19AUG26                    newtonian/u0_2               (1 drops)
+  400_mesh_si_sphere_19AUG26                    newtonian/u0_3               (1 drops)
+  800 nm silica sphere 0.1 VF 06MAR26           Silica/u0_1                  (5 drops)
+  800 nm silica sphere 0.1 VF 06MAR26           Silica/u0_3                  (5 drops)
+  800 nm silica sphere 0.1 VF 06MAR26           Silica/u0_5                  (5 drops)
+  800 nm silica sphere 0.44 VF 04MAR26          Silica/u0_4                  (6 drops)
+  800 nm silica sphere 0.44 VF 04MAR26          Silica/u0_5                  (4 drops)
+  800 nm silica sphere 0.5 VF 06MAR26           Silica/u0_2                  (3 drops)
+  800 nm silica sphere 0.5 VF 06MAR26           Silica/u0_3                  (3 drops)
+  Silica Colloid 0.44 VF 10 mM LiCl 24JUN26     Silica/u0_4.5                (4 drops)
+  Silica Colloid 0.44 VF 10 mM LiCl 24JUN26     newtonian_control/u0_2.3     (1 drops)
+  Silica Colloid 0.44 VF 100 mM LiCl 23JUN26    Silica/u0_4                  (5 drops)
+  Silica Colloid 0.44 VF 100 mM LiCl 23JUN26    Silica/u0_4.5                (4 drops)
+  Silica Colloid 0.44 VF 50 mM LiCl 13JUL26     Silica/u0_5                  (4 drops)
+  Silica Colloid 0.45 VF 24JUL26                Silica/u0_3                  (6 drops)
+  Silica Colloid 0.45 VF 24JUL26                Silica/u0_4                  (6 drops)
+  Silica Colloid 0.45 VF 24JUL26                Silica/u0_5                  (5 drops)
+  Silicone Dioxide 0.28 VF 12JUN26              Silica/u0_3                  (4 drops)
+  Silicone Dioxide 0.32 VF 12JUN26              Silica/u0_3                  (4 drops)
+  Silicone Dioxide 0.35 VF 12JUN26              Silica/u0_3                  (5 drops)
+
+WITHIN-CELL OMISSIONS -- these are the ones item 7 is about. A drop skipped
+because of WHAT IT DID selects the late-time sample on the outcome:
+  400_mesh_si_sphere_19AUG26                    highVF/u0_2                  drop 1
+      E:\CPB\Driscoll\Silica Colloid Drop\400_mesh_si_sphere_19AUG26\highVF\u0_2\side\measurements
+  800 nm silica sphere 0.44 VF 04MAR26          Silica/u0_1                  drop 3
+      E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_1\side\measurements
+  800 nm silica sphere 0.44 VF 04MAR26          Silica/u0_3                  drop 2
+      E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.44 VF 04MAR26\Silica\u0_3\side\measurements
+  800 nm silica sphere 0.48 VF 04MAR26          Silica/u0_3                  drop 7
+      E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_3\side\measurements
+  800 nm silica sphere 0.48 VF 04MAR26          Silica/u0_4                  drop 2
+      E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.48 VF 04MAR26\Silica\u0_4\side\measurements
+  800 nm silica sphere 0.5 VF 06MAR26           Silica/u0_1                  drop 1
+      E:\CPB\Driscoll\Silica Colloid Drop\800 nm silica sphere 0.5 VF 06MAR26\Silica\u0_1\side\measurements
+  Granular Silica Spheres 0.40 VF 12JUN26       Silica/u0_3                  drop 1
+      E:\CPB\Driscoll\Silica Colloid Drop\Granular Silica Spheres 0.40 VF 12JUN26\Silica\u0_3\side\measurements
+  Silica Colloid 0.44 VF 100 mM LiCl 23JUN26    Silica/u0_2.3                drop 4
+      E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 100 mM LiCl 23JUN26\Silica\u0_2.3\side\measurements
+  Silica Colloid 0.44 VF 50 mM LiCl 13JUL26     Silica/u0_1                  drop 4
+      E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_1\side\measurements
+  Silica Colloid 0.44 VF 50 mM LiCl 13JUL26     Silica/u0_4                  drop 2
+      E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_4\side\measurements
+  Silica Colloid 0.44 VF 50 mM LiCl 13JUL26     Silica/u0_4                  drop 3
+      E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_4\side\measurements
+  Silica Colloid 0.44 VF 50 mM LiCl 13JUL26     Silica/u0_4                  drop 5
+      E:\CPB\Driscoll\Silica Colloid Drop\Silica Colloid 0.44 VF 50 mM LiCl 13JUL26\Silica\u0_4\side\measurements
+
+wrote C:\Users\compl\Desktop\Projects\paper1\dec100_coverage.csv
+
+⚠ SCOPE, and it has to be read before the list is. Over the whole disk this is
+  276 recordings / 183 with dec100. Restrict to the six PAPER sessions (the
+  three salt cells plus 0.42 / 0.44 / 0.45 VF) and to `Silica/` cells -- i.e.
+  drop the `newtonian_control` cells -- and it reproduces the audit EXACTLY:
+  n = 160, dec100 = 121, seven whole cells with none, and those seven are the
+  seven the Status card names. So the subset is identified, not guessed.
+  On that subset the within-cell omissions number FIVE, not the card's four,
+  and three of the five are the SAME cell (50 mM LiCl, u0_4: drops 2, 3, 5 of
+  6 missing, keeping 1, 4, 6). An interleaved pattern is not a camera that
+  stopped; check that cell first.
