@@ -625,3 +625,43 @@ def test_stagnation_term_is_not_silently_dropped_when_asked_for():
     assert_allclose(full - bare, 0.5 * imp.p_dyn, rtol=1e-12)
     # the omitted term is ~50% OF THE SINGULAR PART at t* ~ 0.3 (34% of the total)
     assert 0.45 < (full - bare) / bare < 0.55
+
+
+# --------------------------------------------------------------------------
+# The retraction gate (added 2026-09-02)
+# --------------------------------------------------------------------------
+# si_fit is a withdrawn fit to retracted rheometry and this module shipped it for a
+# month without saying so. The lesson that motivated putting the gate in code rather
+# than in a comment is that a pre-registered admission rule applied by hand at
+# read-time gets skipped. These tests exist so the gate cannot be quietly removed:
+# the first fails if the warning stops firing, the second fails if the retraction
+# stops travelling with the object into whatever consumes its caveats.
+
+def test_lab_silica_warns_that_its_calibration_is_retracted():
+    import warnings as _w
+    with _w.catch_warnings(record=True) as rec:
+        _w.simplefilter("always")
+        mat.lab_silica()
+    assert len(rec) == 1
+    assert rec[0].category is mat.RetractedCalibrationWarning
+    msg = str(rec[0].message)
+    assert "2026-07-29" in msg and "2026-08-26" in msg
+
+
+def test_lab_silica_can_be_acknowledged_and_then_is_silent():
+    import warnings as _w
+    with _w.catch_warnings(record=True) as rec:
+        _w.simplefilter("always")
+        s = mat.lab_silica(acknowledge_retracted=True)
+    assert rec == []
+    # acknowledging suppresses the warning; it must NOT suppress the record
+    assert s.caveats[0].startswith("RETRACTED")
+    assert "RETRACTED CALIBRATION" in s.name
+
+
+def test_retraction_travels_with_the_object_not_just_the_call():
+    s = mat.lab_silica(acknowledge_retracted=True)
+    # results.py serialises SUSP.caveats into its output JSON, so this is the path by
+    # which the retraction reaches a reader who never sees the warning.
+    assert any("retracted" in c.lower() for c in s.caveats)
+    assert mat.SI_FIT_RETRACTED["preset_withdrawn"] == "2026-08-26"

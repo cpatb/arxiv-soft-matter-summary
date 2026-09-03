@@ -45,6 +45,8 @@ report generated from this module reprints them.
 
 from __future__ import annotations
 
+import warnings
+
 from dataclasses import dataclass
 
 import numpy as np
@@ -328,7 +330,41 @@ def sound_speed_wood(phi: float, particle: Fluid, fluid: Fluid, rho_mix: float) 
 # --------------------------------------------------------------------------
 # The lab's own system
 # --------------------------------------------------------------------------
-def lab_silica(phi: float = 0.44, a: float = 400e-9) -> WyartCates:
+# ---------------------------------------------------------------------------
+# RETRACTION NOTICE, added 2026-09-02
+# ---------------------------------------------------------------------------
+# The `si_fit` parameters returned by `lab_silica()` below are a WITHDRAWN fit to
+# RETRACTED rheometry, and this module shipped them for a month after that without
+# saying so.
+#
+#   * the eleven flow curves the fit was made against were retracted 2026-07-29
+#   * the `si_fit` preset itself was withdrawn 2026-08-26
+#     (`WC_DNS_MASTER_PLAN.md` A4 -> S1: "No cleared silica rheology exists")
+#
+# It is NOT removed, for one reason: contrasts computed at fixed `si_fit` -- ratios,
+# orderings, sensitivities -- are unaffected by a common wrong calibration, and several
+# results in this tree are of exactly that kind. What is NOT valid is any ABSOLUTE
+# sigma_star, phi_m, viscosity or stress quoted from it.
+#
+# The gate is in code rather than in a comment because a rule applied by hand at
+# read-time gets skipped: `lab_silica()` warns on every call. Pass
+# `acknowledge_retracted=True` to silence it, which is a deliberate act that shows up in
+# a diff. Do not add a global warnings filter to make this quiet.
+SI_FIT_RETRACTED = {
+    "flow_curves_retracted": "2026-07-29",
+    "preset_withdrawn": "2026-08-26",
+    "source": "Github/Drop Impact/closure/params_fitted.yaml (si_fit)",
+    "what_survives": "contrasts and orderings at fixed si_fit",
+    "what_does_not": "absolute sigma_star, phi_m, eta_s, and any stress built on them",
+}
+
+
+class RetractedCalibrationWarning(UserWarning):
+    """Raised when a withdrawn calibration is used without acknowledgement."""
+
+
+def lab_silica(phi: float = 0.44, a: float = 400e-9,
+               acknowledge_retracted: bool = False) -> WyartCates:
     """The Driscoll-lab 800 nm colloidal silica suspension.
 
     Parameters
@@ -342,8 +378,18 @@ def lab_silica(phi: float = 0.44, a: float = 400e-9) -> WyartCates:
     offset. It is used as-fitted here so that the results are consistent with
     the repo's own calibration; the sensitivity to it is reported separately.
     """
+    if not acknowledge_retracted:
+        warnings.warn(
+            "lab_silica() returns the WITHDRAWN si_fit calibration: its flow curves "
+            "were retracted %s and the preset was withdrawn %s. Contrasts at fixed "
+            "si_fit survive; absolute sigma_star, phi_m, eta_s and any stress built on "
+            "them do not. Pass acknowledge_retracted=True once you have decided which "
+            "of those you are doing."
+            % (SI_FIT_RETRACTED["flow_curves_retracted"],
+               SI_FIT_RETRACTED["preset_withdrawn"]),
+            RetractedCalibrationWarning, stacklevel=2)
     return WyartCates(
-        name=f"lab silica, 800 nm, phi={phi:g}",
+        name=f"lab silica [RETRACTED CALIBRATION], 800 nm, phi={phi:g}",
         eta_s=0.004736,
         phi0=0.70,
         phiM=0.5176,
@@ -362,6 +408,9 @@ def lab_silica(phi: float = 0.44, a: float = 400e-9) -> WyartCates:
             "Status/'Drop Impact - Paper 1' section 1."
         ),
         caveats=(
+            "RETRACTED: the eleven flow curves this was fitted to were retracted "
+            "2026-07-29 and the si_fit preset was withdrawn 2026-08-26. Contrasts "
+            "at fixed si_fit survive; no absolute value from it may be quoted.",
             "The flow-curve fit FAILED its own acceptance gate: "
             "rms(log eta) = 0.374 against a required < 0.35.",
             "The rheometer dataset's phi axis is offset from the drop "
