@@ -54,6 +54,17 @@ OBS = ("z_carved", "z_launch", "z_retention", "z_peak", "cor", "spread", "ke_rat
 
 
 def main() -> int:
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--seeds", default="", help="comma-separated seeds, overriding SEEDS")
+    ap.add_argument("--cvs", default="", help="comma-separated CV values")
+    args = ap.parse_args()
+    global SEEDS, CVS
+    if args.seeds:
+        SEEDS = tuple(int(x) for x in args.seeds.split(","))
+    if args.cvs:
+        CVS = tuple(float(x) for x in args.cvs.split(","))
+
     from phase7_confined import run_confined
 
     os.makedirs(OUT_DIR, exist_ok=True)

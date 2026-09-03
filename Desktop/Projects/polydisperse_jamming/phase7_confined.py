@@ -116,9 +116,25 @@ def run_confined(cv, mu_p, seed, n_parent, carve_p_hat, u0, young=1.0):
         if not shell.any():
             return
         f = pc * 4.0 * math.pi * rmax**2 / shell.sum()
+        # A confinement must exert ZERO NET FORCE: it squeezes, it does not push. The
+        # first version applied an inward force to each shell grain and summed to
+        # something non-zero as soon as the shell lost symmetry -- which it does the
+        # moment the aggregate flattens against the wall. The result was a continuous
+        # thrust: diag_cor_timing.py shows a CV = 0 aggregate ACCELERATING away from the
+        # wall with no wall contact at all, COR climbing +0.031 -> +0.339 and ke_ratio
+        # 0.0013 -> 0.115 over the probe loop. Every Phase 4/5/7 COR was contaminated by
+        # it, and the "COR = 2.15, KE = 175" cells were just the visible extreme.
+        #
+        # Subtracting the mean makes the force set self-equilibrated, so it can compress
+        # the aggregate but cannot translate it.
+        dirs = -rel[shell] / rr[shell, None]
+        forces = dirs * f
+        forces -= forces.mean(axis=0)
+        j = 0
         for k, b in enumerate(i):
             if shell[k] and rr[k] > 0:
-                O.forces.addF(b, tuple(-rel[k] / rr[k] * f))
+                O.forces.addF(b, tuple(forces[j]))
+                j += 1
 
     O.engines = [
         utils.ForceResetter(),

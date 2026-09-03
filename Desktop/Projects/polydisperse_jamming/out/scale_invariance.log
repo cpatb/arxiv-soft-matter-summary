@@ -1,0 +1,48 @@
+Using python version: 3.14.4 (main, Jun 18 2026, 14:25:02) [GCC 15.2.0]
+  cv=0.00 pc=1e-03 u0=0.020 J=0.4 -> Zc=4.00 Zl=4.68 ret=1.17 JAMMED Zpk=4.87 COR=+0.0000 spread=1.001 27s
+  cv=0.00 pc=1e-03 u0=0.063 J=0.4 -> Zc=3.92 Zl=4.41 ret=1.12 JAMMED Zpk=5.02 COR=-0.0001 spread=0.995 17s
+  cv=0.00 pc=1e-03 u0=0.006 J=0.4 -> Zc=3.97 Zl=4.62 ret=1.16 JAMMED Zpk=5.12 COR=+0.0001 spread=0.994 18s
+  cv=0.00 pc=1e-03 u0=0.020 J=0.4 -> Zc=4.01 Zl=4.45 ret=1.11 JAMMED Zpk=4.77 COR=+0.0013 spread=0.996 21s
+  cv=0.00 pc=1e-03 u0=0.063 J=0.4 -> Zc=3.90 Zl=4.41 ret=1.13 JAMMED Zpk=4.81 COR=+0.0008 spread=1.003 18s
+  cv=0.00 pc=1e-03 u0=0.006 J=0.4 -> Zc=3.84 Zl=4.63 ret=1.21 JAMMED Zpk=4.88 COR=+0.0015 spread=0.999 21s
+  cv=0.50 pc=1e-03 u0=0.020 J=0.4 -> Zc=2.24 Zl=2.25 ret=1.01 JAMMED Zpk=3.18 COR=+0.0006 spread=0.938 84s
+  cv=0.50 pc=1e-03 u0=0.063 J=0.4 -> Zc=1.92 Zl=2.09 ret=1.09 JAMMED Zpk=3.09 COR=+0.0011 spread=0.930 126s
+  cv=0.50 pc=1e-03 u0=0.006 J=0.4 -> Zc=2.08 Zl=2.19 ret=1.05 JAMMED Zpk=3.21 COR=+0.0014 spread=0.928 231s
+  cv=0.50 pc=1e-03 u0=0.020 J=0.4 -> Zc=2.15 Zl=2.26 ret=1.05 JAMMED Zpk=3.18 COR=+0.0001 spread=0.967 198s
+  cv=0.50 pc=1e-03 u0=0.063 J=0.4 -> Zc=1.90 Zl=2.11 ret=1.11 JAMMED Zpk=3.29 COR=+0.0008 spread=0.936 208s
+  cv=0.50 pc=1e-03 u0=0.006 J=0.4 -> Zc=1.77 Zl=2.09 ret=1.18 JAMMED Zpk=2.27 COR=+0.1336 spread=2.977 185s
+
+ran 12 cells in 19.2 min
+
+==============================================================================
+SCALE INVARIANCE OF THE DYNAMIC MODEL
+==============================================================================
+Same dimensionless cell at three stiffnesses, with u0 scaled as sqrt(E) so
+that p_imp/E is held fixed. Invariance requires every observable to agree.
+
+  --- CV = 0 ---
+    observable                  E=1           E=10          E=0.1  spread/scatter  verdict
+    z_carved                4.00528        3.91179        3.90444            2.61  varies
+    z_launch                4.56740        4.40909        4.62765            3.90  varies
+    z_retention             1.14038        1.12713        1.18561            2.28  varies [gate verdict same at every E]
+    z_peak                  4.81958        4.91472        4.99767            1.35  invariant
+    cor                     0.00068        0.00038        0.00077            0.47  invariant [rebound verdict same at every E]
+    spread                  0.99843        0.99938        0.99681            0.61  invariant
+    ke_ratio                0.00004        0.00001        0.00001            1.82  invariant [admissibility same at every E]
+
+  --- CV = 0.5 ---
+    observable                  E=1           E=10          E=0.1  spread/scatter  verdict
+    z_carved                2.19528        1.91045        1.92260            2.97  varies
+    z_launch                2.25552        2.10230        2.14209            5.03  varies
+    z_retention             1.02785        1.10048        1.11931            1.98  invariant [gate verdict same at every E]
+    z_peak                  3.18158        3.19171        2.73812            1.69  invariant
+    cor                     0.00035        0.00094        0.06751            2.14  *** varies [REBOUND VERDICT FLIPS] ***
+    spread                  0.95261        0.93322        1.95251            2.07  varies
+    ke_ratio                0.00005        0.00005        0.13789            2.12  varies [admissibility same at every E]
+
+==============================================================================
+SCALE_INVARIANCE_FAIL
+  At least one dynamic observable depends on stiffness at fixed
+  dimensionless groups. Every Phase 4-7 number is then E-dependent and
+  must be bracketed before it can be quoted, exactly as SPEC §2.3
+  required and REPORT §4 argued was unnecessary.

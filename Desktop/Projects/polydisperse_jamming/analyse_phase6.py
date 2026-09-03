@@ -34,6 +34,18 @@ COR_FLOOR = 0.05        # the cohesionless result, |COR| <= 0.035, plus margin
 COR_REBOUND = 0.15      # "clearly rebounding", well above the floor and well below
                         # the 0.819 an elastic sphere gives through this damping
 
+# A rebound needs TWO things, and this file originally tested only the first. Phases 5
+# and 7 both require recoil AND coherence, because a shattered aggregate whose fragments
+# recoil produces a centre-of-mass COR that is not a restitution coefficient. Applying
+# the same two-part criterion here is a consistency fix, not a new bar: with six seeds
+# the CV = 0.5 / C = 3000 cell reaches COR +0.171, which clears the recoil bar, while its
+# spread is 2.649 -- the aggregate is in pieces.
+SPREAD_COHERENT = 1.5
+
+# And a mean smaller than twice its own seed scatter is not a measurement. At CV = 0.5
+# the COR sd is comparable to the mean at every C above 100.
+RESOLVE_FACTOR = 2.0
+
 
 def load():
     by_key, n_lines, bad = {}, 0, 0
@@ -121,9 +133,28 @@ def main() -> int:
         lines.append("  DISCRIMINATING NEGATIVE: no C = 0 cells present")
         ok = False
 
-    reb = [r for r in rows if r["cor"] >= COR_REBOUND]
+    def rebounds(r):
+        return (r["cor"] >= COR_REBOUND
+                and r["spread"] < SPREAD_COHERENT
+                and (not np.isfinite(r["cor_sd"])
+                     or r["cor"] > RESOLVE_FACTOR * r["cor_sd"]))
+
+    reb = [r for r in rows if rebounds(r)]
+    recoil_only = [r for r in rows if r["cor"] >= COR_REBOUND and not rebounds(r)]
     lines.append("")
-    lines.append(f"  POSITIVE CONTROL (some C must give COR >= {COR_REBOUND}):")
+    lines.append(f"  POSITIVE CONTROL (some C must give COR >= {COR_REBOUND}, "
+                 f"spread < {SPREAD_COHERENT}, and mean > {RESOLVE_FACTOR}x its sd):")
+    if recoil_only:
+        lines.append(f"    {len(recoil_only)} cell group(s) clear the RECOIL bar but fail "
+                     "coherence or resolution -- not rebounds:")
+        for r in sorted(recoil_only, key=lambda x: -x["cor"]):
+            why = []
+            if r["spread"] >= SPREAD_COHERENT:
+                why.append(f"spread {r['spread']:.2f}")
+            if np.isfinite(r["cor_sd"]) and r["cor"] <= RESOLVE_FACTOR * r["cor_sd"]:
+                why.append(f"mean {r['cor']:.3f} vs sd {r['cor_sd']:.3f}")
+            lines.append(f"      CV={r['cv']:.2f} C={r['C']:g} COR={r['cor']:+.4f} "
+                         f"({'; '.join(why)})")
     if reb:
         lo = min(r["C"] for r in reb)
         lines.append(f"    PASS -- rebound appears at C = {lo:g} and above")
@@ -131,7 +162,7 @@ def main() -> int:
             g = sorted([r for r in rows if r["cv"] == cv], key=lambda x: x["C"])
             cross = None
             for a, b in zip(g[:-1], g[1:]):
-                if a["cor"] < COR_REBOUND <= b["cor"]:
+                if not rebounds(a) and rebounds(b):
                     cross = (a["C"], b["C"])
                     break
             lines.append(f"    CV = {cv:g}: threshold bracketed by C = "

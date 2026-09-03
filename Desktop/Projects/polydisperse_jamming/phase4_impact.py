@@ -253,9 +253,16 @@ def run_impact(cv, mu_p, seed, n_parent, bc, lam, u0, young=1.0, carve_p_hat=Non
         if not shell.any():
             return
         f_per = pc * 4.0 * math.pi * rmax**2 / shell.sum()
+        # Zero net force: see the note in phase7_confined.py. An unbalanced shell force
+        # translates the aggregate instead of only confining it.
+        dirs = -rel[shell] / rr[shell, None]
+        forces = dirs * f_per
+        forces -= forces.mean(axis=0)
+        j = 0
         for k, i in enumerate(ids):
             if shell[k] and rr[k] > 0:
-                O.forces.addF(i, tuple(-rel[k] / rr[k] * f_per))
+                O.forces.addF(i, tuple(forces[j]))
+                j += 1
 
     O.engines = [
         utils.ForceResetter(),

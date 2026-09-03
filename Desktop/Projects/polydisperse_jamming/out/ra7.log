@@ -1,0 +1,50 @@
+[1] phase7 still running: 11
+[2] phase7 still running: 12
+[3] phase7 still running: 12
+[4] phase7 still running: 12
+[5] phase7 still running: 11
+[6] phase7 still running: 12
+[7] phase7 still running: 12
+[8] phase7 still running: 12
+[9] phase7 still running: 12
+[10] phase7 still running: 12
+[11] phase7 still running: 12
+[12] phase7 still running: 12
+[13] phase7 still running: 11
+[14] phase7 still running: 7
+[15] phase7 still running: 4
+[16] phase7 still running: 3
+=== phase7 drained after ~16 min ===
+=== scale invariance on the fixed force ===
+==============================================================================
+Same dimensionless cell at three stiffnesses, with u0 scaled as sqrt(E) so
+that p_imp/E is held fixed. Invariance requires every observable to agree.
+
+  --- CV = 0 ---
+    observable                  E=1           E=10          E=0.1  spread/scatter  verdict
+    z_carved                4.00528        3.91179        3.90444            2.61  varies
+    z_launch                4.56740        4.40909        4.62765            3.90  varies
+    z_retention             1.14038        1.12713        1.18561            2.28  varies [gate verdict same at every E]
+    z_peak                  4.81958        4.91472        4.99767            1.35  invariant
+    cor                     0.00068        0.00038        0.00077            0.47  invariant [rebound verdict same at every E]
+    spread                  0.99843        0.99938        0.99681            0.61  invariant
+    ke_ratio                0.00004        0.00001        0.00001            1.82  invariant [admissibility same at every E]
+
+  --- CV = 0.5 ---
+    observable                  E=1           E=10          E=0.1  spread/scatter  verdict
+    z_carved                2.19528        1.91045        1.92260            2.97  varies
+    z_launch                2.25552        2.10230        2.14209            5.03  varies
+    z_retention             1.02785        1.10048        1.11931            1.98  invariant [gate verdict same at every E]
+    z_peak                  3.18158        3.19171        2.73812            1.69  invariant
+    cor                     0.00035        0.00094        0.06751            2.14  *** varies [REBOUND VERDICT FLIPS] ***
+    spread                  0.95261        0.93322        1.95251            2.07  varies
+    ke_ratio                0.00005        0.00005        0.13789            2.12  varies [admissibility same at every E]
+
+==============================================================================
+SCALE_INVARIANCE_FAIL
+  At least one dynamic observable depends on stiffness at fixed
+  dimensionless groups. Every Phase 4-7 number is then E-dependent and
+  must be bracketed before it can be quoted, exactly as SPEC §2.3
+  required and REPORT §4 argued was unnecessary.
+=== phase 6: more seeds at the CV = 0.5 cohesion cell ===
+=== ALL QUEUED WORK COMPLETE ===

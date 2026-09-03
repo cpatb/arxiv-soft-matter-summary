@@ -1,0 +1,2 @@
+Using python version: 3.14.4 (main, Jun 18 2026, 14:25:02) [GCC 15.2.0]
+  cv=0.50 pc=1e-03 u0=0.020 J=0.4 -> Zc=1.86 Zl=2.23 ret=1.20 JAMMED Zpk=3.14 COR=+0.0022 spread=0.937 277s

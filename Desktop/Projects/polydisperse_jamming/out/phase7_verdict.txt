@@ -9,7 +9,7 @@ Phase 7 confines at p_cap = p_carve, which makes Lambda = J.
 ====================================================================================
 THE GATE: was it jammed at impact?  (Z_launch/Z_carved >= 0.8)
 ====================================================================================
-  retention over 36 cells: median 1.082, range [0.813, 1.188]
+  retention over 36 cells: median 1.074, range [0.816, 1.195]
   cells passing: 36 / 36
 
   For comparison, Phase 5 (confinement ~100x too weak) had median retention 0.874 over 81 cells.
@@ -18,50 +18,38 @@ THE GATE: was it jammed at impact?  (Z_launch/Z_carved >= 0.8)
 THE RESPONSE, on jammed cells only
 ====================================================================================
      CV   p_carve      u0        J   n    ret       COR       sd   spread  Z peak
-   0.00   1.0e-02   0.020     0.04   2   1.14   +2.1515   3.0549    0.999    6.05
-   0.00   1.0e-03   0.020      0.4   2   1.11   +0.0002   0.0000    0.996    4.99
-   0.00   1.0e-02   0.080     0.64   2   1.14   +0.0006   0.0011    1.001    6.04
-   0.00   1.0e-04   0.020        4   2   0.92   +0.0011   0.0011    0.997    4.70
-   0.00   1.0e-03   0.080      6.4   2   1.11   +0.0025   0.0035    1.001    4.99
-   0.00   1.0e-04   0.080       64   2   0.92   +0.0215   0.0008    1.040    3.79
-   0.25   1.0e-02   0.020     0.04   2   1.12   +0.5039   0.7130    1.000    5.81
-   0.25   1.0e-03   0.020      0.4   2   1.02   -0.0040   0.0057    0.984    4.80
-   0.25   1.0e-02   0.080     0.64   2   1.12   +0.0121   0.0174    0.989    5.90
-   0.25   1.0e-04   0.020        4   2   0.82   +0.0023   0.0012    0.970    4.09
-   0.25   1.0e-03   0.080      6.4   2   1.02   +0.0016   0.0009    0.995    4.43
-   0.25   1.0e-04   0.080       64   2   0.82   +0.0266   0.0023    1.118    3.11
-   0.50   1.0e-02   0.020     0.04   2   1.14   +0.5927   0.7837    0.995    4.65
-   0.50   1.0e-03   0.020      0.4   2   1.10   +0.0712   0.1000    0.971    3.12
-   0.50   1.0e-02   0.080     0.64   2   1.14   +0.0115   0.0198    1.000    4.47
-   0.50   1.0e-04   0.020        4   2   0.89   -0.0008   0.0005    0.944    2.48
-   0.50   1.0e-03   0.080      6.4   2   1.10   +0.1675   0.2362    0.979    2.92
-   0.50   1.0e-04   0.080       64   2   0.89   +0.0164   0.0105    1.141    2.31
+   0.00   1.0e-02   0.020     0.04   2   1.15   +0.0002   0.0003    0.999    6.04
+   0.00   1.0e-03   0.020      0.4   2   1.10   +0.0005   0.0008    0.998    4.99
+   0.00   1.0e-02   0.080     0.64   2   1.15   -0.0001   0.0002    0.993    6.04
+   0.00   1.0e-04   0.020        4   2   0.93   +0.0055   0.0003    0.991    4.67
+   0.00   1.0e-03   0.080      6.4   2   1.10   +0.0048   0.0052    0.989    4.96
+   0.00   1.0e-04   0.080       64   2   0.93   +0.0128   0.0042    1.035    3.78
+   0.25   1.0e-02   0.020     0.04   2   1.13   +0.0005   0.0002    0.995    5.68
+   0.25   1.0e-03   0.020      0.4   2   1.03   +0.0002   0.0000    0.981    4.63
+   0.25   1.0e-02   0.080     0.64   2   1.13   -0.0002   0.0000    0.989    5.80
+   0.25   1.0e-04   0.020        4   2   0.83   +0.0194   0.0226    1.080    3.50
+   0.25   1.0e-03   0.080      6.4   2   1.03   +0.0214   0.0117    1.081    4.16
+   0.25   1.0e-04   0.080       64   2   0.83   +0.0199   0.0061    1.127    3.10
+   0.50   1.0e-02   0.020     0.04   2   1.15   -0.0187   0.0197    1.004    4.14
+   0.50   1.0e-03   0.020      0.4   2   1.09   +0.1119   0.0564    3.891    2.62
+   0.50   1.0e-02   0.080     0.64   2   1.15   -0.0015   0.0034    1.012    4.32
+   0.50   1.0e-04   0.020        4   2   0.90   +0.0265   0.0296    1.177    2.06
+   0.50   1.0e-03   0.080      6.4   2   1.09   +0.0207   0.0239    1.065    2.75
+   0.50   1.0e-04   0.080       64   2   0.90   +0.0075   0.0023    1.215    2.29
 
 ====================================================================================
 DOES A JAMMED AGGREGATE REBOUND?
 ====================================================================================
   bar: COR > 0.05 AND spread < 1.5
   detection ceiling 0.8189 (one elastic sphere, same damping)
-  ⚠ 3 cell group(s) are PHYSICALLY INADMISSIBLE (COR > 1.0 or KE gained) and are excluded:
-      CV=0.00 p_carve=1e-02 J=0.04 COR=+2.1515 (sd 3.0549) KE=10.774
-      CV=0.50 p_carve=1e-02 J=0.04 COR=+0.5927 (sd 0.7837) KE=5.287
-      CV=0.25 p_carve=1e-02 J=0.04 COR=+0.5039 (sd 0.7130) KE=175.817
-    The confining PyRunner acts every step, including after impact,
-    so at high p_carve it does work on the aggregate and throws it
-    off the wall. That is a driven body, not a rebounding one.
-
-  cells passing: 2 / 18 (3 inadmissible)
-  2 further cell group(s) clear the bar but are NOT RESOLVED (mean < 2x seed sd):
-      CV=0.50 J=0.4 COR=+0.0712 +/- 0.1000
-      CV=0.50 J=6.4 COR=+0.1675 +/- 0.2362
-
-  NO. The largest COR on a jammed cell is +0.1675, 5x below the
+  cells passing: 0 / 18 (0 inadmissible)
+  NO. The largest COR on a jammed cell is +0.1119, 7x below the
   elastic ceiling. So the Phase 4/5 conclusion SURVIVES the
   correction: even a properly confined, still-jammed cohesionless
   aggregate does not rebound. The confinement error changed the
   interpretation but not the answer.
 
   CV dependence among jammed cells:
-    CV=0.00: COR +0.0002 to +2.1515, spread 0.996 to 1.040  (n=6 cells)
-    CV=0.25: COR -0.0040 to +0.5039, spread 0.970 to 1.118  (n=6 cells)
-    CV=0.50: COR -0.0008 to +0.5927, spread 0.944 to 1.141  (n=6 cells)
+    CV=0.00: COR -0.0001 to +0.0128, spread 0.989 to 1.035  (n=6 cells)
+    CV=0.25: COR -0.0002 to +0.0214, spread 0.981 to 1.127  (n=6 cells)
+    CV=0.50: COR -0.0187 to +0.1119, spread 1.004 to 3.891  (n=6 cells)

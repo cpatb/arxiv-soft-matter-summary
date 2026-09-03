@@ -33,10 +33,10 @@ perfectly elastic sphere through this same damping gives COR = 0.819.
         3   2   +0.0295   0.0017    4.013    0.0925    2.25    0.76
        10   2   +0.0173   0.0067    3.843    0.0924    2.25    0.78
        30   3   +0.0276   0.0042    3.905    0.0880    2.25    0.86
-      100   3   +0.0289   0.0048    3.255    0.0504    2.25    1.82
-      300   3   +0.0923   0.0965    2.615    0.0404    2.25    2.38
-     1000   3   +0.1146   0.0973    2.715    0.0224    2.25    2.60
-     3000   3   +0.1011   0.0946    2.858    0.0228    2.25    2.62
+      100   6   +0.0300   0.0038    3.142    0.0399    2.33    1.90
+      300   6   +0.1165   0.1385    2.483    0.0470    2.33    2.49
+     1000   6   +0.1342   0.1227    2.544    0.0356    2.33    2.68
+     3000   6   +0.1709   0.1443    2.649    0.0517    2.33    2.71
 
 ================================================================================
 CHECKS
@@ -44,7 +44,9 @@ CHECKS
   DISCRIMINATING NEGATIVE (C = 0 must not rebound, |COR| <= 0.05):
     worst |COR| at C = 0 is 0.0262 -> PASS
 
-  POSITIVE CONTROL (some C must give COR >= 0.15):
+  POSITIVE CONTROL (some C must give COR >= 0.15, spread < 1.5, and mean > 2.0x its sd):
+    1 cell group(s) clear the RECOIL bar but fail coherence or resolution -- not rebounds:
+      CV=0.50 C=3000 COR=+0.1709 (spread 2.65; mean 0.171 vs sd 0.144)
     PASS -- rebound appears at C = 300 and above
     CV = 0: threshold bracketed by C = 100 to 300
     CV = 0.25: threshold bracketed by C = 100 to 300
