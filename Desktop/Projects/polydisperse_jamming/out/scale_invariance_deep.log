@@ -1,2 +1,12 @@
 Using python version: 3.14.4 (main, Jun 18 2026, 14:25:02) [GCC 15.2.0]
   cv=0.50 pc=1e-03 u0=0.020 J=0.4 -> Zc=1.86 Zl=2.23 ret=1.20 JAMMED Zpk=3.14 COR=+0.0022 spread=0.937 277s
+  cv=0.50 pc=1e-03 u0=0.063 J=0.4 -> Zc=2.04 Zl=2.14 ret=1.05 JAMMED Zpk=3.35 COR=+0.0002 spread=0.935 238s
+  cv=0.50 pc=1e-03 u0=0.006 J=0.4 -> Zc=1.96 Zl=2.17 ret=1.11 JAMMED Zpk=3.05 COR=-0.0009 spread=0.931 227s
+  cv=0.50 pc=1e-03 u0=0.020 J=0.4 -> Zc=1.84 Zl=1.95 ret=1.06 JAMMED Zpk=3.11 COR=+0.0010 spread=0.943 164s
+  cv=0.50 pc=1e-03 u0=0.063 J=0.4 -> Zc=1.95 Zl=2.48 ret=1.28 JAMMED Zpk=3.24 COR=+0.0005 spread=0.935 156s
+  cv=0.50 pc=1e-03 u0=0.006 J=0.4 -> Zc=1.92 Zl=2.16 ret=1.13 JAMMED Zpk=3.20 COR=+0.0003 spread=0.951 157s
+FAILED cv=0.5 seed=3 E=1.0: ValueError('cell too small for the periodic collider at cv=0.5, N=800, truncate=(0.2, 5.0): largest grain d_max=4.298 needs a final cell edge >= 10.745 but phi=0.72 gives 10.520. Use N >= 853, or tighten `truncate`.')
+FAILED cv=0.5 seed=3 E=10.0: ValueError('cell too small for the periodic collider at cv=0.5, N=800, truncate=(0.2, 5.0): largest grain d_max=4.298 needs a final cell edge >= 10.745 but phi=0.72 gives 10.520. Use N >= 853, or tighten `truncate`.')
+FAILED cv=0.5 seed=3 E=0.1: ValueError('cell too small for the periodic collider at cv=0.5, N=800, truncate=(0.2, 5.0): largest grain d_max=4.298 needs a final cell edge >= 10.745 but phi=0.72 gives 10.520. Use N >= 853, or tighten `truncate`.')
+  cv=0.50 pc=1e-03 u0=0.020 J=0.4 -> Zc=1.95 Zl=2.17 ret=1.11 JAMMED Zpk=3.41 COR=+0.0005 spread=0.927 263s
+  cv=0.50 pc=1e-03 u0=0.063 J=0.4 -> Zc=1.94 Zl=1.99 ret=1.03 JAMMED Zpk=3.44 COR=+0.0012 spread=0.926 194s
