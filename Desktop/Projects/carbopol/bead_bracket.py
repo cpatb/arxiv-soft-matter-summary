@@ -21,14 +21,67 @@ THE PHYSICS, AND ITS ONE CONSTANT
 
     A sphere is held when Y_g exceeds a critical value Y_c.
 
-    **[UNVERIFIED] Y_c = 0.143 is written here from memory as Beris et al. (1985), the
-    creeping-flow numerical solution for a sphere in a Bingham fluid, and it has NOT been
-    resolved to a DOI in this session.** What is on record in this project is the campaign
-    document's "near 0.14 (Beris et al.)", so the leading digits are the project's and the
-    third is not. The same applies to the 0.12-0.20 literature spread quoted in section 4.
-    **Resolve both before any number from this script is written down**; the whole
-    measurement is one multiplication by this constant, so an error in it is an error of
-    the same size in every tau_y the bracket returns.
+    **RESOLVED 2026-09-02, and the number was wrong by a factor of 1.5.** The
+    [UNVERIFIED] tag said Y_c = 0.143 was written from memory as Beris et al. (1985) and
+    had to be resolved before any tau_y from this script was quoted. Resolving it found
+    that 0.143 is real, is Beris's, and **belongs to a different definition of the yield
+    number than the one used above**. There are three conventions in circulation and they
+    span a factor of three:
+
+        Y   = tau_y / (delta_rho g R)            this script, before today
+        Y_g = 1.5 tau_y / (delta_rho g R)        Fraggedakis et al. (2016); Sarabian et
+                                                 al., arXiv:2005.08429 Eq. 11
+        Y_G = tau_y / (delta_rho g d),  d = 2R   Jossic & Magnin (2001, 2009);
+                                                 Mitsoulis & Galazoulas (2009)
+
+    so Y_g = 3 Y_G = 1.5 Y. **0.143 is Beris's critical value in the Y_g convention**, and
+    two independent sources pin it:
+
+      * Sarabian, Rosti, Brandt & Hormozi, arXiv:2005.08429, sec.3.1: "The critical
+        gravity number is found to be Y_g^c = 0.143 for Bingham fluids ... by Beris et
+        al. (1985)", with Y_g defined in their Eq. (11) as 1.5 tau_0/(delta_rho g R).
+      * Nazari, Mittal, Shoele & Mohammadigoushki, arXiv:2606.04861: "the asymptotic
+        analysis of Beris et al. (1985), using a Bingham fluid model, estimated
+        Y_G,max ~ 0.048 for a sphere", with Y_G defined in their Eq. (8) as
+        sigma_y/(g d_e delta_rho), d_e = 2R for a sphere.
+
+    3 x 0.048 = 0.144. The two agree, through different conventions, to the precision
+    either quotes.
+
+    Converted into THIS script's convention, Beris's critical value is
+
+        Y_c = 0.143 / 1.5 = 2 x 0.048 = 0.0953
+
+    Using 0.143 here therefore overstated Y_c by 1.5x, which understates the critical
+    radius by 1.5x and would have **overstated every tau_y read off the ladder by 1.5x**.
+    That is larger than the ladder's own 1.60x worst-case bracket, so it was the dominant
+    error and not a rounding matter.
+
+    Source, resolved: Beris, Tsamopoulos, Armstrong & Brown, "Creeping motion of a sphere
+    through a Bingham plastic", J. Fluid Mech. 158, 219-244 (1985),
+    doi:10.1017/S0022112085002622.
+
+    THE SPREAD, also resolved, and it is a different spread than was quoted. Measured and
+    computed sphere yield limits in the Y_G convention (arXiv:2606.04861 sec.6, with its
+    citations), converted to this script's Y_c = 2 Y_G:
+
+        Beris et al. 1985      (theory, Bingham)     Y_G 0.048   ->  Y_c 0.095
+        Atapattu et al. 1995   (experiment)          Y_G 0.048   ->  Y_c 0.096
+        Tabuteau et al. 2007   (experiment, Carbopol) Y_G 0.061  ->  Y_c 0.122
+        Jossic & Magnin 2001   (roughened sphere)    Y_G 0.062   ->  Y_c 0.124
+        Jossic & Magnin 2001   (SMOOTH sphere)       Y_G 0.088   ->  Y_c 0.176
+
+    So the honest span is Y_c = 0.095 to 0.176, a factor of 1.83 -- wider than the
+    "0.12 to 0.20" (1.67x) this script used to quote, and centred lower.
+
+    ** AND THE SPREAD IS NOT NOISE: IT IS SURFACE ROUGHNESS. ** Jossic & Magnin's own two
+    numbers are the same measurement on a roughened and a smooth sphere, and they differ
+    by 1.42x. This ladder deliberately mixes six materials -- PTFE, glass, ceramics,
+    steel, carbide -- to buy density range, and those do not share a surface finish. So
+    the ladder trades a known systematic for the density coverage it needs, and any
+    tau_y from it must either use beads of one finish or carry the 1.42x. Record the bead
+    surface condition at the bench; it is free to write down and impossible to recover
+    later.
 
     That is also why section 4 leads with it: the constant, not the bead ladder, is the
     dominant uncertainty.
@@ -52,7 +105,21 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 G = 9.81            # m/s^2
-Y_C = 0.143         # Beris et al. (1985), sphere in a Bingham fluid, creeping flow
+# Beris et al. (1985), J. Fluid Mech. 158:219, doi:10.1017/S0022112085002622, converted
+# into THIS module's convention Y = tau_y/(delta_rho g R). Beris's own 0.143 is quoted
+# for Y_g = 1.5 tau_y/(delta_rho g R); equivalently Y_G,max = 0.048 for tau_y/(rho g d).
+# See the module docstring: using 0.143 here was a 1.5x error. Do not "restore" it.
+Y_C = 0.143 / 1.5   # = 0.09533
+Y_C_SPAN = (0.095, 0.176)   # Beris/Atapattu ... Jossic & Magnin smooth sphere; 1.83x
+# Cross-convention check, and the tolerance is 1% deliberately: 0.143/1.5 = 0.09533 against
+# 2 x 0.048 = 0.096 is a 0.7% disagreement, which is exactly the rounding in the second
+# source's two significant figures (0.0477 -> 0.048). A tighter bar would fail on rounding;
+# a looser one (say 50%) would stop discriminating between the conventions, which differ by
+# 1.5x and 3x. This assertion exists to pin WHICH convention Y_C is in, not to check arithmetic.
+assert abs(Y_C - 2 * 0.048) / Y_C < 0.01, (
+    "Y_C must agree with 2 * Y_G,max, Y_G,max = 0.048 (Beris via arXiv:2606.04861); the "
+    "three yield-number conventions differ by 1.5x and 3x and this is what pins which is "
+    "in use. Got Y_C = %.5f against 2 x 0.048 = 0.096" % Y_C)
 RHO_F = 1000.0      # kg/m^3; Carbopol at these concentrations is water to <1%
 
 # Bead materials by density, kg/m^3. Chosen for what a lab actually has in a drawer or
@@ -144,15 +211,28 @@ def main() -> None:
     print()
     print("4. What this measurement cannot do, stated before it is run")
     print()
-    print("   - [UNVERIFIED] Y_c = 0.143 is written from memory as Beris et al.'s")
-    print("     creeping-flow result for a BINGHAM fluid, and is not resolved to a DOI.")
-    print("     The project's own record says only 'near 0.14'. Resolve it first.")
+    print("   - Y_c is RESOLVED as of 2026-09-02, and correcting it moved tau_y by 1.5x.")
+    print(f"     Y_c = {Y_C:.4f} in this module's convention Y = tau_y/(delta_rho g R).")
+    print("     Beris et al. (1985), J. Fluid Mech. 158:219, doi:10.1017/S0022112085002622.")
+    print("     The 0.143 previously used here is Beris's value for a DIFFERENT yield")
+    print("     number, Y_g = 1.5 tau_y/(delta_rho g R); the equivalent in the third")
+    print("     convention in circulation is Y_G,max = 0.048 for tau_y/(delta_rho g d).")
+    print("     Two independent sources agree through different conventions to 3x0.048")
+    print("     = 0.144. Using 0.143 here overstated every tau_y by 1.5x -- larger than")
+    print("     the ladder's own bracket. See the module docstring for the citations.")
     print("     Carbopol is Herschel-Bulkley with n = 0.40 to 0.63 in these very fits, and")
     print("     published Y_c for a sphere in an HB fluid moves with n. So the ABSOLUTE")
-    print("     tau_y carries a systematic on top of the bracket above. Reported values of")
-    print("     Y_c across the literature span roughly 0.12 to 0.20, which is +/- 25% on")
-    print("     tau_y -- LARGER than the bracket the ladder gives. The bracket is not the")
-    print("     dominant error and should not be quoted as if it were.")
+    print("     tau_y carries a systematic on top of the bracket above. Measured and")
+    print(f"     computed sphere yield limits span Y_c = {Y_C_SPAN[0]:.3f} to {Y_C_SPAN[1]:.3f}")
+    print(f"     ({Y_C_SPAN[1] / Y_C_SPAN[0]:.2f}x), which is LARGER than the bracket the ladder gives.")
+    print("     The bracket is not the dominant error and must not be quoted as if it were.")
+    print("   - AND THAT SPAN IS SURFACE ROUGHNESS, not scatter. Jossic & Magnin (2001)")
+    print("     measured 0.062 roughened against 0.088 smooth on spheres -- 1.42x, from")
+    print("     one lab in one paper. This ladder mixes PTFE, glass, ceramics, steel and")
+    print("     carbide to buy density range, and they do not share a surface finish, so")
+    print("     it trades a known systematic for the coverage. Use one finish if you can;")
+    print("     either way RECORD the surface condition of every bead at the bench. It is")
+    print("     free to write down and impossible to recover afterwards.")
     print("   - It is a static test. It says nothing about K or n, and the drop-impact")
     print("     problem needs both: at impact rates the HB stress is dominated by the")
     print("     K gamma_dot^n term, not by tau_y.")

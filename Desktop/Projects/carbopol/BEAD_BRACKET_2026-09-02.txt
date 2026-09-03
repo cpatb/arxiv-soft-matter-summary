@@ -1,0 +1,116 @@
+1. The range the bracket has to cover
+
+   From the 15 Herschel-Bulkley fits in hb_fits_etd2020.csv (Biermann &
+   Mesecke 2024, ETD2020, 0.1-0.9 wt% x 30-50 uL TEA):
+     tau_y spans 0.80 to 41.11 Pa, median 16.80
+     and it is NOT monotone in wt%: 0.3 wt% at 50 uL TEA gives 39.1 Pa
+     against 26.5 Pa at 0.9 wt%.
+   That non-monotonicity is the whole argument for measuring rather than
+   labelling: the neutraliser dose matters as much as the carbomer, and the
+   11AUG26 recordings record only the carbomer.
+
+   A bath made to any of those recipes therefore needs a bracket that spans
+   at least 0.8 to 41.1 Pa -- a factor of 51.
+
+2. What each bead resolves, in Pa
+
+   The marginal tau_y for each (material, diameter). A bead HOLDS when the
+   bath's tau_y is ABOVE the number in the table.
+
+     d (mm)         PTFE   soda-lime     alumina     silicon        440C    tungsten
+      0.500         0.28        0.35        0.68        0.51        1.55        3.25
+      0.800         0.45        0.56        1.08        0.82        2.49        5.20
+      1.000         0.56        0.70        1.36        1.03        3.11        6.50
+      1.500         0.84        1.05        2.03        1.54        4.66        9.75
+      2.000         1.12        1.40        2.71        2.06        6.22       13.00
+      2.381         1.34        1.67        3.23        2.45        7.40       15.48
+      3.000         1.68        2.10        4.07        3.09        9.33       19.50
+      3.175         1.78        2.23        4.31        3.27        9.87       20.64
+      4.000         2.24        2.81        5.42        4.11       12.44       26.00
+      4.762         2.67        3.34        6.46        4.90       14.81       30.95
+      6.000         3.37        4.21        8.14        6.17       18.66       39.00
+      6.350         3.56        4.45        8.61        6.53       19.75       41.27
+      8.000         4.49        5.61       10.85        8.23       24.88       52.00
+      9.525         5.34        6.68       12.92        9.80       29.62       61.91
+     12.700         7.13        8.91       17.22       13.07       39.49       82.55
+
+3. A ladder, and what it costs
+
+   Sort every (material, diameter) by the tau_y it marks, then walk the list
+   keeping only beads that advance the bracket by less than a factor of 1.5.
+   The bracket a ladder returns is the RATIO between adjacent rungs, so the
+   rung spacing IS the measurement's resolution -- there is no separate
+   precision to quote.
+
+    tau_y (Pa)  material            d (mm)   step
+          0.35  soda-lime glass      0.500   
+          0.51  silicon nitride      0.500   x1.47
+          0.70  soda-lime glass      1.000   x1.36
+          1.03  silicon nitride      1.000   x1.47
+          1.40  soda-lime glass      2.000   x1.36
+          2.03  alumina              1.500   x1.45
+          2.81  soda-lime glass      4.000   x1.38
+          4.07  alumina              3.000   x1.45
+          5.61  soda-lime glass      8.000   x1.38
+          8.14  alumina              6.000   x1.45
+         12.44  440C stainless       4.000   x1.53
+         17.22  alumina             12.700   x1.38
+         24.88  440C stainless       8.000   x1.44
+         39.00  tungsten carbide     6.000   x1.57
+         61.91  tungsten carbide     9.525   x1.59
+
+   15 beads, 5 materials, covering 0.35 to 61.91 Pa.
+   Worst-case bracket: a factor of 1.59, i.e. tau_y known to
+   +/- 23% of its midpoint.
+   The campaign document asks for 'within roughly a factor of 2'. This is
+   better than that, and it is better because the ladder mixes DENSITIES --
+   a single-material ladder is limited to the catalogue's diameter steps.
+
+4. What this measurement cannot do, stated before it is run
+
+   - Y_c is RESOLVED as of 2026-09-02, and correcting it moved tau_y by 1.5x.
+     Y_c = 0.0953 in this module's convention Y = tau_y/(delta_rho g R).
+     Beris et al. (1985), J. Fluid Mech. 158:219, doi:10.1017/S0022112085002622.
+     The 0.143 previously used here is Beris's value for a DIFFERENT yield
+     number, Y_g = 1.5 tau_y/(delta_rho g R); the equivalent in the third
+     convention in circulation is Y_G,max = 0.048 for tau_y/(delta_rho g d).
+     Two independent sources agree through different conventions to 3x0.048
+     = 0.144. Using 0.143 here overstated every tau_y by 1.5x -- larger than
+     the ladder's own bracket. See the module docstring for the citations.
+     Carbopol is Herschel-Bulkley with n = 0.40 to 0.63 in these very fits, and
+     published Y_c for a sphere in an HB fluid moves with n. So the ABSOLUTE
+     tau_y carries a systematic on top of the bracket above. Measured and
+     computed sphere yield limits span Y_c = 0.095 to 0.176
+     (1.85x), which is LARGER than the bracket the ladder gives.
+     The bracket is not the dominant error and must not be quoted as if it were.
+   - AND THAT SPAN IS SURFACE ROUGHNESS, not scatter. Jossic & Magnin (2001)
+     measured 0.062 roughened against 0.088 smooth on spheres -- 1.42x, from
+     one lab in one paper. This ladder mixes PTFE, glass, ceramics, steel and
+     carbide to buy density range, and they do not share a surface finish, so
+     it trades a known systematic for the coverage. Use one finish if you can;
+     either way RECORD the surface condition of every bead at the bench. It is
+     free to write down and impossible to recover afterwards.
+   - It is a static test. It says nothing about K or n, and the drop-impact
+     problem needs both: at impact rates the HB stress is dominated by the
+     K gamma_dot^n term, not by tau_y.
+   - Thixotropy and ageing are not controlled. Carbopol's apparent yield stress
+     depends on rest time, and a bead dropped into a freshly stirred bath and
+     one dropped into a rested bath are not the same measurement. Fix a rest
+     time and record it.
+   - Wall effects: keep the bead diameter below about a tenth of the container
+     diameter, or the bracket shifts.
+
+   So this unblocks the 73 recordings by putting them on an axis with an
+   honest +/- 25%, which is enough to ORDER them and enough to decide whether
+   the arm earns a rheometer slot. It is not enough to publish a tau_y.
+
+5. Protocol, for the half hour
+
+   Fix the rest time and the container. Drop the ladder from the top of the
+   list downward, one bead per rung, and record HELD or SANK after a fixed
+   wait -- 10 minutes is longer than any settling time at these stresses and
+   short enough to sit through. The bracket is [largest held, smallest sunk].
+   A non-monotone result -- a bead that sinks while a larger one holds -- means
+   the bath is not uniform or the rest time is not controlled, and is the one
+   outcome that invalidates the run rather than widening it. Record every
+   bead, including the ones that behave, so that check is possible at all.
