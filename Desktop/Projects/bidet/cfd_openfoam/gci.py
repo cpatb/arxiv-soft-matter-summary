@@ -6,8 +6,8 @@ WHY THIS EXISTS
 The paper's grid check was two grids and a percentage difference: base vs refine = 2,
 giving 0.5 % on `n_t`, 6.5 % on `tau_w(15 mm)` and 12.3 % on `C_P`. A difference between
 two grids is not an error estimate -- it has no observed order and no extrapolated value,
-so it cannot say whether the finest grid is close to the continuum answer or merely close
-to the next-coarsest one.
+so it cannot say whether the finest grid is near the continuum answer or merely near the
+next-coarsest one.
 
 That matters for the venue. The ASME *Journal of Fluids Engineering* editorial policy on
 numerical accuracy is a hard gate, not a preference: it "will not accept for publication
@@ -31,26 +31,46 @@ uncertainty due to discretization in CFD applications", J. Fluids Eng. 130(7):07
     e_ext21     = |(phi_ext21 - phi1)/phi_ext21|              extrapolated relative error
     GCI_fine21  = 1.25 * e_a21 / (r21^p - 1)
 
-Here the refinement is uniform by an integer factor in both mesh directions, so the
-representative cell size goes as 1/refine exactly. That is asserted against the cell
+The refinement is uniform by the same factor in both mesh directions, so the
+representative cell size goes as 1/refine exactly. That is ASSERTED against the cell
 counts rather than assumed, because a grading change would break it silently.
+
+TWO FAMILIES, and why both
+--------------------------
+    --family fine     refine 4 / 2 / 1     GCI reported on the 491 520-cell mesh
+    --family coarse   refine 2 / 1 / 0.5   GCI reported on the 122 880-cell mesh
+                                           (the paper's existing fine grid)
+
+`fine` is the better study and is the one to quote. `coarse` costs minutes rather than
+hours and brackets the same fine grid from below, so it is the fallback if the refine = 4
+run has not finished -- and running both is itself a check: the observed order should not
+depend on which triplet it was measured from, and if it does, the meshes are not in the
+asymptotic range and neither GCI means much.
 
 WHAT THE PROCEDURE CANNOT DO, and this is reported rather than hidden
 --------------------------------------------------------------------
-`p` is only meaningful where the three values are MONOTONE. If `s < 0` the solution is
-oscillatory in the grid and Celik et al. say so explicitly: the extrapolation is not
-valid, and the honest output is the oscillation amplitude, not a GCI. This script prints
-that verdict instead of a number when it happens, and it flags any `p` outside [0.5, 2.5]
-as outside the asymptotic range -- the same bar the frisbee and drop-impact ladders use.
+1. `p` is only meaningful where the three values are MONOTONE. If `s < 0` the solution is
+   oscillatory in the grid and Celik et al. exclude the case explicitly: the extrapolation
+   is invalid, and the honest output is the oscillation amplitude, not a GCI. This script
+   prints that verdict instead of a number when it happens, and flags any `p` outside
+   [0.5, 2.5] as outside the asymptotic range.
+2. A GCI measures DISCRETISATION error and silently assumes ITERATIVE error is far
+   smaller. That assumption is false here unless checked, so the script reads each run's
+   final residual per field out of `log.simpleFoam` and prints it beside the GCI, together
+   with whether `residualControl` actually fired. A grid that stopped at the iteration cap
+   with a residual comparable to the differences being extrapolated does not support a GCI,
+   and the reader is told so rather than left to assume.
 
-    python3 gci.py            # reads the three case dirs, writes convergence/
+    python3 gci.py [--family fine|coarse]
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import math
 import os
+import re
 import subprocess
 import sys
 
@@ -58,21 +78,23 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "convergence")
 
 # grid 1 is the FINEST, per Celik et al.'s indexing
-CASES = [
-    ("case_Re10000_H6_r4", 4.0),
-    ("case_Re10000_H6_r2", 2.0),
-    ("case_Re10000_H6", 1.0),
-]
+FAMILIES = {
+    "fine":   [("case_Re10000_H6_r4", 4.0), ("case_Re10000_H6_r2", 2.0),
+               ("case_Re10000_H6", 1.0)],
+    "coarse": [("case_Re10000_H6_r2", 2.0), ("case_Re10000_H6", 1.0),
+               ("case_Re10000_H6_r0", 0.5)],
+}
 
-# (key in the fit_closure record, label, units)
+# (key in the fit_closure record, label)
 QOI = [
-    ("n_t", "closure exponent n_t", ""),
-    ("C_P", "closure prefactor C_P", ""),
-    ("tau_at_15mm_Pa", "tau_w at r = 15 mm", "Pa"),
-    ("tau_peak_Pa", "peak tau_w", "Pa"),
+    ("n_t", "closure exponent n_t"),
+    ("C_P", "closure prefactor C_P"),
+    ("tau_at_15mm_Pa", "tau_w at r = 15 mm [Pa]"),
+    ("tau_peak_Pa", "peak tau_w [Pa]"),
 ]
 
 ASYMPTOTIC_BAND = (0.5, 2.5)
+RESIDUAL_TARGET = 1e-5          # the residualControl set in system/fvSolution
 
 
 def n_cells(case: str) -> int:
@@ -80,9 +102,31 @@ def n_cells(case: str) -> int:
     path = os.path.join(HERE, case, "log.blockMesh")
     with open(path, encoding="utf-8", errors="replace") as fh:
         for line in fh:
-            if "cells:" in line:
+            # blockMesh prints "  nCells: 122880". Match the label exactly rather than a
+            # bare "cells:", which also hits the polyMesh constructor signature above it.
+            if line.strip().startswith("nCells:"):
                 return int(line.split(":")[1].strip())
-    raise RuntimeError("no cell count in " + path)
+    raise RuntimeError("no nCells line in " + path)
+
+
+def iterative_state(case: str) -> dict:
+    """Last initial-residual per field, final iteration, and whether SIMPLE converged."""
+    path = os.path.join(HERE, case, "log.simpleFoam")
+    last = {}
+    n_iter, converged = None, False
+    pat = re.compile(r"Solving for (\w+),\s+Initial residual = ([0-9.eE+-]+)")
+    with open(path, encoding="utf-8", errors="replace") as fh:
+        for line in fh:
+            m = pat.search(line)
+            if m:
+                last[m.group(1)] = float(m.group(2))
+            elif line.startswith("Time = "):
+                n_iter = int(float(line.split("=")[1]))
+            elif "SIMPLE solution converged" in line:
+                converged = True
+    worst = max(last.values()) if last else float("nan")
+    return {"residuals": last, "iterations": n_iter, "converged": converged,
+            "worst_residual": worst}
 
 
 def fit_record(case: str) -> dict:
@@ -102,12 +146,11 @@ def observed_order(phi1, phi2, phi3, r21, r32, tol=1e-12, itmax=200):
     ratio = eps32 / eps21
     s = math.copysign(1.0, ratio)
     if s < 0:
-        return float("nan"), s, False, ("non-monotone in the grid (sign of eps32/eps21 "
-                                        "is negative); Richardson extrapolation invalid")
+        return float("nan"), s, False, ("non-monotone in the grid (sign of eps32/eps21 is "
+                                        "negative); Richardson extrapolation invalid")
     p = 1.0
     for _ in range(itmax):
-        q = 0.0 if abs(r21 - r32) < 1e-12 else math.log(
-            (r21**p - s) / (r32**p - s))
+        q = 0.0 if abs(r21 - r32) < 1e-12 else math.log((r21**p - s) / (r32**p - s))
         p_new = abs(math.log(abs(ratio)) + q) / math.log(r21)
         if abs(p_new - p) < 1e-10:
             p = p_new
@@ -117,9 +160,14 @@ def observed_order(phi1, phi2, phi3, r21, r32, tol=1e-12, itmax=200):
 
 
 def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--family", choices=sorted(FAMILIES), default="fine")
+    args = ap.parse_args()
+    cases = FAMILIES[args.family]
+
     os.makedirs(OUT, exist_ok=True)
-    recs, cells = [], []
-    for case, ref in CASES:
+    recs, cells, iters = [], [], []
+    for case, ref in cases:
         if not os.path.isdir(os.path.join(HERE, case)):
             print("MISSING case dir: %s -- run `bash run_case.sh 10000 6 %g` first"
                   % (case, ref))
@@ -130,10 +178,11 @@ def main() -> int:
             return 1
         recs.append(rec)
         cells.append(n_cells(case))
+        iters.append(iterative_state(case))
 
     # representative cell size. For this 2-D wedge mesh h ~ sqrt(A/N); the refinement is
-    # uniform by an integer factor, so h ~ 1/refine. Check the two agree before using it.
-    h_from_ref = [1.0 / ref for _, ref in CASES]
+    # uniform by the same factor in both directions, so h ~ 1/refine. Check they agree.
+    h_from_ref = [1.0 / ref for _, ref in cases]
     h_from_N = [math.sqrt(1.0 / n) for n in cells]
     scale = h_from_ref[0] / h_from_N[0]
     for a, b in zip(h_from_ref, h_from_N):
@@ -143,23 +192,40 @@ def main() -> int:
     h = h_from_ref
     r21, r32 = h[1] / h[0], h[2] / h[1]
 
-    lines = []
-    lines.append("# Grid convergence, impinging jet at Re_d = 1e4, H/d = 6\n")
-    lines.append("Three uniformly refined meshes, ratio r = %.3f / %.3f.\n" % (r21, r32))
-    lines.append("| grid | refine | cells | " + " | ".join(q[0] for q in QOI) + " |")
-    lines.append("|---|---|---|" + "---|" * len(QOI))
-    for i, ((case, ref), rec) in enumerate(zip(CASES, recs)):
-        lines.append("| %d %s | %g | %d | " % (i + 1, "(fine)" if i == 0 else "", ref,
-                                               cells[i])
-                     + " | ".join("%.4f" % rec[q[0]] for q in QOI) + " |")
-    lines.append("")
+    L = []
+    L.append("# Grid convergence, impinging jet at Re_d = 1e4, H/d = 6 (`--family %s`)\n"
+             % args.family)
+    L.append("Three uniformly refined meshes, refinement ratios r21 = %.3f, r32 = %.3f.\n"
+             % (r21, r32))
+    L.append("| grid | refine | cells | " + " | ".join(q[0] for q in QOI) + " |")
+    L.append("|---|---|---|" + "---|" * len(QOI))
+    for i, ((case, ref), rec) in enumerate(zip(cases, recs)):
+        L.append("| %d %s | %g | %d | " % (i + 1, "(fine)" if i == 0 else "", ref, cells[i])
+                 + " | ".join("%.4f" % rec[q[0]] for q in QOI) + " |")
+    L.append("")
+
+    # --- iterative convergence, which a GCI silently assumes is negligible -------------
+    L.append("## Iterative convergence\n")
+    L.append("A GCI measures discretisation error and assumes iterative error is far "
+             "smaller. Residual target in `fvSolution` is %g." % RESIDUAL_TARGET)
+    L.append("")
+    L.append("| grid | iterations | `SIMPLE converged` | worst final residual | fields |")
+    L.append("|---|---|---|---|---|")
+    for (case, ref), it in zip(cases, iters):
+        flds = ", ".join("%s %.2g" % (k, v) for k, v in sorted(it["residuals"].items()))
+        L.append("| refine %g | %s | %s | **%.2g**%s | %s |"
+                 % (ref, it["iterations"], "yes" if it["converged"] else "**no (cap)**",
+                    it["worst_residual"],
+                    "" if it["worst_residual"] <= RESIDUAL_TARGET else " ⚠ above target",
+                    flds))
+    L.append("")
 
     rows = [("quantity", "phi1_fine", "phi2", "phi3", "p", "phi_extrap",
              "e_a21_%", "e_ext21_%", "GCI_fine_%", "verdict")]
     csv = ["quantity,phi1,phi2,phi3,p,phi_extrap,e_a21,e_ext21,gci_fine,verdict"]
-    for key, label, unit in QOI:
-        phi1, phi2, phi3 = (recs[0][key], recs[1][key], recs[2][key])
-        p, s, ok, why = observed_order(phi1, phi2, phi3, r21, r32)
+    for key, label in QOI:
+        phi1, phi2, phi3 = recs[0][key], recs[1][key], recs[2][key]
+        p, _s, ok, why = observed_order(phi1, phi2, phi3, r21, r32)
         if not ok:
             osc = abs(phi2 - phi1) / abs(phi1) * 100.0
             rows.append((label, "%.5g" % phi1, "%.5g" % phi2, "%.5g" % phi3,
@@ -170,33 +236,34 @@ def main() -> int:
         e_a = abs((phi1 - phi2) / phi1)
         e_ext = abs((ext - phi1) / ext) if ext != 0 else float("nan")
         gci = 1.25 * e_a / (r21**p - 1.0)
-        band = ASYMPTOTIC_BAND
-        verdict = ("OK" if band[0] <= p <= band[1] else
+        lo, hi = ASYMPTOTIC_BAND
+        verdict = ("OK" if lo <= p <= hi else
                    "p = %.2f OUTSIDE [%g, %g]: not in the asymptotic range, GCI is "
-                   "indicative only" % (p, band[0], band[1]))
+                   "indicative only" % (p, lo, hi))
         rows.append((label, "%.5g" % phi1, "%.5g" % phi2, "%.5g" % phi3, "%.3f" % p,
                      "%.5g" % ext, "%.2f" % (100 * e_a), "%.2f" % (100 * e_ext),
                      "%.2f" % (100 * gci), verdict))
         csv.append("%s,%.6g,%.6g,%.6g,%.4f,%.6g,%.5g,%.5g,%.5g,%s"
                    % (key, phi1, phi2, phi3, p, ext, e_a, e_ext, gci, verdict))
 
+    L.append("## Discretisation error\n")
     w = [max(len(str(r[i])) for r in rows) for i in range(len(rows[0]))]
-    lines.append("| " + " | ".join(str(c).ljust(w[i]) for i, c in enumerate(rows[0]))
-                 + " |")
-    lines.append("|" + "|".join("-" * (w[i] + 2) for i in range(len(w))) + "|")
+    L.append("| " + " | ".join(str(c).ljust(w[i]) for i, c in enumerate(rows[0])) + " |")
+    L.append("|" + "|".join("-" * (w[i] + 2) for i in range(len(w))) + "|")
     for r in rows[1:]:
-        lines.append("| " + " | ".join(str(c).ljust(w[i]) for i, c in enumerate(r)) + " |")
-    lines.append("")
-    lines.append("Procedure: Celik et al., J. Fluids Eng. 130(7):078001 (2008), "
-                 "Fs = 1.25 for three grids.")
+        L.append("| " + " | ".join(str(c).ljust(w[i]) for i, c in enumerate(r)) + " |")
+    L.append("")
+    L.append("Procedure: Celik et al., J. Fluids Eng. 130(7):078001 (2008); Fs = 1.25 for "
+             "three grids.")
 
-    md = "\n".join(lines) + "\n"
-    with open(os.path.join(OUT, "gci_Re10000_H6.md"), "w", encoding="utf-8") as fh:
+    md = "\n".join(L) + "\n"
+    stem = os.path.join(OUT, "gci_Re10000_H6_%s" % args.family)
+    with open(stem + ".md", "w", encoding="utf-8") as fh:
         fh.write(md)
-    with open(os.path.join(OUT, "gci_Re10000_H6.csv"), "w", encoding="utf-8") as fh:
+    with open(stem + ".csv", "w", encoding="utf-8") as fh:
         fh.write("\n".join(csv) + "\n")
     print(md)
-    print("wrote %s" % OUT)
+    print("wrote %s.md / .csv" % stem)
     return 0
 
 
