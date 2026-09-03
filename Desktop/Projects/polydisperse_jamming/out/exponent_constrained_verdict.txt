@@ -1,0 +1,56 @@
+==============================================================================
+IS THE EXPONENT ANCHOR'S FAILURE A FIT DEGENERACY?
+==============================================================================
+
+Same ladders, same [0.6, 1.6] bar. The only change is that phi_J is PINNED to
+the independent linear-extrapolation estimate instead of being fitted
+alongside b -- one fewer free parameter, so a stricter test, not a looser one.
+
+  ladders admitted: 55; with >= 3 points above phi_J_lin: 44
+
+  PAIRED -- same ladders, both estimators:
+  estimator         n    median      mean       IQR
+  free phi_J       23     0.549     0.497  [0.356, 0.666]
+  pinned phi_J     23     0.959     1.050  [0.849, 1.246]
+  per-ladder difference (pinned - free): median +0.540, 22 of 23 positive
+
+  CONSTRAINED-ONLY set (ladders the free fit could not fit): n = 21, median 1.165
+  ALL constrained: n = 44, median 1.069
+
+    bidisperse  n= 6  median b_constrained = 1.000
+    lognormal   n=22  median b_constrained = 1.053
+    uniform     n=16  median b_constrained = 1.144
+
+
+CONDITIONING -- how hard does this ladder actually pin b?
+  |db/dphi_J| median = 148.2 per unit phi
+  => a phi_J error of ONE seed scatter (0.00179) moves b by 0.265
+  => the bar is 1.0 wide; one seed scatter of phi_J moves b across 27% of it
+PRE-REGISTERED READING
+  PAIRED constrained median b = 0.959 against bar [0.6, 1.6] -> PASS
+  (free fit on the SAME ladders: 0.549)
+
+
+  !! CIRCULARITY WARNING, and it governs the verdict. phi_J_lin is the
+     INTERCEPT OF A LINEAR FIT, i.e. it already assumes b = 1. Pinning
+     phi_J to it and recovering b ~ 1 is therefore NOT independent
+     evidence for the harmonic law, and must not be reported as a PASS.
+     What the constrained fit does show is the SIZE of the trade-off.
+
+  => VERDICT: THE EXPONENT IS UNDETERMINED BY THIS DESIGN, which is
+     different from either passing or failing. Three facts together:
+       (1) phi_J and b are strongly degenerate, corr = +0.675,
+           p = 0.00056;
+       (2) the phi_J differences driving the b shift are TINY --
+           mostly 0.003-0.015, a few seed scatters -- yet b moves by
+           0.58, so the fit is ill-conditioned, not merely noisy;
+       (3) pinning phi_J to a b=1-assuming estimate returns b ~ 1,
+           which is what circularity predicts and cannot confirm.
+     The honest statement is that this p-ladder cannot determine
+     phi_J and b simultaneously. The original FAIL should be restated
+     as NOT MEASURABLE rather than as evidence against the contact
+     law -- and equally, nothing here vindicates the contact law.
+     Settling it needs a phi_J from an INDEPENDENT observable (e.g.
+     an isostatic contact criterion), not from the same p-ladder.
+
+  EXPONENT_CONSTRAINED_UNDETERMINED
