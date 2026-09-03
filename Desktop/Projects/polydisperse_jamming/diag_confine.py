@@ -121,15 +121,31 @@ def run_instrumented(cv, seed, young, weight):
         elif weight == "area":
             a = np.where(shell, radii**2, 0.0)
             share = a / a.sum()
+        elif weight == "netzero":
+            # The PRODUCTION rule as fixed on 2026-08-31: equal share, then the mean
+            # force subtracted so the set exerts zero NET force. This arm exists to
+            # answer the question the other two cannot: the fix was justified by the
+            # net-force argument, but H1 is about WORK, and a self-equilibrated force
+            # set can still do work on a deforming body. Measuring W_conf under the
+            # production rule is the only way to know whether the fix addressed H1 too
+            # or merely the translation.
+            share = np.where(shell, 1.0 / shell.sum(), 0.0)
         else:
             raise ValueError(weight)
         W = 0.0
+        fv = np.zeros((len(i), 3))
+        for k in range(len(i)):
+            if shell[k] and rr[k] > 0:
+                fv[k] = -rel[k] / rr[k] * (f_tot * share[k])
+        if weight == "netzero":
+            m = shell & (rr > 0)
+            if m.any():
+                fv[m] -= fv[m].mean(axis=0)
         for k, b in enumerate(i):
             if not shell[k] or rr[k] <= 0:
                 continue
-            fvec = -rel[k] / rr[k] * (f_tot * share[k])
-            O.forces.addF(b, tuple(fvec))
-            W += float(fvec @ V[k]) * O.dt
+            O.forces.addF(b, tuple(fv[k]))
+            W += float(fv[k] @ V[k]) * O.dt
         state["W"] += W
 
     O.engines = [
@@ -219,9 +235,9 @@ def main() -> int:
     path = os.path.join(OUT_DIR, "diag_confine.jsonl")
     recs = []
     # CV = 0 is the control where H2 predicts NO effect (all radii equal).
-    for cv in (0.0, 0.5):
-        for young in (1.0, 10.0):
-            for weight in ("equal", "area"):
+    for cv in (0.5, 0.0):
+        for young in (1.0,):
+            for weight in ("equal", "netzero"):
                 for seed in (1, 2):
                     try:
                         r = run_instrumented(cv, seed, young, weight)
