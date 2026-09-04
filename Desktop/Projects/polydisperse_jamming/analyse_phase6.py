@@ -134,10 +134,16 @@ def main() -> int:
         ok = False
 
     def rebounds(r):
+        # A single-seed group has cor_sd = NaN. Treating NaN as "no constraint" would let
+        # n = 1 AUTO-PASS the resolution requirement -- the exact failure the n=1 -> n=6
+        # deepening was done to remove, and one unreplicated seed at COR 0.16 would then
+        # set the reported threshold, since `lo` below is a min over rebounding groups.
+        # An unreplicated cell is unresolved by definition, so it fails.
+        resolved = (np.isfinite(r["cor_sd"]) and r["n"] > 1
+                    and r["cor"] > RESOLVE_FACTOR * r["cor_sd"])
         return (r["cor"] >= COR_REBOUND
                 and r["spread"] < SPREAD_COHERENT
-                and (not np.isfinite(r["cor_sd"])
-                     or r["cor"] > RESOLVE_FACTOR * r["cor_sd"]))
+                and resolved)
 
     reb = [r for r in rows if rebounds(r)]
     recoil_only = [r for r in rows if r["cor"] >= COR_REBOUND and not rebounds(r)]
