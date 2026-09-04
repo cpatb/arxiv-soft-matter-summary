@@ -89,6 +89,26 @@ FAMILIES = {
     # is how much of the "grid effect" was really iteration count.
     "coarse_conv": [("case_Re10000_H6_r2_ext", 2.0), ("case_Re10000_H6", 1.0),
                     ("case_Re10000_H6_r0", 0.5)],
+    # THE ONE TO QUOTE. All three grids converged on residualControl -- refine 4 at
+    # iteration 11552, refine 2 at 5105 (via extend_r2.sh), refine 1 at 2261 -- and all
+    # three sit at y+ < 1 (0.211 / 0.406 / 0.781). That is the property `coarse*` lacks:
+    # it straddles y+ ~ 1 at 1.52, and omegaWallFunction blends the viscous and log layers
+    # across exactly that boundary, so those three grids are not in one wall-treatment
+    # regime while the quantity being converged IS the wall shear stress.
+    #
+    # ⚠ Watch the refine = 4 run rather than judging it early. Its Uy residual sat flat at
+    # ~4.0e-5 from iteration 6400 to 8000 and looked like a stall; it was not, and it fell
+    # through 1e-5 by 11552. "It has plateaued" needed 3500 more iterations of evidence
+    # than the four samples that suggested it.
+    "fine_conv": [("case_Re10000_H6_r4", 4.0), ("case_Re10000_H6_r2_ext", 2.0),
+                  ("case_Re10000_H6", 1.0)],
+    # An INDEPENDENT check on the same hypothesis at a fifth of the cost: ratio
+    # sqrt(2) = 1.414 throughout (above Celik et al.'s recommended 1.3), meshes
+    # 122880 / 61009 / 30720, and again all three at y+ < 1 (0.406 / 0.566 / 0.781).
+    # If `fine_conv` and `midfine` disagree about the observed order, neither is in the
+    # asymptotic range and no GCI from this mesh family means anything.
+    "midfine": [("case_Re10000_H6_r2_ext", 2.0), ("case_Re10000_H6_r1_ext", 1.414),
+                ("case_Re10000_H6", 1.0)],
 }
 
 # (key in the fit_closure record, label)

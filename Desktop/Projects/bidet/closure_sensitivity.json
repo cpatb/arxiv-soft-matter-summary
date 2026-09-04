@@ -1,0 +1,39 @@
+{
+  "n_t_fixed": 1.9023,
+  "r_max_m": 0.015,
+  "tau_c_Pa": 5.0,
+  "dP_Pa": 70000.0,
+  "V0_ms": 11.477194779213255,
+  "rho": 1000.0,
+  "rows": [
+    {
+      "label": "base grid, refine 1 (what the paper quotes)",
+      "C_P": 1.3518,
+      "d_star_mm": 0.6534661346435787,
+      "Q_star_Lmin": 0.1431906776629512,
+      "Q_ratio_vs_base": 1.0
+    },
+    {
+      "label": "refine 2, converged",
+      "C_P": 1.3928,
+      "d_star_mm": 0.6396898955642949,
+      "Q_star_Lmin": 0.13721688460542256,
+      "Q_ratio_vs_base": 0.9582808521125235
+    },
+    {
+      "label": "refine 4, converged (finest)",
+      "C_P": 1.5809,
+      "d_star_mm": 0.5844361313993863,
+      "Q_star_Lmin": 0.11453617829973851,
+      "Q_ratio_vs_base": 0.7998857200001457
+    },
+    {
+      "label": "Richardson extrapolation, p = 2.198",
+      "C_P": 1.6333,
+      "d_star_mm": 0.5710028111677763,
+      "Q_star_Lmin": 0.10933143946768843,
+      "Q_ratio_vs_base": 0.763537412156382
+    }
+  ],
+  "Q_ratio_base_to_extrapolated": 0.763537412156382
+}
