@@ -115,13 +115,20 @@ def run_instrumented(cv, seed, young, weight):
         shell = rr > SHELL_FRACTION * rmax
         if not shell.any():
             return
-        f_tot = pc * 4.0 * math.pi * rmax**2
-        if weight == "equal":
+        # RADIUS ESTIMATOR. Production uses rmax, a SINGLE EXTREMAL grain. 7h's dynamic
+        # test found that inflates the force by up to 83x at CV = 0.5 once the aggregate
+        # fragments (a detached grain sets rmax while r_p95 stays put), against 1.10 at
+        # CV = 0. The "p95" arms use the 95th percentile instead, which is the fix that
+        # withdrawal named. Everything else is identical, so the arms differ ONLY in the
+        # radius fed to the force.
+        r_force = float(np.percentile(rr, 95)) if weight.endswith("_p95") else rmax
+        f_tot = pc * 4.0 * math.pi * r_force**2
+        if weight in ("equal",):
             share = np.where(shell, 1.0 / shell.sum(), 0.0)
         elif weight == "area":
             a = np.where(shell, radii**2, 0.0)
             share = a / a.sum()
-        elif weight == "netzero":
+        elif weight in ("netzero", "netzero_p95"):
             # The PRODUCTION rule as fixed on 2026-08-31: equal share, then the mean
             # force subtracted so the set exerts zero NET force. This arm exists to
             # answer the question the other two cannot: the fix was justified by the
@@ -137,7 +144,7 @@ def run_instrumented(cv, seed, young, weight):
         for k in range(len(i)):
             if shell[k] and rr[k] > 0:
                 fv[k] = -rel[k] / rr[k] * (f_tot * share[k])
-        if weight == "netzero":
+        if weight.startswith("netzero"):
             m = shell & (rr > 0)
             if m.any():
                 fv[m] -= fv[m].mean(axis=0)
@@ -237,7 +244,7 @@ def main() -> int:
     # CV = 0 is the control where H2 predicts NO effect (all radii equal).
     for cv in (0.5, 0.0):
         for young in (1.0,):
-            for weight in ("equal", "netzero"):
+            for weight in ("netzero", "netzero_p95"):
                 for seed in (1, 2):
                     try:
                         r = run_instrumented(cv, seed, young, weight)

@@ -74,6 +74,12 @@ MIN_POINTS = 3
 SEED_SCATTER = 0.00179          # median over 106 replicated cells, from analyse_phase2
 EXPONENT_MIN_RANGE_IN_SD = 2.0
 
+# Must match analyse_phase2.P_HAT_FIT_MAX. The first version of this file omitted the trim
+# and the dedup below, so it refitted a DIFFERENT point set from the one `phi_J_lin` was
+# built on -- which is exactly the inconsistency the whole analysis is about. Found by the
+# code reviewer 2026-09-03; it moved the conditioning number from 148 to 171-194.
+P_HAT_FIT_MAX = 1.1e-3
+
 
 def family_of(rec):
     k = rec.get("key", "")
@@ -84,7 +90,10 @@ def family_of(rec):
 
 
 def load_cells():
-    out = []
+    # DEDUP BY CELL KEY, as analyse_phase2.load_all does. Killed multi-shard launches left
+    # the same cell on disk more than once (463 records, 424 unique keys), and np.polyfit
+    # would silently double-weight the duplicates.
+    by_key = {}
     for fp in glob.glob(os.path.join(OUT, "phase2*.jsonl")):
         with open(fp, encoding="utf-8") as fh:
             for line in fh:
@@ -97,8 +106,9 @@ def load_cells():
                     continue
                 if r.get("failed") or not r.get("converged"):
                     continue
-                out.append(r)
-    return out
+                if r.get("key"):
+                    by_key[r["key"]] = r
+    return list(by_key.values())
 
 
 def main() -> int:
@@ -142,6 +152,9 @@ def main() -> int:
         if not (informative and np.isfinite(phi_J_lin)):
             continue
 
+        lad = [c for c in lad if float(c["p_hat"]) <= P_HAT_FIT_MAX]
+        if len(lad) < MIN_POINTS:
+            continue
         p = np.array([float(c["p_hat"]) for c in lad])
         phi = np.array([float(c["phi"]) for c in lad])
         o = np.argsort(p)
@@ -165,13 +178,25 @@ def main() -> int:
             m2 = (e2 > 0) & (p > 0)
             if int(m2.sum()) >= MIN_POINTS:
                 slopes.append(np.polyfit(np.log(p[m2]), np.log(e2[m2]), 1)[0])
-        db_dphi = ((slopes[1] - slopes[0]) / (2 * SEED_SCATTER)
-                   if len(slopes) == 2 else float("nan"))
+        # If the +SEED_SCATTER perturbation drives too many excesses negative, only the
+        # low side survives. Dropping those ladders BIASES the median low, because they
+        # fail exactly where the excess is smallest relative to noise -- i.e. on the MOST
+        # ill-conditioned ladders. Fall back to a one-sided derivative and record which
+        # was used, rather than discarding them.
+        if len(slopes) == 2:
+            db_dphi = (slopes[1] - slopes[0]) / (2 * SEED_SCATTER)
+            sided = 2
+        elif len(slopes) == 1:
+            db_dphi = (b_con - slopes[0]) / SEED_SCATTER
+            sided = 1
+        else:
+            db_dphi, sided = float("nan"), 0
         rows.append({"cv": key[0], "mu": key[1], "seed": key[2], "family": key[3],
                      "b_free": b_free, "b_con": float(b_con), "n_pos": n_pos,
-                     "db_dphiJ": float(db_dphi),
+                     "db_dphiJ": float(db_dphi), "sided": sided,
                      "b_con_lo": float(slopes[0]) if slopes else float("nan"),
-                     "b_con_hi": float(slopes[-1]) if slopes else float("nan")})
+                     "b_con_hi": (float(slopes[1]) if len(slopes) == 2
+                                  else float("nan"))})
 
     good = [r for r in rows if np.isfinite(r["b_con"])]
     lines = ["=" * 78,
@@ -230,12 +255,24 @@ def main() -> int:
     passes = BAR[0] <= med <= BAR[1]
 
     # --- the conditioning, which decides whether ANY of this is a measurement ---
-    dd = np.array([r.get("db_dphiJ", np.nan) for r in paired], float)
-    dd = dd[np.isfinite(dd)]
+    dd_all = np.array([r.get("db_dphiJ", np.nan) for r in paired], float)
+    sided = np.array([r.get("sided", 0) for r in paired], float)
+    dd = dd_all[np.isfinite(dd_all)]
+    n_one = int(((sided == 1) & np.isfinite(dd_all)).sum())
+    n_drop = int((~np.isfinite(dd_all)).sum())
     swing = float(np.median(np.abs(dd))) * SEED_SCATTER if dd.size else float("nan")
     lines.append("")
     lines.append("CONDITIONING -- how hard does this ladder actually pin b?")
-    lines.append("  |db/dphi_J| median = %.1f per unit phi" % float(np.median(np.abs(dd))))
+    lines.append("  |db/dphi_J| median = %.1f per unit phi  (n = %d; %d one-sided, "
+                 "%d unusable)" % (float(np.median(np.abs(dd))), dd.size, n_one, n_drop))
+    if n_one:
+        two = np.abs(dd_all[(sided == 2) & np.isfinite(dd_all)])
+        one = np.abs(dd_all[(sided == 1) & np.isfinite(dd_all)])
+        lines.append("    two-sided median %.1f over %d; one-sided median %.1f over %d "
+                     "-- the one-sided ladders are the MORE ill-conditioned ones, so "
+                     "dropping them would bias this LOW"
+                     % (float(np.median(two)) if two.size else float("nan"), two.size,
+                        float(np.median(one)) if one.size else float("nan"), one.size))
     lines.append("  => a phi_J error of ONE seed scatter (%.5f) moves b by %.3f"
                  % (SEED_SCATTER, swing))
     lines.append("  => the bar is %.1f wide; one seed scatter of phi_J moves b across "
