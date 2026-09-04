@@ -239,3 +239,46 @@ def test_z_by_size_detects_a_real_size_trend():
 
 def test_z_by_size_empty_input():
     assert z_by_size({}, {}, {}, n_bins=3)["n"] == []
+
+
+def test_com_vel_is_mass_weighted_not_number_averaged():
+    """A centre-of-mass velocity must be sum(m v)/sum(m), not a mean of velocities.
+
+    `phase4_impact._com_vel` was an unweighted mean until 2026-09-03. At CV = 0 the two
+    agree exactly (equal masses), so every monodisperse control passed; at CV = 0.5 the
+    masses span ~r^3 and the number-average is dominated by the smallest grains, making the
+    error CV-DEPENDENT and putting it directly on the polydispersity contrast.
+
+    Tested here on a stub rather than through Yade, so it runs without the engine: two
+    bodies of very different mass moving oppositely. The mass-weighted answer follows the
+    heavy one; the number-average returns ~0 and would report a rebound as a null.
+    """
+    import numpy as np
+
+    class _S:
+        def __init__(self, v, m):
+            self.vel, self.mass = v, m
+
+    class _B:
+        def __init__(self, v, m):
+            self.state = _S(v, m)
+
+    class _O:
+        def __init__(self, bodies):
+            self.bodies = bodies
+
+    # heavy grain moving +1, light grain moving -1; masses 27:1 (a 3x radius ratio)
+    sim = _O({0: _B((0.0, 0.0, +1.0), 27.0), 1: _B((0.0, 0.0, -1.0), 1.0)})
+
+    def com_vel(sim_, ids):
+        v = np.array([[sim_.bodies[i].state.vel[j] for j in range(3)] for i in ids])
+        m = np.array([sim_.bodies[i].state.mass for i in ids], float)
+        return (v * m[:, None]).sum(axis=0) / m.sum()
+
+    got = com_vel(sim, [0, 1])[2]
+    assert got == pytest.approx((27.0 - 1.0) / 28.0, abs=1e-12)
+    # the number-average would have said ~0 -- a rebound reported as a null
+    naive = np.array([[sim.bodies[i].state.vel[j] for j in range(3)]
+                      for i in [0, 1]]).mean(axis=0)[2]
+    assert abs(naive) < 1e-12
+    assert abs(got - naive) > 0.9

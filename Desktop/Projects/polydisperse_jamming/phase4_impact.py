@@ -387,8 +387,23 @@ def _lateral(O, ids) -> float:  # noqa: E741
 
 
 def _com_vel(O, ids) -> np.ndarray:  # noqa: E741
-    return np.array([[O.bodies[i].state.vel[j] for j in range(3)]
-                     for i in ids]).mean(axis=0)
+    """Centre-of-MASS velocity, sum(m v) / sum(m).
+
+    This was an UNWEIGHTED mean until 2026-09-03 (code-review finding). A number-average
+    of grain velocities is not a centre-of-mass velocity: at CV = 0 the two coincide
+    exactly, because every mass is equal, but at CV = 0.5 the masses span roughly r^3 ~ 27x
+    and the number-average is dominated by the smallest grains -- the ones most easily
+    thrown by the confinement. The bias was therefore CV-DEPENDENT and sat directly on the
+    polydispersity contrast the project exists to measure, while being invisible in every
+    monodisperse control. `_ke` below always mass-weighted correctly, which is why the
+    energy gate never flagged it.
+    """
+    v = np.array([[O.bodies[i].state.vel[j] for j in range(3)] for i in ids])
+    m = np.array([O.bodies[i].state.mass for i in ids], float)
+    tot = m.sum()
+    if tot <= 0:
+        return v.mean(axis=0)
+    return (v * m[:, None]).sum(axis=0) / tot
 
 
 def _ke(O, ids) -> float:  # noqa: E741
