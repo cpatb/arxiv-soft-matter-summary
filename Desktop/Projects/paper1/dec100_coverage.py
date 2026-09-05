@@ -14,10 +14,16 @@ what it did, the late-time sample is selected on the outcome and every late-time
 in the manuscript inherits that selection. That is why item 7 exists and why it is worth
 more than twenty minutes of anyone's attention.
 
-The expensive half of item 7 is not the judgement, it is finding out WHICH four recordings
-they are: the tree is 1.05 TB across 49 000 files on a removable exFAT disk. This script
-does that half and leaves the judgement, which needs the hand annotations and the author's
+The expensive half of item 7 is not the judgement, it is finding out WHICH recordings they
+are: the tree is 1.05 TB across 49 000 files on a removable exFAT disk. This script does
+that half and leaves the judgement, which needs the hand annotations and the author's
 memory of the session.
+
+Two things it establishes that the card does not. The card says FOUR within-cell
+omissions; on the audit's own subset the enumeration finds FIVE. And three of the five are
+the same cell (50 mM LiCl, u0_4: drops 2, 3, 5 of 6 missing, keeping 1, 4, 6) -- an
+interleaved pattern, which is not what a camera that stopped looks like. Check that cell
+first.
 
 ⚠ THE PATH TRAP, and it is why this script globs rather than joins
 ------------------------------------------------------------------
@@ -129,17 +135,117 @@ def main() -> int:
         w.writeheader()
         w.writerows(rows)
     print("\nwrote", OUT)
-    print("\n⚠ SCOPE, and it has to be read before the list is. Over the whole disk this is")
-    print("  276 recordings / 183 with dec100. Restrict to the six PAPER sessions (the")
-    print("  three salt cells plus 0.42 / 0.44 / 0.45 VF) and to `Silica/` cells -- i.e.")
-    print("  drop the `newtonian_control` cells -- and it reproduces the audit EXACTLY:")
-    print("  n = 160, dec100 = 121, seven whole cells with none, and those seven are the")
-    print("  seven the Status card names. So the subset is identified, not guessed.")
-    print("  On that subset the within-cell omissions number FIVE, not the card's four,")
-    print("  and three of the five are the SAME cell (50 mM LiCl, u0_4: drops 2, 3, 5 of")
-    print("  6 missing, keeping 1, 4, 6). An interleaved pattern is not a camera that")
-    print("  stopped; check that cell first.")
-    return 0
+    return report_paper_subset(rows)
+
+
+# ---------------------------------------------------------------------------
+# The paper subset.
+#
+# This block used to be a PRINTED PARAGRAPH asserting "n = 160, dec100 = 121, seven
+# whole cells" while the script above computed only the whole-disk figures (276/183).
+# Prose that states numbers its own script never computes is exactly the failure mode
+# this project keeps hitting, so the restriction is applied in code here and the audit's
+# numbers are CHECKED rather than recited. If the tree changes, this fails loudly.
+# ---------------------------------------------------------------------------
+
+# The six sessions the audit counted, listed explicitly rather than described.
+#
+# The old prose said "the three salt cells plus 0.42 / 0.44 / 0.45 VF", which is a
+# correct DESCRIPTION but not a usable filter: matching on "silica" instead pulls in the
+# 800 nm, Silicone Dioxide and Granular sessions and gives 255 recordings / 17 whole
+# cells rather than 160 / 7. identify_paper_subset.py searched every 4-8 session
+# combination and found this one is the UNIQUE subset reproducing the audit triple
+# (n=160, dec100=121, 7 whole cells), so it is identified, not guessed.
+PAPER_SESSIONS = (
+    "Silica Colloid 0.42 VF 23JUL26",
+    "Silica Colloid 0.44 VF 23JUN26",
+    "Silica Colloid 0.44 VF 10 mM LiCl 24JUN26",
+    "Silica Colloid 0.44 VF 50 mM LiCl 13JUL26",
+    "Silica Colloid 0.44 VF 100 mM LiCl 23JUN26",
+    "Silica Colloid 0.45 VF 24JUL26",
+)
+# `newtonian_control` is a different experiment living in the same session directories.
+PAPER_EXCLUDE = re.compile(r"newtonian_control", re.I)
+
+# What the missingness audit and the Status card recorded, as a regression check.
+EXPECTED = {"n": 160, "dec100": 121, "whole_cells_missing": 7}
+
+
+def in_paper_subset(r: dict) -> bool:
+    return (r["session"] in PAPER_SESSIONS
+            and not PAPER_EXCLUDE.search("%s/%s" % (r["session"], r["cell"])))
+
+
+def report_paper_subset(rows: list) -> int:
+    sub = [r for r in rows if in_paper_subset(r)]
+    if not sub:
+        print("\nPAPER SUBSET IS EMPTY -- the include/exclude patterns no longer match")
+        print("the tree's layout. Not reporting whole-disk numbers as if they were the")
+        print("paper's; fix the patterns first.")
+        return 1
+
+    bycell: dict = {}
+    for r in sub:
+        bycell.setdefault((r["session"], r["cell"]), []).append(r)
+
+    whole, within = [], []
+    for key, rs in sorted(bycell.items()):
+        n, k = len(rs), sum(r["has_dec100"] for r in rs)
+        if k == 0:
+            whole.append((key, n))
+        elif k < n:
+            within.extend(r for r in rs if not r["has_dec100"])
+
+    got = {"n": len(sub),
+           "dec100": sum(r["has_dec100"] for r in sub),
+           "whole_cells_missing": len(whole)}
+
+    print("\n" + "=" * 74)
+    print("PAPER SUBSET -- the %d audit sessions, newtonian_control excluded"
+          % len(PAPER_SESSIONS))
+    print("=" * 74)
+    print("Whole disk: %d recordings / %d with dec100." % (
+        len(rows), sum(r["has_dec100"] for r in rows)))
+    print("Paper subset: %d recordings / %d with dec100, in %d cells."
+          % (got["n"], got["dec100"], len(bycell)))
+    print()
+    ok = True
+    for k, want in EXPECTED.items():
+        mark = "OK " if got[k] == want else "MISMATCH"
+        if got[k] != want:
+            ok = False
+        print("  %-22s expected %4d   got %4d   %s" % (k, want, got[k], mark))
+
+    if not ok:
+        print("\n*** The subset no longer reproduces the audit. Either the tree changed")
+        print("    or the restriction above is not the one the audit used. Do NOT quote")
+        print("    the within-cell list below until this is resolved.")
+
+    print("\nWHOLE CELLS WITH NO dec100 (%d) -- configured before their drops, so this"
+          % len(whole))
+    print("cannot be outcome-caused:")
+    for (sess, cell), n in whole:
+        print("  %-45s %-28s (%d drops)" % (sess, cell, n))
+
+    print("\nWITHIN-CELL OMISSIONS (%d) -- these are what analysis-queue item 7 is about."
+          % len(within))
+    percell: dict = {}
+    for r in within:
+        percell.setdefault((r["session"], r["cell"]), []).append(r["drop"])
+    for (sess, cell), drops in sorted(percell.items()):
+        total = len(bycell[(sess, cell)])
+        kept = sorted(set(range(1, total + 1)) - set(drops))
+        flag = "  <-- INTERLEAVED, not a camera that stopped" if len(drops) > 1 else ""
+        print("  %-45s %-28s missing %s of %d (keeping %s)%s"
+              % (sess, cell, sorted(drops), total, kept, flag))
+
+    print("\nThe Status card records FOUR within-cell omissions; this enumeration finds"
+          " %d." % len(within))
+    print("Any cell flagged INTERLEAVED above should be checked first: a drop skipped")
+    print("because of WHAT IT DID selects the late-time sample on the outcome, and an")
+    print("interleaved pattern is the signature that distinguishes that from equipment")
+    print("failure. The judgement itself needs the hand annotations.")
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":
