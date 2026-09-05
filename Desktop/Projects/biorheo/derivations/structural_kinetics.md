@@ -19,5 +19,9 @@
 - PASS spot beta from the source constants: 56.14286 vs hand 56.14286
 - PASS spot eta_ss at gd = gamma_c = 5 with the source's steady constants (alpha t_r = 0.2): 0.10175 vs hand 0.10175
 - PASS spot lam(t = 0.5) after a step to gd = 20 from lam0 = 1: 0.6839397 vs hand 0.6839397
+- PASS **with a = alpha t_r fixed, tau = t_r/(1 + a gd), i.e. t_r = tau (1 + a gd)**: `t_r/(a*gammadot + 1)` == `t_r/(a*gammadot + 1)`
+- PASS **95 % of the step is complete at t = tau ln 20**: `tau*log(20)` == `tau*log(20)`
+- PASS spot stress 3 s after a 300 -> 1 step, a = 0.2 s, t_r = 2.4 s, eta_inf = 3 mPa s, beta = 10: 0.02253148 vs hand 0.02253148
+- PASS spot 95 % time for tau = 2 s: 5.991465 vs hand 5.991465
 
 **0 failure(s).**

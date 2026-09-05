@@ -16,7 +16,12 @@ Derived and checked below, writing ``structural_kinetics.md`` beside this file:
    and ``lam_cross = alpha t_r``: nothing in a steady flow curve says "structural";
 3. step response at constant rate: ``lam(t) = lam_ss + (lam0 - lam_ss) exp(-t/tau)``
    with ``1/tau = 1/t_r + alpha gd``: the transient is what carries t_r on its own;
-4. the source's constants map to ``alpha t_r = 1/gamma_c = 0.2 s`` and ``beta = 56.142857``.
+4. the source's constants map to ``alpha t_r = 1/gamma_c = 0.2 s`` and ``beta = 56.142857``;
+5. with the product ``a = alpha t_r`` fixed by the steady curve, the step relaxation time
+   at rate gd gives ``t_r = tau (1 + a gd)`` and ``alpha = a/t_r`` on their own; the 95 %
+   approach time is ``tau ln 20``; and the stress after a step from gd_0 to gd_1 is
+   ``gd_1 eta_inf (1 + beta lam(t))`` with ``lam0 = lam_ss(gd_0)`` (used by
+   ``scripts/structural_step_horner.py``).
 
 Run:  python derivations/structural_kinetics.py
 """
@@ -108,6 +113,27 @@ spot("eta_ss at gd = gamma_c = 5 with the source's steady constants (alpha t_r =
 # lam(0.5) = 0.5 + 0.5 exp(-1) = 0.5 + 0.18393972 = 0.68393972
 spot("lam(t = 0.5) after a step to gd = 20 from lam0 = 1", sol.rhs,
      {alpha: 0.05, t_r: 1.0, gd: 20.0, lam0: 1.0, t: 0.5}, 0.68393972058572)
+
+# 5. what a step transient adds once the steady curve has fixed a = alpha t_r
+a_prod = sp.symbols("a", positive=True)
+tau_of_a = t_r / (1 + a_prod * gd)          # tau with alpha = a/t_r substituted
+check("with a = alpha t_r fixed, tau = t_r/(1 + a gd), i.e. t_r = tau (1 + a gd)",
+      tau.subs(alpha, a_prod / t_r), tau_of_a)
+tau_sym = sp.symbols("tau", positive=True)
+frac = 1 - sp.exp(-t / tau_sym)              # fraction of the step completed at time t
+t95 = sp.solve(sp.Eq(frac, sp.Rational(19, 20)), t)
+assert len(t95) == 1
+check("95 % of the step is complete at t = tau ln 20", t95[0], tau_sym * sp.log(20))
+gd0, gd1 = sp.symbols("gammadot_0 gammadot_1", positive=True)
+sigma_step = gd1 * eta_of_lam.subs(lam, expected.subs({gd: gd1, lam0: lam_ss.subs(gd, gd0)}))
+# hand: a = 0.2 s, gd1 = 1 -> lam_ss = 1/1.2 = 0.83333333; gd0 = 300 -> lam0 = 1/61 = 0.016393443;
+# tau = 2 s -> t_r = 2 (1 + 0.2) = 2.4 s, alpha = 0.2/2.4 = 0.083333333;
+# lam(3) = 0.83333333 + (0.016393443 - 0.83333333) e^-1.5 = 0.83333333 - 0.81693989 x 0.22313016
+#        = 0.83333333 - 0.18228393 = 0.65104940; sigma = 1 x 3e-3 x (1 + 10 x 0.65104940) = 0.022531482 Pa
+spot("stress 3 s after a 300 -> 1 step, a = 0.2 s, t_r = 2.4 s, eta_inf = 3 mPa s, beta = 10",
+     sigma_step, {alpha: 0.2 / 2.4, t_r: 2.4, gd0: 300.0, gd1: 1.0, eta_inf: 3e-3, beta: 10.0, t: 3.0},
+     0.022531482)
+spot("95 % time for tau = 2 s", tau_sym * sp.log(20), {tau_sym: 2.0}, 5.9914645)
 
 lines += ["", f"**{failures} failure(s).**"]
 OUT.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")

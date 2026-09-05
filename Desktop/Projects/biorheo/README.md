@@ -78,8 +78,14 @@ transient data", quoted in `SOURCE.md`), so the six lowest points of every blood
 are peak-hold values, 7-46 % above the 40-50 s stress at 1 1/s. Refitting with that one
 point replaced moves tau_y only -1 to -7 %. Every donor's stress decays after the peak;
 the thesis attributes the decay to syneresis (wall depletion), so it is not a bulk
-signal for a thixotropic model to fit. `constitutive.structural` describes the rise and
-not the decay, and has not been fitted to blood yet. The LAOS sheets are unused.
+signal for a thixotropic model to fit. `constitutive.structural` fitted to the rise
+(`scripts/structural_step_horner.py`, `data/horner2020/structural_step.md`): the
+timescale gate passes 20/20 (tau 1.1-2.2 s, 95 % approach at 3.4-6.6 s) and the shape
+gate fails 6/20 -- a single exponential misses the rise by 1-12 % of its amplitude
+(median 3.4 %) with the same residual sign pattern on 15/20, and anchoring the endpoints
+to the steady sheet does not rescue it (5/20). The rise is less concave than one
+exponential; one first-order structure variable cannot give that. The LAOS sheets are
+unused.
 
 ## Conventions
 

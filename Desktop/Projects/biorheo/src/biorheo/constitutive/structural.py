@@ -35,8 +35,14 @@ and not the decay. The thesis attributes the decay to syneresis (a wall depletio
 ``data/horner2020/SOURCE.md``), not to bulk rheology; on that reading the family is not
 refuted by the sheet, and no model should be fitted to the decay. A first reading of the
 sheet (commit 39b0988) called the family "refuted on shape"; withdrawn once the thesis
-was read. The rise time (peak at 4-6 s, i.e. strain 4-6) is the build-up timescale a
-blood fit of this family must reproduce; that fit is not done yet.
+was read. Fitted to the rise (``scripts/structural_step_horner.py``, pinned in
+``tests/test_structural_step.py``): the timescale is right on 20/20 donors (``tau`` =
+1.1-2.2 s, 95 % approach at 3.4-6.6 s, where the peak is) and the SHAPE is not -- a
+single exponential misses the rise by 1-12 % of its amplitude (median 3.4 %) against a
+sample noise of 0.04-1 mPa, with the same residual sign pattern on 15/20, and anchoring
+both endpoints to the steady sheet instead of to this fit does not change that. The
+rise is less concave than one exponential; one structure variable with first-order
+kinetics cannot give that. What it would take (a lag, a second timescale) is untested.
 
 The source also added a Casson-like yield offset ``sigma_y`` to the steady stress. It is
 left out here: it is a fourth steady parameter with its own identifiability question, and

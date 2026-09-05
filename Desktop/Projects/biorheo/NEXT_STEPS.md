@@ -44,19 +44,23 @@ the earlier "structural family refuted on shape" claim was withdrawn. The text e
 `data/horner2020/thesis_text.txt` (gitignored, regenerate with pypdf from the PDF) is
 greppable; sections 2.2, 3.3.1, 6.2.1 and 6.4 are the ones that matter.
 
-### 2. Fit the structural family to the step RISE plus the steady curve (medium)
-The step sheet's bulk signal, on the authors' reading, is the rise from the first
-sample to the maximum (1-6 s at 1 1/s; donor D 16 s). `constitutive.structural`
-(first-order kinetics, monotone build-up) is the right shape for that part and must
-not be fitted to the decay. Pre-registered gate: per donor, fit steady curve (16
-points, log-eta residuals) and rise samples (t <= t_max) jointly; the fitted
-build-up time at 1 1/s must put the model's 95 % approach to steady state at 3-8 s on
-at least 16/20 donors, with alpha and t_r each `measurable` or `bounded_only` (the
-identify gate in `tests/test_structural.py` says they are degenerate from the steady
-curve alone; the transient is what should break the degeneracy -- if it does not, that
-is the result, record it). Before any of this, derive the constant-rate solution's
-95 % time in `derivations/structural_kinetics.py` (it is a one-liner from fact 3) and
-spot-check it numerically.
+### 2. DONE 2026-09-05 (result: shape gate FAILED): structural family on the step rise
+`scripts/structural_step_horner.py` -> `data/horner2020/structural_step.md`, pinned in
+`tests/test_structural_step.py`. Derivation fact 5 (`derivations/structural_kinetics.py`)
+first, then per donor: steady fit for (eta_inf, beta, a), one-parameter fit of tau to the
+rise samples (first sample to the maximum), profile interval. Pre-registered gates, not
+touched after the run: G1 (t95 in 3-8 s, tau determined on >= 16/20) PASSED 20/20; G2
+(rise rmse <= 2x tail noise on >= 16/20) FAILED 6/20. Two post-hoc variants are printed
+beside G2 and neither rescues it: dropping the 1 s sample 7/20, anchoring both endpoints
+to the steady sheet (350 1/s point for sigma(0), the 1 1/s peak for sigma(inf)) 5/20.
+The residual has one sign pattern on 15/20 (data above the exponential at 1 s, below at
+2-3 s): the rise is less concave than a single exponential. So: timescale right, shape
+wrong, and the shape failure is in the kinetics, not inherited from the steady misfit.
+Open: what shape the rise IS. Candidates a lag (instrument or physical), a second
+timescale, strain-dependent kinetics. A 4-6 sample rise cannot discriminate those; the
+LAOS sheets might, and are still unused. Do not loosen G2.
+
+### 2b. Syneresis correlation test (small, not started)
 An independent test of the syneresis attribution is worth more than the fit: the decay
 amplitude (1 - last/max, tabulated in `step_response.md`) against hematocrit and
 fibrinogen from `extra` across the 20 donors. Pre-register the sign each mechanism
@@ -89,7 +93,8 @@ Wald-corr-at-bound caveat undocumented. None affects a shipped number.
 ## What NOT to do
 
 - Do not fit any model to the post-peak decay of the step sheet (syneresis, per the thesis).
-- Do not fit the LAOS sheets before item 2 has a model that reproduces the step rise.
+- Do not fit the LAOS sheets to the structural family as it stands: item 2 showed it
+  does not reproduce the step rise's shape. A LAOS fit needs a model that does.
 - Do not add a record from a paper's table without its raw curve; the Horner case shows
   a published yield stress can be 71 % away from the same data under another objective.
 - Do not put `si_fit` or any `impact_stress/materials.py` constant into the registry.
