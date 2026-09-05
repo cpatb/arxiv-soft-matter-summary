@@ -207,8 +207,15 @@ def main():
         # A single macro for the pair: FAIL if either mesh fails, so the paper cannot
         # quote a pass because one of the two happened to be quieter.
         if conv_verdicts:
+            # FAIL-CLOSED. `"FAIL" in conv_verdicts` is exact element equality, so any
+            # verdict spelled anything else -- "FAIL (marginal)", "fail", "WARN" -- would
+            # have printed PASS into the manuscript. Require every entry to be exactly
+            # "PASS" instead, so an unrecognised verdict reads as a failure rather than a
+            # success. (Flagged by a code review 2026-09-03; both current records are
+            # exactly "FAIL", so the emitted macro is unchanged.)
             out.append(macro("ConvVerdict",
-                             "FAIL" if "FAIL" in conv_verdicts else "PASS"))
+                             "PASS" if all(v == "PASS" for v in conv_verdicts)
+                             else "FAIL"))
 
     # ---------------- Q table ---------------------------------------------
     tbl = ["\n\\begin{table}[H]\n\\centering\\small\n",

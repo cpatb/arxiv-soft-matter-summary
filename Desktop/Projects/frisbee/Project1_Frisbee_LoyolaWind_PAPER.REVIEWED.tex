@@ -315,7 +315,8 @@ second, far outside the $\pm15^\circ$ band in which the linear fits were made.}
 \end{table}
 
 \paragraph{Known limitations of the disc model.} The model is axisymmetric and
-carries no rim side-force coefficient $C_S(\alpha)$, hence no yaw stiffness.
+carries no rim side-force coefficient $C_S(\alpha)$. It therefore has no yaw
+stiffness --- though, as set out below, neither does a real axisymmetric disc.
 Launch sideslip is therefore shed only slowly, and predicted crosswind drift is
 about a quarter of the naive full-advection estimate $U_c T$. We verified that
 this is a physics-model gap rather than a numerical artefact: a uniform wind is
@@ -323,19 +324,36 @@ exactly Galilean-equivalent to a shifted release velocity in this
 implementation, to $10^{-8}$ m.
 % WP4b item 5 [2026-09-03]: "lower bound" RETRACTED, in all three places it appeared
 % (here, the limitations section, and P1_AnalyticalModel/README.md). It confused two
-% different omissions. Missing yaw stiffness is one-sided; a missing Robins-Magnus force
-% is not, because it flips sign with the spin direction, i.e. with backhand vs forehand.
+% different omissions. [SUPERSEDED 2026-09-04 -- see the AMENDED note below: the
+% "missing yaw stiffness is one-sided" half of this comment is itself withdrawn.]
+% A missing Robins-Magnus force flips sign with the spin direction, i.e. with backhand
+% vs forehand.
 % The magnitudes the hardening brief quotes for C_S could not be resolved to a source in
 % this tree, so the argument below is made on SIGN alone, which needs no coefficient.
 \textbf{Crosswind drift from this model is uncertain in sign, not bounded
 below.} Two distinct terms are missing and they do not act the same way. The absent
-$C_S(\alpha)$ removes \emph{yaw stiffness}, which is one-sided: with it the disc would
-weathercock and shed sideslip faster. But the model also omits the Robins--Magnus side
+% WP4b item 5 AMENDED [2026-09-04]: the "C_S is one-sided / the disc would weathercock"
+% half is WITHDRAWN. An axisymmetric spinning disc has no yaw stiffness BY SYMMETRY, so
+% C_S(alpha) cannot supply any; and at 90-110 rad/s the response to a moment is
+% precession, not alignment. Raised in CLAUDE_CODE_FRISBEE_HARDENING.md (a); the
+% 2026-09-03 pass took the sign argument from it and left this part standing.
+$C_S(\alpha)$ was previously described here as removing \emph{yaw stiffness}, one-sidedly,
+on the grounds that with it the disc would weathercock and shed sideslip faster.
+\textbf{That is withdrawn.} Yaw stiffness means the yawing moment depends on sideslip
+angle; for a body of revolution the geometry is identical at every azimuth, so no such
+dependence exists. An $\alpha$-dependent side force is not a $\beta$-dependent yawing
+moment, and the model does not \emph{omit} yaw stiffness --- an axisymmetric disc has
+none. Independently, weathercocking is the behaviour of a body free to rotate into the
+relative wind, and a disc spinning at $90$--$110$~rad\,s$^{-1}$ with
+$I_s = 2.35\times10^{-3}$~kg\,m$^2$ carries $L \approx 0.21$--$0.26$~kg\,m$^2$\,s$^{-1}$;
+its response to an applied moment is precession \emph{perpendicular} to that moment, not
+rotation towards it. The model also omits the Robins--Magnus side
 force, which goes as $\boldsymbol{\omega} \times \mathbf{v}$ and therefore \emph{reverses
 with the spin direction} --- a backhand and a forehand spin opposite ways, so the same
 crosswind produces a lateral force of opposite sign for the two throws. Its contribution
 is handedness- and throw-type-dependent, so it can add to the modelled drift or subtract
-from it. Lateral predictions from this model should be read as \emph{unvalidated in sign};
+from it. \textbf{Neither missing term is signed}, which is why the conclusion below
+follows from the symmetry of the problem rather than from any coefficient. Lateral predictions from this model should be read as \emph{unvalidated in sign};
 adding $C_S(\alpha)$ and checking against measured flights is the next step, not a
 correction that can be signed \emph{a priori}.
 
@@ -845,16 +863,32 @@ would wrongly discard good free-stream flow above roof level.
 % (a factor of 2-3) as if it were the penalty. It is not: TI = sigma_u / U, and the mean
 % is what collapsed. The 90 deg column proves it arithmetically out of this paper's own
 % macros, so the correction needs no new computation.
-\paragraph{Shelter is not protection --- when it raises $\sigma_u$.}
+\paragraph{Turbulence intensity is the wrong diagnostic for a thrown disc.}
 The empty-fetch case of \S\ref{sec:cfdvalid} doubles as a no-buildings
-counterfactual: the identical inflow profile over identical ground, without the
-campus. Comparing the two at $2$~m over the pitch separates what the buildings
-took away from what they added. They removed mean wind, cutting it to
-\VertUratioRange{} of the unobstructed value. Measured as
-$\sigma_u = \sqrt{2k/3}$, they left the fluctuation at \VertSigRatioRange{} of the
-control: \emph{raised} by about half at $210^\circ$ and $270^\circ$
-(\VertSigRatioHTwoOneZero, \VertSigRatioHTwoSevenZero), and \emph{lowered} at
-$90^\circ$ (\VertSigRatioHNineZero).
+counterfactual, and it is a valid one \emph{for the $90^\circ$ heading only}. The
+control and the $90^\circ$ production case share an inlet roughness of
+$z_0 = 0.001$~m; the $210^\circ$ and $270^\circ$ cases were run at $z_0 = 0.5$~m and
+so meet inflow already carrying $\sqrt{1.5113/0.1651} = 3.03$ times the control's
+fluctuation before reaching a building. Ground roughness is matched across all four
+($z_0 = 0.03$~m); the inlet is not.
+
+% WP4b item 4 AMENDED [2026-09-04]: the "sigma_u genuinely rose at 210/270" half is
+% WITHDRAWN. Verified from case_info.json by check_control_matching.py -- see the
+% \emph{Withdrawn} note below. CLAUDE_CODE_FRISBEE_HARDENING.md C2 raised this and the
+% 2026-09-03 pass absorbed only the TI half of it.
+\emph{\textbf{Withdrawn.}} An earlier version of this paragraph reported that the
+buildings \emph{raised} $\sigma_u$ by about half at $210^\circ$ and $270^\circ$
+(ratios \VertSigRatioHTwoOneZero{} and \VertSigRatioHTwoSevenZero{}) and lowered it
+at $90^\circ$ (\VertSigRatioHNineZero). Those two rises are the inlet condition, not
+the buildings: dividing out the $3.03$ approach-flow ratio leaves $0.50$ and $0.52$,
+i.e.\ against matched inflow the campus \emph{reduces} $\sigma_u$ in all three
+directions. The comparison is only roughness-clean at $90^\circ$, where the ratio is
+\VertSigRatioHNineZero{}. \textbf{No claim that shelter raises $\sigma_u$ can be made
+from these cases}; testing it needs an empty-domain control run at
+$z_0^{\text{inlet}} = 0.5$~m, which is one additional case.
+
+What follows does not depend on that, because it lives entirely inside the matched
+$90^\circ$ pair.
 
 \textbf{That last column is why turbulence intensity is the wrong diagnostic here, and we
 state it against ourselves.} TI over the pitch is \VertTIpitchRange{} against
@@ -866,9 +900,11 @@ $\VertSigRatioHNineZero/\VertUratioHNineZero = 2.07$ against a measured TI ratio
 $\VertTIpitchHNineZero/\VertTIcontrol = 2.08$. Dividing by a collapsing mean wind
 manufactures a factor of two where the physical disturbance the disc responds to has, in
 that direction, slightly \emph{decreased}. A disc has never heard of $U$; the group it
-responds to is $\sigma_u/V_d$. \textbf{So the claim holds at $210^\circ$ and $270^\circ$,
-where $\sigma_u$ genuinely rose, and does not hold at $90^\circ$ --- and no version of it
-should be argued from TI.}
+responds to is $\sigma_u/V_d$. \textbf{This is the result that survives: turbulence
+intensity cannot tell you whether shelter helped or hurt a thrown object, because a
+collapsing mean inflates it either way.} Whether shelter ever \emph{raises} $\sigma_u$ is
+left open here --- the two headings that appeared to show it are not roughness-matched to
+the control, and the one that is shows $\sigma_u$ falling.
 
 This distinction matters because the two components are not equally damaging.
 A steady crosswind is a \emph{bias}: it displaces every throw the same way, and
@@ -976,13 +1012,21 @@ generated from the same run and are meant to be read together.
     hammer's still-air range in this model is 12.1 m and the scoring target is
     \TargetRange~m downrange; its success rate is structurally zero whatever the
     wind does. The number measures the scoring rule, not the physics.
-    % WP4b item 6 [2026-09-03]: and the 12.1 m is itself an artefact, which is worth
-    % stating here rather than only in the author-decisions section.
-    \textbf{And 12.1 m is itself a clamp artefact}: with the hammer released at
-    $\mathcal{N}(11, 1.5)$ m\,s$^{-1}$, $v^2/g = 12.3$ m, so the modelled hammer is an
-    unpowered point mass to within 2\% --- the coefficient table is edge-clamped at
-    $+30^\circ$ and the hammer is released at $+40^\circ$, so it generates no lift at all.
-    The hammer
+    % WP4b item 6 RETRACTED [2026-09-04] after a physics referee challenge and direct
+    % execution of trajectories.hammer(): alpha stays in [-2.65, +6.41] deg for the whole
+    % flight, 0.0000 of samples leave the tabulated band, and CL runs 0.0157..0.5313.
+    % The v^2/g comparison was also against the wrong formula -- it ignores the 40 deg
+    % elevation and the 2.0 m launch height. True no-aerodynamics range from the same
+    % initial condition is 14.208 m, so the disc flies 15% SHORT of ballistic, not equal.
+    The short range is a release-geometry effect rather than a table artefact.
+    \texttt{trajectories.hammer()} sets a roll of $+80^\circ$, which lays the disc nearly
+    on its side; the lift vector is then close to horizontal and does little work against
+    gravity. Lift is produced --- $C_L$ reaches 0.53 and the peak lift force, 2.25 N,
+    exceeds the disc's weight of 1.71 N --- but it is mis-directed rather than absent, and
+    the angle of attack stays within $[-2.7^\circ, +6.4^\circ]$, comfortably inside the
+    tabulated band. Sweeping the release roll from $0^\circ$ to $90^\circ$ moves the range
+    monotonically from 2.1 m to 12.4 m; only the $0^\circ$ end drives $\alpha$ past
+    $+30^\circ$ and out of the table. The hammer
     is therefore excluded from the success factor in Eq.~\ref{eq:Q} --- leaving
     it in depressed $Q$ at every heading by about a third --- and no claim is
     made about hammer sensitivity to wind. Testing it properly needs a target at
@@ -1050,17 +1094,21 @@ even though its \emph{direction} refutes the stated mechanism.
 % the results, and the "no accepted criterion" sentence narrowed per GATE G5 -- the
 % urban-air-mobility literature does write site-resolved criteria for flying bodies.
 \paragraph{Shelter changes the character of the disturbance, and only sometimes its size.}
-The counterfactual of \S\ref{sec:vertical} sharpens the point above into
-something that should hold beyond this site, provided it is stated with the
-condition attached. The buildings cut mean wind over the pitch to
-\VertUratioRange{} of its unobstructed value while leaving $\sigma_u$ at
-\VertSigRatioRange{} of the control. In two of three directions they raised
-$\sigma_u$ outright, and there shelter genuinely converted a bias a thrower can aim
-off into a variance they cannot. In the third ($90^\circ$) they lowered it, and the
-apparent penalty is an artefact of normalising by the collapsed mean.
-\textbf{The transferable claim is therefore conditional: shelter is not protection
-\emph{when it raises $\sigma_u$}, and turbulence intensity cannot tell you whether it
-did.}
+The counterfactual of \S\ref{sec:vertical} sharpens the point above, within the
+limit set there: only the $90^\circ$ pair is roughness-matched, so only it can be read
+as a buildings-versus-no-buildings comparison. In that pair the buildings cut mean wind
+over the pitch to \VertUratioHNineZero{} of its unobstructed value while leaving
+$\sigma_u$ at \VertSigRatioHNineZero{} --- both down, yet turbulence intensity rises by
+a factor of $2.08$, purely because the mean in its denominator collapsed faster than
+the fluctuation.
+
+\textbf{The transferable claim is therefore about the diagnostic, not about shelter:
+turbulence intensity cannot tell you whether shelter helped or hurt a thrown object, and
+the quantity that can is $\sigma_u/V_d$.} Whether shelter is ever \emph{anti}-protective
+--- whether a building array can raise $\sigma_u$ outright over the ground it shelters
+--- is a well-posed question this study does not answer, because the two cases that
+appeared to answer it differ from the control in inlet roughness as well as in
+buildings. It is worth one matched case to settle.
 
 We think this reframes what "a sheltered pitch" means for projectile sports.
 Urban wind engineering has a mature criterion tradition --- Lawson, NEN 8100,
@@ -1220,11 +1268,14 @@ only: no peak gusts, and no spatially correlated gust structure. The gust model
 is temporally correlated but spatially uniform along the trajectory at any
 instant, isotropic (RANS $k$ carries no anisotropy), and Gaussian, so extreme
 gusts are under-represented. The disc model has neither a rim side-force term
-$C_S(\alpha)$ nor a Robins--Magnus side force; the first removes yaw stiffness (one-sided)
-but the second reverses with spin direction, so \textbf{predicted crosswind drift is
+$C_S(\alpha)$ nor a Robins--Magnus side force. Neither omission is signed --- an
+axisymmetric spinning disc has no yaw stiffness to omit, and the Robins--Magnus term
+reverses with spin direction --- so \textbf{predicted crosswind drift is
 uncertain in sign, not a lower bound} --- see \S\ref{sec:analytical}. Ground is flat and
-no tree canopy is included. The hammer throw is exploratory: it spends most of its flight outside
-the angle-of-attack range over which the tabulated coefficients exist.
+no tree canopy is included. The hammer throw is exploratory because its release
+parameterisation is unvalidated (speed, and a $+80^\circ$ roll that is a guess), not
+because its coefficients are extrapolated: its angle of attack stays within
+$[-2.7^\circ, +6.4^\circ]$ and never leaves the tabulated range.
 
 \section{Author decisions}
 \label{sec:decisions}
@@ -1253,32 +1304,40 @@ the present results support. Each remains the author's to overrule.
     right comparison points; the CFD prediction at those points is already in
     \texttt{flow\_fields.npz}.}
 
-% WP4b item 6 [2026-09-03]: this default is REJECTED. "Exploratory" implies a weak
-% result; what the model has for the hammer is no aerodynamic result at all, and the
-% still-air range is the evidence. See the amendment.
-  \item \textbf{Hammer throw.} \emph{Previous default: retained but reported as
-    \textbf{exploratory}, on the grounds that a hammer spends most of its flight well
-    outside the $-10^\circ$ to $+30^\circ$ band over which the tabulated Potts \&
-    Crowther coefficients exist, so its trajectories rely on edge-clamped values.}
+% WP4b item 6 was REJECTED here on 2026-09-03 and that rejection is itself RETRACTED
+% on 2026-09-04. The "clamp artefact" evidence did not survive execution; see below.
+  \item \textbf{Hammer throw.} \emph{Default: retained but reported as
+    \textbf{exploratory}.}
 
-    \textbf{That default is withdrawn, because ``exploratory'' overstates what is
-    there.} The model's still-air hammer range is 12.1 m. The hammer release speed is
-    $\mathcal{N}(11, 1.5)$ m\,s$^{-1}$, and $v^2/g = 11^2/9.81 = 12.3$ m. \textbf{The
-    modelled hammer is, to within 2\%, an unpowered point mass.} That is what
-    edge-clamping the coefficient table at $+30^\circ$ produces for a throw released at
-    $\alpha_0 = +40^\circ$: no lift, no pitching moment, no aerodynamics --- so 12.1 m is
-    a clamp artefact and not a model result, and it is also why the success rate is
-    structurally zero (\S\ref{sec:results}) whatever the wind does. A number that
-    reproduces $v^2/g$ is not evidence about a disc.
+    \textbf{A stronger claim was entered here on 2026-09-03 and is now withdrawn.} It
+    held that the model's 12.1 m still-air hammer range is a clamp artefact --- that a
+    release at $\alpha_0 = +40^\circ$ against a table edge-clamped at $+30^\circ$ leaves
+    the disc with ``no lift at all'', and that 12.1 m reproduces $v^2/g = 12.3$ m to
+    2\%, making the hammer an unpowered point mass. Direct execution of
+    \texttt{trajectories.hammer()} refutes every link. The angle of attack stays in
+    $[-2.65^\circ, +6.41^\circ]$ for the entire flight and \emph{no} sample leaves the
+    tabulated band, so no edge-clamping occurs; $C_L$ runs 0.0157 to 0.5313 and the peak
+    lift force of 2.25 N exceeds the 1.71 N weight, so lift is produced. The ballistic
+    comparison was also made against the wrong formula: $v^2/g$ ignores both the
+    $40^\circ$ launch elevation and the 2.0 m launch height. Integrating the same initial
+    condition with no aerodynamics gives 14.21 m, so the modelled hammer flies 15\%
+    \emph{short} of ballistic --- the ``agreement to 2\%'' was a coincidence between a
+    model result and a formula that does not describe this launch.
 
-    \textbf{Two admissible options, and ``report it as exploratory'' is not one of
-    them.} \emph{(a)} Drop the hammer from the paper entirely; the backhand and forehand
-    results do not depend on it. \emph{(b)} Keep it only after extending the coefficient
-    table past stall \emph{and} re-parameterising the release --- a real hammer leaves the
-    hand at roughly 18--21 m\,s$^{-1}$, not 11 --- and then re-running. \emph{\% FLAG FOR
-    AUTHOR: (a) costs nothing and is the default we recommend; (b) is a genuine piece of
-    work and would make the hammer the most interesting throw in the study rather than the
-    weakest.}
+    \textbf{What is actually true is milder, and it restores the original default.} The
+    short range is release geometry: \texttt{hammer()} rolls the disc $+80^\circ$, so the
+    lift vector is nearly horizontal and does little work against gravity. Lift is
+    mis-directed, not absent. Sweeping roll $0^\circ \to 90^\circ$ moves the range
+    monotonically 2.1 m $\to$ 12.4 m. Note this also corrects the previous default's
+    \emph{stated ground}: the hammer as parameterised does \emph{not} spend most of its
+    flight outside the $-10^\circ$ to $+30^\circ$ band --- it never leaves it. It is
+    exploratory because the release parameters are unvalidated (a real hammer leaves the
+    hand at roughly 18--21 m\,s$^{-1}$, not 11, and the $+80^\circ$ roll is a guess), not
+    because the coefficients are extrapolated. \emph{\% FLAG FOR AUTHOR: extending the
+    coefficient table past stall is therefore \textbf{not} the fix --- the table is never
+    exceeded. If the hammer is to carry weight, the release parameterisation is what needs
+    measuring. Dropping it remains admissible and costs nothing, since the backhand and
+    forehand results do not depend on it.}
 
   \item \textbf{Authorship and affiliation.}
     \emph{\% FLAG FOR AUTHOR: author name, department, affiliation, co-authors

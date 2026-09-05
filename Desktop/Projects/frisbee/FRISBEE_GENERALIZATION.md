@@ -8,30 +8,77 @@ release-height sweep in `P4_Coupling/height_sweep.json`.
 
 ## 1. The finding that generalizes
 
-> **Shelter is not protection.** Buildings near a playing field remove *mean*
+> ~~**Shelter is not protection.** Buildings near a playing field remove *mean*
 > wind and add *turbulence*. For a thrown object, mean wind is a bias the
 > thrower can aim off; turbulence is variance they cannot. A "sheltered" pitch
 > can therefore be systematically *harder* to throw on than an exposed one,
-> while feeling calmer to a person standing on it.
+> while feeling calmer to a person standing on it.~~
+>
+> ⚠ **Withdrawn 2026-09-04.** The "add *turbulence*" half is not supported by these
+> cases: it rests on two headings whose inlet roughness differs from the control's, and
+> against matched approach flow the buildings *reduce* σ_u everywhere (see the box
+> below). What replaces it is narrower but survives:
+>
+> > **Turbulence intensity is the wrong diagnostic for a thrown object.** Buildings
+> > remove mean wind, which inflates TI whether or not the fluctuation the object
+> > actually responds to has grown. At the one roughness-clean heading here, TI rises
+> > 2.08× while σ_u *falls* to 0.91×. For a thrown object the group that matters is
+> > σ_u/V_d, and a "sheltered" pitch cannot be graded by how calm it feels — or by TI.
+>
+> Whether shelter can be *anti*-protective in the original sense remains open and is
+> worth one matched control run.
 
-Measured at 2 m over the playing surface, against the identical inflow ABL run
-over empty fetch (`--control abl_control.npz`, the no-buildings
-counterfactual):
+> ⚠ **THE σ_u COLUMN IS CONFOUNDED — corrected 2026-09-04.** The control is *not* an
+> "identical inflow" run for two of the three headings. Verified directly from
+> `case_info.json` by `check_control_matching.py`:
+>
+> | case | `z0_inlet` | `z0_ground` | `u*` | `k_inlet_ref` | matched to control? |
+> |---|---|---|---|---|---|
+> | `dir_090_empty` (control) | 0.001 | 0.03 | 0.2226 | 0.1651 | — |
+> | `dir_090` | 0.001 | 0.03 | 0.2226 | 0.1651 | **yes** |
+> | `dir_210` | **0.5** | 0.03 | **0.6733** | **1.5113** | **no** |
+> | `dir_270` | **0.5** | 0.03 | **0.6733** | **1.5113** | **no** |
+>
+> Ground roughness is matched; **inlet** roughness is not. The 210° and 270° cases meet
+> inflow carrying `sqrt(1.5113/0.1651) = 3.03×` the control's fluctuation *before
+> reaching a single building*. Dividing that out:
+>
+> | θ_wind | memo σ_u ratio | approach flow | buildings' own effect |
+> |---|---|---|---|
+> | 90° | 0.91 | 1.00 | **0.91** (clean) |
+> | 210° | 1.51 | 3.03 | **0.50** |
+> | 270° | 1.57 | 3.03 | **0.52** |
+>
+> **Against matched approach flow the buildings *reduce* σ_u in all three directions.**
+> The "raised by half again" claim came entirely from the two unmatched headings, and the
+> one roughness-clean heading (90°) is the one where the ratio was already below 1.
+> **This claim cannot be made from these cases.** Settling it needs one more run: an
+> empty-domain control at `z0_inlet = 0.5`. Raised in
+> `CLAUDE_CODE_FRISBEE_HARDENING.md` §C2 and left standing by the 2026-09-03 pass.
+
+Measured at 2 m over the playing surface, against an empty-fetch ABL control
+(`--control abl_control.npz`) — **roughness-matched at 90° only**, see the box above:
 
 | θ_wind | mean speed vs control | σ_u vs control | TI pitch | TI control |
 |---|---|---|---|---|
 | 90° easterly | **0.44×** | 0.91× | 0.25 | 0.12 |
-| 210° SSW | **0.50×** | **1.51×** | 0.36 | 0.12 |
-| 270° westerly | **0.50×** | **1.57×** | 0.38 | 0.12 |
+| 210° SSW | **0.50×** | ~~1.51×~~ → 0.50 | 0.36 | 0.12 |
+| 270° westerly | **0.50×** | ~~1.57×~~ → 0.52 | 0.38 | 0.12 |
 
-The buildings cut mean wind roughly in half and, in two of three directions,
-raised the absolute velocity fluctuation by half again. Turbulence intensity
-went from 12% to 25–38% — a factor of 2–3.
+The buildings cut mean wind roughly in half, and turbulence intensity went from 12% to
+25–38% — a factor of 2–3. **What survives is the diagnostic claim, not the shelter
+claim.** At 90°, the only roughness-clean pair, σ_u *falls* to 0.91 while TI *rises* by
+2.08×, and the rise is arithmetically the denominator: `σ-ratio / U-ratio = 0.91/0.44 =
+2.07` against a measured TI ratio of `0.25/0.12 = 2.08`. Dividing by a collapsing mean
+manufactures a factor of two where the disturbance the disc responds to has slightly
+decreased.
 
-This is the counterintuitive part and it is the paper's most transferable
-claim. It is also *not* what urban wind engineering optimises for: the COST 732
-/ Lawson / NEN 8100 tradition is built around **pedestrian** comfort and safety,
-which is a mean-and-gust-exceedance criterion for a person standing still.
+So the transferable claim is: **turbulence intensity cannot tell you whether shelter
+helped or hurt a thrown object; the group that can is σ_u/V_d.** Whether shelter ever
+raises σ_u outright is a well-posed question these cases do not answer. This is *not*
+what urban wind engineering optimises for either: the COST 732 / Lawson / NEN 8100
+tradition is built around **pedestrian** comfort and safety, which is a
+mean-and-gust-exceedance criterion for a person standing still.
 
 > ⚠ **NARROWED 2026-09-02 by GATE G5** (`GATE_G5_PRIOR_ART_2026-09-02.md`). This
 > paragraph used to end *"Nobody has written down the equivalent criterion for a
@@ -217,37 +264,81 @@ one more site — the cheapest real generalisation test available.
 > **−0.018 s⁻¹**, i.e. the profile is *inverted* there, which a range written as
 > "0.02–0.06" hides.
 
-**The argument that works, and it needs no control case at all.** Shear reaches the disc
-through the velocity difference **across the disc diameter**, `ΔU = (∂U/∂z)·d` with
-`d = 0.269 m` (`P1_AnalyticalModel/coefficients.py:516`, Potts & Crowther Table 3-1). Put
-that beside the gust velocity the same disc sees, `σ_u`. Both are disc-band quantities
-from `vertical_generated.tex`, so this is a like-for-like ratio:
+> ⚠ **The second retired argument (retired 2026-09-04, one day after it was written).**
+> The replacement below was itself wrong, and a physics referee caught it. It compared
+> `σ_u` against `ΔU = (∂U/∂z)·d` and called the quotient a ratio of *rolling moments*:
+>
+> | θ_wind | `∂U/∂z` (s⁻¹) | `ΔU = (∂U/∂z)·d` (m/s) | `σ_u` (m/s) | `σ_u / ΔU` |
+> |---|---|---|---|---|
+> | 90° | +0.024 | 0.0065 | 0.34 | ~~53×~~ |
+> | 210° | +0.057 | 0.0153 | 0.56 | ~~37×~~ |
+> | 270° | −0.018 | 0.0048 | 0.59 | ~~122×~~ |
+>
+> **A rolling moment comes from a velocity difference across the span.** `ΔU` is such a
+> difference; `σ_u` is not — it is the RMS of the velocity *at a point*. A spatially
+> uniform gust changes the disc's lift and drag and exerts **no roll couple at all**. The
+> table therefore divided a couple by a point velocity and labelled the result a ratio of
+> moments. The two quantities are not the same kind of object.
+>
+> Note the failure mode: this table was written *to fix* an earlier like-for-like problem,
+> and reproduced it one level down. Getting both numbers from the same file and the same
+> height band made them look comparable without making them comparable.
 
-| θ_wind | `∂U/∂z` (s⁻¹) | `ΔU = (∂U/∂z)·d` (m/s) | `σ_u` (m/s) | `σ_u / ΔU` |
-|---|---|---|---|---|
-| 90° | +0.024 | 0.0065 | 0.34 | **53×** |
-| 210° | +0.057 | 0.0153 | 0.56 | **37×** |
-| 270° | −0.018 | 0.0048 | 0.59 | **122×** |
+**The argument that works.** Put both channels on the same footing — the velocity
+difference each imposes **across the disc diameter** `d = 0.269 m`
+(`P1_AnalyticalModel/coefficients.py:516`, Potts & Crowther Table 3-1):
 
-**The gust-induced rolling moment is 37 to 122 times the shear-induced one**, at every
-computed heading. That is the null, and it is now a statement about magnitudes the disc
-actually experiences rather than about two incomparable profile numbers.
+- shear: `ΔU_shear = |∂U/∂z|·d`
+- gust: `ΔU_gust ≈ σ_u·(d / L_int)`
 
-⚠ **Three caveats, because the number is large enough to be over-read.**
+The gust expression is the standard eddy-gradient estimate — an eddy of integral scale
+`L_int` carries a velocity contrast of order `σ_u` across its own width, so across a body
+of size `d ≪ L_int` the contrast it presents scales as `σ_u·d/L_int`. It is a **scaling
+with an unmeasured order-one prefactor**, not an identity, which is what limits the
+precision of the verdict below. All inputs are disc-band quantities from
+`vertical_generated.tex`; regenerate with `python shear_vs_gust_moment.py`.
 
-1. **This holds in the *sheltered* case.** Shelter is what flattens the profile; in open
-   fetch `∂U/∂z` at 2 m is an order of magnitude larger and the two terms become
-   comparable. The null is about this site, not about discs.
-2. **There is a second shear channel and it is not in the table.** The mean wind changes
-   over the trajectory's own height excursion, which is metres rather than the 0.27 m of
-   the disc. That term is comparable to `σ_u` — but it is **deterministic and therefore
-   learnable**, exactly like mean wind, so it is a bias a thrower can aim off rather than a
-   variance they cannot.
+| θ_wind | `∂U/∂z` (s⁻¹) | `L_int` (m) | `ΔU_shear` (m/s) | `σ_u` (m/s) | `ΔU_gust` (m/s) | ratio |
+|---|---|---|---|---|---|---|
+| 90° | +0.024 | 6.2 | 0.006456 | 0.34 | 0.014752 | **2.3×** |
+| 210° | +0.057 | 5.7 | 0.015333 | 0.56 | 0.026428 | **1.7×** |
+| 270° | −0.018 | 6.7 | 0.004842 | 0.59 | 0.023688 | **4.9×** |
+
+**The gust-induced rolling moment exceeds the shear-induced one by 1.7 to 4.9×**, not by
+37 to 122×. The retired table was too large by exactly the factor it omitted,
+`L_int/d ≈ 21–25`.
+
+**What that does to the null.** It survives *in direction* — gust beats shear at every
+computed heading — but it is now a single-figure margin, and at the weakest heading
+(210°, 1.7×) it is **not resolved against the order-one prefactor** in the gust estimate.
+So the honest statement is *"shear is the smaller of the two and not the place to look
+first"*, **not** a hundred-fold null. It is no longer a headline result.
+
+⚠ **Three caveats, and the first is now much sharper than it was.**
+
+1. **This holds in the *sheltered* case, and the margin will not survive leaving it.**
+   Shelter is what flattens the profile; in open fetch `∂U/∂z` at 2 m is an order of
+   magnitude larger. Against the retired 37–122× that merely made the terms "comparable".
+   Against the correct 1.7–4.9×, one order of magnitude in shear puts **shear ahead of
+   gust** in open fetch. The null is about this site, and specifically about its shelter.
+2. **There is a second shear channel and it is not in the table — and it now dominates.**
+   The mean wind changes over the trajectory's own height excursion, which is *metres*
+   rather than the 0.27 m of the disc, so that channel is larger than the tabulated one by
+   roughly the ratio of those lengths. It is **deterministic and therefore learnable**,
+   exactly like mean wind, so it remains a bias a thrower can aim off rather than a
+   variance they cannot — but with the span-wise term cut to 1.7–4.9× it is no longer
+   safe to treat the table above as *the* shear budget. It is the smallest piece of it.
 3. ⚠ The hardening brief states this ratio as "~20×", using `σ_u = 0.36`. That 0.36 is the
-   **turbulence intensity** at 210°, not `σ_u`; the actual `σ_u` there is 0.56 m/s. Use the
-   table above.
+   **turbulence intensity** at 210°, not `σ_u`; the actual `σ_u` there is 0.56 m/s. Note
+   the brief's ~20× is *also* not moment-consistent, so correcting only its `σ_u` would
+   not rescue it. Use the table above.
 
-Reporting this stops the next group chasing shear.
+**What to report.** Not "shear is not the hazard" — that overstates a 1.7× margin at the
+weakest heading. The defensible version is that **at this sheltered site the span-wise
+shear across a disc is the smallest of the three terms** (span-wise gust, trajectory-scale
+mean shear, span-wise shear), and that the ordering is expected to *reverse* in open
+fetch. That is still worth reporting, because it says where not to look first, but it is a
+scoped observation rather than a null result.
 
 ## 5. What would make the current paper materially stronger
 

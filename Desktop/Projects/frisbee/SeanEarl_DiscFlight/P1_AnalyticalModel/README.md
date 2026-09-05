@@ -115,9 +115,21 @@ coefficients with long-flight damping, a hybrid matching no published result.
   Galilean-invariance test confirms the wind coupling itself is exact, so this is a
   physics-model gap, not a numerical bug.)
   - ⚠ **RETRACTED 2026-09-03 (WP4b item 5): this used to say crosswind drift is a
-    "lower bound", and that conflates two different omissions.** Missing yaw stiffness
-    is one-sided — with `CS(α)` the disc would weathercock and shed sideslip faster.
-    But the model also omits the **Robins–Magnus** side force, which goes as
+    "lower bound", and that conflates two different omissions.**
+  - ⚠ **AMENDED 2026-09-04:** the 09-03 retraction itself said "missing yaw stiffness
+    is one-sided — with `CS(α)` the disc would weathercock and shed sideslip faster."
+    **That is withdrawn too.** Yaw stiffness means the yawing moment depends on
+    *sideslip angle*; for a body of revolution the geometry is identical at every
+    azimuth, so no such dependence exists. An α-dependent side force is not a
+    β-dependent yawing moment — the model does not *omit* yaw stiffness, an
+    axisymmetric disc **has none**. And a disc spinning at 90–110 rad/s
+    (`Is = 2.35e-3 kg m²`, `L ≈ 0.21–0.26 kg m²/s`) responds to a moment by
+    **precessing perpendicular to it**, not by rotating into the wind, so it cannot
+    weathercock at any coefficient. Raised in `CLAUDE_CODE_FRISBEE_HARDENING.md` §(a).
+    Net effect: **both** missing terms are unsigned, which makes the conclusion below
+    follow from symmetry rather than from a race between a one-sided and a two-sided
+    term.
+  - The model also omits the **Robins–Magnus** side force, which goes as
     `ω × v` and therefore **reverses with the spin direction**: a backhand and a
     forehand spin opposite ways, so the same crosswind gives a lateral force of
     opposite sign for the two throws. The net effect is handedness- and
@@ -125,8 +137,22 @@ coefficients with long-flight damping, a hybrid matching no published result.
     **Lateral predictions are uncertain in sign, not bounded below.** The same
     retraction is applied at two places in the manuscript.
 - **Angle-of-attack range.** The tabulated curves span −10°…+30°; a realistic
-  flight reaches ~33° in its final second, so ~7% of samples are clamped to the
-  table edge. The linear sets are far worse (44% out of range, α to 47°).
+  flight reaches ~33° in its final second, so samples in the landing phase are
+  clamped to the table edge. The linear sets are far worse (44% out of range, α to 47°).
+  - ⚠ **CORRECTED 2026-09-04.** This used to say "~7% of samples are clamped". That
+    figure does not reproduce on either reading, and the true exposure is larger.
+    Measured by `check_alpha_coverage.py` (seed 20260904, n = 200 draws per throw):
+
+    | throw | nominal | ensemble mean | ensemble α_max | draws never leaving the table |
+    |---|---|---|---|---|
+    | `right_backhand` | **17.6%** | **12.0%** | 30.0° [5.1, 52.6] | 52% |
+    | `right_forehand` | 0.0% | 8.8% | 25.5° [2.1, 51.9] | 65% |
+    | `hammer` | 0.0% | 0.1% | 6.2° [−3.0, 27.1] | **100%** |
+
+    Two things to carry: the backhand's exposure is 12–18%, not 7%; and **the hammer is
+    the *cleanest* throw by this measure, not the worst** — it never leaves the table in
+    200 draws. The manuscript said the opposite until 2026-09-04 (see
+    `wp4b_item6_retract.py`). The `hammer()` roll of +80° is what keeps its α small.
 - No Robins–Magnus side force; Hummel notes its omission may bias other
   coefficients.
 

@@ -753,12 +753,32 @@ for the author.
    therefore **uncertain in sign, not bounded below.** Hummel (2003) reports a 2.7 m
    curvature sign error in the same coefficient set and attributes it to this
    omission."*
-6. **The hammer.** Reject author decision #4. Either drop the hammer entirely, or extend
+6. **The hammer.** ⚠ **THIS ITEM IS WRONG — refuted 2026-09-04 by direct execution.**
+   ~~Reject author decision #4. Either drop the hammer entirely, or extend
    the coefficient table past stall (WP6.1) *and* re-parameterise the release at
    18–21 m/s first. State plainly that the "12.1 m still-air range" was a clamp artefact
    and essentially `v²/g`, not a model result. The H1b "NOT TESTABLE" verdict is right,
    but for the wrong reason — the correct reason is that the model has no valid
-   aerodynamic data for the hammer at all.
+   aerodynamic data for the hammer at all.~~
+
+   Running `trajectories.hammer()` through `disc_6dof.simulate`: α stays in
+   **[−2.65°, +6.41°]** for the entire flight and **0.0000** of samples leave the
+   tabulated band — the hammer is the *cleanest* of the three throws by this measure
+   (100% of 200 Monte Carlo draws never leave the table, vs 52% for the backhand; see
+   `P1_AnalyticalModel/check_alpha_coverage.py`). `C_L` runs 0.0157–0.5313 and peak lift
+   (2.25 N) exceeds weight (1.71 N), so lift is produced.
+
+   The `v²/g` comparison was also against the wrong formula: it ignores both the 40°
+   launch elevation and the 2.0 m launch height. Integrating the same initial condition
+   with **no aerodynamics** gives **14.21 m**, so the modelled hammer flies 15% *short*
+   of ballistic, not equal to it. The short range is release geometry — `hammer()` rolls
+   the disc +80°, so lift is nearly horizontal; sweeping roll 0°→90° moves the range
+   monotonically 2.1→12.4 m, and only the 0° end drives α out of the table.
+
+   **Extending the coefficient table is therefore not the fix**; the table is never
+   exceeded. The real limitation is the unvalidated release parameterisation (speed, and
+   a +80° roll that is a guess). Author decision #4 ("retain but report as exploratory")
+   is **restored**, with its stated ground corrected. See `wp4b_item6_retract.py`.
 7. **The gyroscopic-immunity hypothesis** (`FRISBEE_GENERALIZATION.md` item 3). Rewrite
    as the null result with the derivation in C4(b): no threshold, `ω*` inside the human
    range, total scatter increases with spin, cross-range scatter falls as ≈ ω^−0.21.
