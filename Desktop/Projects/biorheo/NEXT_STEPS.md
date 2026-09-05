@@ -10,7 +10,7 @@ reconstruct state from chat history. State lives in the Obsidian card
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
 python -m pytest -q -m "not slow"      # must print: 137 passed, 1 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be 39b0988 or later
+git -C C:\Users\compl log --oneline -3  # top should be 5bc322d or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -35,28 +35,32 @@ the CRLF warnings are noise.
 
 ## Open work, in order
 
-### 1. Settle the Horner steady-shear protocol (small, high value)
-`data/horner2020/step_response.md` shows the steady sheet's 1 1/s stress is the 4–6 s
-peak of the 300→1 1/s step on 15/20 donors. What protocol produced the steady curve is
-UNVERIFIED. Horner, Armstrong, Wagner, Beris, J. Rheol. 63, 799 (2019),
-doi 10.1122/1.5108737, is titled "steady and transient shear"; its methods section
-should say. Quote it verbatim into `SOURCE.md` and replace the UNVERIFIED tags. If it
-is not accessible, say so in `SOURCE.md` with the date tried. Do not guess.
+### 1. DONE 2026-09-05: the Horner protocol is settled from the thesis
+Open-access PDF on udspace (URL + md5 in `data/horner2020/SOURCE.md`, verbatim quotes
+there). At or below 2 1/s the steady value is the MAXIMUM of a 40-50 s transient; above
+2 1/s the mean of the last 15 samples; 300 1/s preshear for 30 s. The decay after the
+peak in the step sheet is attributed by the authors to syneresis (wall depletion), so
+the earlier "structural family refuted on shape" claim was withdrawn. The text extract
+`data/horner2020/thesis_text.txt` (gitignored, regenerate with pypdf from the PDF) is
+greppable; sections 2.2, 3.3.1, 6.2.1 and 6.4 are the ones that matter.
 
-### 2. A thixotropic model that can overshoot (medium)
-The structural family (`src/biorheo/constitutive/structural.py`) is monotone at constant
-rate and every donor overshoots after the step-down. Candidates, each to be derived in
-`derivations/` with SymPy checks before any code, in the pattern of
-`derivations/structural_kinetics.py`:
-- two-structure kinetics (fast breakdown, slow rouleau growth with its own rate),
-- a viscoelastic stress with a structure-dependent modulus (e.g. a Maxwell element
-  whose G and lambda depend on lam).
-Acceptance gate, pre-registered here: fitted to the steady curve AND the step transient
-jointly, it must put the stress maximum at 3–8 s and the 50 s decay at 6–31 % of the
-maximum on at least 18/20 donors, with every parameter `measurable` or `bounded_only`
-under `fit_rate_curve`-style profiling. If it cannot, that is the result: record it.
-Data: `data/horner2020/step_300_to_1_human.csv` (1 s samples, 40–50 s, 20 donors) and
-`steady_shear_human.csv`.
+### 2. Fit the structural family to the step RISE plus the steady curve (medium)
+The step sheet's bulk signal, on the authors' reading, is the rise from the first
+sample to the maximum (1-6 s at 1 1/s; donor D 16 s). `constitutive.structural`
+(first-order kinetics, monotone build-up) is the right shape for that part and must
+not be fitted to the decay. Pre-registered gate: per donor, fit steady curve (16
+points, log-eta residuals) and rise samples (t <= t_max) jointly; the fitted
+build-up time at 1 1/s must put the model's 95 % approach to steady state at 3-8 s on
+at least 16/20 donors, with alpha and t_r each `measurable` or `bounded_only` (the
+identify gate in `tests/test_structural.py` says they are degenerate from the steady
+curve alone; the transient is what should break the degeneracy -- if it does not, that
+is the result, record it). Before any of this, derive the constant-rate solution's
+95 % time in `derivations/structural_kinetics.py` (it is a one-liner from fact 3) and
+spot-check it numerically.
+An independent test of the syneresis attribution is worth more than the fit: the decay
+amplitude (1 - last/max, tabulated in `step_response.md`) against hematocrit and
+fibrinogen from `extra` across the 20 donors. Pre-register the sign each mechanism
+predicts before computing rho; n = 20 so quote the CI, not just the sign.
 
 ### 3. L3 solver bridge (plan unit 0.3-ish, not started)
 Export a registry record to an OpenFOAM `viscosityModel` block (HB and Casson first)
@@ -84,7 +88,8 @@ Wald-corr-at-bound caveat undocumented. None affects a shipped number.
 
 ## What NOT to do
 
-- Do not fit the LAOS sheets before item 2 has a model that survives the step test.
+- Do not fit any model to the post-peak decay of the step sheet (syneresis, per the thesis).
+- Do not fit the LAOS sheets before item 2 has a model that reproduces the step rise.
 - Do not add a record from a paper's table without its raw curve; the Horner case shows
   a published yield stress can be 71 % away from the same data under another objective.
 - Do not put `si_fit` or any `impact_stress/materials.py` constant into the registry.

@@ -1,2 +1,5 @@
 # author-posted source workbooks, 16 MB; SOURCE.md records URL + md5 for re-download
 *.xlsx
+# the thesis PDF (8.5 MB, copyright the author) and its text extract; SOURCE.md has URL + md5
+*.pdf
+thesis_text.txt

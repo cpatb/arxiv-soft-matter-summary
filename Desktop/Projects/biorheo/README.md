@@ -69,8 +69,17 @@ anything is built on it, and it is a convention: an unweighted line in sqrt spac
 whose yield stress is 0.4-71 % (median 33 %) above biorheo's log-viscosity fit of the
 same 16 points, because Casson misfits every donor but one (3 runs of residual sign
 against 9 expected, under either objective). Cross and Carreau-Yasuda fit the same curves 5x better; the table
-is `data/horner2020/model_comparison.md`. The workbook's step-shear and LAOS sheets are
-unused transient data for the structural family.
+is `data/horner2020/model_comparison.md`. The workbook's 300 -> 1 1/s step sheet
+(`data/horner2020/step_response.md`) shows the steady sheet's 1 1/s stress is
+bit-identical to the 4-6 s peak of that transient on 14/20 donors (a later sample on
+one more, within 1e-4 on four); the thesis confirms
+this is the protocol (at or below 2 1/s the steady value is "the maximum of the
+transient data", quoted in `SOURCE.md`), so the six lowest points of every blood record
+are peak-hold values, 7-46 % above the 40-50 s stress at 1 1/s. Refitting with that one
+point replaced moves tau_y only -1 to -7 %. Every donor's stress decays after the peak;
+the thesis attributes the decay to syneresis (wall depletion), so it is not a bulk
+signal for a thixotropic model to fit. `constitutive.structural` describes the rise and
+not the decay, and has not been fitted to blood yet. The LAOS sheets are unused.
 
 ## Conventions
 

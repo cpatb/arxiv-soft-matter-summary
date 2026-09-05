@@ -1,6 +1,8 @@
 """Data-level facts from the Horner 2020 step-down sheet, pinned so that a re-extraction
 or a re-reading of the steady sheet cannot silently change them. Numbers from
-scripts/step_shear_horner.py, 2026-09-05."""
+scripts/step_shear_horner.py, 2026-09-05. The overshoot is a data fact; the thesis
+attributes the decay after the peak to syneresis (SOURCE.md), so the test below pins the
+shape and makes no claim about which model it refutes."""
 
 from __future__ import annotations
 

@@ -27,13 +27,16 @@ Three facts, each derived in ``derivations/structural_kinetics.md`` and each a t
 3. At constant rate ``lam(t) = lam_ss + (lam0 - lam_ss) exp(-t/tau)`` with
    ``1/tau = 1/t_r + alpha gd``; the rest relaxation time is ``t_r``.
 
-Refuted on shape for human blood (2026-09-05, ``data/horner2020/step_response.md``): after
-a 300 -> 1 1/s step the measured stress rises to a maximum at 4-6 s and then decays by
-6-31 % on all 20 Horner 2020 donors, while fact 3 makes ``lam(t)`` and hence the stress
-monotone at constant rate for any parameter values. This family stays in the package as
-the simplest thixotropic reference and for the identifiability gate above; a blood model
-needs a second process (delayed rouleau growth or a viscoelastic term) and none is
-shipped yet.
+Against human blood (2026-09-05, ``data/horner2020/step_response.md``): after a
+300 -> 1 1/s step the measured stress rises to a maximum at 4-6 s and then decays by
+6-31 % on all 20 Horner 2020 donors. Fact 3 makes ``lam(t)`` and hence the stress
+monotone at constant rate for any parameter values, so this family can describe the rise
+and not the decay. The thesis attributes the decay to syneresis (a wall depletion layer,
+``data/horner2020/SOURCE.md``), not to bulk rheology; on that reading the family is not
+refuted by the sheet, and no model should be fitted to the decay. A first reading of the
+sheet (commit 39b0988) called the family "refuted on shape"; withdrawn once the thesis
+was read. The rise time (peak at 4-6 s, i.e. strain 4-6) is the build-up timescale a
+blood fit of this family must reproduce; that fit is not done yet.
 
 The source also added a Casson-like yield offset ``sigma_y`` to the steady stress. It is
 left out here: it is a fourth steady parameter with its own identifiability question, and

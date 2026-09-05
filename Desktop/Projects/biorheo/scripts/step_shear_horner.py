@@ -8,19 +8,26 @@ model-free facts are measured and one model prediction is checked against them:
 
 1. The transient is NON-monotone on every donor: stress rises from its 1 s value to a
    maximum at 4-6 s (16 s on donor D) and then falls by 6-31 % of that maximum over the
-   rest of the record. A scalar structure parameter with first-order kinetics
+   rest of the record. The thesis (SOURCE.md, section 6.4) reads the rise as structure
+   build-up and the decay as SYNERESIS, a wall depletion layer; on that reading only the
+   rise is bulk rheology. A scalar structure parameter with first-order kinetics
    (``biorheo.constitutive.structural``, derivation fact 3) gives a monotone lam(t) at
-   constant rate and therefore a monotone stress, so it cannot describe this transient
-   on any donor. That is a shape refutation, independent of parameter values.
+   constant rate, so it can describe the rise and cannot describe the decay; whether
+   that is a defect of the model or of the measurement rests on the authors' syneresis
+   attribution, which this script does not test. (The first version of this script,
+   commit 39b0988, called the family "refuted on shape"; withdrawn 2026-09-05 once the
+   thesis was read.)
 2. The steady-shear sheet's stress at 1 1/s is BIT-IDENTICAL to a sample of this
-   transient on 16 of 20 donors (15 at the peak, donor C at t = 14 s), and within 4e-5
-   on three more; so the "steady" 1 1/s point is a 4-6 s peak, not a long-time state,
-   and sits 7-46 % above the 40-50 s value. Whether the other 15 rates were taken the
-   same way cannot be seen from this workbook (only the 1 1/s step exists) and the
-   measurement protocol is not stated in it: UNVERIFIED, see SOURCE.md.
+   transient on 15 of 20 donors (14 at the peak, donor C at t = 14 s), and within 4e-5
+   on four more (donor D: none). That is the thesis's stated protocol (section 3.3.1: at or below
+   2 1/s the steady value is "the maximum of the transient data"), so the six lowest
+   rates of every record are peak-hold values, 7-46 % above the 40-50 s stress at 1 1/s.
+   Donors C (14 s sample, not the 6 s maximum) and D (value not in the sheet) depart
+   from the stated rule.
 3. Replacing that one point by the transient's last sample and refitting Casson on
    log-viscosity residuals moves tau_y by the amount tabulated (a lower bound on the
-   protocol sensitivity, since the other low-rate points are untouched).
+   protocol sensitivity: the five other peak-hold points have no step sheet to replace
+   them from).
 
 Run:  python scripts/step_shear_horner.py
 """
@@ -67,7 +74,7 @@ def main() -> None:
              "by the transient's last sample.", "",
              "| donor | n | first (1 s) | max | t_max s | last | last/max | steady(1) | match | tau_y mPa | tau_y' mPa | shift |",
              "|---|---|---|---|---|---|---|---|---|---|---|---|"]
-    n_exact = n_near = n_overshoot = 0
+    n_exact = n_near = n_overshoot = n_exact_at_max = 0
     shifts = []
     for d in sorted(step):
         v = step[d]
@@ -75,13 +82,14 @@ def main() -> None:
         vv, tt = v[ok], t[ok]
         s1 = steady[d][RATE_INDEX_1]
         k = int(np.argmin(np.abs(vv - s1)))
+        imax = int(np.argmax(vv))
         if np.isclose(vv[k], s1, rtol=EXACT_RTOL, atol=0):
             match, n_exact = f"exact @ {tt[k]:.0f} s", n_exact + 1
+            n_exact_at_max += k == imax
         elif np.isclose(vv[k], s1, rtol=NEAR_RTOL, atol=0):
             match, n_near = f"near @ {tt[k]:.0f} s", n_near + 1
         else:
             match = f"none ({vv[k] / s1 - 1:+.1%} @ {tt[k]:.0f} s)"
-        imax = int(np.argmax(vv))
         overshoot = vv[imax] > vv[-1] and imax > 0
         n_overshoot += overshoot
         eta = steady[d] / rates
@@ -97,20 +105,22 @@ def main() -> None:
     shifts = np.array(shifts)
     lines += ["", "## Counts", "",
               f"- Overshoot (maximum after the first sample and above the last): {n_overshoot}/20 donors.",
-              f"- Steady-sheet 1 1/s value found in the transient: {n_exact} exact, {n_near} within 1e-4, "
+              f"- Steady-sheet 1 1/s value found in the transient: {n_exact} exact ({n_exact_at_max} of them "
+              f"at the transient's maximum, as the thesis protocol states), {n_near} within 1e-4, "
               f"{20 - n_exact - n_near} not found.",
               f"- Casson tau_y shift from replacing the one point: min {shifts.min():+.0%}, median "
               f"{np.median(shifts):+.0%}, max {shifts.max():+.0%} (lower bound on the protocol sensitivity: "
               f"the other low-rate points are left as they are).", "",
               "## Reading", "",
               "The structural family's lam(t) at constant rate is a single exponential toward lam_ss "
-              "(derivations/structural_kinetics.md, fact 3), so its stress after a step is monotone. "
-              "Every human donor overshoots. The family is therefore refuted on shape by this dataset "
-              "before any parameter is fitted; a thixotropic model for blood needs at least a second "
-              "process (rouleau growth with a delay, or a viscoelastic contribution). The steady-sheet "
-              "value at 1 1/s being a sample of this transient means the record's lowest-rate data are "
-              "peak values from a rate step; the protocol itself is not stated in the workbook (see "
-              "SOURCE.md) and is UNVERIFIED.", ""]
+              "(derivations/structural_kinetics.md, fact 3), so its stress after a step is monotone: it "
+              "can describe the rise to the maximum and not the decay after it. The thesis attributes "
+              "that decay to syneresis (a wall depletion layer, SOURCE.md section 6.4), i.e. to the "
+              "measurement rather than to bulk rheology; on that reading the family is not refuted by "
+              "this sheet, and a model fitted to the decay would be fitting an artefact. The steady "
+              "sheet's low-rate points being peak-hold maxima is the thesis's stated protocol (section "
+              "3.3.1), chosen for the same reason. An earlier version of this file (commit 39b0988) "
+              "called the family refuted on shape; that was written before the thesis was read.", ""]
     (DATA / "step_response.md").write_text("\n".join(lines), encoding="utf-8", newline="\n")
     print("\n".join(lines[-12:-5]))
 
