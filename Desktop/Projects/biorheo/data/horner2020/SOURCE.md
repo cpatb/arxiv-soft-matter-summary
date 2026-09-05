@@ -26,10 +26,26 @@ workbook's ReadMe asks that this be cited by any publication using the data.
 - Sheets: Steady Shear; Step from 300 s-1 to 1 s-1; Amplitude Sweep (2 Hz); Frequency
   Sweep (strain amplitude 10); UD-LAOS and LAOS at (strain amplitude, rad/s) pairs.
 
-The steady-shear sheet is the only one used so far. The step-shear and LAOS sheets are
-transient data on the same donors and are the natural anchor for the structural
-(thixotropic) family in `biorheo.constitutive.structural`: nothing in the registry
-is fitted to a transient yet.
+The steady-shear sheet builds the records. The step-shear sheet (300 -> 1 1/s, 1 s
+sampling, 40-50 s) is extracted to `step_300_to_1_human.csv`
+(md5 `956171e5c1a772fdcbed512b693e5ccc`) and read by `scripts/step_shear_horner.py`;
+the LAOS sheets are untouched. The measurement protocol (time per steady point,
+peak-hold or average, preconditioning) is NOT in the workbook's ReadMe. The papers the
+data belongs to, resolved via Crossref on 2026-09-05 and not yet read (paywalled):
+Horner, Armstrong, Wagner, Beris, J. Rheol. 62 (2018) doi 10.1122/1.5017623 and
+J. Rheol. 63, 799 (2019) doi 10.1122/1.5108737 ("steady and transient shear"). Reading
+the 2019 methods section is the next step for the protocol question below.
+
+## The steady 1 1/s point is a transient peak (step_response.md)
+
+On 15 of 20 donors the steady sheet's 1 1/s stress is bit-identical to the maximum of
+the step-down transient at 4-6 s (donor C: identical to the 14 s sample; 4 more within
+1e-4; donor D 3 % off). So the lowest-rate end of the "steady" curve is a peak-hold
+value, 7-46 % above the stress 40-50 s later. Refitting Casson with that one point
+replaced moves tau_y by only -1 to -7 %, so the records survive it; what does not
+survive is the structural family: every donor's stress after the step OVERSHOOTS
+(rise to 4-6 s, then decay), and a scalar structure with first-order kinetics is
+monotone at constant rate.
 
 ## Steady shear, human: 20 donors, 16 rates in [0.1, 700] 1/s
 
