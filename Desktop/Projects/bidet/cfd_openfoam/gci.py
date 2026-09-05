@@ -89,24 +89,41 @@ FAMILIES = {
     # is how much of the "grid effect" was really iteration count.
     "coarse_conv": [("case_Re10000_H6_r2_ext", 2.0), ("case_Re10000_H6", 1.0),
                     ("case_Re10000_H6_r0", 0.5)],
-    # THE ONE TO QUOTE. All three grids converged on residualControl -- refine 4 at
-    # iteration 11552, refine 2 at 5105 (via extend_r2.sh), refine 1 at 2261 -- and all
-    # three sit at y+ < 1 (0.211 / 0.406 / 0.781). That is the property `coarse*` lacks:
-    # it straddles y+ ~ 1 at 1.52, and omegaWallFunction blends the viscous and log layers
-    # across exactly that boundary, so those three grids are not in one wall-treatment
-    # regime while the quantity being converged IS the wall shear stress.
+    # The best-resolved family available: refine 4 / 2 / 1, all three meeting
+    # residualControl (iterations 11552 / 5105 / 2261).
     #
-    # ⚠ Watch the refine = 4 run rather than judging it early. Its Uy residual sat flat at
-    # ~4.0e-5 from iteration 6400 to 8000 and looked like a stall; it was not, and it fell
-    # through 1e-5 by 11552. "It has plateaued" needed 3500 more iterations of evidence
-    # than the four samples that suggested it.
+    # ⚠⚠ ITS p = 2.198 ON C_P IS NOT AN ESTABLISHED OBSERVED ORDER. Three things, all
+    # found by a physics-referee pass on 2026-09-03 and all verified:
+    #   (1) An earlier comment here explained the coarse family's failure by y+ straddling
+    #       1. THAT IS REFUTED. `yplus_profile.py` resolves y+ radially: the 1.52 median is
+    #       entirely a near-stagnation effect (r/d 2-5), and at r/d 14-20 -- where
+    #       tau_w(15mm) lives and where the non-monotonicity is -- y+ is 0.04 to 0.30 on
+    #       EVERY grid including the coarsest. So the difference between `coarse_conv` and
+    #       this family is a change of TRIPLET, not the repair of a mechanism.
+    #   (2) p = 2.198 exceeds the formal order of the discretisation: fvSchemes has
+    #       div(phi,k) and div(phi,omega) as `bounded Gauss upwind`, FIRST order, and nut
+    #       (hence the wall shear) depends on both.
+    #   (3) p on C_P is 1.703 / 0.315 / 2.198 across `coarse` / `coarse_conv` / this --
+    #       a factor of seven from the same handful of grids. A 3-point Richardson fit has
+    #       zero residual degrees of freedom and cannot self-diagnose; cross-triplet
+    #       comparison is the only check available and it does not support 2.198.
+    #
+    # ⚠ Separately: watch the refine = 4 run rather than judging it early. Its Uy residual
+    # sat flat at ~4.0e-5 from iteration 6400 to 8000 and looked like a stall; it fell
+    # through 1e-5 by 11552.
     "fine_conv": [("case_Re10000_H6_r4", 4.0), ("case_Re10000_H6_r2_ext", 2.0),
                   ("case_Re10000_H6", 1.0)],
-    # An INDEPENDENT check on the same hypothesis at a fifth of the cost: ratio
-    # sqrt(2) = 1.414 throughout (above Celik et al.'s recommended 1.3), meshes
-    # 122880 / 61009 / 30720, and again all three at y+ < 1 (0.406 / 0.566 / 0.781).
-    # If `fine_conv` and `midfine` disagree about the observed order, neither is in the
-    # asymptotic range and no GCI from this mesh family means anything.
+    # THE INDEPENDENT ORDER CHECK, and it CANNOT CURRENTLY RUN. Ratio sqrt(2) throughout
+    # (above Celik et al.'s recommended 1.3), meshes 122880 / 61009 / 30720 -- a triplet
+    # disjoint from `fine_conv` except at the ends, which is exactly what is needed to
+    # decide whether p = 2.198 means anything.
+    #
+    # 🔴 case_Re10000_H6_r1_ext ran 20000 iterations and did NOT converge: every field
+    # reaches ~1e-9 EXCEPT Uz at 1.8e-2. Uz is the out-of-plane component on a
+    # one-cell-thick wedge and should be ~0 (it is 1.6e-6 to 4.9e-6 on the three grids
+    # that did converge), so this is a defect of that case, not slowness. Suspect the odd
+    # cell counts at refine = 1.414 (nx = 169) against the collapsed wedge axis.
+    # Fixing it is the cheapest open question in the study.
     "midfine": [("case_Re10000_H6_r2_ext", 2.0), ("case_Re10000_H6_r1_ext", 1.414),
                 ("case_Re10000_H6", 1.0)],
 }
@@ -119,6 +136,14 @@ QOI = [
     ("tau_peak_Pa", "peak tau_w [Pa]"),
 ]
 
+# [UNVERIFIED PROVENANCE, flagged 2026-09-03]. This window is NOT part of Celik et al.'s
+# published procedure; it is carried over from this lab's own convergence-study practice on
+# the frisbee and drop-impact ladders. It affects only the OK/outside label printed beside a
+# GCI, never the GCI value. Resolve it to a source or restate it as a house rule.
+#
+# ⚠ And a p inside it is not thereby credible: this case's fvSchemes uses `bounded Gauss
+# upwind` (first order) for k and omega, on which nut and hence the wall shear depend, so an
+# observed order above ~1 is above the formal order of a link in its own causal chain.
 ASYMPTOTIC_BAND = (0.5, 2.5)
 RESIDUAL_TARGET = 1e-5          # the residualControl set in system/fvSolution
 

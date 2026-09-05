@@ -22,6 +22,31 @@ A closure parameter that moves 21 % is only a problem if a lever the paper quote
 with it. The model's optimum has closed form (`bidet_model.optimum`), so the sensitivity
 is exact rather than estimated, and it can be read off in one run.
 
+#############################################################################
+# READ THIS BEFORE QUOTING ANY Q* FROM THIS SCRIPT (added 2026-09-03 after a
+# physics-referee pass, and it is the reason the write-up quotes a DIRECTION
+# and not the number).
+#
+# `optimum()` solves for the nozzle diameter d*, then evaluates the closure at
+# the FIXED cleaning radius r_max = 15 mm. Because d* shrinks as C_P grows,
+# every row of the table below sits at
+#
+#       r_max / d*  =  22.95, 23.45, 25.67, 26.27
+#
+# against a closure FITTED over r/d in [2, 20] (fit_closure.py's fit_lo/fit_hi)
+# and a CFD domain that ends at Rdom = 25 mm, i.e. r/d = 25 at the simulated
+# d = 1 mm. So every design point extrapolates past the fit band, and the two
+# finest extrapolate past the edge of the computation itself.
+#
+# The extrapolation is also NOT uniform across the comparison: larger C_P gives
+# smaller d* gives worse extrapolation, so the "corrected" rows stand on the
+# thinnest ice. The 23.6 % is therefore a sensitivity, not a corrected value.
+#
+# Note run_bidet.py's own [Result 1] does NOT have this problem -- it holds
+# d = 1 mm so r/d = 15, in band. The discipline exists; optimum() escapes it.
+# Fixing it properly means extending Rdom to ~50 mm and refitting.
+#############################################################################
+
 WHAT IS SWEPT, and what deliberately is not
 -------------------------------------------
 Only `C_P`, across the four values above. `n_t` is held at the base-grid 1.9023 in every
@@ -56,6 +81,12 @@ NT_BAND = (1.8922, 1.9338)      # the non-monotone spread, for the note at the e
 
 R_MAX, TAU_C, DP = 0.015, 5.0, 0.07e6
 
+# The closure's own validity window, so the out-of-band check below is not a magic number.
+# FIT_LO / FIT_HI are fit_closure.py's defaults (its argv[2], argv[3]); RDOM_MM is
+# gen_case.py's RDOM_DEFAULT, i.e. r/d = 25 at the simulated d = 1 mm.
+FIT_LO, FIT_HI = 2.0, 20.0
+RDOM_MM = 25.0
+
 
 def main() -> int:
     print("=" * 78)
@@ -68,16 +99,27 @@ def main() -> int:
           % (1e3 * R_MAX, TAU_C, DP / 1e6))
 
     base = None
-    print("%-46s %8s %9s %9s %9s" % ("C_P from", "C_P", "d* [mm]", "Q* [L/min]", "vs base"))
+    print("%-46s %8s %9s %9s %9s %11s" % ("C_P from", "C_P", "d* [mm]", "Q* [L/min]",
+                                          "vs base", "r_max/d*"))
     rows = []
     for label, cp in CP_CASES:
         o = optimum(cfd_closure(cp, NT_FIXED), DP, R_MAX, TAU_C)
         q_lmin = o["Q_Lmin"]
         if base is None:
             base = q_lmin
-        rows.append((label, cp, o["d_star"] * 1e3, q_lmin, q_lmin / base))
-        print("%-46s %8.4f %9.4f %9.4f %8.3fx"
-              % (label, cp, o["d_star"] * 1e3, q_lmin, q_lmin / base))
+        rd = R_MAX / o["d_star"]
+        rows.append((label, cp, o["d_star"] * 1e3, q_lmin, q_lmin / base, rd))
+        print("%-46s %8.4f %9.4f %9.4f %8.3fx %8.2f %s"
+              % (label, cp, o["d_star"] * 1e3, q_lmin, q_lmin / base, rd,
+                 "OK" if FIT_LO <= rd <= FIT_HI else "** OUT OF BAND **"))
+    if any(not (FIT_LO <= r[5] <= FIT_HI) for r in rows):
+        print()
+        print("*** EVERY DESIGN POINT IS OUTSIDE THE CLOSURE'S FIT BAND [%.0f, %.0f]."
+              % (FIT_LO, FIT_HI))
+        print("    The domain also ends at r/d = %.0f (Rdom = %.0f mm at d = 1 mm), so the"
+              % (RDOM_MM / 1.0, RDOM_MM))
+        print("    finest rows evaluate past the edge of the CFD that produced the fit.")
+        print("    Quote the DIRECTION of the change below, not the value.")
 
     dq = rows[-1][3] / rows[0][3]
     print()

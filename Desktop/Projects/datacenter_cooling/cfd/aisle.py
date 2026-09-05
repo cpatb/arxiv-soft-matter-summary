@@ -292,12 +292,29 @@ class AisleCell:
         w = min(self.inlet[1] - self.inlet[0], self.outlet[1] - self.outlet[0])
         return abs(self.flux) / w
 
-    def solve(self, max_iter=120000, tol=2e-5, safety=0.35):
+    def stable_dt(self, safety=0.35):
+        """The explicit stability limit, as ONE definition callers can share.
+
+        Extracted from `solve` on 2026-09-03 because `run_ra_ladder.py` had copied the
+        formula inline and, in copying, dropped the `forced_velocity()` term below -- the
+        term that was added specifically because omitting it made the forced runs diverge.
+        The copy was inert only because that ladder runs at `flux = 0`. A duplicated
+        stability limit is a stability limit that can drift; there is now one.
+
+        Two limits, and the binding one wins:
+          * diffusive, `h^2 / (4 max(Pr, 1))` -- the tighter of the temperature (D = 1)
+            and vorticity (D = Pr) explicit-diffusion limits, for either sign of Pr - 1;
+          * advective, `h / u_scale`, with the buoyant free-fall velocity `sqrt(Ra Pr)`
+            in this nondimensionalisation PLUS any imposed through-flow. The `+ 1`
+            floors it so `dt` stays finite as `Ra -> 0`; it can only weaken the bound,
+            never tighten it.
+        """
         h = min(self.dx, self.dy)
-        # The advective limit has to see the forced velocity as well as the buoyant one;
-        # omitting it made the forced runs diverge, not merely lose accuracy.
         u_scale = np.sqrt(self.Ra * self.Pr) + self.forced_velocity() + 1.0
-        dt = safety * min(h**2 / (4 * max(self.Pr, 1.0)), h / u_scale)
+        return safety * min(h**2 / (4 * max(self.Pr, 1.0)), h / u_scale)
+
+    def solve(self, max_iter=120000, tol=2e-5, safety=0.35):
+        dt = self.stable_dt(safety=safety)
         prev = self.C.copy()
         for it in range(max_iter):
             self.step(dt)

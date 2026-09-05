@@ -1,0 +1,58 @@
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     simpleFoam;
+startFrom       latestTime;
+startTime       0;
+stopAt          endTime;
+endTime         20000;
+deltaT          1;
+writeControl    timeStep;
+writeInterval   3000;
+purgeWrite      1;
+writeFormat     ascii;
+writePrecision  8;
+writeCompression off;
+timeFormat      general;
+runTimeModifiable true;
+
+functions
+{
+    wallShearStress
+    {
+        type            wallShearStress;
+        libs            (fieldFunctionObjects);
+        patches         (plate);
+        writeControl    onEnd;
+    }
+    yPlus
+    {
+        type            yPlus;
+        libs            (fieldFunctionObjects);
+        writeControl    onEnd;
+    }
+    sampleWSS
+    {
+        type            surfaces;
+        libs            (sampling);
+        writeControl    onEnd;
+        surfaceFormat   raw;
+        fields          (wallShearStress yPlus);
+        interpolate     false;
+        surfaces
+        {
+            plateSurf
+            {
+                type    patch;
+                patches (plate);
+            }
+        }
+    }
+}
+// ************************************************************************* //

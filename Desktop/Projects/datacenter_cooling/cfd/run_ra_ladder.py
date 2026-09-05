@@ -105,9 +105,14 @@ def main() -> None:
                 continue
 
             a = AisleCell(N=n_use, H_room=1.0, eta=eta, Ra=ra)
-            h = min(a.dx, a.dy)
-            dt = 0.35 * min(h * h / (4 * max(a.Pr, 1.0)),
-                            h / (np.sqrt(a.Ra * a.Pr) + 1.0))
+            # dt comes from the cell itself, not from a copy of its formula. The first
+            # version of this script inlined `0.35 * min(h^2/(4 Pr), h/(sqrt(Ra Pr)+1))`
+            # and thereby DROPPED the `+ forced_velocity()` term that AisleCell added on
+            # 2026-08-31 precisely because omitting it made the forced runs diverge. It was
+            # inert here only because every cell in this ladder runs at flux = 0, where the
+            # term is zero -- i.e. it was one `flux` sweep away from reproducing the exact
+            # bug the 08-31 fix existed to prevent. A units audit flagged it 2026-09-03.
+            dt = a.stable_dt()
             t0 = time.time()
             prev, phi, converged, n = 0.0, 0.0, False, 0
             while True:

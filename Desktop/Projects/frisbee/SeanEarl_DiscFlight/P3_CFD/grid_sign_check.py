@@ -32,7 +32,8 @@ import numpy as np
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "P5_Synthesis"))
-from conventions import horizontal_speed, pitch_mask          # noqa: E402
+from conventions import (disc_altitude_index, horizontal_speed,   # noqa: E402
+                         pitch_mask)
 FINE = HERE / "flow_fields.npz"
 COARSE = HERE / "flow_fields_coarse090.npz"
 Z_TARGET = 2.0
@@ -41,7 +42,20 @@ Z_TARGET = 2.0
 def field_mean_speed(npz, key_u: str, z_target: float):
     """Horizontal speed at the z-plane nearest `z_target`, meaned over the pitch mask."""
     z = npz["z"]
-    zk = int(np.argmin(np.abs(z - z_target)))
+    # Use the CANONICAL altitude picker, not a bare argmin. `disc_altitude_index` carries a
+    # grid-derived tolerance (half the smallest z-spacing) and RAISES if the nearest sampled
+    # level is not actually within it -- which a bare argmin cannot do, because argmin always
+    # returns something. A units audit on 2026-09-03 flagged the bare argmin here as the same
+    # shape of defect this file's own comment already records fixing for `pitch_mask`: a
+    # convenience copy of a convention is a convention that can drift. Both stored fields
+    # happen to sample z = 2.0 exactly, so nothing was wrong -- but only by luck, and a
+    # regenerated field with different spacing would have been accepted silently.
+    zk, z_off, within = disc_altitude_index(z, target=z_target)
+    if not within:
+        raise ValueError(
+            "nearest sampled altitude is %.4f m, i.e. %.4f m off the %.2f m target, which "
+            "is outside the grid-derived tolerance. Refusing to report a '2 m' speed from "
+            "a level that is not 2 m." % (float(z[zk]), z_off, z_target))
     # `horizontal_speed` too, for the same reason as `pitch_mask` -- it is what
     # make_results_tex.py forms the Q table's |U_2m| column with.
     mag = horizontal_speed(npz[key_u][:, :, zk, :])

@@ -1,123 +1,186 @@
-# The three-grid study, finished — and the paper's `C_P` is 21 % low
+# The grid study, and a referee pass that took most of it back
 
-**2026-09-03.** Closes the item the 2026-09-02 venue addendum opened: ASME JFE's
-numerical-accuracy policy requires a discretisation-error estimate, and the paper had two
-grids and a percentage difference. It now has four grids, all converged, and an answer.
+**2026-09-03.** Written to close the item the 09-02 venue addendum opened — ASME JFE's
+numerical-accuracy policy needs a discretisation-error estimate and the paper had two
+grids and a percentage difference. Four grids were run. **A physics-referee pass then
+falsified the study's central explanation and undermined its headline, and the corrected
+version is below.** The first draft of this document claimed `C_P` was converged; that
+claim does not survive and is retracted here rather than softened.
 
-Artifacts: `cfd_openfoam/gci.py` (Celik *et al.* 2008), `convergence/gci_Re10000_H6_*.md`,
+Artifacts: `cfd_openfoam/gci.py`, `convergence/gci_Re10000_H6_*.md`, `yplus_profile.py`,
 `closure_sensitivity.py`, `closure_sensitivity.json`.
 
 ---
 
-## 1. Two things had to be fixed before the study could mean anything
+## 1. What survives, and it is worth having
 
-**Iterative convergence came first, and it was not a formality.** Of the grids in the
-original study only the *coarsest two* met `residualControl`; the paper's fine grid stopped
-at the 3000-iteration cap. Restarted (`extend_case.sh`) it converges at iteration **5105**,
-and `C_P` moves **1.5178 → 1.3928, −8.2 %**. So the manuscript's *"`C_P` changes 12.28 %
-between grids"* is really **3.0 %** — two thirds of the headline grid sensitivity was an
-unconverged solve, and 12 % has to come out of the text.
+**The iterative-convergence finding stands, and it is the most solid thing here.** Of the
+grids in the original study only the coarsest two met `residualControl`; the paper's fine
+grid stopped at the 3000-iteration cap. Restarted (`extend_case.sh`) it converges at
+iteration **5105**, and `C_P` moves **1.5178 → 1.3928, −8.2 %**.
 
-**Then the wall treatment.** With all three of the original grids converged, `n_t` and
-`τ_w(15 mm)` came back **non-monotone** and `C_P` gave `p` = 0.315, outside the asymptotic
-band. The diagnosis was `y⁺`: **1.52 / 0.78 / 0.41** across refine 0.5 / 1 / 2, so the
-coarsest grid sits on the far side of `y⁺` ≈ 1, where `omegaWallFunction` blends the viscous
-and log layers — and the quantity being converged *is* the wall shear stress. A refinement
-family that changes the wall model partway up is not a refinement family for `τ_w`.
+> **The manuscript's *"`C_P` changes 12.28 % between grids"* is really 3.0 %. Two thirds of
+> the headline grid sensitivity was an unconverged solve.** That has to come out of the text
+> regardless of everything below.
 
-⚠ **Note the direction of that discovery: correcting the iterative error made the
-convergence study look WORSE.** At the capped state the same three grids gave a tidy
+And the direction of that discovery is worth carrying: **correcting the iterative error made
+the convergence study look worse.** At the capped state the same three grids gave a tidy
 `p` = 1.70 and `GCI` = 6.06 % on `C_P`. **A clean-looking GCI is not evidence that the grids
 converged.**
 
-## 2. The study that answers the question
+## 2. What the four grids give
 
-Family `fine_conv`: refine **4 / 2 / 1**, ratio `r` = 2, cells 491 520 / 122 880 / 30 720.
-Every grid met `residualControl` — at iterations **11 552 / 5 105 / 2 261** — and every grid
-sits at **`y⁺` < 1** (0.211 / 0.406 / 0.781), so they are in one wall-treatment regime.
+Family `fine_conv`: refine **4 / 2 / 1**, `r` = 2, cells 491 520 / 122 880 / 30 720, all
+meeting `residualControl` at iterations **11 552 / 5 105 / 2 261**.
 
-| quantity | refine 4 | refine 2 | refine 1 | `p` | extrapolated | `GCI_fine` | verdict |
-|---|---|---|---|---|---|---|---|
-| `n_t` | 1.9338 | 1.8922 | 1.9023 | — | — | — | **non-monotone**, 2.15 % spread |
-| **`C_P`** | **1.5809** | 1.3928 | 1.3518 | **2.198** | **1.6333** | **4.14 %** | ✅ **OK** |
-| `τ_w`(15 mm) | 6.1374 | 6.2415 | 5.8658 | — | — | — | **non-monotone**, 1.69 % |
-| peak `τ_w` | 486.30 | 441.17 | 389.52 | 0.195 | 798.5 | 80.2 % | ❌ not resolved |
+| quantity | refine 4 | refine 2 | refine 1 | `p` | extrapolated | `GCI_fine` |
+|---|---|---|---|---|---|---|
+| `n_t` | 1.9338 | 1.8922 | 1.9023 | — | — | — non-monotone |
+| `C_P` | 1.5809 | 1.3928 | 1.3518 | 2.198 | 1.6333 | 4.14 % |
+| `τ_w`(15 mm) | 6.1374 | 6.2415 | 5.8658 | — | — | — non-monotone |
+| peak `τ_w` | 486.30 | 441.17 | 389.52 | 0.195 | 798.5 | 80.2 % |
 
-**`C_P` is converged and the JFE policy is satisfied for it.** `p` = 2.198 is what a
-formally second-order scheme should give, and `GCI_fine` = 4.14 % is a real
-discretisation-error bar on the paper's central closure parameter. That is the result the
-study existed to produce.
+**Read as raw numbers this is reassuring**: three of the four move by only 1.7–2.2 % across
+a 16× cell-count range. Read as a convergence study it is not, for four reasons.
 
-**The `y⁺` hypothesis is only partly vindicated, and the write-up says so.** Putting all
-three grids below `y⁺` = 1 fixed `C_P` — it went from `p` = 0.315 to 2.198 — but `n_t` and
-`τ_w(15 mm)` are **still non-monotone**. So the wall-function straddle was *a* cause, not
-*the* cause, and those two quantities have no demonstrable order on this mesh family. They
-are *stable* (2.15 % and 1.69 % across a 16× cell-count range) and must be quoted as bands,
-not as converged values.
+## 3. 🔴 Four findings from the referee pass, each verified here independently
 
-**Peak `τ_w` is not resolved at all** (`p` = 0.195, `GCI` = 80 %) and must not be quoted.
-That is physically unsurprising — it is a sharp stagnation-region maximum — but the paper
-should not carry a number for it.
+### 3a. The y⁺ mechanism is refuted — it has the wrong sign in the right place
 
-⚠ An **independent check** at ratio √2 (`--family midfine`, refine 2 / 1.414 / 1, all at
-`y⁺` < 1) is running. If it disagrees with `fine_conv` about the observed order, neither is
-in the asymptotic range and no GCI from this mesh family means anything.
+The first draft explained the coarse family's failure by `y⁺` straddling 1 (medians 1.52 /
+0.78 / 0.41), since `omegaWallFunction` blends the viscous and log layers there and the
+quantity being converged is the wall shear stress. **The median is the wrong statistic and
+the mechanism does not survive resolving it radially** (`yplus_profile.py`):
 
-## 3. What it does to the paper — and it is not a caveat
+| case | median | r/d 2–5 | 5–10 | 10–14 | **14–20** | 20–25 |
+|---|---|---|---|---|---|---|
+| refine 4 | 0.211 | 0.206 | 0.100 | 0.058 | **0.038** | 0.025 |
+| refine 2 | 0.406 | 0.398 | 0.190 | 0.113 | **0.079** | 0.058 |
+| refine 1 | 0.781 | 0.776 | 0.372 | 0.219 | **0.152** | 0.112 |
+| refine 0.5 | 1.517 | 1.517 | 0.733 | 0.436 | **0.299** | 0.219 |
 
-`model/run_bidet.py` reads `C_P` from the **base grid**: 1.3518. The converged value is
-1.5809 and the extrapolation 1.6333 — **17 % and 21 % higher**. `closure_sensitivity.py`
-propagates that through the model's closed-form optimum:
+**The `y⁺` ≈ 1.5 "straddle" is entirely a near-stagnation effect (r/d 2–5). At r/d = 15 —
+where `τ_w`(15 mm) lives, where the non-monotonicity is, and where the design criterion
+evaluates — `y⁺` is 0.04 to 0.30, well under 1 on *every* grid including the coarsest.**
+Wall-function blending therefore cannot be the mechanism for the non-monotonicity it was
+invoked to explain.
 
-| `C_P` from | `C_P` | `d*` [mm] | `Q*` [L/min] | vs base |
-|---|---|---|---|---|
-| base grid, refine 1 — **what the paper quotes** | 1.3518 | 0.6535 | **0.1432** | 1.000× |
-| refine 2, converged | 1.3928 | 0.6397 | 0.1372 | 0.958× |
-| refine 4, converged | 1.5809 | 0.5844 | 0.1145 | 0.800× |
-| Richardson extrapolation | 1.6333 | 0.5710 | **0.1093** | **0.764×** |
+**Consequence for §2.** The change from `coarse_conv` (`p` = 0.315) to `fine_conv`
+(`p` = 2.198) is then **a change of triplet, not the repair of a mechanism.** The first
+draft presented it as the latter. It is not.
 
-**The optimal water demand falls 23.6 %.** That is a correction to the number the whole
-paper optimises, not a caveat on it — and it moves in the paper's favour: the optimal
-nozzle uses *less* water than the manuscript claims.
+### 3b. `p` = 2.198 exceeds the formal order of the discretisation
 
-**The sensitivity is an exponent, and it amplifies.** The closed form gives
-`d* ∝ C_P^{−1/(n_t−½)}` and therefore `Q* ∝ C_P^{−2/(n_t−½)} = C_P^{−1.426}`. Because that
-exponent **exceeds 1**, a closure error is *magnified* into the design output rather than
-absorbed: 20.8 % on `C_P` becomes 23.6 % on `Q*`. It diverges as `n_t → ½`. **This is worth
-a sentence in the paper**, because it states how much closure accuracy the design model
-actually requires — which is a more useful thing to publish than any single `Q*`.
+`system/fvSchemes` specifies `div(phi,U) bounded Gauss linearUpwind grad(U)` (≈2nd order)
+but **`div(phi,k)` and `div(phi,omega)` are `bounded Gauss upwind` — first order.** `nut`,
+and hence the wall shear through the wall function, depends on `k` and `omega`. An observed
+order **above the formal order of a first-order link in its own causal chain** is a signature
+of accidental cancellation on one triplet, not of second-order accuracy.
 
-🔑 **And `n_t`'s own non-monotone band is comparable to the whole `C_P` correction.** At the
-finest-grid `C_P`, sweeping `n_t` over its 2.15 % grid spread moves `Q*` from 0.1093 to
-0.1321 L/min — a factor **1.209**. So:
+### 3c. `p` is unstable across overlapping triplets from the same mesh family
 
-> **`Q*` is uncertain at the ~20–25 % level from the closure alone, and the single number
-> the manuscript quotes for it is not supported.** The paper should quote a band and name
-> its source.
+| family | grids | `p` on `C_P` | verdict as printed |
+|---|---|---|---|
+| `coarse` | 2 / 1 / 0.5, refine-2 **capped** | 1.703 | OK |
+| `coarse_conv` | 2 / 1 / 0.5, refine-2 converged | **0.315** | outside band |
+| `fine_conv` | 4 / 2 / 1 | **2.198** | OK |
 
-## 4. What this changes in the manuscript
+**A factor of seven, from the same handful of grids.** A three-point Richardson fit has zero
+residual degrees of freedom and cannot self-diagnose; cross-triplet comparison is the only
+available check, and it says 2.198 is no more trustworthy than the 0.315 the study rejected.
 
-1. 🔴 **Replace "`C_P` within 12 %"** — it is 3.0 % between converged grids, and the
-   relevant statement is now `GCI_fine` = 4.14 % at `p` = 2.198.
-2. 🔴 **Update `C_P` itself** from 1.35 to the converged 1.58 (or the extrapolated 1.63,
-   stating which), and **recompute every lever downstream**. `Q*` falls 23.6 %.
-3. 🔴 **Quote `n_t` and `τ_w(15 mm)` as bands**, not converged values, and say they are
-   non-monotone in the grid.
-4. 🔴 **Remove any quoted peak `τ_w`.**
-5. ✅ **Add the sensitivity exponent** `Q* ∝ C_P^{−2/(n_t−½)}` and the ~20–25 % closure
-   uncertainty on `Q*`.
-6. ✅ **The JFE numerical-accuracy policy is now satisfiable** for `C_P`, with the honest
-   rider that two of the four reported quantities have no observed order on this family.
+### 3d. 🔴 The designed independent cross-check cannot run, and its grid is genuinely stuck
 
-## 5. What was checked and would have been easy to get wrong
+`gci.py --family midfine` (refine 2 / 1.414 / 1, `r` = √2) exists precisely so the observed
+order can be measured from a second, disjoint triplet. The refine = 1.414 grid **ran 20 000
+iterations and did not converge**: every field reaches ~10⁻⁹ **except `Uz`, which sits at
+1.8 × 10⁻²** — seven orders above the others and three above the target. `Uz` is the
+out-of-plane component on a one-cell-thick wedge and should be ~0; a limit cycle there is a
+defect of that case, not slowness. (`Uz` is 1.6 × 10⁻⁶ to 4.9 × 10⁻⁶ on the three grids that
+did converge, so this is specific to refine = 1.414.)
 
-- **The refine = 4 run looked stalled and was not.** Its `Uy` residual sat flat at
-  ~4.0 × 10⁻⁵ from iteration 6400 to 8000 — four samples, no trend — and I nearly recorded
-  it as a plateau. It fell through 10⁻⁵ by 11 552. *"It has plateaued"* needed 3500 more
-  iterations of evidence than the samples that suggested it.
-- **`gci.py` refuses rather than reports** where Celik *et al.* exclude the case: it prints
-  `NOT CONVERGENT: non-monotone` instead of a GCI, and flags `p` outside [0.5, 2.5] instead
-  of quoting it silently.
-- **Cell counts are read from `blockMesh`'s own log**, not recomputed from `gen_case.py`,
-  and the code asserts they scale as `refine²` before applying the procedure — so a grading
-  change could not silently break the family.
+**So the check that would decide whether `p` = 2.198 means anything is outstanding, and the
+grid it needs is broken rather than merely slow.**
+
+## 4. 🔴 And the design propagation extrapolates outside the fit band
+
+This is the finding with the largest consequence and it is independent of the grid study.
+
+`bidet_model.optimum()` solves for the nozzle diameter `d*`, then evaluates the closure at
+the fixed cleaning radius `r_max` = 15 mm. Because `d*` shrinks as `C_P` grows:
+
+| `C_P` from | `C_P` | `d*` [mm] | **`r_max/d*`** | in fit band [2, 20]? | `Q*` [L/min] |
+|---|---|---|---|---|---|
+| base grid — what the paper quotes | 1.3518 | 0.6535 | **22.95** | **NO** | 0.1432 |
+| refine 2, converged | 1.3928 | 0.6397 | **23.45** | **NO** | 0.1372 |
+| refine 4, converged | 1.5809 | 0.5844 | **25.67** | **NO** | 0.1145 |
+| Richardson extrapolation | 1.6333 | 0.5710 | **26.27** | **NO** | 0.1093 |
+
+**Every design point sits outside the band the closure was fitted over**, and the CFD domain
+itself ends at `Rdom` = 25 mm — `r/d` = 25 at the simulated `d` = 1 mm — so the two finest
+cases evaluate the power law **at or beyond the edge of the computation that produced it**.
+`gen_case.py`'s own comment already says the `τ_c` = 1 Pa contour lies outside the domain.
+
+Worse, the extrapolation is **not uniform across the comparison**: a larger `C_P` gives a
+smaller `d*` and therefore a *worse* extrapolation, so the "corrected" rows are the ones
+standing on the thinnest ice.
+
+> **Therefore the 23.6 % fall in `Q*` is not a result this study can quote.** The arithmetic
+> is right — `Q* ∝ C_P^{−2/(n_t−½)} = C_P^{−1.426}`, verified independently, an amplifying
+> exponent — but the inputs are a closure evaluated 15–30 % past its fitted range at a nozzle
+> diameter 40 % smaller than the one ever simulated, and that extrapolation error has never
+> been estimated. Quote the direction, not the number.
+
+⚠ Note that `run_bidet.py`'s own `[Result 1]` avoids this: it evaluates at `d` = 1 mm, i.e.
+`r/d` = 15, in-band. The discipline exists in the codebase; it is the `optimum()` call that
+escapes it.
+
+### 4a. And `τ_w`(15 mm) is exactly the quantity that does not converge
+
+`r_max` = 15 mm is literally the `tau_at_15mm_Pa` row of §2 — the one flagged non-monotone.
+So the design criterion's own evaluation point is the location with no demonstrable
+convergence, while `C_P`, the quantity that does have a `p`, is a **regression statistic**:
+an intercept at `r/d` = 1, extrapolated past the *low* edge of the fit band, whose
+statistical weight sits in the inner, best-resolved part of the profile. Convergence of that
+intercept is not evidence that the field is converged where the design uses it.
+
+## 5. What the paper should now say
+
+1. 🔴 **Replace "`C_P` within 12 %"** — between converged grids it is 3.0 %.
+2. 🔴 **Do not claim a converged `C_P` or a GCI-backed error bar.** State the raw spread
+   (`C_P` 1.35 → 1.58 over a 16× cell-count range, 11.9 % between the two finest) and state
+   that **no observed order is established**, giving the three triplet values and the reason.
+3. 🔴 **Quote `n_t` and `τ_w`(15 mm) as bands** and say they are non-monotone in the grid.
+   **Remove any peak `τ_w`** (GCI 80 %).
+4. 🔴 **State that the design optimum evaluates the closure outside its fit band**
+   (`r/d` ≈ 23–26 against a fitted [2, 20], and past the domain edge at 25). This is a
+   pre-existing modelling gap the grid study happened to expose; it is not caused by it.
+5. ✅ **Keep the sensitivity exponent** `Q* ∝ C_P^{−2/(n_t−½)}` — it is exact, it amplifies,
+   and it states how much closure accuracy a design model of this shape needs. Quote it as
+   a sensitivity, not as a corrected `Q*`.
+6. ⚠ **The JFE numerical-accuracy policy is NOT satisfied.** The honest position is that
+   the study has bounded the *iterative* error, shown the *discretisation* spread is a few
+   per cent on three of four quantities, and been unable to establish an observed order on
+   any of them.
+
+## 6. What would settle it, in order of cost
+
+1. **Fix or replace the refine = 1.414 grid** so `midfine` can run. Its `Uz` limit cycle is
+   the cheapest open question in the study and it gates the only independent order estimate.
+   Suspect the odd cell counts (`nx` = 169) against the collapsed wedge axis.
+2. **Extend the domain to `Rdom` ≈ 50 mm and refit.** That removes the extrapolation in §4
+   entirely rather than bounding it, and the 08 AUG card already identified it as the thing
+   that would settle the cleaning-radius claim. It is the single highest-value CFD run left
+   in this project.
+3. **Second-order schemes for `k` and `omega`**, then repeat. Until then no observed order
+   above 1 is interpretable.
+4. **A second `Re_d`.** The `Re_d^{−1/2}` in the closure has never been tested against
+   anything; the design runs at `Re_d` ≈ 7 400–8 400 against a single simulated 10 000.
+
+## 7. Process note, for the record
+
+Five reviewers were dispatched. The units audit and this physics referee returned; **three
+(code review, numerics verification, and the frisbee physics referee) died on a session rate
+limit and have not run.** The numerics verification in particular has *not* independently
+re-run any number in this document — every figure here is from my own execution, which is
+exactly the arrangement the lab's rules say not to rely on. Re-dispatch them.
