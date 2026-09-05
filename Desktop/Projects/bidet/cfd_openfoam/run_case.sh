@@ -7,13 +7,17 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 cd "$HERE"
 
 RE="$1"; HD="$2"; REF="${3:-1}"
-python3 gen_case.py "$RE" "$HD" "$REF"
 
-# case dir name mirrors gen_case.py
-if [ "$REF" = "1" ] || [ "$REF" = "1.0" ]; then
-  TAG="case_Re$(printf '%.0f' "$RE")_H$(printf '%.0f' "$HD")"
-else
-  TAG="case_Re$(printf '%.0f' "$RE")_H$(printf '%.0f' "$HD")_r$(printf '%.0f' "$REF")"
+# TAKE THE TAG FROM gen_case.py, DO NOT MIRROR IT. `printf '%.0f'` is round-half-to-even
+# and gen_case.py uses Python's truncating `int()`: at refine = 1.5 they give 2 and 1, so
+# the mirrored name pointed at a DIFFERENT case, which this script would then overwrite.
+# See run_case_fast.sh for the full account (2026-09-03).
+GEN_OUT="$(python3 gen_case.py "$RE" "$HD" "$REF")"
+echo "$GEN_OUT"
+TAG="$(printf '%s\n' "$GEN_OUT" | awk '/^wrote /{print $2}' | tail -1)"
+if [ -z "$TAG" ] || [ ! -d "$HERE/$TAG" ]; then
+  echo "could not read the case directory from gen_case.py output; refusing to guess" >&2
+  exit 1
 fi
 cd "$HERE/$TAG"
 

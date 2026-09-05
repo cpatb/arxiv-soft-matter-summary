@@ -19,11 +19,24 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 RE="$1"; HD="$2"; REF="$3"; NPROC="${4:-4}"
 
 cd "$HERE"
-python3 gen_case.py "$RE" "$HD" "$REF"
-if [ "$REF" = "1" ] || [ "$REF" = "1.0" ]; then
-  TAG="case_Re$(printf '%.0f' "$RE")_H$(printf '%.0f' "$HD")"
-else
-  TAG="case_Re$(printf '%.0f' "$RE")_H$(printf '%.0f' "$HD")_r$(printf '%.0f' "$REF")"
+# TAKE THE TAG FROM gen_case.py, DO NOT RECONSTRUCT IT.
+#
+# This script used to rebuild the directory name with `printf '%.0f'`, which is
+# round-half-to-EVEN, while gen_case.py builds it with Python's `int()`, which TRUNCATES.
+# They agree on integers and disagree otherwise -- at refine = 1.5, printf gives "2" and
+# int() gives 1, so gen_case wrote case_..._r1 while this script then cd'd into
+# case_..._r2 and, at the end, `rm -rf`'d and overwrote it. On 2026-09-03 that came within
+# seconds of destroying the converged refine = 2 case the whole grid study rests on; what
+# it did destroy was another case's metadata, recovered from git.
+#
+# gen_case.py already prints "wrote <dir>  (Re=..., refine=...)" as its last line. Parse
+# that. One source of truth for the name, and it is the code that creates it.
+GEN_OUT="$(python3 gen_case.py "$RE" "$HD" "$REF")"
+echo "$GEN_OUT"
+TAG="$(printf '%s\n' "$GEN_OUT" | awk '/^wrote /{print $2}' | tail -1)"
+if [ -z "$TAG" ] || [ ! -d "$HERE/$TAG" ]; then
+  echo "could not read the case directory from gen_case.py output; refusing to guess" >&2
+  exit 1
 fi
 
 WORK="$HOME/bidet_gci/$TAG"

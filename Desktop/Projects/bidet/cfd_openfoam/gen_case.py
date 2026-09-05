@@ -523,6 +523,34 @@ def main():
     if abs(Rdom - RDOM_DEFAULT) > 1e-12:
         tag += f"_R{int(round(Rdom_mm))}"
     case = os.path.join(os.path.dirname(os.path.abspath(__file__)), tag)
+
+    # REFUSE TO OVERWRITE A CASE THAT WAS BUILT AT A DIFFERENT REFINEMENT.
+    #
+    # The tag above truncates: int(1.414) and int(1.5) are both 1, so every refine in
+    # [1, 2) collides on `_r1`, and 0.5 lands on `_r0`. On 2026-09-03 a refine = 1.5 run
+    # silently overwrote the refine = 1.414 case's blockMeshDict and case_info.txt while
+    # leaving its log.blockMesh (61 009 cells) in place -- an internally inconsistent case
+    # that would have been read by gci.py as if it were sound. Recovered from git.
+    #
+    # The naming scheme is left alone deliberately: renaming would orphan the case
+    # directories gci.py's families already reference. This guard is the cheap half and it
+    # is the half that stops the damage. Pass --force to override, which is then a
+    # deliberate act visible in a shell history.
+    info = os.path.join(case, "case_info.txt")
+    if os.path.exists(info) and "--force" not in sys.argv:
+        prev = {}
+        with open(info, encoding="utf-8") as fh:
+            for line in fh:
+                if "=" in line:
+                    k_, v_ = line.strip().split("=", 1)
+                    prev[k_] = v_
+        was = float(prev.get("refine", "nan"))
+        if not (was == refine or (was != was and refine != refine)):
+            print(f"REFUSING to overwrite {tag}: it was built at refine={was:g} and you "
+                  f"asked for refine={refine:g}. The tag truncates, so these collide. "
+                  f"Move or delete the existing case, or pass --force.", file=sys.stderr)
+            return 1
+
     for sub in ("0", "constant", "system"):
         os.makedirs(os.path.join(case, sub), exist_ok=True)
 
@@ -542,7 +570,10 @@ def main():
         f.write(f"Re_d={Re}\nH_over_d={Hd}\nrefine={refine}\nV0={V0}\nH={H}\n"
                 f"Rjet={Rjet}\nRdom={Rdom}\nk_in={k}\nomega_in={omega}\nNU={NU}\nRHO={RHO}\nD={D}\n")
     print(f"wrote {case}  (Re={Re:g}, H/d={Hd:g}, V0={V0:.4g} m/s, refine={refine:g})")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    # main() returns 1 when it refuses to overwrite a colliding case; that has to
+    # reach the shell, or `set -e` in run_case*.sh will not stop the run.
+    sys.exit(main() or 0)
