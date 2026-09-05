@@ -1,0 +1,16 @@
+{
+ "10.25835/hjn2qcvy": {
+  "doi": "10.25835/hjn2qcvy",
+  "label": "Biermann, Mesecke (2024). Rheology Data of Lubrizol Carbopol ETD2020. LUIS",
+  "registrar": "datacite",
+  "resolved_on": "2026-09-05",
+  "url": "https://data.uni-hannover.de/dataset/a455b231-a59f-4919-b43e-2f3d890667da"
+ },
+ "10.3390/ma18133164": {
+  "doi": "10.3390/ma18133164",
+  "label": "Biermann, Mesecke, Teves (2025). Full-Factorial Rheological Investigation of Carbopol ETD2020 for Embedded Printing: Effects of pH and Carbomer Concentration. Materials",
+  "registrar": "crossref",
+  "resolved_on": "2026-09-05",
+  "url": "https://www.mdpi.com/1996-1944/18/13/3164"
+ }
+}

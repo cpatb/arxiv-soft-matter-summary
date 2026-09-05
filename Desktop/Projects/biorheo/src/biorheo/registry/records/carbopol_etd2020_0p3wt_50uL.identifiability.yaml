@@ -1,0 +1,42 @@
+# written by biorheo.identify; do not edit by hand
+written_by: biorheo.identify
+written_on: '2026-09-05'
+record_id: carbopol_etd2020_0p3wt_50uL
+model: herschel_bulkley
+level: 0.95
+fit:
+  n_points: 54
+  rmse_log_eta: 0.00980890416392838
+  gammadot_min: 0.0010026382576733828
+  gammadot_max: 199.96617036382088
+parameters:
+  tau_y:
+    value: 39.09690267297421
+    lo: 38.821403417425685
+    hi: 39.37023326738096
+    verdict: measurable
+    decades: 0.006096756632158559
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+  k:
+    value: 15.893435078844456
+    lo: 15.477867646593662
+    hi: 16.479363266284842
+    verdict: measurable
+    decades: 0.02722929868079389
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+  n:
+    value: 0.39778110841364195
+    lo: 0.3916694586405711
+    hi: 0.403946321824436
+    verdict: measurable
+    decades: 0.013403950250322752
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+data_note: fit of the replicate-mean flow curve from the deposited csv, rate recovered
+  as tau/eta; stored parameters come from carbopol/fit_hb.py (curve_fit, sigma = tau)
+  and differ from this fit by at most 0.05%

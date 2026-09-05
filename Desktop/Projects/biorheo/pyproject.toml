@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "biorheo"
+version = "0.0.1"
+description = "Cited fluid records, identifiable constitutive models, and their handoff to solvers, for fluids that are not water"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Charlie Burton" }]
+dependencies = [
+    "numpy>=2.0",
+    "scipy>=1.14",
+    "sympy>=1.12",
+    "pint>=0.24",
+    "pyyaml>=6.0",
+    # Editable sibling at Desktop/Projects/dst_fit. Its fitter and profiler are
+    # generic in the independent variable, so rate-space models here are
+    # dst_fit.models.Model instances and nothing in dst_fit changes.
+    "dst-fit>=0.1.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"biorheo.registry" = ["records/*.yaml", "doi_cache.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+    "slow: runs another package's whole suite",
+    "network: needs internet (DOI resolution)",
+]
