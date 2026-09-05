@@ -26,7 +26,18 @@ property of the syringe, not the fluid). NOT included: the barrel's own pressure
 (smaller by ``(R/R_s)^4`` for a Newtonian fluid), entrance and exit losses, the kinetic
 term ``rho U^2``, and the transient at plunger start. These are all inertial or
 geometric corrections that grow with Reynolds number; pass ``rho`` to get the wall
-Reynolds number reported beside the force and judge them.
+Reynolds number reported beside the force and judge them. ALSO NOT included, and not
+inertial: wall slip. The closed form assumes no slip at the needle wall; microgel
+suspensions (Carbopol) and many biological fluids slip at wall stresses of the kPa
+order this geometry produces, which lowers the true force below the number here and
+is not covered by the extrapolation flag either (it is a boundary condition, not a
+constitutive extrapolation). A slip-vs-no-slip test needs two needle radii at the
+same wall stress (Mooney's method); none of the registry data has it.
+
+``reynolds`` is ``rho U (2R) / eta(gd_w)``, the apparent viscosity at the true wall
+shear rate, NOT the Metzner-Reed generalised Reynolds number built on ``8U/D``; for a
+power-law fluid ``Re_here = Re_MR (3n+1)/(4n)``, 1.1-1.3x at n = 0.4-0.65. Compare
+with a literature transition threshold only after converting.
 
 Where the flow curve is being extrapolated
 ------------------------------------------
@@ -299,7 +310,7 @@ class ForceUQ:
     seed: int
     sensitivity: dict[str, float]   # d ln F / d ln p at the fit
     insensitive_to: tuple[str, ...]  # |sensitivity| < INSENSITIVE
-    extrapolated: bool              # wall shear rate outside the fitted envelope
+    extrapolated: bool              # wall shear rate outside the envelope, at the fit or any profile end
     envelope: tuple[float, float]   # fitted (gammadot_min, gammadot_max)
     notes: tuple[str, ...] = field(default_factory=tuple)
 
@@ -373,7 +384,16 @@ def force_with_uq(identified: IdentifiedModel, Q: float, needle: Needle, syringe
     sens = sensitivities(Q, needle, syringe, model, values, friction=friction)
     insens = tuple(k for k, v in sens.items() if abs(v) < INSENSITIVE)
     env = (float(identified.envelope.gammadot_min), float(identified.envelope.gammadot_max))
-    extrap = not (env[0] <= nominal.wall_shear_rate <= env[1])
+    # judged at the nominal fit AND at every one-at-a-time profile end: an interval whose
+    # far end sits outside the envelope is partly extrapolation even if the fit is not
+    wall_rates = [nominal.wall_shear_rate]
+    for j, name in enumerate(model.param_names):
+        est = identified.params[name]
+        for edge in (est.lo, est.hi):
+            p = values.copy()
+            p[j] = edge
+            wall_rates.append(injection_force(Q, needle, syringe, model, p, friction=friction).wall_shear_rate)
+    extrap = any(not (env[0] <= w <= env[1]) for w in wall_rates if np.isfinite(w))
     return ForceUQ(nominal=nominal, level=identified.level,
                    profile_lo=float(min(forces)), profile_hi=float(max(forces)),
                    profile_open=tuple(open_params), per_parameter=per_param,

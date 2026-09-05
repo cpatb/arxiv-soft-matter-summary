@@ -37,7 +37,9 @@ class RecoveryReport:
     model_name: str
     truth: dict[str, float]
     n_seeds: int
-    within_interval: dict[str, int]  # seeds whose profile interval contains the truth
+    within_interval: dict[str, int]  # seeds whose profile interval contains the truth (any interval)
+    n_closed: dict[str, int]         # seeds whose interval closed on both sides
+    within_closed: dict[str, int]    # of those, how many contain the truth: the coverage that can fail
     verdicts: dict[str, dict[str, int]]  # param -> verdict -> count
     fits: tuple[IdentifiedModel, ...]
 
@@ -45,7 +47,8 @@ class RecoveryReport:
         lines = [f"{self.model_name}: {self.n_seeds} seeds"]
         for p in self.truth:
             v = ", ".join(f"{k} {n}" for k, n in sorted(self.verdicts[p].items()))
-            lines.append(f"  {p:>8s} = {self.truth[p]:<10.4g} in interval {self.within_interval[p]:2d}/{self.n_seeds}  ({v})")
+            lines.append(f"  {p:>8s} = {self.truth[p]:<10.4g} in interval {self.within_interval[p]:2d}/{self.n_seeds}"
+                         f"  closed {self.within_closed[p]}/{self.n_closed[p]}  ({v})")
         return "\n".join(lines)
 
 
@@ -55,6 +58,8 @@ def recovery_study(model: RateModel, truth, gammadot, *, n_seeds: int = 20,
     interval contains the truth and which verdict was returned."""
     truth = np.asarray(truth, dtype=float)
     within = {p: 0 for p in model.param_names}
+    n_closed = {p: 0 for p in model.param_names}
+    within_closed = {p: 0 for p in model.param_names}
     verdicts: dict[str, dict[str, int]] = {p: {} for p in model.param_names}
     fits = []
     for seed in range(n_seeds):
@@ -65,7 +70,14 @@ def recovery_study(model: RateModel, truth, gammadot, *, n_seeds: int = 20,
             est = ident.params[p]
             if est.lo <= truth[i] <= est.hi:
                 within[p] += 1
+            # an interval that ran to a bound contains the truth for free (tau_y's lower
+            # bound is 0); only closed intervals make a coverage count that can fail
+            if not (est.lo_at_bound or est.hi_at_bound):
+                n_closed[p] += 1
+                if est.lo <= truth[i] <= est.hi:
+                    within_closed[p] += 1
             verdicts[p][est.verdict] = verdicts[p].get(est.verdict, 0) + 1
     return RecoveryReport(model_name=model.name, truth=dict(zip(model.param_names, truth.tolist())),
-                          n_seeds=n_seeds, within_interval=within, verdicts=verdicts,
+                          n_seeds=n_seeds, within_interval=within, n_closed=n_closed,
+                          within_closed=within_closed, verdicts=verdicts,
                           fits=tuple(fits))

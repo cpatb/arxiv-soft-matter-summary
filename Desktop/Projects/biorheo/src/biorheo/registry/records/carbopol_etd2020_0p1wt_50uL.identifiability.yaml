@@ -9,6 +9,13 @@ fit:
   rmse_log_eta: 0.11360921287386122
   gammadot_min: 0.0010007205852221705
   gammadot_max: 199.96312085700654
+residual_structure:
+  n: 54
+  n_runs: 4
+  expected_runs: 27.85185185185185
+  z: -6.590632377463342
+  structured: true
+  signs: ++++++++++++------------------+++++++++++++++++-------
 parameters:
   tau_y:
     value: 0.8055160693284475

@@ -43,6 +43,7 @@ NEEDLE = Needle(radius=0.10e-3, length=25e-3)   # m; illustrative, see docstring
 SYRINGE = Syringe(barrel_radius=2.3e-3)         # m; illustrative
 DOSE_ML, DOSE_TIMES_S = 1.0, (30.0, 10.0, 3.0)
 RHO = 1000.0                                    # kg/m^3, assumed for Re only
+LAMINAR_RE = 2100.0                             # Newtonian pipe transition; the only threshold used
 SURROGATES = {
     "carbopol_etd2020_0p5wt_50uL": "ETD2020-05wt-50ul.csv",
     "carbopol_etd2020_0p1wt_40uL": "ETD2020-01wt-40ul.csv",
@@ -98,10 +99,12 @@ def main() -> None:
                                temperature_C=rec.envelope.temperature_C, geometry=rec.envelope.geometry)
         dev = np.max(np.abs(ident.values / rec.params_si - 1.0))
         md += [f"## `{rid}`", "",
-               f"Refit: tau_y = {ident.values[0]:.3g} Pa, k = {ident.values[1]:.3g} Pa s^n, "
-               f"n = {ident.values[2]:.3g}; within {dev:.1%} of the registry record. Fitted "
+               f"Refit: tau_y = {ident.values[0]:.5g} Pa, k = {ident.values[1]:.5g} Pa s^n, "
+               f"n = {ident.values[2]:.5g} (five figures: d ln F / d ln n reaches 7, so three "
+               f"would not let a reader reproduce the table to 1 %); within {dev:.1%} of the "
+               f"registry record. Fitted "
                f"envelope [{ident.envelope.gammadot_min:.3g}, {ident.envelope.gammadot_max:.3g}] 1/s.", "",
-               "| dose time (s) | Q (mL/s) | F (N) | profile 95 % (N) | covariance 95 % (N) | dp (bar) | gd_w (1/s) | Re | plug r_p/R | Q share outside envelope | extrapolated |",
+               "| dose time (s) | Q (mL/s) | F (N) | one-at-a-time profile envelope 95 % (N) | covariance 95 % (N) | dp (bar) | gd_w (1/s) | Re | plug r_p/R | Q share outside envelope | extrapolated |",
                "|---|---|---|---|---|---|---|---|---|---|---|"]
         Qs, Fs, plo, phi, slo, shi = [], [], [], [], [], []
         mid = None
@@ -145,6 +148,14 @@ def main() -> None:
     top = min(ia.envelope.gammadot_max, ib.envelope.gammadot_max)
     sig_a_top = ia.model.stress(top, *ia.values)
     sig_b_top = ib.model.stress(top, *ib.values)
+    plug_max = max(a.nominal.plug_fraction, b.nominal.plug_fraction)
+    sep_1e5 = ib.model.stress(1e5, *ib.values) / ia.model.stress(1e5, *ia.values)
+    re_max = max(uq.nominal.reynolds for uq, _ in summary.values())  # the 10 s dose
+    fast = [force_with_uq(i_, DOSE_ML * 1e-6 / DOSE_TIMES_S[-1], NEEDLE, SYRINGE, rho=RHO).nominal
+            for _, i_ in summary.values()]
+    re_3s = max(f.reynolds for f in fast)
+    gdw_3s = max(f.wall_shear_rate for f in fast)
+    assert re_3s < LAMINAR_RE, f"Re = {re_3s:.0f} at the 3 s dose is not below {LAMINAR_RE}"
     md += ["## Reading", "",
            f"1. Every force above is an extrapolation of the rheometry: the wall shear rate is "
            f"{dec_a:.1f} decades ({rid_a}) and {dec_b:.1f} decades ({rid_b}) above the top of the "
@@ -157,16 +168,33 @@ def main() -> None:
            f"({rid_a}) and {sig_b_top:.0f} Pa ({rid_b}); at the needle wall the fitted curves give "
            f"{sig_a:.0f} Pa and {sig_b:.0f} Pa, so the LOWER-concentration gel needs {ratio:.1f}x "
            f"the force. That comes entirely from the flow index (n = {ia.values[2]:.3f} against "
-           f"{ib.values[2]:.3f}) carried three decades past the data. Which surrogate is harder "
+           f"{ib.values[2]:.3f}) carried {max(dec_a, dec_b):.1f} decades past the data. Which surrogate is harder "
            f"to inject through this needle is not decided by the deposited measurements.", "",
            f"3. The force is insensitive to the yield stress for both gels "
            f"(d ln F / d ln tau_y = {a.sensitivity['tau_y']:+.3f} and {b.sensitivity['tau_y']:+.3f}): "
-           f"the plug is under 3 % of the radius. Injectability of these surrogates is a "
-           f"high-rate consistency question, and the measurement that would settle it is a "
-           f"capillary or slit rheometer run to 1e5 1/s, not a better yield-stress fit.", "",
-           f"4. Reynolds numbers reach {max(a.nominal.reynolds, b.nominal.reynolds):.0f} at the "
-           f"{DOSE_TIMES_S[1]:g} s dose and larger at 3 s: laminar, but the entrance and exit "
+           f"the plug is at most {plug_max:.1%} of the radius. Injectability of these surrogates "
+           f"is a high-rate consistency question. The measurement that would settle the "
+           f"ORDERING is a capillary or slit rheometer run to 1e5 1/s (the curves are "
+           f"{sep_1e5:.1f}x apart there); the force MAGNITUDE at the 3 s dose needs the wall "
+           f"rate itself, {gdw_3s:.2g} 1/s. Not a better yield-stress fit.", "",
+           f"4. Reynolds numbers (rho U 2R / eta at the wall rate) reach {re_max:.0f} at the "
+           f"{DOSE_TIMES_S[1]:g} s dose and {re_3s:.0f} at 3 s, below the Newtonian transition "
+           f"{LAMINAR_RE:g}, the only threshold used: laminar, but the entrance and exit "
            f"losses left out of the closed form grow with Re and are not in these numbers.", "",
+           f"5. No slip. Carbopol slips on smooth walls at stresses far below the "
+           f"{max(sig_a, sig_b) / 1e3:.0f} kPa the needle wall sees, so every force above is an "
+           f"upper bound in that respect; the deposited data (smooth plates, one gap) cannot "
+           f"say by how much. A two-radius needle test at matched wall stress would.", "",
+           f"6. The Herschel-Bulkley form is not exact for either curve within the data: the "
+           f"log residuals ordered by rate have {ia.residual_structure.n_runs} runs where "
+           f"{ia.residual_structure.expected_runs:.0f} are expected ({rid_a}, rmse_log "
+           f"{ia.fit.rmse_log:.3f}) and {ib.residual_structure.n_runs} where "
+           f"{ib.residual_structure.expected_runs:.0f} are expected ({rid_b}, rmse_log "
+           f"{ib.fit.rmse_log:.3f}; signs `{ib.residual_structure.signs}`). For the 0.5 wt% gel "
+           f"that is a {ia.fit.rmse_log:.1%} systematic misfit; for the 0.1 wt% gel it is "
+           f"{ib.fit.rmse_log:.0%}, so the "
+           f"flow index carried past the data in point 2 is the index of a form that already "
+           f"misses this curve by that much.", "",
            "## Figure", "",
            "`force_vs_Q.png`: plunger force against dose rate, left the 0.5 wt% and right the "
            "0.1 wt% surrogate. Light band: one-at-a-time profile interval; dark band: covariance "

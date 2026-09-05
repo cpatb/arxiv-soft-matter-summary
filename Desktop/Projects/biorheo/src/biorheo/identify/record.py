@@ -58,6 +58,8 @@ def write_identifiability(record: FluidRecord, ident: IdentifiedModel,
                 "rmse_log_eta": float(ident.fit.rmse_log),
                 "gammadot_min": ident.envelope.gammadot_min,
                 "gammadot_max": ident.envelope.gammadot_max},
+        "residual_structure": (None if ident.residual_structure is None
+                               else ident.residual_structure.as_dict()),
         "parameters": {
             name: {"value": est.value, "lo": est.lo, "hi": est.hi, "verdict": est.verdict,
                    "decades": (None if est.decades == float("inf") else est.decades),

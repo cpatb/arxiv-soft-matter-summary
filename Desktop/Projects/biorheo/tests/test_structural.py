@@ -152,6 +152,7 @@ def test_gate_product_is_measurable_and_the_pair_is_degenerate():
     for p in STRUCTURAL_STEADY.param_names:
         assert r.verdicts[p].get("measurable", 0) >= 18, r.summary()
         assert r.within_interval[p] >= 17, r.summary()
+        assert r.within_closed[p] >= 17, r.summary()  # coverage among closed intervals only
 
     alpha, t_r = 0.05, ALPHA_TR / 0.05
     sep = recovery_study(STRUCTURAL_STEADY_SEPARATE, [ETA_INF, BETA, alpha, t_r], GRID,

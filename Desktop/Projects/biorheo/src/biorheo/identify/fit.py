@@ -37,6 +37,26 @@ degenerate
 ``measurable`` verdict is a statement about closure, not precision; ``ParamEstimate.decades``
 carries the width and must be quoted beside it.
 
+Every verdict above is conditional on the model describing the curve. A parameter can
+be ``measurable`` in a model that is wrong: the interval then says how precisely the
+wrong model's constant is pinned, not how well the fluid is described. So the fit
+also reports the STRUCTURE of its log residuals ordered by shear rate, as a
+Wald-Wolfowitz runs test on their signs (``ResidualStructure``): a model that misses
+the curve's shape leaves long runs of one sign, far fewer runs than the
+``1 + 2 n+ n- / n`` a random sequence has. ``structured`` is set when the standard
+score is below ``RUNS_Z = -2.0`` (one-sided, fixed 2026-09-05 before the blood
+records were fitted). Hand anchor: 16 points with signs ``--+++++++++-----`` have 3
+runs where 8.875 are expected, z = -3.09. The flag is a statement about the model
+form and is written into the sidecar beside the verdicts; it changes no verdict.
+
+Read it WITH ``rmse_log``, never alone: it measures whether the misfit is systematic,
+not how large it is. On the 15 Carbopol ETD2020 records (54 points each) it fires on
+13, at rmse_log from 0.002 (0.5 wt%, z = -3.6: a misfit of 0.2 % that a 54-point
+series still resolves as non-random) to 0.17 (0.1 wt%, z = -6.6, signs
+``++++++++-----...+++++-------``: Herschel-Bulkley is the wrong form for that curve
+within the data). Synthetic curves drawn from the fitted model trip it at the
+expected rate (``tests/test_identify.py``).
+
 This module is the only writer of a record's ``identifiability`` block.
 """
 
@@ -51,14 +71,15 @@ from dst_fit.profiling import Profile, profile_likelihood
 from ..constitutive import RateModel
 from ..registry.schema import Envelope
 
-__all__ = ["VERDICTS", "ParamEstimate", "IdentifiedModel", "fit_rate_curve", "verdict_for",
-           "null_direction"]
+__all__ = ["VERDICTS", "ParamEstimate", "IdentifiedModel", "ResidualStructure",
+           "fit_rate_curve", "verdict_for", "null_direction", "runs_test"]
 
 VERDICTS = ("measurable", "bounded_only", "degenerate", "not_identifiable")
 DEGENERATE_CORR = 0.99  # |corr| above which two parameters count as one
 DEGENERATE_COND = 1e-8  # s_min/s_max of the log-log Jacobian below which a null direction exists
 NULL_WEIGHT = 0.3       # |component| in the null vector for a parameter to "carry weight"
 _FD_REL_STEP = 1e-6     # central-difference step, relative to |p|
+RUNS_Z = -2.0           # runs-test score below which the residuals are called structured
 
 
 @dataclass(frozen=True)
@@ -92,12 +113,53 @@ class ParamEstimate:
 
 
 @dataclass(frozen=True)
+class ResidualStructure:
+    """Wald-Wolfowitz runs test on the signs of the log residuals ordered by rate."""
+    n: int
+    n_runs: int
+    expected_runs: float
+    z: float
+    structured: bool
+    signs: str  # e.g. "--+++++++++-----", data - model, in order of increasing rate
+
+    def as_dict(self) -> dict:
+        return {"n": self.n, "n_runs": self.n_runs, "expected_runs": self.expected_runs,
+                "z": self.z, "structured": self.structured, "signs": self.signs}
+
+
+def runs_test(residuals: np.ndarray) -> ResidualStructure:
+    """Runs test on ``sign(residuals)`` in the order given (caller sorts by rate).
+
+    Under the null of exchangeable signs, with ``n1`` positive and ``n2`` negative,
+    the number of runs has mean ``1 + 2 n1 n2 / n`` and variance
+    ``2 n1 n2 (2 n1 n2 - n) / (n^2 (n - 1))`` (Wald & Wolfowitz 1940). Exact zeros are
+    dropped rather than assigned a sign. If either sign is absent the score is
+    undefined (nan) and ``structured`` is False: one-signed residuals are a bias,
+    which a runs test cannot see, and rmse carries it.
+    """
+    r = np.asarray(residuals, dtype=float)
+    r = r[np.isfinite(r) & (r != 0)]
+    n = int(r.size)
+    signs = "".join("+" if x > 0 else "-" for x in r)
+    n1 = int((r > 0).sum())
+    n2 = n - n1
+    n_runs = 1 + int((np.sign(r[1:]) != np.sign(r[:-1])).sum()) if n else 0
+    if n1 == 0 or n2 == 0 or n < 2:
+        return ResidualStructure(n, n_runs, float("nan"), float("nan"), False, signs)
+    mu = 1.0 + 2.0 * n1 * n2 / n
+    var = 2.0 * n1 * n2 * (2.0 * n1 * n2 - n) / (n * n * (n - 1.0))
+    z = (n_runs - mu) / np.sqrt(var) if var > 0 else float("nan")
+    return ResidualStructure(n, n_runs, float(mu), float(z), bool(np.isfinite(z) and z < RUNS_Z), signs)
+
+
+@dataclass(frozen=True)
 class IdentifiedModel:
     model: RateModel
     params: dict[str, ParamEstimate]
     fit: FitResult
     envelope: Envelope
     level: float
+    residual_structure: ResidualStructure | None = None
 
     @property
     def values(self) -> np.ndarray:
@@ -122,7 +184,11 @@ def null_direction(model: RateModel, gd: np.ndarray, params: np.ndarray
 
     Central differences with a relative step; a parameter at exactly 0 is stepped
     absolutely (its log-sensitivity is then a plain sensitivity, which is fine for
-    the rank question).
+    the rank question). If one side of the step leaves the model's domain (eta <= 0,
+    typically a parameter sitting on its lower bound 0) the other side is used alone,
+    so the channel is not switched off by a bound. If the Jacobian is still
+    non-finite the result is ``(nan, nan-vector)`` and ``verdict_for`` falls back to
+    the correlation rule.
     """
     p = np.asarray(params, dtype=float)
     cols = []
@@ -133,7 +199,16 @@ def null_direction(model: RateModel, gd: np.ndarray, params: np.ndarray
         up[j] += h
         dn[j] -= h
         with np.errstate(all="ignore"):
-            d = (np.log(model(gd, *up)) - np.log(model(gd, *dn))) / (2 * h)
+            f_up, f_dn = np.log(model(gd, *up)), np.log(model(gd, *dn))
+            f_0 = None
+            if not np.all(np.isfinite(f_dn)):   # e.g. p_j = 0 stepped negative
+                f_0 = np.log(model(gd, *p))
+                d = (f_up - f_0) / h
+            elif not np.all(np.isfinite(f_up)):
+                f_0 = np.log(model(gd, *p))
+                d = (f_0 - f_dn) / h
+            else:
+                d = (f_up - f_dn) / (2 * h)
         cols.append(d * scale)
     J = np.column_stack(cols)
     if not np.all(np.isfinite(J)):
@@ -210,4 +285,11 @@ def fit_rate_curve(model: RateModel, gammadot, eta, *, level: float = 0.95,
         )
     envelope = Envelope(gammadot_min=float(gd.min()), gammadot_max=float(gd.max()),
                         temperature_C=temperature_C, geometry=geometry)
-    return IdentifiedModel(model=model, params=params, fit=fit, envelope=envelope, level=level)
+    # residuals recomputed here rather than read off the fitter, so the ordering is
+    # by rate whatever order the data arrived in
+    order = np.argsort(gd)
+    with np.errstate(all="ignore"):
+        resid = np.log(et[order]) - np.log(model(gd[order], *np.asarray(fit.params, dtype=float)))
+    structure = runs_test(resid)
+    return IdentifiedModel(model=model, params=params, fit=fit, envelope=envelope, level=level,
+                           residual_structure=structure)

@@ -6,9 +6,9 @@ Needle R = 0.10 mm, L = 25 mm; barrel R = 2.3 mm; dose 1 mL.
 
 ## `carbopol_etd2020_0p5wt_50uL`
 
-Refit: tau_y = 41.1 Pa, k = 13.7 Pa s^n, n = 0.428; within 0.0% of the registry record. Fitted envelope [0.001, 200] 1/s.
+Refit: tau_y = 41.111 Pa, k = 13.732 Pa s^n, n = 0.42826 (five figures: d ln F / d ln n reaches 7, so three would not let a reader reproduce the table to 1 %); within 0.0% of the registry record. Fitted envelope [0.001, 200] 1/s.
 
-| dose time (s) | Q (mL/s) | F (N) | profile 95 % (N) | covariance 95 % (N) | dp (bar) | gd_w (1/s) | Re | plug r_p/R | Q share outside envelope | extrapolated |
+| dose time (s) | Q (mL/s) | F (N) | one-at-a-time profile envelope 95 % (N) | covariance 95 % (N) | dp (bar) | gd_w (1/s) | Re | plug r_p/R | Q share outside envelope | extrapolated |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 30 | 0.0333 | 12.802 | [12.503, 13.109] | [12.620, 12.993] | 7.703 | 5.74e+04 | 7.9 | 0.027 | 100.0% | YES |
 | 10 | 0.1 | 20.240 | [19.713, 20.784] | [19.903, 20.598] | 12.179 | 1.71e+05 | 45 | 0.017 | 100.0% | YES |
@@ -18,9 +18,9 @@ Sensitivity d ln F / d ln p at 10 s: tau_y +0.021, k +0.979, n +4.869. Insensiti
 
 ## `carbopol_etd2020_0p1wt_40uL`
 
-Refit: tau_y = 0.839 Pa, k = 4.46 Pa s^n, n = 0.644; within 3.4% of the registry record. Fitted envelope [0.001, 200] 1/s.
+Refit: tau_y = 0.83865 Pa, k = 4.4596 Pa s^n, n = 0.64448 (five figures: d ln F / d ln n reaches 7, so three would not let a reader reproduce the table to 1 %); within 3.4% of the registry record. Fitted envelope [0.001, 200] 1/s.
 
-| dose time (s) | Q (mL/s) | F (N) | profile 95 % (N) | covariance 95 % (N) | dp (bar) | gd_w (1/s) | Re | plug r_p/R | Q share outside envelope | extrapolated |
+| dose time (s) | Q (mL/s) | F (N) | one-at-a-time profile envelope 95 % (N) | covariance 95 % (N) | dp (bar) | gd_w (1/s) | Re | plug r_p/R | Q share outside envelope | extrapolated |
 |---|---|---|---|---|---|---|---|---|---|---|
 | 30 | 0.0333 | 38.697 | [27.941, 54.106] | [29.537, 50.730] | 23.284 | 4.83e+04 | 2.2 | 0.000 | 100.0% | YES |
 | 10 | 0.1 | 78.545 | [54.801, 113.769] | [58.099, 106.669] | 47.262 | 1.45e+05 | 9.8 | 0.000 | 100.0% | YES |
@@ -32,11 +32,15 @@ Sensitivity d ln F / d ln p at 10 s: tau_y +0.000, k +1.000, n +7.438. Insensiti
 
 1. Every force above is an extrapolation of the rheometry: the wall shear rate is 2.9 decades (carbopol_etd2020_0p5wt_50uL) and 2.9 decades (carbopol_etd2020_0p1wt_40uL) above the top of the deposited flow curves at the 10 s dose, and essentially all of Q is carried there. The profile and covariance intervals are conditional on Herschel-Bulkley holding over those decades, which the data does not test; they bound the parameter uncertainty, not the model-form uncertainty.
 
-2. The ordering of the two surrogates flips between the rheometer and the needle. At the top of the measured range (199.961 1/s) the stresses are 174 Pa (carbopol_etd2020_0p5wt_50uL) and 136 Pa (carbopol_etd2020_0p1wt_40uL); at the needle wall the fitted curves give 2436 Pa and 9452 Pa, so the LOWER-concentration gel needs 3.9x the force. That comes entirely from the flow index (n = 0.428 against 0.644) carried three decades past the data. Which surrogate is harder to inject through this needle is not decided by the deposited measurements.
+2. The ordering of the two surrogates flips between the rheometer and the needle. At the top of the measured range (199.961 1/s) the stresses are 174 Pa (carbopol_etd2020_0p5wt_50uL) and 136 Pa (carbopol_etd2020_0p1wt_40uL); at the needle wall the fitted curves give 2436 Pa and 9452 Pa, so the LOWER-concentration gel needs 3.9x the force. That comes entirely from the flow index (n = 0.428 against 0.644) carried 2.9 decades past the data. Which surrogate is harder to inject through this needle is not decided by the deposited measurements.
 
-3. The force is insensitive to the yield stress for both gels (d ln F / d ln tau_y = +0.021 and +0.000): the plug is under 3 % of the radius. Injectability of these surrogates is a high-rate consistency question, and the measurement that would settle it is a capillary or slit rheometer run to 1e5 1/s, not a better yield-stress fit.
+3. The force is insensitive to the yield stress for both gels (d ln F / d ln tau_y = +0.021 and +0.000): the plug is at most 1.7% of the radius. Injectability of these surrogates is a high-rate consistency question. The measurement that would settle the ORDERING is a capillary or slit rheometer run to 1e5 1/s (the curves are 3.8x apart there); the force MAGNITUDE at the 3 s dose needs the wall rate itself, 5.7e+05 1/s. Not a better yield-stress fit.
 
-4. Reynolds numbers reach 45 at the 10 s dose and larger at 3 s: laminar, but the entrance and exit losses left out of the closed form grow with Re and are not in these numbers.
+4. Reynolds numbers (rho U 2R / eta at the wall rate) reach 45 at the 10 s dose and 299 at 3 s, below the Newtonian transition 2100, the only threshold used: laminar, but the entrance and exit losses left out of the closed form grow with Re and are not in these numbers.
+
+5. No slip. Carbopol slips on smooth walls at stresses far below the 9 kPa the needle wall sees, so every force above is an upper bound in that respect; the deposited data (smooth plates, one gap) cannot say by how much. A two-radius needle test at matched wall stress would.
+
+6. The Herschel-Bulkley form is not exact for either curve within the data: the log residuals ordered by rate have 16 runs where 27 are expected (carbopol_etd2020_0p5wt_50uL, rmse_log 0.004) and 4 where 28 are expected (carbopol_etd2020_0p1wt_40uL, rmse_log 0.166; signs `++++++++-----------------------++++++++++++++++-------`). For the 0.5 wt% gel that is a 0.4% systematic misfit; for the 0.1 wt% gel it is 17%, so the flow index carried past the data in point 2 is the index of a form that already misses this curve by that much.
 
 ## Figure
 

@@ -63,7 +63,9 @@ class RateModel(Model):
         return np.clip(g, lo + 1e-12, hi - 1e-12)
 
     def stress(self, gammadot: np.ndarray, *params: float) -> np.ndarray:
-        """sigma = eta * gammadot, with the 0 * inf at zero rate resolved to tau_y."""
+        """sigma = eta * gammadot for gd > 0; NaN at zero rate (the 0 * inf there is
+        model-specific: a yield-stress model tends to tau_y, a GNF to 0; read the
+        model's ``limits`` instead of this function for that point)."""
         gd = np.asarray(gammadot, dtype=float)
         with np.errstate(invalid="ignore"):
             return np.where(gd > 0, self(gd, *params) * gd, np.nan)

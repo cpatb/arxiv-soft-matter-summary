@@ -6,6 +6,7 @@ import re
 from collections.abc import Mapping
 from pathlib import Path
 
+import numpy as np
 import yaml
 
 from ..constitutive import MODELS, get_model
@@ -142,10 +143,14 @@ def load_record(path: str | Path, allow_network: bool = False) -> FluidRecord:
                          f"got {lic['commercial_use']!r}")
     licence = Licence(name=str(lic["name"]), commercial_use=bool(lic["commercial_use"]))
 
+    sidecar = _read_sidecar(path, rec_id, model)
+    if sidecar is not None:
+        _check_sidecar_values(sidecar, np.array([params[n].si for n in model.param_names]),
+                              model, path)
     return FluidRecord(
         id=rec_id, fluid=str(raw["fluid"]), model=model, parameters=params,
         envelope=envelope, sources=sources, licence=licence,
-        notes=str(raw.get("notes", "")), identifiability=_read_sidecar(path, rec_id, model),
+        notes=str(raw.get("notes", "")), identifiability=sidecar,
         path=str(path), extra=dict(raw.get("extra") or {}),
     )
 
@@ -175,6 +180,20 @@ def _read_sidecar(path: Path, rec_id: str, model) -> dict | None:
     if set(block.get("parameters", {})) != set(model.param_names):
         raise ProvenanceError(f"{sc}: sidecar parameters do not match the model's")
     return dict(block)
+
+
+def _check_sidecar_values(sc_block: dict, params_si: np.ndarray, model, path: Path) -> None:
+    """Apply at load time the rule ``write_identifiability`` applies at write time: every
+    record value must lie inside the sidecar's profile interval. The record may quote
+    the source's own fit (the Carbopol records carry ``carbopol/fit_hb.py``'s stress-space
+    values, 0.1-4 % from the identify layer's log-viscosity fit) but not a number the
+    fit excludes; an edited record does not keep its verdicts."""
+    for name, stored in zip(model.param_names, params_si):
+        est = sc_block["parameters"][name]
+        lo, hi = est.get("lo"), est.get("hi")
+        if lo is None or hi is None or not (float(lo) <= float(stored) <= float(hi)):
+            raise ProvenanceError(f"{path}: record {name} = {stored:g} lies outside the sidecar's "
+                                  f"interval [{lo}, {hi}]; the verdicts are not this record's")
 
 
 def load_all(directory: str | Path = RECORDS_DIR, allow_network: bool = False) -> dict[str, FluidRecord]:

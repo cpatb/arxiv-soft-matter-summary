@@ -265,6 +265,13 @@ def test_no_sidecar_means_no_verdicts(tmp_path):
     ({"record_id": "some_other_record"}, "is for record"),
     ({"model": "casson"}, "sidecar fitted"),
     ({"parameters": {"tau_y": {"verdict": "measurable"}}}, "do not match"),
+    # reviewer 2026-09-05: an edited record must not keep its verdicts. k = 8.903 in the
+    # record against a sidecar interval that excludes it
+    ({"parameters": {
+        "tau_y": {"value": 23.756, "lo": 23.0, "hi": 24.5, "verdict": "measurable"},
+        "k": {"value": 4.918, "lo": 4.73, "hi": 5.11, "verdict": "measurable"},
+        "n": {"value": 0.4526, "lo": 0.44, "hi": 0.46, "verdict": "measurable"}}},
+     "outside the sidecar's interval"),
 ])
 def test_sidecar_rejected_not_ignored(tmp_path, override, match):
     p = _write(tmp_path, GOOD)
