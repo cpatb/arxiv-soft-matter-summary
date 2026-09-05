@@ -122,6 +122,13 @@ assert abs(Y_C - 2 * 0.048) / Y_C < 0.01, (
     "in use. Got Y_C = %.5f against 2 x 0.048 = 0.096" % Y_C)
 RHO_F = 1000.0      # kg/m^3; Carbopol at these concentrations is water to <1%
 
+# Ladder construction. These were inline literals until 2026-09-03, and the printed prose
+# described the first as a MAXIMUM of 1.5 when the code applies it as a MINIMUM of 1.35 --
+# a reader could not check the quoted resolution against the stated rule. Named here so the
+# rule and the number are one thing.
+LADDER_MIN_STEP = 1.35   # keep a bead only once it is this far above the last kept one
+CAND_LO, CAND_HI = 0.4, 2.5   # candidate window, as multiples of the softest/stiffest recipe
+
 # Bead materials by density, kg/m^3. Chosen for what a lab actually has in a drawer or
 # can buy as a precision ball bearing / chromatography packing, not for coverage.
 MATERIALS = {
@@ -181,18 +188,29 @@ def main() -> None:
     print("3. A ladder, and what it costs")
     print()
     print("   Sort every (material, diameter) by the tau_y it marks, then walk the list")
-    print("   keeping only beads that advance the bracket by less than a factor of 1.5.")
-    print("   The bracket a ladder returns is the RATIO between adjacent rungs, so the")
-    print("   rung spacing IS the measurement's resolution -- there is no separate")
-    print("   precision to quote.")
+    print("   keeping a bead only once it is at least %.2fx above the last one kept."
+          % LADDER_MIN_STEP)
+    print("   That is a MINIMUM spacing: two rungs closer together cost a drop and buy no")
+    print("   resolution, because the bracket a ladder returns IS the ratio between")
+    print("   adjacent rungs. The rung spacing therefore IS the measurement's resolution,")
+    print("   and there is no separate precision to quote.")
+    print("   Candidates are restricted to %.2fx the softest and %.2fx the stiffest recipe."
+          % (CAND_LO, CAND_HI))
     print()
     cand = sorted(((tau_from_bead(d, rho), m, d)
                    for m, rho in MATERIALS.items() for d in DIAMETERS_MM),
                   key=lambda t: t[0])
-    cand = [c for c in cand if taus.min() * 0.4 <= c[0] <= taus.max() * 2.5]
+    # Only beads that can bracket the recipes: a rung far below the softest or far above
+    # the stiffest bath resolves nothing, it just costs a drop. The margins are generous
+    # because the recipe range is itself uncertain.
+    cand = [c for c in cand if taus.min() * CAND_LO <= c[0] <= taus.max() * CAND_HI]
+    # MINIMUM spacing, not maximum: take the next bead only once it is at least
+    # LADDER_MIN_STEP above the last kept one. Two rungs closer than that cost a drop and
+    # buy no resolution, because the bracket a ladder returns IS the ratio between
+    # adjacent rungs.
     ladder: list[tuple[float, str, float]] = []
     for tau, m, d in cand:
-        if not ladder or tau / ladder[-1][0] >= 1.35:
+        if not ladder or tau / ladder[-1][0] >= LADDER_MIN_STEP:
             ladder.append((tau, m, d))
     print(f"   {'tau_y (Pa)':>11}  {'material':<18} {'d (mm)':>7}   step")
     for i, (tau, m, d) in enumerate(ladder):

@@ -87,7 +87,7 @@ def main() -> int:
     rows = []
     print("%6s %8s %10s %10s %9s %22s %10s %7s %6s"
           % ("rate", "n_pts", "gEff(T1)", "gEff(T2)", "gauge%",
-             "68% interval (T1)", "chi2_red", "n_fit", "ok"))
+             "95% interval (T1)", "chi2_red", "n_fit", "ok"))
     for rate in RATES:
         d = load(f"Fig_3a_gamma_dot_{rate:.2f}.csv")
         strain, eta_r = d[:, 0], d[:, 1]
@@ -143,54 +143,48 @@ def main() -> int:
     print("the affine-invariance check G11 rests on, holding at every rate.")
     print()
     # Is the span bigger than the fits' own uncertainty? A 1.9x spread means nothing if
-    # each interval is 2x wide. Compare the extremes' 68% intervals for overlap.
+    # each interval is 2x wide. Compare the extremes' 95% intervals for overlap.
     lo = min(rows, key=lambda r: r["gamma_eff_triple1"])
     hi = max(rows, key=lambda r: r["gamma_eff_triple1"])
     overlap = lo["gamma_eff_hi"] >= hi["gamma_eff_lo"]
     print("Extremes: rate %.2f -> %.4f [%.4f, %.4f]   rate %.2f -> %.4f [%.4f, %.4f]"
           % (lo["rate"], lo["gamma_eff_triple1"], lo["gamma_eff_lo"], lo["gamma_eff_hi"],
              hi["rate"], hi["gamma_eff_triple1"], hi["gamma_eff_lo"], hi["gamma_eff_hi"]))
-    print("68%% intervals %s -- the spread is %s the NAIVE fit uncertainty."
+    print("95%% intervals %s -- the spread IS %s the fit uncertainty."
           % ("OVERLAP" if overlap else "do NOT overlap",
-             "NOT resolved against" if overlap else "resolved against"))
-
-    # ...but chi2_reduced is ~1e3 on every record, so the exponential does NOT describe
-    # these data and the naive intervals are optimistic by roughly the Birge ratio
-    # sqrt(chi2_reduced). Inflating by it is the standard conservative treatment, and the
-    # verdict has to survive it or be stated as unresolved.
-    def inflated(r):
-        b = np.sqrt(max(r["chi2_reduced"], 1.0))
-        half_lo = r["gamma_eff_triple1"] - r["gamma_eff_lo"]
-        half_hi = r["gamma_eff_hi"] - r["gamma_eff_triple1"]
-        return (r["gamma_eff_triple1"] - b * half_lo,
-                r["gamma_eff_triple1"] + b * half_hi, b)
-    lo_i, hi_i = inflated(lo), inflated(hi)
-    overlap_inf = lo_i[1] >= hi_i[0]
+             "not resolved against" if overlap else "resolved against"))
     print()
-    print("BUT chi2_reduced is %.0f to %.0f on these records -- the exponential does not"
+    print("A NOTE ON WHAT THAT INTERVAL ALREADY CONTAINS, because an earlier version of")
+    print("this script got it wrong in a way that reversed the verdict.")
+    print("`fit_relaxation` admits lambdas with  ssr <= ssr_min * (1 + CHI2_1DOF_95/dof),")
+    print("i.e. a RELATIVE SSR criterion. That is the error-rescaled form: the half-width")
+    print("already scales as sqrt(chi2_reduced), so the misfit (chi2_red = %.0f to %.0f)"
           % (min(r["chi2_reduced"] for r in rows), max(r["chi2_reduced"] for r in rows)))
-    print("describe them, so those intervals are optimistic. Inflating by the Birge ratio")
-    print("sqrt(chi2_red) (x%.1f and x%.1f at the extremes):" % (lo_i[2], hi_i[2]))
-    print("  rate %.2f -> [%.4f, %.4f]   rate %.2f -> [%.4f, %.4f]"
-          % (lo["rate"], lo_i[0], lo_i[1], hi["rate"], hi_i[0], hi_i[1]))
-    print("  inflated intervals %s." % ("OVERLAP" if overlap_inf else "do NOT overlap"))
-    if overlap_inf:
-        print("=> The 1.88x span is NOT resolved once the model misfit is priced in.")
-        print("   Report it as a SPAN over the sampled rates, not as a measured rate")
-        print("   dependence, and do not fit an exponent to it.")
+    print("is ALREADY priced in. The first version inflated by the Birge ratio on top of")
+    print("that -- an extra factor of 30 to 63 -- which pushed the lower bound to -0.54, a")
+    print("NEGATIVE e-folding strain, and manufactured an overlap. Do not re-add it.")
+    print("CHI2_1DOF_95 = 3.8415, so these are 95% intervals, not 68%.")
     print()
     if span < 1.10:
         print("=> RATE-INDEPENDENT to better than 10%. The inversion behaves like a fixed")
         print("   map over this range, so the 41% offset measured at gamma_dot = 0.74 is")
         print("   more defensibly carried as a systematic OF THE METHOD.")
-        print("   ⚠ INDIRECT. The direct channel exists at one rate only, so this removes")
-        print("     one way for the 41% to mislead; it does not confirm the DIFFERENCE is")
-        print("     rate-independent, and the spec must not claim that it does.")
+    elif overlap:
+        print("=> The %.2fx span is NOT resolved against the fit uncertainty. Report it as" % span)
+        print("   a span over the sampled rates, not as a measured rate dependence.")
     else:
-        print("=> RATE-DEPENDENT by %.2fx. 'The strain clock' is not one number even" % span)
-        print("   within a single channel, so the 41%% is a difference between two")
-        print("   rate-varying quantities and must not be quoted as a fixed systematic.")
-        print("   The spec's gamma_0 clause needs a rate attached as well as a definition.")
+        print("=> RATE-DEPENDENT by %.2fx, and RESOLVED: the extremes' 95%% intervals do not"
+              % span)
+        print("   overlap. So 'the strain clock' is not one number even within a single")
+        print("   channel, and the 41% is a difference between two rate-varying quantities.")
+        print("   gamma_0 needs a RATE quoted with it as well as a definition.")
+        if not monotone:
+            print("   BUT the dependence is NON-MONOTONE, so it is not a law: do not fit an")
+            print("   exponent, and do not extrapolate outside 0.02 <= gamma_dot <= 0.74.")
+    print()
+    print("⚠ INDIRECT, and this bounds what may be concluded. The direct channel exists at")
+    print("  ONE rate, so this cannot show the 41% DIFFERENCE is rate-varying -- only that")
+    print("  one of its two terms is. The spec must not claim more.")
 
     out = ROOT / "logs" / "g11_rate_dependence.json"
     out.parent.mkdir(exist_ok=True)
