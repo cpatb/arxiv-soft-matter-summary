@@ -177,10 +177,28 @@ intercept is not evidence that the field is converged where the design uses it.
 4. **A second `Re_d`.** The `Re_d^{−1/2}` in the closure has never been tested against
    anything; the design runs at `Re_d` ≈ 7 400–8 400 against a single simulated 10 000.
 
-## 7. Process note, for the record
+## 7. Independent verification, and a process note
 
-Five reviewers were dispatched. The units audit and this physics referee returned; **three
-(code review, numerics verification, and the frisbee physics referee) died on a session rate
-limit and have not run.** The numerics verification in particular has *not* independently
-re-run any number in this document — every figure here is from my own execution, which is
-exactly the arrangement the lab's rules say not to rely on. Re-dispatch them.
+**Every number in this document has now been independently re-run and reproduced.** The
+numerics verifier executed each claim itself rather than reading mine:
+
+- The Celik arithmetic was **hand-recomputed without calling `gci.py`** — `p` = 2.19780,
+  `GCI_fine` = 4.1454 %, `φ_ext` = 1.633328, agreeing to four significant figures.
+- The three convergence iteration counts (**11 552 / 5 105 / 2 261**) were grepped from
+  `log.simpleFoam` directly, as was `r1_ext`'s failure: 0 hits on "SIMPLE solution
+  converged", `Uz` initial residual **1.85e-2** against ~1e-9 on every other field and
+  3000–11 000× the `Uz` of the three grids that did converge.
+- The `y⁺` bins reproduced exactly, and the binning was judged a fair reading of the same
+  raw sample `fit_closure.py` uses (median per bin, true radial coordinate).
+- `Q* ∝ C_P^{−1.426}` was recovered independently by calling `optimum()` at two `C_P`
+  values and taking the log-ratio: **−1.4262**.
+- The Birge inflation was recomputed and the intervals do overlap.
+
+⚠ **One methodological catch worth keeping.** `latexmk`'s *intermediate* pass reports a
+transient 3.9095 pt overfull box that disappears once `bibtex` resolves the references.
+**Only the final `.log` is quotable** — which is the same shape as this document's own
+headline finding, that an intermediate state can look like a result.
+
+Two reviewers (code review, and the frisbee physics referee) were still outstanding when
+this was written; three of the original five had died on a session rate limit and were
+re-dispatched.
