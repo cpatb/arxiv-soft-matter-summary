@@ -8,6 +8,18 @@
 
 **Tech Stack:** Python 3.12, numpy 2, scipy 1.17, sympy, pint, PyYAML, pytest. `dst-fit` 0.1.0 editable from `Desktop/Projects/dst_fit`.
 
+## Execution ledger (updated 2026-09-05)
+
+- [x] Task 1 skeleton + 0.1 gate -- commit c004821
+- [x] Task 2 registry + provenance -- c004821 (15 Carbopol records, sidecar-only identifiability)
+- [x] Task 3 GNF family + regularisations -- c004821
+- [x] Task 4 identify layer -- c004821; degenerate detector gained a Fisher null-direction channel in f9597c6 (the corr-only rule read an all-NaN covariance as "no evidence")
+- [x] Task 5 structural family -- f9597c6 (gate 20/20 after the detector change; bar unchanged at 18)
+- [x] Task 6 injectability -- d4684a8. Went beyond the plan: closed form for GENERAL n (Skelland) checked against the quadrature route to 1e-8, not only n = 1. Pre-registered UQ gate's "inside" case was mis-specified (Q = 1e-8 puts the wall 16x above the envelope; the flag was right) and moved to Q = 2e-10 with the miss recorded in the test docstring. Case study finding: both surrogates sit 2.9 decades above the deposited data at the needle wall and their force ordering reverses there.
+- [x] Reviewer pass (physics-referee, science-code-reviewer) on Tasks 3-6 -- acted on in 56da557: extrapolation flag now judged at every profile end, wall slip and the Re definition named in the injectability docstring, load-time sidecar containment check, Wald-vs-profile coverage counted over closed intervals only, and a Wald-Wolfowitz runs test on the log residuals written into every sidecar as `residual_structure` (13/15 Carbopol records flagged). Not done from the reviews: loader unit check compares `repr`, `assert not base.fixed` in regularise, envelope rounded outward, note on dst_fit guess collision, Wald-corr-at-bound caveat.
+- [x] 0.3 blood record: 20 Horner 2020 donors (doi:10.1007/s00397-023-01402-2, author-posted workbook, `commercial_use: false`) as Casson records via `scripts/records_from_horner.py`; the authors' Casson table reproduced to 1e-8 and shown to be an objective convention (sqrt-space LSQ) that puts tau_y 0.4-71 % above the log-eta fit; Casson structured on 19/20, Cross/CY 5x lower rmse. The earlier "no DOI-resolvable curve" entry was wrong: the workbook was findable from the 2023 paper's data statement.
+- [ ] 0.7 founder-only decisions (D1 package name etc.)
+
 ## Global Constraints
 
 - Every number in a record or a test has a source (DOI, dataset DOI, or a hand computation shown in the test).

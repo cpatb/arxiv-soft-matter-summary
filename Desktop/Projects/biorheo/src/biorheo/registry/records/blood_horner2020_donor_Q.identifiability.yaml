@@ -1,0 +1,38 @@
+# written by biorheo.identify; do not edit by hand
+written_by: biorheo.identify
+written_on: '2026-09-05'
+record_id: blood_horner2020_donor_Q
+model: casson
+level: 0.95
+fit:
+  n_points: 16
+  rmse_log_eta: 0.17110365274490516
+  gammadot_min: 0.1
+  gammadot_max: 700.0
+residual_structure:
+  n: 16
+  n_runs: 3
+  expected_runs: 8.875
+  z: -3.092372966310914
+  structured: true
+  signs: --+++++++++-----
+parameters:
+  tau_y:
+    value: 0.005503888864174672
+    lo: 0.004100220593930896
+    hi: 0.02503513778919638
+    verdict: measurable
+    decades: 0.7857427634155181
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+  eta_c:
+    value: 0.003608843788065391
+    lo: 0.0030233815826827765
+    hi: 0.19892134308321313
+    verdict: measurable
+    decades: 1.8181884196660085
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+data_note: Horner 2020 steady shear, human donor Q, 16 points; see data/horner2020/SOURCE.md

@@ -219,6 +219,30 @@ def test_shipped_records_load_offline():
         assert r.identifiability["fit"]["gammadot_max"] == pytest.approx(r.envelope.gammadot_max, rel=1e-5)
 
 
+def test_shipped_blood_records_carry_their_convention():
+    """The 20 Horner 2020 donors (A-U without E) ship as Casson records whose values are
+    biorheo's own log-eta fit, with the authors' sqrt-space values beside them in extra.
+    Two facts pinned from scripts/records_from_horner.py's 2026-09-05 run: the authors'
+    table reproduces to 1e-6 or better, and the Casson form is flagged structured on
+    19 of 20 donors (2 runs of residual sign on n = 16; donor D is the exception)."""
+    recs = load_all(allow_network=False)
+    blood = [r for r in recs.values() if r.id.startswith("blood_horner2020_donor_")]
+    assert sorted(r.extra["donor"] for r in blood) == [c for c in "ABCDFGHIJKLMNOPQRSTU"]
+    structured = 0
+    for r in blood:
+        assert r.model.name == "casson" and r.commercial_ok is False
+        assert r.envelope.temperature_C == 37.0
+        assert r.envelope.gammadot_min == pytest.approx(0.1) and r.envelope.gammadot_max == pytest.approx(700.0)
+        assert float(r.extra["authors_casson_reproduced_to"]) < 1e-6
+        # the record is the log-eta fit, never the authors' number: tau_y is lower on every donor
+        assert r.parameters["tau_y"].si < r.extra["authors_casson_tau_y_Pa"]
+        assert r.identifiability["fit"]["n_points"] == 16
+        structured += bool(r.identifiability["residual_structure"]["structured"])
+    assert structured == 19
+    assert recs["blood_horner2020_donor_D"].identifiability["residual_structure"]["structured"] is False
+    assert {r.extra["paper_outlier_flag"] for r in blood if r.extra["donor"] in "FNK"} == {True}
+
+
 def test_shipped_carbopol_record_matches_fit_table():
     """carbopol/hb_fits_etd2020.csv row '0.5 wt%, 40 uL TEA': tau_y 23.756, K 8.903,
     n 0.4526; hand value at 10 1/s is 4.9002 Pa s (see test above)."""

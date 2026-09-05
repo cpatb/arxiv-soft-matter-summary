@@ -54,12 +54,23 @@ suite to prove it.
 
 Fifteen Carbopol records (doi:10.25835/hjn2qcvy, ETD2020, smooth plates, 20 C) with
 measured envelopes of [1e-3, 200] 1/s and every Herschel-Bulkley parameter graded
-`measurable`. The one case study so far, needle injectability of two of those gels,
-puts the needle wall 2.9 decades above the top of that envelope and finds the force
-ordering of the two gels reverses between rheometer and needle; see
-`case_studies/injectability_surrogates/results.md`. No blood record is in the
-registry: no measured, DOI-resolvable steady flow curve with a stated envelope has been
-found yet, and nothing is entered from memory.
+`measurable`; 13 of the 15 are flagged `residual_structure.structured`, so the HB form
+is a systematic misfit at rmse 0.2-17 % even where every parameter is determined. The
+one case study so far, needle injectability of two of those gels, puts the needle wall
+2.9 decades above the top of that envelope and finds the force ordering of the two gels
+reverses between rheometer and needle; see
+`case_studies/injectability_surrogates/results.md`.
+
+Twenty human whole-blood records (Horner 2020 thesis workbook via Farrington,
+Jariwala, Armstrong 2023, doi:10.1007/s00397-023-01402-2; 37 C, EDTA, 16 rates in
+[0.1, 700] 1/s, one donor each) as Casson fits with `commercial_use: false` (author
+posted, no licence stated). The authors' Casson table is reproduced to 1e-8 before
+anything is built on it, and it is a convention: an unweighted line in sqrt space,
+whose yield stress is 0.4-71 % (median 33 %) above biorheo's log-viscosity fit of the
+same 16 points, because Casson misfits every donor but one (2 runs of residual sign
+against 9 expected). Cross and Carreau-Yasuda fit the same curves 5x better; the table
+is `data/horner2020/model_comparison.md`. The workbook's step-shear and LAOS sheets are
+unused transient data for the structural family.
 
 ## Conventions
 
