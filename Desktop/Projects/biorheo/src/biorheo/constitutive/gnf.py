@@ -218,9 +218,12 @@ CROSS = RateModel(
 )
 
 
+from .structural import STRUCTURAL_STEADY  # noqa: E402  (steady state of the kinetics)
+
 MODELS: dict[str, RateModel] = {
     m.name: m
-    for m in (NEWTONIAN, POWER_LAW, HERSCHEL_BULKLEY, CASSON, CARREAU_YASUDA, CROSS)
+    for m in (NEWTONIAN, POWER_LAW, HERSCHEL_BULKLEY, CASSON, CARREAU_YASUDA, CROSS,
+              STRUCTURAL_STEADY)
 }
 
 

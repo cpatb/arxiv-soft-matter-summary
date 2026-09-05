@@ -15,11 +15,22 @@ not_identifiable
     both ends are at bounds: the profile never crossed the critical value, the data
     says nothing about this parameter on its own;
 degenerate
-    at least one end is open AND the parameter's fit correlation with another one has
-    ``|corr| > 0.99``: it is not identifiable because it is traded against that other
-    parameter (a ratio or product enters the model, the ``parameters-that-enter-as-a-
-    ratio`` lesson). Checked before ``bounded_only``/``not_identifiable``, so a
-    degenerate pair is named as such rather than reported as two unrelated bounds.
+    at least one end is open AND the parameter is traded against another one (a ratio
+    or product enters the model, the ``parameters-that-enter-as-a-ratio`` lesson),
+    detected by either of two signatures: the fit correlation has ``|corr| > 0.99``,
+    or the log-log sensitivity Jacobian ``d ln eta / d ln p`` at the fit has a null
+    direction (``s_min/s_max < DEGENERATE_COND``) in which this parameter and a
+    partner both carry weight (``|v_j| > NULL_WEIGHT``). Checked before
+    ``bounded_only``/``not_identifiable``, so a degenerate pair is named as such
+    rather than reported as two unrelated bounds.
+
+    The second signature was added 2026-09-05 after the structural gate
+    (``tests/test_structural.py``) missed its pre-registered bar at 16/20: on 4 of 20
+    seeds the fitter sat exactly on the symmetric point ``alpha = t_r``, where the
+    Jacobian is rank-deficient, the covariance is all-NaN, and the corr rule read the
+    strongest possible degeneracy signal as no evidence. The bar was not moved; the
+    detector got a second, independent channel that a singular covariance cannot hide
+    from.
 
 "Bounded" here means the likelihood-ratio interval at ``level``, not the Wald error;
 ``dst_fit`` reports both, and the profile is the one that is honest near a bound. A
@@ -40,10 +51,14 @@ from dst_fit.profiling import Profile, profile_likelihood
 from ..constitutive import RateModel
 from ..registry.schema import Envelope
 
-__all__ = ["VERDICTS", "ParamEstimate", "IdentifiedModel", "fit_rate_curve", "verdict_for"]
+__all__ = ["VERDICTS", "ParamEstimate", "IdentifiedModel", "fit_rate_curve", "verdict_for",
+           "null_direction"]
 
 VERDICTS = ("measurable", "bounded_only", "degenerate", "not_identifiable")
 DEGENERATE_CORR = 0.99  # |corr| above which two parameters count as one
+DEGENERATE_COND = 1e-8  # s_min/s_max of the log-log Jacobian below which a null direction exists
+NULL_WEIGHT = 0.3       # |component| in the null vector for a parameter to "carry weight"
+_FD_REL_STEP = 1e-6     # central-difference step, relative to |p|
 
 
 @dataclass(frozen=True)
@@ -98,8 +113,38 @@ class IdentifiedModel:
                 for k, v in self.params.items()}
 
 
+def null_direction(model: RateModel, gd: np.ndarray, params: np.ndarray
+                   ) -> tuple[float, np.ndarray]:
+    """``(s_min/s_max, v)`` of the log-log sensitivity Jacobian ``d ln eta_i / d ln p_j``
+    at ``params``, with ``v`` the unit right-singular vector of the smallest singular
+    value. A ratio near machine zero means the data cannot move along ``v`` at all;
+    the parameters with large ``|v_j|`` are the ones traded against each other.
+
+    Central differences with a relative step; a parameter at exactly 0 is stepped
+    absolutely (its log-sensitivity is then a plain sensitivity, which is fine for
+    the rank question).
+    """
+    p = np.asarray(params, dtype=float)
+    cols = []
+    for j in range(p.size):
+        scale = abs(p[j]) if p[j] != 0 else 1.0
+        h = _FD_REL_STEP * scale
+        up, dn = p.copy(), p.copy()
+        up[j] += h
+        dn[j] -= h
+        with np.errstate(all="ignore"):
+            d = (np.log(model(gd, *up)) - np.log(model(gd, *dn))) / (2 * h)
+        cols.append(d * scale)
+    J = np.column_stack(cols)
+    if not np.all(np.isfinite(J)):
+        return float("nan"), np.full(p.size, np.nan)
+    _, s, vt = np.linalg.svd(J, full_matrices=False)
+    return float(s[-1] / s[0]) if s[0] > 0 else 0.0, vt[-1]
+
+
 def verdict_for(profile: Profile, corr_row: np.ndarray, index: int,
-                param_names: tuple[str, ...]) -> tuple[str, str | None]:
+                param_names: tuple[str, ...], *, cond: float = np.inf,
+                null_vec: np.ndarray | None = None) -> tuple[str, str | None]:
     """Apply the rules in the module docstring to one parameter's profile."""
     open_side = profile.lower_at_bound or profile.upper_at_bound
     if open_side:
@@ -109,6 +154,15 @@ def verdict_for(profile: Profile, corr_row: np.ndarray, index: int,
             c, partner = max(others)
             if np.isfinite(c) and c > DEGENERATE_CORR:
                 return "degenerate", partner
+        # second signature: a null direction of the sensitivity Jacobian in which this
+        # parameter and another both carry weight
+        if null_vec is not None and np.isfinite(cond) and cond < DEGENERATE_COND                 and abs(float(null_vec[index])) > NULL_WEIGHT:
+            weights = [(abs(float(null_vec[j])), param_names[j])
+                       for j in range(len(param_names)) if j != index]
+            if weights:
+                w, partner = max(weights)
+                if w > NULL_WEIGHT:
+                    return "degenerate", partner
     if profile.lower_at_bound and profile.upper_at_bound:
         return "not_identifiable", None
     if open_side:
@@ -142,10 +196,12 @@ def fit_rate_curve(model: RateModel, gammadot, eta, *, level: float = 0.95,
     if not fit.success:
         raise RuntimeError(f"fit of {model.name} failed: {fit.message}")
 
+    cond, null_vec = null_direction(model, gd, np.asarray(fit.params, dtype=float))
     params: dict[str, ParamEstimate] = {}
     for i, name in enumerate(model.param_names):
         prof = profile_likelihood(model, gd, et, name, level=level, fit=fit, seed=seed)
-        verdict, partner = verdict_for(prof, fit.corr[i], i, model.param_names)
+        verdict, partner = verdict_for(prof, fit.corr[i], i, model.param_names,
+                                       cond=cond, null_vec=null_vec)
         params[name] = ParamEstimate(
             name=name, value=float(fit.params[i]), lo=float(prof.lower), hi=float(prof.upper),
             verdict=verdict, lo_at_bound=bool(prof.lower_at_bound),

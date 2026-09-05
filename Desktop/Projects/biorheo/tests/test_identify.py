@@ -60,6 +60,52 @@ def test_verdict_rules(lo_b, hi_b, corr, expected):
     assert (partner == "b") if expected == "degenerate" else (partner is None)
 
 
+@pytest.mark.parametrize("lo_b, hi_b, cond, vec, expected, partner", [
+    # rank signature: open side + null direction shared by a and b
+    (True, False, 1e-12, [0.7071, -0.7071, 0.0], "degenerate", "b"),
+    (True, True, 1e-12, [0.7071, -0.7071, 0.0], "degenerate", "b"),
+    # closed both sides: the rank signature is not consulted
+    (False, False, 1e-12, [0.7071, -0.7071, 0.0], "measurable", None),
+    # null direction is this parameter alone (inert, no partner): existing rules apply
+    (True, True, 0.0, [1.0, 0.0, 0.0], "not_identifiable", None),
+    # null direction does not involve this parameter
+    (True, False, 1e-12, [0.0, 0.7071, -0.7071], "bounded_only", None),
+    # well-conditioned Jacobian: no degeneracy
+    (True, False, 0.1, [0.7071, -0.7071, 0.0], "bounded_only", None),
+    # NaN covariance (rank-deficient fit) must not hide the rank signature
+    (True, False, 1e-15, [0.7071, -0.7071, 0.0], "degenerate", "b"),
+])
+def test_verdict_rank_signature(lo_b, hi_b, cond, vec, expected, partner):
+    corr_row = np.array([1.0, np.nan, np.nan])  # what a singular covariance looks like
+    verdict, got = verdict_for(_FakeProfile(lo_b, hi_b), corr_row, 0, ("a", "b", "c"),
+                               cond=cond, null_vec=np.array(vec))
+    assert (verdict, got) == (expected, partner)
+
+
+def test_null_direction_separates_degenerate_from_well_posed():
+    """The condition ratio must separate a product-only pair from a well-posed fit by
+    orders of magnitude, not by a tuned threshold: measured 1e-11..1e-17 against 0.09..0.11
+    on 2026-09-05, i.e. >= 8 decades either side of DEGENERATE_COND = 1e-8."""
+    from biorheo.constitutive import STRUCTURAL_STEADY, STRUCTURAL_STEADY_SEPARATE
+    from biorheo.identify.fit import DEGENERATE_COND, null_direction
+
+    gd = np.logspace(-2, 3, 30)
+    cond, v = null_direction(STRUCTURAL_STEADY_SEPARATE, gd, [3.5e-3, 56.14, 0.05, 4.0])
+    assert cond < DEGENERATE_COND * 1e-2
+    np.testing.assert_allclose(np.abs(v), [0, 0, 2 ** -0.5, 2 ** -0.5], atol=1e-6)
+    assert np.sign(v[2]) == -np.sign(v[3])  # alpha up, t_r down: the product is fixed
+
+    cond, _ = null_direction(STRUCTURAL_STEADY, gd, [3.5e-3, 56.14, 0.2])
+    assert cond > DEGENERATE_COND * 1e6
+    cond, _ = null_direction(HB, GRID_FULL, TRUTH)
+    assert cond > DEGENERATE_COND * 1e6
+
+    # beta = 0 makes alpha_tr inert: the null direction is alpha_tr alone, no partner
+    cond, v = null_direction(STRUCTURAL_STEADY, gd, [3.5e-3, 0.0, 0.2])
+    assert cond < DEGENERATE_COND
+    np.testing.assert_allclose(np.abs(v), [0, 0, 1], atol=1e-9)
+
+
 def test_single_parameter_model_cannot_be_degenerate():
     verdict, partner = verdict_for(_FakeProfile(True, True), np.array([1.0]), 0, ("mu",))
     assert verdict == "not_identifiable" and partner is None

@@ -28,7 +28,8 @@ from biorheo.constitutive import (
 
 def test_registry_names_and_units_cover_every_parameter():
     assert set(MODELS) == {
-        "newtonian", "power_law", "herschel_bulkley", "casson", "carreau_yasuda", "cross"
+        "newtonian", "power_law", "herschel_bulkley", "casson", "carreau_yasuda", "cross",
+        "structural_steady",
     }
     for m in MODELS.values():
         assert isinstance(m, RateModel)
