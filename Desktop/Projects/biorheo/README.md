@@ -67,8 +67,8 @@ Jariwala, Armstrong 2023, doi:10.1007/s00397-023-01402-2; 37 C, EDTA, 16 rates i
 posted, no licence stated). The authors' Casson table is reproduced to 1e-8 before
 anything is built on it, and it is a convention: an unweighted line in sqrt space,
 whose yield stress is 0.4-71 % (median 33 %) above biorheo's log-viscosity fit of the
-same 16 points, because Casson misfits every donor but one (2 runs of residual sign
-against 9 expected). Cross and Carreau-Yasuda fit the same curves 5x better; the table
+same 16 points, because Casson misfits every donor but one (3 runs of residual sign
+against 9 expected, under either objective). Cross and Carreau-Yasuda fit the same curves 5x better; the table
 is `data/horner2020/model_comparison.md`. The workbook's step-shear and LAOS sheets are
 unused transient data for the structural family.
 

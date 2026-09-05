@@ -62,9 +62,12 @@ end (sqrt(700) = 26 against sqrt(0.1) = 0.3), so the "yield stress" it returns i
 intercept of a line dominated by the 100-700 1/s points. `biorheo.identify` fits
 log-viscosity residuals (equal weight per decade) and returns tau_y 0.4-71 % lower
 (median 33 %) and eta_c 0.3-35 % higher on the same data. Neither is wrong; the Casson
-form does not describe the curve: on 19 of 20 donors the log-residuals ordered by rate
-fall into 2 runs against 9 expected (z = -3.1, which is the floor for n = 16; donor D is
-the exception at z = -0.5), so its parameters depend on the objective by that much.
+form does not describe the curve: on 18 of 20 donors the log-residuals ordered by rate
+fall into 3 runs against 9 expected (z = -3.1; the minimum possible at n = 16 is -3.62
+for 2 runs; donor D is the exception at 8 runs, z = -0.5), so its parameters depend on
+the objective by that much. The same test on the authors' own sqrt-space residuals
+flags 18 of 20, so the misfit is the form's, not the objective's (referee check,
+2026-09-05).
 Cross and Carreau-Yasuda fit the same curves with rmse_log 0.03 against Casson's 0.15,
 and are flagged structured on 2 and 1 donors; the price is that lam and a are degenerate
 or bounded on a third of donors. Full table: `model_comparison.md`.

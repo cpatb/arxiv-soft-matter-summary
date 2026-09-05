@@ -18,8 +18,11 @@ Three things happen, each a check:
    own numbers; the authors' values and the objective difference go in ``extra``. The
    difference (tau_y 0.4-71 % lower here, median 33 %) is a statement about the Casson
    form, which both fits misfit systematically: the log-residuals ordered by rate form
-   2 runs on 19 of 20 donors (z = -3.1, the floor for n = 16), and the sidecar's
-   ``residual_structure`` says so. Cross and Carreau-Yasuda misfit 5x less.
+   3 runs on 18 of 20 donors (z = -3.1; the minimum possible at n = 16 is -3.62 for
+   2 runs), and the sidecar's ``residual_structure`` says so. The same test on the
+   AUTHORS' OWN sqrt-space residuals flags 18 of 20, so the misfit is not an artefact
+   of the log-eta objective. Cross and Carreau-Yasuda misfit 5x less, at the price of
+   lam and a being degenerate or bounded on about a third of donors.
 3. Cross and Carreau-Yasuda are fitted to the same curves and their rmse and verdicts
    tabulated beside Casson's in ``data/horner2020/model_comparison.md``: which model
    the data determines is the finding, not the Casson numbers.
@@ -36,7 +39,8 @@ from pathlib import Path
 import numpy as np
 
 from biorheo.constitutive import get_model
-from biorheo.identify import fit_rate_curve, write_identifiability
+from biorheo.identify.fit import RUNS_Z
+from biorheo.identify import fit_rate_curve, runs_test, write_identifiability
 from biorheo.registry import load_record
 
 HERE = Path(__file__).resolve().parent
@@ -107,10 +111,14 @@ def load() -> tuple[np.ndarray, dict[str, np.ndarray], dict[str, dict]]:
     return gd, stress, phys
 
 
-def authors_casson(gd: np.ndarray, tau: np.ndarray) -> tuple[float, float]:
-    """The authors' objective, back-solved 2026-09-05: unweighted line in sqrt space."""
+def authors_casson(gd: np.ndarray, tau: np.ndarray) -> tuple[float, float, float]:
+    """The authors' objective, back-solved 2026-09-05: unweighted line in sqrt space.
+    Also returns the runs-test z of THEIR fit's log-eta residuals ordered by rate, the
+    anchor that the misfit is not a property of biorheo's objective."""
     slope, intercept = np.polyfit(np.sqrt(gd), np.sqrt(tau), 1)
-    return float(intercept ** 2), float(slope ** 2)
+    tau_fit = (intercept + slope * np.sqrt(gd)) ** 2
+    z_authors = runs_test(np.log(tau) - np.log(tau_fit)).z
+    return float(intercept ** 2), float(slope ** 2), float(z_authors)
 
 
 def main() -> None:
@@ -126,12 +134,15 @@ def main() -> None:
              "| donor | Hct % | " + " | ".join(f"{m} rmse / runs z / verdicts" for m in COMPARE) + " |",
              "|---|---|" + "---|" * len(COMPARE)]
     worst_repro = 0.0
+    n_authors_structured = 0
+    n_runs_hist: dict[int, int] = {}
     summary = {m: {"rmse": [], "structured": 0, "verdicts": {}} for m in COMPARE}
     for donor in sorted(stress):
         tau = stress[donor]
         eta = tau / gd
         p = phys[donor]
-        a_tau, a_eta = authors_casson(gd, tau)
+        a_tau, a_eta, z_authors = authors_casson(gd, tau)
+        n_authors_structured += z_authors < RUNS_Z
         dev = max(abs(a_tau / (float(p["casson_tau_y_mPa"]) * 1e-3) - 1.0),
                   abs(a_eta / (float(p["casson_eta_mPa_s"]) * 1e-3) - 1.0))
         worst_repro = max(worst_repro, dev)
@@ -143,6 +154,8 @@ def main() -> None:
             fits[m] = fit_rate_curve(get_model(m), gd, eta, temperature_C=TEMPERATURE_C, geometry=GEOMETRY)
         ident = fits["casson"]
         tau_y, eta_c = ident.values
+        nr = ident.residual_structure.n_runs
+        n_runs_hist[nr] = n_runs_hist.get(nr, 0) + 1
         rec_id = f"blood_horner2020_donor_{donor}"
         text = TEMPLATE.format(
             id=rec_id, donor=donor, hct=float(p["hematocrit_pct"]), fib=float(p["fibrinogen_mg_per_dL"]),
@@ -167,7 +180,8 @@ def main() -> None:
                 summary[m]["verdicts"][n][f.params[n].verdict] = summary[m]["verdicts"][n].get(f.params[n].verdict, 0) + 1
         table.append(f"| {donor} | {float(p['hematocrit_pct']):g} | " + " | ".join(cells) + " |")
         print(f"{rec_id}: tau_y {tau_y * 1e3:.3f} mPa (authors {a_tau * 1e3:.3f}), eta_c {eta_c * 1e3:.3f} mPa s "
-              f"(authors {a_eta * 1e3:.3f}); casson z {ident.residual_structure.z:+.2f}")
+              f"(authors {a_eta * 1e3:.3f}); casson z {ident.residual_structure.z:+.2f} "
+              f"({nr} runs), authors' own fit z {z_authors:+.2f}")
     table += ["", "## Summary over 20 donors", "",
               "| model | median rmse | max rmse | donors flagged structured | verdict counts |",
               "|---|---|---|---|---|"]
@@ -176,7 +190,15 @@ def main() -> None:
         vc = "; ".join(f"{n}: " + ", ".join(f"{k} {c}" for k, c in sorted(d.items())) for n, d in s["verdicts"].items())
         table.append(f"| {m} | {np.median(s['rmse']):.3f} | {max(s['rmse']):.3f} | {s['structured']}/20 | {vc} |")
     table += ["", f"Authors' Casson table reproduced to max relative deviation {worst_repro:.1e} "
-              f"(objective: unweighted least squares in sqrt space, all 16 points).", ""]
+              f"(objective: unweighted least squares in sqrt space, all 16 points).",
+              "", f"Casson runs on the log-eta fit, donors per run count: "
+              + ", ".join(f"{k} runs: {v}" for k, v in sorted(n_runs_hist.items()))
+              + f". The same runs test on the residuals of the AUTHORS' OWN sqrt-space fit flags "
+              f"{n_authors_structured}/20 donors structured (z < {RUNS_Z}), so the misfit does not "
+              f"depend on the objective. The minimum z possible at n = 16 is -3.62 (2 runs, 8/8 split).",
+              "", "The rmse comparison is across parameter counts (2 for Casson, 4-5 for Cross and "
+              "Carreau-Yasuda); the verdict column is the price paid: lam and a are degenerate or "
+              "bounded on about a third of donors.", ""]
     (DATA / "model_comparison.md").write_text("\n".join(table) + "\n", encoding="utf-8", newline="\n")
     print("\n".join(table[-len(COMPARE) - 4:]))
 

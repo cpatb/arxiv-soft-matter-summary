@@ -224,7 +224,7 @@ def test_shipped_blood_records_carry_their_convention():
     biorheo's own log-eta fit, with the authors' sqrt-space values beside them in extra.
     Two facts pinned from scripts/records_from_horner.py's 2026-09-05 run: the authors'
     table reproduces to 1e-6 or better, and the Casson form is flagged structured on
-    19 of 20 donors (2 runs of residual sign on n = 16; donor D is the exception)."""
+    19 of 20 donors (3 runs of residual sign on n = 16 for 18 of them; donor D is the exception)."""
     recs = load_all(allow_network=False)
     blood = [r for r in recs.values() if r.id.startswith("blood_horner2020_donor_")]
     assert sorted(r.extra["donor"] for r in blood) == [c for c in "ABCDFGHIJKLMNOPQRSTU"]
