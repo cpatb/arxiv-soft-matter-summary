@@ -33,17 +33,63 @@ converged.**
 Family `fine_conv`: refine **4 / 2 / 1**, `r` = 2, cells 491 520 / 122 880 / 30 720, all
 meeting `residualControl` at iterations **11 552 / 5 105 / 2 261**.
 
-| quantity | refine 4 | refine 2 | refine 1 | `p` | extrapolated | `GCI_fine` |
-|---|---|---|---|---|---|---|
-| `n_t` | 1.9338 | 1.8922 | 1.9023 | — | — | — non-monotone |
-| `C_P` | 1.5809 | 1.3928 | 1.3518 | 2.198 | 1.6333 | 4.14 % |
-| `τ_w`(15 mm) | 6.1374 | 6.2415 | 5.8658 | — | — | — non-monotone |
-| peak `τ_w` | 486.30 | 441.17 | 389.52 | 0.195 | 798.5 | 80.2 % |
+| quantity | refine 4 | refine 2 | refine 1 | verdict |
+|---|---|---|---|---|
+| `n_t` | 1.9338 | 1.8922 | 1.9023 | **non-monotone** |
+| **`C_P`** | **1.5809** | **1.3928** | **1.3518** | 🔴 **DIVERGING**, \|ε21/ε32\| = 4.59 |
+| `τ_w`(15 mm) | 6.1374 | 6.2415 | 5.8658 | **non-monotone** |
+| peak `τ_w` | 486.30 | 441.17 | 389.52 | `p` = 0.195, outside [0.5, 2.5] |
 
-**Read as raw numbers this is reassuring**: three of the four move by only 1.7–2.2 % across
-a 16× cell-count range. Read as a convergence study it is not, for four reasons.
+**Read as raw numbers this looks reassuring**: three of the four move by only 1.7–2.2 %
+across a 16× cell-count range. Read as a convergence study it is not, for five reasons —
+and the first one was a bug in my own tooling.
 
-## 3. 🔴 Four findings from the referee pass, each verified here independently
+## 3. 🔴 Five findings, each verified here independently
+
+### 3z. `C_P` is DIVERGING under refinement, and my GCI script reported |p| for it
+
+**This is the biggest one and it came from a code review, not the referee.**
+`observed_order` implemented Celik et al. Eq. (2) including its `abs()`, and guarded only
+the SIGN of `ε32/ε21` — never the magnitude. Celik classify a triplet by
+`R = ε21/ε32`: `0 < R < 1` is monotonic convergence, `−1 < R < 0` oscillatory, and
+**`|R| ≥ 1` is DIVERGENCE, which the procedure does not cover.**
+
+For `C_P` on this family, `ε21` = −0.1881 and `ε32` = −0.0410, so **`|R|` = 4.59**: the gap
+between the two *finest* grids is four and a half times the gap between the two coarsest.
+Refining takes `C_P` 1.3518 → 1.3928 → 1.5809 **with the steps growing**. The sequence is
+running away, and the `p = 2.198` that was printed is `|−2.198|`.
+
+**Both rows in the whole study that carried an "OK" verdict were the divergent ones.** So
+`GCI_fine` = 4.14 % and the extrapolation to 1.6333 came from a diverging sequence and are
+**void**. `closure_sensitivity.py`'s extrapolation row is deleted.
+
+It also *explains* §3c rather than leaving it a puzzle: `p` = 1.703 / 0.315 / 2.198 across
+the three families is |−1.703| / **+0.315** / |−2.198| — the two extremes are sign-flipped
+divergences and the middle one is the only genuine observed order in the study.
+
+`gci.py` now refuses both cases and names which, and asserts the downstream invariant that
+would have caught it independently: with a true negative `p`, `r21^p − 1 < 0`, so the GCI
+would come out **negative**. A bound that cannot be negative only because an `abs()`
+upstream removed the sign is not a bound.
+
+The full picture after the fix, twelve rows across three families and four quantities.
+⚠ **Corrected 2026-09-04 after an independent verification pass — this paragraph said
+"exactly one row is a genuine converging order" and there are TWO**, and the second was
+printed in this document's own §2 table two pages above. `gci.py` returns a computed order
+on three rows:
+
+| family | quantity | `p` | in band? | iteratively sound? |
+|---|---|---|---|---|
+| `coarse_conv` | `C_P` | 0.315 | no | **yes** — all three grids converged |
+| `fine_conv` | peak `τ_w` | 0.195 | no | **yes** — all three grids converged |
+| `coarse` | `n_t` | 0.657 | yes | **no** — its finest grid is capped at 3000 it. |
+
+So **two rows are genuine converging orders and both are outside the asymptotic band**,
+and the one row that lands inside the band is disqualified by iterative non-convergence.
+The miscount did not flatter the study — `fine_conv`'s peak `τ_w` carries `GCI` = 80.2%
+and `e_ext21` = 39.1%, so adding it makes the grid-convergence picture *worse*, not
+better. (The disqualified row's grid is the **finest** of its own three-grid triplet, not
+its "middle" one; it is only middle relative to the four-grid superset.)
 
 ### 3a. The y⁺ mechanism is refuted — it has the wrong sign in the right place
 
@@ -79,15 +125,16 @@ of accidental cancellation on one triplet, not of second-order accuracy.
 
 ### 3c. `p` is unstable across overlapping triplets from the same mesh family
 
-| family | grids | `p` on `C_P` | verdict as printed |
+| family | grids | as printed before | **corrected** |
 |---|---|---|---|
-| `coarse` | 2 / 1 / 0.5, refine-2 **capped** | 1.703 | OK |
-| `coarse_conv` | 2 / 1 / 0.5, refine-2 converged | **0.315** | outside band |
-| `fine_conv` | 4 / 2 / 1 | **2.198** | OK |
+| `coarse` | 2 / 1 / 0.5, refine-2 **capped** | 1.703 "OK" | **diverging**, \|R\| = 3.26 |
+| `coarse_conv` | 2 / 1 / 0.5, refine-2 converged | 0.315 outside band | **`p` = 0.315**, the only genuine one |
+| `fine_conv` | 4 / 2 / 1 | 2.198 "OK" | **diverging**, \|R\| = 4.59 |
 
-**A factor of seven, from the same handful of grids.** A three-point Richardson fit has zero
-residual degrees of freedom and cannot self-diagnose; cross-triplet comparison is the only
-available check, and it says 2.198 is no more trustworthy than the 0.315 the study rejected.
+A factor of seven from the same handful of grids — and §3z says why: two of the three were
+sign-flipped divergences. **Cross-triplet comparison was the check that exposed it**, which
+is the reason to run more than one triplet even when the first looks clean. A three-point
+Richardson fit has zero residual degrees of freedom and cannot self-diagnose.
 
 ### 3d. 🔴 The designed independent cross-check cannot run, and its grid is genuinely stuck
 
@@ -99,8 +146,10 @@ out-of-plane component on a one-cell-thick wedge and should be ~0; a limit cycle
 defect of that case, not slowness. (`Uz` is 1.6 × 10⁻⁶ to 4.9 × 10⁻⁶ on the three grids that
 did converge, so this is specific to refine = 1.414.)
 
-**So the check that would decide whether `p` = 2.198 means anything is outstanding, and the
-grid it needs is broken rather than merely slow.**
+**So the second, disjoint triplet is still outstanding, and the grid it needs is broken
+rather than merely slow.** §3z has since answered the narrower question — `p` = 2.198 was an
+artefact — but an independent order estimate is still the thing that would tell us whether
+*any* order exists on this mesh family.
 
 ## 4. 🔴 And the design propagation extrapolates outside the fit band
 
@@ -146,10 +195,12 @@ intercept is not evidence that the field is converged where the design uses it.
 
 ## 5. What the paper should now say
 
-1. 🔴 **Replace "`C_P` within 12 %"** — between converged grids it is 3.0 %.
-2. 🔴 **Do not claim a converged `C_P` or a GCI-backed error bar.** State the raw spread
-   (`C_P` 1.35 → 1.58 over a 16× cell-count range, 11.9 % between the two finest) and state
-   that **no observed order is established**, giving the three triplet values and the reason.
+1. 🔴 **Replace "`C_P` within 12 %"** — between converged grids it is 3.0 %, and see 2.
+2. 🔴 **State that `C_P` DIVERGES under refinement.** Not "unconverged" — the steps grow:
+   1.3518 → 1.3928 → 1.5809, `|ε21/ε32|` = 4.59. There is no extrapolated value and no
+   GCI-backed error bar, and the raw spread (11.9 % between the two finest) is a **lower
+   bound** on the discretisation error rather than an estimate of it, because the sequence
+   is not bracketing anything.
 3. 🔴 **Quote `n_t` and `τ_w`(15 mm) as bands** and say they are non-monotone in the grid.
    **Remove any peak `τ_w`** (GCI 80 %).
 4. 🔴 **State that the design optimum evaluates the closure outside its fit band**
@@ -158,10 +209,14 @@ intercept is not evidence that the field is converged where the design uses it.
 5. ✅ **Keep the sensitivity exponent** `Q* ∝ C_P^{−2/(n_t−½)}` — it is exact, it amplifies,
    and it states how much closure accuracy a design model of this shape needs. Quote it as
    a sensitivity, not as a corrected `Q*`.
-6. ⚠ **The JFE numerical-accuracy policy is NOT satisfied.** The honest position is that
-   the study has bounded the *iterative* error, shown the *discretisation* spread is a few
-   per cent on three of four quantities, and been unable to establish an observed order on
-   any of them.
+6. ⚠ **The JFE numerical-accuracy policy is NOT satisfied, and the reason is now specific
+   rather than vague.** The study has bounded the *iterative* error; it has shown the
+   discretisation spread is a few per cent on three of four quantities; and of twelve
+   (family × quantity) rows, **exactly two are genuine converging orders and both sit
+   outside the asymptotic band** — `coarse_conv`'s `C_P` at `p` = 0.315 and `fine_conv`'s
+   peak `τ_w` at `p` = 0.195, the latter carrying `GCI` = 80.2%. `C_P` on every family
+   containing the refine-4 grid **diverges**. (Corrected 2026-09-04; this said "exactly
+   one" and undercounted, in the direction that made the study look better than it is.)
 
 ## 6. What would settle it, in order of cost
 

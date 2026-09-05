@@ -1,5 +1,5 @@
 quantity,phi1,phi2,phi3,p,phi_extrap,e_a21,e_ext21,gci_fine,verdict
 n_t,1.91189,1.90227,1.88711,0.6568,1.92858,0.0050312,0.0086499,0.010907,OK
-C_P,1.51784,1.3518,1.30081,1.7031,1.59144,0.10939,0.046245,0.060609,OK
+C_P,1.51784,1.3518,1.30081,,,10.94,,,DIVERGING under refinement: |eps21/eps32| = 3.256 >= 1, i.e. the gap between the two FINEST grids is larger than between the two coarsest. Celik et al. exclude this case; the procedure would report |p| = 1.703 for a true p of -1.703.
 tau_at_15mm_Pa,6.24481,5.86575,5.88927,,,6.07,,,non-monotone in the grid (sign of eps32/eps21 is negative); Richardson extrapolation invalid
-tau_peak_Pa,454.47,389.522,341.619,0.4392,637.001,0.14291,0.28655,0.50205,p = 0.44 OUTSIDE [0.5, 2.5]: not in the asymptotic range, GCI is indicative only
+tau_peak_Pa,454.47,389.522,341.619,,,14.29,,,DIVERGING under refinement: |eps21/eps32| = 1.356 >= 1, i.e. the gap between the two FINEST grids is larger than between the two coarsest. Celik et al. exclude this case; the procedure would report |p| = 0.439 for a true p of -0.439.

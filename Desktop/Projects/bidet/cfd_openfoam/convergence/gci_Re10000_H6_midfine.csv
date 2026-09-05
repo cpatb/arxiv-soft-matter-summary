@@ -1,0 +1,5 @@
+quantity,phi1,phi2,phi3,p,phi_extrap,e_a21,e_ext21,gci_fine,verdict
+n_t,1.89224,1.92366,1.90227,,,1.661,,,non-monotone in the grid (sign of eps32/eps21 is negative); Richardson extrapolation invalid
+C_P,1.39279,1.40977,1.3518,,,1.219,,,non-monotone in the grid (sign of eps32/eps21 is negative); Richardson extrapolation invalid
+tau_at_15mm_Pa,6.24146,5.77262,5.86575,,,7.512,,,non-monotone in the grid (sign of eps32/eps21 is negative); Richardson extrapolation invalid
+tau_peak_Pa,441.175,417.197,389.522,0.4164,595.543,0.054348,0.25921,0.43738,p = 0.42 OUTSIDE [0.5, 2.5]: not in the asymptotic range, GCI is indicative only

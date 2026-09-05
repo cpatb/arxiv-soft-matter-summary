@@ -11,11 +11,17 @@ n_t = 1.9023. The three-grid study finished on 2026-09-03 with every grid meetin
     refine 1        30720     1.3518   1.9023   <- what the paper quotes
     refine 2       122880     1.3928   1.8922
     refine 4       491520     1.5809   1.9338
-    Richardson ext.     --    1.6333      --    (p = 2.198, GCI_fine = 4.14 %)
 
-So the paper's `C_P` is **17 % below the finest grid and 21 % below the extrapolate**,
-and `C_P` is the only quantity in the study with a valid observed order -- `n_t`,
-`tau_w(15 mm)` and peak `tau_w` are all non-monotone or out of the asymptotic band.
+So the paper's `C_P` is 17 % below the finest grid.
+
+⚠ AND THERE IS NO EXTRAPOLATED VALUE. An earlier version of this file carried a fourth
+row, "Richardson extrapolation 1.6333 (p = 2.198, GCI 4.14 %)". That p was the ABSOLUTE
+VALUE of -2.198: C_P DIVERGES under refinement -- 1.3518 -> 1.3928 -> 1.5809 with the
+steps GROWING, |eps21/eps32| = 4.589 -- so the sequence is running away and there is
+nothing to extrapolate to. No quantity in the study has a valid observed order inside the
+asymptotic band on a family whose grids all converged. The rows below are three
+MEASUREMENTS on three meshes, and the sensitivity they show is a lower bound on how much
+the closure moves, not an error bar.
 
 The question this script answers is not "is C_P wrong" -- it is **"does it matter"**.
 A closure parameter that moves 21 % is only a problem if a lever the paper quotes moves
@@ -31,12 +37,12 @@ is exact rather than estimated, and it can be read off in one run.
 # the FIXED cleaning radius r_max = 15 mm. Because d* shrinks as C_P grows,
 # every row of the table below sits at
 #
-#       r_max / d*  =  22.95, 23.45, 25.67, 26.27
+#       r_max / d*  =  22.95, 23.45, 25.67
 #
 # against a closure FITTED over r/d in [2, 20] (fit_closure.py's fit_lo/fit_hi)
 # and a CFD domain that ends at Rdom = 25 mm, i.e. r/d = 25 at the simulated
 # d = 1 mm. So every design point extrapolates past the fit band, and the two
-# finest extrapolate past the edge of the computation itself.
+# finest extrapolates past the edge of the computation itself.
 #
 # The extrapolation is also NOT uniform across the comparison: larger C_P gives
 # smaller d* gives worse extrapolation, so the "corrected" rows stand on the
@@ -49,7 +55,7 @@ is exact rather than estimated, and it can be read off in one run.
 
 WHAT IS SWEPT, and what deliberately is not
 -------------------------------------------
-Only `C_P`, across the four values above. `n_t` is held at the base-grid 1.9023 in every
+Only `C_P`, across the three measured values above. `n_t` is held at the base-grid 1.9023 in every
 case **on purpose**: it is non-monotone in the grid (1.9023 / 1.8922 / 1.9338, oscillating
 within 2.2 %) so there is no converged value to move it to, and varying two parameters
 would confound which one carries the change. `n_t`'s own 2.2 % band is reported separately
@@ -69,12 +75,18 @@ sys.path.insert(0, os.path.join(HERE, "model"))
 
 from bidet_model import RHO, V0_from_dP, cfd_closure, optimum   # noqa: E402
 
-# from convergence/gci_Re10000_H6_fine_conv.csv, all three grids at residualControl
+# The three MEASURED values, all from grids that reached residualControl.
+#
+# ⚠ THE RICHARDSON-EXTRAPOLATION ROW (1.6333) HAS BEEN REMOVED, 2026-09-03.
+# It was quoted from an observed order of p = 2.198 which was the ABSOLUTE VALUE of
+# -2.198: C_P is DIVERGING under refinement (|eps21/eps32| = 4.589 -- the gap between the
+# two finest grids is 4.6x the gap between the two coarsest), so there is nothing for it
+# to extrapolate TO. gci.py now refuses that triplet outright. Any "extrapolated C_P" in
+# an older artifact is void.
 CP_CASES = [
     ("base grid, refine 1 (what the paper quotes)", 1.3518),
     ("refine 2, converged",                          1.3928),
     ("refine 4, converged (finest)",                  1.5809),
-    ("Richardson extrapolation, p = 2.198",           1.6333),
 ]
 NT_FIXED = 1.9023
 NT_BAND = (1.8922, 1.9338)      # the non-monotone spread, for the note at the end
@@ -125,9 +137,12 @@ def main() -> int:
     print()
     print("VERDICT")
     print("-------")
-    print("Water demand Q* moves %.3fx between the base grid and the Richardson" % dq)
-    print("extrapolation -- a %+.1f%% change in the number the whole paper optimises."
+    print("Water demand Q* moves %.3fx between the base grid the paper quotes and the" % dq)
+    print("FINEST GRID MEASURED -- a %+.1f%% change in the number the whole paper"
           % (100 * (dq - 1)))
+    print("optimises. This is a measured spread across meshes, NOT an error bar: C_P is")
+    print("diverging under refinement, so the true continuum value is not bracketed by")
+    print("these three and could lie further out still.")
     if abs(dq - 1) < 0.05:
         print("That is inside the 5%% band the paper already carries for other sources,")
         print("so the conclusions survive the correction and only the quoted C_P changes.")
@@ -147,7 +162,7 @@ def main() -> int:
     print("    d* ~ C_P^(-1/(n_t - 1/2)) = C_P^(-%.4f)      -- damped, exponent < 1" % e_d)
     print("    Q* ~ d*^2 V0 ~ C_P^(-%.4f)                  -- AMPLIFIED, exponent > 1"
           % e_q)
-    print("C_P rises %.1f%% between the base grid and the extrapolation, and Q* falls"
+    print("C_P rises %.1f%% between the base grid and the finest measured, and Q* falls"
           % (100 * (cp_ratio - 1)))
     print("%.1f%%: %.4f^(-%.4f) = %.4f. The exponent 2/(n_t - 1/2) = %.3f is the whole"
           % (100 * (1 - cp_ratio ** (-e_q)), cp_ratio, e_q, cp_ratio ** (-e_q), e_q))

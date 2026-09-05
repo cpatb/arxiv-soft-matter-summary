@@ -26,14 +26,7 @@
       "d_star_mm": 0.5844361313993863,
       "Q_star_Lmin": 0.11453617829973851,
       "Q_ratio_vs_base": 0.7998857200001457
-    },
-    {
-      "label": "Richardson extrapolation, p = 2.198",
-      "C_P": 1.6333,
-      "d_star_mm": 0.5710028111677763,
-      "Q_star_Lmin": 0.10933143946768843,
-      "Q_ratio_vs_base": 0.763537412156382
     }
   ],
-  "Q_ratio_base_to_extrapolated": 0.763537412156382
+  "Q_ratio_base_to_extrapolated": 0.7998857200001457
 }

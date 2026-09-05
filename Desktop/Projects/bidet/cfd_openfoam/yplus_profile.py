@@ -43,14 +43,20 @@ def read_info(case: str) -> dict:
 
 
 def latest_raw(case: str, field: str):
-    """The same file-selection rule fit_closure.py uses, so this reads the same sample."""
-    pat = os.path.join(HERE, case, "postProcessing", "*", "*", "*",
-                       "%s_*.raw" % field)
-    hits = sorted(glob.glob(pat))
-    if not hits:
-        pat = os.path.join(HERE, case, "postProcessing", "**", "%s_*.raw" % field)
-        hits = sorted(glob.glob(pat, recursive=True))
-    return hits[-1] if hits else None
+    """IMPORT fit_closure's own selector so both read the SAME sample.
+
+    This used to reimplement it, and got it wrong twice in one function: the primary glob
+    needed three directory levels below `postProcessing` where the layout has two (so it
+    matched nothing on every case and always fell through), and the fallback then took
+    `sorted(...)[-1]`, a LEXICOGRAPHIC sort of paths containing the time directory. On this
+    tree `sorted(['sampleWSS/11552/y', 'sampleWSS/3000/y'])[-1]` is **3000** -- so the
+    moment a pre-restart sample sits beside a converged one, y+ would be read from the
+    unconverged state while fit_closure reads the converged one, silently, with this
+    module's docstring asserting they are the same sample. fit_closure sorts by
+    `float(time_dir)`. Reuse it; do not copy it. (Code review, 2026-09-03.)
+    """
+    from fit_closure import latest_raw as _fc_latest_raw
+    return _fc_latest_raw(os.path.join(HERE, case), field)
 
 
 def main() -> int:

@@ -49,11 +49,17 @@ asymptotic range and neither GCI means much.
 
 WHAT THE PROCEDURE CANNOT DO, and this is reported rather than hidden
 --------------------------------------------------------------------
-1. `p` is only meaningful where the three values are MONOTONE. If `s < 0` the solution is
-   oscillatory in the grid and Celik et al. exclude the case explicitly: the extrapolation
-   is invalid, and the honest output is the oscillation amplitude, not a GCI. This script
-   prints that verdict instead of a number when it happens, and flags any `p` outside
-   [0.5, 2.5] as outside the asymptotic range.
+1. `p` is only meaningful where the triplet is MONOTONICALLY CONVERGING. Celik et al.
+   classify by R = eps21/eps32 (grid 1 = finest): 0 < R < 1 is monotonic convergence and
+   the procedure applies; -1 < R < 0 is oscillatory; |R| >= 1 is DIVERGENCE and the
+   procedure does not apply. BOTH tests are needed. Until 2026-09-03 this script tested
+   only the sign, and Eq. (2)'s `abs()` then reported |p| for a divergent triplet as
+   though it were a convergence order -- it printed p = +2.198 and GCI = 4.14 % for the
+   study's headline quantity at |R| = 4.59, i.e. with the gap between the two FINEST
+   grids four and a half times the gap between the two coarsest. Both rows in this study
+   that carried an "OK" verdict were divergent. It now refuses both cases and says which,
+   and asserts the downstream invariant (r21^p - 1 > 0, so the GCI cannot be negative)
+   that would have caught it independently.
 2. A GCI measures DISCRETISATION error and silently assumes ITERATIVE error is far
    smaller. That assumption is false here unless checked, so the script reads each run's
    final residual per field out of `log.simpleFoam` and prints it beside the GCI, together
@@ -92,8 +98,11 @@ FAMILIES = {
     # The best-resolved family available: refine 4 / 2 / 1, all three meeting
     # residualControl (iterations 11552 / 5105 / 2261).
     #
-    # ⚠⚠ ITS p = 2.198 ON C_P IS NOT AN ESTABLISHED OBSERVED ORDER. Three things, all
-    # found by a physics-referee pass on 2026-09-03 and all verified:
+    # ⚠⚠ ITS C_P IS DIVERGING UNDER REFINEMENT, and the p = 2.198 this script used to
+    # print for it was the absolute value of -2.198. |eps21/eps32| = 4.589: refining takes
+    # C_P 1.3518 -> 1.3928 -> 1.5809 with the steps GROWING, so there is nothing for it to
+    # extrapolate to and the 1.6333 that was quoted has no basis. Found by a code review on
+    # 2026-09-03 and verified by hand. Three further things, all also verified:
     #   (1) An earlier comment here explained the coarse family's failure by y+ straddling
     #       1. THAT IS REFUTED. `yplus_profile.py` resolves y+ radially: the 1.52 median is
     #       entirely a near-stagnation effect (r/d 2-5), and at r/d 14-20 -- where
@@ -103,10 +112,10 @@ FAMILIES = {
     #   (2) p = 2.198 exceeds the formal order of the discretisation: fvSchemes has
     #       div(phi,k) and div(phi,omega) as `bounded Gauss upwind`, FIRST order, and nut
     #       (hence the wall shear) depends on both.
-    #   (3) p on C_P is 1.703 / 0.315 / 2.198 across `coarse` / `coarse_conv` / this --
-    #       a factor of seven from the same handful of grids. A 3-point Richardson fit has
-    #       zero residual degrees of freedom and cannot self-diagnose; cross-triplet
-    #       comparison is the only check available and it does not support 2.198.
+    #   (3) p on C_P read 1.703 / 0.315 / 2.198 across `coarse` / `coarse_conv` / this,
+    #       and the spread is now EXPLAINED rather than merely alarming: `coarse` and this
+    #       family are divergent (their printed orders are |-1.703| and |-2.198|), and
+    #       `coarse_conv`'s +0.315 is the only genuine one -- outside the asymptotic band.
     #
     # ⚠ Separately: watch the refine = 4 run rather than judging it early. Its Uy residual
     # sat flat at ~4.0e-5 from iteration 6400 to 8000 and looked like a stall; it fell
@@ -200,15 +209,49 @@ def fit_record(case: str) -> dict:
 
 
 def observed_order(phi1, phi2, phi3, r21, r32, tol=1e-12, itmax=200):
-    """Solve Celik et al. Eq. (2) by fixed-point iteration. Returns (p, s, ok, why)."""
+    """Solve Celik et al. Eq. (2) by fixed-point iteration. Returns (p, s, ok, why).
+
+    TWO preconditions, and the second was missing until 2026-09-03.
+
+    Celik et al. classify a triplet by the convergence ratio ``R = eps21 / eps32``
+    (grid 1 = finest):
+
+        0 < R < 1     monotonic convergence      -- the procedure applies
+        -1 < R < 0    oscillatory convergence    -- excluded here as non-monotone
+        |R| > 1       DIVERGENCE                 -- the procedure does NOT apply
+
+    The sign test alone catches only the middle case. **The magnitude test catches
+    divergence, and without it Eq. (2)'s ``abs()`` reports |p| as though it were a
+    convergence order.** That is not hypothetical: it was reporting p = +2.198 with
+    GCI = 4.14 % for the study's headline quantity when |R| = 4.59, i.e. the gap between
+    the two FINEST grids was four and a half times the gap between the two coarsest --
+    the sequence running away under refinement, not settling. Both rows in this study
+    that carried an "OK" verdict were divergent ones, and the reported observed orders
+    were the absolute values of negative numbers.
+
+    The tell is available downstream too and is asserted below: with a true negative p,
+    ``r21**p - 1 < 0``, so the GCI would come out NEGATIVE. A GCI that cannot be negative
+    because an ``abs()`` upstream removed the sign is not a bound on anything.
+    """
     eps21, eps32 = phi2 - phi1, phi3 - phi2
-    if abs(eps21) < tol:
-        return float("nan"), 0.0, False, "phi1 == phi2 to machine precision"
+    scale = max(abs(phi1), abs(phi2), abs(phi3), tol)
+    if abs(eps21) < tol * scale:
+        return float("nan"), 0.0, False, "phi1 == phi2 to within a relative 1e-12"
+    if abs(eps32) < tol * scale:
+        return float("nan"), 0.0, False, "phi2 == phi3 to within a relative 1e-12"
     ratio = eps32 / eps21
     s = math.copysign(1.0, ratio)
     if s < 0:
         return float("nan"), s, False, ("non-monotone in the grid (sign of eps32/eps21 is "
                                         "negative); Richardson extrapolation invalid")
+    R = eps21 / eps32
+    if abs(R) >= 1.0:
+        return float("nan"), s, False, (
+            "DIVERGING under refinement: |eps21/eps32| = %.3f >= 1, i.e. the gap between "
+            "the two FINEST grids is larger than between the two coarsest. Celik et al. "
+            "exclude this case; the procedure would report |p| = %.3f for a true p of "
+            "%+.3f." % (abs(R), abs(math.log(abs(ratio))) / math.log(r21),
+                        math.log(abs(ratio)) / math.log(r21)))
     p = 1.0
     for _ in range(itmax):
         q = 0.0 if abs(r21 - r32) < 1e-12 else math.log((r21**p - s) / (r32**p - s))
@@ -295,8 +338,15 @@ def main() -> int:
             continue
         ext = (r21**p * phi1 - phi2) / (r21**p - 1.0)
         e_a = abs((phi1 - phi2) / phi1)
-        e_ext = abs((ext - phi1) / ext) if ext != 0 else float("nan")
+        e_ext = abs((ext - phi1) / ext) if abs(ext) > 1e-30 else float("nan")
         gci = 1.25 * e_a / (r21**p - 1.0)
+        # Invariants that would have caught the divergence bug downstream. With a true
+        # negative p, r21**p - 1 is negative and the GCI comes out negative -- a "bound"
+        # that cannot be negative only because an abs() upstream removed the sign is not a
+        # bound. Assert rather than print, because a negative GCI must never reach a table.
+        assert r21**p - 1.0 > 0.0, (
+            "r21**p - 1 <= 0 for %s: p = %.4f is not a usable order" % (key, p))
+        assert gci > 0.0, "negative GCI for %s (p = %.4f)" % (key, p)
         lo, hi = ASYMPTOTIC_BAND
         verdict = ("OK" if lo <= p <= hi else
                    "p = %.2f OUTSIDE [%g, %g]: not in the asymptotic range, GCI is "
