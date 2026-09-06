@@ -124,6 +124,67 @@ def one_donor(rec, nd: Needle) -> dict:
             "reynolds": force.reynolds}
 
 
+def _crosscheck_section() -> list[str]:
+    """The caveat item 12 put on this page's PRECISION, quoted from that study's own
+    artifact rather than retyped.
+
+    This page ranks donors and says the yield stress is invisible here. Both survive item
+    12. What does not is any reading of these forces as accurate to better than tens of
+    per cent, and until 2026-09-06 nothing on this page said so -- which is this repo's
+    "prose contradicts its own artifact" failure mode waiting to happen.
+
+    If `crosscheck.json` is absent the section says so rather than quoting numbers that
+    are not there; if it is present but was generated against a different operating
+    point, that is asserted rather than papered over."""
+    path = HERE / "crosscheck.json"
+    head = ["## The FAMILY the record was fitted to moves these forces by more than the "
+            "yield stress does", ""]
+    if not path.exists():
+        return head + ["Not computed: `crosscheck.json` is missing. Run "
+                       "`python case_studies/blood_injectability/crosscheck.py`. **The "
+                       "forces on this page should not be read as accurate to better "
+                       "than tens of per cent until it has been run** -- see "
+                       "`crosscheck_prereg.md`.", ""]
+    c = json.loads(path.read_text())
+    assert c["needle"]["id_nominal_mm"] == ID_NOMINAL_MM, c["needle"]
+    assert c["Q_mL_per_min"] == Q_ML_PER_MIN and c["rho"] == RHO_BLOOD
+    s, g3 = c["summary"], c["G12_3_informative"]
+    return head + [
+        "Every donor on this page also has a `cross` and a `carreau_yasuda` record "
+        "fitted by the same code to the SAME 16 points. Pushed through this same needle "
+        "at this same flow rate "
+        "(`crosscheck.md`, gate pre-registered in `crosscheck_prereg.md` before the run), "
+        f"they miss this page's Casson force by up to "
+        f"**{100 * s['cross']['worst_abs_rel_dev']:.4g} %** and "
+        f"**{100 * s['carreau_yasuda']['worst_abs_rel_dev']:.4g} %** respectively, with "
+        f"medians {100 * s['cross']['median_rel_dev']:.4g} % and "
+        f"{100 * s['carreau_yasuda']['median_rel_dev']:.4g} % -- both families predict a "
+        "LOWER force. That is an order of magnitude more than the "
+        f"{100 * c['scales']['yield_term']:.3g} % the yield stress contributes (that "
+        "study reads this one's own `yield_share_max`, so the two cannot drift), and it "
+        "is not a "
+        "numerical artefact: the closed form and the quadrature agree to "
+        f"{c['route_control']['worst_rel_dev']:.2e} on this page's own records.", "",
+        "The cause is the extrapolation this page already reports. At "
+        f"{c['median_decades_past_high']:.2f} decades past the top of the measured "
+        "envelope, Casson tends to `eta_c`, Cross to `eta_inf` and Carreau-Yasuda to its "
+        "own `eta_inf` -- three different constants, each fitted to data that stops at "
+        "700 1/s. The force ratio reproduces the ratio of those plateaux to "
+        f"{100 * c['plateau_control']['cross']['worst_gap']:.3g} %, so the families "
+        "disagree because their plateaux do.", "",
+        "**What survives and what does not.** The ordering survives: "
+        f"{100 * s['cross']['worst_abs_rel_dev']:.4g} % is well inside the "
+        f"{100 * c['scales']['donor_spread']:.4g} % donor-to-donor spread, so which "
+        "patient the blood came from still matters more than which family was fitted, "
+        "and the yield stress is still invisible in this geometry. The PRECISION does "
+        "not: a force from this page is a Casson force, and choosing a different "
+        "equally-good fit to the same curve moves it by tens of per cent. The "
+        "comparison is not vacuous -- a Newtonian null misses by "
+        f"{100 * s['newtonian']['worst_abs_rel_dev']:.4g} %, a "
+        f"{g3['separation']:.3g}x separation, so the needle has not simply washed out "
+        "the difference between every model.", ""]
+
+
 def main() -> int:
     recs = {k: v for k, v in sorted(load_all().items()) if v.model.name == "casson"}
     assert len(recs) == 20, len(recs)
@@ -407,6 +468,7 @@ def main() -> int:
           "against 9 expected` quoted above comes from `data/horner2020/model_comparison"
           ".md`, and it is the value for 18 of the 20 donors, not all of them (donor D "
           "has 8 runs, z = -0.52, and is not flagged structured).", ""]
+    L += _crosscheck_section()
     (HERE / "results.md").write_text("\n".join(L), encoding="utf-8")
     print("\n".join(L))
     return 0
