@@ -1,0 +1,56 @@
+# written by biorheo.identify; do not edit by hand
+written_by: biorheo.identify
+written_on: '2026-09-05'
+record_id: blood_horner2020_donor_T_cross
+model: cross
+level: 0.95
+fit:
+  n_points: 16
+  rmse_log_eta: 0.028453947274585063
+  gammadot_min: 0.1
+  gammadot_max: 700.0
+residual_structure:
+  n: 16
+  n_runs: 7
+  expected_runs: 9.0
+  z: -1.0350983390135313
+  structured: false
+  signs: -++-++--++++----
+parameters:
+  eta_0:
+    value: 0.19477980151488414
+    lo: 0.12269527901100072
+    hi: 0.7807171873860943
+    verdict: measurable
+    decades: 0.8036658878573829
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+  eta_inf:
+    value: 0.003195259633976757
+    lo: 0.0029490891240969786
+    hi: 0.19850775900990258
+    verdict: measurable
+    decades: 1.8280895890460174
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+  lam:
+    value: 35.132837655121534
+    lo: 11.869511992785867
+    hi: 421.7989400004361
+    verdict: measurable
+    decades: 1.5506726204150492
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+  m:
+    value: 0.6437161143608209
+    lo: 0.5826560002645552
+    hi: 0.7063018571692847
+    verdict: measurable
+    decades: 0.08357812496629904
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+data_note: Horner 2020 steady shear, human donor T, 16 points; see data/horner2020/SOURCE.md

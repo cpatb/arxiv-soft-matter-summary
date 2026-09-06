@@ -111,7 +111,8 @@ from pathlib import Path
 import numpy as np
 
 from biorheo.registry.loader import load_all
-from biorheo.solver.openfoam import export_transport_properties, parse_transport_properties
+from biorheo.solver.openfoam import (coefficients, export_transport_properties,
+                                    nu_openfoam, parse_transport_properties)
 
 ROOT = Path(__file__).resolve().parent.parent
 # BIORHEO_OF_OUT lets a test run the whole anchor without overwriting the COMMITTED
@@ -137,7 +138,24 @@ BAR_A5 = 1e-9       # A5': relative change of the shear-rate field over the last
 WINDOWS = (4, 2, 1)  # END_TIME // w: the three writes A5' measures contraction over
 ROUNDOFF = 1e-13     # below this a relative increment is float noise, not a signal
 
-RECORD_IDS = ["carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A"]
+RECORD_IDS = ["carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A",
+              # Added 2026-09-06 (NEXT_STEPS item 6): one record of each family that has
+              # NO yield stress, so B = tau_y/(k gd^n) is identically zero. They are the
+              # control for the finding that simpleFoam's convergence failure is about
+              # YIELD and not about "hard fluid".
+              #
+              # Neither is an arbitrary pick. Both are the record of their family with
+              # every parameter graded `measurable` (so no allow_unidentified override is
+              # needed) that maximises the separation between the shipped map and the
+              # candidate the gate has to reject: for `_cross` that is the name-swapped
+              # map (G3), and for `_carreau_yasuda` it is `a` forced to 2 (G4, 1.01e-1
+              # relative -- 1e5 times BAR_A2, so A2 can decide whether OpenFOAM honours
+              # `a` at all). Both numbers are printed by the script.
+              "blood_horner2020_donor_N_cross",
+              "blood_horner2020_donor_S_carreau_yasuda"]
+# The families whose `nu0` is a FITTED PARAMETER rather than a clamp; `eta_max` is None
+# for them and `clamped_frac` is meaningless, so it is not read.
+NO_CLAMP_MODELS = ("cross", "carreau_yasuda")
 
 
 # --------------------------------------------------------------------------- case files
@@ -406,7 +424,8 @@ def shear_rate_field(case: Path, time: str) -> np.ndarray:
 
 # -------------------------------------------------------------------------------- cases
 
-def one_case(name: str, transport_text: str, gd: float, eta_ref: float) -> dict:
+def one_case(name: str, transport_text: str, gd: float, eta_ref: float,
+             has_clamp: bool = True) -> dict:
     """Run at wall speed gd*H; compare OpenFOAM's nu and tau_w with eta_ref (Pa s)."""
     case = RUNS / name
     build_case(case, transport_text, u0=gd * H)
@@ -428,11 +447,14 @@ def one_case(name: str, transport_text: str, gd: float, eta_ref: float) -> dict:
     # nu0 is the clamp the dictionary actually carries. The Newtonian control has no
     # Coeffs block at all and therefore no clamp; that is a legitimate None, not a
     # parse failure, so only that one case is allowed to raise here.
-    # The clamp key is `nu0` for HerschelBulkley and `nuMax` for Casson.
+    # The clamp key is `nu0` for HerschelBulkley and `nuMax` for Casson. CrossPowerLaw
+    # and BirdCarreau also carry a `nu0`, but there it is the record's own fitted
+    # zero-shear plateau and NOT a clamp, so `has_clamp=False` keeps this from reporting
+    # "the cap binds on x % of cells" about a number that is not a cap.
     try:
         c = parse_transport_properties(
             (case / "constant" / "transportProperties").read_text())[1]
-        nu0 = c.get("nu0", c.get("nuMax"))
+        nu0 = c.get("nu0", c.get("nuMax")) if has_clamp else None
     except ValueError:
         nu0 = None
 
@@ -643,6 +665,73 @@ def diagnosis_section() -> list[str]:
     return out
 
 
+def item6_section(item6: dict, nc_rows: list[dict]) -> list[str]:
+    """The families with no yield stress: G3/G4/G7 of
+    `data/openfoam/nonyield_bridge_prereg.md`, written 2026-09-06 before the code."""
+    if not nc_rows:
+        return ["## The families with no yield stress", "",
+                "No `cross` or `carreau_yasuda` record was run; G3/G4/G7 not evaluated."]
+    seps = item6["candidate_separation"]
+    out = ["## The families with no yield stress (Cross, Carreau-Yasuda)", "",
+           f"{item6['n_cases']} cases over {len(item6['records'])} records: "
+           + ", ".join(f"`{r}`" for r in item6["records"]) + ".", "",
+           "| gate | what | number | bar | verdict |", "|---|---|---|---|---|",
+           f"| G7 | worst OpenFOAM `nu` vs `eta_at/rho` on these records | "
+           f"{item6['G7_worst_err_nu']:.3e} | {item6['G7_bar']:g} | "
+           f"{'PASS' if item6['G7_pass'] else 'FAILED'} |",
+           f"| G3/G4 | smallest separation between the shipped map and the rejected "
+           f"candidate | {item6['G3_G4_min_separation']:.3e} | >= "
+           f"{item6['G3_G4_bar']:g} | "
+           f"{'informative' if item6['G3_G4_informative'] else 'UNINFORMATIVE'} |", ""]
+    for rid, s in seps.items():
+        what = ("the name-swapped Cross map (biorheo `m` into OpenFOAM's `m`, `lam` into "
+                "`n`)" if recs_model(rid) == "cross" else
+                "`a` forced to 2, i.e. what OpenFOAM would compute if it ignored the entry")
+        out.append(f"- `{rid}`: {what} differs from the record by {s:.3e} relative "
+                   f"over the {len(nc_rows) // max(len(seps), 1)} anchor rates, "
+                   f"{s / BAR_A2:.1e} times A2's bar.")
+    out += ["",
+            "**G7 is the control for the Bingham-number finding above.** Neither family "
+            "has a yield stress, so `B = tau_y/(k gd^n)` is identically zero on every one "
+            f"of these cases, and the worst viscosity error is {item6['G7_worst_err_nu']:.3e} "
+            "against the 1.72 (172 %) the Herschel-Bulkley record returns at B = 29 with "
+            "`rc = 0`. The failure is about YIELD, not about a large viscosity: the "
+            "Cross record's zero-shear plateau is itself a large viscosity and it "
+            "converges. The worst wall-traction imbalance on these cases is "
+            f"{item6['worst_wall_imbalance']:.3e}.", "",
+            "**G4 decides a premise of NEXT_STEPS item 6 by running the solver.** That "
+            "item was written believing OpenFOAM v2606's `BirdCarreau` has no `a` "
+            "exponent, so that the export would have to REFUSE a Carreau-Yasuda record "
+            "with `a != 2`. It has one -- `a_` is "
+            "`getOrDefault(\"a\", dimensionedScalar(\"a\", dimless, 2))` "
+            "(BirdCarreau.C:81-88) and `calcNu` uses it. The Carreau-Yasuda record run "
+            "here has a fitted `a` far from 2, so if OpenFOAM ignored the entry A2 would "
+            f"fail by about {seps.get(item6['records'][-1], float('nan')):.1e}; it passes "
+            f"at {max(r['err_nu'] for r in nc_rows):.1e}. **The premise is refuted and no "
+            "`a != 2` refusal is shipped.** What is shipped instead is the mirror hazard: "
+            "because `a` is optional with a silent default, the export always WRITES it "
+            "and the parser fills a missing one with 2 rather than reporting it missing.",
+            "",
+            "**G3 is the discriminator for the Cross map.** biorheo's `lam` (a time) is "
+            "OpenFOAM's `m` and biorheo's `m` (an exponent) is OpenFOAM's `n` -- the names "
+            "collide with the meanings swapped, and a map written by matching names would "
+            "raise nothing, because both slots take a plain scalar. Without this number "
+            "the round trip passing at 1e-10 would not show the round trip can tell the "
+            "two maps apart.", "",
+            "**These records take no `eta_max`.** Their zero-shear plateau `eta_0` is a "
+            "fitted parameter of the record, so the exported `nu0` IS the record and there "
+            "is nothing to clamp; `coefficients` refuses an `eta_max` for them rather than "
+            "accepting and ignoring one."]
+    return out
+
+
+_MODEL_OF_ID: dict[str, str] = {}
+
+
+def recs_model(rid: str) -> str:
+    return _MODEL_OF_ID.get(rid, "")
+
+
 def main() -> int:
     if not has_openfoam():
         print("SKIP: no WSL OpenFOAM v2606")
@@ -650,15 +739,19 @@ def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     RUNS.mkdir(parents=True, exist_ok=True)
     recs = load_all()
+    _MODEL_OF_ID.update({rid: recs[rid].model.name for rid in RECORD_IDS})
     rows = [newtonian_control()]
     for rid in RECORD_IDS:
         rec = recs[rid]
         gmin, gmax = rec.envelope.gammadot_min, rec.envelope.gammadot_max
-        eta_max = 10.0 * float(rec.eta_at(gmin))          # cap far above the envelope
+        has_clamp = rec.model.name not in NO_CLAMP_MODELS
+        # cap far above the envelope for the yield families; the other two take none
+        eta_max = 10.0 * float(rec.eta_at(gmin)) if has_clamp else None
         text = export_transport_properties(rec, RHO, eta_max)
         for k, gd in enumerate(np.geomspace(gmin, gmax, N_RATES)):
             eta = float(rec.eta_at(np.array([gd]))[0])
-            rows.append(one_case(f"{rid}_g{k}", text, float(gd), eta) | {"record": rid})
+            rows.append(one_case(f"{rid}_g{k}", text, float(gd), eta, has_clamp=has_clamp)
+                        | {"record": rid, "model": rec.model.name})
 
     a1 = max(r["shear_spread"] for r in rows)
     a1p = max(r["err_profile"] for r in rows)
@@ -672,6 +765,53 @@ def main() -> int:
     # a sign error on either wall is a failure, not a small number: the moving wall must
     # pull in +x and the stationary one must react in -x
     signs_ok = all(r["tau_openfoam"] > 0 > r["tau_lower_wall"] for r in rows)
+
+    # ---- item 6: the families with no yield stress (G3, G4, G7 of the pre-registration)
+    # A separation is measured between the SHIPPED law -- taken as `record.eta_at`, which
+    # is not nu_openfoam -- and the candidate the gate has to reject, which is evaluated
+    # through nu_openfoam. Only the rejected candidate goes through this repo's
+    # transcription, so a bug there could understate a separation but could not manufacture
+    # a passing verdict.
+    nc_rows = [r for r in rows if r.get("model") in NO_CLAMP_MODELS]
+    seps: dict[str, float] = {}
+    for rid in RECORD_IDS:
+        rec = recs[rid]
+        if rec.model.name not in NO_CLAMP_MODELS:
+            continue
+        gds = np.geomspace(rec.envelope.gammadot_min, rec.envelope.gammadot_max, N_RATES)
+        nu_ref = rec.eta_at(gds) / RHO
+        c = coefficients(rec, RHO, None)
+        if rec.model.name == "cross":
+            # G3: the map a name-matcher would write -- biorheo's exponent `m` into
+            # OpenFOAM's `m` (a time) and biorheo's `lam` into `n` (an exponent).
+            with np.errstate(over="ignore"):
+                bad = nu_openfoam("CrossPowerLaw",
+                                  {**c, "m": c["n"], "n": c["m"]}, gds)
+        else:
+            # G4: `a` forced to the value it would take if OpenFOAM ignored the entry.
+            bad = nu_openfoam("BirdCarreau", {**c, "a": 2.0}, gds)
+        seps[rid] = float(np.max(np.abs(bad / nu_ref - 1.0)))
+    g7_worst = max((r["err_nu"] for r in nc_rows), default=float("nan"))
+    item6 = {
+        "records": [r for r in RECORD_IDS if recs[r].model.name in NO_CLAMP_MODELS],
+        "n_cases": len(nc_rows),
+        "candidate_separation": seps,
+        "G3_G4_min_separation": min(seps.values()) if seps else float("nan"),
+        "G3_G4_bar": 1e-2,
+        "G3_G4_informative": bool(seps) and min(seps.values()) >= 1e-2,
+        "G7_worst_err_nu": g7_worst,
+        "G7_bar": BAR_A2,
+        "G7_pass": bool(g7_worst <= BAR_A2),
+        "worst_wall_imbalance": max((r["wall_imbalance"] for r in nc_rows),
+                                    default=float("nan")),
+        "note": ("These records have no yield stress, so the local Bingham number "
+                 "B = tau_y/(k gd^n) that controls simpleFoam's outer iteration for the "
+                 "Herschel-Bulkley record is identically zero here. G7 is the control for "
+                 "the reading that the convergence failure is about YIELD, not about a "
+                 "large viscosity; the separations say the A2 verdict on these records "
+                 "can discriminate the map the gate rejects."),
+    }
+
     verdict = {"A1_shear_uniformity": {"worst": a1, "bar": BAR_A1, "pass": a1 <= BAR_A1,
                                        "note": "reported only; A1' is the real test"},
                "A1prime_profile": {"worst": a1p, "bar": BAR_A1P, "pass": a1p <= BAR_A1P},
@@ -759,7 +899,7 @@ def main() -> int:
               "self-consistently wrong on every non-Newtonian case and A4 is the only "
               "row where the answer is known without OpenFOAM).",
               "",
-              ] + diagnosis_section() + [""]
+              ] + diagnosis_section() + [""] + item6_section(item6, nc_rows) + [""]
     (OUT / "couette_anchor.md").write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines[8:]))
     return 0 if all(v.get("pass") for v in verdict.values()) else 1

@@ -1,9 +1,10 @@
 """Export a registry record to an OpenFOAM ``transportProperties`` viscosity model and
-read it back (the L3 solver bridge, first rung: Herschel-Bulkley and Casson).
+read it back (the L3 solver bridge: Herschel-Bulkley, Casson, Cross and Carreau-Yasuda).
 
 Ground truth is the OpenFOAM v2606 (ESI) source, read in WSL at
 ``/usr/lib/openfoam/openfoam2606/src/transportModels/incompressible/viscosityModels/``
-on 2026-09-05. The two ``calcNu`` bodies, verbatim:
+on 2026-09-05 (the two yield-stress families) and 2026-09-06 (the other two). The four
+``calcNu`` bodies, verbatim:
 
 HerschelBulkley/HerschelBulkley.C (lines 56-67)::
 
@@ -12,6 +13,14 @@ HerschelBulkley/HerschelBulkley.C (lines 56-67)::
 Casson/Casson.C (lines 60-70)::
 
     max(nuMin_, min(nuMax_, sqr(sqrt(tau0_/max(strainRate(), VSMALL)) + sqrt(m_))))
+
+CrossPowerLaw/CrossPowerLaw.C (lines 53-57)::
+
+    (nu0_ - nuInf_)/(scalar(1) + pow(m_*strainRate(), n_)) + nuInf_
+
+BirdCarreau/BirdCarreau.C (lines 52-59)::
+
+    nuInf_ + (nu0_ - nuInf_)*pow(scalar(1) + pow(k_*strainRate(), a_), (n_ - 1.0)/a_)
 
 with ``VSMALL = 1.0e-300`` (OpenFOAM/primitives/Scalar/doubleScalar/doubleScalar.H:64),
 ``strainRate() = sqrt(2.0)*mag(symm(fvc::grad(U_)))`` (viscosityModel.C:62), which is
@@ -28,8 +37,39 @@ Parameter map (biorheo -> OpenFOAM), exact, no fitting involved::
         tau0 = tau_y/rho   k = k/rho   n = n   nu0 = eta_max/rho
     casson            eta = (sqrt(tau_y/gd) + sqrt(eta_c))^2
         tau0 = tau_y/rho   m = eta_c/rho   nuMin = eta_c/rho   nuMax = eta_max/rho
+    cross             eta = eta_inf + (eta_0 - eta_inf)/(1 + (lam gd)^m)
+        nu0 = eta_0/rho   nuInf = eta_inf/rho   m = lam   n = m        <- SWAPPED NAMES
+    carreau_yasuda    eta = eta_inf + (eta_0 - eta_inf)[1 + (lam gd)^a]^((n-1)/a)
+        nu0 = eta_0/rho   nuInf = eta_inf/rho   k = lam   n = n   a = a
 
-``eta_max`` is required: OpenFOAM has no unregularised yield-stress law, and its scheme
+**THE CROSS NAMES COLLIDE WITH THEIR MEANINGS SWAPPED.** biorheo's ``lam`` is a time
+constant in seconds and OpenFOAM calls it ``m`` (declared ``dimTime``,
+CrossPowerLaw.C:77); biorheo's ``m`` is a dimensionless exponent and OpenFOAM calls it
+``n`` (``dimless``, line 78). A map written by matching names would write an exponent
+into a time slot and a time into an exponent slot, and it would not raise anywhere --
+both are plain scalars in the dictionary. ``tests/test_openfoam_export.py`` carries that
+wrong map explicitly as a discriminator: it must FAIL the round trip by more than 1e-3,
+or the round trip passing at 1e-10 has proved nothing.
+
+**THE CLAMP IS NOT UNIVERSAL.** For Herschel-Bulkley and Casson, ``nu0``/``nuMax`` is a
+regularisation the caller picks and ``eta_max`` is required. ``cross`` and
+``carreau_yasuda`` have no yield stress: their ``eta_0`` is a FITTED PARAMETER and the
+law is already bounded by it at every rate, so there is nothing to clamp, ``nu0`` is the
+record itself, and ``coefficients`` REFUSES an ``eta_max`` rather than accepting and
+ignoring one.
+
+**``a`` IS OPTIONAL IN OPENFOAM, NOT ABSENT.** NEXT_STEPS item 6 was written believing
+v2606's ``BirdCarreau`` has no ``a`` exponent and that the export would have to refuse
+``a != 2``. It has one: ``a_`` is ``getOrDefault("a", dimensionedScalar("a", dimless, 2))``
+(BirdCarreau.C:81-88, 120-124) and ``calcNu`` uses it, so the map is total and no refusal
+is warranted. What IS true is the mirror image -- because ``a`` is optional with a silent
+default of 2, a dictionary that omits it is a legal ``BirdCarreau`` running as a Carreau
+fluid. So this module always WRITES ``a``, and ``parse_transport_properties`` fills a
+missing one with 2 rather than reporting it missing, which is what OpenFOAM means by the
+file. That ``a`` is really honoured was decided by running ``simpleFoam``, not by reading
+the C++: see ``data/openfoam/couette_anchor.md``, gate G4.
+
+``eta_max`` is required for the two yield-stress families: OpenFOAM has no unregularised yield-stress law, and its scheme
 is exactly biorheo's ``regularise(model, "clamp", eta_max=...)`` (``min(eta, eta_max)``),
 so the exported law equals the clamped record, not the record. ``nuMin`` defaults to
 the Casson high-rate limit ``eta_c``, the largest floor that never changes the law
@@ -91,7 +131,17 @@ VSMALL = 1.0e-300  # doubleScalar.H:64
 _MODELS = {
     "herschel_bulkley": ("HerschelBulkley", ("k", "n", "tau0", "nu0")),
     "casson": ("Casson", ("m", "tau0", "nuMin", "nuMax")),
+    "cross": ("CrossPowerLaw", ("nu0", "nuInf", "m", "n")),
+    "carreau_yasuda": ("BirdCarreau", ("nu0", "nuInf", "k", "n", "a")),
 }
+# The families whose zero-shear plateau is a FITTED PARAMETER rather than a clamp, so
+# they take no `eta_max` at all. See the module docstring, "The clamp is not universal".
+_NO_CLAMP = ("cross", "carreau_yasuda")
+# `a` is the one coefficient OpenFOAM reads with `getOrDefault` rather than `readEntry`
+# (BirdCarreau.C:81-88, 120-124): a dictionary that omits it is a legal BirdCarreau that
+# runs as a Carreau fluid. The parser mirrors that default; it does not raise.
+_BIRDCARREAU_A_DEFAULT = 2.0
+_OPTIONAL_COEFFS = {"BirdCarreau": {"a": _BIRDCARREAU_A_DEFAULT}}
 _BAD_VERDICTS = ("degenerate", "not_identifiable")
 
 _HEADER = """FoamFile
@@ -109,17 +159,48 @@ class ExportRefused(ValueError):
     """The record's own identifiability sidecar says a parameter is not a measurement."""
 
 
-def coefficients(record: FluidRecord, rho: float, eta_max: float) -> dict[str, float]:
+def coefficients(record: FluidRecord, rho: float, eta_max: float | None = None
+                 ) -> dict[str, float]:
     """Kinematic OpenFOAM coefficients for ``record`` at density ``rho`` (kg/m^3), with
-    the clamp ``eta_max`` (Pa s). Pure arithmetic; no verdict check."""
+    the clamp ``eta_max`` (Pa s) for the yield-stress families and ``None`` for the two
+    that do not take one. Pure arithmetic; no verdict check."""
     if not (rho > 0 and np.isfinite(rho)):
         raise ValueError(f"rho must be a positive density in kg/m^3, got {rho!r}")
-    if not (eta_max > 0 and np.isfinite(eta_max)):
-        raise ValueError(f"eta_max must be a positive viscosity in Pa s, got {eta_max!r}")
     if record.model.name not in _MODELS:
         raise NotImplementedError(
             f"no OpenFOAM {OPENFOAM_VERSION} export for model '{record.model.name}'; "
             f"available: {sorted(_MODELS)}")
+    p = {name: float(v) for name, v in zip(record.model.param_names, record.params_si)}
+    if record.model.name in _NO_CLAMP:
+        # Refusing rather than ignoring is the point: eta_0 is a fitted parameter here,
+        # so accepting a clamp and dropping it would put the caller's regularisation
+        # request into the same silent-drop class this bridge exists to prevent.
+        if eta_max is not None:
+            raise ValueError(
+                f"{record.id}: model '{record.model.name}' takes no eta_max. Its "
+                f"zero-shear plateau eta_0 = {p['eta_0']:g} Pa s is a FITTED PARAMETER of "
+                "the record, not a regularisation, and the law is bounded by it at every "
+                "rate; there is nothing to clamp. Pass eta_max=None. (Herschel-Bulkley "
+                "and Casson do require one: OpenFOAM has no unregularised yield-stress "
+                "law.)")
+        if record.model.name == "cross":
+            # NAME COLLISION, both ways: biorheo's `lam` (a time) is OpenFOAM's `m`, and
+            # biorheo's `m` (an exponent) is OpenFOAM's `n`. A map written by matching
+            # names would put an exponent into a dimTime slot. CrossPowerLaw.C:56,75-78.
+            return {"nu0": p["eta_0"] / rho, "nuInf": p["eta_inf"] / rho,
+                    "m": p["lam"], "n": p["m"]}
+        # carreau_yasuda -> BirdCarreau: a straight rename, `lam` -> `k` (dimTime), and
+        # `a` is written ALWAYS even when it equals 2, because omitting it is legal and
+        # silently means 2. BirdCarreau.C:55-59,77-88.
+        return {"nu0": p["eta_0"] / rho, "nuInf": p["eta_inf"] / rho,
+                "k": p["lam"], "n": p["n"], "a": p["a"]}
+    if eta_max is None:
+        raise ValueError(
+            f"{record.id}: model '{record.model.name}' requires eta_max. OpenFOAM has no "
+            "unregularised yield-stress law, so the exported dictionary is the CLAMPED "
+            "record and the clamp has to be chosen here.")
+    if not (eta_max > 0 and np.isfinite(eta_max)):
+        raise ValueError(f"eta_max must be a positive viscosity in Pa s, got {eta_max!r}")
     # A clamp at or below the viscosity at the TOP of the envelope makes the exported law
     # a constant-viscosity Newtonian fluid over the whole measured range, silently. Both
     # families are shear-thinning, so eta_at(gammadot_max) is that minimum. This also
@@ -134,7 +215,6 @@ def coefficients(record: FluidRecord, rho: float, eta_max: float) -> dict[str, f
             f"of its envelope ({eta_hi:g} Pa s at {record.envelope.gammadot_max:g} 1/s); "
             "the clamp would bind everywhere and the exported law would be Newtonian. "
             "For a Casson record this also covers the nuMin floor, which is lower still.")
-    p = {name: float(v) for name, v in zip(record.model.param_names, record.params_si)}
     if record.model.name == "herschel_bulkley":
         return {"k": p["k"] / rho, "n": p["n"], "tau0": p["tau_y"] / rho, "nu0": eta_max / rho}
     assert eta_max > p["eta_c"], "unreachable: eta_c < eta_at(gammadot_max) <= eta_max"
@@ -181,19 +261,26 @@ def check_exportable(record: FluidRecord, allow_unidentified: bool = False,
             "parameter is measurable. Pass strict_form=False to export it anyway.")
 
 
-def export_transport_properties(record: FluidRecord, rho: float, eta_max: float, *,
+def export_transport_properties(record: FluidRecord, rho: float, eta_max: float | None = None, *,
                                 allow_unidentified: bool = False,
                                 strict_form: bool = False) -> str:
-    """The full ``constant/transportProperties`` text for ``record``."""
+    """The full ``constant/transportProperties`` text for ``record``. ``eta_max`` is
+    required for the yield-stress families and refused for the other two."""
     check_exportable(record, allow_unidentified, strict_form)
     of_name, keys = _MODELS[record.model.name]
     c = coefficients(record, rho, eta_max)
     verd = record.verdicts or {}
     rs = structured_flag(record)
+    clamp_line = (
+        f"// clamp eta_max = {eta_max:.10g} Pa s (OpenFOAM {OPENFOAM_VERSION} form, "
+        f"{OPENFOAM_SRC}/{of_name})" if eta_max is not None else
+        f"// no clamp: {record.model.name} has no yield stress and its zero-shear plateau "
+        f"eta_0 is a fitted parameter, so nu0 below is the RECORD, not a regularisation "
+        f"(OpenFOAM {OPENFOAM_VERSION} form, {OPENFOAM_SRC}/{of_name})")
     lines = [_HEADER,
              f"// biorheo export of record {record.id} ({record.fluid})",
              f"// model {record.model.name}; kinematic coefficients = dynamic / rho, rho = {rho:.10g} kg/m^3",
-             f"// clamp eta_max = {eta_max:.10g} Pa s (OpenFOAM {OPENFOAM_VERSION} form, {OPENFOAM_SRC}/{of_name})",
+             clamp_line,
              f"// envelope {record.envelope.gammadot_min:g} to {record.envelope.gammadot_max:g} 1/s; "
              f"verdicts {verd if verd else 'none (allow_unidentified)'}",
              "// WARNING: the envelope above is a COMMENT. FluidRecord.eta_at refuses to",
@@ -217,7 +304,8 @@ def export_transport_properties(record: FluidRecord, rho: float, eta_max: float,
     return "\n".join(lines)
 
 
-def write_transport_properties(record: FluidRecord, rho: float, eta_max: float, path: str | Path, *,
+def write_transport_properties(record: FluidRecord, rho: float, eta_max: float | None,
+                               path: str | Path, *,
                                allow_unidentified: bool = False,
                                strict_form: bool = False) -> Path:
     path = Path(path)
@@ -253,6 +341,12 @@ def parse_transport_properties(text: str, *, expect: str | None = None
     ``expect`` names a biorheo model whose full coefficient set must be present; the
     parse then raises rather than returning a partial dict. Leave it None only when
     reading a dictionary whose contents are not known in advance.
+
+    One coefficient is OPTIONAL in OpenFOAM itself: ``BirdCarreau``'s ``a`` is read with
+    ``getOrDefault("a", 2)``, so a dictionary that omits it is legal and runs as a Carreau
+    fluid. This function mirrors that -- a missing ``a`` is FILLED with 2, not reported
+    missing -- because reporting it missing would disagree with the solver about what the
+    file means. biorheo's own export always writes it.
     """
     text = re.sub(r"//[^\n]*", "", text)
     m = _MODEL_ENTRY.search(text)
@@ -263,6 +357,8 @@ def parse_transport_properties(text: str, *, expect: str | None = None
     if block is None:
         raise ValueError(f"no {of_name}Coeffs block")
     coeffs = {k: float(v) for k, v in _ENTRY.findall(block.group(1))}
+    for k, default in _OPTIONAL_COEFFS.get(of_name, {}).items():
+        coeffs.setdefault(k, default)
     if expect is not None:
         want = set(_MODELS[expect][1])
         if not want.issubset(coeffs):
@@ -280,15 +376,26 @@ def nu_openfoam(of_name: str, c: dict[str, float], sr) -> np.ndarray:
     if of_name == "Casson":
         return np.maximum(c["nuMin"], np.minimum(
             c["nuMax"], (np.sqrt(c["tau0"] / np.maximum(sr, VSMALL)) + np.sqrt(c["m"])) ** 2))
+    if of_name == "CrossPowerLaw":
+        # (nu0_ - nuInf_)/(scalar(1) + pow(m_*strainRate(), n_)) + nuInf_
+        # `m` is the TIME here and `n` the exponent -- the reverse of biorheo's names.
+        return (c["nu0"] - c["nuInf"]) / (1.0 + (c["m"] * sr) ** c["n"]) + c["nuInf"]
+    if of_name == "BirdCarreau":
+        # nuInf_ + (nu0_ - nuInf_)*pow(1 + pow(k_*strainRate(), a_), (n_ - 1.0)/a_)
+        # `a` absent means 2, exactly as OpenFOAM's getOrDefault does.
+        a = c.get("a", _BIRDCARREAU_A_DEFAULT)
+        return c["nuInf"] + (c["nu0"] - c["nuInf"]) * (1.0 + (c["k"] * sr) ** a) ** ((c["n"] - 1.0) / a)
     raise NotImplementedError(of_name)
 
 
-def export_report(record: FluidRecord, rho: float, eta_max: float, gammadot, *,
+def export_report(record: FluidRecord, rho: float, eta_max: float | None, gammadot, *,
                   allow_unidentified: bool = False, strict_form: bool = False) -> dict:
     """Round trip at the rates ``gammadot`` (all inside the envelope): export, parse,
     evaluate the OpenFOAM form, compare with ``rho * record.eta_at``. Returns the
     text, the parsed coefficients, the relative error where the cap does not bind, and
-    the rates where it does (there the OpenFOAM law is ``eta_max`` by construction)."""
+    the rates where it does (there the OpenFOAM law is ``eta_max`` by construction).
+    With ``eta_max=None`` -- the only option for ``cross`` and ``carreau_yasuda`` -- no
+    cap exists and ``cap_binds`` is False everywhere."""
     text = export_transport_properties(record, rho, eta_max,
                                        allow_unidentified=allow_unidentified,
                                        strict_form=strict_form)
@@ -296,7 +403,7 @@ def export_report(record: FluidRecord, rho: float, eta_max: float, gammadot, *,
     gd = np.asarray(gammadot, dtype=float)
     nu_of = nu_openfoam(of_name, c, gd)
     nu_rec = record.eta_at(gd) / rho
-    binds = nu_rec > eta_max / rho
+    binds = (nu_rec > eta_max / rho) if eta_max is not None else np.zeros(gd.shape, dtype=bool)
     rel = np.abs(nu_of - nu_rec) / nu_rec
     return {
         "transportModel": of_name, "coefficients": c, "text": text, "gammadot": gd,

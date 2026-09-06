@@ -114,9 +114,11 @@ def test_rejects_bad_density_or_cap(records):
     rec = records["blood_horner2020_donor_A"]
     with pytest.raises(ValueError, match="rho"):
         coefficients(rec, 0.0, 1.0)
-    with pytest.raises(NotImplementedError, match="cross"):
-        from biorheo.constitutive.gnf import CROSS
-        coefficients(replace(rec, model=CROSS), RHO, 1.0)
+    # `cross` used to be the unimplemented example here; it is implemented as of
+    # 2026-09-06 (NEXT_STEPS item 6), so the check moved to a family that still is not.
+    with pytest.raises(NotImplementedError, match="power_law"):
+        from biorheo.constitutive.gnf import POWER_LAW
+        coefficients(replace(rec, model=POWER_LAW), RHO, 1.0)
 
 
 @pytest.mark.parametrize("rid", ["carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A"])

@@ -1,0 +1,65 @@
+# written by biorheo.identify; do not edit by hand
+written_by: biorheo.identify
+written_on: '2026-09-05'
+record_id: blood_horner2020_donor_D_carreau_yasuda
+model: carreau_yasuda
+level: 0.95
+fit:
+  n_points: 16
+  rmse_log_eta: 0.04379348583273303
+  gammadot_min: 0.1
+  gammadot_max: 700.0
+residual_structure:
+  n: 16
+  n_runs: 7
+  expected_runs: 9.0
+  z: -1.0350983390135313
+  structured: false
+  signs: -++-++---++++---
+parameters:
+  eta_0:
+    value: 0.10314368180441777
+    lo: 0.09171608734472808
+    hi: 0.29845616165916744
+    verdict: measurable
+    decades: 0.5124350301479732
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+  eta_inf:
+    value: 0.0035115188780792967
+    lo: 0.0032559305243767558
+    hi: 0.19882401819223577
+    verdict: measurable
+    decades: 1.7857937172883718
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+  lam:
+    value: 6.949731590162661
+    lo: 5.618477540261585
+    hi: 13.980932724862418
+    verdict: measurable
+    decades: 0.3959174968057996
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+  a:
+    value: 9.999999999999998
+    lo: 9.990332031249999
+    hi: 10.0
+    verdict: bounded_only
+    decades: 0.0004200776455476172
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: true
+  n:
+    value: 0.2231682360886998
+    lo: 0.1632035157682993
+    hi: 0.2701865684888961
+    verdict: measurable
+    decades: 0.21893424538921322
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+data_note: Horner 2020 steady shear, human donor D, 16 points; see data/horner2020/SOURCE.md
