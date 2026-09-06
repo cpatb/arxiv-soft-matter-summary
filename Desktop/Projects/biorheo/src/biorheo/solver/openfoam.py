@@ -257,13 +257,17 @@ def check_exportable(record: FluidRecord, allow_unidentified: bool = False,
     counterexample is in blood Herschel-Bulkley, which is fitted for the model comparison
     and never shipped as a record.
 
-    **Scope, because the flag refuses more than the evidence covers.** The seed study
-    (``scripts/multistart_seed_scatter.py``) fitted the 20 BLOOD curves only. The 15
-    Carbopol Herschel-Bulkley records were never in it -- their parameters come from
-    ``carbopol/fit_hb.py``, a different fitter -- so nothing here says whether THEY move
-    under a change of seed. Turning this flag on refuses 7 of the 58 records the default
-    accepts; that set is chosen by the verdicts, not by measured scatter, for any record
-    outside the blood families.
+    **Scope, now closed on both sets.** The first seed study
+    (``scripts/multistart_seed_scatter.py``) fitted the 20 BLOOD curves only, leaving the
+    15 Carbopol records unmeasured; ``scripts/multistart_seed_scatter_carbopol.py`` covers
+    them (NEXT_STEPS item 10). All 15 are all-``measurable``, their worst seed spread is
+    5.409e-06, their verdict sets do not change with the seed, and every one of the 225
+    (seed, parameter, record) intervals still contains the value the record ships from
+    ``carbopol/fit_hb.py`` -- so the loader's containment rule is not resting on seed 0
+    being lucky.
+
+    Turning this flag on refuses 7 of the 58 records the default accepts. All 7 are
+    Carreau-Yasuda blood records; no Carbopol record carries a ``bounded_only`` at all.
 
     A caller about to QUOTE an exported parameter, rather than run a simulation with it,
     should pass ``strict_identifiability=True``."""

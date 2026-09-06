@@ -1,4 +1,4 @@
-"""Pins the multi-start seed-scatter study (NEXT_STEPS item 9).
+"""Pins the multi-start seed-scatter studies (NEXT_STEPS items 9 and 10).
 
 Three criteria, fixed in `scripts/multistart_seed_scatter.py`'s docstring before the
 held-out families were looked at. **One passed and two failed, and no bar was moved.**
@@ -18,6 +18,13 @@ as "determined, with a one-sided interval".
 The objective is what makes this a statement about FLATNESS rather than about a failed
 search: it moves by at most 6.5e-10 relative across all 80 pairs, so no seed is landing on
 a worse optimum.
+
+Item 10 closes the scope gap item 9 left: the 15 Carbopol records were never in the blood
+study. On that independent set (different material, instrument, 54 points per curve, and a
+DIFFERENT FITTER for the shipped values) all three criteria PASS -- worst spread 5.409e-06,
+seed-stable verdicts on 15/15, and all 225 (seed, parameter, record) intervals still
+contain the value the record ships. So the blood failure is one record in one family, not
+a property of the identify layer.
 """
 
 from __future__ import annotations
@@ -123,3 +130,65 @@ def test_rerunning_reproduces_the_verdicts():
                        capture_output=True, text=True, cwd=ROOT)
     assert r.returncode == 0, r.stderr[-2000:]
     assert json.loads(JSON.read_text()) == before
+
+
+# ------------------------------------------------ NEXT_STEPS item 10: the Carbopol set
+
+CARBOPOL_JSON = ROOT / "data" / "carbopol_multistart_scatter.json"
+CARBOPOL_MD = ROOT / "data" / "carbopol_multistart_scatter.md"
+
+
+@pytest.fixture(scope="module")
+def cms():
+    assert CARBOPOL_JSON.exists(), "run scripts/multistart_seed_scatter_carbopol.py"
+    return json.loads(CARBOPOL_JSON.read_text())
+
+
+def test_carbopol_bars_are_the_pre_registered_ones(cms):
+    assert cms["G101_bar"] == 1e-3 and cms["G102_bar"] == 1e-3
+    assert cms["seeds"] == [0, 1, 2, 3, 4]
+    assert len(cms["records"]) == 15
+
+
+def test_carbopol_all_three_criteria_pass(cms):
+    """G10.1/G10.2/G10.3 on an independent set -- different material, instrument, 54
+    points per curve instead of 16, and a different fitter for the shipped values. The
+    blood set failed the equivalent of G10.2 on one record; this set does not."""
+    assert cms["G101_violations"] == []
+    assert cms["G102_violations"] == []
+    assert cms["G103_violations"] == []
+    assert cms["n_all_measurable"] == 15 and cms["n_export_accepted"] == 15
+    assert cms["worst_spread_all_measurable"] == pytest.approx(5.409e-06, rel=1e-3)
+    assert cms["worst_spread_all_measurable"] < cms["G101_bar"]
+    assert cms["worst_cost_spread"] < 1e-9
+
+
+def test_carbopol_containment_holds_at_every_seed_not_just_seed_zero(cms):
+    """G10.3, the one specific to this set. `write_identifiability` refuses a sidecar
+    whose interval does not contain the shipped csv value, and the loader then refuses a
+    record outside its sidecar interval -- both evaluated only at seed 0 until now. All
+    5 x 3 x 15 = 225 intervals contain it."""
+    assert cms["total_interval_failures"] == 0
+    n = 0
+    for rid, r in cms["records"].items():
+        assert r["n_interval_failures"] == 0, rid
+        for key, c in r["containment"].items():
+            assert c["lo"] <= c["shipped"] <= c["hi"], (rid, key, c)
+            n += 1
+    assert n == 5 * 3 * 15 == 225
+
+
+def test_carbopol_verdicts_do_not_depend_on_the_seed(cms):
+    """A verdict that changes with the seed would be a statement about the optimiser; the
+    sidecar records only seed 0's, so this has to hold for the sidecar to mean anything."""
+    assert cms["verdict_unstable_records"] == []
+    for rid, r in cms["records"].items():
+        sets = {tuple(sorted(v.items())) for v in r["verdicts_by_seed"].values()}
+        assert len(sets) == 1, (rid, sets)
+
+
+def test_carbopol_md_quotes_its_own_json(cms):
+    md = CARBOPOL_MD.read_text(encoding="utf-8")
+    assert "**FAILED**" not in md
+    assert f"{cms['worst_spread_all_measurable']:.3e}" in md
+    assert f"{cms['worst_cost_spread']:.2e}" in md

@@ -1,0 +1,2168 @@
+{
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "G101_bar": 0.001,
+  "G102_bar": 0.001,
+  "G101_violations": [],
+  "G102_violations": [],
+  "G103_violations": [],
+  "n_all_measurable": 15,
+  "n_export_accepted": 15,
+  "worst_spread_all_measurable": 5.408795170759882e-06,
+  "worst_spread_export_accepted": 5.408795170759882e-06,
+  "worst_cost_spread": 1.545518749104922e-11,
+  "total_interval_failures": 0,
+  "verdict_unstable_records": [],
+  "records": {
+    "carbopol_etd2020_0p1wt_30uL": {
+      "n_points": 54,
+      "param_spread": 5.408795170759882e-06,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 3.2353733592085154e-06,
+        "k": 5.408795170759882e-06,
+        "n": 2.6151507326815748e-06
+      },
+      "cost_spread": 7.238571203038077e-12,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 2.602,
+        "k": 4.918,
+        "n": 0.579
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 2.4695523750857507,
+          "hi": 2.927747731951966,
+          "shipped": 2.602,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 4.386215289076952,
+          "hi": 5.738915397538451,
+          "shipped": 4.918,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.5527111043312671,
+          "hi": 0.6235594653158758,
+          "shipped": 0.579,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 2.469552654951999,
+          "hi": 2.927748006390089,
+          "shipped": 2.602,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 4.386214475437306,
+          "hi": 5.738914543734761,
+          "shipped": 4.918,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.5527111500996117,
+          "hi": 0.6235595169501205,
+          "shipped": 0.579,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 2.4695527764171876,
+          "hi": 2.927748124597164,
+          "shipped": 2.602,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 4.3862141450607695,
+          "hi": 5.73891419897498,
+          "shipped": 4.918,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.5527111690258273,
+          "hi": 0.6235595383335765,
+          "shipped": 0.579,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 2.4695521179374422,
+          "hi": 2.9277474825112644,
+          "shipped": 2.602,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 4.386216017770423,
+          "hi": 5.738916170401158,
+          "shipped": 4.918,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.552711062315529,
+          "hi": 0.6235594187186662,
+          "shipped": 0.579,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 2.469543857231839,
+          "hi": 2.927739410535895,
+          "shipped": 2.602,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 4.386239633977834,
+          "hi": 5.738941013997968,
+          "shipped": 4.918,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.5527097196611063,
+          "hi": 0.6235579117245305,
+          "shipped": 0.579,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p1wt_40uL": {
+      "n_points": 54,
+      "param_spread": 3.699260906091661e-06,
+      "worst_param": "tau_y",
+      "per_param_spread": {
+        "tau_y": 3.699260906091661e-06,
+        "k": 3.1071773616970726e-06,
+        "n": 1.5199526393075025e-06
+      },
+      "cost_spread": 1.545518749104922e-11,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 0.811,
+        "k": 4.313,
+        "n": 0.6347
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 0.7433798653668053,
+          "hi": 0.9558348560584368,
+          "shipped": 0.811,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 4.043507700815152,
+          "hi": 5.045562906189133,
+          "shipped": 4.313,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.6133034199693455,
+          "hi": 0.6765932471770502,
+          "shipped": 0.6347,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 0.743380120190976,
+          "hi": 0.9558351133870164,
+          "shipped": 0.811,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 4.043506584191421,
+          "hi": 5.045561757277715,
+          "shipped": 4.313,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.6133034967604216,
+          "hi": 0.6765933332124152,
+          "shipped": 0.6347,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 0.7433811957212814,
+          "hi": 0.9558361919402724,
+          "shipped": 0.811,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 4.043501907588949,
+          "hi": 5.045556933660154,
+          "shipped": 4.313,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.6133038208469448,
+          "hi": 0.6765936941208943,
+          "shipped": 0.6347,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 0.7433798659914743,
+          "hi": 0.9558348575546238,
+          "shipped": 0.811,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 4.043507698036713,
+          "hi": 5.045562906364099,
+          "shipped": 4.313,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.6133034199904037,
+          "hi": 0.6765932475892589,
+          "shipped": 0.6347,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 0.7433829553578065,
+          "hi": 0.9558379584372902,
+          "shipped": 0.811,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 4.043494260086062,
+          "hi": 5.045549049530032,
+          "shipped": 4.313,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.6133043471007418,
+          "hi": 0.676594280778994,
+          "shipped": 0.6347,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p1wt_50uL": {
+      "n_points": 54,
+      "param_spread": 7.719478348491107e-07,
+      "worst_param": "tau_y",
+      "per_param_spread": {
+        "tau_y": 7.719478348491107e-07,
+        "k": 4.7068624785504946e-07,
+        "n": 2.4504951118885474e-07
+      },
+      "cost_spread": 8.521443402203325e-13,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 0.802,
+        "k": 5.365,
+        "n": 0.5922
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 0.7279546388023775,
+          "hi": 0.9031715326916611,
+          "shipped": 0.802,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 5.150869550292743,
+          "hi": 5.883306541077781,
+          "shipped": 5.365,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.5755407993275354,
+          "hi": 0.6178269422006726,
+          "shipped": 0.5922,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 0.7279541671554675,
+          "hi": 0.9031710593750328,
+          "shipped": 0.802,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 5.150871483904917,
+          "hi": 5.883308506313489,
+          "shipped": 5.365,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.5755406923963532,
+          "hi": 0.6178268262310737,
+          "shipped": 0.5922,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 0.7279540182480897,
+          "hi": 0.9031709108760684,
+          "shipped": 0.802,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 5.1508720941919695,
+          "hi": 5.883309126407917,
+          "shipped": 5.365,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.575540659050161,
+          "hi": 0.6178267900280805,
+          "shipped": 0.5922,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 0.7279545324968,
+          "hi": 0.9031714251574019,
+          "shipped": 0.802,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 5.15086999096008,
+          "hi": 5.883306988350281,
+          "shipped": 5.365,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.5755407751806916,
+          "hi": 0.6178269158278067,
+          "shipped": 0.5922,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 0.7279546388023775,
+          "hi": 0.9031715326916611,
+          "shipped": 0.802,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 5.150869550292743,
+          "hi": 5.883306541077781,
+          "shipped": 5.365,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.5755407993275354,
+          "hi": 0.6178269422006726,
+          "shipped": 0.5922,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p3wt_30uL": {
+      "n_points": 54,
+      "param_spread": 1.2221189309362164e-07,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 2.826973921990703e-08,
+        "k": 1.2221189309362164e-07,
+        "n": 6.822376630806631e-08
+      },
+      "cost_spread": 1.6613841432009444e-13,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 19.273,
+        "k": 8.23,
+        "n": 0.4238
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 19.127393509594192,
+          "hi": 19.437862979851353,
+          "shipped": 19.273,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 7.9859852935093905,
+          "hi": 8.614873558052505,
+          "shipped": 8.23,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.41711799213730893,
+          "hi": 0.43100519888116584,
+          "shipped": 0.4238,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 19.12739369918635,
+          "hi": 19.43786316790984,
+          "shipped": 19.273,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 7.985984949364968,
+          "hi": 8.614873207425722,
+          "shipped": 8.23,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.4171180020307503,
+          "hi": 0.4310052089395284,
+          "shipped": 0.4238,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 19.12739365775359,
+          "hi": 19.43786313271194,
+          "shipped": 19.273,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 7.985985012270552,
+          "hi": 8.614873280009654,
+          "shipped": 8.23,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.41711799989644505,
+          "hi": 0.43100520718055424,
+          "shipped": 0.4238,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 19.127394059707058,
+          "hi": 19.437863524937534,
+          "shipped": 19.273,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 7.985984300294624,
+          "hi": 8.614872552951578,
+          "shipped": 8.23,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.41711802061386705,
+          "hi": 0.43100522826657894,
+          "shipped": 0.4238,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 19.127393936064518,
+          "hi": 19.437863395088705,
+          "shipped": 19.273,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 7.985984547479675,
+          "hi": 8.614872791766938,
+          "shipped": 8.23,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.41711801413831057,
+          "hi": 0.4310052210246658,
+          "shipped": 0.4238,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p3wt_40uL": {
+      "n_points": 54,
+      "param_spread": 3.917140558725772e-08,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 8.502814060637339e-09,
+        "k": 3.917140558725772e-08,
+        "n": 2.1988052614846256e-08
+      },
+      "cost_spread": 1.7801331383518526e-13,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 32.21,
+        "k": 12.538,
+        "n": 0.4109
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 32.03130452295943,
+          "hi": 32.41168521531054,
+          "shipped": 32.21,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 12.253151512802802,
+          "hi": 12.923577668657014,
+          "shipped": 12.538,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.4057924148665234,
+          "hi": 0.4163031651849721,
+          "shipped": 0.4109,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 32.031304457396985,
+          "hi": 32.41168514636948,
+          "shipped": 32.21,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 12.253151639891632,
+          "hi": 12.923577791800685,
+          "shipped": 12.538,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.40579241272492694,
+          "hi": 0.41630316287360114,
+          "shipped": 0.4109,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 32.03130450134124,
+          "hi": 32.41168518969518,
+          "shipped": 32.21,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 12.25315156425875,
+          "hi": 12.923577714765612,
+          "shipped": 12.538,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.4057924141969055,
+          "hi": 0.4163031642740961,
+          "shipped": 0.4109,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 32.03130423785578,
+          "hi": 32.41168494138073,
+          "shipped": 32.21,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 12.253151985222352,
+          "hi": 12.923578159590392,
+          "shipped": 12.538,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.4057924057181316,
+          "hi": 0.41630315625875725,
+          "shipped": 0.4109,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 32.03130437462002,
+          "hi": 32.41168507475102,
+          "shipped": 32.21,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 12.253151751272004,
+          "hi": 12.92357792344422,
+          "shipped": 12.538,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.40579241001803035,
+          "hi": 0.4163031607402679,
+          "shipped": 0.4109,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p3wt_50uL": {
+      "n_points": 54,
+      "param_spread": 4.846575051120106e-08,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 1.1251994082020899e-08,
+        "k": 4.846575051120106e-08,
+        "n": 2.831433448710114e-08
+      },
+      "cost_spread": 5.606205674910066e-14,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 39.085,
+        "k": 15.902,
+        "n": 0.3976
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 38.821403417425685,
+          "hi": 39.37023326738096,
+          "shipped": 39.085,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 15.477867646593662,
+          "hi": 16.479363266284842,
+          "shipped": 15.902,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.3916694586405711,
+          "hi": 0.403946321824436,
+          "shipped": 0.3976,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 38.82140333434531,
+          "hi": 39.37023320328679,
+          "shipped": 39.085,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 15.47786773744815,
+          "hi": 16.479363389269835,
+          "shipped": 15.902,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.3916694566567266,
+          "hi": 0.40394632048157864,
+          "shipped": 0.3976,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 38.82140331650761,
+          "hi": 39.37023315209653,
+          "shipped": 39.085,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 15.477867866148035,
+          "hi": 16.47936346595235,
+          "shipped": 15.902,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.39166945614293647,
+          "hi": 0.4039463186158317,
+          "shipped": 0.3976,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 38.8214037274699,
+          "hi": 39.37023359201344,
+          "shipped": 39.085,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 15.477867066413154,
+          "hi": 16.479362695665543,
+          "shipped": 15.902,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.3916694667495722,
+          "hi": 0.40394633054076245,
+          "shipped": 0.3976,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 38.82140344710543,
+          "hi": 39.37023331413904,
+          "shipped": 39.085,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 15.4778675491823,
+          "hi": 16.47936319493861,
+          "shipped": 15.902,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.39166945942138415,
+          "hi": 0.4039463232297145,
+          "shipped": 0.3976,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p5wt_30uL": {
+      "n_points": 54,
+      "param_spread": 5.607967277750891e-10,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 1.1736007713633444e-10,
+        "k": 5.607967277750891e-10,
+        "n": 2.5834312975715176e-10
+      },
+      "cost_spread": 2.3362343775637096e-14,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 7.93,
+        "k": 3.862,
+        "n": 0.5051
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 7.920402056071698,
+          "hi": 7.949127839153183,
+          "shipped": 7.93,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 3.846568652064599,
+          "hi": 4.057085901224923,
+          "shipped": 3.862,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.5041488306508546,
+          "hi": 0.5061184200422084,
+          "shipped": 0.5051,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 7.920402055805649,
+          "hi": 7.949127838886828,
+          "shipped": 7.93,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 3.846568652532093,
+          "hi": 4.057085901829566,
+          "shipped": 3.862,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.5041488306064783,
+          "hi": 0.5061184200066756,
+          "shipped": 0.5051,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 7.920402056733926,
+          "hi": 7.94912783981618,
+          "shipped": 7.93,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 3.846568650922902,
+          "hi": 4.057085899663896,
+          "shipped": 3.862,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.5041488307668875,
+          "hi": 0.5061184201370873,
+          "shipped": 0.5051,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 7.920402055804384,
+          "hi": 7.949127838885563,
+          "shipped": 7.93,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 3.846568652958654,
+          "hi": 4.057085901723077,
+          "shipped": 3.862,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.5041488306402133,
+          "hi": 0.5061184200089329,
+          "shipped": 0.5051,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 7.920402056123574,
+          "hi": 7.949127839205122,
+          "shipped": 7.93,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 3.846568651865839,
+          "hi": 4.057085901257613,
+          "shipped": 3.862,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.5041488306392512,
+          "hi": 0.5061184200414066,
+          "shipped": 0.5051,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p5wt_40uL": {
+      "n_points": 54,
+      "param_spread": 9.186518909151026e-10,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 1.6171115933120382e-10,
+        "k": 9.186518909151026e-10,
+        "n": 4.4108552451819955e-10
+      },
+      "cost_spread": 2.275511066417324e-14,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 23.756,
+        "k": 8.903,
+        "n": 0.4526
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 23.72120412128234,
+          "hi": 23.795225241290453,
+          "shipped": 23.756,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 8.849711753426615,
+          "hi": 9.098586664971652,
+          "shipped": 8.903,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.4511257590797694,
+          "hi": 0.4539958138852651,
+          "shipped": 0.4526,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 23.72120412251554,
+          "hi": 23.795225242525472,
+          "shipped": 23.756,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 8.849711753332581,
+          "hi": 9.098586664020274,
+          "shipped": 8.903,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.4511257591224941,
+          "hi": 0.453995813913661,
+          "shipped": 0.4526,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 23.72120411972292,
+          "hi": 23.795225239728737,
+          "shipped": 23.756,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 8.849711757428736,
+          "hi": 9.0985866680316,
+          "shipped": 8.903,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.4511257590352489,
+          "hi": 0.4539958138137577,
+          "shipped": 0.4526,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 23.721204122180875,
+          "hi": 23.795225242190313,
+          "shipped": 23.756,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 8.849711756752821,
+          "hi": 9.098586664380687,
+          "shipped": 8.903,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.4511257591973963,
+          "hi": 0.45399581391707133,
+          "shipped": 0.4526,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 23.721204118679555,
+          "hi": 23.795225238683834,
+          "shipped": 23.756,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 8.849711763548074,
+          "hi": 9.098586672199284,
+          "shipped": 8.903,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.45112575898236346,
+          "hi": 0.4539958137176391,
+          "shipped": 0.4526,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p5wt_50uL": {
+      "n_points": 54,
+      "param_spread": 4.993794965056116e-09,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 9.348410997467603e-10,
+        "k": 4.993794965056116e-09,
+        "n": 2.7630100548392663e-09
+      },
+      "cost_spread": 3.558710673548181e-14,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 41.11,
+        "k": 13.733,
+        "n": 0.4282
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 41.019403065523875,
+          "hi": 41.20897576075001,
+          "shipped": 41.11,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 13.595387625521727,
+          "hi": 13.92745023029413,
+          "shipped": 13.733,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.4259390916634302,
+          "hi": 0.4305905402906455,
+          "shipped": 0.4282,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 41.019403043319095,
+          "hi": 41.20897574129635,
+          "shipped": 41.11,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 13.595387653613445,
+          "hi": 13.927450265790569,
+          "shipped": 13.733,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.42593909096306326,
+          "hi": 0.4305905396993953,
+          "shipped": 0.4282,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 41.01940305387295,
+          "hi": 41.20897575995889,
+          "shipped": 41.11,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 13.59538761544993,
+          "hi": 13.927450232305187,
+          "shipped": 13.733,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.42593909144773445,
+          "hi": 0.43059054024344634,
+          "shipped": 0.4282,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 41.01940306653509,
+          "hi": 41.208975768152726,
+          "shipped": 41.11,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 13.595387601630042,
+          "hi": 13.927450215956423,
+          "shipped": 13.733,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.4259390917739234,
+          "hi": 0.43059054054096135,
+          "shipped": 0.4282,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 41.019403032709434,
+          "hi": 41.20897572972017,
+          "shipped": 41.11,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 13.595387676373035,
+          "hi": 13.927450284531904,
+          "shipped": 13.733,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.4259390906835895,
+          "hi": 0.43059053935942615,
+          "shipped": 0.4282,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p7wt_30uL": {
+      "n_points": 54,
+      "param_spread": 3.2412147102739096e-09,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 6.903165138164429e-10,
+        "k": 3.2412147102739096e-09,
+        "n": 1.4434234844676213e-09
+      },
+      "cost_spread": 1.5745611216548803e-14,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 6.65,
+        "k": 3.36,
+        "n": 0.5169
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 6.62838980328803,
+          "hi": 6.690405022612735,
+          "shipped": 6.65,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 3.32083874683664,
+          "hi": 3.55446495801875,
+          "shipped": 3.36,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.5141164474447644,
+          "hi": 0.5198804799026808,
+          "shipped": 0.5169,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 6.628389799033389,
+          "hi": 6.690405019039341,
+          "shipped": 6.65,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 3.320838753766041,
+          "hi": 3.5544649662973176,
+          "shipped": 3.36,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.5141172507891393,
+          "hi": 0.5198804794096518,
+          "shipped": 0.5169,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 6.628389802895089,
+          "hi": 6.690405022849532,
+          "shipped": 6.65,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 3.3208387455720416,
+          "hi": 3.554464957388624,
+          "shipped": 3.36,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.51411644745661,
+          "hi": 0.5198804799916342,
+          "shipped": 0.5169,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 6.628389803768808,
+          "hi": 6.6904050236308725,
+          "shipped": 6.65,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 3.3208387433395057,
+          "hi": 3.554464955409583,
+          "shipped": 3.36,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.5141164475708169,
+          "hi": 0.5198804801486301,
+          "shipped": 0.5169,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 6.628389803872628,
+          "hi": 6.690405023148623,
+          "shipped": 6.65,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 3.3208387456255926,
+          "hi": 3.554464957094366,
+          "shipped": 3.36,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.5141164475049063,
+          "hi": 0.5198804799788832,
+          "shipped": 0.5169,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p7wt_40uL": {
+      "n_points": 54,
+      "param_spread": 1.4691245383230379e-09,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 2.4591242866291057e-10,
+        "k": 1.4691245383230379e-09,
+        "n": 6.944998977993129e-10
+      },
+      "cost_spread": 1.1779535773118452e-14,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 16.54,
+        "k": 6.485,
+        "n": 0.4849
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 16.500074671357652,
+          "hi": 16.59969724079994,
+          "shipped": 16.54,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 6.419835571013691,
+          "hi": 6.67904445301812,
+          "shipped": 6.485,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.4825266761723843,
+          "hi": 0.48732071195336757,
+          "shipped": 0.4849,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 16.500074668058758,
+          "hi": 16.59969723887707,
+          "shipped": 16.54,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 6.419835574793661,
+          "hi": 6.679044457843505,
+          "shipped": 6.485,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.4825266759719239,
+          "hi": 0.48732071178659186,
+          "shipped": 0.4849,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 16.500074667685315,
+          "hi": 16.59969724176006,
+          "shipped": 16.54,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 6.4198355611246996,
+          "hi": 6.679044448318095,
+          "shipped": 6.485,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.4825266761799807,
+          "hi": 0.4873207121228351,
+          "shipped": 0.4849,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 16.50007466866718,
+          "hi": 16.599697241714402,
+          "shipped": 16.54,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 6.419835563466328,
+          "hi": 6.679044449783555,
+          "shipped": 6.485,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.4825266761534608,
+          "hi": 0.4873207120722984,
+          "shipped": 0.4849,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 16.50007467083457,
+          "hi": 16.599697242944735,
+          "shipped": 16.54,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 6.419835564140082,
+          "hi": 6.679044449664708,
+          "shipped": 6.485,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.48252667621555856,
+          "hi": 0.487320712095313,
+          "shipped": 0.4849,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p7wt_50uL": {
+      "n_points": 54,
+      "param_spread": 1.3864495874547046e-09,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 1.8361780803668705e-10,
+        "k": 1.3864495874547046e-09,
+        "n": 7.044776274333297e-10
+      },
+      "cost_spread": 3.7040677519887695e-15,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 28.378,
+        "k": 9.626,
+        "n": 0.4687
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 28.312337184035428,
+          "hi": 28.456346735949758,
+          "shipped": 28.378,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 9.52699482473827,
+          "hi": 9.821080432654462,
+          "shipped": 9.626,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.4662194977423214,
+          "hi": 0.47111194553530256,
+          "shipped": 0.4687,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 28.312337184035428,
+          "hi": 28.456346735949758,
+          "shipped": 28.378,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 9.52699482473827,
+          "hi": 9.821080432654462,
+          "shipped": 9.626,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.4662194977423214,
+          "hi": 0.47111194553530256,
+          "shipped": 0.4687,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 28.312337184035428,
+          "hi": 28.456346735949758,
+          "shipped": 28.378,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 9.52699482473827,
+          "hi": 9.821080432654462,
+          "shipped": 9.626,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.4662194977423214,
+          "hi": 0.47111194553530256,
+          "shipped": 0.4687,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 28.312337184035428,
+          "hi": 28.456346735949758,
+          "shipped": 28.378,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 9.52699482473827,
+          "hi": 9.821080432654462,
+          "shipped": 9.626,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.4662194977423214,
+          "hi": 0.47111194553530256,
+          "shipped": 0.4687,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 28.312337179730484,
+          "hi": 28.456346730739014,
+          "shipped": 28.378,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 9.526994839171252,
+          "hi": 9.821080446000103,
+          "shipped": 9.626,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.46621949742774327,
+          "hi": 0.47111194518950505,
+          "shipped": 0.4687,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p9wt_30uL": {
+      "n_points": 54,
+      "param_spread": 1.224578656174146e-07,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 2.3580689426372766e-08,
+        "k": 1.224578656174146e-07,
+        "n": 5.452542104272739e-08
+      },
+      "cost_spread": 1.7140189056300754e-13,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 8.833,
+        "k": 3.379,
+        "n": 0.5319
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 8.761213791269327,
+          "hi": 8.917497680690525,
+          "shipped": 8.833,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 3.2562129505976496,
+          "hi": 3.5708288109739863,
+          "shipped": 3.379,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.52341279640246,
+          "hi": 0.5409924768811476,
+          "shipped": 0.5319,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 8.761213921537227,
+          "hi": 8.917497811166005,
+          "shipped": 8.833,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 3.2562127079140075,
+          "hi": 3.57082856600365,
+          "shipped": 3.379,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.5234128129974696,
+          "hi": 0.5409924943559761,
+          "shipped": 0.5319,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 8.76121377159394,
+          "hi": 8.91749766256574,
+          "shipped": 8.833,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 3.256212989897512,
+          "hi": 3.570828854231057,
+          "shipped": 3.379,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.5234127933033438,
+          "hi": 0.5409924740974976,
+          "shipped": 0.5319,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 8.76121371094549,
+          "hi": 8.917497602727503,
+          "shipped": 8.833,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 3.2562131119774,
+          "hi": 3.570828979362166,
+          "shipped": 3.379,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.5234127843400935,
+          "hi": 0.5409924649775935,
+          "shipped": 0.5319,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 8.761213905844809,
+          "hi": 8.917497792357409,
+          "shipped": 8.833,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 3.2562127281039075,
+          "hi": 3.570828582826778,
+          "shipped": 3.379,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.5234128128469472,
+          "hi": 0.5409924936895654,
+          "shipped": 0.5319,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p9wt_40uL": {
+      "n_points": 54,
+      "param_spread": 4.519038951014199e-09,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 8.06026327369607e-10,
+        "k": 4.519038951014199e-09,
+        "n": 2.18559110867268e-09
+      },
+      "cost_spread": 1.977236206500365e-14,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 16.795,
+        "k": 6.285,
+        "n": 0.4859
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 16.728259958050593,
+          "hi": 16.877971451419768,
+          "shipped": 16.795,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 6.170990944310367,
+          "hi": 6.476082650010307,
+          "shipped": 6.285,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.4818557319632666,
+          "hi": 0.49034224080526045,
+          "shipped": 0.4859,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 16.728259942958232,
+          "hi": 16.87797143787865,
+          "shipped": 16.795,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 6.17099096998459,
+          "hi": 6.476082677034494,
+          "shipped": 6.285,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.48185573094482664,
+          "hi": 0.49034223984027725,
+          "shipped": 0.4859,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 16.728259939663292,
+          "hi": 16.877971438675598,
+          "shipped": 16.795,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 6.170990967300158,
+          "hi": 6.476082678393352,
+          "shipped": 6.285,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.481855730768878,
+          "hi": 0.4903422398756518,
+          "shipped": 0.4859,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 16.72825994495164,
+          "hi": 16.877971440177767,
+          "shipped": 16.795,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 6.17099096426692,
+          "hi": 6.476082672072855,
+          "shipped": 6.285,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.4818557310901246,
+          "hi": 0.4903422400739902,
+          "shipped": 0.4859,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 16.72825994667606,
+          "hi": 16.87797144105363,
+          "shipped": 16.795,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 6.1709909574024975,
+          "hi": 6.476082664019824,
+          "shipped": 6.285,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.4818557313750451,
+          "hi": 0.4903422402707551,
+          "shipped": 0.4859,
+          "contains": true
+        }
+      }
+    },
+    "carbopol_etd2020_0p9wt_50uL": {
+      "n_points": 54,
+      "param_spread": 1.3833578014935968e-09,
+      "worst_param": "k",
+      "per_param_spread": {
+        "tau_y": 2.44352898697848e-10,
+        "k": 1.3833578014935968e-09,
+        "n": 6.933934580168375e-10
+      },
+      "cost_spread": 2.198281916805967e-14,
+      "verdicts": {
+        "tau_y": "measurable",
+        "k": "measurable",
+        "n": "measurable"
+      },
+      "verdicts_by_seed": {
+        "0": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "1": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "2": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "3": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "4": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        }
+      },
+      "all_measurable": true,
+      "has_bad_verdict": false,
+      "shipped_values": {
+        "tau_y": 26.488,
+        "k": 8.984,
+        "n": 0.4757
+      },
+      "n_interval_failures": 0,
+      "containment": {
+        "seed0:tau_y": {
+          "lo": 26.447904296956317,
+          "hi": 26.546619654078743,
+          "shipped": 26.488,
+          "contains": true
+        },
+        "seed0:k": {
+          "lo": 8.923258624062843,
+          "hi": 9.17897982584011,
+          "shipped": 8.984,
+          "contains": true
+        },
+        "seed0:n": {
+          "lo": 0.4741439380519279,
+          "hi": 0.47735592283724937,
+          "shipped": 0.4757,
+          "contains": true
+        },
+        "seed1:tau_y": {
+          "lo": 26.447904301164584,
+          "hi": 26.54661965829339,
+          "shipped": 26.488,
+          "contains": true
+        },
+        "seed1:k": {
+          "lo": 8.923258620284468,
+          "hi": 9.178979818421261,
+          "shipped": 8.984,
+          "contains": true
+        },
+        "seed1:n": {
+          "lo": 0.4741439383135776,
+          "hi": 0.4773559230231904,
+          "shipped": 0.4757,
+          "contains": true
+        },
+        "seed2:tau_y": {
+          "lo": 26.447904295026973,
+          "hi": 26.546619652146465,
+          "shipped": 26.488,
+          "contains": true
+        },
+        "seed2:k": {
+          "lo": 8.923258628367137,
+          "hi": 9.178979828816004,
+          "shipped": 8.984,
+          "contains": true
+        },
+        "seed2:n": {
+          "lo": 0.4741439379952256,
+          "hi": 0.4773559227479641,
+          "shipped": 0.4757,
+          "contains": true
+        },
+        "seed3:tau_y": {
+          "lo": 26.44790430148959,
+          "hi": 26.546619658618894,
+          "shipped": 26.488,
+          "contains": true
+        },
+        "seed3:k": {
+          "lo": 8.923258613761158,
+          "hi": 9.178979816388377,
+          "shipped": 8.984,
+          "contains": true
+        },
+        "seed3:n": {
+          "lo": 0.4741439382756121,
+          "hi": 0.47735592307749686,
+          "shipped": 0.4757,
+          "contains": true
+        },
+        "seed4:tau_y": {
+          "lo": 26.447904298796207,
+          "hi": 26.546619655921422,
+          "shipped": 26.488,
+          "contains": true
+        },
+        "seed4:k": {
+          "lo": 8.923258619100073,
+          "hi": 9.178979823139409,
+          "shipped": 8.984,
+          "contains": true
+        },
+        "seed4:n": {
+          "lo": 0.47414393807469635,
+          "hi": 0.477355922908584,
+          "shipped": 0.4757,
+          "contains": true
+        }
+      }
+    }
+  }
+}
