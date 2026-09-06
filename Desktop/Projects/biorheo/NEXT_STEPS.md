@@ -60,11 +60,15 @@ Open: what shape the rise IS. Candidates a lag (instrument or physical), a secon
 timescale, strain-dependent kinetics. A 4-6 sample rise cannot discriminate those; the
 LAOS sheets might, and are still unused. Do not loosen G2.
 
-### 2b. Syneresis correlation test (small, not started)
-An independent test of the syneresis attribution is worth more than the fit: the decay
-amplitude (1 - last/max, tabulated in `step_response.md`) against hematocrit and
-fibrinogen from `extra` across the 20 donors. Pre-register the sign each mechanism
-predicts before computing rho; n = 20 so quote the CI, not just the sign.
+### 2b. CLOSED 2026-09-05 as not runnable: syneresis correlation test
+The proposed sign test assumed a depletion layer and bulk rouleau kinetics predict
+opposite fibrinogen dependence. The thesis says migration is ENHANCED in aggregating
+blood and its own syneresis model sets the depletion length proportional to the
+structure parameter, so both candidates predict the same sign and a correlation across
+20 donors would pass either. Recorded in `SOURCE.md` ("The syneresis attribution cannot
+be tested against the donor covariates"), with the one available order-of-magnitude
+check. A discriminating measurement needs a gap sweep or roughened walls; not in the
+workbook. Do not compute the correlation and read a sign into it.
 
 ### 3. L3 solver bridge (plan unit 0.3-ish, not started)
 Export a registry record to an OpenFOAM `viscosityModel` block (HB and Casson first)

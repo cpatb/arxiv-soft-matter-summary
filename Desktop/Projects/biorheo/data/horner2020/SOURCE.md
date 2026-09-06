@@ -94,6 +94,33 @@ points cannot be replaced, no step exists for them). Every donor's stress after 
 rises to 4-6 s and then decays; the rise is structure build-up, the decay is attributed
 by the authors to syneresis.
 
+## The syneresis attribution cannot be tested against the donor covariates (2026-09-05)
+
+`NEXT_STEPS.md` proposed correlating the post-peak decay amplitude with hematocrit and
+fibrinogen, on the assumption that a wall-depletion mechanism and a bulk rouleau
+mechanism predict opposite signs. They do not, by the thesis's own account:
+
+- p. 168: "enhanced migration has been observed for more strongly aggregating blood
+  [81]" -- syneresis grows with aggregation, as bulk rouleau kinetics would.
+- p. 265, its own two-phase syneresis model (Eq. 8.1): the steady depletion length is
+  "proportional to the structure parameter (lambda), reflecting the linear nature of
+  rouleaux", with a free time constant tau_delta, fitted to donor Q only (Fig. 8.2).
+- p. 264: "it was demonstrated that the significance of syneresis cannot be fully
+  explained by a shear migration model alone. Excluded volume effects are likely an
+  additional mechanism."
+
+So the attribution is the authors' hypothesis with a one-donor preliminary model, and
+both candidate mechanisms scale the same way with fibrinogen; a correlation across the
+20 donors would pass either. Not computed, because a sign that both candidates predict
+discriminates nothing. One order-of-magnitude check is available: shear-induced
+migration across the outer gap (H = 0.5 mm, p. 27) at 1 1/s runs as H^2/(a^2 gd) =
+3900 s for single cells (a = 8 um), against a decay that plays out over 5-50 s; that
+needs an effective aggregate of ~80 um, which is the thesis's own point above
+("aggregate size is increasing at lower shear rates"). It does not settle anything.
+
+What would: a gap-dependence measurement (a wall effect scales with 1/H, a bulk one
+does not), or wall-roughened vs smooth surfaces. Neither is in the workbook.
+
 ## Steady shear, human: 20 donors, 16 rates in [0.1, 700] 1/s
 
 Donor letters A-U without E (20 donors). `DonorOutliers.xlsx` lists which donors the
