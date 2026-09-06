@@ -120,9 +120,14 @@ the rise.
 
 The L3 solver bridge exports a record to an OpenFOAM v2606 `transportProperties` block.
 The export itself is exact: OpenFOAM's own `nu` field and its `wallShearStress` function
-object reproduce `record.eta_at` to 9.6e-13 relative, on 33 `simpleFoam` plane-Couette
-cases spanning four records' whole measured envelopes, in a comparison that never touches
-this repo's transcription of `calcNu` (`data/openfoam/couette_anchor.md`). The useful
+object reproduce `record.eta_at` to 9.6e-13 relative, on 49 `simpleFoam` plane-Couette
+cases spanning six records' whole measured envelopes -- one of each exportable family --
+in a comparison that never touches
+this repo's transcription of `calcNu` (`data/openfoam/couette_anchor.md`). Two of those
+dictionaries are ones OpenFOAM must REFUSE, and does: a `powerLaw` without its required
+`nuMin`, and a `Newtonian` with its `nu` moved into a `NewtonianCoeffs` block, which
+OpenFOAM reports as `nu` missing from `transportProperties` itself -- i.e. it never looked
+in the block. The useful
 finding is what the export cannot carry. **A record's refusal to extrapolate does not
 survive the export** -- `eta_at` raises outside the measured envelope, a dictionary
 cannot, and every cell of a run started from rest sits decades below the lower bound.

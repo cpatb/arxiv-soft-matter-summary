@@ -9,8 +9,8 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 223 passed, 6 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be d79decd or later
+python -m pytest -q -m "not slow"      # must print: 253 passed, 6 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be 0d5b95b or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -41,10 +41,20 @@ failure cannot destroy the reference it was checking against.
   target string did not match applied nothing, the script printed no error, and the
   anchor's JSON went out missing a whole key while its `.md` had the section.
 - Pre-registered bars are never loosened. A failed or MIS-SPECIFIED bar is recorded with
-  its number and a *stricter* test is added beside it. Five gates have gone this way:
+  its number and a *stricter* test is added beside it. Six gates have gone this way:
   `openfoam_couette_anchor.py`'s A1 -> A1' and A5 -> A5'; the case study's ISO comparison,
-  retracted outright; the step-rise shape gate G2, recorded FAILED; and item 6's G7 ->
-  G7' (see below), where the defect was in the pre-registration, not the code.
+  retracted outright; the step-rise shape gate G2, recorded FAILED; item 6's G7 -> G7'
+  (see below), where the defect was in the pre-registration, not the code; and item 11's
+  G11.4b, whose `rc != 0` bar cannot tell "OpenFOAM rejected the dictionary" from "the
+  case never got that far", so a stricter check is reported BESIDE it and the original
+  verdict is kept as `pass_as_preregistered`.
+- **A pre-registration is not rewritten.** Errors in one are corrected in an addendum at
+  the foot of the file plus a one-line marker where the error is, never edited out --
+  `newtonian_powerlaw_prereg.md` §0.2 is the worked example.
+- **Adding a record to `RECORD_IDS` must not re-decide a closed gate.** It did, twice,
+  silently: `g7_prime` iterated that list and `item6["A2_worst_all_records"]` was a max
+  over every row on the page. Both now read a frozen list / one record's own rows. If you
+  append to `RECORD_IDS`, grep for every other use of it first.
 - OpenFOAM case directories live in `data/openfoam/runs/` and are gitignored; the JSON
   and `.md` beside them are the committed artifacts. `BIORHEO_OF_OUT` redirects the
   anchor's output so a test run cannot overwrite them.
@@ -273,38 +283,82 @@ from `carbopol/fit_hb.py`, seed scatter moves the SIDECAR rather than the record
 (seed, parameter, record) intervals contain the shipped value, and the verdict sets are
 seed-stable on 15/15.
 
-### 11. NEXT ITEM, not started: the L3 bridge for `newtonian` and `power_law`
-Written for zero context. `solver/openfoam.py` exports four of the registry's seven
-constitutive families and raises `NotImplementedError` for `newtonian`, `power_law` and
-`structural_steady`. OpenFOAM v2606 ships `Newtonian` and `powerLaw` in the same directory
-as the four already mapped
-(`/usr/lib/openfoam/openfoam2606/src/transportModels/incompressible/viscosityModels/`,
-readable in WSL). `structural_steady` is thixotropic and has no counterpart there; make
-that refusal EXPLICIT with a message saying why, rather than a generic
-`NotImplementedError`.
+### 11. DONE 2026-09-06 (every gate PASS, and G11.6 REFUTED this item's own premise)
+The L3 bridge now covers SIX of the registry's seven families: `newtonian -> Newtonian`
+and `power_law -> powerLaw` are exported and parsed back, and `structural_steady` is
+refused by a named `ThixotropyNotRepresentable` rather than a bare `NotImplementedError`.
 
-**Read both `calcNu` bodies FIRST and write the parameter map out before coding.** Item 6
-is the reason: its stated premise about `BirdCarreau` was false, and `CrossPowerLaw`'s
-names collide with biorheo's with the meanings SWAPPED. Assume nothing about `powerLaw`'s
-parameter names or about whether it carries `nuMin`/`nuMax` limiters -- check.
+Gate pre-registered in `data/openfoam/newtonian_powerlaw_prereg.md`, committed at
+`e9c1ace` BEFORE any code (that commit contains that file and nothing else); the code
+landed in `bcf84bf`. **Results are in the addendum at the foot of that file**, in
+`data/openfoam/newtonian_powerlaw_gates.md` (written by `scripts/item11_gate_report.py`)
+and in the item-11 section of `data/openfoam/couette_anchor.md`. Tests:
+`tests/test_openfoam_export_null.py` and the item-11 block of
+`tests/test_openfoam_couette.py`.
 
-Gate to pre-register before writing code (do not weaken it): the round trip reproduces
-`eta_at` on 20 rates inside the envelope to 1e-10; the export refuses a `degenerate` /
-`not_identifiable` parameter without the override; if `powerLaw` has viscosity limiters,
-DECIDE AND DOCUMENT whether they are a clamp the caller chooses (as for Herschel-Bulkley)
-or fitted parameters (as for Cross), and make `coefficients` require or refuse `eta_max`
-accordingly -- getting that wrong silently is what G8 exists to prevent; and a
-discriminating negative case in the style of G3, some plausible WRONG map that must fail
-the round trip by more than 1e-3, reported beside the verdict.
+**This item's stated reason for refusing `structural_steady` was FALSE, and G11.6 was
+written to find that out before the reason was put in an error message.** It said the
+family "is thixotropic and has no counterpart there". It has an exact counterpart: the
+steady flow curve of first-order structure kinetics IS `CrossPowerLaw` with n = 1, to
+1.386e-16 relative -- `STRUCTURAL_STEADY.limits` already said so. Refusing on "no
+counterpart" would have refused something OpenFOAM can do, which is item 6's mistake
+repeated. The real reason is narrower and worse: `viscosityModel` is a function of the
+instantaneous `strainRate()` alone, so the STRUCTURE EQUATION cannot be carried and the
+export would be right in steady state and silently wrong in every transient. The message
+says that and gives the deliberate substitution -- **per family**, because
+`structural_steady_separate` carries `alpha` and `t_r` apart and has no `alpha_tr`.
 
-There is no `newtonian` or `power_law` RECORD in the registry, so this needs one of each
-before the plane-Couette anchor can be extended. Do not invent one: either derive it from
-a source already on disk with a DOI that resolves, or state plainly that the export is
-tested by round trip only and put that limitation in the gate. The anchor's existing
-`newtonian_control()` is hand-made, is NOT a record, and does not exercise the export path.
+**Three things the OpenFOAM source said that this item did not.** All were read before
+coding, as the item required.
+- `Newtonian` is the ONLY viscosityModel with no `<Model>Coeffs` sub-dictionary: it reads
+  `nu` from the top level (`Newtonian.C:71`). The export writes no block and the parser
+  REFUSES one rather than ignoring it.
+- `powerLaw`'s `nuMin` and `nuMax` are REQUIRED (`readEntry`), not optional like
+  `BirdCarreau`'s `a`, and `eta = k gd^(n-1)` has no plateau at either end -- so both are
+  the caller's regularisation. New keyword-only `eta_min`, required for `power_law` and
+  refused for the other five, each with its own reason.
+- `powerLaw` floors `SMALL = 1e-15` on the DIMENSIONLESS `1[s]*strainRate()`, not
+  `VSMALL`. (The prereg's §0.2 then says "the other four models use VSMALL", which is
+  itself false -- only HB and Casson do. Corrected in the addendum, not edited out.)
 
-### 12. Also not started: injectability for the families with no yield stress
-`injectability` has closed forms for Herschel-Bulkley and Casson only. The registry holds
+**Records: 75 -> 115.** `scripts/records_from_horner.py` writes `newtonian` and
+`power_law` per donor. They are NULL MODELS and say so in `notes`; the item forbids
+inventing a record, and these are the same generator, source curve, DOI and envelope as
+the four existing families. `model_comparison.md` gains the null columns and reports what
+they say: **Casson beats a one-parameter constant on 20/20 donors but a two-parameter
+power law on only 14/20**, at the same parameter count, and the `residual_structure` flag
+does NOT separate a fit from a null -- 20/20 for both nulls AND for Herschel-Bulkley; the
+only forms it clears are Cross and Carreau-Yasuda.
+
+**What the gates do NOT establish.** Both G11.5 wrong-map separations are CONSTANTS:
+G11.5a is `rho - 1` = 1059 on all 20 records and G11.5b is `1/gammadot_min - 1` = 9 on
+all 20. They show the slot is USED and no more; neither is sensitive to the fitted values.
+G11.5b's attribution survives its own control (the clamp moved 10x -> 100x leaves it at 9).
+
+**Two code reviews, nine + four findings, all acted on** (`5f6ac8c`, `04332dd`). The one
+that was a silently WRONG number: the Newtonian parser stripped sub-dictionaries with a
+regex, and `[^}]*` cannot match balanced braces, so everything after a NESTED block leaked
+out as top level -- it returned a buried `nu = 999`, and returned it even with the real
+entry deleted. Four more of the same family as defects this repo has hit before:
+- `G7'` iterated `RECORD_IDS`, and `item6["A2_worst_all_records"]` was a max over every
+  row on the page, so appending two records here would have re-decided a CLOSED item-6
+  gate -- and G7's yield/no-yield split keys on `NO_CLAMP_MODELS`, which lists neither
+  null family, so both NULLS would have counted as yield-stress arms. Both now read a
+  frozen list / the HB record's own rows.
+- The anchor's exit code did not carry G11.7 or the refusal probes (rc = 0 on a failure).
+- The per-family aggregation used builtin `max()`, which DROPS a NaN.
+- Two docstring sentences said G11.3b/G11.4b "were decided by running the solver" while
+  the anchor was still running.
+- G11.4b could pass on a blockMesh failure with a BLANK message. The pre-registered bar
+  (`rc != 0`) is unchanged and still recorded as `pass_as_preregistered`; a stricter
+  check is reported beside it.
+- The `foamDictionary -entry nu` test was cited as a second check of the Newtonian
+  layout. It is not -- both candidates pass it. G11.4b is the only discriminator.
+
+### 12. NEXT ITEM, not started: injectability for the families with no yield stress
+Written for zero context. `src/biorheo/apps/injectability.py` has closed forms for
+Herschel-Bulkley and Casson only; `case_studies/blood_injectability/results.md` is the
+case study this cross-checks and `tests/test_casson_needle.py` pins it. The registry holds
 20 Cross and 20 Carreau-Yasuda blood records fitted to the SAME curves, and the needle case
 study's central finding -- that the yield stress is invisible in this geometry -- makes a
 pre-registrable prediction: the plunger force from a donor's Cross record should agree with
@@ -317,6 +371,24 @@ route rather than deriving one. Beware the trap item 4 already hit: `flow_rate_c
 yield is limited by the CALLER's conditioning in `1 - tau_y/tau_w`, so compare at the
 operating point, not near yield. And note 7 of the 20 Carreau-Yasuda records carry a
 `bounded_only` `a`, so decide up front whether the comparison uses them.
+
+**Pre-register the gate in `data/` and commit it ON ITS OWN before writing code**, the way
+`newtonian_powerlaw_prereg.md` (`e9c1ace`) and `nonyield_bridge_prereg.md` (`2561346`)
+were. Things items 6 and 11 learned that apply here:
+- **Check this item's stated premise against the artifacts first.** Item 6's was false and
+  item 11's was false, and each time the check was cheaper than the workaround. Here the
+  premise is "the yield term contributes under 3 %", which is on the case-study page --
+  reproduce that number before extending it.
+- **State in advance what makes the comparison INFORMATIVE**, not just what makes it pass.
+  Item 6's G7 passed and decided nothing because both arms passed. If the Cross and Casson
+  forces agree to within the donor spread, say beforehand how far apart a DISAGREEMENT
+  would have to be to matter, and report the separation beside the verdict.
+- **Do not form a relative spread without naming its denominator's scale** (item 9's
+  retraction), and do not read a byte-identity claim off a maximum (item 8's).
+- The registry now holds 20 `newtonian` and 20 `power_law` blood records fitted to the
+  same curves. A Newtonian plunger force is a genuine NULL for this comparison and is
+  nearly free -- consider whether the agreement you are about to report is any better than
+  what a constant viscosity gives, because in this geometry it may not be.
 
 ## What NOT to do
 
@@ -342,3 +414,10 @@ operating point, not near yield. And note 7 of the 20 Carreau-Yasuda records car
 - Do not add an `a != 2` refusal to the BirdCarreau export. v2606 honours `a`; that was
   decided by running the solver, and the refusal item 6 asked for would refuse something
   OpenFOAM can do.
+- Do not cite `foamDictionary -entry nu` as evidence about OpenFOAM's Newtonian LAYOUT.
+  It reads a top-level key out of a file biorheo wrote with a top-level key, using a
+  generic dictionary reader; it would pass unchanged if the layout claim were false. It
+  anchors bit-exactness, which is a different claim. G11.4b is the only discriminator.
+- Do not add an `a != 2` refusal to the BirdCarreau export, and do not add a
+  "structural_steady has no counterpart" message to the structural refusal. Both are
+  premises this repo tested and refuted (items 6 and 11).
