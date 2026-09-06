@@ -282,3 +282,48 @@ def test_block_comments_are_stripped_and_unsupported_constructs_are_named(record
             parse_transport_properties(
                 text.replace("    nu0 ", f"    {construct}\n    nu0 "),
                 expect="carreau_yasuda")
+
+
+# -------------------------------------------- the gap NEXT_STEPS item 9's G9.2 exposed
+
+
+def test_strict_identifiability_refuses_bounded_only_and_is_off_by_default():
+    """`bounded_only` is not one of the verdicts the export refuses, and a pre-registered
+    gate FAILED on exactly that: blood Herschel-Bulkley on donor G moves 415 % in `tau_y`
+    under nothing but a change of the fitter's seed, with `tau_y` graded `bounded_only`
+    (`data/horner2020/multistart_scatter.md`, G9.2).
+
+    The flag is OFF by default on purpose -- over the 43 export-accepted blood records in
+    the shipped families the worst seed spread is 5.997e-05 -- so this test pins BOTH the
+    default and the override, and the count between them."""
+    from biorheo.solver.openfoam import check_exportable
+
+    recs = load_all()
+    default_ok, strict_ok, refused_by_flag = [], [], []
+    for rid, rec in sorted(recs.items()):
+        try:
+            check_exportable(rec)
+            default_ok.append(rid)
+        except ExportRefused:
+            continue
+        try:
+            check_exportable(rec, strict_identifiability=True)
+            strict_ok.append(rid)
+        except ExportRefused as e:
+            refused_by_flag.append(rid)
+            assert "bounded_only" in str(e) and "415" in str(e)
+
+    # measured 2026-09-06 over the 75-record registry
+    assert len(default_ok) == 58, len(default_ok)
+    assert len(strict_ok) == 51, len(strict_ok)
+    assert len(refused_by_flag) == 7, refused_by_flag
+    # every record the flag adds must actually carry a bounded_only verdict, and none of
+    # the ones it still accepts may
+    for rid in refused_by_flag:
+        assert "bounded_only" in recs[rid].verdicts.values(), rid
+    for rid in strict_ok:
+        assert "bounded_only" not in recs[rid].verdicts.values(), rid
+
+    # allow_unidentified still overrides everything, including the new check
+    for rid in refused_by_flag:
+        check_exportable(recs[rid], allow_unidentified=True, strict_identifiability=True)

@@ -233,14 +233,40 @@ def structured_flag(record: FluidRecord) -> dict | None:
 
 
 def check_exportable(record: FluidRecord, allow_unidentified: bool = False,
-                     strict_form: bool = False) -> None:
+                     strict_form: bool = False,
+                     strict_identifiability: bool = False) -> None:
     """Raise ``ExportRefused`` for a parameter the sidecar calls degenerate or not
     identifiable, or for a record without a sidecar, unless overridden. With
     ``strict_form`` also refuse a record whose residuals are flagged ``structured``,
     i.e. whose constitutive FORM is a systematic misfit even where every parameter is
     determined. That is off by default because it would refuse most of the registry --
     but it is written into the exported file either way, so a case that quotes an
-    exported number can be traced back to a refuted form."""
+    exported number can be traced back to a refuted form.
+
+    ``strict_identifiability`` additionally refuses ``bounded_only``. It exists because a
+    pre-registered gate FAILED on exactly that verdict (NEXT_STEPS item 9,
+    ``data/horner2020/multistart_scatter.md``): the Herschel-Bulkley fit to donor G moves
+    4.149 -- 415 % -- in ``tau_y`` under nothing but a change of the optimiser's seed,
+    while ``tau_y`` there is graded ``bounded_only`` and so passes the default check.
+    ``bounded_only`` means the profile ran into a bound on one side; it does NOT mean the
+    value is pinned, and a flat direction can put it anywhere.
+
+    It is OFF by default, and deliberately so: over the 43 export-accepted BLOOD records
+    in the three families the registry ships (casson, cross, carreau_yasuda) the worst
+    seed spread is 5.997e-05, four orders below the bar, and the one demonstrated
+    counterexample is in blood Herschel-Bulkley, which is fitted for the model comparison
+    and never shipped as a record.
+
+    **Scope, because the flag refuses more than the evidence covers.** The seed study
+    (``scripts/multistart_seed_scatter.py``) fitted the 20 BLOOD curves only. The 15
+    Carbopol Herschel-Bulkley records were never in it -- their parameters come from
+    ``carbopol/fit_hb.py``, a different fitter -- so nothing here says whether THEY move
+    under a change of seed. Turning this flag on refuses 7 of the 58 records the default
+    accepts; that set is chosen by the verdicts, not by measured scatter, for any record
+    outside the blood families.
+
+    A caller about to QUOTE an exported parameter, rather than run a simulation with it,
+    should pass ``strict_identifiability=True``."""
     verdicts = record.verdicts
     if verdicts is None:
         if allow_unidentified:
@@ -252,6 +278,16 @@ def check_exportable(record: FluidRecord, allow_unidentified: bool = False,
         raise ExportRefused(f"{record.id}: parameter verdict(s) {bad} are not measurements; "
                             "an export would put an unidentified number into a solver. "
                             "Pass allow_unidentified=True to override, and say so in the case.")
+    if strict_identifiability and not allow_unidentified:
+        weak = {k: v for k, v in verdicts.items() if v == "bounded_only"}
+        if weak:
+            raise ExportRefused(
+                f"{record.id}: parameter verdict(s) {weak} are bounded on one side only. "
+                "That is not the same as determined -- a `bounded_only` parameter has "
+                "been measured moving 415 % under nothing but a change of the fitter's "
+                "seed (see data/horner2020/multistart_scatter.md). Pass "
+                "strict_identifiability=False to export it anyway, or "
+                "allow_unidentified=True to override every verdict check.")
     rs = structured_flag(record)
     if strict_form and rs and rs.get("structured"):
         raise ExportRefused(
@@ -263,10 +299,11 @@ def check_exportable(record: FluidRecord, allow_unidentified: bool = False,
 
 def export_transport_properties(record: FluidRecord, rho: float, eta_max: float | None = None, *,
                                 allow_unidentified: bool = False,
-                                strict_form: bool = False) -> str:
+                                strict_form: bool = False,
+                                strict_identifiability: bool = False) -> str:
     """The full ``constant/transportProperties`` text for ``record``. ``eta_max`` is
     required for the yield-stress families and refused for the other two."""
-    check_exportable(record, allow_unidentified, strict_form)
+    check_exportable(record, allow_unidentified, strict_form, strict_identifiability)
     of_name, keys = _MODELS[record.model.name]
     c = coefficients(record, rho, eta_max)
     verd = record.verdicts or {}
@@ -307,11 +344,13 @@ def export_transport_properties(record: FluidRecord, rho: float, eta_max: float 
 def write_transport_properties(record: FluidRecord, rho: float, eta_max: float | None,
                                path: str | Path, *,
                                allow_unidentified: bool = False,
-                               strict_form: bool = False) -> Path:
+                               strict_form: bool = False,
+                               strict_identifiability: bool = False) -> Path:
     path = Path(path)
     path.write_text(export_transport_properties(record, rho, eta_max,
                                                 allow_unidentified=allow_unidentified,
-                                                strict_form=strict_form),
+                                                strict_form=strict_form,
+                                                strict_identifiability=strict_identifiability),
                     encoding="ascii", newline="\n")
     return path
 
@@ -434,7 +473,8 @@ def nu_openfoam(of_name: str, c: dict[str, float], sr) -> np.ndarray:
 
 
 def export_report(record: FluidRecord, rho: float, eta_max: float | None, gammadot, *,
-                  allow_unidentified: bool = False, strict_form: bool = False) -> dict:
+                  allow_unidentified: bool = False, strict_form: bool = False,
+                  strict_identifiability: bool = False) -> dict:
     """Round trip at the rates ``gammadot`` (all inside the envelope): export, parse,
     evaluate the OpenFOAM form, compare with ``rho * record.eta_at``. Returns the
     text, the parsed coefficients, the relative error where the cap does not bind, and
@@ -443,7 +483,8 @@ def export_report(record: FluidRecord, rho: float, eta_max: float | None, gammad
     cap exists and ``cap_binds`` is False everywhere."""
     text = export_transport_properties(record, rho, eta_max,
                                        allow_unidentified=allow_unidentified,
-                                       strict_form=strict_form)
+                                       strict_form=strict_form,
+                                       strict_identifiability=strict_identifiability)
     of_name, c = parse_transport_properties(text, expect=record.model.name)
     gd = np.asarray(gammadot, dtype=float)
     nu_of = nu_openfoam(of_name, c, gd)
