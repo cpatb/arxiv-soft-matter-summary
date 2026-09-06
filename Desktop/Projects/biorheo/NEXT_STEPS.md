@@ -9,17 +9,17 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 253 passed, 6 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be 207acd0 or later
+python -m pytest -q -m "not slow"      # must print: 272 passed, 7 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be ITEM13PIN or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
 the CRLF warnings are noise.
 
-The six slow tests are the `dst_fit` suite gate, an OpenFOAM re-run of the plane-Couette
-anchor (~25 min, needs WSL), the real-curve half of the model-comparison control, a re-run
-of the oscillatory-capability census, and re-runs of the two seed-scatter studies (~20 min
-and ~3 min). All of them RESTORE the artifact they overwrite before asserting, so a
+The seven slow tests are the `dst_fit` suite gate, an OpenFOAM re-run of the plane-Couette
+anchor (~45 min, needs WSL), the real-curve half of the model-comparison control, a re-run
+of the oscillatory-capability census, re-runs of the two seed-scatter studies (~20 min
+and ~3 min), and a re-run of the item-12 injectability cross-check. All of them RESTORE the artifact they overwrite before asserting, so a
 failure cannot destroy the reference it was checking against.
 
 ## Rules that are specific to this repo
@@ -355,40 +355,110 @@ entry deleted. Four more of the same family as defects this repo has hit before:
 - The `foamDictionary -entry nu` test was cited as a second check of the Newtonian
   layout. It is not -- both candidates pass it. G11.4b is the only discriminator.
 
-### 12. NEXT ITEM, not started: injectability for the families with no yield stress
-Written for zero context. `src/biorheo/apps/injectability.py` has closed forms for
-Herschel-Bulkley and Casson only; `case_studies/blood_injectability/results.md` is the
-case study this cross-checks and `tests/test_casson_needle.py` pins it. The registry holds
-20 Cross and 20 Carreau-Yasuda blood records fitted to the SAME curves, and the needle case
-study's central finding -- that the yield stress is invisible in this geometry -- makes a
-pre-registrable prediction: the plunger force from a donor's Cross record should agree with
-the force from that donor's Casson record to within the donor-to-donor spread, because the
-two describe the same curve over the same envelope and the yield term contributes under
-3 %. That is a cross-check of the case study rather than an extension, and it can fail.
+### 12. DONE 2026-09-06 (the prediction was REFUTED, and three of the write-up's own claims were too)
+`case_studies/blood_injectability/crosscheck.py` -> `crosscheck.md` / `crosscheck.json`,
+pinned in `tests/test_injectability_crosscheck.py`. Gate pre-registered in
+`crosscheck_prereg.md`, committed at `1cd46de` BEFORE any of it was computed.
 
-Cross and Carreau-Yasuda have no closed-form tube solution, so use the numerical quadrature
-route rather than deriving one. Beware the trap item 4 already hit: `flow_rate_casson` near
-yield is limited by the CALLER's conditioning in `1 - tau_y/tau_w`, so compare at the
-operating point, not near yield. And note 7 of the 20 Carreau-Yasuda records carry a
-`bounded_only` `a`, so decide up front whether the comparison uses them.
+**Item 12 predicted the two forces would agree. They do not.** The worst
+Cross-vs-Casson plunger force difference is **30.18 %**, median **-11.19 %**;
+Carreau-Yasuda 33.02 %. That is ten times the yield term the case study calls
+negligible and thirty times the calculation's own ~1 % resolution. The item's premise
+(*the yield term contributes under 3 %*) is TRUE and was reproduced first; the conclusion
+does not follow from it.
 
-**Pre-register the gate in `data/` and commit it ON ITS OWN before writing code**, the way
-`newtonian_powerlaw_prereg.md` (`e9c1ace`) and `nonyield_bridge_prereg.md` (`2561346`)
-were. Things items 6 and 11 learned that apply here:
-- **Check this item's stated premise against the artifacts first.** Item 6's was false and
-  item 11's was false, and each time the check was cheaper than the workaround. Here the
-  premise is "the yield term contributes under 3 %", which is on the case-study page --
-  reproduce that number before extending it.
-- **State in advance what makes the comparison INFORMATIVE**, not just what makes it pass.
-  Item 6's G7 passed and decided nothing because both arms passed. If the Cross and Casson
-  forces agree to within the donor spread, say beforehand how far apart a DISAGREEMENT
-  would have to be to matter, and report the separation beside the verdict.
-- **Do not form a relative spread without naming its denominator's scale** (item 9's
-  retraction), and do not read a byte-identity claim off a maximum (item 8's).
-- The registry now holds 20 `newtonian` and 20 `power_law` blood records fitted to the
-  same curves. A Newtonian plunger force is a genuine NULL for this comparison and is
-  nearly free -- consider whether the agreement you are about to report is any better than
-  what a constant viscosity gives, because in this geometry it may not be.
+**The case study's ordinal claim SURVIVES** -- 30 % is well inside the 128 % donor spread,
+so which patient the blood came from still matters more than which family was fitted, and
+the yield stress is still invisible in that geometry. **Its precision does not**, and
+`results.md` now carries that caveat, printed by `run.py` from `crosscheck.json`.
+
+**The mechanism is MISFIT, not extrapolation, and the first write-up said the opposite.**
+Casson's `rmse_log` is worse than Cross's on 20/20 donors (1.5x to 12.3x) and
+`residual_structure` flags 19/20 against 2/20; the force difference tracks that misfit at
+Spearman +0.559 (p = 0.010). Two checks killed the extrapolation story: the same fits
+differ by up to 42 % at rates INSIDE the envelope (worse at the bottom than at the
+needle), and re-running the whole comparison at a needle sized so the wall rate lands in
+the measured range (ID 0.6236 mm) leaves **99.5 % of the median difference intact**.
+
+**Do not describe this as "family choice moves the force".** It is not symmetric: the
+two-parameter family the case study ships is the worse-fitting one on every donor.
+
+Three claims were shipped and then corrected on the page (`439410f`), all found by review:
+- *"both families predict a consistently LOWER force"* -- FALSE, 4/20 Cross donors are
+  positive, up to +14.19 %. Use the paired sign test (16/20, p = 0.0118).
+- *"the plateau residual is the size of the yield term"* -- FALSE and it is a SIGNED
+  claim, so the unsigned bound that tested it could not see that 6/20 Cross and 7/20 CY
+  donors have the wrong sign. Withdrawn.
+- G12.3's Newtonian null does not license what it was used for: for a Newtonian fluid
+  `dp = 8 mu L Q/(pi R^4)` exactly, so its 271 % is `(mu/eta_c)/(1+y)`, an identity
+  restating "blood shear-thins 2-4x over the measured range". `power_law`, with no plateau
+  at all, lands in the SAME band as `cross`, so the four-band verdict is coarser than the
+  claim. **The bar was not changed**; both are recorded as findings.
+
+**The null that does discriminate** (supplied by the review): Cross with `eta_inf`
+replaced by that donor's Casson `eta_c`, keeping `eta_0`, `lam`, `m` fitted -- not Casson
+in disguise. It collapses 30.18 % to **2.72 %**, inside the yield band. That, and not the
+plateau-ratio arithmetic, is what the mechanism rests on.
+
+A fourth control is on the page labelled as NOT independent evidence: a Newtonian fluid at
+`eta_c` is Casson with `tau_y = 0`, so it recomputes the sibling study's
+`yield_share_max`. It agrees to 1e-5, which makes it a cross-implementation check of that
+number and nothing more.
+
+### 13. NEXT ITEM, not started: an upstream `dst_fit` bug corrupts 40 % of the registry's profile intervals
+Written for zero context. **Found while reviewing item 12; verified in this session; NOT
+fixed, because `dst_fit` is consumed unchanged and the fix is a judgement call about
+someone else's library.**
+
+**The bug.** `dst_fit.profiling.profile_likelihood` walks outward from the best fit with
+`step = max(wald/4, span/5000)` where `span = |bound - best|` and `bound` is the
+parameter's declared box limit. For a viscosity bounded at `1e6` that is `step = 200`, so
+the FIRST step overshoots to `best + 200`, the statistic is astronomically past `f_crit`,
+and `_REFINEMENTS = 10` bisections on `[best, best+200]` leave a resolution of
+`200/1024 = 0.1953125` -- on a parameter whose value is `0.0038`. The returned `hi` is a
+bisection endpoint, not the F-crossing.
+
+**Verified here, not taken on report.** `blood_horner2020_donor_A` `eta_c`: stored
+`hi - best = 0.19531250328`, which is `200/1024` to ten digits. Across the registry,
+**117 of 296 closed upper profile ends sit exactly on that grid** (a conservative count --
+only three candidate bounds were tested), and the worst sits **82x the best-fit value**
+above it.
+
+**What it touches, in descending order of how much it matters.**
+1. **The item 9/10 seed-scatter metric divides by this interval** (`metric` in
+   `data/horner2020/multistart_scatter.json`: *"seed span in units of the parameter's own
+   95 % profile interval"*). An inflated denominator makes the metric too SMALL, i.e.
+   those gates passed more easily than they should have. The reported worst is
+   `2.972e-05` against a `1e-3` bar -- a margin of only **33.6x** -- and the interval
+   inflation on the worst-affected parameters is of that order or more. **So G9.1/G9.3
+   and G10.1/G10.2 may not survive correct intervals. This is not a claim that they
+   fail; it is a claim that nobody knows.**
+2. `verdict_for`'s `measurable` / `bounded_only` labels, `decades`, `asymmetry` and
+   `widening` all read `hi`.
+3. `injectability.force_with_uq`'s `profile_hi`, and any uncertainty item 12 might have
+   propagated (it propagated none, which is now the honest reason why).
+4. The loader's containment rule (record value must lie inside its sidecar interval) is
+   made MORE permissive, so it cannot have produced a wrong acceptance -- only a missed
+   rejection.
+
+**What to do, in order.**
+1. **Reproduce the diagnosis before changing anything** -- the one-line check is that
+   `hi - best` equals `bound/5.12e6` times an integer.
+2. Decide whether the fix belongs in `dst_fit` (a step floor tied to the parameter's own
+   scale rather than to its box) or in a biorheo-side wrapper. **The repo rule is that
+   `dst_fit` is consumed unchanged and `tests/test_gate_0_1_dstfit_unchanged.py` runs its
+   suite; do not edit it to make biorheo convenient.** If the fix goes upstream it needs
+   its own justification, not this one.
+3. **Re-derive the intervals and re-grade items 9 and 10 against their UNCHANGED bars.**
+   Record whatever comes out. If a gate now fails, that is a result, and the retraction
+   goes on the page the way item 9's did.
+4. Only then is `force_with_uq` usable, and only then can item 12 say whether the plateau
+   disagreement is resolved at 95 %.
+
+**Pre-register the gate before touching code**, as items 6, 11 and 12 did. State in
+advance what a corrected interval must satisfy (it should be near where the F statistic
+crosses `f_crit`, which is checkable directly by evaluating the profile at the returned
+endpoint) and what you will do if items 9/10 flip.
 
 ## What NOT to do
 
@@ -421,3 +491,9 @@ were. Things items 6 and 11 learned that apply here:
 - Do not add an `a != 2` refusal to the BirdCarreau export, and do not add a
   "structural_steady has no counterpart" message to the structural refusal. Both are
   premises this repo tested and refuted (items 6 and 11).
+- Do not describe item 12's finding as "which constitutive family you pick moves the
+  force". It is not symmetric: Casson fits these curves WORSE on 20/20 donors, and the
+  effect tracks the misfit. The shipped family is the worse-fitting one.
+- Do not quote a `hi`, `decades`, `asymmetry` or `widening` from any sidecar until item 13
+  is closed, and do not use `force_with_uq` at all. 117 of 296 closed upper profile ends
+  are a bisection-grid artefact, not a likelihood crossing.
