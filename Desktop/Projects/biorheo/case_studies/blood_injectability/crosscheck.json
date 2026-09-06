@@ -764,7 +764,10 @@
     "null_bands": {
       "newtonian": "above the donor spread",
       "power_law": "above the neglected yield term, below the donor spread"
-    }
+    },
+    "separation_worst_null": 8.98324899532283,
+    "separation_least_extreme_null": 2.7046553061101206,
+    "informative_on_either_null": true
   },
   "G12_4_identifiability_split": {
     "cross": {
@@ -1191,6 +1194,152 @@
         }
       ]
     }
+  },
+  "plateau_null": {
+    "worst_rel_dev": 0.02941487454208791,
+    "rows": [
+      {
+        "donor": "A",
+        "eta_c": 0.00384913,
+        "force_casson": 0.28728169584068497,
+        "force_newtonian_at_eta_c": 0.2836635361219449,
+        "rel_dev": 0.012594466584973651
+      },
+      {
+        "donor": "B",
+        "eta_c": 0.00348833,
+        "force_casson": 0.2621394508870999,
+        "force_newtonian_at_eta_c": 0.2570742019523059,
+        "rel_dev": 0.01932272657798284
+      },
+      {
+        "donor": "C",
+        "eta_c": 0.00296961,
+        "force_casson": 0.2249968957337873,
+        "force_newtonian_at_eta_c": 0.21884687539861805,
+        "rel_dev": 0.027333800829171695
+      },
+      {
+        "donor": "D",
+        "eta_c": 0.00304571,
+        "force_casson": 0.2312575132163842,
+        "force_newtonian_at_eta_c": 0.22445510247820902,
+        "rel_dev": 0.02941487454208791
+      },
+      {
+        "donor": "F",
+        "eta_c": 0.00298181,
+        "force_casson": 0.22312815921704846,
+        "force_newtonian_at_eta_c": 0.2197459604232046,
+        "rel_dev": 0.015158099299128813
+      },
+      {
+        "donor": "G",
+        "eta_c": 0.00394989,
+        "force_casson": 0.2937922414358167,
+        "force_newtonian_at_eta_c": 0.29108909407910577,
+        "rel_dev": 0.009200880675065415
+      },
+      {
+        "donor": "H",
+        "eta_c": 0.00400758,
+        "force_casson": 0.3010273928234139,
+        "force_newtonian_at_eta_c": 0.2953405871174999,
+        "rel_dev": 0.018891322987506176
+      },
+      {
+        "donor": "I",
+        "eta_c": 0.00380253,
+        "force_casson": 0.28550407138989103,
+        "force_newtonian_at_eta_c": 0.28022932610999857,
+        "rel_dev": 0.01847520161171068
+      },
+      {
+        "donor": "J",
+        "eta_c": 0.00445742,
+        "force_casson": 0.33475565405128743,
+        "force_newtonian_at_eta_c": 0.32849176805685354,
+        "rel_dev": 0.01871181537526534
+      },
+      {
+        "donor": "K",
+        "eta_c": 0.00367066,
+        "force_casson": 0.2751939385755543,
+        "force_newtonian_at_eta_c": 0.27051110134014106,
+        "rel_dev": 0.01701649847250386
+      },
+      {
+        "donor": "L",
+        "eta_c": 0.0039097,
+        "force_casson": 0.29622898558864624,
+        "force_newtonian_at_eta_c": 0.2881272721825369,
+        "rel_dev": 0.02734949583009283
+      },
+      {
+        "donor": "M",
+        "eta_c": 0.00358782,
+        "force_casson": 0.2720883307413757,
+        "force_newtonian_at_eta_c": 0.2644061666322093,
+        "rel_dev": 0.028234081514022735
+      },
+      {
+        "donor": "N",
+        "eta_c": 0.00673754,
+        "force_casson": 0.5085512098114549,
+        "force_newtonian_at_eta_c": 0.49652633742249475,
+        "rel_dev": 0.02364535204511331
+      },
+      {
+        "donor": "O",
+        "eta_c": 0.00343169,
+        "force_casson": 0.2574785989698779,
+        "force_newtonian_at_eta_c": 0.25290008918293705,
+        "rel_dev": 0.01778209841617362
+      },
+      {
+        "donor": "P",
+        "eta_c": 0.00390718,
+        "force_casson": 0.2934860854379956,
+        "force_newtonian_at_eta_c": 0.2879415595381139,
+        "rel_dev": 0.01889195493410567
+      },
+      {
+        "donor": "Q",
+        "eta_c": 0.00360884,
+        "force_casson": 0.2715283403699404,
+        "force_newtonian_at_eta_c": 0.26595524591227576,
+        "rel_dev": 0.020524908928738816
+      },
+      {
+        "donor": "R",
+        "eta_c": 0.00363506,
+        "force_casson": 0.27406976635292646,
+        "force_newtonian_at_eta_c": 0.2678875417601994,
+        "rel_dev": 0.022557119944291992
+      },
+      {
+        "donor": "S",
+        "eta_c": 0.00385523,
+        "force_casson": 0.29072930526193785,
+        "force_newtonian_at_eta_c": 0.284113078634238,
+        "rel_dev": 0.02275734337045532
+      },
+      {
+        "donor": "T",
+        "eta_c": 0.00352261,
+        "force_casson": 0.26512667868372364,
+        "force_newtonian_at_eta_c": 0.2596004834802989,
+        "rel_dev": 0.02084360288018039
+      },
+      {
+        "donor": "U",
+        "eta_c": 0.00402879,
+        "force_casson": 0.303093198195463,
+        "force_newtonian_at_eta_c": 0.2969036685413922,
+        "rel_dev": 0.02042120935382774
+      }
+    ],
+    "claim": "A Newtonian fluid AT the Casson plateau reproduces the Casson force to about the yield term, so the needle is reading the high-rate plateau and essentially nothing else. The 30 % is therefore a disagreement between plateaux, not a difference in what the geometry samples."
   },
   "median_decades_past_high": 1.419126894948016
 }

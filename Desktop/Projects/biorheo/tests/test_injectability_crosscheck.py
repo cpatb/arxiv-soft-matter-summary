@@ -165,6 +165,36 @@ def test_the_plateau_control_identifies_the_mechanism_outside_the_flow_solver(cc
     assert pc["cross"]["worst_gap"] < 2.0 * sc["yield_term"]
 
 
+
+def test_the_plateau_null_is_not_independent_evidence(cc, case):
+    """A control that shares an identity with its target cannot check it.
+
+    The Newtonian-at-`eta_c` null was added to separate "does the needle read the
+    plateau?" from "do the plateaux disagree?". It cannot: Casson at `tau_y = 0` IS
+    Newtonian at `eta_c`, so it recomputes the sibling study's `yield_share_max` by a
+    different route. This pins that it agrees with that number -- which makes it a
+    cross-implementation check worth having (one route through `flow_rate_casson`, one
+    through `flow_rate_gnf`) -- and pins that the .md says so rather than claiming a
+    second anchor."""
+    pn = cc["plateau_null"]
+    assert pn["worst_rel_dev"] == pytest.approx(case["yield_share_max"], rel=1e-4)
+    # different routes, so NOT bit-identical: that is the content of the check
+    assert pn["worst_rel_dev"] != case["yield_share_max"]
+    md = MD.read_text(encoding="utf-8")
+    assert "NOT independent evidence" in md
+    assert "the same number" in md
+    assert "rests on the plateau control above and on that alone" in md
+
+
+def test_g12_3_does_not_rest_on_which_null_was_picked(cc):
+    """`max` over the two nulls was a free choice. The milder null must clear the floor
+    too, or the verdict is a property of the choice."""
+    g = cc["G12_3_informative"]
+    assert g["separation_least_extreme_null"] >= g["floor"]
+    assert g["informative_on_either_null"]
+    assert g["separation_least_extreme_null"] == pytest.approx(2.705, rel=1e-3)
+    assert g["separation_worst_null"] == pytest.approx(8.9832, rel=1e-3)
+
 def test_the_prereg_predates_the_result_and_names_what_it_cannot_settle(cc):
     text = PREREG.read_text(encoding="utf-8")
     for token in ("G12.1", "G12.2", "G12.3", "G12.4", "G12.5", "1.6x"):

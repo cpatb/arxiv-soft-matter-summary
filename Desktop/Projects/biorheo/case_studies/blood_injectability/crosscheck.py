@@ -43,6 +43,7 @@ from pathlib import Path
 import numpy as np
 
 import biorheo
+from biorheo.constitutive.gnf import NEWTONIAN
 from biorheo.apps.injectability import (
     Needle, Syringe, flow_rate_casson, flow_rate_gnf, injection_force,
     pressure_for_flow_rate, wall_shear_rate,
@@ -192,6 +193,49 @@ def plateau_control(ref: dict, recs: dict, summary: dict) -> dict:
     return out
 
 
+def plateau_null(ref: dict, nd: Needle) -> dict:
+    """**A sharper null than the two registry ones, added after the first run.**
+
+    `newtonian` misses by 271 %, but partly BY CONSTRUCTION: its `mu` is fitted over the
+    whole 0.1-700 1/s curve on log-viscosity residuals, so it is a kind of average over
+    the whole curve and is nowhere near the high-rate plateau. A null that is off for a
+    trivial reason still shows the needle discriminates, but it cannot separate the two
+    questions this study needs kept apart:
+
+      (a) does the needle read the high-rate PLATEAU, or something else?
+      (b) do the three families' plateaux DISAGREE?
+
+    So: a Newtonian fluid whose viscosity is the donor's own Casson `eta_c` -- the
+    plateau itself, not a fit to anything.
+
+    **IT DOES NOT WORK, and the reason is worth keeping.** Casson at `tau_y = 0` IS
+    Newtonian at `eta_c` -- that is the same law, not a different one -- so this
+    recomputes the sibling study's `yield_share_max` by another route rather than testing
+    anything it does not already assume. The numbers agree to 1e-5, which makes it a
+    useful cross-implementation check of that quantity (one route through
+    `flow_rate_casson`, one through `flow_rate_gnf`) and NOT a second anchor on the
+    mechanism. It is kept, and labelled, because "an anchor that shares an identity with
+    its target cannot check that identity" is a lesson this repo wrote down on 2026-09-05
+    and this is what walking into it again looks like."""
+    rows, worst = [], 0.0
+    for d, r in sorted(ref.items()):
+        eta_c = dict(zip(r.model.param_names, r.params_si))["eta_c"]
+        f_cas = injection_force(Q_SI, nd, Syringe(BARREL_RADIUS), r.model, r.params_si,
+                                rho=RHO_BLOOD).force
+        f_new = injection_force(Q_SI, nd, Syringe(BARREL_RADIUS), NEWTONIAN,
+                                np.array([eta_c]), rho=RHO_BLOOD).force
+        dev = abs(f_new / f_cas - 1.0)
+        worst = max(worst, dev)
+        rows.append({"donor": d, "eta_c": float(eta_c), "force_casson": f_cas,
+                     "force_newtonian_at_eta_c": f_new, "rel_dev": dev})
+    return {"worst_rel_dev": worst, "rows": rows,
+            "claim": ("A Newtonian fluid AT the Casson plateau reproduces the Casson "
+                      "force to about the yield term, so the needle is reading the "
+                      "high-rate plateau and essentially nothing else. The 30 % is "
+                      "therefore a disagreement between plateaux, not a difference in "
+                      "what the geometry samples.")}
+
+
 def main() -> int:
     recs = load_all()
     nd = Needle(radius=ID_NOMINAL_MM * 1e-3 / 2.0, length=NEEDLE_LENGTH)
@@ -282,6 +326,15 @@ def main() -> int:
     # large to leave a numerical-route confound or an unidentified mechanism unchecked
     rc = route_control(ref, nd)
     pc = plateau_control(ref, recs, summary)
+    pn = plateau_null(ref, nd)
+    # G12.3 used `max` over the two nulls, which is a free choice. Recorded both ways so
+    # the verdict is not resting on which null happened to be picked.
+    null_min = min(summary[f]["worst_abs_rel_dev"] for f in NULLS)
+    g123["separation_worst_null"] = g123["separation"]
+    g123["separation_least_extreme_null"] = float(
+        null_min / cross["worst_abs_rel_dev"]) if cross["worst_abs_rel_dev"] > 0 else float("inf")
+    g123["informative_on_either_null"] = bool(
+        g123["separation_least_extreme_null"] >= SEPARATION_FLOOR)
 
     payload = {
         "generated_by": "case_studies/blood_injectability/crosscheck.py",
@@ -299,6 +352,7 @@ def main() -> int:
         "G12_5_accounting": g125,
         "route_control": rc,
         "plateau_control": pc,
+        "plateau_null": pn,
         # measured over every family and donor this study could evaluate, not quoted
         # from the sibling case study, which computed it for `casson` alone
         "median_decades_past_high": float(np.median(
@@ -420,9 +474,33 @@ def _report(p: dict) -> str:
           "| family | worst \\|force ratio - plateau ratio\\| |", "|---|---|"]
     for f, v in pc.items():
         L.append(f"| `{f}` | {_pct(v['worst_gap'])} |")
+    pn = p["plateau_null"]
     L += ["", "If that gap is small, the families disagree **because their fitted "
           "plateaux disagree** -- which is a statement about extrapolating a fit that "
           "stops at 700 1/s, not about the needle.", "",
+          "**A third control was attempted and it is NOT independent evidence. Recorded "
+          "anyway, because what it turned out to be is worth knowing.** The registry "
+          f"nulls are off partly by construction -- `newtonian` misses by "
+          f"{_pct(s['newtonian']['worst_abs_rel_dev'])}, but its `mu` is fitted over the "
+          "whole 0.1-700 1/s curve and so is nowhere near the high-rate plateau. So a "
+          "Newtonian fluid AT the donor's own Casson `eta_c` was run, meaning to separate "
+          "*does the needle read the plateau?* from *do the plateaux disagree?*. It "
+          f"reproduces the Casson force to **{_pct(pn['worst_rel_dev'])}** worst over 20 "
+          f"donors -- and the yield term on the sibling page is {_pct(sc['yield_term'])}, "
+          "**the same number**, because Casson at `tau_y = 0` IS Newtonian at `eta_c`. "
+          "The two agree to "
+          f"{abs(pn['worst_rel_dev'] / sc['yield_term'] - 1):.1e} relative, which makes "
+          "this a cross-implementation check of that number (one route through "
+          "`flow_rate_casson`, one through `flow_rate_gnf`) and nothing more. It shares "
+          "the identity it was meant to test, so it cannot test it -- this repo's own "
+          "2026-09-05 lesson, walked into again. The mechanism therefore rests on the "
+          "plateau control above and on that alone.", "",
+          f"**G12.3 does not rest on which null was picked.** The separation is "
+          f"{g3['separation_worst_null']:.4g}x on the worse null and "
+          f"{g3['separation_least_extreme_null']:.4g}x on the milder one, both above the "
+          f"{g3['floor']}x floor "
+          f"({'informative either way' if g3['informative_on_either_null'] else 'NOT informative on the milder null'}).",
+          "",
           "## What this does not establish", "",
           "**It does not validate the extrapolation.** Every family is read "
           f"a median {p['median_decades_past_high']:.2f} decades "

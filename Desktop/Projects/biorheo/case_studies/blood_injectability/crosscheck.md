@@ -62,6 +62,10 @@ Neither is in the pre-registration. Both were added because the effect the first
 
 If that gap is small, the families disagree **because their fitted plateaux disagree** -- which is a statement about extrapolating a fit that stops at 700 1/s, not about the needle.
 
+**A third control was attempted and it is NOT independent evidence. Recorded anyway, because what it turned out to be is worth knowing.** The registry nulls are off partly by construction -- `newtonian` misses by 271.1 %, but its `mu` is fitted over the whole 0.1-700 1/s curve and so is nowhere near the high-rate plateau. So a Newtonian fluid AT the donor's own Casson `eta_c` was run, meaning to separate *does the needle read the plateau?* from *do the plateaux disagree?*. It reproduces the Casson force to **2.941 %** worst over 20 donors -- and the yield term on the sibling page is 2.941 %, **the same number**, because Casson at `tau_y = 0` IS Newtonian at `eta_c`. The two agree to 1.0e-05 relative, which makes this a cross-implementation check of that number (one route through `flow_rate_casson`, one through `flow_rate_gnf`) and nothing more. It shares the identity it was meant to test, so it cannot test it -- this repo's own 2026-09-05 lesson, walked into again. The mechanism therefore rests on the plateau control above and on that alone.
+
+**G12.3 does not rest on which null was picked.** The separation is 8.983x on the worse null and 2.705x on the milder one, both above the 1.6x floor (informative either way).
+
 ## What this does not establish
 
 **It does not validate the extrapolation.** Every family is read a median 1.42 decades past the top of its own envelope on every donor, so if they agree they agree about an extrapolation. The measurement that would settle it is tube viscometry at this diameter, which the Horner dataset does not contain. No amount of agreement here is evidence that any of these families is RIGHT at the needle's wall rate.
