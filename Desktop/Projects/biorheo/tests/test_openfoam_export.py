@@ -41,9 +41,10 @@ def records():
 
 @pytest.fixture(scope="module")
 def all_records():
-    """Every exportable record, all four families. The `records` fixture above is
+    """Every record, all six exportable families. The `records` fixture above is
     deliberately the two yield-stress families only, because most of this file is about
-    the clamp, which the other two do not have."""
+    the clamp, which three of the other four do not have (`power_law` does, and takes a
+    floor as well; it is graded in `test_openfoam_export_null.py`)."""
     return load_all()
 
 
@@ -234,7 +235,13 @@ def _foam(cmd: str) -> str:
 @pytest.mark.skipif(not _wsl_openfoam(), reason="needs WSL with OpenFOAM v2606")
 @pytest.mark.parametrize("rid", ["carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A",
                                  "blood_horner2020_donor_N_cross",
-                                 "blood_horner2020_donor_S_carreau_yasuda"])
+                                 "blood_horner2020_donor_S_carreau_yasuda",
+                                 # item 11: the two NULL families. `newtonian` is the one
+                                 # whose entry is at the TOP LEVEL, so it exercises a
+                                 # different `foamDictionary -entry` path -- which is the
+                                 # point, since that layout was decided by reading C++.
+                                 "blood_horner2020_donor_A_newtonian",
+                                 "blood_horner2020_donor_A_power_law"])
 def test_openfoam_foamDictionary_reads_the_file_back(all_records, rid, tmp_path):
     """OpenFOAM's own parser must recover every coefficient BIT-EXACTLY, which is
     stricter than the 1e-10 gate on the law. `-precision 17` is required and is not a
@@ -245,20 +252,30 @@ def test_openfoam_foamDictionary_reads_the_file_back(all_records, rid, tmp_path)
     A user reading an exported coefficient back with a bare `foamDictionary -value`
     therefore sees 6 figures; the solver reads the file, not that output."""
     rec = all_records[rid]
-    # the two no-yield families take no clamp; the two yield ones require one
-    eta_max = (None if rec.model.name in ("cross", "carreau_yasuda")
+    # three families take no clamp; herschel_bulkley and casson require a cap; power_law
+    # requires a cap AND a floor (OpenFOAM reads both nuMin and nuMax with readEntry)
+    no_clamp = rec.model.name in ("cross", "carreau_yasuda", "newtonian")
+    eta_max = (None if no_clamp
                else 2.0 * float(rec.eta_at(rec.envelope.gammadot_min)))
-    path = write_transport_properties(rec, RHO, eta_max, tmp_path / "transportProperties")
+    eta_min = (0.5 * float(rec.eta_at(rec.envelope.gammadot_max))
+               if rec.model.name == "power_law" else None)
+    path = write_transport_properties(rec, RHO, eta_max, tmp_path / "transportProperties",
+                                      eta_min=eta_min)
     of_name, c = parse_transport_properties(path.read_text())
     drive, rest = Path(path).drive[0].lower(), Path(path).as_posix()[2:]
     wsl_path = f"/mnt/{drive}{rest}"
+    # `Newtonian` is the only model whose coefficient is at the TOP LEVEL rather than in
+    # a `<Model>Coeffs` sub-dictionary (Newtonian.C:71), so the entry path differs. If
+    # this ever needed a `NewtonianCoeffs/` prefix, `foamDictionary` would say so.
+    def _entry(key: str) -> str:
+        return key if of_name == "Newtonian" else f"{of_name}Coeffs/{key}"
     for key, val in c.items():
-        got = _foam(f"foamDictionary -precision 17 -entry {of_name}Coeffs/{key} "
+        got = _foam(f"foamDictionary -precision 17 -entry {_entry(key)} "
                     f"-value '{wsl_path}'")
         assert float(got) == val, (key, got, repr(val))  # exact double, no tolerance
         # and the default precision is exactly %.6g of the same number: lossy printing,
         # not a different value. If OpenFOAM ever changes its default this fails loudly.
-        deflt = _foam(f"foamDictionary -entry {of_name}Coeffs/{key} -value '{wsl_path}'")
+        deflt = _foam(f"foamDictionary -entry {_entry(key)} -value '{wsl_path}'")
         assert float(deflt) == float(f"{val:.6g}"), (key, deflt, f"{val:.6g}")
     assert _foam(f"foamDictionary -entry transportModel -value '{wsl_path}'") == of_name
     # `a` is the one OPTIONAL coefficient (BirdCarreau reads it with getOrDefault), so it

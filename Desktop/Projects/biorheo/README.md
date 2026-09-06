@@ -29,9 +29,14 @@ src/biorheo/
                       sources, licence); identifiability lives only in a sidecar the
                       identify layer writes
   solver/             openfoam.py: export a record to an OpenFOAM v2606
-                      `transportProperties` viscosity model (HerschelBulkley, Casson),
-                      parse it back, and refuse a record whose sidecar calls a parameter
-                      degenerate or not identifiable without an explicit override
+                      `transportProperties` viscosity model -- six of the seven families
+                      (HerschelBulkley, Casson, CrossPowerLaw, BirdCarreau, Newtonian,
+                      powerLaw) -- parse it back, and refuse a record whose sidecar calls
+                      a parameter degenerate or not identifiable without an explicit
+                      override. `structural_steady` is refused with a named error: its
+                      steady curve IS CrossPowerLaw with n = 1, but OpenFOAM's
+                      viscosityModel cannot carry the structure equation, so the export
+                      would be right in steady state and silently wrong in a transient
   apps/               injectability.py: Herschel-Bulkley needle flow (closed form for any
                       n, quadrature for any monotone model), plunger force with profile
                       and covariance intervals, log-sensitivities, and an extrapolation
@@ -73,7 +78,14 @@ anything is built on it, and it is a convention: an unweighted line in sqrt spac
 whose yield stress is 0.4-71 % (median 33 %) above biorheo's log-viscosity fit of the
 same 16 points, because Casson misfits every donor but one (3 runs of residual sign
 against 9 expected, under either objective). Cross and Carreau-Yasuda fit the same curves 5x better; the table
-is `data/horner2020/model_comparison.md`. The workbook's 300 -> 1 1/s step sheet
+is `data/horner2020/model_comparison.md`. That table now also carries two NULL columns,
+`newtonian` and `power_law`, fitted to the same curves and shipped as records so the L3
+bridge has one of each to gate against. They are the floor the rest of the table is read
+against, and they say two things worth knowing: Casson beats a one-parameter constant on
+20/20 donors but beats a two-parameter power law on only **14/20**, at the same parameter
+count; and the `residual_structure` flag does NOT separate a fit from a null here -- it
+fires on 20/20 for both nulls and for Herschel-Bulkley, and the only two forms it clears
+are Cross and Carreau-Yasuda. The workbook's 300 -> 1 1/s step sheet
 (`data/horner2020/step_response.md`) shows the steady sheet's 1 1/s stress is
 bit-identical to the 4-6 s peak of that transient on 14/20 donors (a later sample on
 one more, within 1e-4 on four); the thesis confirms
