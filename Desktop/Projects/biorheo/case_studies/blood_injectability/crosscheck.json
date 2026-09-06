@@ -1,0 +1,1196 @@
+{
+  "generated_by": "case_studies/blood_injectability/crosscheck.py",
+  "prereg": "case_studies/blood_injectability/crosscheck_prereg.md (commit 1cd46de)",
+  "biorheo_version": "0.0.1",
+  "scales": {
+    "resolution": 0.00987168627287154,
+    "yield_term": 0.029414577638202075,
+    "donor_spread": 1.2791888374643041,
+    "casson_force_min": 0.22312815921704846,
+    "casson_force_max": 0.5085512098114549,
+    "source": "case_studies/blood_injectability/results.json"
+  },
+  "reference": "casson",
+  "donors": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U"
+  ],
+  "reference_reproduces_case_study_to": 0.0,
+  "needle": {
+    "id_nominal_mm": 0.21,
+    "length_m": 0.0127
+  },
+  "Q_mL_per_min": 1.0,
+  "rho": 1060.0,
+  "summary": {
+    "cross": {
+      "rows": [
+        {
+          "donor": "A",
+          "force_N": 0.2005823694131191,
+          "casson_force_N": 0.28728169584068497,
+          "rel_dev": -0.3017920308979444,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "B",
+          "force_N": 0.24901552805760743,
+          "casson_force_N": 0.2621394508870999,
+          "rel_dev": -0.0500646613284651,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "C",
+          "force_N": 0.23111621221725412,
+          "casson_force_N": 0.2249968957337873,
+          "rel_dev": 0.027197337383299214,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "D",
+          "force_N": 0.2640742007029247,
+          "casson_force_N": 0.2312575132163842,
+          "rel_dev": 0.14190538949467313,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "F",
+          "force_N": 0.18904164450066538,
+          "casson_force_N": 0.22312815921704846,
+          "rel_dev": -0.15276653039218302,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "G",
+          "force_N": 0.22937215054163462,
+          "casson_force_N": 0.2937922414358167,
+          "rel_dev": -0.2192709057916209,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "H",
+          "force_N": 0.2732295551756864,
+          "casson_force_N": 0.3010273928234139,
+          "rel_dev": -0.09234321630003284,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "I",
+          "force_N": 0.2632174515653115,
+          "casson_force_N": 0.28550407138989103,
+          "rel_dev": -0.07806060248487456,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "J",
+          "force_N": 0.3390807888357609,
+          "casson_force_N": 0.33475565405128743,
+          "rel_dev": 0.012920274033103807,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "K",
+          "force_N": 0.20408013012116513,
+          "casson_force_N": 0.2751939385755543,
+          "rel_dev": -0.25841342590060323,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "L",
+          "force_N": 0.25738541121375885,
+          "casson_force_N": 0.29622898558864624,
+          "rel_dev": -0.13112685207931307,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "M",
+          "force_N": 0.27301401420438626,
+          "casson_force_N": 0.2720883307413757,
+          "rel_dev": 0.00340214319551424,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "N",
+          "force_N": 0.3800216450155615,
+          "casson_force_N": 0.5085512098114549,
+          "rel_dev": -0.2527367201496691,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "O",
+          "force_N": 0.22514879320112896,
+          "casson_force_N": 0.2574785989698779,
+          "rel_dev": -0.12556307940968392,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "P",
+          "force_N": 0.24825663329889042,
+          "casson_force_N": 0.2934860854379956,
+          "rel_dev": -0.1541110614208684,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "Q",
+          "force_N": 0.2379753186932249,
+          "casson_force_N": 0.2715283403699404,
+          "rel_dev": -0.123570974694581,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "R",
+          "force_N": 0.2602111734781083,
+          "casson_force_N": 0.27406976635292646,
+          "rel_dev": -0.05056593092786499,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "S",
+          "force_N": 0.27472843712594514,
+          "casson_force_N": 0.29072930526193785,
+          "rel_dev": -0.05503699780652127,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "T",
+          "force_N": 0.238542064918678,
+          "casson_force_N": 0.26512667868372364,
+          "rel_dev": -0.10027136422871685,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "U",
+          "force_N": 0.24809602159327335,
+          "casson_force_N": 0.303093198195463,
+          "rel_dev": -0.1814530214786354,
+          "all_measurable": false,
+          "failed": null
+        }
+      ],
+      "n_in": 20,
+      "n_out": 20,
+      "n_failed": 0,
+      "failed_donors": [],
+      "failure_reasons": {},
+      "n_all_measurable": 11,
+      "worst_abs_rel_dev": 0.3017920308979444,
+      "worst_abs_rel_dev_measurable_only": 0.2527367201496691,
+      "median_rel_dev": -0.11192116946164893,
+      "band": "above the neglected yield term, below the donor spread",
+      "band_measurable_only": "above the neglected yield term, below the donor spread"
+    },
+    "carreau_yasuda": {
+      "rows": [
+        {
+          "donor": "A",
+          "force_N": 0.19240987325129608,
+          "casson_force_N": 0.28728169584068497,
+          "rel_dev": -0.3302397053587467,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "B",
+          "force_N": 0.24898197893198495,
+          "casson_force_N": 0.2621394508870999,
+          "rel_dev": -0.05019264330717499,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "C",
+          "force_N": 0.23370398168076725,
+          "casson_force_N": 0.2249968957337873,
+          "rel_dev": 0.03869869368012102,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "D",
+          "force_N": 0.25976890173833034,
+          "casson_force_N": 0.2312575132163842,
+          "rel_dev": 0.12328848531406833,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "F",
+          "force_N": 0.18705177091921377,
+          "casson_force_N": 0.22312815921704846,
+          "rel_dev": -0.16168460504683002,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "G",
+          "force_N": 0.19750498627965468,
+          "casson_force_N": 0.2937922414358167,
+          "rel_dev": -0.3277392714170685,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "H",
+          "force_N": 0.2582438087542022,
+          "casson_force_N": 0.3010273928234139,
+          "rel_dev": -0.14212521879797502,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "I",
+          "force_N": 0.2468105786342581,
+          "casson_force_N": 0.28550407138989103,
+          "rel_dev": -0.13552693860814402,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "J",
+          "force_N": 0.32941712234146103,
+          "casson_force_N": 0.33475565405128743,
+          "rel_dev": -0.01594754754764649,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "K",
+          "force_N": 0.20810989372110686,
+          "casson_force_N": 0.2751939385755543,
+          "rel_dev": -0.24377006703594073,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "L",
+          "force_N": 0.25733782446832265,
+          "casson_force_N": 0.29622898558864624,
+          "rel_dev": -0.13128749383873328,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "M",
+          "force_N": 0.25328686167763464,
+          "casson_force_N": 0.2720883307413757,
+          "rel_dev": -0.06910060792578465,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "N",
+          "force_N": 0.3712833107805709,
+          "casson_force_N": 0.5085512098114549,
+          "rel_dev": -0.26991952114670215,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "O",
+          "force_N": 0.223262257106103,
+          "casson_force_N": 0.2574785989698779,
+          "rel_dev": -0.13289004212648303,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "P",
+          "force_N": 0.24759734377056297,
+          "casson_force_N": 0.2934860854379956,
+          "rel_dev": -0.15635746955072416,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "Q",
+          "force_N": 0.22788480608232634,
+          "casson_force_N": 0.2715283403699404,
+          "rel_dev": -0.16073288787517526,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "R",
+          "force_N": 0.2527353151043643,
+          "casson_force_N": 0.27406976635292646,
+          "rel_dev": -0.07784314020645844,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "S",
+          "force_N": 0.26864250285358227,
+          "casson_force_N": 0.29072930526193785,
+          "rel_dev": -0.07597033394502861,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "T",
+          "force_N": 0.2326144226129201,
+          "casson_force_N": 0.26512667868372364,
+          "rel_dev": -0.12262913801137398,
+          "all_measurable": false,
+          "failed": null
+        },
+        {
+          "donor": "U",
+          "force_N": 0.2477870928880934,
+          "casson_force_N": 0.303093198195463,
+          "rel_dev": -0.18247227465560945,
+          "all_measurable": false,
+          "failed": null
+        }
+      ],
+      "n_in": 20,
+      "n_out": 20,
+      "n_failed": 0,
+      "failed_donors": [],
+      "failure_reasons": {},
+      "n_all_measurable": 5,
+      "worst_abs_rel_dev": 0.3302397053587467,
+      "worst_abs_rel_dev_measurable_only": 0.26991952114670215,
+      "median_rel_dev": -0.13420849036731353,
+      "band": "above the neglected yield term, below the donor spread",
+      "band_measurable_only": "above the neglected yield term, below the donor spread"
+    },
+    "newtonian": {
+      "rows": [
+        {
+          "donor": "A",
+          "force_N": 0.601535046564602,
+          "casson_force_N": 0.28728169584068497,
+          "rel_dev": 1.093885740977349,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "B",
+          "force_N": 0.7112506868969026,
+          "casson_force_N": 0.2621394508870999,
+          "rel_dev": 1.7132531348867026,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "C",
+          "force_N": 0.7870899826306742,
+          "casson_force_N": 0.2249968957337873,
+          "rel_dev": 2.4982259646904033,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "D",
+          "force_N": 0.858213503714995,
+          "casson_force_N": 0.2312575132163842,
+          "rel_dev": 2.711072958360395,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "F",
+          "force_N": 0.5189636674705023,
+          "casson_force_N": 0.22312815921704846,
+          "rel_dev": 1.3258546536283622,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "G",
+          "force_N": 0.5269581546399426,
+          "casson_force_N": 0.2937922414358167,
+          "rel_dev": 0.7936421740227078,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "H",
+          "force_N": 0.8044968582706251,
+          "casson_force_N": 0.3010273928234139,
+          "rel_dev": 1.6725038234063705,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "I",
+          "force_N": 0.7518193192890968,
+          "casson_force_N": 0.28550407138989103,
+          "rel_dev": 1.6333050720751188,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "J",
+          "force_N": 0.8889666332854917,
+          "casson_force_N": 0.33475565405128743,
+          "rel_dev": 1.6555686887645353,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "K",
+          "force_N": 0.687175106021308,
+          "casson_force_N": 0.2751939385755543,
+          "rel_dev": 1.497057564487906,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "L",
+          "force_N": 1.0367482070373732,
+          "casson_force_N": 0.29622898558864624,
+          "rel_dev": 2.499820265654346,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "M",
+          "force_N": 0.9767527055221937,
+          "casson_force_N": 0.2720883307413757,
+          "rel_dev": 2.5898368109384773,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "N",
+          "force_N": 1.5918226664815032,
+          "casson_force_N": 0.5085512098114549,
+          "rel_dev": 2.1301128298793564,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "O",
+          "force_N": 0.6612984072767872,
+          "casson_force_N": 0.2574785989698779,
+          "rel_dev": 1.5683626131356716,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "P",
+          "force_N": 0.7843558798100038,
+          "casson_force_N": 0.2934860854379956,
+          "rel_dev": 1.672548780769075,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "Q",
+          "force_N": 0.7677891327995852,
+          "casson_force_N": 0.2715283403699404,
+          "rel_dev": 1.8276574436153532,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "R",
+          "force_N": 0.8287058279900316,
+          "casson_force_N": 0.27406976635292646,
+          "rel_dev": 2.0237039240690504,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "S",
+          "force_N": 0.8847512510390686,
+          "casson_force_N": 0.29072930526193785,
+          "rel_dev": 2.0432131712416672,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "T",
+          "force_N": 0.7577739151896399,
+          "casson_force_N": 0.26512667868372364,
+          "rel_dev": 1.8581579151210494,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "U",
+          "force_N": 0.8540349692154809,
+          "casson_force_N": 0.303093198195463,
+          "rel_dev": 1.8177305670341006,
+          "all_measurable": true,
+          "failed": null
+        }
+      ],
+      "n_in": 20,
+      "n_out": 20,
+      "n_failed": 0,
+      "failed_donors": [],
+      "failure_reasons": {},
+      "n_all_measurable": 20,
+      "worst_abs_rel_dev": 2.711072958360395,
+      "worst_abs_rel_dev_measurable_only": 2.711072958360395,
+      "median_rel_dev": 1.7654918509604016,
+      "band": "above the donor spread",
+      "band_measurable_only": "above the donor spread"
+    },
+    "power_law": {
+      "rows": [
+        {
+          "donor": "A",
+          "force_N": 0.08402947122079879,
+          "casson_force_N": 0.28728169584068497,
+          "rel_dev": -0.7075014787318779,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "B",
+          "force_N": 0.06237492652290858,
+          "casson_force_N": 0.2621394508870999,
+          "rel_dev": -0.7620544091634164,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "C",
+          "force_N": 0.04290909389751434,
+          "casson_force_N": 0.2249968957337873,
+          "rel_dev": -0.8092902848389354,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "D",
+          "force_N": 0.04249509025755624,
+          "casson_force_N": 0.2312575132163842,
+          "rel_dev": -0.8162434177098747,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "F",
+          "force_N": 0.06044874312313826,
+          "casson_force_N": 0.22312815921704846,
+          "rel_dev": -0.7290850991858154,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "G",
+          "force_N": 0.09883917169672687,
+          "casson_force_N": 0.2937922414358167,
+          "rel_dev": -0.6635746021961586,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "H",
+          "force_N": 0.07035820622489516,
+          "casson_force_N": 0.3010273928234139,
+          "rel_dev": -0.7662730771276749,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "I",
+          "force_N": 0.06806179022013452,
+          "casson_force_N": 0.28550407138989103,
+          "rel_dev": -0.7616083375315943,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "J",
+          "force_N": 0.08103092788819125,
+          "casson_force_N": 0.33475565405128743,
+          "rel_dev": -0.7579400768664042,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "K",
+          "force_N": 0.06806968004427469,
+          "casson_force_N": 0.2751939385755543,
+          "rel_dev": -0.7526483308585439,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "L",
+          "force_N": 0.0555778035093719,
+          "casson_force_N": 0.29622898558864624,
+          "rel_dev": -0.8123822913583847,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "M",
+          "force_N": 0.05054398179552509,
+          "casson_force_N": 0.2720883307413757,
+          "rel_dev": -0.8142368632355352,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "N",
+          "force_N": 0.10236196764912504,
+          "casson_force_N": 0.5085512098114549,
+          "rel_dev": -0.7987184659592577,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "O",
+          "force_N": 0.06312296080829319,
+          "casson_force_N": 0.2574785989698779,
+          "rel_dev": -0.7548419128392186,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "P",
+          "force_N": 0.069390859590384,
+          "casson_force_N": 0.2934860854379956,
+          "rel_dev": -0.7635633747786515,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "Q",
+          "force_N": 0.060661252998142665,
+          "casson_force_N": 0.2715283403699404,
+          "rel_dev": -0.7765932907206095,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "R",
+          "force_N": 0.05843012736119678,
+          "casson_force_N": 0.27406976635292646,
+          "rel_dev": -0.7868056439105551,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "S",
+          "force_N": 0.06170664501323567,
+          "casson_force_N": 0.29072930526193785,
+          "rel_dev": -0.787752235855137,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "T",
+          "force_N": 0.05919079617906505,
+          "casson_force_N": 0.26512667868372364,
+          "rel_dev": -0.7767452280814212,
+          "all_measurable": true,
+          "failed": null
+        },
+        {
+          "donor": "U",
+          "force_N": 0.06790329613116891,
+          "casson_force_N": 0.303093198195463,
+          "rel_dev": -0.77596562200852,
+          "all_measurable": true,
+          "failed": null
+        }
+      ],
+      "n_in": 20,
+      "n_out": 20,
+      "n_failed": 0,
+      "failed_donors": [],
+      "failure_reasons": {},
+      "n_all_measurable": 20,
+      "worst_abs_rel_dev": 0.8162434177098747,
+      "worst_abs_rel_dev_measurable_only": 0.8162434177098747,
+      "median_rel_dev": -0.7711193495680975,
+      "band": "above the neglected yield term, below the donor spread",
+      "band_measurable_only": "above the neglected yield term, below the donor spread"
+    }
+  },
+  "G12_1_item12_own_bar": {
+    "bar": 1.2791888374643041,
+    "worst": 0.3017920308979444,
+    "pass": true,
+    "note": "the bar item 12 proposed; passing it establishes very little"
+  },
+  "G12_2_bands": {
+    "cross": "above the neglected yield term, below the donor spread",
+    "carreau_yasuda": "above the neglected yield term, below the donor spread",
+    "newtonian": "above the donor spread",
+    "power_law": "above the neglected yield term, below the donor spread"
+  },
+  "G12_3_informative": {
+    "null_worst": 2.711072958360395,
+    "cross_worst": 0.3017920308979444,
+    "separation": 8.98324899532283,
+    "floor": 1.6,
+    "nulls_in_a_different_band": true,
+    "informative": true,
+    "null_bands": {
+      "newtonian": "above the donor spread",
+      "power_law": "above the neglected yield term, below the donor spread"
+    }
+  },
+  "G12_4_identifiability_split": {
+    "cross": {
+      "band": "above the neglected yield term, below the donor spread",
+      "band_measurable_only": "above the neglected yield term, below the donor spread",
+      "n_all_measurable": 11,
+      "same": true
+    },
+    "carreau_yasuda": {
+      "band": "above the neglected yield term, below the donor spread",
+      "band_measurable_only": "above the neglected yield term, below the donor spread",
+      "n_all_measurable": 5,
+      "same": true
+    },
+    "newtonian": {
+      "band": "above the donor spread",
+      "band_measurable_only": "above the donor spread",
+      "n_all_measurable": 20,
+      "same": true
+    },
+    "power_law": {
+      "band": "above the neglected yield term, below the donor spread",
+      "band_measurable_only": "above the neglected yield term, below the donor spread",
+      "n_all_measurable": 20,
+      "same": true
+    }
+  },
+  "G12_5_accounting": {
+    "cross": {
+      "n_in": 20,
+      "n_out": 20,
+      "failed": []
+    },
+    "carreau_yasuda": {
+      "n_in": 20,
+      "n_out": 20,
+      "failed": []
+    },
+    "newtonian": {
+      "n_in": 20,
+      "n_out": 20,
+      "failed": []
+    },
+    "power_law": {
+      "n_in": 20,
+      "n_out": 20,
+      "failed": []
+    }
+  },
+  "route_control": {
+    "worst_rel_dev": 1.0151879337172431e-12,
+    "rows": [
+      {
+        "donor": "A",
+        "Q_closed": 1.6666666666666677e-08,
+        "Q_quad": 1.6666666666675204e-08,
+        "rel_dev": 5.115907697472721e-13
+      },
+      {
+        "donor": "B",
+        "Q_closed": 1.6666666666666684e-08,
+        "Q_quad": 1.6666666666680276e-08,
+        "rel_dev": 8.1556983388964e-13
+      },
+      {
+        "donor": "C",
+        "Q_closed": 1.6666666666666148e-08,
+        "Q_quad": 1.666666666666872e-08,
+        "rel_dev": 1.5432100042289676e-13
+      },
+      {
+        "donor": "D",
+        "Q_closed": 1.6666666666664857e-08,
+        "Q_quad": 1.666666666666766e-08,
+        "rel_dev": 1.680877659282487e-13
+      },
+      {
+        "donor": "F",
+        "Q_closed": 1.666666666666635e-08,
+        "Q_quad": 1.666666666667678e-08,
+        "rel_dev": 6.257216966787382e-13
+      },
+      {
+        "donor": "G",
+        "Q_closed": 1.6666666666666664e-08,
+        "Q_quad": 1.6666666666673556e-08,
+        "rel_dev": 4.134470543704083e-13
+      },
+      {
+        "donor": "H",
+        "Q_closed": 1.6666666666666667e-08,
+        "Q_quad": 1.666666666667992e-08,
+        "rel_dev": 7.951417302365371e-13
+      },
+      {
+        "donor": "I",
+        "Q_closed": 1.6666666666666664e-08,
+        "Q_quad": 1.6666666666679604e-08,
+        "rel_dev": 7.764899834228345e-13
+      },
+      {
+        "donor": "J",
+        "Q_closed": 1.666666666666658e-08,
+        "Q_quad": 1.6666666666679693e-08,
+        "rel_dev": 7.867040352493859e-13
+      },
+      {
+        "donor": "K",
+        "Q_closed": 1.6666666666666677e-08,
+        "Q_quad": 1.6666666666678512e-08,
+        "rel_dev": 7.100986465502501e-13
+      },
+      {
+        "donor": "L",
+        "Q_closed": 1.6666666666666657e-08,
+        "Q_quad": 1.6666666666669235e-08,
+        "rel_dev": 1.545430450278218e-13
+      },
+      {
+        "donor": "M",
+        "Q_closed": 1.666666666666666e-08,
+        "Q_quad": 1.666666666666933e-08,
+        "rel_dev": 1.603162047558726e-13
+      },
+      {
+        "donor": "N",
+        "Q_closed": 1.666666666666666e-08,
+        "Q_quad": 1.666666666668358e-08,
+        "rel_dev": 1.0151879337172431e-12
+      },
+      {
+        "donor": "O",
+        "Q_closed": 1.666666666666664e-08,
+        "Q_quad": 1.6666666666679055e-08,
+        "rel_dev": 7.4495964952348e-13
+      },
+      {
+        "donor": "P",
+        "Q_closed": 1.666666666666666e-08,
+        "Q_quad": 1.666666666667993e-08,
+        "rel_dev": 7.960299086562372e-13
+      },
+      {
+        "donor": "Q",
+        "Q_closed": 1.6666666666666677e-08,
+        "Q_quad": 1.666666666668119e-08,
+        "rel_dev": 8.706368959110478e-13
+      },
+      {
+        "donor": "R",
+        "Q_closed": 1.666666666666668e-08,
+        "Q_quad": 1.6666666666682754e-08,
+        "rel_dev": 9.64339719189411e-13
+      },
+      {
+        "donor": "S",
+        "Q_closed": 1.6666666666666664e-08,
+        "Q_quad": 1.666666666668291e-08,
+        "rel_dev": 9.747758156208874e-13
+      },
+      {
+        "donor": "T",
+        "Q_closed": 1.6666666666666657e-08,
+        "Q_quad": 1.666666666668142e-08,
+        "rel_dev": 8.857359290459499e-13
+      },
+      {
+        "donor": "U",
+        "Q_closed": 1.6666666666666647e-08,
+        "Q_quad": 1.666666666668109e-08,
+        "rel_dev": 8.666400930223972e-13
+      }
+    ],
+    "claim": "Casson's closed form and the generic quadrature agree at this operating point, so a family-to-family force difference is a difference between FITS and not between numerical routes."
+  },
+  "plateau_control": {
+    "cross": {
+      "worst_gap": 0.03188856705535936,
+      "rows": [
+        {
+          "donor": "A",
+          "plateau_ratio": -0.33368059795330374,
+          "force_ratio": -0.3017920308979444,
+          "gap": 0.03188856705535936
+        },
+        {
+          "donor": "B",
+          "plateau_ratio": -0.042862917212534324,
+          "force_ratio": -0.0500646613284651,
+          "gap": 0.007201744115930775
+        },
+        {
+          "donor": "C",
+          "plateau_ratio": 0.04755169870791098,
+          "force_ratio": 0.027197337383299214,
+          "gap": 0.02035436132461177
+        },
+        {
+          "donor": "D",
+          "plateau_ratio": 0.17342754234644797,
+          "force_ratio": 0.14190538949467313,
+          "gap": 0.03152215285177484
+        },
+        {
+          "donor": "F",
+          "plateau_ratio": -0.15673701543693264,
+          "force_ratio": -0.15276653039218302,
+          "gap": 0.0039704850447496165
+        },
+        {
+          "donor": "G",
+          "plateau_ratio": -0.21641615336123288,
+          "force_ratio": -0.2192709057916209,
+          "gap": 0.002854752430388019
+        },
+        {
+          "donor": "H",
+          "plateau_ratio": -0.07864097535170855,
+          "force_ratio": -0.09234321630003284,
+          "gap": 0.013702240948324285
+        },
+        {
+          "donor": "I",
+          "plateau_ratio": -0.06484629970046263,
+          "force_ratio": -0.07806060248487456,
+          "gap": 0.013214302784411935
+        },
+        {
+          "donor": "J",
+          "plateau_ratio": 0.029817697232928486,
+          "force_ratio": 0.012920274033103807,
+          "gap": 0.01689742319982468
+        },
+        {
+          "donor": "K",
+          "plateau_ratio": -0.2800695242817368,
+          "force_ratio": -0.25841342590060323,
+          "gap": 0.02165609838113358
+        },
+        {
+          "donor": "L",
+          "plateau_ratio": -0.12720924879146744,
+          "force_ratio": -0.13112685207931307,
+          "gap": 0.003917603287845628
+        },
+        {
+          "donor": "M",
+          "plateau_ratio": 0.02859953955326633,
+          "force_ratio": 0.00340214319551424,
+          "gap": 0.02519739635775209
+        },
+        {
+          "donor": "N",
+          "plateau_ratio": -0.26210308213383526,
+          "force_ratio": -0.2527367201496691,
+          "gap": 0.009366361984166183
+        },
+        {
+          "donor": "O",
+          "plateau_ratio": -0.12128135117099736,
+          "force_ratio": -0.12556307940968392,
+          "gap": 0.004281728238686555
+        },
+        {
+          "donor": "P",
+          "plateau_ratio": -0.15778643420574423,
+          "force_ratio": -0.1541110614208684,
+          "gap": 0.003675372784875841
+        },
+        {
+          "donor": "Q",
+          "plateau_ratio": -0.11498431628999894,
+          "force_ratio": -0.123570974694581,
+          "gap": 0.00858665840458206
+        },
+        {
+          "donor": "R",
+          "plateau_ratio": -0.03488800735063513,
+          "force_ratio": -0.05056593092786499,
+          "gap": 0.015677923577229858
+        },
+        {
+          "donor": "S",
+          "plateau_ratio": -0.04033222401776282,
+          "force_ratio": -0.05503699780652127,
+          "gap": 0.014704773788758452
+        },
+        {
+          "donor": "T",
+          "plateau_ratio": -0.09292825490190504,
+          "force_ratio": -0.10027136422871685,
+          "gap": 0.007343109326811814
+        },
+        {
+          "donor": "U",
+          "plateau_ratio": -0.1887688363007255,
+          "force_ratio": -0.1814530214786354,
+          "gap": 0.007315814822090094
+        }
+      ]
+    },
+    "carreau_yasuda": {
+      "worst_gap": 0.0494408977905364,
+      "rows": [
+        {
+          "donor": "A",
+          "plateau_ratio": -0.3796806031492831,
+          "force_ratio": -0.3302397053587467,
+          "gap": 0.0494408977905364
+        },
+        {
+          "donor": "B",
+          "plateau_ratio": -0.04301198567796061,
+          "force_ratio": -0.05019264330717499,
+          "gap": 0.007180657629214382
+        },
+        {
+          "donor": "C",
+          "plateau_ratio": 0.06013584275376216,
+          "force_ratio": 0.03869869368012102,
+          "gap": 0.021437149073641137
+        },
+        {
+          "donor": "D",
+          "plateau_ratio": 0.1529397086393649,
+          "force_ratio": 0.12328848531406833,
+          "gap": 0.029651223325296572
+        },
+        {
+          "donor": "F",
+          "plateau_ratio": -0.16887393898336922,
+          "force_ratio": -0.16168460504683002,
+          "gap": 0.0071893339365391995
+        },
+        {
+          "donor": "G",
+          "plateau_ratio": -0.3605771299960252,
+          "force_ratio": -0.3277392714170685,
+          "gap": 0.03283785857895671
+        },
+        {
+          "donor": "H",
+          "plateau_ratio": -0.13599728514465093,
+          "force_ratio": -0.14212521879797502,
+          "gap": 0.006127933653324091
+        },
+        {
+          "donor": "I",
+          "plateau_ratio": -0.13159396507062415,
+          "force_ratio": -0.13552693860814402,
+          "gap": 0.003932973537519868
+        },
+        {
+          "donor": "J",
+          "plateau_ratio": -0.0021402515356416796,
+          "force_ratio": -0.01594754754764649,
+          "gap": 0.01380729601200481
+        },
+        {
+          "donor": "K",
+          "plateau_ratio": -0.25603297499632227,
+          "force_ratio": -0.24377006703594073,
+          "gap": 0.012262907960381542
+        },
+        {
+          "donor": "L",
+          "plateau_ratio": -0.12740363710770652,
+          "force_ratio": -0.13128749383873328,
+          "gap": 0.003883856731026758
+        },
+        {
+          "donor": "M",
+          "plateau_ratio": -0.053316498598034445,
+          "force_ratio": -0.06910060792578465,
+          "gap": 0.015784109327750206
+        },
+        {
+          "donor": "N",
+          "plateau_ratio": -0.28553448291216077,
+          "force_ratio": -0.26991952114670215,
+          "gap": 0.015614961765458624
+        },
+        {
+          "donor": "O",
+          "plateau_ratio": -0.1305129542586888,
+          "force_ratio": -0.13289004212648303,
+          "gap": 0.0023770878677942253
+        },
+        {
+          "donor": "P",
+          "plateau_ratio": -0.1608321090914675,
+          "force_ratio": -0.15635746955072416,
+          "gap": 0.0044746395407433415
+        },
+        {
+          "donor": "Q",
+          "plateau_ratio": -0.160480930160384,
+          "force_ratio": -0.16073288787517526,
+          "gap": 0.00025195771479125106
+        },
+        {
+          "donor": "R",
+          "plateau_ratio": -0.06671691801510837,
+          "force_ratio": -0.07784314020645844,
+          "gap": 0.011126222191350066
+        },
+        {
+          "donor": "S",
+          "plateau_ratio": -0.06501038848525253,
+          "force_ratio": -0.07597033394502861,
+          "gap": 0.010959945459776077
+        },
+        {
+          "donor": "T",
+          "plateau_ratio": -0.12037097493052018,
+          "force_ratio": -0.12262913801137398,
+          "gap": 0.0022581630808538034
+        },
+        {
+          "donor": "U",
+          "plateau_ratio": -0.19031520630263676,
+          "force_ratio": -0.18247227465560945,
+          "gap": 0.007842931647027318
+        }
+      ]
+    }
+  },
+  "median_decades_past_high": 1.419126894948016
+}
