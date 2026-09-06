@@ -8,6 +8,11 @@ biorheo's *with the meanings swapped*. So nothing below is assumed from the fami
 
 ## 0. What was read first, and what it says
 
+> **Correction, see the addendum at the foot of this file:** §0.2's last sentence is FALSE.
+> Only `HerschelBulkley` and `Casson` use `VSMALL`; `CrossPowerLaw`, `BirdCarreau` and
+> `Newtonian` have no floor at all. The text is left as written because a pre-registration
+> is not rewritten; the corrected statement is in `openfoam.py` beside `SMALL`.
+
 `/usr/lib/openfoam/openfoam2606/src/transportModels/incompressible/viscosityModels/`,
 read in WSL on 2026-09-06.
 
@@ -202,3 +207,97 @@ limitation goes in the gate report rather than being worked around.
   failure mode G8 was written for.
 - Writing "no counterpart exists" into the `structural_steady` refusal without checking
   it (G11.6), which is item 6's mistake repeated.
+
+---
+
+## Addendum, 2026-09-06, after the run and the code review
+
+**Nothing above this line was edited.** The commit that carries it, `e9c1ace`, contains
+this file and nothing else, and is the proof of order; the code it grades landed in
+`bcf84bf`. No bar was moved. What follows is what the run and the review found.
+
+### The gates
+
+| gate | verdict | number | bar | where |
+|---|---|---|---|---|
+| G11.1 `newtonian` | PASS | 0.000e+00 (exact) | 1e-10 | `newtonian_powerlaw_gates.md` |
+| G11.1 `power_law` | PASS | 2.392e-16 | 1e-10 | same |
+| G11.2 | PASS | pass/fail | — | `tests/test_openfoam_export_null.py` |
+| G11.3a | PASS | 8 refusals, each with its own reason | — | same |
+| G11.3b | **PASS, prediction confirmed** | control rc 0, broken rc 1, `nuMin` named | rc != 0 | `couette_anchor.md` |
+| G11.4a | PASS | pass/fail | — | `tests/test_openfoam_export_null.py` |
+| G11.4b | **PASS, prediction confirmed** | control rc 0, broken rc 1 | rc != 0 | `couette_anchor.md` |
+| G11.5a | PASS | 1059 minimum separation | > 1e-3 | `newtonian_powerlaw_gates.md` |
+| G11.5b | PASS | 9 minimum separation | > 1e-3 | same |
+| G11.6 | **PASS, and it REFUTES item 11's premise** | 1.386e-16 | 1e-12 | same |
+| G11.7 | PASS | `newtonian` err_nu 0.000e+00, `power_law` 6.370e-15 | A2 1e-6 | `couette_anchor.md` |
+
+OpenFOAM's own words on the two dictionaries it was predicted to reject:
+`Entry 'nuMin' not found in dictionary ".../transportProperties/powerLawCoeffs"` and
+`Entry 'nu' not found in dictionary ".../transportProperties"`. The second is the more
+informative of the two: OpenFOAM looked for `nu` at the TOP LEVEL and did not find it,
+i.e. the `NewtonianCoeffs` block was not read at all — which is the claim §0 made from
+`Newtonian.C:71` and the reason the parser refuses such a block rather than ignoring it.
+
+### G11.6: the item's stated reason was wrong, and the refusal is kept with a new one
+
+§2 said this in advance and it happened. `structural_steady`'s steady flow curve equals
+`CrossPowerLaw` with n = 1 to 1.386e-16, so "no counterpart exists" would have refused
+something OpenFOAM can do — item 6's mistake repeated. `ThixotropyNotRepresentable` now
+gives the true reason: `viscosityModel` is a function of the instantaneous `strainRate()`
+alone, so the structure equation cannot be carried and the export would be right in
+steady state and silently wrong in every transient.
+
+### What §0 got wrong, recorded rather than edited out
+
+**§0.2's last sentence is FALSE.** It says "The other four models this bridge already
+covers use `VSMALL`". Only two do — `HerschelBulkley.C:65` and `Casson.C:69`, which
+divide by the rate. `CrossPowerLaw`, `BirdCarreau` and `Newtonian` have **no floor at
+all**, because nothing in them is singular at zero rate. No number moves: `nu_openfoam`
+transcribes each model as written and the two that have no floor never had one. The
+corrected statement is in the module docstring beside `SMALL`. Found by code review, not
+by the run.
+
+### What the gates do NOT establish, measured after the fact
+
+**Both G11.5 separations are constants and neither is a property of the fit.** G11.5a is
+`rho - 1` = 1059 on all 20 records (spread 2.3e-13) because forgetting `/rho` is a pure
+scaling; G11.5b is `1/gammadot_min - 1` = 9 on all 20 (spread 7.1e-15) because the
+doubled `-1` multiplies the law by `gd^-1` and the largest such factor sits at the bottom
+of the envelope. So they establish that the slot is USED, and no more. A discriminator
+sensitive to the fitted values would need a different candidate. That second
+attribution is not free -- the clamp sits 10x outside the envelope and the wrong map's
+value at `gammadot_min` lands on `nuMax`, so 9 could equally have been the clamp factor
+minus 1 -- and it survives its own control: `item11_gate_report.py` re-measures it with
+the clamp 100x out and prints the number beside the verdict.
+
+### Five rigor defects the review found in the code that implements these gates
+
+All fixed in `5f6ac8c`; listed because each could have produced a passing verdict from a
+broken measurement.
+
+1. **The Newtonian parser was FAIL-OPEN on nested sub-dictionaries** and returned a
+   silently wrong `nu` — a regex cannot match balanced braces, so everything after a
+   nested block leaked out as top level. It returned the buried value even with the real
+   entry deleted, i.e. it succeeded on a dictionary OpenFOAM rejects.
+2. **The anchor's exit code did not carry G11.7 or the refusal probes.** They were in the
+   JSON only, so a FAILED gate left `rc = 0`.
+3. **The per-family aggregation used builtin `max()`, which DROPS a NaN**
+   (`max([5.0, nan]) == 5.0`), so a family could report PASS on a case that produced no
+   number.
+4. **`G7'` iterated `RECORD_IDS`**, so appending two records here would have re-decided
+   item 6's CLOSED gate — and its yield/no-yield split keys on `NO_CLAMP_MODELS`, which
+   lists neither null family, so both NULLS would have been counted as yield-stress arms.
+   `G7'` now has its own frozen list, and its `worst_yield` is unchanged at 1.7202393803.
+5. **Two docstring sentences claimed G11.3b and G11.4b had been decided by running the
+   solver** while the anchor was still running. They now say the claim is read from the
+   C++ and point here for the verdict — which, as of this addendum, agrees.
+
+### Effect on the numbers already on this page's sibling artifacts
+
+Of `couette_anchor.json`'s 33 pre-existing rows, **every field of all 33 is bit-identical**
+except `contraction`, which is NaN in both (NaN compares unequal to itself). Every item-6
+gate scalar is unchanged. **A3's headline moved 5.53e-14 -> 6.28e-14 and no old row
+moved**: A3 is a maximum over every case on the page, and a NEW `newtonian` row is now the
+largest. That distinction is the point of reporting the item-11 families in their own
+table.

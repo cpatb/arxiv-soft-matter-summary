@@ -391,7 +391,21 @@ def run_case(case: Path) -> str:
                        capture_output=True, text=True, timeout=900)
     log = (case / "log.simpleFoam")
     if r.returncode != 0:
-        tail = log.read_text(errors="replace")[-2000:] if log.exists() else r.stderr
+        # Fall back to log.blockMesh, then to the shell's own streams. Under `set -e` a
+        # blockMesh failure aborts before simpleFoam runs, so log.simpleFoam does not
+        # exist -- and `r.stderr` is EMPTY there, because both streams went into
+        # log.blockMesh. The tail was then blank, which matters because
+        # `item11_refusal_probes` grades a PREDICTED failure partly on what the message
+        # says: a mesh or environment failure would have read as the dictionary being
+        # rejected. Found by code review 2026-09-06.
+        mesh = case / "log.blockMesh"
+        if log.exists():
+            tail = f"[log.simpleFoam]\n{log.read_text(errors='replace')[-2000:]}"
+        elif mesh.exists():
+            tail = ("[log.simpleFoam ABSENT -- simpleFoam never ran; log.blockMesh]\n"
+                    + mesh.read_text(errors="replace")[-2000:])
+        else:
+            tail = f"[no log file; stdout={r.stdout!r} stderr={r.stderr!r}]"
         raise RuntimeError(f"{case.name} failed (rc={r.returncode}):\n{tail}")
     return log.read_text(errors="replace")
 
@@ -636,15 +650,38 @@ def item11_refusal_probes(recs: dict) -> dict:
     nw = recs["blood_horner2020_donor_A_newtonian"]
     ntext = export_transport_properties(nw, RHO, None)
     nu = parse_transport_properties(ntext)[1]["nu"]
-    moved = ntext.replace(f"nu              {nu:.17g};",
-                          "NewtonianCoeffs\n{\n" f"    nu      {nu:.17g};\n" "}")
-    assert "NewtonianCoeffs\n{" in moved, "the nu entry was not moved into a block"
-    nok = must_fail_case("item11_newtonian_control", ntext, gd)
-    nbad = must_fail_case("item11_newtonian_in_coeffs", moved, gd)
+    target = f"nu              {nu:.17g};"
+    # assert the COUNT, not just that the result looks right: a `.replace()` whose target
+    # does not match changes nothing and says nothing, which has bitten this repo before
+    assert ntext.count(target) == 1, ntext.count(target)
+    moved = ntext.replace(target, "NewtonianCoeffs\n{\n" f"    nu      {nu:.17g};\n" "}")
+    assert "NewtonianCoeffs\n{" in moved and target not in moved
+    # and the two dictionaries must differ in EXACTLY that one way
+    assert len(moved.splitlines()) == len(ntext.splitlines()) + 3
+    # its OWN rate, not the power-law record's: identical here (both donor A, the same
+    # envelope) but reading a rate off a different record is the kind of implicit
+    # coupling that stops being harmless the moment a record changes
+    gd_n = float(np.sqrt(nw.envelope.gammadot_min * nw.envelope.gammadot_max))
+    nok = must_fail_case("item11_newtonian_control", ntext, gd_n)
+    nbad = must_fail_case("item11_newtonian_in_coeffs", moved, gd_n)
+    # The pre-registered bar for G11.4b is `rc != 0` and it is NOT changed. But `rc != 0`
+    # is also what a mesh or environment failure gives, and `must_fail_case` turns any
+    # RuntimeError into rc = 1 -- so the bar cannot tell "OpenFOAM rejected the
+    # dictionary" from "the case never got that far". G11.3b was protected by requiring
+    # `nuMin` in the message; this had no equivalent. A STRICTER check is reported beside
+    # the bar rather than replacing it: OpenFOAM's message must name the missing
+    # top-level `nu`, which is also the positive content of the claim -- it looked at the
+    # top level and not in the block.
+    named = ("Entry 'nu' not found" in nbad["tail"]
+             and "transportProperties" in nbad["tail"])
+    ran_simplefoam = "log.simpleFoam ABSENT" not in nbad["tail"]
     out["G11_4b"] = {
         "control_rc": nok["rc"], "control_tail": nok["tail"],
         "rc": nbad["rc"], "tail": nbad["tail"],
-        "pass": bool(nok["rc"] == 0 and nbad["rc"] != 0),
+        "message_names_the_missing_top_level_nu": named,
+        "failed_in_simpleFoam_not_in_blockMesh": ran_simplefoam,
+        "pass_as_preregistered": bool(nok["rc"] == 0 and nbad["rc"] != 0),
+        "pass": bool(nok["rc"] == 0 and nbad["rc"] != 0 and named and ran_simplefoam),
         "claim": ("Newtonian reads `nu` from the TOP LEVEL of transportProperties "
                   "(Newtonian.C:71) and is the only viscosityModel in that directory "
                   "with no <Model>Coeffs sub-dictionary, so a NewtonianCoeffs block is "
@@ -980,7 +1017,7 @@ def item6_section(item6: dict, nc_rows: list[dict]) -> list[str]:
             "`relax_U = 0.7, endTime = 2000`, whereas these cases run at "
             f"`relax_U = {RELAX_U:g}, endTime = {END_TIME}` -- and at THOSE settings the "
             "Herschel-Bulkley record passes A2 too, at "
-            f"{item6['A2_worst_all_records']:.3e}. Both arms pass, so the comparison "
+            f"{item6['A2_worst_hb_record']:.3e}. Both arms pass, so the comparison "
             "decides nothing. Replaced by a stricter test at matched settings, with G7's "
             "number kept:", ""]
     if not gp:
@@ -1148,7 +1185,17 @@ def main() -> int:
         "G4_separation": g4_sep,
         "G4_premise_refuted": bool(cy_rows and g4_worst <= BAR_A2
                                    and g4_sep / max(g4_worst, 1e-300) > 1e3),
-        "A2_worst_all_records": a2,
+        # The HB record's OWN worst, not `a2`. `a2` is a maximum over EVERY row on the
+        # page, so once item 11 appended 16 null-family rows this key could silently
+        # become a `power_law` number while the prose (see item6_section) quotes it as
+        # "the Herschel-Bulkley record passes A2 too, at ...". Same defect as G7'
+        # iterating RECORD_IDS, found by the same review. It happened to be true anyway
+        # -- the Carbopol row is still the largest, by 60x -- which is exactly why it
+        # needed fixing rather than checking.
+        "A2_worst_hb_record": max(
+            (r["err_nu"] for r in rows if r.get("record") == "carbopol_etd2020_0p1wt_30uL"),
+            default=float("nan")),
+        "A2_worst_all_rows_on_the_page": a2,
         "G7prime": g7_prime(recs),
         "worst_wall_imbalance": max((r["wall_imbalance"] for r in nc_rows),
                                     default=float("nan")),

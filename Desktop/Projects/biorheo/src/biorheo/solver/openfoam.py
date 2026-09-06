@@ -97,11 +97,16 @@ straight out of the top-level ``transportProperties``
 in that directory constructs from ``optionalSubDict(typeName + "Coeffs")``. So the export
 writes a top-level entry and no block, and ``parse_transport_properties`` REFUSES a
 ``NewtonianCoeffs`` block rather than ignoring it -- OpenFOAM would never read it, so a
-caller who wrote one believes a number reached the solver that did not. Two independent
-checks of that layout: ``foamDictionary -entry nu`` resolves on the exported file with no
-``NewtonianCoeffs/`` prefix (``tests/test_openfoam_export.py``), and gate G11.4b hands
-``simpleFoam`` the sub-dictionary form and requires it to fail -- its verdict is in
-``data/openfoam/couette_anchor.md``, not here.
+caller who wrote one believes a number reached the solver that did not. **The only
+DISCRIMINATING check of that layout is gate G11.4b**, which hands ``simpleFoam`` the
+sub-dictionary form and requires it to fail; its verdict is in
+``data/openfoam/couette_anchor.md``, not here. ``tests/test_openfoam_export.py``'s
+``foamDictionary -entry nu`` is NOT a second one and must not be cited as such: it reads
+a top-level key out of a file this module wrote with a top-level key, using a generic
+dictionary reader that resolves any top-level entry whatever ``viscosityModels::Newtonian``
+looks up. It would pass unchanged if the layout claim were false. What it does anchor is
+bit-exactness of the written coefficients, which is worth having and is a different
+claim.
 
 **``a`` IS OPTIONAL IN OPENFOAM, NOT ABSENT.** NEXT_STEPS item 6 was written believing
 v2606's ``BirdCarreau`` has no ``a`` exponent and that the export would have to refuse
@@ -668,10 +673,28 @@ def _strip_subdicts(text: str) -> str:
     regex cannot match balanced braces; this counts them.
 
     Raises on unbalanced braces rather than guessing, because either direction of
-    imbalance means the reader and OpenFOAM disagree about where an entry lives."""
+    imbalance means the reader and OpenFOAM disagree about where an entry lives.
+
+    Double-quoted spans are skipped, so a legal free-text entry such as
+    ``note "a { brace";`` does not read as an unbalanced dictionary. Without that this
+    was a fail-CLOSED check rejecting valid input its own test set never contained --
+    the 2026-09-06 lesson, in a function written the same day -- and it could only ever
+    have bitten a dictionary biorheo did not write, i.e. the ``expect=None`` case."""
     out: list[str] = []
     depth = 0
+    in_str = False
     for ch in text:
+        if in_str:
+            if depth == 0:
+                out.append(ch)
+            if ch == '"':
+                in_str = False
+            continue
+        if ch == '"':
+            in_str = True
+            if depth == 0:
+                out.append(ch)
+            continue
         if ch == "{":
             if depth == 0:
                 # drop the sub-dictionary's NAME, which is the word just written out;
@@ -691,10 +714,16 @@ def _strip_subdicts(text: str) -> str:
                 out.append("\n")   # keep the delimiter `_ENTRY` looks behind for
         elif depth == 0:
             out.append(ch)
+    if in_str:
+        raise ValueError("unterminated double-quoted string in the dictionary; brace "
+                         "counting is not meaningful past it, so this refuses rather "
+                         "than guessing")
     if depth:
         raise ValueError(f"unbalanced '{{' in the dictionary ({depth} unclosed): this "
                          "parser and OpenFOAM would disagree about which entries are at "
-                         "the top level, so it refuses rather than guessing")
+                         "the top level, so it refuses rather than guessing. (Braces "
+                         "inside double-quoted values are skipped, so a legal "
+                         "`note \"a { brace\";` is not the cause.)")
     return "".join(out)
 
 

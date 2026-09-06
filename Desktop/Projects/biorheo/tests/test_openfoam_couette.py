@@ -124,15 +124,20 @@ def test_the_case_set_is_the_one_the_gates_were_written_for(anchor):
     assert anchor["rho"] == 1060.0 and anchor["H"] == 1e-3 and anchor["NY"] == 20
     # 4 records since 2026-09-05: the two yield-stress ones the gates were written for,
     # plus one Cross and one Carreau-Yasuda (NEXT_STEPS item 6), which have no yield
-    # stress and are the control for the Bingham-number finding.
-    assert len(rows) == 1 + 4 * anchor["n_rates"] == 33
+    # stress and are the control for the Bingham-number finding. 6 since 2026-09-06:
+    # item 11 adds the two NULL families, both on donor A's curve -- the SAME curve as
+    # the Casson record above, so the three are directly comparable.
+    assert len(rows) == 1 + 6 * anchor["n_rates"] == 49
     assert rows[0]["case"] == "newtonian_control"
     ids = {r.get("record") for r in rows[1:]}
     assert ids == {"carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A",
                    "blood_horner2020_donor_N_cross",
-                   "blood_horner2020_donor_S_carreau_yasuda"}
+                   "blood_horner2020_donor_S_carreau_yasuda",
+                   "blood_horner2020_donor_A_newtonian",
+                   "blood_horner2020_donor_A_power_law"}
     assert {r.get("model") for r in rows[1:]} == {
-        "herschel_bulkley", "casson", "cross", "carreau_yasuda"}
+        "herschel_bulkley", "casson", "cross", "carreau_yasuda",
+        "newtonian", "power_law"}
     # the rates span each record's whole envelope, which is what makes A2 a real test
     for rid in ids:
         gd = sorted(r["gammadot"] for r in rows if r.get("record") == rid)
@@ -302,3 +307,83 @@ def test_the_prereg_for_item_6_predates_its_code():
         assert token in text, token
     # the premise it refutes, named, so a later reader cannot reinstate the refusal
     assert "That is false for OpenFOAM v2606" in text
+
+
+# ---------------------------------------------------------------------------- item 11
+# The two NULL families. G11.7 and the two refusal probes are pre-registered in
+# `data/openfoam/newtonian_powerlaw_prereg.md`, committed (e9c1ace) before the code.
+# G11.1-G11.6 do not need a solver and live in tests/test_openfoam_export_null.py.
+
+
+def test_g11_7_the_null_families_run_through_the_solver(anchor):
+    """G11.7. The same bars as the rest of the page, unchanged. Reported PER FAMILY
+    because A2 and A3 are maxima over all 49 cases and a maximum cannot say which family
+    moved -- which matters here: A3's headline went 5.53e-14 -> 6.28e-14 when these two
+    records were added, and no pre-existing row moved. A new `newtonian` row is simply
+    the largest."""
+    i = anchor["item11_null_families"]
+    assert set(i["per_family"]) == {"newtonian", "power_law"}
+    assert i["records"] == ["blood_horner2020_donor_A_newtonian",
+                            "blood_horner2020_donor_A_power_law"]
+    for fam, f in i["per_family"].items():
+        assert f["n_cases"] == anchor["n_rates"] == 8, fam
+        assert f["bars"] == {"A1prime": A.BAR_A1P, "A2": A.BAR_A2, "A3": A.BAR_A3}, fam
+        assert f["pass"], (fam, f)
+        # measured 2026-09-06: newtonian err_nu is EXACTLY 0 (calcNu returns a uniform
+        # field of the coefficient, so there is nothing to converge), power_law 6.4e-15
+        assert f["worst_err_nu"] < 1e-12, (fam, f["worst_err_nu"])
+        assert f["worst_err_tau"] < 1e-12, (fam, f["worst_err_tau"])
+        assert f["worst_wall_imbalance"] < 1e-12, (fam, f["worst_wall_imbalance"])
+    assert i["per_family"]["newtonian"]["worst_err_nu"] == 0.0
+    assert i["G11_7_pass"]
+
+
+def test_g11_3b_g11_4b_openfoam_rejects_the_two_dictionaries_it_was_predicted_to(anchor):
+    """Two PREDICTIONS about the C++ decided by running `simpleFoam`, each beside an
+    unmodified CONTROL -- "the broken one failed" says nothing unless the intact one ran.
+
+    G11.3b: `powerLaw`'s `nuMin` is REQUIRED, unlike `BirdCarreau`'s `a`, so a dictionary
+    without it must not run. G11.4b: `Newtonian` reads `nu` at the TOP LEVEL, so putting
+    it in a `NewtonianCoeffs` block must not run. Both confirmed 2026-09-06, and
+    G11.4b's message is the informative one -- OpenFOAM reports `nu` missing from
+    `transportProperties` itself, i.e. it never looked in the block."""
+    p = anchor["item11_null_families"]["refusal_probes"]
+    for g in ("G11_3b", "G11_4b"):
+        assert p[g]["control_rc"] == 0, (g, "the UNMODIFIED dictionary must run")
+        assert p[g]["rc"] != 0, (g, "the broken dictionary was predicted to fail")
+        assert p[g]["pass"], (g, p[g])
+    assert p["G11_3b"]["keyword_named"]
+    assert "nuMin" in p["G11_3b"]["tail"]
+    # OpenFOAM looked for `nu` at the top level, which is the whole claim
+    assert "Entry 'nu' not found" in p["G11_4b"]["tail"]
+    assert "NewtonianCoeffs" not in p["G11_4b"]["tail"].split("Entry 'nu' not found")[1]
+
+
+def test_g7_prime_is_still_item_6s_four_records(anchor):
+    """A closed gate must not be re-decided by a later item appending to a list. G7'
+    iterated `RECORD_IDS` until 2026-09-06; item 11 added two records to it, and G7's
+    yield/no-yield split keys on `NO_CLAMP_MODELS`, which lists NEITHER null family --
+    so both NULLS would have been counted as yield-stress arms. G7' now has its own
+    frozen list and its number is unchanged."""
+    g = anchor["item6_no_yield_stress"]["G7prime"]
+    assert len(g["rows"]) == 4
+    assert {r["model"] for r in g["rows"]} == {"herschel_bulkley", "casson", "cross",
+                                              "carreau_yasuda"}
+    assert "newtonian" not in {r["model"] for r in g["rows"]}
+    assert "power_law" not in {r["model"] for r in g["rows"]}
+    # measured 2026-09-05, unchanged after item 11 added two records to RECORD_IDS
+    assert g["worst_yield"] == pytest.approx(1.7202393802951472, rel=1e-12)
+
+
+def test_the_prereg_for_item_11_predates_its_code():
+    """`e9c1ace` contains that file and nothing else; the code it grades is in `bcf84bf`.
+    The addendum records what the run found, including the one factual error the
+    pre-registration itself contains -- corrected there rather than edited out."""
+    prereg = ROOT / "data" / "openfoam" / "newtonian_powerlaw_prereg.md"
+    text = prereg.read_text(encoding="utf-8")
+    for token in ("G11.1", "G11.3b", "G11.4b", "G11.6", "G11.7", "1e-10", "1e-3", "1e-12"):
+        assert token in text, token
+    assert "Addendum, 2026-09-06" in text
+    # the premise it refuted, named
+    assert "item's stated reason is wrong" in text
+    assert "**§0.2's last sentence is FALSE.**" in text

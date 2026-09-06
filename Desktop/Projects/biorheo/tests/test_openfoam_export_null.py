@@ -15,6 +15,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+import biorheo.solver.openfoam as openfoam_module
 from biorheo.constitutive import get_model
 from biorheo.constitutive.structural import STRUCTURAL_STEADY, STRUCTURAL_STEADY_SEPARATE
 from biorheo.registry import load_all
@@ -275,6 +276,37 @@ def test_the_newtonian_branch_still_accepts_ordinary_dictionaries(records):
         assert parse_transport_properties(text + extra)[1] == {"nu": nu}, extra
 
 
+def test_the_strip_is_quote_aware(records):
+    """A brace inside a double-quoted value is not a brace. `note "a { brace";` is a
+    legal free-text FoamFile entry and OpenFOAM's tokenizer is string-aware, so refusing
+    it would be a fail-CLOSED check rejecting valid input its own test set never
+    contained -- the exact shape of the 2026-09-06 lesson, in a function written that
+    day. Found by review before it shipped."""
+    head = "transportModel  Newtonian;\nnu              1e-06;\n"
+    assert parse_transport_properties(head + 'note "a { brace";\n')[1] == {"nu": 1e-06}
+    assert parse_transport_properties(head + 'note "}}}";\n')[1] == {"nu": 1e-06}
+    # a quoted brace inside a SUB-DICTIONARY must not leak the block's contents either
+    assert parse_transport_properties(
+        head + 'blk\n{\n  note "{";\n  nu 999;\n}\n')[1] == {"nu": 1e-06}
+    # an unterminated string is refused rather than silently swallowing the rest
+    with pytest.raises(ValueError, match="unterminated"):
+        parse_transport_properties(head + 'note "oops;\n')
+    # and the unbalanced-brace message must not blame the thing that is now handled
+    with pytest.raises(ValueError, match="not the cause"):
+        parse_transport_properties(head + "blk\n{\n")
+
+
+def test_the_docstring_does_not_call_foamDictionary_a_layout_check():
+    """`foamDictionary -entry nu` reads a top-level key out of a file this module wrote
+    with a top-level key, using a GENERIC dictionary reader. It would pass unchanged if
+    OpenFOAM's Newtonian actually read `NewtonianCoeffs/nu` -- both candidates pass it,
+    so it discriminates nothing about the layout. The docstring claimed it as a second
+    independent check until a review said otherwise; this pins the correction."""
+    doc = openfoam_module.__doc__ or ""
+    assert "only\nDISCRIMINATING check of that layout is gate G11.4b" in doc
+    assert "is NOT a second one and must not be cited as such" in doc
+
+
 def test_g11_4a_expect_still_discriminates_the_model(records):
     rec = sorted(_null_records(records, "newtonian").items())[0][1]
     text = export_transport_properties(rec, RHO, None)
@@ -403,6 +435,30 @@ def test_g11_6_the_refusal_is_explicit_and_says_the_true_reason(records):
     assert "lam = alpha_tr," not in msgs[1] and "alpha_tr gd" not in msgs[1]
     assert "has no alpha_tr to read" in msgs[1]
     assert issubclass(ThixotropyNotRepresentable, NotImplementedError)
+
+
+def test_the_prereg_for_item_11_predates_its_code():
+    """The pre-registration is only worth something if it was written first. Its commit
+    is `e9c1ace`, which contains that file and NOTHING else; the code it grades landed in
+    `bcf84bf`. Every bar this file asserts must appear in it, and so must the two premises
+    it went on to refute -- named, so a later reader cannot quietly reinstate either."""
+    prereg = (Path(__file__).resolve().parents[1] / "data" / "openfoam"
+              / "newtonian_powerlaw_prereg.md").read_text(encoding="utf-8")
+    for token in ("G11.1", "G11.2", "G11.3", "G11.4", "G11.5", "G11.6", "G11.7"):
+        assert token in prereg, token
+    # the bars, in either spelling -- what matters is that the NUMBER this file asserts
+    # is the number the pre-registration named, not how it was typed
+    for bar in (BAR_G111, BAR_G115, BAR_G116):
+        assert any(s in prereg for s in (f"{bar:g}", f"{bar:.0e}".replace("e-0", "e-"),
+                                         repr(bar))), bar
+    # premise 1, refuted by G11.6: item 11 said structural_steady has no counterpart
+    assert "item's stated reason is wrong" in prereg
+    # premise 2: the item told us to assume nothing about powerLaw's limiters, and the
+    # answer -- that they are REQUIRED, unlike BirdCarreau's `a` -- is recorded there
+    assert "REQUIRED, not optional" in prereg
+    # and the one factual error the prereg itself contains, which is corrected in the
+    # addendum rather than edited out (a pre-registration is not rewritten)
+    assert "The other four models this bridge already covers use `VSMALL`" in prereg
 
 
 def test_the_gate_report_on_disk_matches_what_the_code_computes():

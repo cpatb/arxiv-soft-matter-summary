@@ -81,6 +81,22 @@ def main() -> int:
         wrong = nu_openfoam("powerLaw", {**c, "n": c["n"] - 1.0}, gd)
         g115["power_law"].append(float(np.abs(wrong - nu_rec).max() / nu_rec.max()))
 
+    # --- the control on G11.5b's ATTRIBUTION -------------------------------------------
+    # G11.5b comes out at exactly 9 and the report below identifies that as
+    # `1/gammadot_min - 1`. But `_clamps` puts the cap a factor of 10 outside the
+    # envelope, and the wrong map's value at `gammadot_min` lands on `nuMax`, so 9 could
+    # equally be `10 - 1` -- the clamp factor wearing the envelope's label. Re-measure
+    # with the clamp 100x out: if the attribution is right the number does not move.
+    # (Raised by code review 2026-09-06; the attribution survived.)
+    g115b_wide = []
+    for rid, rec in sorted(fam["power_law"].items()):
+        gd = _rates(rec)
+        lo, hi = _envelope_eta_range(rec)
+        c = dict(coefficients(rec, RHO, 100.0 * hi, eta_min=0.01 * lo))
+        nu_rec = np.asarray(rec.eta_at(gd), dtype=float) / RHO
+        wrong = nu_openfoam("powerLaw", {**c, "n": c["n"] - 1.0}, gd)
+        g115b_wide.append(float(np.abs(wrong - nu_rec).max() / nu_rec.max()))
+
     # --- G11.6 structural_steady vs Cross(n = 1) --------------------------------------
     ss, cr = get_model("structural_steady"), get_model("cross")
     gd = np.logspace(-2, 2, N_RATES)
@@ -143,7 +159,13 @@ def main() -> int:
         f"{max(g115['power_law']) - min(g115['power_law']):.1e}, and it is "
         f"`1/gammadot_min - 1` = {1.0 / next(iter(fam['power_law'].values())).envelope.gammadot_min - 1:.6g}, "
         "because the wrong exponent multiplies the law by `gd^-1` and the largest such "
-        "factor sits at the bottom of the envelope. So both discriminators test whether "
+        f"factor sits at the bottom of the envelope. **That second attribution is not "
+        f"free:** the clamp sits a factor of 10 outside the envelope and the wrong map's "
+        f"value at `gammadot_min` lands on `nuMax`, so 9 could equally have been the "
+        f"clamp factor minus 1. Re-measured with the clamp 100x out it is "
+        f"{min(g115b_wide):.6g} (spread "
+        f"{max(g115b_wide) - min(g115b_wide):.1e}) -- unmoved, so the 9 is the envelope's "
+        "and not the clamp's. So both discriminators test whether "
         "the slot is USED AT ALL; neither is sensitive to the fitted values, and a "
         "session that wanted a map error graded per-record would need a different "
         "candidate. That they are informative at all (both are far above "

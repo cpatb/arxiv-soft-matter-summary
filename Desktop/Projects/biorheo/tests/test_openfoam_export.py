@@ -22,8 +22,9 @@ import pytest
 from biorheo.constitutive.regularise import regularise
 from biorheo.registry.loader import load_all
 from biorheo.solver.openfoam import (
-    ExportRefused, VSMALL, coefficients, export_report, export_transport_properties,
-    nu_openfoam, parse_transport_properties, structured_flag, write_transport_properties,
+    ExportRefused, VSMALL, _envelope_eta_range, coefficients, export_report,
+    export_transport_properties, nu_openfoam, parse_transport_properties,
+    structured_flag, write_transport_properties,
 )
 
 N_RATES = 20
@@ -255,10 +256,13 @@ def test_openfoam_foamDictionary_reads_the_file_back(all_records, rid, tmp_path)
     # three families take no clamp; herschel_bulkley and casson require a cap; power_law
     # requires a cap AND a floor (OpenFOAM reads both nuMin and nuMax with readEntry)
     no_clamp = rec.model.name in ("cross", "carreau_yasuda", "newtonian")
-    eta_max = (None if no_clamp
-               else 2.0 * float(rec.eta_at(rec.envelope.gammadot_min)))
-    eta_min = (0.5 * float(rec.eta_at(rec.envelope.gammadot_max))
-               if rec.model.name == "power_law" else None)
+    # `_envelope_eta_range`, not the endpoints: `eta_at(gammadot_min)` is the largest
+    # viscosity only for a monotonically shear-thinning law, and `herschel_bulkley` and
+    # `power_law` both admit n > 1. Inert on the shipped set; this was the last copy of
+    # the endpoint idiom after `_clamps_for` was moved off it (review, 2026-09-06).
+    eta_lo, eta_hi = _envelope_eta_range(rec)
+    eta_max = None if no_clamp else 2.0 * eta_hi
+    eta_min = 0.5 * eta_lo if rec.model.name == "power_law" else None
     path = write_transport_properties(rec, RHO, eta_max, tmp_path / "transportProperties",
                                       eta_min=eta_min)
     of_name, c = parse_transport_properties(path.read_text())

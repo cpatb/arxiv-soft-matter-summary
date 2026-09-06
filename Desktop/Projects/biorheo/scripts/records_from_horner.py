@@ -241,7 +241,7 @@ def _null_paragraph(summary: dict) -> str:
             "the reason the comparison above means anything. "
             + "; ".join(out) + ". "
             + "The `structured` flag: it fires on "
-            + ", ".join(f"{struct[m]}/20 for {m}" for m in COMPARE if m in struct)
+            + ", ".join(f"{struct[m]}/{n} for {m}" for m in COMPARE if m in struct)
             + f", so {verdict}. What it "
               "does separate is cross and carreau_yasuda, the only two forms it clears. "
               "Read the flag as a statement about the FORM's residual shape, not as a "
