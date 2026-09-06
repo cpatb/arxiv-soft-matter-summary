@@ -1,6 +1,6 @@
 # Pre-registration: the L3 bridge for the families that have no yield stress
 
-Written 2026-09-06, **before any code was written**, and committed on its own so the
+Written 2026-09-05, **before any code was written**, and committed on its own so the
 history proves the order. NEXT_STEPS item 6. Nothing below may be loosened; a bar that
 fails is recorded as FAILED with its number and a *stricter* test may be added beside it.
 
@@ -144,3 +144,48 @@ Casson ids unsuffixed so nothing that pins them breaks, with the new ids suffixe
 All 20 donors are written, not one, because **G2's refusal count is only a measurement
 over the whole set** -- one record cannot demonstrate a refusal that depends on
 identifiability.
+
+---
+
+## Addendum, 2026-09-05, after the run and the code review
+
+Nothing above was edited except a wrong date in the first line (it said 2026-09-06; the
+file was written on 2026-09-05, and the commit that carries it, `2561346`, is the proof
+of order). No bar was moved. What follows is what the run and the review found.
+
+**G1, G2, G3, G5, G6, G8: PASS.** Numbers in `tests/test_openfoam_export_nonyield.py`
+and in `couette_anchor.md`.
+
+**G4: PASS, and the premise recorded in §0 is REFUTED by a running solver**, which is
+what §0 said it would take. The Carreau-Yasuda record's fitted `a` is far enough from 2
+that ignoring the entry would move `nu` by 1.1e-1; A2 on those cases lands far below its
+1e-6 bar instead. No `a != 2` refusal is shipped.
+
+**G7: PASS as written, and UNINFORMATIVE — the gate was mis-specified, by me, here.**
+Its number stands and is not withdrawn. But G7 compares the new families, run at the
+anchor's `relax_U = 0.95, endTime = 20000`, against the 172 % figure from
+`couette_diagnosis.json`, which was taken at `relax_U = 0.7, endTime = 2000`. **At the
+anchor's own settings the Herschel-Bulkley record passes A2 as well.** Both arms pass, so
+the comparison decides nothing about yield. This is the same error the lessons file calls
+"a discriminator that passes BOTH candidates has discriminated nothing", and it was in
+the pre-registration rather than in the code.
+
+The replacement is STRICTER and is added rather than substituted, following this repo's
+A1/A1' and A5/A5' pattern:
+
+**G7' matched settings.** Every record in `RECORD_IDS` — both yield-stress families and
+both no-yield ones — is run once at its own lowest envelope rate at the SAME
+`(relax_U, endTime) = (0.7, 2000)`, the configuration in which the Herschel-Bulkley
+record is known to fail. Pre-registered before it ran: **the comparison is informative
+only if at least one yield-stress record fails `BAR_A2` there**, because with no failing
+arm there is nothing to contrast; if none fails, G7' is reported UNINFORMATIVE and no
+claim about yield may be quoted from the file.
+
+**And G7' still does not separate yield from viscosity magnitude.** The no-yield record's
+zero-shear plateau is three to four decades below the Herschel-Bulkley case's viscosity
+at the failing rate, so a "hard fluid" reading is not excluded by that table and the
+report says so. The magnitude control is the constant-`B` 2x2 already in
+`couette_diagnosis.json` — at fixed shear rate, 100x in `eta` at constant `B` changes the
+error in the tenth digit against 5.6e4x across `B` — and that, not the new records, is
+what the "about yield, not magnitude" reading rests on. The earlier draft of the report
+asserted the opposite from these records alone; that sentence is withdrawn.

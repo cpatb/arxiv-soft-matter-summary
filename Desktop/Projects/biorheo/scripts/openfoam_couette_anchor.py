@@ -139,7 +139,7 @@ WINDOWS = (4, 2, 1)  # END_TIME // w: the three writes A5' measures contraction 
 ROUNDOFF = 1e-13     # below this a relative increment is float noise, not a signal
 
 RECORD_IDS = ["carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A",
-              # Added 2026-09-06 (NEXT_STEPS item 6): one record of each family that has
+              # Added 2026-09-05 (NEXT_STEPS item 6): one record of each family that has
               # NO yield stress, so B = tau_y/(k gd^n) is identically zero. They are the
               # control for the finding that simpleFoam's convergence failure is about
               # YIELD and not about "hard fluid".
@@ -238,33 +238,43 @@ interpolationSchemes { default linear; }
 snGradSchemes   { default corrected; }
 """
 
-_FVSOLUTION = _FOAM.format(cls="dictionary", obj="fvSolution") + f"""
+_FVSOLUTION = _FOAM.format(cls="dictionary", obj="fvSolution") + """
 solvers
-{{
-    p {{ solver PCG; preconditioner DIC; tolerance 1e-14; relTol 0; }}
-    U {{ solver PBiCGStab; preconditioner DILU; tolerance 1e-14; relTol 0; }}
-}}
+{
+    p { solver PCG; preconditioner DIC; tolerance 1e-14; relTol 0; }
+    U { solver PBiCGStab; preconditioner DILU; tolerance 1e-14; relTol 0; }
+}
 SIMPLE
-{{
+{
     nNonOrthogonalCorrectors 0;
     pRefCell        0;
     pRefValue       0;
     // no residualControl: every case runs the full endTime and is judged on A5'
-}}
-relaxationFactors {{ fields {{ p 0.3; }} equations {{ U {RELAX_U:g}; }} }}
+}
+relaxationFactors { fields { p RELAX_U_PLACEHOLDER; } equations { U RELAX_U_PLACEHOLDER_U; } }
 """
 
 
-def _control_dict() -> str:
+def _fv_solution(relax_u: float | None = None) -> str:
+    """`relax_u` defaults to RELAX_U. It is a parameter only so that G7' can run the
+    matched-settings comparison at the DIAGNOSIS's setting; the 33 shipped cases all use
+    the default and their files are unchanged."""
+    ru = RELAX_U if relax_u is None else relax_u
+    return (_FVSOLUTION.replace("RELAX_U_PLACEHOLDER_U", f"{ru:g}")
+                       .replace("RELAX_U_PLACEHOLDER", "0.3"))
+
+
+def _control_dict(end_time: int | None = None) -> str:
+    et = END_TIME if end_time is None else int(end_time)
     return _FOAM.format(cls="dictionary", obj="controlDict") + f"""
 application     simpleFoam;
 startFrom       startTime;
 startTime       0;
 stopAt          endTime;
-endTime         {END_TIME};
+endTime         {et};
 deltaT          1;
 writeControl    timeStep;
-writeInterval   {END_TIME // max(WINDOWS)};
+writeInterval   {et // max(WINDOWS)};
 purgeWrite      0;
 writeFormat     ascii;
 writePrecision  17;
@@ -299,13 +309,14 @@ def _write(path: Path, text: str) -> None:
         fh.write(text)
 
 
-def build_case(case: Path, transport_text: str, u0: float) -> None:
+def build_case(case: Path, transport_text: str, u0: float,
+               relax_u: float | None = None, end_time: int | None = None) -> None:
     if case.exists():
         shutil.rmtree(case)
     _write(case / "system" / "blockMeshDict", _block_mesh_dict(H, NY))
-    _write(case / "system" / "controlDict", _control_dict())
+    _write(case / "system" / "controlDict", _control_dict(end_time))
     _write(case / "system" / "fvSchemes", _FVSCHEMES)
-    _write(case / "system" / "fvSolution", _FVSOLUTION)
+    _write(case / "system" / "fvSolution", _fv_solution(relax_u))
     _write(case / "constant" / "transportProperties", transport_text)
     _write(case / "constant" / "turbulenceProperties", _TURB)
     _write(case / "0" / "U", _u_file(u0))
@@ -423,6 +434,23 @@ def shear_rate_field(case: Path, time: str) -> np.ndarray:
 
 
 # -------------------------------------------------------------------------------- cases
+
+def matched_settings_case(name: str, transport_text: str, gd: float, eta_ref: float,
+                          relax_u: float, end_time: int) -> dict:
+    """One case at an ARBITRARY (relax_u, end_time), used only by G7'. Returns just the
+    viscosity error and the iteration count -- the A-gates are not evaluated here,
+    because these settings are deliberately the ones under which the Herschel-Bulkley
+    record is known to fail."""
+    case = RUNS / name
+    build_case(case, transport_text, u0=gd * H, relax_u=relax_u, end_time=end_time)
+    run_case(case)
+    t = last_time_dir(case)
+    nu = read_internal_field(case / t / "nu")
+    nu_ref = eta_ref / RHO
+    return {"case": name, "gammadot": gd, "eta_ref": eta_ref, "relax_U": relax_u,
+            "end_time": end_time, "last_time": t,
+            "err_nu": float(np.abs(nu - nu_ref).max() / nu_ref)}
+
 
 def one_case(name: str, transport_text: str, gd: float, eta_ref: float,
              has_clamp: bool = True) -> dict:
@@ -665,16 +693,101 @@ def diagnosis_section() -> list[str]:
     return out
 
 
+G7P_RELAX_U = 0.7    # the diagnosis's setting, where the Herschel-Bulkley record fails
+G7P_END_TIME = 2000  # ditto; NOT bars, they are the configuration being matched
+
+
+def bingham_number(rec, gd: float) -> float:
+    """Local Bingham number at shear rate ``gd``: yield stress over viscous stress.
+
+    `tau_y/(k gd^n)` for Herschel-Bulkley, which is the form the diagnosis measured, and
+    its direct analogue `tau_y/(eta_c gd)` for Casson. **Exactly 0 for `cross` and
+    `carreau_yasuda`, which have no yield stress.** Reported so the G7' table can be read
+    as a comparison across B rather than as a yes/no about having a yield term -- the
+    blood Casson record HAS one and still converges, because its B here is small."""
+    p = {n: float(v) for n, v in zip(rec.model.param_names, rec.params_si)}
+    if rec.model.name == "herschel_bulkley":
+        return p["tau_y"] / (p["k"] * gd ** p["n"])
+    if rec.model.name == "casson":
+        return p["tau_y"] / (p["eta_c"] * gd)
+    return 0.0
+
+
+def g7_prime(recs: dict) -> dict | None:
+    """G7', added 2026-09-05 after the code review showed G7 compares two arms taken at
+    DIFFERENT solver settings and therefore cannot discriminate.
+
+    Every record in `RECORD_IDS` is run once, at its own lowest envelope rate, at the
+    SAME `(relax_U, endTime)` -- the diagnosis's `(0.7, 2000)`, chosen because that is
+    where the Herschel-Bulkley record is known to fail A2. Pre-registered before this
+    ran: the comparison is INFORMATIVE only if at least one yield-stress record fails
+    BAR_A2 here, because with no failing arm there is nothing to contrast. The viscosity
+    magnitudes are reported beside the errors so the 'hard fluid' confound is visible
+    rather than argued away; the magnitude control is the constant-B 2x2 already in
+    `couette_diagnosis.json`, not this table."""
+    rows = []
+    for rid in RECORD_IDS:
+        rec = recs[rid]
+        gmin = rec.envelope.gammadot_min
+        has_clamp = rec.model.name not in NO_CLAMP_MODELS
+        eta_max = 10.0 * float(rec.eta_at(gmin)) if has_clamp else None
+        text = export_transport_properties(rec, RHO, eta_max)
+        eta = float(rec.eta_at(np.array([gmin]))[0])
+        try:
+            r = matched_settings_case(f"g7p_{rid}", text, float(gmin), eta,
+                                      G7P_RELAX_U, G7P_END_TIME)
+        except RuntimeError as e:            # a divergent case is data, not a stop
+            rows.append({"case": f"g7p_{rid}", "record": rid, "model": rec.model.name,
+                         "gammadot": float(gmin), "eta_ref": eta,
+                         "relax_U": G7P_RELAX_U, "end_time": G7P_END_TIME,
+                         "err_nu": float("inf"), "crashed": str(e)[:200]})
+            continue
+        rows.append(r | {"record": rid, "model": rec.model.name,
+                         "B": bingham_number(rec, float(gmin))})
+    if not rows:
+        return None
+    yield_rows = [r for r in rows if r["model"] not in NO_CLAMP_MODELS]
+    nc = [r for r in rows if r["model"] in NO_CLAMP_MODELS]
+    if not yield_rows or not nc:
+        return None
+    wy = max(r["err_nu"] for r in yield_rows)
+    wn = max(r["err_nu"] for r in nc)
+    worst_yield_row = max(yield_rows, key=lambda r: r["err_nu"])
+    # A yield-stress record that PASSES is the row that decides how the table reads: if
+    # one exists, the split is not "has a yield term / has none" but "high B / low B".
+    passing_yield = [r for r in yield_rows if r["err_nu"] <= BAR_A2]
+    return {"relax_U": G7P_RELAX_U, "end_time": G7P_END_TIME, "rows": rows,
+            "worst_yield": wy, "worst_no_yield": wn,
+            "ratio": wy / max(wn, 1e-300),
+            # pre-registered: informative only if the yield arm actually fails here
+            "informative": bool(wy > BAR_A2),
+            "eta_yield": worst_yield_row["eta_ref"],
+            "eta0_no_yield": max(r["eta_ref"] for r in nc),
+            "eta_ratio": worst_yield_row["eta_ref"] / max(r["eta_ref"] for r in nc),
+            "B_failing": worst_yield_row["B"],
+            "B_passing_yield": [r["B"] for r in passing_yield],
+            "n_yield_records_that_pass": len(passing_yield),
+            "splits_on_yield_term": not passing_yield}
+
+
 def item6_section(item6: dict, nc_rows: list[dict]) -> list[str]:
     """The families with no yield stress: G3/G4/G7 of
-    `data/openfoam/nonyield_bridge_prereg.md`, written 2026-09-06 before the code."""
+    `data/openfoam/nonyield_bridge_prereg.md` (written before the code), plus G7', the
+    matched-settings replacement the code review of 2026-09-05 showed G7 needs.
+
+    Every verdict sentence below is CONDITIONAL on its own number. An earlier draft
+    asserted "the premise is refuted" and "it converges" unconditionally while the table
+    above computed PASS/FAILED correctly, so a failed gate would have produced a page
+    contradicting its own table."""
     if not nc_rows:
         return ["## The families with no yield stress", "",
                 "No `cross` or `carreau_yasuda` record was run; G3/G4/G7 not evaluated."]
     seps = item6["candidate_separation"]
+    models = item6["model_of_record"]
+    gp = item6.get("G7prime")
     out = ["## The families with no yield stress (Cross, Carreau-Yasuda)", "",
            f"{item6['n_cases']} cases over {len(item6['records'])} records: "
-           + ", ".join(f"`{r}`" for r in item6["records"]) + ".", "",
+           + ", ".join(f"`{r}` ({models[r]})" for r in item6["records"]) + ".", "",
            "| gate | what | number | bar | verdict |", "|---|---|---|---|---|",
            f"| G7 | worst OpenFOAM `nu` vs `eta_at/rho` on these records | "
            f"{item6['G7_worst_err_nu']:.3e} | {item6['G7_bar']:g} | "
@@ -685,20 +798,74 @@ def item6_section(item6: dict, nc_rows: list[dict]) -> list[str]:
            f"{'informative' if item6['G3_G4_informative'] else 'UNINFORMATIVE'} |", ""]
     for rid, s in seps.items():
         what = ("the name-swapped Cross map (biorheo `m` into OpenFOAM's `m`, `lam` into "
-                "`n`)" if recs_model(rid) == "cross" else
+                "`n`)" if models[rid] == "cross" else
                 "`a` forced to 2, i.e. what OpenFOAM would compute if it ignored the entry")
         out.append(f"- `{rid}`: {what} differs from the record by {s:.3e} relative "
-                   f"over the {len(nc_rows) // max(len(seps), 1)} anchor rates, "
-                   f"{s / BAR_A2:.1e} times A2's bar.")
-    out += ["",
-            "**G7 is the control for the Bingham-number finding above.** Neither family "
-            "has a yield stress, so `B = tau_y/(k gd^n)` is identically zero on every one "
-            f"of these cases, and the worst viscosity error is {item6['G7_worst_err_nu']:.3e} "
-            "against the 1.72 (172 %) the Herschel-Bulkley record returns at B = 29 with "
-            "`rc = 0`. The failure is about YIELD, not about a large viscosity: the "
-            "Cross record's zero-shear plateau is itself a large viscosity and it "
-            "converges. The worst wall-traction imbalance on these cases is "
-            f"{item6['worst_wall_imbalance']:.3e}.", "",
+                   f"over the {N_RATES} anchor rates, {s / BAR_A2:.1e} times A2's bar.")
+
+    out += ["", "### G7 passes and is UNINFORMATIVE as pre-registered; G7' is the test",
+            "",
+            "**G7 as written compares two arms run at DIFFERENT solver settings, so it "
+            "cannot discriminate** (code review 2026-09-05). Its number stands and is not "
+            "withdrawn: the no-yield cases give "
+            f"{item6['G7_worst_err_nu']:.3e} against a 1e-6 bar. But the 172 % it was "
+            "written to contrast with comes from `couette_diagnosis.json` at "
+            "`relax_U = 0.7, endTime = 2000`, whereas these cases run at "
+            f"`relax_U = {RELAX_U:g}, endTime = {END_TIME}` -- and at THOSE settings the "
+            "Herschel-Bulkley record passes A2 too, at "
+            f"{item6['A2_worst_all_records']:.3e}. Both arms pass, so the comparison "
+            "decides nothing. Replaced by a stricter test at matched settings, with G7's "
+            "number kept:", ""]
+    if not gp:
+        out += ["G7' was not run. **No claim about yield versus viscosity magnitude may "
+                "be quoted from this file.**", ""]
+    else:
+        out += ["| record | model | B | eta at the tested rate (Pa s) | err_nu | verdict |",
+                "|---|---|---|---|---|---|"]
+        for r in gp["rows"]:
+            out.append(f"| `{r['record']}` | {r['model']} | {r['B']:.3g} | "
+                       f"{r['eta_ref']:.4g} | {r['err_nu']:.3e} | "
+                       f"{'passes A2' if r['err_nu'] <= BAR_A2 else '**fails A2**'} |")
+        out += ["",
+                f"All rows at `relax_U = {gp['relax_U']:g}, endTime = {gp['end_time']}`, "
+                f"each at its record's lowest envelope rate.", ""]
+        if not gp["informative"]:
+            out += ["**G7' is UNINFORMATIVE: the yield-stress arm did not fail at these "
+                    "settings either.** With no failing arm there is nothing to contrast, "
+                    "and the reading that the convergence failure is about yield is NOT "
+                    "supported by this file.", ""]
+        else:
+            out += [f"**G7' is informative: at matched settings one record fails and the "
+                    f"others do not.** The failing record reaches "
+                    f"{gp['worst_yield']:.3e} where the no-yield records reach "
+                    f"{gp['worst_no_yield']:.3e}, a factor of {gp['ratio']:.1e}.", ""]
+            if gp["splits_on_yield_term"]:
+                out += ["Every record with a yield term failed and every record without "
+                        "one passed, so the split is consistent with the yield term "
+                        "itself.", ""]
+            else:
+                out += [f"**But the split is NOT 'has a yield term / has none'.** "
+                        f"{gp['n_yield_records_that_pass']} of the yield-stress records "
+                        f"PASS here, at B = "
+                        + ", ".join(f"{b:.3g}" for b in gp["B_passing_yield"])
+                        + f", while the one that fails is at B = {gp['B_failing']:.3g}. "
+                        "A Casson fluid is still a yield-stress fluid; it converges "
+                        "because its local Bingham number at this rate is small. The "
+                        "table therefore separates HIGH B from LOW B, which is what "
+                        "item 3's diagnosis said, and it does not separate either from "
+                        "viscosity magnitude.", ""]
+        out += ["**This does NOT by itself separate yield from viscosity magnitude, and "
+                "saying so is the point.** The no-yield record's zero-shear plateau is "
+                f"{gp['eta0_no_yield']:.4g} Pa s while the yield-stress case sits at "
+                f"{gp['eta_yield']:.4g} Pa s -- a factor of "
+                f"{gp['eta_ratio']:.0f} -- so a 'hard fluid' reading is not excluded by "
+                "this table. The magnitude control is the 2x2 already in "
+                "`couette_diagnosis.json`: at FIXED shear rate, moving `eta` 100x at "
+                "constant `B` changes the error in the tenth digit, against 5.6e4x across "
+                "`B`. That, and not this table, is what the 'about yield, not magnitude' "
+                "reading rests on.", ""]
+
+    out += ["### G4 and G3", "",
             "**G4 decides a premise of NEXT_STEPS item 6 by running the solver.** That "
             "item was written believing OpenFOAM v2606's `BirdCarreau` has no `a` "
             "exponent, so that the export would have to REFUSE a Carreau-Yasuda record "
@@ -706,30 +873,28 @@ def item6_section(item6: dict, nc_rows: list[dict]) -> list[str]:
             "`getOrDefault(\"a\", dimensionedScalar(\"a\", dimless, 2))` "
             "(BirdCarreau.C:81-88) and `calcNu` uses it. The Carreau-Yasuda record run "
             "here has a fitted `a` far from 2, so if OpenFOAM ignored the entry A2 would "
-            f"fail by about {seps.get(item6['records'][-1], float('nan')):.1e}; it passes "
-            f"at {max(r['err_nu'] for r in nc_rows):.1e}. **The premise is refuted and no "
-            "`a != 2` refusal is shipped.** What is shipped instead is the mirror hazard: "
-            "because `a` is optional with a silent default, the export always WRITES it "
-            "and the parser fills a missing one with 2 rather than reporting it missing.",
+            f"fail by about {item6['G4_separation']:.1e}; it comes out at "
+            f"{item6['G4_worst_err_nu']:.1e}.",
+            ("**The premise is refuted and no `a != 2` refusal is shipped.**"
+             if item6["G4_premise_refuted"] else
+             "**G4 did NOT refute the premise: the Carreau-Yasuda cases do not meet A2, "
+             "so `a` may not be honoured and the refusal must be reconsidered.**"),
+            "What is shipped instead is the mirror hazard: because `a` is optional with a "
+            "silent default of 2, the export always WRITES it, the parser fills a MISSING "
+            "one with 2, and a MALFORMED one raises rather than silently defaulting.",
             "",
             "**G3 is the discriminator for the Cross map.** biorheo's `lam` (a time) is "
-            "OpenFOAM's `m` and biorheo's `m` (an exponent) is OpenFOAM's `n` -- the names "
-            "collide with the meanings swapped, and a map written by matching names would "
-            "raise nothing, because both slots take a plain scalar. Without this number "
-            "the round trip passing at 1e-10 would not show the round trip can tell the "
-            "two maps apart.", "",
+            "OpenFOAM's `m` and biorheo's `m` (an exponent) is OpenFOAM's `n` -- the "
+            "names collide with the meanings swapped, and a map written by matching names "
+            "would raise nothing, because both slots take a plain scalar. Without this "
+            "number the round trip passing at 1e-10 would not show the round trip can "
+            "tell the two maps apart.", "",
             "**These records take no `eta_max`.** Their zero-shear plateau `eta_0` is a "
-            "fitted parameter of the record, so the exported `nu0` IS the record and there "
-            "is nothing to clamp; `coefficients` refuses an `eta_max` for them rather than "
-            "accepting and ignoring one."]
+            "fitted parameter of the record, so the exported `nu0` IS the record and "
+            "there is nothing to clamp; `coefficients` refuses an `eta_max` for them "
+            "rather than accepting and ignoring one. The worst wall-traction imbalance on "
+            f"the no-yield cases is {item6['worst_wall_imbalance']:.3e}."]
     return out
-
-
-_MODEL_OF_ID: dict[str, str] = {}
-
-
-def recs_model(rid: str) -> str:
-    return _MODEL_OF_ID.get(rid, "")
 
 
 def main() -> int:
@@ -739,7 +904,6 @@ def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     RUNS.mkdir(parents=True, exist_ok=True)
     recs = load_all()
-    _MODEL_OF_ID.update({rid: recs[rid].model.name for rid in RECORD_IDS})
     rows = [newtonian_control()]
     for rid in RECORD_IDS:
         rec = recs[rid]
@@ -792,9 +956,19 @@ def main() -> int:
             bad = nu_openfoam("BirdCarreau", {**c, "a": 2.0}, gds)
         seps[rid] = float(np.max(np.abs(bad / nu_ref - 1.0)))
     g7_worst = max((r["err_nu"] for r in nc_rows), default=float("nan"))
+    cy_rows = [r for r in nc_rows if r["model"] == "carreau_yasuda"]
+    cy_ids = [r for r in RECORD_IDS if recs[r].model.name == "carreau_yasuda"]
+    g4_worst = max((r["err_nu"] for r in cy_rows), default=float("nan"))
+    # keyed by RECORD, not positionally: `records[-1]` happened to be the Carreau-Yasuda
+    # one and would silently report a Cross separation if a second cross record were
+    # appended after it (code review 2026-09-05).
+    g4_sep = min((seps[r] for r in cy_ids), default=float("nan"))
     item6 = {
         "records": [r for r in RECORD_IDS if recs[r].model.name in NO_CLAMP_MODELS],
+        "model_of_record": {r: recs[r].model.name for r in RECORD_IDS
+                            if recs[r].model.name in NO_CLAMP_MODELS},
         "n_cases": len(nc_rows),
+        "n_rates": N_RATES,
         "candidate_separation": seps,
         "G3_G4_min_separation": min(seps.values()) if seps else float("nan"),
         "G3_G4_bar": 1e-2,
@@ -802,14 +976,22 @@ def main() -> int:
         "G7_worst_err_nu": g7_worst,
         "G7_bar": BAR_A2,
         "G7_pass": bool(g7_worst <= BAR_A2),
+        "G7_uninformative_as_preregistered": True,
+        "G4_worst_err_nu": g4_worst,
+        "G4_separation": g4_sep,
+        "G4_premise_refuted": bool(cy_rows and g4_worst <= BAR_A2
+                                   and g4_sep / max(g4_worst, 1e-300) > 1e3),
+        "A2_worst_all_records": a2,
+        "G7prime": g7_prime(recs),
         "worst_wall_imbalance": max((r["wall_imbalance"] for r in nc_rows),
                                     default=float("nan")),
         "note": ("These records have no yield stress, so the local Bingham number "
                  "B = tau_y/(k gd^n) that controls simpleFoam's outer iteration for the "
-                 "Herschel-Bulkley record is identically zero here. G7 is the control for "
-                 "the reading that the convergence failure is about YIELD, not about a "
-                 "large viscosity; the separations say the A2 verdict on these records "
-                 "can discriminate the map the gate rejects."),
+                 "Herschel-Bulkley record is identically zero here. G7 as PRE-REGISTERED "
+                 "compares them against a 172 % figure taken at a different (relax_U, "
+                 "endTime); at the anchor's own settings the Herschel-Bulkley record "
+                 "passes A2 as well, so G7 cannot discriminate. Its number is kept and "
+                 "G7prime is the matched-settings replacement."),
     }
 
     verdict = {"A1_shear_uniformity": {"worst": a1, "bar": BAR_A1, "pass": a1 <= BAR_A1,
@@ -829,7 +1011,8 @@ def main() -> int:
                                       max(r["final_ux_residual"] for r in rows)}}
     payload = {"rho": RHO, "H": H, "NY": NY, "n_rates": N_RATES, "rows": rows,
                "relax_U": RELAX_U, "end_time": END_TIME, "windows": list(WINDOWS),
-               "verdict": verdict, "openfoam": "v2606"}
+               "verdict": verdict, "openfoam": "v2606",
+               "item6_no_yield_stress": item6}
     (OUT / "couette_anchor.json").write_text(json.dumps(payload, indent=2), encoding="ascii")
 
     lines = ["# OpenFOAM plane-Couette anchor for the L3 bridge", "",

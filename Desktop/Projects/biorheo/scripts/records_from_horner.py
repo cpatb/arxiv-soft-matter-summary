@@ -8,7 +8,7 @@ Casson ids are UNSUFFIXED -- ``blood_horner2020_donor_A`` -- and the other two c
 ``_cross`` / ``_carreau_yasuda`` suffix. That asymmetry is ugly and deliberate: the
 unsuffixed ids are pinned by tests, by the injectability case study and by the OpenFOAM
 anchor, and renaming them to gain symmetry would have been a rename with no result
-attached. Added 2026-09-06 for NEXT_STEPS item 6 (the L3 bridge for the families that
+attached. Added 2026-09-05 for NEXT_STEPS item 6 (the L3 bridge for the families that
 have no yield stress), which needs a record of each new family to export; all 20 donors
 are written rather than one, because the export's refusal-on-verdict is only a
 measurement over the whole set.
@@ -106,7 +106,7 @@ extra:
 """
 
 
-# The two families added 2026-09-06 for the L3 non-yield bridge. Casson keeps its own
+# The two families added 2026-09-05 for the L3 non-yield bridge. Casson keeps its own
 # template because its notes carry the authors'-objective comparison, which these do not
 # have: the source study publishes no Cross or Carreau-Yasuda table, so there is nothing
 # to reproduce and the record's numbers are biorheo's fit and only that.

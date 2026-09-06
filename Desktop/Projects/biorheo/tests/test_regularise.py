@@ -188,3 +188,25 @@ def test_critical_rate_refuses_when_uninformative():
         critical_rate(r, BINGHAM, rtol=1e-13)
     with pytest.raises(ValueError, match="below rtol"):
         critical_rate(regularise(HERSCHEL_BULKLEY, "clamp", eta_max=1e12), BINGHAM, rtol=0.5)
+
+
+def test_yield_schemes_refuse_a_base_model_with_fixed_constants():
+    """The Papanastasiou and Bercovier-Engelman schemes rebuild the law from the model's
+    parameters and never see `base.fixed`, so a fixed constant would be dropped without
+    a word. The clamp wraps `base.func` and does receive them, so it is still allowed.
+    No shipped model has a fixed constant; this is the guard that keeps that a fact
+    rather than an assumption (NEXT_STEPS item 5, referee item, closed 2026-09-05)."""
+    from dataclasses import replace as _replace
+
+    from biorheo.constitutive import get_model
+    from biorheo.constitutive.regularise import regularise
+
+    hb = get_model("herschel_bulkley")
+    assert not hb.fixed, "a shipped model grew a fixed constant; re-read this test"
+    with_fixed = _replace(hb, fixed={"rho": 1060.0})
+    for scheme, knob in (("papanastasiou", {"m": 1e3}),
+                         ("bercovier_engelman", {"eps": 1e-3})):
+        with pytest.raises(ValueError, match="rho"):
+            regularise(with_fixed, scheme, **knob)
+    # the clamp is unaffected: it wraps base.func, which does get base.fixed
+    regularise(hb, "clamp", eta_max=10.0)

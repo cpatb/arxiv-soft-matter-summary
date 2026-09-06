@@ -81,7 +81,7 @@ def test_c3_fails_under_the_reading_that_is_not_guessed(cap):
     # nothing below 9.95 % strain was measured at all, on either ramp -- the decisive
     # fact, and the one that needs no reading of the ambiguous unit
     assert lve["strain_min_pct"] == pytest.approx(9.95271, rel=1e-5)
-    # measured 2026-09-06: still rising at that point in BOTH ramps on 9 of 15 donors
+    # measured 2026-09-05: still rising at that point in BOTH ramps on 9 of 15 donors
     assert lve["n_donors"] == 15
     assert lve["n_rising_at_first_point_in_every_repeat"] == 9
     # and at ~1000 % strain G' is down to a median 0.207 of its own per-ramp maximum

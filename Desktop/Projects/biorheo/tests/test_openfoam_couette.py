@@ -122,10 +122,17 @@ def test_the_clamp_did_not_bind_even_during_the_transient(anchor):
 def test_the_case_set_is_the_one_the_gates_were_written_for(anchor):
     rows = anchor["rows"]
     assert anchor["rho"] == 1060.0 and anchor["H"] == 1e-3 and anchor["NY"] == 20
-    assert len(rows) == 1 + 2 * anchor["n_rates"] == 17
+    # 4 records since 2026-09-05: the two yield-stress ones the gates were written for,
+    # plus one Cross and one Carreau-Yasuda (NEXT_STEPS item 6), which have no yield
+    # stress and are the control for the Bingham-number finding.
+    assert len(rows) == 1 + 4 * anchor["n_rates"] == 33
     assert rows[0]["case"] == "newtonian_control"
     ids = {r.get("record") for r in rows[1:]}
-    assert ids == {"carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A"}
+    assert ids == {"carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A",
+                   "blood_horner2020_donor_N_cross",
+                   "blood_horner2020_donor_S_carreau_yasuda"}
+    assert {r.get("model") for r in rows[1:]} == {
+        "herschel_bulkley", "casson", "cross", "carreau_yasuda"}
     # the rates span each record's whole envelope, which is what makes A2 a real test
     for rid in ids:
         gd = sorted(r["gammadot"] for r in rows if r.get("record") == rid)
@@ -223,3 +230,75 @@ def test_rerunning_the_anchor_reproduces_the_verdicts(anchor, tmp_path):
         assert g["pass"], (name, g)
         assert g["bar"] == anchor["verdict"][name]["bar"], name
         assert g["worst"] <= 10 * max(anchor["verdict"][name]["worst"], 1e-15), (name, g)
+
+
+# ------------------------------------------------------------------ NEXT_STEPS item 6
+# The families with no yield stress. Gates G3/G4/G7 are pre-registered in
+# `data/openfoam/nonyield_bridge_prereg.md`, committed (2561346) before the code.
+# G1/G2/G5/G8 do not need a solver and live in tests/test_openfoam_export_nonyield.py.
+
+
+def test_g7_the_no_yield_families_converge_where_the_yield_one_does_not(anchor):
+    """G7, the control. `B = tau_y/(k gd^n)` is identically zero for Cross and
+    Carreau-Yasuda, so if the Bingham number is what controls simpleFoam's outer
+    iteration these cases must be clean. Measured 2026-09-05: worst relative viscosity
+    error 2.514e-14 over 16 cases, against the 1.72 (172 %) the Herschel-Bulkley record
+    returns at B = 29 with `rc = 0` and no warning.
+
+    The contrast is the argument, and it is not "hard fluid vs easy fluid": the Cross
+    record's zero-shear plateau is itself a large viscosity."""
+    i = anchor["item6_no_yield_stress"]
+    assert i["n_cases"] == 16 and len(i["records"]) == 2
+    assert i["G7_bar"] == A.BAR_A2 == 1e-6      # the existing bar, not a new one
+    assert i["G7_pass"] and i["G7_worst_err_nu"] <= i["G7_bar"]
+    assert i["G7_worst_err_nu"] < 1e-12, i["G7_worst_err_nu"]
+    assert i["worst_wall_imbalance"] < 1e-12, i["worst_wall_imbalance"]
+
+
+def test_g3_g4_the_anchor_could_have_told_the_rejected_map_apart(anchor):
+    """A gate that both candidates pass has discriminated nothing. Both separations must
+    exceed the 1e-2 pre-registered floor, and by a margin against A2's own bar, or the
+    A2 verdict on these records is not evidence about the parameter map."""
+    i = anchor["item6_no_yield_stress"]
+    assert i["G3_G4_bar"] == 1e-2
+    assert i["G3_G4_informative"], i["candidate_separation"]
+    seps = i["candidate_separation"]
+    assert set(seps) == set(i["records"])
+    # measured 2026-09-05: 1.056e+01 for the name-swapped Cross map, 1.128e-01 for `a`
+    # forced to 2. Both are >= 1e5 times BAR_A2.
+    assert min(seps.values()) / A.BAR_A2 > 1e4, seps
+    assert seps["blood_horner2020_donor_N_cross"] > 1.0
+    assert seps["blood_horner2020_donor_S_carreau_yasuda"] > 1e-2
+
+
+def test_g4_openfoam_honours_the_birdcarreau_a_exponent(anchor):
+    """The premise of NEXT_STEPS item 6 -- that v2606's `BirdCarreau` has no `a` and the
+    export must refuse `a != 2` -- decided by a running solver rather than by reading
+    C++. The Carreau-Yasuda record's fitted `a` is far enough from 2 that ignoring the
+    entry would move `nu` by 1.1e-1; A2 on those cases lands at 2.5e-14 instead. The
+    premise is REFUTED, so no such refusal is shipped and none may be added."""
+    i = anchor["item6_no_yield_stress"]
+    rid = "blood_horner2020_donor_S_carreau_yasuda"
+    cy = [r for r in anchor["rows"] if r.get("record") == rid]
+    assert len(cy) == anchor["n_rates"]
+    worst = max(r["err_nu"] for r in cy)
+    sep = i["candidate_separation"][rid]
+    assert worst <= A.BAR_A2, worst
+    # the whole content of the gate: the two candidates are far apart AND the shipped
+    # one is the one that matches, by many orders of magnitude
+    assert sep / max(worst, 1e-300) > 1e9, (sep, worst)
+
+    from biorheo.solver.openfoam import _MODELS
+    assert _MODELS["carreau_yasuda"] == ("BirdCarreau", ("nu0", "nuInf", "k", "n", "a"))
+
+
+def test_the_prereg_for_item_6_predates_its_code():
+    """The pre-registration is only worth something if it was written first. Its commit
+    must be an ancestor of the commit that added the module's Cross/BirdCarreau map."""
+    prereg = ROOT / "data" / "openfoam" / "nonyield_bridge_prereg.md"
+    assert prereg.exists()
+    text = prereg.read_text(encoding="utf-8")
+    for token in ("G1", "G2", "G3", "G4", "G5", "G7", "G8", "1e-10", "1e-3", "1e-2"):
+        assert token in text, token
+    # the premise it refutes, named, so a later reader cannot reinstate the refusal
+    assert "That is false for OpenFOAM v2606" in text

@@ -10,7 +10,7 @@ import numpy as np
 import yaml
 
 from ..constitutive import MODELS, get_model
-from ..units import dimensionality, to_si
+from ..units import dimensionality, same_dimension, to_si
 from .provenance import is_doi_syntax, resolve_doi
 from .schema import (
     Envelope,
@@ -111,7 +111,7 @@ def load_record(path: str | Path, allow_network: bool = False) -> FluidRecord:
     si = {name: p.si for name, p in params.items()}
     for name, p in params.items():
         expected = _expected_unit(model.units[name], si)
-        if dimensionality(p.unit) != dimensionality(expected):
+        if not same_dimension(p.unit, expected):
             raise ValueError(
                 f"{rec_id}: parameter {name!r} has unit {p.unit!r} "
                 f"({dimensionality(p.unit)}), but {model_name} needs {expected!r} "

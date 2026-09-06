@@ -3,7 +3,7 @@ read it back (the L3 solver bridge: Herschel-Bulkley, Casson, Cross and Carreau-
 
 Ground truth is the OpenFOAM v2606 (ESI) source, read in WSL at
 ``/usr/lib/openfoam/openfoam2606/src/transportModels/incompressible/viscosityModels/``
-on 2026-09-05 (the two yield-stress families) and 2026-09-06 (the other two). The four
+on 2026-09-05 (the two yield-stress families) and 2026-09-05 (the other two). The four
 ``calcNu`` bodies, verbatim:
 
 HerschelBulkley/HerschelBulkley.C (lines 56-67)::
@@ -330,9 +330,19 @@ _ENTRY = re.compile(r"(?:(?<=[{;\n])|^)\s*(\w+)\s+(?:\1\s+)?(?:\[[^\]]*\]\s*)?"
 # user might keep beside the live one) matched first and its coefficients were returned
 # with no error.
 _MODEL_ENTRY = re.compile(r"(?<![A-Za-z0-9_])transportModel\s+(\w+)\s*;")
+# MALFORMED and ABSENT are distinguished by a RESIDUE check: whatever `_ENTRY` does not
+# consume from the coefficients block must be whitespace. It matters only because one
+# coefficient is optional -- `_ENTRY` simply fails to match a broken entry, so before
+# 2026-09-05 dropping the semicolon after `a` made it read as absent and `getOrDefault`'s
+# 2 was filled in silently, giving a law 11 % wrong with no error anywhere. OpenFOAM's
+# own dictionary reader raises on a present-but-unparsable entry; so does this now.
+# A per-chunk `split(";")` test was tried first and does NOT work: the text after the
+# last semicolon has no semicolon of its own, so exactly the dropped-semicolon case it
+# was meant to catch looked well-formed.
 
 
-def parse_transport_properties(text: str, *, expect: str | None = None
+def parse_transport_properties(text: str, *, expect: str | None = None,
+                               defaults_applied: set[str] | None = None
                                ) -> tuple[str, dict[str, float]]:
     """``(transportModel, coefficients)`` from dictionary text. Accepts plain,
     dimensioned (``[0 2 -1 0 0 0 0] value``) and full dimensionedScalar
@@ -346,7 +356,13 @@ def parse_transport_properties(text: str, *, expect: str | None = None
     ``getOrDefault("a", 2)``, so a dictionary that omits it is legal and runs as a Carreau
     fluid. This function mirrors that -- a missing ``a`` is FILLED with 2, not reported
     missing -- because reporting it missing would disagree with the solver about what the
-    file means. biorheo's own export always writes it.
+    file means. biorheo's own export always writes it. Pass ``defaults_applied`` a set to
+    learn which keys were filled; a caller that quotes a number from a dictionary it did
+    not write should say so.
+
+    ABSENT and MALFORMED are different, and only the first gets a default. Every
+    ``;``-terminated chunk of the coefficients block must be a well-formed entry, so a
+    dropped semicolon raises instead of silently reading as an omitted key.
     """
     text = re.sub(r"//[^\n]*", "", text)
     m = _MODEL_ENTRY.search(text)
@@ -356,9 +372,20 @@ def parse_transport_properties(text: str, *, expect: str | None = None
     block = re.search(r"(?<![A-Za-z0-9_])" + re.escape(of_name) + r"Coeffs\s*\{([^}]*)\}", text)
     if block is None:
         raise ValueError(f"no {of_name}Coeffs block")
-    coeffs = {k: float(v) for k, v in _ENTRY.findall(block.group(1))}
+    body = block.group(1)
+    coeffs = {k: float(v) for k, v in _ENTRY.findall(body)}
+    residue = _ENTRY.sub("", body).strip()
+    if residue:
+        raise ValueError(
+            f"{of_name}Coeffs contains text this parser cannot read as an entry: "
+            f"{residue!r}. A malformed entry is NOT treated as an absent one: OpenFOAM's "
+            "dictionary reader raises here, and for an optional key like BirdCarreau's "
+            "`a` a silent default would change the exported law without any error.")
     for k, default in _OPTIONAL_COEFFS.get(of_name, {}).items():
-        coeffs.setdefault(k, default)
+        if k not in coeffs:
+            coeffs[k] = default
+            if defaults_applied is not None:
+                defaults_applied.add(k)
     if expect is not None:
         want = set(_MODELS[expect][1])
         if not want.issubset(coeffs):

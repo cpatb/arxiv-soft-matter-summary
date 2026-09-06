@@ -88,13 +88,28 @@ timescale gate passes 20/20 (tau 1.1-2.2 s, 95 % approach at 3.4-6.6 s) and the 
 gate fails 6/20 -- a single exponential misses the rise by 1-12 % of its amplitude
 (median 3.4 %) with the same residual sign pattern on 15/20, and anchoring the endpoints
 to the steady sheet does not rescue it (5/20). The rise is less concave than one
-exponential; one first-order structure variable cannot give that. The LAOS sheets are
-unused.
+exponential; one first-order structure variable cannot give that.
+
+Whether that rise is a **lag or a second timescale** is not decidable from this workbook,
+and the reason is not the one we expected (`scripts/oscillatory_capability_horner.py`,
+`data/horner2020/oscillatory_capability.md`). Five criteria were fixed before any was
+graded; four failed. The one that PASSED is the question we had written down -- the LAOS
+sheets carry 20 to 1571 samples per cycle over 3 to 64 cycles, against a 4-6 sample rise,
+so sampling was never the constraint. What decides it is that the workbook stores a
+**storage modulus and nothing conjugate to it** -- no loss modulus, no phase angle, no
+tan(delta) -- and a lag and a second timescale differ chiefly in phase; that **linearity
+is never demonstrated**, the amplitude sweep starting at 9.95 % strain, at or above the
+frequency sweep's own operating strain, with G' still rising there in both ramps on 9 of
+15 donors; and that the **population is not the same** -- 12 of 20 donors appear on any
+LAOS sheet and 8 (A, B, C, D, F, Q, R, T) on none, against a step-rise result on all 20.
+A discriminating measurement needs a phase channel on the same donors, an amplitude sweep
+that reaches into the linear region, or a step sampled an order of magnitude faster on
+the rise.
 
 The L3 solver bridge exports a record to an OpenFOAM v2606 `transportProperties` block.
 The export itself is exact: OpenFOAM's own `nu` field and its `wallShearStress` function
-object reproduce `record.eta_at` to 9.6e-13 relative, on 17 `simpleFoam` plane-Couette
-cases spanning both records' whole measured envelopes, in a comparison that never touches
+object reproduce `record.eta_at` to 9.6e-13 relative, on 33 `simpleFoam` plane-Couette
+cases spanning four records' whole measured envelopes, in a comparison that never touches
 this repo's transcription of `calcNu` (`data/openfoam/couette_anchor.md`). The useful
 finding is what the export cannot carry. **A record's refusal to extrapolate does not
 survive the export** -- `eta_at` raises outside the measured envelope, a dictionary

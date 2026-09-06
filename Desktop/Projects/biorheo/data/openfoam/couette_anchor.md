@@ -40,6 +40,22 @@ The comparison uses OpenFOAM's own `nu` field and its `wallShearStress` function
 | blood_horner2020_donor_A_g5 | 55.78 | 0.05578 | 0.00e+00 | nan | 6.79e-16 | 2.54e-14 | 0.00 | 0.00 | 2.71e-14 | 4.40057978e-06 | 4.40057978e-06 | 4.40057978e-06 | 1.54e-15 | 0.0002454756954 | -0.0002454756954 | 1.68e-14 |
 | blood_horner2020_donor_A_g6 | 197.6 | 0.1976 | 0.00e+00 | nan | 1.11e-15 | 6.68e-14 | 0.00 | 0.00 | 5.34e-14 | 4.030810649e-06 | 4.030810649e-06 | 4.030810649e-06 | 2.10e-15 | 0.0007965090548 | -0.0007965090548 | 4.63e-14 |
 | blood_horner2020_donor_A_g7 | 700 | 0.7 | 0.00e+00 | nan | 5.23e-16 | 7.53e-14 | 0.00 | 0.00 | 5.75e-14 | 3.840947809e-06 | 3.840947809e-06 | 3.840947809e-06 | 1.32e-15 | 0.002688663466 | -0.002688663466 | 5.53e-14 |
+| blood_horner2020_donor_N_cross_g0 | 0.1 | 0.0001 | 0.00e+00 | nan | 8.93e-16 | 4.99e-15 | n/a | n/a | 8.88e-15 | 0.0001257161825 | 0.0001257161825 | 0.0001257161825 | 2.80e-15 | 1.257161825e-05 | -1.257161825e-05 | 2.70e-15 |
+| blood_horner2020_donor_N_cross_g1 | 0.3542 | 0.0003542 | 1.57e-15 | nan | 8.06e-16 | 5.36e-14 | n/a | n/a | 8.85e-14 | 7.223549474e-05 | 7.223549474e-05 | 7.223549474e-05 | 2.51e-14 | 2.558882662e-05 | -2.558882662e-05 | 3.48e-14 |
+| blood_horner2020_donor_N_cross_g2 | 1.255 | 0.001255 | 0.00e+00 | nan | 4.30e-16 | 1.29e-14 | n/a | n/a | 1.66e-14 | 3.990817251e-05 | 3.990817251e-05 | 3.990817251e-05 | 5.77e-15 | 5.007964952e-05 | -5.007964952e-05 | 9.47e-15 |
+| blood_horner2020_donor_N_cross_g3 | 4.445 | 0.004445 | 3.80e-15 | nan | 2.97e-16 | 2.05e-14 | n/a | n/a | 1.92e-14 | 2.235064603e-05 | 2.235064603e-05 | 2.235064603e-05 | 9.25e-15 | 9.935488859e-05 | -9.935488859e-05 | 1.43e-14 |
+| blood_horner2020_donor_N_cross_g4 | 15.75 | 0.01575 | 5.64e-16 | nan | 5.57e-16 | 9.66e-15 | n/a | n/a | 1.57e-14 | 1.336605476e-05 | 1.336605476e-05 | 1.336605476e-05 | 3.42e-15 | 0.0002104757745 | -0.0002104757745 | 5.28e-15 |
+| blood_horner2020_donor_N_cross_g5 | 55.78 | 0.05578 | 0.00e+00 | nan | 5.93e-16 | 1.83e-14 | n/a | n/a | 4.64e-14 | 8.908377341e-06 | 8.908377341e-06 | 8.908377341e-06 | 6.85e-15 | 0.0004969322752 | -0.0004969322752 | 2.84e-15 |
+| blood_horner2020_donor_N_cross_g6 | 197.6 | 0.1976 | 0.00e+00 | nan | 5.53e-16 | 3.00e-14 | n/a | n/a | 2.63e-14 | 6.730635146e-06 | 6.730635146e-06 | 6.730635146e-06 | 3.78e-15 | 0.001330008354 | -0.001330008354 | 2.18e-14 |
+| blood_horner2020_donor_N_cross_g7 | 700 | 0.7 | 0.00e+00 | nan | 9.13e-16 | 7.01e-14 | n/a | n/a | 4.84e-14 | 5.674761304e-06 | 5.674761304e-06 | 5.674761304e-06 | 4.63e-15 | 0.003972332913 | -0.003972332913 | 5.09e-14 |
+| blood_horner2020_donor_S_carreau_yasuda_g0 | 0.1 | 0.0001 | 0.00e+00 | nan | 6.64e-16 | 0.00e+00 | n/a | n/a | 2.98e-14 | 6.943811985e-05 | 6.943811985e-05 | 6.943811985e-05 | 5.66e-15 | 6.943811985e-06 | -6.943811985e-06 | 8.90e-15 |
+| blood_horner2020_donor_S_carreau_yasuda_g1 | 0.3542 | 0.0003542 | 0.00e+00 | nan | 7.07e-16 | 9.14e-15 | n/a | n/a | 5.44e-14 | 4.186891671e-05 | 4.186891671e-05 | 4.186891671e-05 | 1.54e-14 | 1.483171748e-05 | -1.483171748e-05 | 4.68e-15 |
+| blood_horner2020_donor_S_carreau_yasuda_g2 | 1.255 | 0.001255 | 0.00e+00 | nan | 5.70e-16 | 8.06e-15 | n/a | n/a | 2.25e-14 | 2.145126841e-05 | 2.145126841e-05 | 2.145126841e-05 | 6.48e-15 | 2.691859677e-05 | -2.691859677e-05 | 5.16e-15 |
+| blood_horner2020_donor_S_carreau_yasuda_g3 | 4.445 | 0.004445 | 0.00e+00 | nan | 5.26e-16 | 1.48e-14 | n/a | n/a | 2.88e-14 | 1.13384167e-05 | 1.13384167e-05 | 1.13384167e-05 | 7.77e-15 | 5.040244146e-05 | -5.040244146e-05 | 9.68e-15 |
+| blood_horner2020_donor_S_carreau_yasuda_g4 | 15.75 | 0.01575 | 0.00e+00 | nan | 8.18e-16 | 1.21e-14 | n/a | n/a | 7.67e-15 | 6.844610229e-06 | 6.844610229e-06 | 6.844610229e-06 | 4.58e-15 | 0.0001077823385 | -0.0001077823385 | 1.21e-14 |
+| blood_horner2020_donor_S_carreau_yasuda_g5 | 55.78 | 0.05578 | 3.82e-15 | nan | 6.85e-16 | 2.23e-14 | n/a | n/a | 3.89e-14 | 4.891072508e-06 | 4.891072508e-06 | 4.891072508e-06 | 5.54e-15 | 0.0002728366454 | -0.0002728366454 | 1.11e-14 |
+| blood_horner2020_donor_S_carreau_yasuda_g6 | 197.6 | 0.1976 | 0.00e+00 | nan | 3.61e-16 | 2.77e-14 | n/a | n/a | 2.68e-14 | 4.045322398e-06 | 4.045322398e-06 | 4.045322398e-06 | 2.09e-15 | 0.0007993766515 | -0.0007993766515 | 1.83e-14 |
+| blood_horner2020_donor_S_carreau_yasuda_g7 | 700 | 0.7 | 0.00e+00 | nan | 6.30e-16 | 3.79e-14 | n/a | n/a | 3.59e-14 | 3.679447699e-06 | 3.679447699e-06 | 3.679447699e-06 | 1.15e-15 | 0.002575613389 | -0.002575613389 | 2.36e-14 |
 
 The Newtonian control is hand-written, not an export: it fixes the `wallShearStress` convention (a factor of 2 or a sign there would make A3 self-consistently wrong on every non-Newtonian case and A4 is the only row where the answer is known without OpenFOAM).
 
@@ -105,3 +121,44 @@ The rate sweep above moves B, the viscosity eta and the wall speed U0 together, 
 | 29 | 50 | 0.483333 | 0.2398 | 1.7373e+00 |
 
 Across B at fixed eta the error moves 5.642e+04x at eta = 0.5, 5.642e+04x at eta = 50.0; across a 100x change in eta at fixed B it moves 1x at B = 2.0, 1x at B = 29.0. **Verdict: B controls.** The two eta rows agree to the digits printed, which is what a genuine invariance looks like -- the solve is unchanged by a common rescaling of (tau_y, k), so it is the yield-to-viscous RATIO that sets the convergence, not the size of the viscosity, the wall speed or the matrix conditioning.
+
+## The families with no yield stress (Cross, Carreau-Yasuda)
+
+16 cases over 2 records: `blood_horner2020_donor_N_cross` (cross), `blood_horner2020_donor_S_carreau_yasuda` (carreau_yasuda).
+
+| gate | what | number | bar | verdict |
+|---|---|---|---|---|
+| G7 | worst OpenFOAM `nu` vs `eta_at/rho` on these records | 2.514e-14 | 1e-06 | PASS |
+| G3/G4 | smallest separation between the shipped map and the rejected candidate | 1.128e-01 | >= 0.01 | informative |
+
+- `blood_horner2020_donor_N_cross`: the name-swapped Cross map (biorheo `m` into OpenFOAM's `m`, `lam` into `n`) differs from the record by 1.056e+01 relative over the 8 anchor rates, 1.1e+07 times A2's bar.
+- `blood_horner2020_donor_S_carreau_yasuda`: `a` forced to 2, i.e. what OpenFOAM would compute if it ignored the entry differs from the record by 1.128e-01 relative over the 8 anchor rates, 1.1e+05 times A2's bar.
+
+### G7 passes and is UNINFORMATIVE as pre-registered; G7' is the test
+
+**G7 as written compares two arms run at DIFFERENT solver settings, so it cannot discriminate** (code review 2026-09-05). Its number stands and is not withdrawn: the no-yield cases give 2.514e-14 against a 1e-6 bar. But the 172 % it was written to contrast with comes from `couette_diagnosis.json` at `relax_U = 0.7, endTime = 2000`, whereas these cases run at `relax_U = 0.95, endTime = 20000` -- and at THOSE settings the Herschel-Bulkley record passes A2 too, at 9.594e-13. Both arms pass, so the comparison decides nothing. Replaced by a stricter test at matched settings, with G7's number kept:
+
+| record | model | B | eta at the tested rate (Pa s) | err_nu | verdict |
+|---|---|---|---|---|---|
+| `carbopol_etd2020_0p1wt_30uL` | herschel_bulkley | 28.9 | 2692 | 1.720e+00 | **fails A2** |
+| `blood_horner2020_donor_A` | casson | 5.67 | 0.04402 | 8.517e-08 | passes A2 |
+| `blood_horner2020_donor_N_cross` | cross | 0 | 0.1333 | 1.542e-13 | passes A2 |
+| `blood_horner2020_donor_S_carreau_yasuda` | carreau_yasuda | 0 | 0.0736 | 1.444e-14 | passes A2 |
+
+All rows at `relax_U = 0.7, endTime = 2000`, each at its record's lowest envelope rate.
+
+**G7' is informative: at matched settings one record fails and the others do not.** The failing record reaches 1.720e+00 where the no-yield records reach 1.542e-13, a factor of 1.1e+13.
+
+**But the split is NOT 'has a yield term / has none'.** 1 of the yield-stress records PASS here, at B = 5.67, while the one that fails is at B = 28.9. A Casson fluid is still a yield-stress fluid; it converges because its local Bingham number at this rate is small. The table therefore separates HIGH B from LOW B, which is what item 3's diagnosis said, and it does not separate either from viscosity magnitude.
+
+**This does NOT by itself separate yield from viscosity magnitude, and saying so is the point.** The no-yield record's zero-shear plateau is 0.1333 Pa s while the yield-stress case sits at 2692 Pa s -- a factor of 20200 -- so a 'hard fluid' reading is not excluded by this table. The magnitude control is the 2x2 already in `couette_diagnosis.json`: at FIXED shear rate, moving `eta` 100x at constant `B` changes the error in the tenth digit, against 5.6e4x across `B`. That, and not this table, is what the 'about yield, not magnitude' reading rests on.
+
+### G4 and G3
+
+**G4 decides a premise of NEXT_STEPS item 6 by running the solver.** That item was written believing OpenFOAM v2606's `BirdCarreau` has no `a` exponent, so that the export would have to REFUSE a Carreau-Yasuda record with `a != 2`. It has one -- `a_` is `getOrDefault("a", dimensionedScalar("a", dimless, 2))` (BirdCarreau.C:81-88) and `calcNu` uses it. The Carreau-Yasuda record run here has a fitted `a` far from 2, so if OpenFOAM ignored the entry A2 would fail by about 1.1e-01; it comes out at 1.5e-14.
+**The premise is refuted and no `a != 2` refusal is shipped.**
+What is shipped instead is the mirror hazard: because `a` is optional with a silent default of 2, the export always WRITES it, the parser fills a MISSING one with 2, and a MALFORMED one raises rather than silently defaulting.
+
+**G3 is the discriminator for the Cross map.** biorheo's `lam` (a time) is OpenFOAM's `m` and biorheo's `m` (an exponent) is OpenFOAM's `n` -- the names collide with the meanings swapped, and a map written by matching names would raise nothing, because both slots take a plain scalar. Without this number the round trip passing at 1e-10 would not show the round trip can tell the two maps apart.
+
+**These records take no `eta_max`.** Their zero-shear plateau `eta_0` is a fitted parameter of the record, so the exported `nu0` IS the record and there is nothing to clamp; `coefficients` refuses an `eta_max` for them rather than accepting and ignoring one. The worst wall-traction imbalance on the no-yield cases is 7.009e-14.

@@ -138,6 +138,16 @@ def regularise(model: RateModel, scheme: str, **knob: float) -> RateModel:
     if scheme == "clamp":
         func = _clamped(model)
     else:
+        # The yield-term schemes below rebuild the law from the model's PARAMETERS only;
+        # unlike the clamp, which wraps base.func, they never see base.fixed, so a fixed
+        # constant on the base model would be silently dropped. No shipped model has one,
+        # and this refuses rather than assuming that stays true (NEXT_STEPS item 5).
+        if model.fixed:
+            raise ValueError(
+                f"scheme {scheme!r} rebuilds {model.name!r} from its parameters and does "
+                f"not carry fixed constants, but {model.name!r} fixes {sorted(model.fixed)}; "
+                "regularising it would silently drop them. Use 'clamp', which wraps the "
+                "model's own func and does receive them.")
         if model.name not in _YIELD_MODELS:
             raise ValueError(
                 f"{scheme!r} regularises a yield term; {model.name!r} has none "

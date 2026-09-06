@@ -39,6 +39,14 @@ def records():
     return out
 
 
+@pytest.fixture(scope="module")
+def all_records():
+    """Every exportable record, all four families. The `records` fixture above is
+    deliberately the two yield-stress families only, because most of this file is about
+    the clamp, which the other two do not have."""
+    return load_all()
+
+
 def _rates(rec):
     return np.geomspace(rec.envelope.gammadot_min, rec.envelope.gammadot_max, N_RATES)
 
@@ -115,7 +123,7 @@ def test_rejects_bad_density_or_cap(records):
     with pytest.raises(ValueError, match="rho"):
         coefficients(rec, 0.0, 1.0)
     # `cross` used to be the unimplemented example here; it is implemented as of
-    # 2026-09-06 (NEXT_STEPS item 6), so the check moved to a family that still is not.
+    # 2026-09-05 (NEXT_STEPS item 6), so the check moved to a family that still is not.
     with pytest.raises(NotImplementedError, match="power_law"):
         from biorheo.constitutive.gnf import POWER_LAW
         coefficients(replace(rec, model=POWER_LAW), RHO, 1.0)
@@ -221,8 +229,10 @@ def _foam(cmd: str) -> str:
 
 
 @pytest.mark.skipif(not _wsl_openfoam(), reason="needs WSL with OpenFOAM v2606")
-@pytest.mark.parametrize("rid", ["carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A"])
-def test_openfoam_foamDictionary_reads_the_file_back(records, rid, tmp_path):
+@pytest.mark.parametrize("rid", ["carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A",
+                                 "blood_horner2020_donor_N_cross",
+                                 "blood_horner2020_donor_S_carreau_yasuda"])
+def test_openfoam_foamDictionary_reads_the_file_back(all_records, rid, tmp_path):
     """OpenFOAM's own parser must recover every coefficient BIT-EXACTLY, which is
     stricter than the 1e-10 gate on the law. `-precision 17` is required and is not a
     convenience: `foamDictionary` prints through an IOstream whose default write
@@ -231,8 +241,10 @@ def test_openfoam_foamDictionary_reads_the_file_back(records, rid, tmp_path):
     error, and the two are asserted separately below so the distinction is pinned.
     A user reading an exported coefficient back with a bare `foamDictionary -value`
     therefore sees 6 figures; the solver reads the file, not that output."""
-    rec = records[rid]
-    eta_max = 2.0 * float(rec.eta_at(rec.envelope.gammadot_min))
+    rec = all_records[rid]
+    # the two no-yield families take no clamp; the two yield ones require one
+    eta_max = (None if rec.model.name in ("cross", "carreau_yasuda")
+               else 2.0 * float(rec.eta_at(rec.envelope.gammadot_min)))
     path = write_transport_properties(rec, RHO, eta_max, tmp_path / "transportProperties")
     of_name, c = parse_transport_properties(path.read_text())
     drive, rest = Path(path).drive[0].lower(), Path(path).as_posix()[2:]
@@ -246,3 +258,11 @@ def test_openfoam_foamDictionary_reads_the_file_back(records, rid, tmp_path):
         deflt = _foam(f"foamDictionary -entry {of_name}Coeffs/{key} -value '{wsl_path}'")
         assert float(deflt) == float(f"{val:.6g}"), (key, deflt, f"{val:.6g}")
     assert _foam(f"foamDictionary -entry transportModel -value '{wsl_path}'") == of_name
+    # `a` is the one OPTIONAL coefficient (BirdCarreau reads it with getOrDefault), so it
+    # is the one most likely to be silently absent. Assert OpenFOAM sees it (item 9 of the
+    # code review 2026-09-05: nothing checked that OpenFOAM parses the new families).
+    if of_name == "BirdCarreau":
+        assert "a" in c and c["a"] != 2.0, c
+        got = _foam(f"foamDictionary -precision 17 -entry BirdCarreauCoeffs/a "
+                    f"-value '{wsl_path}'")
+        assert float(got) == c["a"], (got, c["a"])

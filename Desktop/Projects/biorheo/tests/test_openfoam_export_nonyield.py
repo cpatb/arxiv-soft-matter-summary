@@ -67,10 +67,19 @@ def test_g1_round_trip_reproduces_eta_at_on_every_record(records):
     rho * eta_at to 1e-10. No cap exists for these families, so nothing may bind."""
     worst = {}
     for rid, rec in records.items():
-        rep = export_report(rec, RHO, None, _rates(rec), allow_unidentified=True)
-        assert rep["n_bound"] == 0, f"{rid}: a cap bound, but these families have none"
+        gd = _rates(rec)
+        rep = export_report(rec, RHO, None, gd, allow_unidentified=True)
         worst[rid] = rep["max_rel_err_unbound"]
         assert rep["max_rel_err_unbound"] <= RTOL_GATE, (rid, rep["max_rel_err_unbound"])
+        # `n_bound == 0` would be a tautology here (`export_report` sets `binds` to an
+        # all-False array when eta_max is None), so the substantive statement is checked
+        # instead: no clamp key is written, and the law is bounded by the record's OWN
+        # fitted plateaux at every rate, which is why no clamp is needed.
+        assert "nu0" in rep["coefficients"] and "nuMax" not in rep["coefficients"]
+        p = dict(zip(rec.model.param_names, (float(v) for v in rec.params_si)))
+        nu = rep["nu_openfoam"]
+        assert np.all(nu <= p["eta_0"] / RHO * (1 + 1e-12)), rid
+        assert np.all(nu >= p["eta_inf"] / RHO * (1 - 1e-12)), rid
     # the number, so a regression shows as a change and not just a pass
     assert max(worst.values()) < 1e-14, max(worst.items(), key=lambda kv: kv[1])
 
@@ -93,6 +102,14 @@ def test_g1_the_cross_map_is_the_swapped_one_not_the_name_matched_one(records):
     c = coefficients(rec, RHO, None)
     assert c["m"] == p["lam"] and c["n"] == p["m"]
     assert c["nu0"] == p["eta_0"] / RHO and c["nuInf"] == p["eta_inf"] / RHO
+    # The four asserts above are built from the same `zip` that `coefficients` uses, so
+    # on their own they only say which KEY a value lands under. These say the values are
+    # of the right KIND: OpenFOAM declares `m` as dimTime and `n` as dimless, so a
+    # swapped map would put an O(0.5) exponent in the time slot and an O(10-100 s) time
+    # in the exponent slot (code review 2026-09-05).
+    assert 1.0 < c["m"] < 1e3, c["m"]        # a time constant, seconds
+    assert 0.0 < c["n"] < 1.0, c["n"]        # a shear-thinning exponent
+    assert c["nu0"] > c["nuInf"] > 0.0       # shear-thinning, both plateaux positive
 
 
 # --------------------------------------------------------------------------------- G2
@@ -110,14 +127,20 @@ def test_g2_refuses_exactly_the_records_the_sidecar_calls_unidentified(records):
             export_transport_properties(rec, RHO, None)
         except ExportRefused as e:
             assert should, f"{rid}: refused but no parameter is degenerate/unidentifiable"
-            # the message must name the offending parameter, not just say no
-            assert any(n in str(e) for n in rec.model.param_names if rec.verdicts[n] in bad)
+            # The message must NAME the offending parameter. Word-boundary matched: the
+            # bare substring test this replaced passed on `a` for free, since "a" occurs
+            # in almost any English sentence, and `a` is the offender on 8 of the 17
+            # refusals -- so `any()` short-circuited on noise (code review 2026-09-05).
+            offenders = [n for n in rec.model.param_names if rec.verdicts[n] in bad]
+            for n in offenders:
+                assert re.search(rf"(?<![A-Za-z0-9_]){re.escape(n)}(?![A-Za-z0-9_])",
+                                 str(e)), (rid, n, str(e))
             refused[rec.model.name] += 1
         else:
             assert not should, f"{rid}: exported despite {rec.verdicts}"
         # the override is the only way through
         export_transport_properties(rec, RHO, None, allow_unidentified=True)
-    # measured 2026-09-06 over the 20 Horner donors; pinned so a refit that changes the
+    # measured 2026-09-05 over the 20 Horner donors; pinned so a refit that changes the
     # registry's identifiability has to be noticed rather than absorbed
     assert refused == {"cross": 9, "carreau_yasuda": 8}, refused
 
@@ -142,7 +165,7 @@ def test_g3_the_name_matched_cross_map_fails_the_round_trip(records):
         seps[rid] = float(np.max(np.abs(bad / nu_ref - 1.0)))
         assert seps[rid] > WRONG_MAP_BAR, (rid, seps[rid])
     assert len(seps) == 20
-    # measured 2026-09-06: the weakest separation is 6.3e-2, 63x the bar
+    # measured 2026-09-05: the weakest separation is 6.3e-2, 63x the bar
     assert min(seps.values()) > 6e-2, min(seps.items(), key=lambda kv: kv[1])
 
 
@@ -184,7 +207,7 @@ def test_g5_a_missing_a_parses_to_two_and_changes_the_law(records):
     gd = _rates(rec)
     nu_ref = rec.eta_at(gd) / RHO
     sep = float(np.max(np.abs(nu_openfoam("BirdCarreau", c, gd) / nu_ref - 1.0)))
-    # measured 2026-09-06: 1.128e-1, i.e. 1e5 times the anchor's BAR_A2 = 1e-6. This is
+    # measured 2026-09-05: 1.128e-1, i.e. 1e5 times the anchor's BAR_A2 = 1e-6. This is
     # also the separation that lets the anchor decide whether OpenFOAM honours `a` (G4).
     # The pre-registration wrote the ratio the other way up, |nu(a)/nu(a=2) - 1|, which
     # is 1.014e-1 on the same numbers; the bar is 1e-2 and both directions clear it.

@@ -12,7 +12,7 @@ NEXT_STEPS item 7 framed the question as "do the LAOS sheets have enough samples
 cycle". They do, by a wide margin, so that is NOT what decides it; three other things
 do. All five criteria below were written before any of them was graded.
 
-PRE-REGISTERED CRITERIA (2026-09-06; a failure is recorded, never softened):
+PRE-REGISTERED CRITERIA (2026-09-05; a failure is recorded, never softened):
 
   C1 POPULATION. A discrimination is only a corroboration of item 2 if it speaks for the
      same donors. Bar: >= 16 of the 20 human donors present on the sheets the

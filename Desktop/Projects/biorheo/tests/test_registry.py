@@ -226,7 +226,7 @@ def test_shipped_blood_records_carry_their_convention():
     table reproduces to 1e-6 or better, and the Casson form is flagged structured on
     19 of 20 donors (3 runs of residual sign on n = 16 for 18 of them; donor D is the exception)."""
     recs = load_all(allow_network=False)
-    # model-filtered, not id-filtered: since 2026-09-06 the same 20 curves also ship as
+    # model-filtered, not id-filtered: since 2026-09-05 the same 20 curves also ship as
     # `_cross` and `_carreau_yasuda` records (NEXT_STEPS item 6), and this test is about
     # the Casson convention specifically.
     blood = [r for r in recs.values() if r.id.startswith("blood_horner2020_donor_")
