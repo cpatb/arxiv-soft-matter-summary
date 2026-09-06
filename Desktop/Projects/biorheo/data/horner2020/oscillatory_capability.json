@@ -1,0 +1,1377 @@
+{
+  "verdict": "CLOSED",
+  "linear_route_open": false,
+  "criteria": [
+    {
+      "name": "C1 population",
+      "bar": ">= 16/20 donors",
+      "measured": "12/20 on at least one LAOS sheet, 10/20 on every LAOS sheet, 13/20 on the Frequency Sweep",
+      "pass": false
+    },
+    {
+      "name": "C2 linear channel is a measurement",
+      "bar": "G' > 0 at every frequency on >= 16/20 donors",
+      "measured": "11/20 donors have G' positive everywhere (13/20 have data at all; 2 of those carry a non-positive G')",
+      "pass": false
+    },
+    {
+      "name": "C3 linearity demonstrated",
+      "bar": "Amplitude Sweep reaches <= 0.5x the frequency sweep's strain",
+      "measured": "under '10 % (Amplitude Sweep's own unit)': needs <= 5 %, sweep stops at 9.953 % -> FAILED; under '10 dimensionless = 1000 % (the LAOS label unit)': needs <= 500 %, sweep stops at 9.953 % -> PASS",
+      "pass": false,
+      "readings": {
+        "10 % (Amplitude Sweep's own unit)": {
+          "freq_sweep_strain_pct": 10.0,
+          "needed_amplitude_sweep_min_pct": 5.0,
+          "actual_amplitude_sweep_min_pct": 9.95271,
+          "pass": false
+        },
+        "10 dimensionless = 1000 % (the LAOS label unit)": {
+          "freq_sweep_strain_pct": 1000.0,
+          "needed_amplitude_sweep_min_pct": 500.0,
+          "actual_amplitude_sweep_min_pct": 9.95271,
+          "pass": true
+        }
+      },
+      "plateau": "and measured directly, per repeat: G' is still RISING at the sweep's lowest strain (9.953 %) in every ramp on 9/15 donors, so that point is on a flank and not a plateau; by ~1000 % strain G' has fallen to a median 0.207 (worst 0.540) of its own maximum"
+    },
+    {
+      "name": "C4 discriminating channel exists",
+      "bar": "a loss modulus, phase angle, or strain-aligned stress waveform",
+      "measured": "phase-like column labels found: NONE; the workbook's oscillatory column labels are Angular frequency, Oscillation strain, Shear Rate, Shear rate, Step time, Storage modulus, Stress",
+      "pass": false
+    },
+    {
+      "name": "C5 sampling (item 7's stated question)",
+      "bar": ">= 10 samples per cycle",
+      "measured": "20 to 1571 samples per cycle over 52 sheets, 3.0 to 63.6 cycles each",
+      "pass": true
+    }
+  ],
+  "laos": [
+    {
+      "sheet": "UD-LAOS (5, 0.2 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 5.0,
+      "omega_rad_s": 0.2,
+      "n_samples": 2375,
+      "dt_s": 0.039699999999996294,
+      "span_s": 94.2112,
+      "cycles": 2.998835634923834,
+      "samples_per_cycle": 791.3331621133719,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (10, 0.2 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 10.0,
+      "omega_rad_s": 0.2,
+      "n_samples": 2375,
+      "dt_s": 0.039699999999996294,
+      "span_s": 94.211,
+      "cycles": 2.9988292687261104,
+      "samples_per_cycle": 791.3331621133719,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (50, 0.2 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 50.0,
+      "omega_rad_s": 0.2,
+      "n_samples": 2375,
+      "dt_s": 0.039699999999996294,
+      "span_s": 94.211,
+      "cycles": 2.9988292687261104,
+      "samples_per_cycle": 791.3331621133719,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (100, 0.2 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 100.0,
+      "omega_rad_s": 0.2,
+      "n_samples": 2375,
+      "dt_s": 0.039699999999996294,
+      "span_s": 94.211,
+      "cycles": 2.9988292687261104,
+      "samples_per_cycle": 791.3331621133719,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (1, 0.5 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 1.0,
+      "omega_rad_s": 0.5,
+      "n_samples": 1504,
+      "dt_s": 0.037599999999997635,
+      "span_s": 56.5244,
+      "cycles": 4.498068832651764,
+      "samples_per_cycle": 334.2119844244671,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (5, 0.5 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 5.0,
+      "omega_rad_s": 0.5,
+      "n_samples": 1504,
+      "dt_s": 0.037599999999997635,
+      "span_s": 56.5245,
+      "cycles": 4.49807679039892,
+      "samples_per_cycle": 334.2119844244671,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (10, 0.5 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 10.0,
+      "omega_rad_s": 0.5,
+      "n_samples": 1504,
+      "dt_s": 0.037599999999997635,
+      "span_s": 56.5245,
+      "cycles": 4.49807679039892,
+      "samples_per_cycle": 334.2119844244671,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (50, 0.5 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 50.0,
+      "omega_rad_s": 0.5,
+      "n_samples": 1504,
+      "dt_s": 0.037599999999997635,
+      "span_s": 56.5244,
+      "cycles": 4.498068832651764,
+      "samples_per_cycle": 334.2119844244671,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (100, 0.5 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 100.0,
+      "omega_rad_s": 0.5,
+      "n_samples": 1504,
+      "dt_s": 0.037599999999997635,
+      "span_s": 56.5245,
+      "cycles": 4.49807679039892,
+      "samples_per_cycle": 334.2119844244671,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (0.5, 1 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 0.5,
+      "omega_rad_s": 1.0,
+      "n_samples": 995,
+      "dt_s": 0.0378418,
+      "span_s": 37.6809,
+      "cycles": 5.9971014951514,
+      "samples_per_cycle": 166.03822511560196,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS(1, 1 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 1.0,
+      "omega_rad_s": 1.0,
+      "n_samples": 995,
+      "dt_s": 0.037840000000000096,
+      "span_s": 37.6809,
+      "cycles": 5.9971014951514,
+      "samples_per_cycle": 166.04612333984065,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (5, 1 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 5.0,
+      "omega_rad_s": 1.0,
+      "n_samples": 995,
+      "dt_s": 0.037840000000000096,
+      "span_s": 37.681,
+      "cycles": 5.997117410645708,
+      "samples_per_cycle": 166.04612333984065,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (10, 1 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 10.0,
+      "omega_rad_s": 1.0,
+      "n_samples": 995,
+      "dt_s": 0.037840000000000096,
+      "span_s": 37.6809,
+      "cycles": 5.9971014951514,
+      "samples_per_cycle": 166.04612333984065,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (50, 1 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 50.0,
+      "omega_rad_s": 1.0,
+      "n_samples": 995,
+      "dt_s": 0.037840000000000096,
+      "span_s": 37.681,
+      "cycles": 5.997117410645708,
+      "samples_per_cycle": 166.04612333984065,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (100, 1 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 100.0,
+      "omega_rad_s": 1.0,
+      "n_samples": 995,
+      "dt_s": 0.037840000000000096,
+      "span_s": 37.6811,
+      "cycles": 5.997133326140018,
+      "samples_per_cycle": 166.04612333984065,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (0.5, 5 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 0.5,
+      "omega_rad_s": 5.0,
+      "n_samples": 1008,
+      "dt_s": 0.03930000000000078,
+      "span_s": 39.5842,
+      "cycles": 31.50010549169102,
+      "samples_per_cycle": 31.975497746460366,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (1, 5 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 1.0,
+      "omega_rad_s": 5.0,
+      "n_samples": 1008,
+      "dt_s": 0.03930000000000078,
+      "span_s": 39.5842,
+      "cycles": 31.50010549169102,
+      "samples_per_cycle": 31.975497746460366,
+      "donors": "GHIJKLMNOSU",
+      "n_donors": 11
+    },
+    {
+      "sheet": "UD-LAOS (5, 5 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 5.0,
+      "omega_rad_s": 5.0,
+      "n_samples": 1008,
+      "dt_s": 0.03930000000000078,
+      "span_s": 39.5843,
+      "cycles": 31.500185069162562,
+      "samples_per_cycle": 31.975497746460366,
+      "donors": "GHIJKLMNOSU",
+      "n_donors": 11
+    },
+    {
+      "sheet": "UD-LAOS (10, 5 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 10.0,
+      "omega_rad_s": 5.0,
+      "n_samples": 1008,
+      "dt_s": 0.03930000000000078,
+      "span_s": 39.5844,
+      "cycles": 31.50026464663411,
+      "samples_per_cycle": 31.975497746460366,
+      "donors": "GHIJKLMNOSU",
+      "n_donors": 11
+    },
+    {
+      "sheet": "UD-LAOS (50, 5 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 50.0,
+      "omega_rad_s": 5.0,
+      "n_samples": 1008,
+      "dt_s": 0.03930000000000078,
+      "span_s": 39.5843,
+      "cycles": 31.500185069162562,
+      "samples_per_cycle": 31.975497746460366,
+      "donors": "GHIJKLMNOSU",
+      "n_donors": 11
+    },
+    {
+      "sheet": "UD-LAOS (100, 5 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 100.0,
+      "omega_rad_s": 5.0,
+      "n_samples": 1008,
+      "dt_s": 0.03930000000000078,
+      "span_s": 39.5843,
+      "cycles": 31.500185069162562,
+      "samples_per_cycle": 31.975497746460366,
+      "donors": "GHIJKLMNSU",
+      "n_donors": 10
+    },
+    {
+      "sheet": "UD-LAOS (0.5, 10 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 0.5,
+      "omega_rad_s": 10.0,
+      "n_samples": 1268,
+      "dt_s": 0.03149999999999942,
+      "span_s": 39.8744,
+      "cycles": 63.46207862823472,
+      "samples_per_cycle": 19.946620022792708,
+      "donors": "GHIJKLMNSU",
+      "n_donors": 10
+    },
+    {
+      "sheet": "UD-LAOS (1, 10 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 1.0,
+      "omega_rad_s": 10.0,
+      "n_samples": 1268,
+      "dt_s": 0.03149999999999942,
+      "span_s": 39.8744,
+      "cycles": 63.46207862823472,
+      "samples_per_cycle": 19.946620022792708,
+      "donors": "GHIJKLMNSU",
+      "n_donors": 10
+    },
+    {
+      "sheet": "UD-LAOS (5, 10 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 5.0,
+      "omega_rad_s": 10.0,
+      "n_samples": 1268,
+      "dt_s": 0.03149999999999942,
+      "span_s": 39.8743,
+      "cycles": 63.46191947329162,
+      "samples_per_cycle": 19.946620022792708,
+      "donors": "GHIJKLMNSU",
+      "n_donors": 10
+    },
+    {
+      "sheet": "UD-LAOS (10, 10 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 10.0,
+      "omega_rad_s": 10.0,
+      "n_samples": 1268,
+      "dt_s": 0.03149999999999942,
+      "span_s": 39.8746,
+      "cycles": 63.462396938120904,
+      "samples_per_cycle": 19.946620022792708,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "UD-LAOS (50, 10 rads)",
+      "unidirectional": true,
+      "strain_amplitude": 50.0,
+      "omega_rad_s": 10.0,
+      "n_samples": 1268,
+      "dt_s": 0.03149999999999942,
+      "span_s": 39.8745,
+      "cycles": 63.462237783177805,
+      "samples_per_cycle": 19.946620022792708,
+      "donors": "GHIJKLMNSU",
+      "n_donors": 10
+    },
+    {
+      "sheet": "LAOS (5, 0.2 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 5.0,
+      "omega_rad_s": 0.2,
+      "n_samples": 4746,
+      "dt_s": 0.019999999999999574,
+      "span_s": 94.985,
+      "cycles": 3.0234664539167357,
+      "samples_per_cycle": 1570.79632679493,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (10, 0.2 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 10.0,
+      "omega_rad_s": 0.2,
+      "n_samples": 4746,
+      "dt_s": 0.019999999999999574,
+      "span_s": 94.985,
+      "cycles": 3.0234664539167357,
+      "samples_per_cycle": 1570.79632679493,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (50, 0.2 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 50.0,
+      "omega_rad_s": 0.2,
+      "n_samples": 4746,
+      "dt_s": 0.019999999999999574,
+      "span_s": 94.985,
+      "cycles": 3.0234664539167357,
+      "samples_per_cycle": 1570.79632679493,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (100, 0.2 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 100.0,
+      "omega_rad_s": 0.2,
+      "n_samples": 4746,
+      "dt_s": 0.019999999999999574,
+      "span_s": 94.985,
+      "cycles": 3.0234664539167357,
+      "samples_per_cycle": 1570.79632679493,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (1, 0.5 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 1.0,
+      "omega_rad_s": 0.5,
+      "n_samples": 1996,
+      "dt_s": 0.020000000000003126,
+      "span_s": 39.9953,
+      "cycles": 3.1827248477216408,
+      "samples_per_cycle": 628.3185307178604,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (5, 0.5 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 5.0,
+      "omega_rad_s": 0.5,
+      "n_samples": 1996,
+      "dt_s": 0.020000000000003126,
+      "span_s": 39.9953,
+      "cycles": 3.1827248477216408,
+      "samples_per_cycle": 628.3185307178604,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (10, 0.5 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 10.0,
+      "omega_rad_s": 0.5,
+      "n_samples": 1996,
+      "dt_s": 0.020000000000003126,
+      "span_s": 39.9953,
+      "cycles": 3.1827248477216408,
+      "samples_per_cycle": 628.3185307178604,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (50, 0.5 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 50.0,
+      "omega_rad_s": 0.5,
+      "n_samples": 1996,
+      "dt_s": 0.020000000000003126,
+      "span_s": 39.9953,
+      "cycles": 3.1827248477216408,
+      "samples_per_cycle": 628.3185307178604,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (100, 0.5 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 100.0,
+      "omega_rad_s": 0.5,
+      "n_samples": 1996,
+      "dt_s": 0.020000000000003126,
+      "span_s": 39.9953,
+      "cycles": 3.1827248477216408,
+      "samples_per_cycle": 628.3185307178604,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (0.5, 1 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 0.5,
+      "omega_rad_s": 1.0,
+      "n_samples": 1996,
+      "dt_s": 0.020000000000003126,
+      "span_s": 39.9953,
+      "cycles": 6.3654496954432815,
+      "samples_per_cycle": 314.1592653589302,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS(1, 1 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 1.0,
+      "omega_rad_s": 1.0,
+      "n_samples": 1996,
+      "dt_s": 0.020000000000003126,
+      "span_s": 39.9953,
+      "cycles": 6.3654496954432815,
+      "samples_per_cycle": 314.1592653589302,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (5, 1 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 5.0,
+      "omega_rad_s": 1.0,
+      "n_samples": 1996,
+      "dt_s": 0.020000000000003126,
+      "span_s": 39.9953,
+      "cycles": 6.3654496954432815,
+      "samples_per_cycle": 314.1592653589302,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (10, 1 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 10.0,
+      "omega_rad_s": 1.0,
+      "n_samples": 1996,
+      "dt_s": 0.020000000000003126,
+      "span_s": 39.9953,
+      "cycles": 6.3654496954432815,
+      "samples_per_cycle": 314.1592653589302,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (50, 1 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 50.0,
+      "omega_rad_s": 1.0,
+      "n_samples": 1996,
+      "dt_s": 0.020000000000003126,
+      "span_s": 39.9954,
+      "cycles": 6.365465610937591,
+      "samples_per_cycle": 314.1592653589302,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (100, 1 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 100.0,
+      "omega_rad_s": 1.0,
+      "n_samples": 1996,
+      "dt_s": 0.020000000000003126,
+      "span_s": 39.9954,
+      "cycles": 6.365465610937591,
+      "samples_per_cycle": 314.1592653589302,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (0.5, 5 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 0.5,
+      "omega_rad_s": 5.0,
+      "n_samples": 2005,
+      "dt_s": 0.019999999999999574,
+      "span_s": 39.9835,
+      "cycles": 31.817858335573987,
+      "samples_per_cycle": 62.8318530717972,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (1, 5 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 1.0,
+      "omega_rad_s": 5.0,
+      "n_samples": 2005,
+      "dt_s": 0.019999999999999574,
+      "span_s": 39.9834,
+      "cycles": 31.817778758102442,
+      "samples_per_cycle": 62.8318530717972,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (5, 5 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 5.0,
+      "omega_rad_s": 5.0,
+      "n_samples": 2005,
+      "dt_s": 0.019999999999999574,
+      "span_s": 39.9834,
+      "cycles": 31.817778758102442,
+      "samples_per_cycle": 62.8318530717972,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (10, 5 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 10.0,
+      "omega_rad_s": 5.0,
+      "n_samples": 2005,
+      "dt_s": 0.019999999999999574,
+      "span_s": 39.9835,
+      "cycles": 31.817858335573987,
+      "samples_per_cycle": 62.8318530717972,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (50, 5 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 50.0,
+      "omega_rad_s": 5.0,
+      "n_samples": 2005,
+      "dt_s": 0.019999999999999574,
+      "span_s": 39.9836,
+      "cycles": 31.817937913045537,
+      "samples_per_cycle": 62.8318530717972,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (100, 5 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 100.0,
+      "omega_rad_s": 5.0,
+      "n_samples": 2005,
+      "dt_s": 0.019999999999999574,
+      "span_s": 39.9834,
+      "cycles": 31.817778758102442,
+      "samples_per_cycle": 62.8318530717972,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (0.5, 10 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 0.5,
+      "omega_rad_s": 10.0,
+      "n_samples": 2005,
+      "dt_s": 0.019999999999999574,
+      "span_s": 39.9836,
+      "cycles": 63.63587582609107,
+      "samples_per_cycle": 31.4159265358986,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (1, 10 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 1.0,
+      "omega_rad_s": 10.0,
+      "n_samples": 2005,
+      "dt_s": 0.019999999999999574,
+      "span_s": 39.9833,
+      "cycles": 63.63539836126179,
+      "samples_per_cycle": 31.4159265358986,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (5, 10 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 5.0,
+      "omega_rad_s": 10.0,
+      "n_samples": 2005,
+      "dt_s": 0.019999999999999574,
+      "span_s": 39.9836,
+      "cycles": 63.63587582609107,
+      "samples_per_cycle": 31.4159265358986,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (10, 10 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 10.0,
+      "omega_rad_s": 10.0,
+      "n_samples": 2005,
+      "dt_s": 0.019999999999999574,
+      "span_s": 39.9834,
+      "cycles": 63.635557516204884,
+      "samples_per_cycle": 31.4159265358986,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    },
+    {
+      "sheet": "LAOS (50, 10 rads)",
+      "unidirectional": false,
+      "strain_amplitude": 50.0,
+      "omega_rad_s": 10.0,
+      "n_samples": 2005,
+      "dt_s": 0.019999999999999574,
+      "span_s": 39.9836,
+      "cycles": 63.63587582609107,
+      "samples_per_cycle": 31.4159265358986,
+      "donors": "GHIJKLMNOPSU",
+      "n_donors": 12
+    }
+  ],
+  "frequency_sweep": {
+    "sheet": "Frequency Sweep",
+    "x_unit": "rad/s",
+    "n_x": 40,
+    "n_repeats": 2,
+    "points_per_repeat": [
+      20,
+      20
+    ],
+    "x_min": 0.5,
+    "x_max": 40.0,
+    "per_donor": {
+      "B": {
+        "n": 40,
+        "min": -8.51689e-05,
+        "max": 0.136998,
+        "n_nonpositive": 1
+      },
+      "C": {
+        "n": 40,
+        "min": 0.000111216,
+        "max": 0.129753,
+        "n_nonpositive": 0
+      },
+      "D": {
+        "n": 40,
+        "min": -2.65432e-05,
+        "max": 0.139668,
+        "n_nonpositive": 1
+      },
+      "G": {
+        "n": 40,
+        "min": 0.000157346,
+        "max": 0.127577,
+        "n_nonpositive": 0
+      },
+      "H": {
+        "n": 40,
+        "min": 0.000266616,
+        "max": 0.163529,
+        "n_nonpositive": 0
+      },
+      "I": {
+        "n": 40,
+        "min": 0.000176879,
+        "max": 0.150591,
+        "n_nonpositive": 0
+      },
+      "J": {
+        "n": 40,
+        "min": 0.000295356,
+        "max": 0.190451,
+        "n_nonpositive": 0
+      },
+      "K": {
+        "n": 40,
+        "min": 0.000223757,
+        "max": 0.13879,
+        "n_nonpositive": 0
+      },
+      "L": {
+        "n": 40,
+        "min": 0.000265551,
+        "max": 0.161096,
+        "n_nonpositive": 0
+      },
+      "M": {
+        "n": 40,
+        "min": 0.0002398,
+        "max": 0.154535,
+        "n_nonpositive": 0
+      },
+      "N": {
+        "n": 40,
+        "min": 0.000554751,
+        "max": 0.25668,
+        "n_nonpositive": 0
+      },
+      "O": {
+        "n": 40,
+        "min": 0.000179821,
+        "max": 0.136374,
+        "n_nonpositive": 0
+      },
+      "T": {
+        "n": 40,
+        "min": 0.000219349,
+        "max": 0.138875,
+        "n_nonpositive": 0
+      }
+    },
+    "n_donors": 13,
+    "donors": "BCDGHIJKLMNOT",
+    "n_donors_all_positive": 11
+  },
+  "amplitude_sweep": {
+    "sheet": "Amplitude Sweep",
+    "x_unit": "%",
+    "n_x": 52,
+    "n_repeats": 2,
+    "points_per_repeat": [
+      26,
+      26
+    ],
+    "x_min": 9.95271,
+    "x_max": 2985.8,
+    "per_donor": {
+      "B": {
+        "n": 52,
+        "min": 0.00162148,
+        "max": 0.0987042,
+        "n_nonpositive": 0
+      },
+      "C": {
+        "n": 52,
+        "min": 0.00158553,
+        "max": 0.0892411,
+        "n_nonpositive": 0
+      },
+      "D": {
+        "n": 52,
+        "min": 0.00176062,
+        "max": 0.095311,
+        "n_nonpositive": 0
+      },
+      "G": {
+        "n": 52,
+        "min": 0.00155724,
+        "max": 0.100037,
+        "n_nonpositive": 0
+      },
+      "H": {
+        "n": 52,
+        "min": 0.00148723,
+        "max": 0.125394,
+        "n_nonpositive": 0
+      },
+      "I": {
+        "n": 52,
+        "min": 0.0015156,
+        "max": 0.116773,
+        "n_nonpositive": 0
+      },
+      "J": {
+        "n": 52,
+        "min": 0.00158073,
+        "max": 0.155414,
+        "n_nonpositive": 0
+      },
+      "K": {
+        "n": 52,
+        "min": 0.00160501,
+        "max": 0.112683,
+        "n_nonpositive": 0
+      },
+      "L": {
+        "n": 52,
+        "min": 0.00163084,
+        "max": 0.140867,
+        "n_nonpositive": 0
+      },
+      "M": {
+        "n": 52,
+        "min": 0.000927107,
+        "max": 0.128972,
+        "n_nonpositive": 0
+      },
+      "N": {
+        "n": 52,
+        "min": 0.00278367,
+        "max": 0.250953,
+        "n_nonpositive": 0
+      },
+      "O": {
+        "n": 52,
+        "min": 0.00139972,
+        "max": 0.100326,
+        "n_nonpositive": 0
+      },
+      "P": {
+        "n": 52,
+        "min": 3.38715e-05,
+        "max": 0.0238924,
+        "n_nonpositive": 0
+      },
+      "T": {
+        "n": 52,
+        "min": 0.00193922,
+        "max": 0.101338,
+        "n_nonpositive": 0
+      },
+      "U": {
+        "n": 52,
+        "min": 0.00110505,
+        "max": 0.137808,
+        "n_nonpositive": 0
+      }
+    },
+    "n_donors": 15,
+    "donors": "BCDGHIJKLMNOPTU",
+    "n_donors_all_positive": 15
+  },
+  "channels": {
+    "labels": {
+      "Angular frequency": 1,
+      "Oscillation strain": 1,
+      "Shear Rate": 1,
+      "Shear rate": 51,
+      "Step time": 53,
+      "Storage modulus": 2,
+      "Stress": 54
+    },
+    "phase_like": {}
+  },
+  "lve_plateau": {
+    "per_donor": {
+      "B": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0174758,
+            "G_max": 0.0387193,
+            "strain_at_G_max_pct": 15.774,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.45134596958106166,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.05729261634378721
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0929425,
+            "G_max": 0.0987042,
+            "strain_at_G_max_pct": 25.0001,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9416265974497539,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.5049116450971691
+          }
+        ],
+        "repeat_spread_at_min_strain": 4.31835452454251
+      },
+      "C": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0351906,
+            "G_max": 0.0423479,
+            "strain_at_G_max_pct": 19.8583,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.8309880773308712,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.05294123203275723
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0853618,
+            "G_max": 0.0892411,
+            "strain_at_G_max_pct": 19.8583,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9565301189698469,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.5389579465067105
+          }
+        ],
+        "repeat_spread_at_min_strain": 1.4256989082311753
+      },
+      "D": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.034435,
+            "G_max": 0.0471129,
+            "strain_at_G_max_pct": 19.8583,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.7309038501132387,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.05120338590916713
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0888609,
+            "G_max": 0.095311,
+            "strain_at_G_max_pct": 25.0001,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.932325754634827,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.5400268594390993
+          }
+        ],
+        "repeat_spread_at_min_strain": 1.5805401481051256
+      },
+      "G": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0430155,
+            "G_max": 0.0484296,
+            "strain_at_G_max_pct": 15.774,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.8882067991476287,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.04685440309232369
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0986034,
+            "G_max": 0.100037,
+            "strain_at_G_max_pct": 12.5297,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9856693023581274,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.485732279056749
+          }
+        ],
+        "repeat_spread_at_min_strain": 1.2922760400320814
+      },
+      "H": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0801698,
+            "G_max": 0.0879254,
+            "strain_at_G_max_pct": 15.774,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9117934066833929,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.03198836741146471
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.125394,
+            "G_max": 0.125394,
+            "strain_at_G_max_pct": 9.95271,
+            "first_point_is_the_max": true,
+            "ratio_at_first_point": 1.0,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.5057171794503723
+          }
+        ],
+        "repeat_spread_at_min_strain": 0.564105186741142
+      },
+      "I": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0635123,
+            "G_max": 0.0734185,
+            "strain_at_G_max_pct": 15.774,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.8650721548383581,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.03232877272077201
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.116027,
+            "G_max": 0.116773,
+            "strain_at_G_max_pct": 15.774,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9936115369134989,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.4954210305464448
+          }
+        ],
+        "repeat_spread_at_min_strain": 0.8268429894681819
+      },
+      "J": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0894465,
+            "G_max": 0.0969513,
+            "strain_at_G_max_pct": 12.5297,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9225920642631918,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.027345481700606387
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.154493,
+            "G_max": 0.155414,
+            "strain_at_G_max_pct": 12.5297,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9940738929568764,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.47203533787174906
+          }
+        ],
+        "repeat_spread_at_min_strain": 0.7272112380026048
+      },
+      "K": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0548908,
+            "G_max": 0.0579993,
+            "strain_at_G_max_pct": 12.5297,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9464045255718604,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.04111342723101831
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.112683,
+            "G_max": 0.112683,
+            "strain_at_G_max_pct": 9.95271,
+            "first_point_is_the_max": true,
+            "ratio_at_first_point": 1.0,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.4754417259036412
+          }
+        ],
+        "repeat_spread_at_min_strain": 1.052857673781399
+      },
+      "L": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0903046,
+            "G_max": 0.0989974,
+            "strain_at_G_max_pct": 15.774,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9121916333156225,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.02980613632277211
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.140867,
+            "G_max": 0.140867,
+            "strain_at_G_max_pct": 9.95271,
+            "first_point_is_the_max": true,
+            "ratio_at_first_point": 1.0,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.4598742075858789
+          }
+        ],
+        "repeat_spread_at_min_strain": 0.5599094619764662
+      },
+      "M": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0741982,
+            "G_max": 0.0812536,
+            "strain_at_G_max_pct": 15.774,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9131681550109781,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.02189502988175293
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.128972,
+            "G_max": 0.128972,
+            "strain_at_G_max_pct": 9.95271,
+            "first_point_is_the_max": true,
+            "ratio_at_first_point": 1.0,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.46235772105573303
+          }
+        ],
+        "repeat_spread_at_min_strain": 0.7382092827049711
+      },
+      "N": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.174434,
+            "G_max": 0.176714,
+            "strain_at_G_max_pct": 12.5297,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9870977964394445,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.02851403963466392
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.250953,
+            "G_max": 0.250953,
+            "strain_at_G_max_pct": 9.95271,
+            "first_point_is_the_max": true,
+            "ratio_at_first_point": 1.0,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.4119775416113775
+          }
+        ],
+        "repeat_spread_at_min_strain": 0.43867021337583245
+      },
+      "O": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0509891,
+            "G_max": 0.0591778,
+            "strain_at_G_max_pct": 15.774,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.8616254744177715,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.036422104235034086
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0996378,
+            "G_max": 0.100326,
+            "strain_at_G_max_pct": 19.8583,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9931403624185157,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.5148246715706796
+          }
+        ],
+        "repeat_spread_at_min_strain": 0.954099993920269
+      },
+      "P": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0153245,
+            "G_max": 0.0177336,
+            "strain_at_G_max_pct": 15.774,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.8641505390896378,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.016317329814589256
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0231095,
+            "G_max": 0.0238924,
+            "strain_at_G_max_pct": 15.774,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.967232257956505,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.3560856171837069
+          }
+        ],
+        "repeat_spread_at_min_strain": 0.508010049267513
+      },
+      "T": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0453973,
+            "G_max": 0.0499905,
+            "strain_at_G_max_pct": 19.8583,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9081185425230794,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.05610365969534212
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0995822,
+            "G_max": 0.101338,
+            "strain_at_G_max_pct": 19.8583,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9826738242317787,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.51136098995441
+          }
+        ],
+        "repeat_spread_at_min_strain": 1.1935709832963632
+      },
+      "U": {
+        "n_repeats": 2,
+        "repeats": [
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.0829849,
+            "G_max": 0.0893255,
+            "strain_at_G_max_pct": 15.774,
+            "first_point_is_the_max": false,
+            "ratio_at_first_point": 0.9290169100648751,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.024289256707211267
+          },
+          {
+            "n": 26,
+            "strain_min_pct": 9.95271,
+            "G_at_min_strain": 0.137808,
+            "G_max": 0.137808,
+            "strain_at_G_max_pct": 9.95271,
+            "first_point_is_the_max": true,
+            "ratio_at_first_point": 1.0,
+            "strain_near_1000_pct": 995.267,
+            "ratio_near_1000_pct": 0.4606641123882503
+          }
+        ],
+        "repeat_spread_at_min_strain": 0.6606394657341277
+      }
+    },
+    "n_donors": 15,
+    "n_rising_at_first_point_in_every_repeat": 9,
+    "strain_min_pct": 9.95271,
+    "median_ratio_near_1000_pct": 0.20668911676374707,
+    "max_ratio_near_1000_pct": 0.5400268594390993,
+    "median_repeat_spread_at_min_strain": 0.8268429894681819,
+    "max_repeat_spread_at_min_strain": 4.31835452454251
+  },
+  "laos_donors_union": "GHIJKLMNOPSU",
+  "laos_donors_every_sheet": "GHIJKLMNSU",
+  "donors_with_no_laos": "ABCDFQRT"
+}
