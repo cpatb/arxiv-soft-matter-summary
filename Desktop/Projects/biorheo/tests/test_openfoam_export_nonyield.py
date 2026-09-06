@@ -80,7 +80,10 @@ def test_g1_round_trip_reproduces_eta_at_on_every_record(records):
         nu = rep["nu_openfoam"]
         assert np.all(nu <= p["eta_0"] / RHO * (1 + 1e-12)), rid
         assert np.all(nu >= p["eta_inf"] / RHO * (1 - 1e-12)), rid
-    # the number, so a regression shows as a change and not just a pass
+    # the number, so a regression shows as a change and not just a pass. Measured
+    # 2026-09-05 over all 40 records: 4.3155e-16, on donor L's Carreau-Yasuda record.
+    # (Commit d63158e's message says 3.3e-16; that was a max over the SUBSET the
+    # quick check did not refuse, and 4.3155e-16 is the number over all 40.)
     assert max(worst.values()) < 1e-14, max(worst.items(), key=lambda kv: kv[1])
 
 
