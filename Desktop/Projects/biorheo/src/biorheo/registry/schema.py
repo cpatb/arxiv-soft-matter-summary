@@ -22,7 +22,51 @@ from ..constitutive import RateModel
 from ..units import to_si
 
 __all__ = ["EnvelopeError", "ProvenanceError", "Parameter", "Envelope", "Source",
-           "Licence", "FluidRecord"]
+           "Licence", "FluidRecord", "round_out"]
+
+
+def round_out(x: float, up: bool, sig: int = 6) -> float:
+    """Round ``x`` to ``sig`` significant figures AWAY from zero-error: down for a lower
+    bound (``up=False``), up for an upper bound (``up=True``).
+
+    Why this exists. A record's envelope is written into YAML with ``%.6g``, and
+    six-significant-figure rounding goes whichever way the digits happen to fall. When it
+    rounds a MAXIMUM down or a MINIMUM up, the record's own extreme measured rate lands
+    OUTSIDE its own envelope and ``FluidRecord.eta_at`` refuses to evaluate there.
+    Measured 2026-09-06 before the fix: **12 of the 15 Carbopol records** excluded at
+    least one of their own extreme rates (e.g. a raw maximum of 199.9612229703406 written
+    as 199.961). The 60 blood records were unaffected, because 0.1 and 700 are exact at
+    six figures. Rounding outward cannot exclude a measured rate, and it widens the
+    envelope by at most one unit in the sixth figure.
+
+    The generators call this; the loader cannot, because it never sees the raw curve.
+
+    It works on the ROUNDED DECIMAL, not on pure arithmetic, because the decimal is what
+    is written and read back. ``%.6g`` already rounds the safe way about half the time,
+    and taking ``ceil(x/q)*q`` regardless widens those cases for nothing -- it turns an
+    exact 0.1 into 0.100001, because the float 0.1 is a hair above the decimal 0.1. So:
+    format, read back, and step one unit in the last figure ONLY if that landed on the
+    wrong side. The value returned is exactly what ``f"{value:.6g}"`` will produce.
+    """
+    if not np.isfinite(x):
+        raise ValueError(f"round_out needs a finite value, got {x!r}")
+    if sig < 1:
+        raise ValueError(f"sig must be at least 1, got {sig}")
+    if x == 0.0:
+        return 0.0
+    v = float(f"{x:.{sig}g}")
+    if (v >= x) if up else (v <= x):
+        return v
+    # The step is one unit in x's OWN last significant figure, not v's. They differ when
+    # the rounding crossed a power of ten -- %.6g takes 999999.9 to 1e+06, whose quantum
+    # is 10 where x's is 1, and stepping by v's would return 999990 instead of 999999,
+    # ten times wider than necessary. Caught by the width property in test_registry.py.
+    q = 10.0 ** (np.floor(np.log10(abs(x))) - (sig - 1))
+    out = float(f"{v + q if up else v - q:.{sig}g}")
+    if (out < x) if up else (out > x):  # cannot happen for finite x; refuse rather than lie
+        raise AssertionError(f"round_out({x!r}, up={up}) produced {out!r}, which does not "
+                             "bracket the input; the envelope would exclude a measured rate")
+    return out
 
 
 class ProvenanceError(ValueError):

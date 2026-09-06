@@ -18,9 +18,13 @@ from __future__ import annotations
 
 import csv
 import re
+import sys
 from pathlib import Path
 
 import numpy as np
+
+from biorheo.registry import load_record
+from biorheo.registry.schema import round_out
 
 HERE = Path(__file__).resolve().parent
 CSV = HERE.parents[1] / "carbopol" / "hb_fits_etd2020.csv"
@@ -84,18 +88,38 @@ def main() -> None:
     rows = list(csv.DictReader(CSV.open(encoding="utf-8")))
     assert len(rows) == 15, len(rows)
     OUT.mkdir(exist_ok=True)
+    n_widened = 0
     for r in rows:
         m = re.fullmatch(r"([\d.]+) wt%, (\d+) uL TEA", r["condition"])
         assert m, r["condition"]
         wt, tea = m.group(1), m.group(2)
         rec_id = f"carbopol_etd2020_{wt.replace('.', 'p')}wt_{tea}uL"
-        gmin, gmax = rate_range(wt, tea)
+        raw_min, raw_max = rate_range(wt, tea)
+        # The envelope is written with %.6g, and six-figure rounding goes whichever way
+        # the digits fall -- which put the record's own extreme rate OUTSIDE its own
+        # envelope on 12 of these 15 records before 2026-09-06. Round OUTWARD.
+        gmin, gmax = round_out(raw_min, up=False), round_out(raw_max, up=True)
+        n_widened += (gmin != float(f"{raw_min:.6g}")) or (gmax != float(f"{raw_max:.6g}"))
         text = TEMPLATE.format(
             id=rec_id, wt=wt, tea=tea, tau_y=r["tau_y_Pa"], k=r["K_Pa_sn"], n=r["n"],
             r2=r["R2"], gmin=gmin, gmax=gmax, temp=TEMPERATURE_C, geometry=GEOMETRY,
         )
-        (OUT / f"{rec_id}.yaml").write_text(text, encoding="utf-8", newline="\n")
-        print("wrote", rec_id)
+        path = OUT / f"{rec_id}.yaml"
+        path.write_text(text, encoding="utf-8", newline="\n")
+        # THE GATE (pre-registered in NEXT_STEPS item 8, do not weaken): the record as
+        # WRITTEN AND READ BACK must contain both extreme rates of its own source curve.
+        rec = load_record(path, allow_network=False)
+        inside = rec.envelope.contains(np.array([raw_min, raw_max]))
+        if not inside.all():
+            sys.exit(f"{rec_id}: envelope [{rec.envelope.gammadot_min!r}, "
+                     f"{rec.envelope.gammadot_max!r}] does not contain its own measured "
+                     f"rates [{raw_min!r}, {raw_max!r}] (min ok: {bool(inside[0])}, "
+                     f"max ok: {bool(inside[1])}); the record would refuse to evaluate "
+                     "where it was measured")
+        print(f"wrote {rec_id}  envelope [{rec.envelope.gammadot_min:.6g}, "
+              f"{rec.envelope.gammadot_max:.6g}] contains [{raw_min:.10g}, {raw_max:.10g}]")
+    print(f"\n{n_widened}/15 records needed the envelope widened outward; all 15 now "
+          "contain both of their own extreme measured rates.")
 
 
 if __name__ == "__main__":

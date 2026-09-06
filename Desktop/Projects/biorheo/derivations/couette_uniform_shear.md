@@ -28,7 +28,7 @@ Not an identity: `tau` is evaluated on a dense grid over each record's own envel
 
 | record | model | envelope (1/s) | tau increasing | unique root | root vs gd_mid |
 |---|---|---|---|---|---|
-| carbopol_etd2020_0p1wt_30uL | herschel_bulkley | 0.0010001 to 199.972 | yes | 1 crossing(s) | rel 1.24e-16 |
+| carbopol_etd2020_0p1wt_30uL | herschel_bulkley | 0.0010001 to 199.973 | yes | 1 crossing(s) | rel 0.00e+00 |
 | blood_horner2020_donor_A | casson | 0.1 to 700 | yes | 1 crossing(s) | rel 2.12e-16 |
 
 **0 failure(s).**

@@ -23,6 +23,8 @@ from biorheo.registry import (
 )
 from biorheo.registry.provenance import DOI_RE, is_doi_syntax, resolve_doi
 
+ROOT = Path(__file__).resolve().parent.parent
+
 # A DOI that is in the shipped cache (Biermann & Mesecke 2024 Carbopol ETD2020 dataset,
 # resolved on 2026-09-05). The cache is what makes these tests run offline.
 CACHED_DOI = "10.25835/hjn2qcvy"
@@ -338,3 +340,105 @@ def test_write_identifiability_refuses_a_foreign_fit(tmp_path):
     reloaded = load_record(rec.path)
     assert reloaded.verdicts == {"tau_y": "measurable", "k": "measurable", "n": "measurable"}
     assert reloaded.identifiability["data_note"] == "synthetic self-fit"
+
+
+# ------------------------------------------------- NEXT_STEPS item 8: envelope rounding
+
+
+def test_round_out_never_excludes_its_input_and_is_what_gets_written():
+    """`round_out` is the fix for the envelope being written rounded INWARD. Two
+    properties, both required:
+
+    1. the bracket [round_out(x, down), round_out(x, up)] always contains x;
+    2. the value returned IS what `%.6g` will write, so nothing is lost between the
+       rounding and the file.
+
+    Property 2 is why this works on the formatted decimal rather than on `ceil(x/q)*q`:
+    the pure-arithmetic form widens an exact 0.1 to 0.100001, because the float 0.1 sits
+    a hair above the decimal 0.1."""
+    from biorheo.registry.schema import round_out
+
+    rng = np.random.default_rng(0)
+    vals = np.concatenate([rng.uniform(1e-6, 1e6, 5000),
+                           np.exp(rng.uniform(-30, 30, 5000)),
+                           np.array([1e-3, 199.9612229703406, 0.0009902779138, 1.0,
+                                     999999.9, 700.0, 0.1, 0.001])])
+    for x in vals:
+        x = float(x)
+        lo, hi = round_out(x, up=False), round_out(x, up=True)
+        assert lo <= x <= hi, (x, lo, hi)
+        assert float(f"{lo:.6g}") == lo and float(f"{hi:.6g}") == hi, (x, lo, hi)
+        assert (hi - lo) / abs(x) <= 1.0000001e-5, (x, lo, hi)   # one unit in the 6th figure
+
+    # values already exact at six figures are returned untouched, in BOTH directions
+    for x in (0.1, 700.0, 0.001, 1.0):
+        assert round_out(x, up=False) == x and round_out(x, up=True) == x, x
+    assert round_out(0.0, up=True) == 0.0
+    # the two cases the Carbopol records actually hit
+    assert round_out(199.9612229703406, up=True) == 199.962
+    assert round_out(0.0009902779138, up=False) == 0.000990277
+
+
+def test_every_record_can_be_evaluated_where_it_was_measured():
+    """THE GATE, pre-registered in NEXT_STEPS item 8. A record whose envelope excludes
+    one of its own extreme measured rates refuses to evaluate where the data is, which
+    is the opposite of what the envelope is for.
+
+    Measured 2026-09-06 BEFORE the fix: 12 of the 15 Carbopol records failed this, and
+    0 of the 60 blood records did (0.1 and 700 are exact at six figures). The generators
+    now round outward and carry this same check, exiting non-zero."""
+    import re
+    import sys
+
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import records_from_carbopol as C
+
+    recs = load_all(allow_network=False)
+    carbopol = {k: v for k, v in recs.items() if v.model.name == "herschel_bulkley"}
+    assert len(carbopol) == 15, len(carbopol)
+    for rid, rec in sorted(carbopol.items()):
+        m = re.fullmatch(r"carbopol_etd2020_(\d)p(\d)wt_(\d+)uL", rid)
+        assert m, rid
+        raw_min, raw_max = C.rate_range(f"{m.group(1)}.{m.group(2)}", m.group(3))
+        inside = rec.envelope.contains(np.array([raw_min, raw_max]))
+        assert inside.all(), (rid, raw_min, raw_max, rec.envelope)
+        # and eta_at itself, which is what a caller actually hits
+        rec.eta_at(np.array([raw_min, raw_max]))
+
+    # the blood curve's own extremes, from the source CSV rather than from the record
+    import csv
+    with open(ROOT / "data" / "horner2020" / "steady_shear_human.csv",
+              newline="", encoding="utf-8") as f:
+        gd = np.array([float(r[0]) for r in list(csv.reader(f))[1:]])
+    for rid, rec in sorted(recs.items()):
+        if rec.model.name == "herschel_bulkley":
+            continue
+        assert rec.envelope.contains(np.array([gd.min(), gd.max()])).all(), rid
+
+
+def test_the_gate_would_have_caught_the_old_inward_rounding():
+    """A negative control: the gate above must FAIL on the envelopes the generators
+    wrote before 2026-09-06, or it is not testing anything. Rebuilds the old `%.6g`
+    envelope for each Carbopol condition and counts how many exclude their own data."""
+    import re
+    import sys
+
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import records_from_carbopol as C
+    from biorheo.registry.schema import Envelope
+
+    recs = load_all(allow_network=False)
+    excluded = []
+    for rid, rec in sorted(recs.items()):
+        m = re.fullmatch(r"carbopol_etd2020_(\d)p(\d)wt_(\d+)uL", rid)
+        if not m:
+            continue
+        raw_min, raw_max = C.rate_range(f"{m.group(1)}.{m.group(2)}", m.group(3))
+        old = Envelope(gammadot_min=float(f"{raw_min:.6g}"),
+                       gammadot_max=float(f"{raw_max:.6g}"),
+                       temperature_C=rec.envelope.temperature_C,
+                       geometry=rec.envelope.geometry)
+        if not old.contains(np.array([raw_min, raw_max])).all():
+            excluded.append(rid)
+    # measured 2026-09-06: exactly 12 of 15. If this ever reads 0 the gate is inert.
+    assert len(excluded) == 12, (len(excluded), excluded)

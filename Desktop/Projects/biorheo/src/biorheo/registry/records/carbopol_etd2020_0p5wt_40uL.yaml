@@ -7,8 +7,8 @@ parameters:
   k: {value: 8.903, unit: Pa*s**0.4526}
   n: {value: 0.4526, unit: dimensionless}
 envelope:
-  gammadot_min: {value: 0.000999021, unit: 1/s}
-  gammadot_max: {value: 199.967, unit: 1/s}
+  gammadot_min: {value: 0.00099902, unit: 1/s}
+  gammadot_max: {value: 199.968, unit: 1/s}
   temperature_C: 20
   geometry: smooth 50 mm parallel plates, 0.5 mm gap, stress-controlled sweep
 sources:
