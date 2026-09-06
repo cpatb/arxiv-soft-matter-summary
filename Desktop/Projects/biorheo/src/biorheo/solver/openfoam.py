@@ -364,6 +364,12 @@ def parse_transport_properties(text: str, *, expect: str | None = None,
     ``;``-terminated chunk of the coefficients block must be a well-formed entry, so a
     dropped semicolon raises instead of silently reading as an omitted key.
     """
+    # Both OpenFOAM comment forms, block first so a `//` inside one cannot truncate it.
+    # The block form was added 2026-09-06: the residue check below rejects anything
+    # `_ENTRY` cannot consume, which turned a perfectly legal `/* ... */` inside a
+    # coefficients block into a hard parse error. That only ever bit a dictionary
+    # biorheo did not write -- which is exactly the case `expect=None` exists for.
+    text = re.sub(r"/\*.*?\*/", "", text, flags=re.S)
     text = re.sub(r"//[^\n]*", "", text)
     m = _MODEL_ENTRY.search(text)
     if m is None:
@@ -376,11 +382,23 @@ def parse_transport_properties(text: str, *, expect: str | None = None,
     coeffs = {k: float(v) for k, v in _ENTRY.findall(body)}
     residue = _ENTRY.sub("", body).strip()
     if residue:
+        # Two different failures share this check and the caller needs to tell them
+        # apart: a MALFORMED entry (a dropped semicolon, a comma decimal) means the file
+        # is wrong, while an UNSUPPORTED CONSTRUCT (`$var` expansion, `#include`,
+        # `#calc`) means the file is fine and this parser is not OpenFOAM. Both must
+        # refuse -- silently skipping either would let an optional key fall back to its
+        # default and change the law -- but the message says which.
+        unsupported = sorted({t for t in ("$", "#") if t in residue})
+        hint = (f" This looks like an OpenFOAM construct this parser does not implement "
+                f"({', '.join(unsupported)}...): expansion, includes and computed "
+                "entries are not evaluated here. Resolve them with "
+                "`foamDictionary -expand` first." if unsupported else
+                " A malformed entry is NOT treated as an absent one: OpenFOAM's "
+                "dictionary reader raises here, and for an optional key like "
+                "BirdCarreau's `a` a silent default would change the law with no error.")
         raise ValueError(
             f"{of_name}Coeffs contains text this parser cannot read as an entry: "
-            f"{residue!r}. A malformed entry is NOT treated as an absent one: OpenFOAM's "
-            "dictionary reader raises here, and for an optional key like BirdCarreau's "
-            "`a` a silent default would change the exported law without any error.")
+            f"{residue!r}.{hint}")
     for k, default in _OPTIONAL_COEFFS.get(of_name, {}).items():
         if k not in coeffs:
             coeffs[k] = default

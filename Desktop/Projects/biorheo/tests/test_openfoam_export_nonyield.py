@@ -248,3 +248,37 @@ def test_g8_the_exported_header_says_nu0_is_the_record_not_a_clamp(records):
                                        RHO, None, allow_unidentified=True)
     assert "no clamp" in text and "fitted parameter" in text
     assert "clamp eta_max" not in text
+
+
+# ------------------------------------------------- the residue check's own blind spot
+
+
+def test_block_comments_are_stripped_and_unsupported_constructs_are_named(records):
+    """The residue check added for the malformed-`a` bug (it rejects anything `_ENTRY`
+    cannot consume) initially rejected a legal `/* ... */` inside a coefficients block
+    too, which only ever bites a dictionary biorheo did not write -- exactly the case
+    `expect=None` exists for. Raised by the code review 2026-09-06.
+
+    Both comment forms are stripped, block first so a `//` inside a block comment cannot
+    truncate it. And the two reasons the residue check can fire are told apart in the
+    message: a MALFORMED entry means the file is wrong, an UNSUPPORTED CONSTRUCT
+    (`$var`, `#include`) means the file is fine and this parser is not OpenFOAM. Both
+    still refuse -- skipping either would let `a` fall back to 2 and change the law."""
+    rec = records["blood_horner2020_donor_S_carreau_yasuda"]
+    text = export_transport_properties(rec, RHO, None)
+    a = parse_transport_properties(text, expect="carreau_yasuda")[1]["a"]
+
+    for injected in ("/* fitted 2026 */", "/* see // note */", "/* multi\n    line */"):
+        block = text.replace("    nu0 ", f"    {injected}\n    nu0 ")
+        assert parse_transport_properties(block, expect="carreau_yasuda")[1]["a"] == a
+
+    with pytest.raises(ValueError, match="malformed entry is NOT treated as an absent"):
+        parse_transport_properties(
+            re.sub(r"^(    a\s+[-+0-9.eE]+);", r"\1", text, flags=re.M),
+            expect="carreau_yasuda")
+
+    for construct in ("$nuZero;", '#include "coeffs"'):
+        with pytest.raises(ValueError, match="does not implement"):
+            parse_transport_properties(
+                text.replace("    nu0 ", f"    {construct}\n    nu0 "),
+                expect="carreau_yasuda")
