@@ -1,32 +1,37 @@
 """Pins the multi-start seed-scatter studies (NEXT_STEPS items 9 and 10).
 
-Three criteria, fixed in `scripts/multistart_seed_scatter.py`'s docstring before the
-held-out families were looked at. **One passed and two failed, and no bar was moved.**
+Three criteria, fixed in `scripts/multistart_seed_scatter.py`'s docstring. **All three
+PASS.** An earlier run reported two of them FAILED; that failure is RETRACTED and the
+retraction is the more useful part of this file.
 
-  G9.1 PASSED  -- 54 all-`measurable` records, worst seed spread 5.997e-05 (bar 1e-3).
-  G9.2 FAILED  -- 1 of 80 (model, donor) pairs moves more than 1e-1 without carrying a
-                  `degenerate` or `not_identifiable` verdict: Herschel-Bulkley on donor
-                  G, 4.149 in `tau_y`, graded `bounded_only`.
-  G9.3 FAILED over all 80 on the same record, and PASSES over the 43 export-accepted
-                  records in the families that actually ship (worst 5.997e-05).
+  G9.1 no all-`measurable` record moves more than 1e-3 of its own confidence interval.
+  G9.2 nothing `check_exportable` accepts moves more than 1e-1.
+  G9.3 the same predicate at 1e-3. G9.3 implies G9.2; they are one nested criterion with
+       two bars, not two independent results.
 
-The load-bearing statement is the narrow one: **the identifiability verdicts predict seed
-scatter for everything the registry ships, and there is one demonstrated counterexample in
-a family that does not ship.** The counterexample is what stops `bounded_only` being read
-as "determined, with a one-sided interval".
+**THE RETRACTION.** The first version divided the seed-to-seed span by `|mean|`. For
+Herschel-Bulkley on donor G that gave 4.149 -- "a 415 % move" -- and a docstring claim, a
+pinned test and a new API flag were built on it. The five seeds return `tau_y` =
+1.61e-19, 9.81e-19, 5.00e-22, 3.27e-20, 5.94e-21 Pa against a smallest measured stress of
+1.583e-03 Pa, with an identical profile interval [0, 0.01953] on all five: the optimiser
+converged the parameter to ZERO five times, and the ratio was dust over dust. Had
+`least_squares` returned exactly 0.0 the criterion would have passed. The metric now
+measures a span in units of the parameter's own 95 % profile interval -- a parameter that
+moves less than its stated uncertainty has not moved -- and the retracted ratio is still
+computed and printed so the number stays visible.
 
-The objective is what makes this a statement about FLATNESS rather than about a failed
-search: it moves by at most 6.5e-10 relative across all 80 pairs, so no seed is landing on
-a worse optimum.
+That is this repo's own lesson ("a relative sensitivity whose denominator is itself
+shrinking measures the shrinkage") applied to its own instrument, one session after it was
+written down.
 
-Item 10 closes the scope gap item 9 left: the 15 Carbopol records were never in the blood
-study. On that independent set (different material, instrument, 54 points per curve, and a
-DIFFERENT FITTER for the shipped values) all three criteria PASS -- worst spread 5.409e-06,
-seed-stable verdicts on 15/15, and all 225 (seed, parameter, record) intervals still
-contain the value the record ships. So the blood failure is one record in one family, not
-a property of the identify layer.
+The objective moves by at most 6.5e-10 in `rmse_log` across all 80 pairs -- 1.3e-9 in the
+least-squares cost, which is what the optimiser minimises -- so where parameters do move,
+it is flatness and not a failed search.
+
+Item 10 asks the same question of the 15 Carbopol records, an independent set (different
+material, instrument, 54 points per curve, and a DIFFERENT FITTER for the shipped values).
+All three of its criteria pass too.
 """
-
 from __future__ import annotations
 
 import json
@@ -55,81 +60,110 @@ def test_the_bars_are_the_ones_that_were_pre_registered(ms):
     assert ms["G93_bar"] == 1e-3
     assert ms["seeds"] == [0, 1, 2, 3, 4]
     assert ms["families"] == ["casson", "herschel_bulkley", "cross", "carreau_yasuda"]
-    assert ms["exploratory"] == ["carreau_yasuda"]
-    assert ms["shipped_families"] == ["casson", "cross", "carreau_yasuda"]
     assert sum(len(v) for v in ms["records"].values()) == 80
+    # the metric is part of the criterion, so a silent change to it must fail here
+    assert ms["metric"].startswith("seed span in units of the parameter")
 
 
-def test_g91_passed_no_all_measurable_record_wanders(ms):
-    """The criterion that did hold: a record whose parameters are all `measurable` does
-    not move under a change of seed."""
+def test_all_three_criteria_pass(ms):
     assert ms["G91_violations"] == []
+    assert ms["G92_violations"] == []
+    assert ms["G93_violations"] == []
     assert ms["n_all_measurable"] == 54
-    assert ms["worst_spread_all_measurable"] == pytest.approx(5.996843e-05, rel=1e-4)
-    assert ms["worst_spread_all_measurable"] < ms["G91_bar"]
-
-
-def test_g92_FAILED_and_is_recorded_as_failed(ms):
-    """G9.2 said every record moving more than 1e-1 must carry a `degenerate` or
-    `not_identifiable` verdict. It does not. The bar stays where it was written and the
-    failing number is pinned, so a later run that quietly stops reproducing it fails
-    here."""
-    assert ms["G92_violations"] == [["herschel_bulkley", "G", pytest.approx(4.1486, rel=1e-4)]]
-    g = ms["records"]["herschel_bulkley"]["G"]
-    assert g["worst_param"] == "tau_y"
-    assert g["verdicts"]["tau_y"] == "bounded_only"
-    # neither of the verdicts an export refuses -- which is the whole point of the failure
-    assert not g["has_bad_verdict"]
-    assert g["param_spread"] > ms["G92_bar"]
-
-
-def test_g93_fails_over_everything_but_passes_over_what_ships(ms):
-    """The stricter replacement. It fails on the same single record, and that record is
-    Herschel-Bulkley, which is fitted for `model_comparison.md` and never shipped as a
-    blood record. Over the families that do ship it passes by two orders of magnitude."""
-    assert ms["G93_violations"] == [["herschel_bulkley", "G", pytest.approx(4.1486, rel=1e-4)]]
-    assert ms["G93_violations_shipped"] == []
     assert ms["n_export_accepted"] == 63
-    assert ms["n_export_accepted_shipped"] == 43
-    assert ms["worst_spread_export_accepted_shipped"] == pytest.approx(5.996843e-05, rel=1e-4)
-    assert ms["worst_spread_export_accepted_shipped"] < ms["G93_bar"]
+    assert ms["worst_spread_all_measurable"] == pytest.approx(2.9724e-05, rel=1e-3)
+    assert ms["worst_spread_all_measurable"] < ms["G91_bar"]
+    assert ms["worst_spread_export_accepted"] < ms["G93_bar"]
+
+
+def test_the_retracted_metric_is_still_visible_and_is_the_artefact_it_was(ms):
+    """The retracted number stays computed so nobody has to take the retraction on
+    trust. Donor G's `tau_y` is zero to eighteen decimal places on all five seeds; the
+    4.149 was that span over that mean."""
+    assert ms["worst_spread_over_mean"] == pytest.approx(4.1486, rel=1e-4)
+    g = ms["records"]["herschel_bulkley"]["G"]
+    assert g["param_spread_over_mean"] == pytest.approx(4.1486, rel=1e-4)
+    vals = g["values_by_seed"]["tau_y"]
+    assert len(vals) == 5 and max(abs(v) for v in vals) < 1e-18, vals
+    # against the parameter's own interval it is nothing, which is the corrected metric
+    assert g["ci_width"]["tau_y"] == pytest.approx(0.01953, rel=1e-3)
+    # tau_y's OWN contribution, not the record max (which is set by k at ~3e-09)
+    assert g["per_param_spread"]["tau_y"] < 1e-15, g["per_param_spread"]["tau_y"]
+    assert g["param_spread"] < 1e-6, g["param_spread"]
+    # and it is NOT a violation of anything any more
+    assert ("herschel_bulkley", "G") not in [tuple(v[:2]) for v in ms["G92_violations"]]
 
 
 def test_the_objective_does_not_move_so_this_is_flatness_not_a_failed_search(ms):
     """If the cost moved, some seeds would be landing on worse optima and the finding
-    would be about convergence instead. It does not move."""
+    would be about convergence instead. `rmse_log` is a monotone function of the
+    least-squares cost the optimiser minimises, so a bound on one bounds the other."""
     assert ms["worst_cost_spread"] < 1e-8, ms["worst_cost_spread"]
     for fam, donors in ms["records"].items():
         for d, r in donors.items():
             assert r["cost_spread"] < 1e-8, (fam, d, r["cost_spread"])
 
 
-def test_the_movers_are_the_three_recorded_ones(ms):
+def test_the_movers_are_the_two_degenerate_carreau_yasuda_records(ms):
+    """Both survive the metric change, and both carry a `degenerate` /
+    `not_identifiable` verdict -- which is the positive content G9.2 was written for."""
     movers = [(f, d) for f, ds in ms["records"].items() for d, r in ds.items()
               if r["param_spread"] > ms["G92_bar"]]
-    assert sorted(movers) == [("carreau_yasuda", "B"), ("carreau_yasuda", "L"),
-                              ("herschel_bulkley", "G")]
-    assert ms["n_movers"] == 3
+    assert sorted(movers) == [("carreau_yasuda", "B"), ("carreau_yasuda", "L")]
+    assert ms["n_movers"] == 2
+    for f, d in movers:
+        assert ms["records"][f][d]["has_bad_verdict"], (f, d)
 
 
-def test_the_md_quotes_its_own_json(ms):
+def test_verdicts_are_seed_dependent_on_three_records_and_are_read_over_all_seeds(ms):
+    """A real finding the review predicted. The verdict SET changes with the seed on 3 of
+    80 pairs, so deciding which criterion a record falls under from seed 0 alone would
+    make the populations a function of seed 0's luck. Both `all_measurable` and
+    `has_bad_verdict` are therefore taken over all five seeds."""
+    assert sorted(tuple(v) for v in ms["verdict_unstable"]) == [
+        ("carreau_yasuda", "A"), ("carreau_yasuda", "B"), ("carreau_yasuda", "L")]
+    for f, d in [tuple(v) for v in ms["verdict_unstable"]]:
+        r = ms["records"][f][d]
+        assert not r["verdict_seed_stable"]
+        assert len({tuple(sorted(v.items())) for v in r["verdicts_by_seed"].values()}) > 1
+    # the unstable ones all still land on the same side of the export check
+    for f, d in [tuple(v) for v in ms["verdict_unstable"]]:
+        assert ms["records"][f][d]["has_bad_verdict"], (f, d)
+
+
+def test_the_md_quotes_its_own_json_and_carries_the_retraction(ms):
     md = MD.read_text(encoding="utf-8")
-    assert "**FAILED**" in md, "the two failures must be visible on the page"
+    assert "**FAILED**" not in md, "all three criteria pass now"
+    assert "## Retraction" in md and "415 %" in md
     assert f"{ms['worst_cost_spread']:.2e}" in md
     assert f"{ms['worst_spread_all_measurable']:.3e}" in md
+    assert f"{ms['worst_spread_over_mean']:.3e}" in md
 
 
 @pytest.mark.slow
 def test_rerunning_reproduces_the_verdicts():
-    """The fits are seeded, so a re-run must be identical. ~20 minutes."""
-    if not WORKBOOK_CSV.exists():
-        pytest.skip("source CSV missing")
-    before = json.loads(JSON.read_text())
-    r = subprocess.run([sys.executable,
-                        str(ROOT / "scripts" / "multistart_seed_scatter.py")],
-                       capture_output=True, text=True, cwd=ROOT)
-    assert r.returncode == 0, r.stderr[-2000:]
-    assert json.loads(JSON.read_text()) == before
+    """The fits are seeded, so a re-run must be identical. ~20 minutes.
+
+    NON-DESTRUCTIVE. The script writes over the committed JSON, so the original is saved
+    and RESTORED before any assertion can fail -- an earlier version compared and then
+    left the artifact overwritten, so a failure destroyed the reference it was checking
+    against (code review 2026-09-06). The source CSV is committed, so its absence is a
+    real error rather than a reason to skip: a silent skip on the only test that can
+    fail is not a test."""
+    assert WORKBOOK_CSV.exists(), WORKBOOK_CSV
+    original_json = JSON.read_text()
+    original_md = MD.read_text(encoding="utf-8")
+    try:
+        r = subprocess.run([sys.executable,
+                            str(ROOT / "scripts" / "multistart_seed_scatter.py")],
+                           capture_output=True, text=True, cwd=ROOT)
+        rc, err = r.returncode, r.stderr[-2000:]
+        after = JSON.read_text()
+    finally:
+        JSON.write_text(original_json, encoding="utf-8", newline="")
+        MD.write_text(original_md, encoding="utf-8", newline="")
+    assert rc == 0, err
+    assert json.loads(after) == json.loads(original_json)
 
 
 # ------------------------------------------------ NEXT_STEPS item 10: the Carbopol set
@@ -185,6 +219,25 @@ def test_carbopol_verdicts_do_not_depend_on_the_seed(cms):
     for rid, r in cms["records"].items():
         sets = {tuple(sorted(v.items())) for v in r["verdicts_by_seed"].values()}
         assert len(sets) == 1, (rid, sets)
+
+
+@pytest.mark.slow
+def test_carbopol_rerunning_reproduces_the_verdicts():
+    """Same shape, same non-destructive discipline. A few minutes."""
+    original_json = CARBOPOL_JSON.read_text()
+    original_md = CARBOPOL_MD.read_text(encoding="utf-8")
+    try:
+        r = subprocess.run(
+            [sys.executable,
+             str(ROOT / "scripts" / "multistart_seed_scatter_carbopol.py")],
+            capture_output=True, text=True, cwd=ROOT)
+        rc, err = r.returncode, r.stderr[-2000:]
+        after = CARBOPOL_JSON.read_text()
+    finally:
+        CARBOPOL_JSON.write_text(original_json, encoding="utf-8", newline="")
+        CARBOPOL_MD.write_text(original_md, encoding="utf-8", newline="")
+    assert rc == 0, err
+    assert json.loads(after) == json.loads(original_json)
 
 
 def test_carbopol_md_quotes_its_own_json(cms):

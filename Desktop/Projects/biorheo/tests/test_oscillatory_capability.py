@@ -124,9 +124,18 @@ def test_the_md_quotes_its_own_json(cap):
 def test_rerunning_reproduces_the_verdict():
     if not WORKBOOK.exists():
         pytest.skip("workbook is gitignored; see data/horner2020/SOURCE.md")
-    before = JSON.read_text()
-    r = subprocess.run([sys.executable,
-                        str(ROOT / "scripts" / "oscillatory_capability_horner.py")],
-                       capture_output=True, text=True, cwd=ROOT)
-    assert r.returncode == 0, r.stderr[-2000:]
-    assert json.loads(JSON.read_text()) == json.loads(before)
+    # non-destructive: restore before asserting, so a failure does not destroy the
+    # reference it is checking against (code review 2026-09-06)
+    original_json = JSON.read_text()
+    original_md = MD.read_text(encoding="utf-8")
+    try:
+        r = subprocess.run([sys.executable,
+                            str(ROOT / "scripts" / "oscillatory_capability_horner.py")],
+                           capture_output=True, text=True, cwd=ROOT)
+        rc, err = r.returncode, r.stderr[-2000:]
+        after = JSON.read_text()
+    finally:
+        JSON.write_text(original_json, encoding="utf-8", newline="")
+        MD.write_text(original_md, encoding="utf-8", newline="")
+    assert rc == 0, err
+    assert json.loads(after) == json.loads(original_json)

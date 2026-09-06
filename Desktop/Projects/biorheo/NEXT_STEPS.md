@@ -9,17 +9,18 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 207 passed, 4 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be 50ff1c3 or later
+python -m pytest -q -m "not slow"      # must print: 223 passed, 6 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be the item-10 fix commit or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
 the CRLF warnings are noise.
 
-The four slow tests are the `dst_fit` suite gate, an OpenFOAM re-run of the plane-Couette
-anchor (~25 min, needs WSL), the real-curve half of the model-comparison control, and a
-re-run of the oscillatory-capability census (needs the gitignored workbook). Run them
-with `-m slow` before believing anything about the L3 bridge.
+The six slow tests are the `dst_fit` suite gate, an OpenFOAM re-run of the plane-Couette
+anchor (~25 min, needs WSL), the real-curve half of the model-comparison control, a re-run
+of the oscillatory-capability census, and re-runs of the two seed-scatter studies (~20 min
+and ~3 min). All of them RESTORE the artifact they overwrite before asserting, so a
+failure cannot destroy the reference it was checking against.
 
 ## Rules that are specific to this repo
 
@@ -188,44 +189,134 @@ Do not reopen this by re-asking about sampling. A discriminating measurement nee
 channel on the same donors, an amplitude sweep reaching into the linear region, or a step
 sampled an order of magnitude faster on the rise.
 
-### 8. NEXT ITEM, not started: the envelope is written rounded INWARD
-Written for zero context, and it is small and self-contained.
+### 8. DONE 2026-09-06: the envelope was written rounded INWARD
+`%.6g` rounds whichever way the digits fall, so a MAXIMUM could round down and a MINIMUM
+up, putting a record's own extreme measured rate outside its own envelope --
+`FluidRecord.eta_at` then refuses to evaluate where the data is. **Measured before the
+fix: 12 of the 15 Carbopol records; 0 of 60 blood records (0.1 and 700 are exact at six
+figures). After: 0 of 15.**
 
-`scripts/records_from_carbopol.py` and `scripts/records_from_horner.py` write the measured
-envelope with `{gmin:.6g}` / `{gmax:.6g}`. Six-significant-figure rounding goes whichever
-way the digits fall, so it can round a MAXIMUM DOWN and a MINIMUM UP, which puts the
-record's own extreme measured rate OUTSIDE its own envelope. Measured 2026-09-05 on the
-Carbopol records: a raw maximum of `199.9612229703406` is written as `199.961`, and
-`FluidRecord.eta_at` raises `EnvelopeError` for anything above that. The blood records are
-unaffected (0.1 and 700 are exact at 6 figures), so no shipped number moves — this is a
-latent defect, not a live one.
+`registry.schema.round_out` rounds outward, working on the ROUNDED DECIMAL rather than on
+`ceil(x/q)*q` -- the arithmetic form widens an exact 0.1 to 0.100001. One edge case the
+property test caught: when `%.6g` crosses a power of ten (999999.9 -> 1e+06) the step
+quantum must come from `x`'s exponent, not the rounded value's. Both generators now carry
+the gate (write, read the record BACK, require its envelope to contain both extremes of
+its own source curve, exit non-zero otherwise). `tests/test_registry.py` has a NEGATIVE
+CONTROL that rebuilds the old envelopes and requires exactly 12 of 15 to fail -- if that
+ever reads 0 the gate is inert.
 
-The fix is in the GENERATORS, not the loader or the records (records are generated). Round
-OUTWARD at 6 significant figures: floor the minimum, ceil the maximum, e.g.
+**Two corrections to what the first commit of this item claimed, both found by review:**
 
-```python
-def round_out(x: float, up: bool, sig: int = 6) -> float:
-    """Round to `sig` significant figures AWAY from the data, so a written envelope can
-    never exclude a rate that was measured."""
-    if x == 0.0:
-        return 0.0
-    q = 10.0 ** (math.floor(math.log10(abs(x))) - (sig - 1))
-    return (math.ceil(x / q) if up else math.floor(x / q)) * q
-```
+1. It said BOTH generators had the gate. `records_from_horner.py` did not -- a patch had
+   silently not applied and I trusted its "patched" print instead of grepping the file.
+   Fixed and verified on disk. The blood records were never at risk (0.1 and 700 are
+   exact) but the generator would not have caught it if they had been.
+2. It said the anchor re-run left "every gate value BIT-IDENTICAL, so no shipped number
+   moves". The six pass/fail scalars ARE bit-identical -- but they are MAXIMA over 33
+   rows, and a max cannot see the other rows move. **7 of the 33 rows changed** (all
+   seven Carbopol cases), and `verdict.A5prime_cauchy.worst_contraction_ratio` moved
+   0.004368 -> 0.001856, a factor of 2.35, from a 5e-6 change in one input rate. This is
+   the byte-identity-on-an-extremal trap from `lessons.md`, made by the person who wrote
+   that lesson. The honest statement: the six verdicts and their scalars are unchanged;
+   seven rows and one A5' diagnostic are not. Worth noting separately that
+   `worst_contraction_ratio` -- the diagnostic added to catch a stalled A5' -- moves 2.35x
+   under a 5e-6 rate change, so it is not carrying convergence information.
 
-Gate to pre-register before writing code (do not weaken it): after regenerating, for
-EVERY record, the raw minimum and maximum rate of the source curve must satisfy
-`record.envelope.contains(...)` — checked in the generator itself, which exits non-zero
-otherwise, and pinned in `tests/test_registry.py` against the two source CSVs. Report how
-many of the 75 records move and by how much; expect the 15 Carbopol ones to move in the
-7th figure and the 60 blood ones not at all. If a record does NOT move, say so rather than
-implying the fix was needed everywhere.
+### 9. DONE 2026-09-06 (all three criteria PASS, after a RETRACTION): multi-start seed scatter
+The referee item was "document dst_fit's multi-start guess collision". It was measured
+instead: all 20 blood curves refitted five times under four models, changing nothing but
+the optimiser's seed (`scripts/multistart_seed_scatter.py` ->
+`data/horner2020/multistart_scatter.md`).
 
-### 9. Also not started, smaller: the two remaining item-5 referee notes
-No shipped number depends on either. (a) Document dst_fit's multi-start guess collision —
-two starts that collapse to the same guess make the multi-start report a spurious
-agreement. (b) Document the caveat that a Wald correlation computed at a parameter bound
-is not interpretable, which is the situation for the `bounded_only` verdicts.
+**Read the retraction in that file before using any of this.** The first version divided
+the seed-to-seed span by `|mean|` and reported G9.2 and G9.3 as FAILED on one record --
+Herschel-Bulkley, donor G, "4.149, i.e. 415 %, in `tau_y`". A docstring claim, a pinned
+test and a new `strict_identifiability` API flag were built on that before a code review
+caught it. The five seeds return `tau_y` = 1.61e-19, 9.81e-19, 5.00e-22, 3.27e-20,
+5.94e-21 Pa against a smallest measured stress of 1.583e-03 Pa, with an identical profile
+interval [0, 0.01953] on all five: **the optimiser converged the parameter to zero five
+times out of five and the ratio was dust over dust.** Had `least_squares` returned exactly
+0.0 the criterion would have passed. This repo's own lesson -- "a relative sensitivity
+whose denominator is itself shrinking measures the shrinkage" -- applied to its own
+instrument one session after being written down.
+
+The metric now measures a span in units of the parameter's OWN 95 % profile interval; the
+retracted ratio is still computed and printed so the number stays visible. Bars unchanged.
+Results: **G9.1, G9.2 and G9.3 all PASS** -- 54 all-`measurable` records with a worst
+spread of 2.972e-05, 63 export-accepted with the same worst. The two real movers are
+Carreau-Yasuda donors B and L, both carrying `degenerate` / `not_identifiable`, which is
+the positive content the criteria were written for. G9.3 is G9.2's predicate at a lower
+bar over the SAME set, so they are one nested criterion, not two results.
+
+The objective moves by at most 6.5e-10 in `rmse_log` (1.3e-9 in the least-squares cost),
+so this is flatness and not a failed search.
+
+**A real finding the review predicted:** the verdict SET is seed-dependent on 3 of the 80
+pairs (Carreau-Yasuda A, B, L). Both `all_measurable` and `has_bad_verdict` are now taken
+over all five seeds; the sidecar still records seed 0's only.
+
+Also from this item: `check_exportable` gained `strict_identifiability=True` (off by
+default). **Its original justification is withdrawn** -- what survives is that a genuinely
+degenerate parameter whose covariance row is NaN is labelled `bounded_only` and accepted
+by default, which is the gap the flag closes. Two other review fixes landed here: the
+Wald-correlation-at-a-bound caveat is documented, and `verdict_for` now filters to FINITE
+correlations before taking a max (`max([(nan,'a'),(0.995,'b')])` returns the NaN, so a
+real degeneracy was found or missed depending on column order).
+
+### 10. DONE 2026-09-06 (all three PASS): the same question, asked of Carbopol
+`scripts/multistart_seed_scatter_carbopol.py` -> `data/carbopol_multistart_scatter.md`,
+on an independent set: different material, instrument, 54 points per curve, and a
+DIFFERENT FITTER for the shipped values. G10.1 and G10.2 pass at a worst spread of
+5.409e-06; **G10.3 is the one specific to this set** -- because the shipped values come
+from `carbopol/fit_hb.py`, seed scatter moves the SIDECAR rather than the record, and
+`write_identifiability`'s containment rule had only ever been checked at seed 0. All 225
+(seed, parameter, record) intervals contain the shipped value, and the verdict sets are
+seed-stable on 15/15.
+
+### 11. NEXT ITEM, not started: the L3 bridge for `newtonian` and `power_law`
+Written for zero context. `solver/openfoam.py` exports four of the registry's seven
+constitutive families and raises `NotImplementedError` for `newtonian`, `power_law` and
+`structural_steady`. OpenFOAM v2606 ships `Newtonian` and `powerLaw` in the same directory
+as the four already mapped
+(`/usr/lib/openfoam/openfoam2606/src/transportModels/incompressible/viscosityModels/`,
+readable in WSL). `structural_steady` is thixotropic and has no counterpart there; make
+that refusal EXPLICIT with a message saying why, rather than a generic
+`NotImplementedError`.
+
+**Read both `calcNu` bodies FIRST and write the parameter map out before coding.** Item 6
+is the reason: its stated premise about `BirdCarreau` was false, and `CrossPowerLaw`'s
+names collide with biorheo's with the meanings SWAPPED. Assume nothing about `powerLaw`'s
+parameter names or about whether it carries `nuMin`/`nuMax` limiters -- check.
+
+Gate to pre-register before writing code (do not weaken it): the round trip reproduces
+`eta_at` on 20 rates inside the envelope to 1e-10; the export refuses a `degenerate` /
+`not_identifiable` parameter without the override; if `powerLaw` has viscosity limiters,
+DECIDE AND DOCUMENT whether they are a clamp the caller chooses (as for Herschel-Bulkley)
+or fitted parameters (as for Cross), and make `coefficients` require or refuse `eta_max`
+accordingly -- getting that wrong silently is what G8 exists to prevent; and a
+discriminating negative case in the style of G3, some plausible WRONG map that must fail
+the round trip by more than 1e-3, reported beside the verdict.
+
+There is no `newtonian` or `power_law` RECORD in the registry, so this needs one of each
+before the plane-Couette anchor can be extended. Do not invent one: either derive it from
+a source already on disk with a DOI that resolves, or state plainly that the export is
+tested by round trip only and put that limitation in the gate. The anchor's existing
+`newtonian_control()` is hand-made, is NOT a record, and does not exercise the export path.
+
+### 12. Also not started: injectability for the families with no yield stress
+`injectability` has closed forms for Herschel-Bulkley and Casson only. The registry holds
+20 Cross and 20 Carreau-Yasuda blood records fitted to the SAME curves, and the needle case
+study's central finding -- that the yield stress is invisible in this geometry -- makes a
+pre-registrable prediction: the plunger force from a donor's Cross record should agree with
+the force from that donor's Casson record to within the donor-to-donor spread, because the
+two describe the same curve over the same envelope and the yield term contributes under
+3 %. That is a cross-check of the case study rather than an extension, and it can fail.
+
+Cross and Carreau-Yasuda have no closed-form tube solution, so use the numerical quadrature
+route rather than deriving one. Beware the trap item 4 already hit: `flow_rate_casson` near
+yield is limited by the CALLER's conditioning in `1 - tau_y/tau_w`, so compare at the
+operating point, not near yield. And note 7 of the 20 Carreau-Yasuda records carry a
+`bounded_only` `a`, so decide up front whether the comparison uses them.
 
 ## What NOT to do
 
@@ -238,7 +329,14 @@ is not interpretable, which is the situation for the `bounded_only` verdicts.
 - Do not put `si_fit` or any `impact_stress/materials.py` constant into the registry.
 - Do not change `MAX_REPRO_DEV`, `RUNS_Z`, gate bars, `LAMINAR_RE`, `BAR_*`, `G7P_RELAX_U`
   or `G7P_END_TIME` in `scripts/openfoam_couette_anchor.py` to make a check pass.
-  `G7P_*` are the configuration being MATCHED, not bars.
+  `G7P_*` are the configuration being MATCHED, not bars. Same for `G91_BAR`, `G92_BAR`,
+  `G93_BAR`, `G101_BAR`, `G102_BAR` in the two seed-scatter scripts.
+- Do not form a RELATIVE spread without checking what the denominator is. Item 9's
+  retraction is the whole argument: a parameter converged to 1e-19 gave a 415 % move.
+  Measure against a declared scale -- the parameter's own confidence interval, or a
+  physical quantity -- before believing any ratio.
+- Do not read a byte-identity or bit-identity claim off a MAXIMUM. Item 8's second
+  correction: six gate scalars were bit-identical while 7 of 33 underlying rows moved.
 - Do not reinstate the ISO 9626 needle-tolerance comparison without the standard in hand.
 - Do not quote a flow rate from `flow_rate_casson` within about a part in 1e9 of yield.
 - Do not add an `a != 2` refusal to the BirdCarreau export. v2606 honours `a`; that was

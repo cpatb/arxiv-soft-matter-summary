@@ -54,8 +54,14 @@ reason to distrust the verdicts:
   or all-NaN -- which is precisely how it was found (see above);
 * the two signatures are ORed, never ANDed, so a failure of the Wald channel can only
   cost a ``degenerate`` label, never manufacture one out of nothing;
-* ``degenerate`` and ``bounded_only`` and ``not_identifiable`` all refuse an export
-  the same way, so a mislabel among the three does not change what ships.
+* a mislabel among the three is NOT free, and an earlier draft of this paragraph claimed
+  it was. ``solver.openfoam._BAD_VERDICTS`` is ``("degenerate", "not_identifiable")``:
+  ``bounded_only`` is ACCEPTED by default. So the one case bullet 2 leaves open -- a
+  genuinely degenerate parameter whose covariance row is NaN and whose null-direction
+  weight falls under ``NULL_WEIGHT``, which is therefore labelled ``bounded_only`` --
+  is exactly the case where the mislabel changes what ships. ``check_exportable``'s
+  ``strict_identifiability=True`` refuses ``bounded_only`` for a caller who needs that;
+  it is off by default.
 
 What the caveat DOES forbid is quoting ``ParamEstimate.corr_with`` as a measured
 correlation between two parameters when either sits at a bound. It is a detector input
@@ -250,11 +256,19 @@ def verdict_for(profile: Profile, corr_row: np.ndarray, index: int,
     """Apply the rules in the module docstring to one parameter's profile."""
     open_side = profile.lower_at_bound or profile.upper_at_bound
     if open_side:
+        # Filter to FINITE entries before taking the max. `max` on a list containing NaN
+        # is order-dependent -- `max([(nan, 'a'), (0.995, 'b')])` returns the NaN, because
+        # `0.995 > nan` is False -- so a real |corr| = 0.995 degeneracy was missed when a
+        # NaN happened to sort first, and flagged when it sorted last. The direction is
+        # safe (a lost `degenerate` becomes `bounded_only`), but by the note above that is
+        # precisely the mislabel that changes what an export accepts. Raised by the code
+        # review 2026-09-06.
         others = [(abs(float(corr_row[j])), param_names[j])
-                  for j in range(len(param_names)) if j != index]
+                  for j in range(len(param_names))
+                  if j != index and np.isfinite(corr_row[j])]
         if others:
             c, partner = max(others)
-            if np.isfinite(c) and c > DEGENERATE_CORR:
+            if c > DEGENERATE_CORR:
                 return "degenerate", partner
         # second signature: a null direction of the sensitivity Jacobian in which this
         # parameter and another both carry weight
@@ -288,21 +302,24 @@ def fit_rate_curve(model: RateModel, gammadot, eta, *, level: float = 0.95,
     spanning decades is sparse. So a fit is not "well searched" because ``n_starts`` is 8.
 
     What that costs was MEASURED rather than left as a caveat
-    (``scripts/multistart_seed_scatter.py`` -> ``data/horner2020/multistart_scatter.md``,
-    2026-09-06): refitting all 20 blood curves under four models with five different seeds
-    moves the OBJECTIVE by at most ~1e-9 relative, so no start is landing on a worse
-    optimum -- the search is fine. Where the PARAMETERS move, they move on a flat
-    direction, and no record with all parameters ``measurable`` moved by more than 1e-3
-    (54 such records, worst 6.0e-5).
+    (``scripts/multistart_seed_scatter.py`` -> ``data/horner2020/multistart_scatter.md``):
+    refitting all 20 blood curves under four models with five different seeds moves the
+    OBJECTIVE by at most 6.5e-10 in ``rmse_log``, i.e. 1.3e-9 in the least-squares cost
+    the optimiser actually minimises, so no start is landing on a worse optimum -- the
+    search is fine. Where the PARAMETERS move, they move on a flat direction, and every
+    record that moves more than 1e-1 of its own confidence interval carries a
+    ``degenerate`` or ``not_identifiable`` verdict. No all-``measurable`` record moves
+    more than 3e-5 (54 such records).
 
-    **But "the flagged set catches every mover" is FALSE, and the pre-registered gate that
-    said so failed.** Herschel-Bulkley on donor G moves 4.149 in ``tau_y`` while that
-    parameter is graded ``bounded_only`` -- which is neither ``degenerate`` nor
-    ``not_identifiable``, and so is NOT one of the verdicts
-    ``solver.openfoam.check_exportable`` refuses. Do not read ``bounded_only`` as
-    "determined, with a one-sided interval": it can be a parameter the optimiser places
-    anywhere along a flat direction. The seed is recorded on the result, so such a value
-    is reproducible; it is not, on its own, a measurement.
+    A spread there is measured in units of the parameter's OWN 95 % profile interval. An
+    earlier version of that study divided by the mean instead and reported a spurious
+    415 % move on a parameter the optimiser had converged to 1e-19; that number is
+    RETRACTED and the retraction is on the page.
+
+    The verdict SET is itself seed-dependent on 3 of the 80 (model, donor) pairs, so a
+    verdict quoted from one fit is a statement about that fit. All three are
+    Carreau-Yasuda records that carry a bad verdict under every seed, so nothing flips
+    across the export check -- but the sidecar records seed 0's verdicts and only those.
     """
     gd = np.asarray(gammadot, dtype=float)
     et = np.asarray(eta, dtype=float)

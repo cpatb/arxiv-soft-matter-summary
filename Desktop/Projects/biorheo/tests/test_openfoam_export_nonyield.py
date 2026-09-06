@@ -311,7 +311,7 @@ def test_strict_identifiability_refuses_bounded_only_and_is_off_by_default():
             strict_ok.append(rid)
         except ExportRefused as e:
             refused_by_flag.append(rid)
-            assert "bounded_only" in str(e) and "415" in str(e)
+            assert "bounded_only" in str(e) and "covariance row is NaN" in str(e)
 
     # measured 2026-09-06 over the 75-record registry
     assert len(default_ok) == 58, len(default_ok)

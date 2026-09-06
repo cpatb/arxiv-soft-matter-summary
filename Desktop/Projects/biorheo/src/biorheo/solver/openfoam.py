@@ -243,19 +243,26 @@ def check_exportable(record: FluidRecord, allow_unidentified: bool = False,
     but it is written into the exported file either way, so a case that quotes an
     exported number can be traced back to a refuted form.
 
-    ``strict_identifiability`` additionally refuses ``bounded_only``. It exists because a
-    pre-registered gate FAILED on exactly that verdict (NEXT_STEPS item 9,
-    ``data/horner2020/multistart_scatter.md``): the Herschel-Bulkley fit to donor G moves
-    4.149 -- 415 % -- in ``tau_y`` under nothing but a change of the optimiser's seed,
-    while ``tau_y`` there is graded ``bounded_only`` and so passes the default check.
-    ``bounded_only`` means the profile ran into a bound on one side; it does NOT mean the
-    value is pinned, and a flat direction can put it anywhere.
+    ``strict_identifiability`` additionally refuses ``bounded_only``.
 
-    It is OFF by default, and deliberately so: over the 43 export-accepted BLOOD records
-    in the three families the registry ships (casson, cross, carreau_yasuda) the worst
-    seed spread is 5.997e-05, four orders below the bar, and the one demonstrated
-    counterexample is in blood Herschel-Bulkley, which is fitted for the model comparison
-    and never shipped as a record.
+    **Its original justification was withdrawn and this is the one that survives.** The
+    flag was added because a pre-registered gate appeared to fail on a ``bounded_only``
+    parameter that "moved 415 % under a change of seed"; that number was an artefact of
+    dividing by a mean of 1e-19 and is RETRACTED (see
+    ``data/horner2020/multistart_scatter.md``). Under a corrected metric every criterion
+    passes and no ``bounded_only`` parameter is known to wander.
+
+    What still argues for the flag is a different and narrower thing, in
+    ``identify.fit``'s module docstring: a genuinely DEGENERATE parameter whose covariance
+    row is NaN and whose null-direction weight falls under ``NULL_WEIGHT`` is labelled
+    ``bounded_only``, and that label is accepted here by default. The flag closes exactly
+    that gap. ``bounded_only`` means the profile ran into a bound on one side; it does not
+    by itself mean the value is unpinned, and no evidence here says it is.
+
+    It is OFF by default, and deliberately so: across all 80 (model, donor) blood fits the
+    worst seed spread among export-accepted records is 2.972e-05 of a confidence interval,
+    and the Carbopol set is cleaner still. There is no measured case of a shipped
+    ``bounded_only`` parameter wandering.
 
     **Scope, now closed on both sets.** The first seed study
     (``scripts/multistart_seed_scatter.py``) fitted the 20 BLOOD curves only, leaving the
@@ -287,9 +294,10 @@ def check_exportable(record: FluidRecord, allow_unidentified: bool = False,
         if weak:
             raise ExportRefused(
                 f"{record.id}: parameter verdict(s) {weak} are bounded on one side only. "
-                "That is not the same as determined -- a `bounded_only` parameter has "
-                "been measured moving 415 % under nothing but a change of the fitter's "
-                "seed (see data/horner2020/multistart_scatter.md). Pass "
+                "That is not the same as determined: a degenerate parameter whose "
+                "covariance row is NaN is labelled `bounded_only` rather than "
+                "`degenerate` (see biorheo.identify.fit's module docstring), and this "
+                "check is the only one that catches it. Pass "
                 "strict_identifiability=False to export it anyway, or "
                 "allow_unidentified=True to override every verdict check.")
     rs = structured_flag(record)
