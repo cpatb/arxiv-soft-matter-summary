@@ -14,7 +14,19 @@ through a needle of radius ``R`` and length ``L`` is (``derivations/buckingham_r
 Its ``n = 1`` case is the Buckingham-Reiner equation and its ``tau_y = 0`` case the
 power-law result; both, and Poiseuille, are the anchors in ``tests/test_injectability.py``.
 
-For any other registry model (Cross, Carreau-Yasuda, Casson, ...) :func:`flow_rate_gnf`
+For Casson (``sqrt(sigma) = sqrt(tau_y) + sqrt(eta_c gd)``) the integral is elementary in
+``tau`` directly, because the inverted flow curve is a polynomial in ``sqrt(tau)``
+(``derivations/casson_tube_flow.md``):
+
+    x = tau_y / tau_w,
+    Q = pi R^3 tau_w / (4 eta_c) * [ 1 - (16/7) sqrt(x) + (4/3) x - x^4 / 21 ].
+
+The bracket vanishes at ``x = 1`` with ZERO slope (``-8/7 + 4/3 - 4/21 = 0`` exactly), so
+``Q`` leaves the no-flow branch quadratically in ``1 - x``, not linearly: a needle sized
+by extrapolating linearly down from higher pressures under-predicts the pressure needed
+to start the flow. At ``tau_y = 0`` it is Poiseuille with viscosity ``eta_c``.
+
+For any other registry model (Cross, Carreau-Yasuda, ...) :func:`flow_rate_gnf`
 integrates ``Q = pi int_0^R r^2 gd(r) dr`` numerically, inverting ``sigma(gd) = tau(r)``
 at each quadrature node. The two routes are checked against each other on HB.
 
@@ -70,7 +82,7 @@ from scipy.integrate import quad
 from scipy.optimize import brentq
 
 from ..constitutive.base import RateModel
-from ..constitutive.gnf import HERSCHEL_BULKLEY
+from ..constitutive.gnf import CASSON, HERSCHEL_BULKLEY
 from ..identify.fit import IdentifiedModel
 
 __all__ = [
@@ -146,6 +158,43 @@ def flow_rate_hb(dp: float, R: float, L: float, tau_y: float, k: float, n: float
     return float(np.pi * R ** 3 / tw ** 3 * k ** (-m) * bracket)
 
 
+def flow_rate_casson(dp: float, R: float, L: float, tau_y: float, eta_c: float) -> float:
+    """Casson flow rate (m^3/s) through a needle; closed form
+    (``derivations/casson_tube_flow.md``).
+
+        tau_w = dp R / (2 L),   x = tau_y / tau_w,
+        Q = pi R^3 tau_w / (4 eta_c) * [1 - (16/7) sqrt(x) + (4/3) x - x^4 / 21].
+
+    Returns 0.0 when ``tau_w <= tau_y``. The bracket vanishes at ``x = 1`` WITH ZERO
+    SLOPE, so the flow rate leaves the no-flow branch quadratically in ``1 - x``: just
+    above yield a Casson fluid is harder to start than a linear picture suggests. At
+    ``tau_y = 0`` the result is Poiseuille with viscosity ``eta_c``, exactly.
+    """
+    if not (dp > 0 and R > 0 and L > 0 and eta_c > 0 and tau_y >= 0):
+        raise ValueError(f"flow_rate_casson: bad inputs dp={dp}, R={R}, L={L}, "
+                         f"tau_y={tau_y}, eta_c={eta_c}")
+    tw = wall_stress(dp, R, L)
+    x = tau_y / tw
+    if x >= 1.0:
+        return 0.0
+    # The FACTORED bracket, not the expanded one. In u = sqrt(x) the expanded form
+    # 1 - (16/7)u + (4/3)u^2 - u^8/21 is a difference of O(1) terms whose value is
+    # O((1-u)^3), so it cancels catastrophically near yield: at 1 - x = 1e-5 the
+    # expanded form is already 52 % wrong and at 1e-6 it is meaningless (round-off).
+    # Dividing out the triple root at u = 1 exactly (polynomial division, checked in
+    # derivations/casson_tube_flow.py) leaves a polynomial with ALL-POSITIVE
+    # coefficients -- the triangular numbers -- so there is no cancellation at any x:
+    #     21 * bracket = (1 - u)^3 (u^5 + 3u^4 + 6u^3 + 10u^2 + 15u + 21).
+    # `1 - u` is itself a cancelling subtraction (it is what is left of the triple root),
+    # so it is written `(1 - x)/(1 + u)`, which is exact. With both rewrites the only
+    # cancellation left is `1 - tau_y/tau_w` in the caller's own inputs.
+    u = np.sqrt(x)
+    one_minus_u = (1.0 - x) / (1.0 + u)
+    tail = 21.0 + u * (15.0 + u * (10.0 + u * (6.0 + u * (3.0 + u))))   # Horner
+    bracket = one_minus_u ** 3 * tail / 21.0
+    return float(np.pi * R ** 3 * tw / (4.0 * eta_c) * bracket)
+
+
 def _shear_rate_at_stress(model: RateModel, params, tau: float) -> float:
     """Invert ``model.stress(gd) = tau`` for gd; 0 if the stress at the lower bracket
     already exceeds ``tau`` (below yield, or effectively so)."""
@@ -201,9 +250,11 @@ def flow_rate_gnf(dp: float, R: float, L: float, model: RateModel, params) -> fl
 
 
 def flow_rate(dp: float, needle: Needle, model: RateModel, params) -> float:
-    """Closed form when ``model`` is Herschel-Bulkley, quadrature otherwise."""
+    """Closed form for Herschel-Bulkley and Casson, quadrature otherwise."""
     if model is HERSCHEL_BULKLEY:
         return flow_rate_hb(dp, needle.radius, needle.length, *np.asarray(params, float))
+    if model is CASSON:
+        return flow_rate_casson(dp, needle.radius, needle.length, *np.asarray(params, float))
     return flow_rate_gnf(dp, needle.radius, needle.length, model, params)
 
 

@@ -48,7 +48,7 @@ tests/                fast suite; `-m "not slow"` skips re-running dst_fit's own
 ```
 pip install -e ../dst_fit -e .[dev]
 python -m pytest -q tests/ -m "not slow"
-python derivations/gnf_limits.py && python derivations/structural_kinetics.py && python derivations/buckingham_reiner.py && python derivations/couette_uniform_shear.py
+python derivations/gnf_limits.py && python derivations/structural_kinetics.py && python derivations/buckingham_reiner.py && python derivations/couette_uniform_shear.py && python derivations/casson_tube_flow.py
 ```
 
 `dst_fit` is consumed unchanged; `tests/test_gate_0_1_dstfit_unchanged.py` runs its
@@ -107,6 +107,36 @@ was measured, not assumed, with a 2x2 that fixes the shear rate and moves `eta` 
 constant B (the error is unchanged to ten digits) against a 5.6e4x change across B. The
 one diagnostic that needs no reference answer is the wall traction imbalance, which ranks
 with the true error at Spearman 0.98 over 14 decades.
+
+The needle app now has a Casson closed form beside the Herschel-Bulkley one
+(`derivations/casson_tube_flow.md`), derived rather than quoted and anchored three ways:
+against the package's independent quadrature (8.6e-12 on 24 cases), against a
+velocity-profile route that carries the plug explicitly (7.2e-11 at x up to 0.93, and
+unlike the quadrature it shares no step with the algebra), and against a hand-worked
+point. Its bracket has a TRIPLE root at yield, so the flow rate leaves the no-flow branch
+cubically in `1 - tau_y/tau_w` -- halving the distance to yield divides the flow rate by
+eight, and the module evaluates the factored form because the expanded one goes negative
+and is 6e2 times wrong within 1e-6 of yield.
+
+Running the 20 blood donors through a nominal 27G needle at 1 mL/min
+(`case_studies/blood_injectability/results.md`) gives two results worth more than the
+force numbers. **All 20 are `extrapolated`, all by the same 1.42 decades**, because for
+an effectively Newtonian fluid the wall rate is `4Q/(pi R^3)` regardless of viscosity:
+how far a device extrapolates its own rheology is a property of the DEVICE, computable
+at design time. (Scope: the decade is a device property; the third significant figure is
+a property of the Casson form, which cannot shear-thin further above yield.) **The yield
+stress is invisible here** -- `x = tau_y/tau_w` reaches only 1.7e-4, zeroing `tau_y`
+moves the force under 2.9 %, and the force ranks with `eta_c` at Spearman 0.995 against
+0.170 for `tau_y`; the parameter the published Casson tables disagree about by 71 % is
+the one this device cannot see. And because `F ~ R^-4` (measured, -3.9723), **a 10.5 %
+error in the needle's bore reproduces the entire donor-to-donor force spread** of the
+17 donors the source study does not flag as atypical.
+
+A claim was retracted from that study the day it was written: an ISO 9626 tolerance
+comparison whose band mixed regular-wall and thin-wall figures and which reverses under
+the narrower reading. The standard could not be checked offline, so the section was
+rebuilt on the `R^-4` scaling, which needs no standard; the retraction, both readings and
+both verdicts are on the page.
 
 ## Conventions
 

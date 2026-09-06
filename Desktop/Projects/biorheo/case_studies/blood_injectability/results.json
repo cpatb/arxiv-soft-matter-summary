@@ -1,0 +1,546 @@
+{
+  "generated_by": "case_studies/blood_injectability/run.py",
+  "git_head": "133374c3377c5a13f2ca9652d3390c327ffc7ddc",
+  "biorheo_version": "0.0.1",
+  "needle": {
+    "id_nominal_mm": 0.21,
+    "id_band_mm": [
+      0.184,
+      0.241
+    ],
+    "length_m": 0.0127
+  },
+  "barrel_radius_m": 0.0023,
+  "Q_mL_per_min": 1.0,
+  "Q_si": 1.6666666666666667e-08,
+  "rho": 1060.0,
+  "rows": [
+    {
+      "record": "blood_horner2020_donor_A",
+      "donor": "A",
+      "tau_y": 0.00218363,
+      "eta_c": 0.00384913,
+      "dp_Pa": 17286.314537946088,
+      "tau_w_Pa": 71.45917427103699,
+      "x": 3.055772785335758e-05,
+      "gd_wall": 18360.335692215427,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4187825773707923,
+      "decades_past": 1.4187825773707923,
+      "force_N": 0.28728169584068497,
+      "reynolds": 27.521244120954595
+    },
+    {
+      "record": "blood_horner2020_donor_B",
+      "donor": "B",
+      "tau_y": 0.00470642,
+      "eta_c": 0.00348833,
+      "dp_Pa": 15773.455345208726,
+      "tau_w_Pa": 65.20522878924868,
+      "x": 7.217856738470665e-05,
+      "gd_wall": 18376.126808376084,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4191559391246051,
+      "decades_past": 1.4191559391246051,
+      "force_N": 0.2621394508870999,
+      "reynolds": 30.186794262497855
+    },
+    {
+      "record": "blood_horner2020_donor_C",
+      "donor": "C",
+      "tau_y": 0.0081172,
+      "eta_c": 0.00296961,
+      "dp_Pa": 13538.513473105493,
+      "tau_w_Pa": 55.96629585338886,
+      "x": 0.0001450372921099528,
+      "gd_wall": 18395.140389047585,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.419605066638131,
+      "decades_past": 1.419605066638131,
+      "force_N": 0.2249968957337873,
+      "reynolds": 35.20642939092493
+    },
+    {
+      "record": "blood_horner2020_donor_D",
+      "donor": "D",
+      "tau_y": 0.00967233,
+      "eta_c": 0.00304571,
+      "dp_Pa": 13915.227355586716,
+      "tau_w_Pa": 57.523577651047454,
+      "x": 0.00016814548738040591,
+      "gd_wall": 18400.117830884785,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4197225641441495,
+      "decades_past": 1.4197225641441495,
+      "force_N": 0.2312575132163842,
+      "reynolds": 34.26258721100781
+    },
+    {
+      "record": "blood_horner2020_donor_F",
+      "donor": "F",
+      "tau_y": 0.00245997,
+      "eta_c": 0.00298181,
+      "dp_Pa": 13426.067857235808,
+      "tau_w_Pa": 55.50146161455748,
+      "x": 4.432261653006224e-05,
+      "gd_wall": 18366.333547898048,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.418924427187466,
+      "decades_past": 1.418924427187466,
+      "force_N": 0.22312815921704846,
+      "reynolds": 35.44569414386157
+    },
+    {
+      "record": "blood_horner2020_donor_G",
+      "donor": "G",
+      "tau_y": 0.00118974,
+      "eta_c": 0.00394989,
+      "dp_Pa": 17678.067095106915,
+      "tau_w_Pa": 73.07862381835537,
+      "x": 1.6280273735822177e-05,
+      "gd_wall": 18352.43166085955,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.418595575545369,
+      "decades_past": 1.418595575545369,
+      "force_N": 0.2937922414358167,
+      "reynolds": 26.899777886128916
+    },
+    {
+      "record": "blood_horner2020_donor_H",
+      "donor": "H",
+      "tau_y": 0.00516482,
+      "eta_c": 0.00400758,
+      "dp_Pa": 18113.420632859004,
+      "tau_w_Pa": 74.87831363977148,
+      "x": 6.897617946962838e-05,
+      "gd_wall": 18375.109474964243,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.419131895183132,
+      "decades_past": 1.419131895183132,
+      "force_N": 0.3010273928234139,
+      "reynolds": 26.28568620439793
+    },
+    {
+      "record": "blood_horner2020_donor_I",
+      "donor": "I",
+      "tau_y": 0.00468405,
+      "eta_c": 0.00380253,
+      "dp_Pa": 17179.35131741495,
+      "tau_w_Pa": 71.01700347750274,
+      "x": 6.595673952201949e-05,
+      "gd_wall": 18374.128810959068,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4191087166365273,
+      "decades_past": 1.4191087166365273,
+      "force_N": 0.28550407138989103,
+      "reynolds": 27.713402661687454
+    },
+    {
+      "record": "blood_horner2020_donor_J",
+      "donor": "J",
+      "tau_y": 0.00563435,
+      "eta_c": 0.00445742,
+      "dp_Pa": 20142.91760688955,
+      "tau_w_Pa": 83.26796648517335,
+      "x": 6.7665276790484e-05,
+      "gd_wall": 18374.686357408587,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4191218947129,
+      "decades_past": 1.4191218947129,
+      "force_N": 0.33475565405128743,
+      "reynolds": 23.636731112792187
+    },
+    {
+      "record": "blood_horner2020_donor_K",
+      "donor": "K",
+      "tau_y": 0.00382721,
+      "eta_c": 0.00367066,
+      "dp_Pa": 16558.96999365856,
+      "tau_w_Pa": 68.45243501315548,
+      "x": 5.591050193122379e-05,
+      "gd_wall": 18370.696001117867,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4190275704950819,
+      "decades_past": 1.4190275704950819,
+      "force_N": 0.2751939385755543,
+      "reynolds": 28.746312844873323
+    },
+    {
+      "record": "blood_horner2020_donor_L",
+      "donor": "L",
+      "tau_y": 0.0106994,
+      "eta_c": 0.0039097,
+      "dp_Pa": 17824.690867119425,
+      "tau_w_Pa": 73.68474571053306,
+      "x": 0.00014520508820145856,
+      "gd_wall": 18395.177868466504,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4196059514961912,
+      "decades_past": 1.4196059514961912,
+      "force_N": 0.29622898558864624,
+      "reynolds": 26.74064270422506
+    },
+    {
+      "record": "blood_horner2020_donor_M",
+      "donor": "M",
+      "tau_y": 0.0104783,
+      "eta_c": 0.00358782,
+      "dp_Pa": 16372.099355430035,
+      "tau_w_Pa": 67.67993828032101,
+      "x": 0.0001548213586809184,
+      "gd_wall": 18397.291702064846,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.419655854439872,
+      "decades_past": 1.419655854439872,
+      "force_N": 0.2720883307413757,
+      "reynolds": 29.11651411959979
+    },
+    {
+      "record": "blood_horner2020_donor_N",
+      "donor": "N",
+      "tau_y": 0.0137032,
+      "eta_c": 0.00673754,
+      "dp_Pa": 30600.543991250142,
+      "tau_w_Pa": 126.49831177485295,
+      "x": 0.00010832713739602736,
+      "gd_wall": 18386.357325157052,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4193976560381603,
+      "decades_past": 1.4193976560381603,
+      "force_N": 0.5085512098114549,
+      "reynolds": 15.568845372135785
+    },
+    {
+      "record": "blood_horner2020_donor_O",
+      "donor": "O",
+      "tau_y": 0.00391185,
+      "eta_c": 0.00343169,
+      "dp_Pa": 15493.002558197302,
+      "tau_w_Pa": 64.04587671695735,
+      "x": 6.107887346578025e-05,
+      "gd_wall": 18372.496763768922,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4190701395384528,
+      "decades_past": 1.4190701395384528,
+      "force_N": 0.2574785989698779,
+      "reynolds": 30.727161517585706
+    },
+    {
+      "record": "blood_horner2020_donor_P",
+      "donor": "P",
+      "tau_y": 0.00503577,
+      "eta_c": 0.00390718,
+      "dp_Pa": 17659.64507604814,
+      "tau_w_Pa": 73.00246980256121,
+      "x": 6.898081686303887e-05,
+      "gd_wall": 18375.11096472978,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4191319303936394,
+      "decades_past": 1.4191319303936394,
+      "force_N": 0.2934860854379956,
+      "reynolds": 26.961115435507125
+    },
+    {
+      "record": "blood_horner2020_donor_Q",
+      "donor": "Q",
+      "tau_y": 0.00550389,
+      "eta_c": 0.00360884,
+      "dp_Pa": 16338.403614145427,
+      "tau_w_Pa": 67.5406448616248,
+      "x": 8.14900422001626e-05,
+      "gd_wall": 18378.965307397884,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4192230179642187,
+      "decades_past": 1.4192230179642187,
+      "force_N": 0.2715283403699404,
+      "reynolds": 29.147498854332778
+    },
+    {
+      "record": "blood_horner2020_donor_R",
+      "donor": "R",
+      "tau_y": 0.00671705,
+      "eta_c": 0.00363506,
+      "dp_Pa": 16491.326301364486,
+      "tau_w_Pa": 68.17280557650673,
+      "x": 9.85297574772951e-05,
+      "gd_wall": 18383.775421832863,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4193366659745092,
+      "decades_past": 1.4193366659745092,
+      "force_N": 0.27406976635292646,
+      "reynolds": 28.88477423985543
+    },
+    {
+      "record": "blood_horner2020_donor_S",
+      "donor": "S",
+      "tau_y": 0.00725316,
+      "eta_c": 0.00385523,
+      "dp_Pa": 17493.76409607183,
+      "tau_w_Pa": 72.31674134202923,
+      "x": 0.00010029710777059847,
+      "gd_wall": 18384.250143868707,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4193478805642212,
+      "decades_past": 1.4193478805642212,
+      "force_N": 0.29072930526193785,
+      "reynolds": 27.230305336132442
+    },
+    {
+      "record": "blood_horner2020_donor_T",
+      "donor": "T",
+      "tau_y": 0.00554323,
+      "eta_c": 0.00352261,
+      "dp_Pa": 15953.202819679116,
+      "tau_w_Pa": 65.94827937268927,
+      "x": 8.405420206149581e-05,
+      "gd_wall": 18379.718652755488,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4192408191309946,
+      "decades_past": 1.4192408191309946,
+      "force_N": 0.26512667868372364,
+      "reynolds": 29.8525083768387
+    },
+    {
+      "record": "blood_horner2020_donor_U",
+      "donor": "U",
+      "tau_y": 0.00608146,
+      "eta_c": 0.00402879,
+      "dp_Pa": 18237.72427612078,
+      "tau_w_Pa": 75.39216728317648,
+      "x": 8.066434775853776e-05,
+      "gd_wall": 18378.720255647222,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4192172273589907,
+      "decades_past": 1.4192172273589907,
+      "force_N": 0.303093198195463,
+      "reynolds": 26.111659755130233
+    }
+  ],
+  "n_extrapolated": 20,
+  "n_records": 20,
+  "decades_past_min": 1.418595575545369,
+  "decades_past_max": 1.4197225641441495,
+  "x_min": 1.6280273735822177e-05,
+  "x_max": 0.00016814548738040591,
+  "spearman_force_eta_c": 0.9954887218045112,
+  "spearman_force_tau_y": 0.16992481203007515,
+  "yield_share_min": 0.009200614529253392,
+  "yield_share_max": 0.029414577638202075,
+  "geometry_band": {
+    "low": {
+      "record": "blood_horner2020_donor_I",
+      "donor": "I",
+      "tau_y": 0.00468405,
+      "eta_c": 0.00380253,
+      "dp_Pa": 29051.05011872709,
+      "tau_w_Pa": 105.2242760205863,
+      "x": 4.4514917822609704e-05,
+      "gd_wall": 27304.152192805035,
+      "gd_apparent": 27251.812123622527,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.5911306560119365,
+      "decades_past": 1.5911306560119365,
+      "force_N": 0.4828001321936075,
+      "reynolds": 31.721934218539005
+    },
+    "narrow_low": {
+      "record": "blood_horner2020_donor_I",
+      "donor": "I",
+      "tau_y": 0.00468405,
+      "eta_c": 0.00380253,
+      "dp_Pa": 29051.05011872709,
+      "tau_w_Pa": 105.2242760205863,
+      "x": 4.4514917822609704e-05,
+      "gd_wall": 27304.152192805035,
+      "gd_apparent": 27251.812123622527,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.5911306560119365,
+      "decades_past": 1.5911306560119365,
+      "force_N": 0.4828001321936075,
+      "reynolds": 31.721934218539005
+    },
+    "nominal": {
+      "record": "blood_horner2020_donor_I",
+      "donor": "I",
+      "tau_y": 0.00468405,
+      "eta_c": 0.00380253,
+      "dp_Pa": 17179.35131741495,
+      "tau_w_Pa": 71.01700347750274,
+      "x": 6.595673952201949e-05,
+      "gd_wall": 18374.128810959068,
+      "gd_apparent": 18331.203177988882,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.4191087166365273,
+      "decades_past": 1.4191087166365273,
+      "force_N": 0.28550407138989103,
+      "reynolds": 27.713402661687454
+    },
+    "high": {
+      "record": "blood_horner2020_donor_I",
+      "donor": "I",
+      "tau_y": 0.00468405,
+      "eta_c": 0.00380253,
+      "dp_Pa": 9946.330203223504,
+      "tau_w_Pa": 47.18633029482017,
+      "x": 9.926709643945731e-05,
+      "gd_wall": 12163.152533103617,
+      "gd_apparent": 12128.238466751009,
+      "envelope": [
+        0.1,
+        700.0
+      ],
+      "extrapolated": true,
+      "decades_past_high": 1.239948113070931,
+      "decades_past": 1.239948113070931,
+      "force_N": 0.16529831167314749,
+      "reynolds": 24.059003796021244
+    }
+  },
+  "band_extrapolation": {
+    "low": {
+      "n_extrapolated": 20,
+      "min_decades_past": 1.5907096444531068
+    },
+    "high": {
+      "n_extrapolated": 20,
+      "min_decades_past": 1.2393175477968335
+    }
+  },
+  "geometry": {
+    "slope_dlogF_dlogR": -3.9722718559826626,
+    "spread_all_20": 2.279188837464304,
+    "spread_excluding_paper_outliers": 1.4878234340057959,
+    "n_excluded": 3,
+    "excluded": [
+      "F",
+      "K",
+      "N"
+    ],
+    "id_error_matching_full_spread": 0.23046550152121648,
+    "id_error_matching_typical_spread": 0.1051951469236252,
+    "band_wide_force_ratio": 2.9207807829778205,
+    "band_narrow_force_ratio": 1.6910446490070692,
+    "median_donor": "I"
+  },
+  "wall_rate_spread": 1.0025983570409873,
+  "entrance_loss": {
+    "u_mean_m_s": 0.48119408342220815,
+    "delta_p_Pa": 132.53792976491656,
+    "fraction_of_dp_min": 0.004331227895909765,
+    "fraction_of_dp_max": 0.00987168627287154,
+    "worst_donor": "F",
+    "donors_where_entrance_beats_yield": []
+  }
+}

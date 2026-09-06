@@ -120,9 +120,14 @@ def test_wall_quantities():
     assert wall_shear_rate(1e5, NEEDLE, NEWT, [1.0]) == pytest.approx(250.0, rel=1e-9)
 
 
-def test_casson_goes_through_the_quadrature_route():
-    # Casson has a yield stress but no closed form here; below yield no flow, above it
-    # a rate that is positive and less than the Newtonian rate at the same eta_c
+def test_casson_below_and_above_yield():
+    """Renamed 2026-09-05: this was `test_casson_goes_through_the_quadrature_route`, and
+    its comment said Casson had "no closed form here". Both became false when
+    `flow_rate_casson` was added and `flow_rate` was pointed at it, and the test kept
+    passing because its assertions never touched the route. Nothing was silently pinned
+    to the old value -- no Casson result was asserted by value anywhere -- but a test
+    whose name certifies the opposite of what it checks is worse than no test.
+    Route coverage now lives in `tests/test_casson_needle.py`."""
     assert flow_rate(1e4, NEEDLE, CASSON, [50.0, 0.01]) == 0.0   # tau_w = 25 < 50
     q = flow_rate(1e5, NEEDLE, CASSON, [50.0, 0.01])
     assert 0 < q < flow_rate_hb(1e5, 1e-4, 0.02, 0.0, 0.01, 1.0)
