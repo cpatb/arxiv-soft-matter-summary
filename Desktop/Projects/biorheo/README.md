@@ -28,6 +28,10 @@ src/biorheo/
   registry/           YAML fluid records (parameters with units, measured envelope, DOI
                       sources, licence); identifiability lives only in a sidecar the
                       identify layer writes
+  solver/             openfoam.py: export a record to an OpenFOAM v2606
+                      `transportProperties` viscosity model (HerschelBulkley, Casson),
+                      parse it back, and refuse a record whose sidecar calls a parameter
+                      degenerate or not identifiable without an explicit override
   apps/               injectability.py: Herschel-Bulkley needle flow (closed form for any
                       n, quadrature for any monotone model), plunger force with profile
                       and covariance intervals, log-sensitivities, and an extrapolation
@@ -44,7 +48,7 @@ tests/                fast suite; `-m "not slow"` skips re-running dst_fit's own
 ```
 pip install -e ../dst_fit -e .[dev]
 python -m pytest -q tests/ -m "not slow"
-python derivations/gnf_limits.py && python derivations/structural_kinetics.py && python derivations/buckingham_reiner.py
+python derivations/gnf_limits.py && python derivations/structural_kinetics.py && python derivations/buckingham_reiner.py && python derivations/couette_uniform_shear.py
 ```
 
 `dst_fit` is consumed unchanged; `tests/test_gate_0_1_dstfit_unchanged.py` runs its
@@ -86,6 +90,23 @@ gate fails 6/20 -- a single exponential misses the rise by 1-12 % of its amplitu
 to the steady sheet does not rescue it (5/20). The rise is less concave than one
 exponential; one first-order structure variable cannot give that. The LAOS sheets are
 unused.
+
+The L3 solver bridge exports a record to an OpenFOAM v2606 `transportProperties` block.
+The export itself is exact: OpenFOAM's own `nu` field and its `wallShearStress` function
+object reproduce `record.eta_at` to 9.6e-13 relative, on 17 `simpleFoam` plane-Couette
+cases spanning both records' whole measured envelopes, in a comparison that never touches
+this repo's transcription of `calcNu` (`data/openfoam/couette_anchor.md`). The useful
+finding is what the export cannot carry. **A record's refusal to extrapolate does not
+survive the export** -- `eta_at` raises outside the measured envelope, a dictionary
+cannot, and every cell of a run started from rest sits decades below the lower bound.
+And **the solve, not the export, is where a yield-stress hand-off breaks**: on a 20-cell
+1-D problem `simpleFoam`'s outer iteration converges at a rate set by the local Bingham
+number `B = tau_y/(k gd^n)`, returning a viscosity 172 % wrong at B = 29 with `rc = 0`,
+no warning and a written result. That B and not the viscosity magnitude is the controller
+was measured, not assumed, with a 2x2 that fixes the shear rate and moves `eta` 100x at
+constant B (the error is unchanged to ten digits) against a 5.6e4x change across B. The
+one diagnostic that needs no reference answer is the wall traction imbalance, which ranks
+with the true error at Spearman 0.98 over 14 decades.
 
 ## Conventions
 

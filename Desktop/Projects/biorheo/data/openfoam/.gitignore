@@ -1,0 +1,4 @@
+# OpenFOAM case directories built by scripts/openfoam_couette_anchor.py and
+# scripts/openfoam_couette_diagnose.py. Regenerate with those scripts; the JSON and .md
+# results beside this file are the committed artifacts.
+runs/
