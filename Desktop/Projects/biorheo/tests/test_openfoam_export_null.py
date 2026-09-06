@@ -288,9 +288,18 @@ def test_the_strip_is_quote_aware(records):
     # a quoted brace inside a SUB-DICTIONARY must not leak the block's contents either
     assert parse_transport_properties(
         head + 'blk\n{\n  note "{";\n  nu 999;\n}\n')[1] == {"nu": 1e-06}
+    # an ESCAPED quote does not close the string -- OpenFOAM's tokenizer honours `\"`,
+    # so refusing this would be the same false-refusal class one layer down
+    assert parse_transport_properties(head + 'note "he said \\" hi";\n')[1] == {"nu": 1e-06}
+    # a real FoamFile header entry, which is where quoted values actually occur
+    assert parse_transport_properties(
+        head + 'arch "LSB;label=32;scalar=64";\n')[1] == {"nu": 1e-06}
     # an unterminated string is refused rather than silently swallowing the rest
     with pytest.raises(ValueError, match="unterminated"):
         parse_transport_properties(head + 'note "oops;\n')
+    # ... including one left open by a trailing escape
+    with pytest.raises(ValueError, match="unterminated"):
+        parse_transport_properties(head + 'note "oops \\";\n')
     # and the unbalanced-brace message must not blame the thing that is now handled
     with pytest.raises(ValueError, match="not the cause"):
         parse_transport_properties(head + "blk\n{\n")

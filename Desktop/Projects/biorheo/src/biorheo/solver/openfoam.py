@@ -683,11 +683,20 @@ def _strip_subdicts(text: str) -> str:
     out: list[str] = []
     depth = 0
     in_str = False
+    escaped = False
     for ch in text:
         if in_str:
             if depth == 0:
                 out.append(ch)
-            if ch == '"':
+            # `\"` does not close the string -- OpenFOAM's tokenizer honours the escape,
+            # and without this a legal `note "he said \" hi";` raised "unterminated
+            # string". Same false-refusal class as the lone brace, found by the review
+            # pass after that one.
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == '"':
                 in_str = False
             continue
         if ch == '"':
