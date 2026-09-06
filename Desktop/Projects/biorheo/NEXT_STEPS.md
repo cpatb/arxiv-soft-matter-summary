@@ -10,7 +10,7 @@ reconstruct state from chat history. State lives in the Obsidian card
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
 python -m pytest -q -m "not slow"      # must print: 253 passed, 6 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be 0d5b95b or later
+git -C C:\Users\compl log --oneline -3  # top should be 93307f5 or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
