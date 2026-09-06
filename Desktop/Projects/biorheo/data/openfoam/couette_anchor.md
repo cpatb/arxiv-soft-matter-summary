@@ -11,7 +11,7 @@ The comparison uses OpenFOAM's own `nu` field and its `wallShearStress` function
 | A1 | shear rate uniform across the gap (reported only, see below) | 1.765e-12 | 1e-06 | PASS |
 | A1' | max \|Ux - U0 y/H\| / U0 against the analytic line | 2.717e-13 | 1e-09 | PASS |
 | A2 | OpenFOAM `nu` vs `eta_at/rho` | 9.594e-13 | 1e-06 | PASS |
-| A3 | wall shear stress vs `eta_at*gd/rho` | 5.533e-14 | 1e-06 | PASS |
+| A3 | wall shear stress vs `eta_at*gd/rho` | 6.276e-14 | 1e-06 | PASS |
 | A4 | Newtonian control vs hand value | 3.014e-14 | 1e-06 | PASS |
 | A5' | shear field at 10000 its vs 20000 its (Cauchy) | 8.736e-12 | 1e-09 | PASS |
 
@@ -56,6 +56,22 @@ The comparison uses OpenFOAM's own `nu` field and its `wallShearStress` function
 | blood_horner2020_donor_S_carreau_yasuda_g5 | 55.78 | 0.05578 | 3.82e-15 | nan | 6.85e-16 | 2.23e-14 | n/a | n/a | 3.89e-14 | 4.891072508e-06 | 4.891072508e-06 | 4.891072508e-06 | 5.54e-15 | 0.0002728366454 | -0.0002728366454 | 1.11e-14 |
 | blood_horner2020_donor_S_carreau_yasuda_g6 | 197.6 | 0.1976 | 0.00e+00 | nan | 3.61e-16 | 2.77e-14 | n/a | n/a | 2.68e-14 | 4.045322398e-06 | 4.045322398e-06 | 4.045322398e-06 | 2.09e-15 | 0.0007993766515 | -0.0007993766515 | 1.83e-14 |
 | blood_horner2020_donor_S_carreau_yasuda_g7 | 700 | 0.7 | 0.00e+00 | nan | 6.30e-16 | 3.79e-14 | n/a | n/a | 3.59e-14 | 3.679447699e-06 | 3.679447699e-06 | 3.679447699e-06 | 1.15e-15 | 0.002575613389 | -0.002575613389 | 2.36e-14 |
+| blood_horner2020_donor_A_newtonian_g0 | 0.1 | 0.0001 | 0.00e+00 | nan | 4.05e-16 | 2.72e-14 | n/a | n/a | 2.03e-14 | 7.700415094e-06 | 7.700415094e-06 | 7.700415094e-06 | 0.00e+00 | 7.700415094e-07 | -7.700415094e-07 | 2.02e-14 |
+| blood_horner2020_donor_A_newtonian_g1 | 0.3542 | 0.0003542 | 0.00e+00 | nan | 4.03e-16 | 9.01e-15 | n/a | n/a | 1.85e-14 | 7.700415094e-06 | 7.700415094e-06 | 7.700415094e-06 | 0.00e+00 | 2.727808364e-06 | -2.727808364e-06 | 1.54e-14 |
+| blood_horner2020_donor_A_newtonian_g2 | 1.255 | 0.001255 | 0.00e+00 | nan | 4.20e-16 | 3.12e-14 | n/a | n/a | 3.93e-14 | 7.700415094e-06 | 7.700415094e-06 | 7.700415094e-06 | 0.00e+00 | 9.663035536e-06 | -9.663035536e-06 | 1.77e-14 |
+| blood_horner2020_donor_A_newtonian_g3 | 4.445 | 0.004445 | 0.00e+00 | nan | 4.65e-16 | 6.14e-15 | n/a | n/a | 1.36e-14 | 7.700415094e-06 | 7.700415094e-06 | 7.700415094e-06 | 0.00e+00 | 3.423050424e-05 | -3.423050424e-05 | 2.38e-15 |
+| blood_horner2020_donor_A_newtonian_g4 | 15.75 | 0.01575 | 0.00e+00 | nan | 6.16e-16 | 2.98e-14 | n/a | n/a | 2.19e-14 | 7.700415094e-06 | 7.700415094e-06 | 7.700415094e-06 | 0.00e+00 | 0.0001212587304 | -0.0001212587304 | 2.17e-14 |
+| blood_horner2020_donor_A_newtonian_g5 | 55.78 | 0.05578 | 0.00e+00 | nan | 7.53e-16 | 3.96e-14 | n/a | n/a | 4.23e-14 | 7.700415094e-06 | 7.700415094e-06 | 7.700415094e-06 | 0.00e+00 | 0.0004295490241 | -0.0004295490241 | 2.85e-14 |
+| blood_horner2020_donor_A_newtonian_g6 | 197.6 | 0.1976 | 0.00e+00 | nan | 5.96e-16 | 3.86e-14 | n/a | n/a | 3.94e-14 | 7.700415094e-06 | 7.700415094e-06 | 7.700415094e-06 | 0.00e+00 | 0.001521641893 | -0.001521641893 | 2.62e-14 |
+| blood_horner2020_donor_A_newtonian_g7 | 700 | 0.7 | 0.00e+00 | nan | 7.91e-16 | 7.47e-14 | n/a | n/a | 4.39e-14 | 7.700415094e-06 | 7.700415094e-06 | 7.700415094e-06 | 0.00e+00 | 0.005390290566 | -0.005390290566 | 6.28e-14 |
+| blood_horner2020_donor_A_power_law_g0 | 0.1 | 0.0001 | 4.16e-16 | nan | 8.52e-16 | 9.91e-15 | 0.00 | 0.00 | 2.37e-14 | 2.478990239e-05 | 2.478990239e-05 | 2.478990239e-05 | 4.51e-15 | 2.478990239e-06 | -2.478990239e-06 | 2.90e-15 |
+| blood_horner2020_donor_A_power_law_g1 | 0.3542 | 0.0003542 | 6.11e-15 | nan | 4.61e-16 | 2.13e-14 | 0.00 | 0.00 | 2.48e-14 | 1.775008211e-05 | 1.775008211e-05 | 1.775008211e-05 | 5.54e-15 | 6.287819791e-06 | -6.287819791e-06 | 1.59e-14 |
+| blood_horner2020_donor_A_power_law_g2 | 1.255 | 0.001255 | 0.00e+00 | nan | 6.47e-16 | 2.36e-14 | 0.00 | 0.00 | 2.21e-14 | 1.270942539e-05 | 1.270942539e-05 | 1.270942539e-05 | 6.00e-15 | 1.594870246e-05 | -1.594870246e-05 | 1.81e-14 |
+| blood_horner2020_donor_A_power_law_g3 | 4.445 | 0.004445 | 0.00e+00 | nan | 5.20e-16 | 1.54e-14 | 0.00 | 0.00 | 2.50e-14 | 9.10021107e-06 | 9.10021107e-06 | 9.10021107e-06 | 4.28e-15 | 4.045298984e-05 | -4.045298984e-05 | 7.71e-15 |
+| blood_horner2020_donor_A_power_law_g4 | 15.75 | 0.01575 | 0.00e+00 | nan | 5.69e-16 | 3.30e-14 | 0.00 | 0.00 | 3.25e-14 | 6.515939076e-06 | 6.515939076e-06 | 6.515939076e-06 | 6.37e-15 | 0.0001026067413 | -0.0001026067413 | 2.23e-14 |
+| blood_horner2020_donor_A_power_law_g5 | 55.78 | 0.05578 | 1.27e-15 | nan | 6.77e-16 | 1.35e-14 | 0.00 | 0.00 | 2.47e-14 | 4.665546954e-06 | 4.665546954e-06 | 4.665546954e-06 | 4.18e-15 | 0.0002602562481 | -0.0002602562481 | 6.46e-15 |
+| blood_horner2020_donor_A_power_law_g6 | 197.6 | 0.1976 | 0.00e+00 | nan | 4.35e-16 | 1.43e-14 | 0.00 | 0.00 | 2.78e-14 | 3.340627978e-06 | 3.340627978e-06 | 3.340627978e-06 | 4.18e-15 | 0.0006601253855 | -0.0006601253855 | 6.90e-15 |
+| blood_horner2020_donor_A_power_law_g7 | 700 | 0.7 | 0.00e+00 | nan | 2.39e-16 | 2.69e-14 | 0.00 | 0.00 | 3.20e-14 | 2.391958628e-06 | 2.391958628e-06 | 2.391958628e-06 | 5.67e-15 | 0.001674371039 | -0.001674371039 | 1.81e-14 |
 
 The Newtonian control is hand-written, not an export: it fixes the `wallShearStress` convention (a factor of 2 or a sign there would make A3 self-consistently wrong on every non-Newtonian case and A4 is the only row where the answer is known without OpenFOAM).
 
@@ -162,3 +178,77 @@ What is shipped instead is the mirror hazard: because `a` is optional with a sil
 **G3 is the discriminator for the Cross map.** biorheo's `lam` (a time) is OpenFOAM's `m` and biorheo's `m` (an exponent) is OpenFOAM's `n` -- the names collide with the meanings swapped, and a map written by matching names would raise nothing, because both slots take a plain scalar. Without this number the round trip passing at 1e-10 would not show the round trip can tell the two maps apart.
 
 **These records take no `eta_max`.** Their zero-shear plateau `eta_0` is a fitted parameter of the record, so the exported `nu0` IS the record and there is nothing to clamp; `coefficients` refuses an `eta_max` for them rather than accepting and ignoring one. The worst wall-traction imbalance on the no-yield cases is 7.009e-14.
+
+## Item 11: the two families with no material parameter to speak of (`newtonian`, `power_law`)
+
+Both are NULL MODELS and are in the registry for that reason -- see `scripts/records_from_horner.py`'s `EXTRA_FAMILIES` and `data/openfoam/newtonian_powerlaw_prereg.md` §3. Records: `blood_horner2020_donor_A_newtonian`, `blood_horner2020_donor_A_power_law`. They are the SAME 16-point curve as the Casson record `blood_horner2020_donor_A` above, under two more forms, so their columns are directly comparable with its.
+
+| family | cases | worst err nu | worst err tau | worst profile | worst wall imbal | verdict |
+|---|---|---|---|---|---|---|
+| newtonian | 8 | 0.000e+00 | 6.276e-14 | 6.220e-15 | 7.466e-14 | PASS |
+| power_law | 8 | 6.370e-15 | 2.232e-14 | 5.398e-15 | 3.302e-14 | PASS |
+
+Bars, unchanged from the rest of this page: A1' 1e-09, A2 1e-06, A3 1e-06. **G11.7 PASS.** The per-family rows are reported separately on purpose: A2 and A3 above are maxima over every case on the page, and a maximum cannot say which family moved.
+
+### Two dictionaries that OpenFOAM must REFUSE
+
+Both are predictions about the C++ decided by RUNNING `simpleFoam`, not by reading it -- item 6's premise about `BirdCarreau`'s `a` was false and was settled the same way. Each is run beside an unmodified CONTROL, because "the broken one failed" says nothing unless the intact one ran.
+
+| gate | claim | control rc | broken rc | keyword named | verdict |
+|---|---|---|---|---|---|
+| G11.3b | `powerLaw` `nuMin` is REQUIRED | 0 | 1 | True | PASS |
+| G11.4b | `Newtonian` reads `nu` at the TOP LEVEL | 0 | 1 | n/a | PASS |
+
+G11.3b: powerLaw's nuMin is REQUIRED, not optional like BirdCarreau's `a`: it is read with the dimensionedScalar(name, dims, dict) constructor and re-read with readEntry (powerLaw.C:90,120).
+
+G11.4b: Newtonian reads `nu` from the TOP LEVEL of transportProperties (Newtonian.C:71) and is the only viscosityModel in that directory with no <Model>Coeffs sub-dictionary, so a NewtonianCoeffs block is not read -- it is a file OpenFOAM stops on.
+
+OpenFOAM's own message on the `nuMin`-less dictionary, tail:
+
+```
+ns will run for 20000 steps.
+
+Reading field p
+
+Reading field U
+
+Reading/calculating face flux field phi
+
+Selecting incompressible transport model powerLaw
+
+
+--> FOAM FATAL IO ERROR: (openfoam-2606)
+Entry 'nuMin' not found in dictionary "/mnt/c/Users/compl/Desktop/Projects/biorheo/data/openfoam/runs/item11_powerlaw_no_nuMin/constant/transportProperties/powerLawCoeffs"
+
+file: constant/transportProperties/powerLawCoeffs at line 24 to 26.
+
+    From bool Foam::dimensioned<Type>::readEntry(const Foam::word&, const Foam::dictionary&, Foam::IOobjectOption::readOption, bool, Foam::keyType::option) [with Type = double]
+    in file ./src/OpenFOAM/lnInclude/dimensionedType.C at line 104.
+
+FOAM exiting
+```
+
+and on the `NewtonianCoeffs` one:
+
+```
+nce criteria found. Calculations will run for 20000 steps.
+
+Reading field p
+
+Reading field U
+
+Reading/calculating face flux field phi
+
+Selecting incompressible transport model Newtonian
+
+
+--> FOAM FATAL IO ERROR: (openfoam-2606)
+Entry 'nu' not found in dictionary "/mnt/c/Users/compl/Desktop/Projects/biorheo/data/openfoam/runs/item11_newtonian_in_coeffs/constant/transportProperties"
+
+file: constant/transportProperties at line 20 to 24.
+
+    From bool Foam::dimensioned<Type>::readEntry(const Foam::word&, const Foam::dictionary&, Foam::IOobjectOption::readOption, bool, Foam::keyType::option) [with Type = double]
+    in file ./src/OpenFOAM/lnInclude/dimensionedType.C at line 104.
+
+FOAM exiting
+```
