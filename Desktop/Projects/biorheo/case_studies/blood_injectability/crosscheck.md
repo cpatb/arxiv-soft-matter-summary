@@ -23,6 +23,17 @@ The ratio's denominator is the donor's own Casson force, 0.2231 to 0.5086 N -- a
 | `newtonian` (NULL) | 20 | 20 | 271.1 % | 176.5 % | above the donor spread |
 | `power_law` (NULL) | 20 | 20 | 81.62 % | -77.11 % | above the neglected yield term, below the donor spread |
 
+**The extremes point in OPPOSITE directions, and reporting a signed median beside an unsigned worst hid that.** A first version of this page and of the commit message said both no-yield families predict a *consistently* lower force. They do not:
+
+| family | lower on | most positive | two-sided sign test |
+|---|---|---|---|
+| `cross` | 16/20 donors | +14.19 % | p = 0.01182 |
+| `carreau_yasuda` | 18/20 donors | +12.33 % | p = 0.0004025 |
+
+So the supportable claim is a paired sign test, not "consistently".
+
+**And the two families are not equally good.** Casson's `rmse_log` is worse on 20/20 donors, by 1.54x to 12.29x, and the force difference TRACKS the misfit: Spearman(|rel dev|, rmse ratio) = 0.559 (p = 0.01033) for `cross` and 0.683 (p = 0.0009099) for `carreau_yasuda`. **This is not a symmetric "family choice moves the force" ambiguity.** It is the two-parameter family the case study ships misfitting these curves systematically, and its plateau being biased relative to a four-parameter family that does not -- a stronger and differently actionable result than the first version of this page claimed.
+
 **G12.1 (PASS), item 12's own bar:** the worst Cross deviation is 30.18 % against the donor spread 127.9 %. Pre-registered as WEAK -- the bar item 12 proposed; passing it establishes very little.
 
 **G12.2:** `cross` lands in the band *above the neglected yield term, below the donor spread*; `carreau_yasuda` in *above the neglected yield term, below the donor spread*.
@@ -60,14 +71,43 @@ Neither is in the pre-registration. Both were added because the effect the first
 | `cross` | 3.189 % |
 | `carreau_yasuda` | 4.944 % |
 
-If that gap is small, the families disagree **because their fitted plateaux disagree** -- which is a statement about extrapolating a fit that stops at 700 1/s, not about the needle.
+**That gap is NOT the yield term, and this study said it was.** The yield explanation is signed and quantitative -- `F_casson = F_newt(eta_c)(1+y)` puts the force ratio BELOW the plateau ratio on every donor by `y` -- so an unsigned |gap| cannot test it. Signed, the residual has the WRONG SIGN on 6/20 Cross donors (A, F, K, N, P, U) and 7/20 Carreau-Yasuda ones, the worst gap in both families is a wrong-sign row (donor A), and Carreau-Yasuda's 4.944 % is 1.68x the yield term rather than equal to it. **The sentence is withdrawn**; what the residual is instead is a compression that grows with the plateau ratio -- the non-Newtonian core -- and this study does not characterise it.
 
-**A third control was attempted and it is NOT independent evidence. Recorded anyway, because what it turned out to be is worth knowing.** The registry nulls are off partly by construction -- `newtonian` misses by 271.1 %, but its `mu` is fitted over the whole 0.1-700 1/s curve and so is nowhere near the high-rate plateau. So a Newtonian fluid AT the donor's own Casson `eta_c` was run, meaning to separate *does the needle read the plateau?* from *do the plateaux disagree?*. It reproduces the Casson force to **2.941 %** worst over 20 donors -- and the yield term on the sibling page is 2.941 %, **the same number**, because Casson at `tau_y = 0` IS Newtonian at `eta_c`. The two agree to 1.0e-05 relative, which makes this a cross-implementation check of that number (one route through `flow_rate_casson`, one through `flow_rate_gnf`) and nothing more. It shares the identity it was meant to test, so it cannot test it -- this repo's own 2026-09-05 lesson, walked into again. The mechanism therefore rests on the plateau control above and on that alone.
+### The explanation this study first gave was WRONG, and two checks refute it
+
+Having found a 30 % difference at a rate 1.42 decades past the data, the first version of this page and of `results.md` both said *the cause is the extrapolation*.
+
+**Check one, through the solver.** Run the identical comparison at a needle wide enough that the wall rate lands in the measured range -- ID 0.6236 mm instead of 0.21 mm, sized so `4Q/(pi R^3)` = 700 1/s. With the extrapolation removed (40/40 record evaluations still sit outside, by at most 0.015 decades, because sizing on the apparent rate leaves a shear-thinning fluid's true wall rate a little higher) the Cross-vs-Casson difference is **20.4 % worst, -11.13 % median** -- against 30.18 % and -11.19 % at the 27G. **99.4 % of the median survives with no extrapolation at all.** The extrapolation contributes essentially nothing to the typical donor and about a third of the single worst one.
+
+**Check two, on the laws themselves.** How far apart are the same two fits at rates inside the envelope?
+
+| rate (1/s) | worst `cross` vs `casson` | worst `carreau_yasuda` | |
+|---|---|---|---|
+| 0.1 | 41.96 % | 44.81 % | inside the envelope |
+| 0.9147 | 32.7 % | 35.11 % | inside the envelope |
+| 8.367 | 20.62 % | 20.27 % | inside the envelope |
+| 76.53 | 12.08 % | 9.135 % | inside the envelope |
+| 700 | 21.61 % | 24.6 % | inside the envelope |
+| 1.838e+04 | 30.54 % | 33.51 % | **the needle** |
+
+The families disagree by up to 41.96 % **inside the measured range**, against 30.54 % at the needle -- and the worst rate is the BOTTOM of the envelope, not the top. The needle is therefore not where the disagreement is created; it is one rate at which two differently-shaped fits to the same 16 noisy points are read. The families disagree across the whole MEASURED range, by more at the bottom of the envelope than at the needle. The 30 % is a misfit between two differently-shaped fits to the same 16 points, not an artefact of reading them past the data.
+
+That does not weaken the finding, it widens it: the 30 % is not a hazard of extrapolating these records, it is a property of the records themselves, and it applies to anyone reading them anywhere on the curve -- not only in a needle. What the extrapolation adds is that outside the envelope there is no data to say which fit is right, and `eta_at` refuses to answer while a solver dictionary cannot.
+
+### The null that DOES discriminate, and the two that do not
+
+**The matched-plateau null.** Take each donor's `cross` record and replace `eta_inf` with that donor's Casson `eta_c`, leaving `eta_0`, `lam` and `m` at their fitted values -- not Casson in disguise, since the whole low-rate structure of the Cross fit is kept -- and push it through the same solver. If the difference came from anywhere but the high-rate plateau it would survive. It does not: **2.719 % worst, -0.8665 % median**, collapsing into the 2.941 % yield band from 30.18 %. So at the needle the plateau IS what is read, and the disagreement is about its value. (Supplied by code review after this study's own first two nulls were shown not to discriminate.)
+
+**Neither registry null discriminates, and `newtonian`'s number is an identity.** For a Newtonian fluid `dp = 8 mu L Q / (pi R^4)` exactly, so `F_newt/F_casson = (mu/eta_c)/(1+y)` -- computable from the registry with no needle, no quadrature and no solver. Its 271.1 % is a restatement of *blood shear-thins by 2-4x between 0.1 and 700 1/s*, which is visible in the raw data. G12.3 therefore does NOT license "the needle has not washed out the difference between models"; the matched-plateau null is what licenses it. And `power_law`, a family with NO plateau at all, lands in the SAME band as `cross` -- so the four-band verdict is coarser than the claim it was being used to support. The bar is not changed; this is reported as the finding it is.
+
+**A fourth control was attempted and it is NOT independent evidence. Recorded anyway, because what it turned out to be is worth knowing.** The registry nulls are off partly by construction -- `newtonian` misses by 271.1 %, but its `mu` is fitted over the whole 0.1-700 1/s curve and so is nowhere near the high-rate plateau. So a Newtonian fluid AT the donor's own Casson `eta_c` was run, meaning to separate *does the needle read the plateau?* from *do the plateaux disagree?*. It reproduces the Casson force to **2.941 %** worst over 20 donors -- and the yield term on the sibling page is 2.941 %, **the same number**, because Casson at `tau_y = 0` IS Newtonian at `eta_c`. The two agree to 1.0e-05 relative, which makes this a cross-implementation check of that number (one route through `flow_rate_casson`, one through `flow_rate_gnf`) and nothing more. It shares the identity it was meant to test, so it cannot test it -- this repo's own 2026-09-05 lesson, walked into again. The mechanism rests on the MATCHED-PLATEAU null, which is the only control here that both goes through the solver and could have come out the other way.
 
 **G12.3 does not rest on which null was picked.** The separation is 8.983x on the worse null and 2.705x on the milder one, both above the 1.6x floor (informative either way).
 
 ## What this does not establish
 
-**It does not validate the extrapolation.** Every family is read a median 1.42 decades past the top of its own envelope on every donor, so if they agree they agree about an extrapolation. The measurement that would settle it is tube viscometry at this diameter, which the Horner dataset does not contain. No amount of agreement here is evidence that any of these families is RIGHT at the needle's wall rate.
+**It does not say which family is RIGHT.** At the 27G every family is read a median 1.42 decades past the top of its own envelope, and the measurement that would settle which extrapolation is correct is tube viscometry at this diameter, which the Horner dataset does not contain. Casson fitting worse over the MEASURED range is a reason to doubt its plateau; it is not a demonstration that Cross's is right.
+
+**It does not propagate the plateaux's own uncertainty, and today it could not.** The forces here carry no parameter error, and `injectability.force_with_uq` -- which is in the module under test -- is never called. A code review then found why that is not a simple omission to fix: **the stored profile-likelihood UPPER bounds are corrupted by a step-size bug upstream in `dst_fit.profiling`.** `step = max(wald/4, span/5000)` takes `span` from the parameter's arbitrary BOUND, so for a viscosity bounded at 1e6 the step is 200 and 10 bisections leave a resolution of 200/1024 = 0.195 on a parameter of size 0.0038. Verified in this session: 117 of 296 closed upper ends in the registry sit exactly on that grid, and the worst sits 82x the best-fit value above it. **Whether the plateau disagreement is resolved at 95 % is therefore UNKNOWN here and is not claimed either way.** See NEXT_STEPS item 13; the same denominator is used by the item 9/10 seed-scatter metric, whose margin to its bar is only 33.6x.
 
 **It resolves nothing at the 1 % level**, for the reason in the scales table.

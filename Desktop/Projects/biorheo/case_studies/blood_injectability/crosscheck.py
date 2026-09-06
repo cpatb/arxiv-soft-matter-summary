@@ -41,6 +41,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+from scipy.stats import binomtest, spearmanr
 
 import biorheo
 from biorheo.constitutive.gnf import NEWTONIAN
@@ -155,12 +156,76 @@ def route_control(ref: dict, nd: Needle) -> dict:
         q_closed = flow_rate_casson(dp, nd.radius, nd.length, *rec.params_si)
         q_quad = flow_rate_gnf(dp, nd.radius, nd.length, rec.model, rec.params_si)
         dev = abs(q_quad / q_closed - 1.0)
-        worst = max(worst, dev)
+        worst = max(worst, dev) if np.isfinite(dev) else float("nan")
         rows.append({"donor": d, "Q_closed": q_closed, "Q_quad": q_quad, "rel_dev": dev})
     return {"worst_rel_dev": worst, "rows": rows,
             "claim": ("Casson's closed form and the generic quadrature agree at this "
                       "operating point, so a family-to-family force difference is a "
                       "difference between FITS and not between numerical routes.")}
+
+
+def _finite(xs):
+    """Finite values only. `max(0.0, nan)` returns 0.0 in Python, so a NaN row is
+    SILENTLY DROPPED and a worst-case understated -- `lessons.md`, 2026-09-06."""
+    return [x for x in xs if np.isfinite(x)]
+
+
+def sign_accounting(rows: list[dict]) -> dict:
+    """The signed structure of a set of relative deviations.
+
+    Reporting a signed median beside an unsigned worst hides the case where the extremes
+    point in OPPOSITE directions -- which is what happens here, and what made "both
+    families predict a LOWER force, consistently" false when it was written into a commit
+    message and onto two pages. The supportable claim is a paired sign test."""
+    d = _finite([r["rel_dev"] for r in rows])
+    neg = [x for x in d if x < 0]
+    pos = [x for x in d if x > 0]
+    p = float(binomtest(len(neg), len(d), 0.5).pvalue) if d else float("nan")
+    return {"n": len(d), "n_negative": len(neg), "n_positive": len(pos),
+            "most_negative": min(d) if d else float("nan"),
+            "most_positive": max(pos) if pos else 0.0,
+            "sign_test_p": p,
+            "claim": (f"lower on {len(neg)} of {len(d)} donors (two-sided sign test "
+                      f"p = {p:.4g}), NOT on all of them")}
+
+
+def matched_plateau_null(ref: dict, recs: dict, nd: Needle) -> dict:
+    """**The discriminating negative case for "the needle reads the plateau", supplied by
+    the code review after this study's first two nulls were shown not to be one.**
+
+    Each donor's `cross` record is re-run with `eta_inf` REPLACED by that donor's Casson
+    `eta_c`, leaving `eta_0`, `lam` and `m` at their fitted values. This is not Casson in
+    disguise -- it keeps the whole low-rate structure of the Cross fit -- so if the force
+    difference were coming from anywhere other than the high-rate plateau it would
+    survive. It goes THROUGH the flow solver rather than around it, which is what the
+    earlier `plateau_control` did not do.
+
+    Contrast with the two nulls that do not work:
+      * `newtonian` at 271 % is `mu/eta_c` divided by the yield factor -- an algebraic
+        identity that restates "blood shear-thins by 2-4x over the measured range".
+      * `plateau_null` (Newtonian at `eta_c`) is Casson with `tau_y = 0`, i.e. the
+        sibling study's `yield_share_max` by another route."""
+    rows, worst = [], 0.0
+    cross_model = recs[f"{next(iter(ref.values())).id}_cross"].model
+    i_inf = cross_model.param_names.index("eta_inf")
+    for d, r in sorted(ref.items()):
+        eta_c = dict(zip(r.model.param_names, r.params_si))["eta_c"]
+        f_cas = injection_force(Q_SI, nd, Syringe(BARREL_RADIUS), r.model, r.params_si,
+                                rho=RHO_BLOOD).force
+        p_matched = np.array(recs[f"{r.id}_cross"].params_si, dtype=float)
+        p_matched[i_inf] = eta_c
+        f_mat = injection_force(Q_SI, nd, Syringe(BARREL_RADIUS), cross_model,
+                                p_matched, rho=RHO_BLOOD).force
+        dev = f_mat / f_cas - 1.0
+        worst = max(worst, abs(dev))
+        rows.append({"donor": d, "rel_dev": float(dev)})
+    return {"worst_abs_rel_dev": worst,
+            "median_rel_dev": float(np.median([r["rel_dev"] for r in rows])),
+            "rows": rows,
+            "claim": ("Cross with its plateau set to Casson's, keeping all its other "
+                      "fitted parameters, collapses the difference into the yield band. "
+                      "So at the needle the plateau IS what is being read, and the "
+                      "30 % is a disagreement about its value.")}
 
 
 def plateau_control(ref: dict, recs: dict, summary: dict) -> dict:
@@ -178,18 +243,58 @@ def plateau_control(ref: dict, recs: dict, summary: dict) -> dict:
     explanation on the page would be wrong."""
     out = {}
     for fam, key in (("cross", "eta_inf"), ("carreau_yasuda", "eta_inf")):
-        rows, worst = [], 0.0
+        rows = []
         for d, r in sorted(ref.items()):
             f_rec = recs[f"{r.id}_{fam}"]
             p = dict(zip(f_rec.model.param_names, f_rec.params_si))
             eta_c = dict(zip(r.model.param_names, r.params_si))["eta_c"]
             plateau_ratio = float(p[key]) / float(eta_c) - 1.0
             force_ratio = next(x["rel_dev"] for x in summary[fam]["rows"] if x["donor"] == d)
-            gap = abs(force_ratio - plateau_ratio)
-            worst = max(worst, gap)
             rows.append({"donor": d, "plateau_ratio": plateau_ratio,
-                         "force_ratio": force_ratio, "gap": gap})
-        out[fam] = {"worst_gap": worst, "rows": rows}
+                         "force_ratio": force_ratio,
+                         # SIGNED. The yield explanation is signed and quantitative --
+                         # F_casson = F_newt(eta_c)(1+y) makes the force ratio sit BELOW
+                         # the plateau ratio on every donor -- so an unsigned |gap| cannot
+                         # test it, and the first version of this study asserted it with
+                         # an unsigned bound and a factor-2 slop. It is false: the
+                         # residual has the wrong sign on several donors.
+                         "signed_gap": float(force_ratio - plateau_ratio),
+                         "gap": abs(force_ratio - plateau_ratio)})
+        gaps = _finite([x["gap"] for x in rows])
+        signed = _finite([x["signed_gap"] for x in rows])
+        worst_row = max((x for x in rows if np.isfinite(x["gap"])),
+                        key=lambda x: x["gap"], default=None)
+        out[fam] = {
+            "worst_gap": max(gaps) if gaps else float("nan"),
+            "worst_gap_donor": worst_row["donor"] if worst_row else None,
+            "n_wrong_sign": sum(1 for x in signed if x > 0),
+            "wrong_sign_donors": [x["donor"] for x in rows if x["signed_gap"] > 0],
+            "rows": rows,
+        }
+    return out
+
+
+def misfit_correlation(ref: dict, recs: dict, summary: dict) -> dict:
+    """Does the force difference track how badly Casson misfits that donor's curve?
+
+    The two families are NOT equally good -- Casson's `rmse_log` is worse on 20/20 donors
+    -- so "family choice moves the force" is the wrong framing: the family the case study
+    ships is the worse-fitting one, and if the effect grows with the misfit that is a
+    directional statement, not a symmetric ambiguity. Raised by code review."""
+    out = {}
+    for fam in ("cross", "carreau_yasuda"):
+        ratio, dev = [], []
+        for d, r in sorted(ref.items()):
+            e = recs[f"{r.id}_{fam}"].extra
+            ratio.append(float(e["rmse_log_casson"]) / float(e["rmse_log_this_model"]))
+            dev.append(abs(next(x["rel_dev"] for x in summary[fam]["rows"]
+                                if x["donor"] == d)))
+        keep = [(a, b) for a, b in zip(ratio, dev) if np.isfinite(a) and np.isfinite(b)]
+        rho, p = spearmanr([a for a, _ in keep], [b for _, b in keep])
+        out[fam] = {"spearman_rho": float(rho), "p": float(p), "n": len(keep),
+                    "rmse_ratio_min": float(min(ratio)),
+                    "rmse_ratio_max": float(max(ratio)),
+                    "casson_worse_on": sum(1 for a in ratio if a > 1.0)}
     return out
 
 
@@ -234,6 +339,120 @@ def plateau_null(ref: dict, nd: Needle) -> dict:
                       "high-rate plateau and essentially nothing else. The 30 % is "
                       "therefore a disagreement between plateaux, not a difference in "
                       "what the geometry samples.")}
+
+
+def in_envelope_needle(ref: dict, recs: dict, target_gd: float) -> dict:
+    """**The control that decides C1: run the SAME comparison through the SAME solver at a
+    needle wide enough that the wall rate lands INSIDE the measured envelope.**
+
+    The `viscosity_ladder` below shows the fits disagree across the measured range, but it
+    evaluates the laws directly. This runs the whole force calculation -- pressure
+    inversion, quadrature, plunger area -- with no extrapolation anywhere, which is the
+    only way to say what the extrapolation is contributing to the HEADLINE number rather
+    than to the viscosity ratio. Supplied by code review; it is 20 lines and it changes
+    the sentence.
+
+    The radius is chosen so the apparent wall rate `4Q/(pi R^3)` equals `target_gd`; the
+    true rate is then checked to be inside every record's envelope and the study says so
+    rather than assuming it."""
+    R = (4.0 * Q_SI / (np.pi * target_gd)) ** (1.0 / 3.0)
+    nd = Needle(radius=R, length=NEEDLE_LENGTH)
+    out = {"radius_m": float(R), "id_mm": float(2e3 * R), "target_gd": float(target_gd),
+           "families": {}}
+    inside = True
+    for fam in ("cross", "carreau_yasuda"):
+        rows = []
+        for d, r in sorted(ref.items()):
+            f_cas = force_of(r, nd)
+            f_fam = force_of(recs[f"{r.id}_{fam}"], nd)
+            if f_cas["failed"] or f_fam["failed"]:
+                rows.append({"donor": d, "rel_dev": float("nan")})
+                continue
+            inside &= not (f_cas["extrapolated"] or f_fam["extrapolated"])
+            rows.append({"donor": d, "rel_dev": float(f_fam["force_N"] / f_cas["force_N"] - 1.0),
+                         "gd_wall": f_cas["gd_wall"],
+                         "decades_past_high": max(f_cas["decades_past_high"],
+                                                  f_fam["decades_past_high"])})
+        devs = _finite([x["rel_dev"] for x in rows])
+        out["families"][fam] = {
+            "rows": rows, "n": len(devs),
+            "worst_abs_rel_dev": max((abs(x) for x in devs), default=float("nan")),
+            "median_rel_dev": float(np.median(devs)) if devs else float("nan"),
+        }
+    out["every_record_inside_its_envelope"] = bool(inside)
+    # Sizing on the APPARENT rate `4Q/(pi R^3)` leaves the true wall rate of a
+    # shear-thinning fluid slightly higher, so a few records can still sit just outside.
+    # Reported in decades rather than claimed away: the point of this control is that the
+    # extrapolation is ~0, and "~0" has to be a number.
+    over = [x["decades_past_high"] for v in out["families"].values() for x in v["rows"]
+            if "decades_past_high" in x]
+    out["worst_decades_past_high"] = float(max(over)) if over else float("nan")
+    out["n_records_outside"] = int(sum(1 for x in over if x > 0))
+    out["n_records_total"] = len(over)
+    return out
+
+
+def viscosity_ladder(ref: dict, recs: dict, gd_needle: float) -> dict:
+    """**The check that refuted this study's own first explanation.**
+
+    Having found a 30 % force difference at a rate 1.42 decades past the data, the obvious
+    reading -- and the one first written onto both pages -- was "the cause is the
+    extrapolation". That is testable in one line, by asking how far apart the same two
+    fits are at rates INSIDE the measured envelope, and it is false.
+
+    The families disagree by tens of per cent across the WHOLE measured range, and by MORE
+    at the bottom of the envelope than at the needle. So the needle is not where the
+    disagreement is created; it is just one rate at which two differently-shaped fits to
+    the same 16 noisy points are read. The mechanism is the MISFIT (Casson's median
+    rmse_log is 0.146 against Cross's 0.030, and it is flagged `structured` on 19 of 20
+    donors -- `data/horner2020/model_comparison.md`), not the extrapolation.
+
+    This touches no part of `injectability`: it evaluates the records' own laws."""
+    lo = min(r.envelope.gammadot_min for r in ref.values())
+    hi = max(r.envelope.gammadot_max for r in ref.values())
+    rates = list(np.geomspace(lo, hi, 5)) + [gd_needle]
+    rows = []
+    for gd in rates:
+        row = {"gammadot": float(gd), "inside_envelope": bool(lo <= gd <= hi)}
+        for fam in ("cross", "carreau_yasuda"):
+            devs = []
+            for d, r in sorted(ref.items()):
+                a = float(r.model(np.array([gd]), *r.params_si)[0])
+                f = recs[f"{r.id}_{fam}"]
+                b = float(f.model(np.array([gd]), *f.params_si)[0])
+                devs.append(abs(b / a - 1.0))
+            row[fam] = float(max(devs))
+        rows.append(row)
+    inside = [r for r in rows if r["inside_envelope"]]
+    needle = [r for r in rows if not r["inside_envelope"]][0]
+    # the misfit itself, computed from the records' own `extra` rather than quoted from
+    # `model_comparison.md` -- every number in a case-study .md is printed by a script
+    rmse = {"casson": float(np.median(
+        [recs[f"{r.id}_cross"].extra["rmse_log_casson"] for r in ref.values()]))}
+    for fam in ("cross", "carreau_yasuda"):
+        rmse[fam] = float(np.median(
+            [recs[f"{r.id}_{fam}"].extra["rmse_log_this_model"] for r in ref.values()]))
+    structured = {"casson": sum(
+        bool((r.identifiability or {}).get("residual_structure", {}).get("structured"))
+        for r in ref.values())}
+    for fam in ("cross", "carreau_yasuda"):
+        structured[fam] = sum(
+            bool((recs[f"{r.id}_{fam}"].identifiability or {})
+                 .get("residual_structure", {}).get("structured"))
+            for r in ref.values())
+    return {
+        "rows": rows, "envelope": [lo, hi], "gd_needle": gd_needle,
+        "median_rmse_log": rmse, "n_structured_of_20": structured, "n_donors": len(ref),
+        "worst_inside_cross": max(r["cross"] for r in inside),
+        "worst_inside_cy": max(r["carreau_yasuda"] for r in inside),
+        "at_needle_cross": needle["cross"], "at_needle_cy": needle["carreau_yasuda"],
+        "needle_is_the_worst_rate": bool(
+            needle["cross"] >= max(r["cross"] for r in inside)),
+        "claim": ("The families disagree across the whole MEASURED range, by more at the "
+                  "bottom of the envelope than at the needle. The 30 % is a misfit "
+                  "between two differently-shaped fits to the same 16 points, not an "
+                  "artefact of reading them past the data."),
+    }
 
 
 def main() -> int:
@@ -327,6 +546,15 @@ def main() -> int:
     rc = route_control(ref, nd)
     pc = plateau_control(ref, recs, summary)
     pn = plateau_null(ref, nd)
+    gd_needle = float(np.median([out[REFERENCE][d]["gd_wall"] for d in donors]))
+    vl = viscosity_ladder(ref, recs, gd_needle)
+    mpn = matched_plateau_null(ref, recs, nd)
+    mc = misfit_correlation(ref, recs, summary)
+    # the top of every record's envelope, so the wall rate lands INSIDE it
+    ien = in_envelope_needle(ref, recs, max(r.envelope.gammadot_max
+                                            for r in ref.values()))
+    for fam in FAMILIES:
+        summary[fam]["signs"] = sign_accounting(summary[fam]["rows"])
     # G12.3 used `max` over the two nulls, which is a free choice. Recorded both ways so
     # the verdict is not resting on which null happened to be picked.
     null_min = min(summary[f]["worst_abs_rel_dev"] for f in NULLS)
@@ -353,6 +581,10 @@ def main() -> int:
         "route_control": rc,
         "plateau_control": pc,
         "plateau_null": pn,
+        "viscosity_ladder": vl,
+        "matched_plateau_null": mpn,
+        "misfit_correlation": mc,
+        "in_envelope_needle": ien,
         # measured over every family and donor this study could evaluate, not quoted
         # from the sibling case study, which computed it for `casson` alone
         "median_decades_past_high": float(np.median(
@@ -412,6 +644,31 @@ def _report(p: dict) -> str:
         L.append(f"| `{f}`{' (NULL)' if f in NULLS else ''} | {v['n_in']} | {v['n_out']} | "
                  f"{_pct(v['worst_abs_rel_dev'])} | {_pct(v['median_rel_dev'])} | "
                  f"{v['band']} |")
+    L += ["",
+          "**The extremes point in OPPOSITE directions, and reporting a signed median "
+          "beside an unsigned worst hid that.** A first version of this page and of the "
+          "commit message said both no-yield families predict a *consistently* lower "
+          "force. They do not:", "",
+          "| family | lower on | most positive | two-sided sign test |", "|---|---|---|---|"]
+    for f in ("cross", "carreau_yasuda"):
+        g = s[f]["signs"]
+        L.append(f"| `{f}` | {g['n_negative']}/{g['n']} donors | "
+                 f"+{_pct(g['most_positive'])} | p = {g['sign_test_p']:.4g} |")
+    L += ["", "So the supportable claim is a paired sign test, not \"consistently\".", "",
+          "**And the two families are not equally good.** Casson's `rmse_log` is worse on "
+          f"{p['misfit_correlation']['cross']['casson_worse_on']}/20 donors, by "
+          f"{p['misfit_correlation']['cross']['rmse_ratio_min']:.2f}x to "
+          f"{p['misfit_correlation']['cross']['rmse_ratio_max']:.2f}x, and the force "
+          "difference TRACKS the misfit: Spearman(|rel dev|, rmse ratio) = "
+          f"{p['misfit_correlation']['cross']['spearman_rho']:.3f} "
+          f"(p = {p['misfit_correlation']['cross']['p']:.4g}) for `cross` and "
+          f"{p['misfit_correlation']['carreau_yasuda']['spearman_rho']:.3f} "
+          f"(p = {p['misfit_correlation']['carreau_yasuda']['p']:.4g}) for "
+          "`carreau_yasuda`. **This is not a symmetric \"family choice moves the force\" "
+          "ambiguity.** It is the two-parameter family the case study ships misfitting "
+          "these curves systematically, and its plateau being biased relative to a "
+          "four-parameter family that does not -- a stronger and differently actionable "
+          "result than the first version of this page claimed."]
     g1, g3 = p["G12_1_item12_own_bar"], p["G12_3_informative"]
     L += ["",
           f"**G12.1 ({'PASS' if g1['pass'] else 'FAILED'}), item 12's own bar:** the worst "
@@ -475,10 +732,89 @@ def _report(p: dict) -> str:
     for f, v in pc.items():
         L.append(f"| `{f}` | {_pct(v['worst_gap'])} |")
     pn = p["plateau_null"]
-    L += ["", "If that gap is small, the families disagree **because their fitted "
-          "plateaux disagree** -- which is a statement about extrapolating a fit that "
-          "stops at 700 1/s, not about the needle.", "",
-          "**A third control was attempted and it is NOT independent evidence. Recorded "
+    vl, ien, mpn = p["viscosity_ladder"], p["in_envelope_needle"], p["matched_plateau_null"]
+    L += ["",
+          "**That gap is NOT the yield term, and this study said it was.** The yield "
+          "explanation is signed and quantitative -- `F_casson = F_newt(eta_c)(1+y)` puts "
+          "the force ratio BELOW the plateau ratio on every donor by `y` -- so an "
+          "unsigned |gap| cannot test it. Signed, the residual has the WRONG SIGN on "
+          f"{p['plateau_control']['cross']['n_wrong_sign']}/20 Cross donors "
+          f"({', '.join(p['plateau_control']['cross']['wrong_sign_donors'])}) and "
+          f"{p['plateau_control']['carreau_yasuda']['n_wrong_sign']}/20 "
+          "Carreau-Yasuda ones, the worst gap in both families is a wrong-sign row "
+          f"(donor {p['plateau_control']['cross']['worst_gap_donor']}), and "
+          f"Carreau-Yasuda's {_pct(p['plateau_control']['carreau_yasuda']['worst_gap'])} "
+          f"is {p['plateau_control']['carreau_yasuda']['worst_gap'] / sc['yield_term']:.2f}x "
+          "the yield term rather than equal to it. **The sentence is withdrawn**; what "
+          "the residual is instead is a compression that grows with the plateau ratio -- "
+          "the non-Newtonian core -- and this study does not characterise it.", "",
+          "### The explanation this study first gave was WRONG, and two checks refute it",
+          "",
+          "Having found a 30 % difference at a rate 1.42 decades past the data, the first "
+          "version of this page and of `results.md` both said *the cause is the "
+          "extrapolation*.", "",
+          "**Check one, through the solver.** Run the identical comparison at a needle "
+          f"wide enough that the wall rate lands in the measured range -- ID "
+          f"{ien['id_mm']:.4g} mm instead of {ID_NOMINAL_MM} mm, sized so "
+          f"`4Q/(pi R^3)` = {ien['target_gd']:.0f} 1/s. With the extrapolation removed "
+          f"({ien['n_records_outside']}/{ien['n_records_total']} record evaluations still "
+          f"sit outside, by at most {ien['worst_decades_past_high']:.3f} decades, because "
+          "sizing on the apparent rate leaves a shear-thinning fluid's true wall rate a "
+          "little higher) the Cross-vs-Casson difference is "
+          f"**{_pct(ien['families']['cross']['worst_abs_rel_dev'])} worst, "
+          f"{_pct(ien['families']['cross']['median_rel_dev'])} median** -- against "
+          f"{_pct(s['cross']['worst_abs_rel_dev'])} and "
+          f"{_pct(s['cross']['median_rel_dev'])} at the 27G. "
+          f"**{100 * abs(ien['families']['cross']['median_rel_dev'] / s['cross']['median_rel_dev']):.1f} % "
+          "of the median survives with no extrapolation at all.** The extrapolation "
+          "contributes essentially nothing to the typical donor and about a third of the "
+          "single worst one.", "",
+          "**Check two, on the laws themselves.** How far apart are the same two fits at "
+          "rates inside the envelope?", "",
+          "| rate (1/s) | worst `cross` vs `casson` | worst `carreau_yasuda` | |",
+          "|---|---|---|---|"]
+    for r in vl["rows"]:
+        L.append(f"| {r['gammadot']:.4g} | {_pct(r['cross'])} | "
+                 f"{_pct(r['carreau_yasuda'])} | "
+                 f"{'inside the envelope' if r['inside_envelope'] else '**the needle**'} |")
+    L += ["",
+          f"The families disagree by up to {_pct(vl['worst_inside_cross'])} **inside the "
+          f"measured range**, against {_pct(vl['at_needle_cross'])} at the needle -- and "
+          f"the worst rate is the BOTTOM of the envelope, not the top. The needle is "
+          "therefore not where the disagreement is created; it is one rate at which two "
+          "differently-shaped fits to the same 16 noisy points are read. "
+          + vl["claim"], "",
+          "That does not weaken the finding, it widens it: the 30 % is not a hazard of "
+          "extrapolating these records, it is a property of the records themselves, and "
+          "it applies to anyone reading them anywhere on the curve -- not only in a "
+          "needle. What the extrapolation adds is that outside the envelope there is no "
+          "data to say which fit is right, and `eta_at` refuses to answer while a solver "
+          "dictionary cannot.", "",
+          "### The null that DOES discriminate, and the two that do not", "",
+          "**The matched-plateau null.** Take each donor's `cross` record and replace "
+          "`eta_inf` with that donor's Casson `eta_c`, leaving `eta_0`, `lam` and `m` at "
+          "their fitted values -- not Casson in disguise, since the whole low-rate "
+          "structure of the Cross fit is kept -- and push it through the same solver. If "
+          "the difference came from anywhere but the high-rate plateau it would survive. "
+          f"It does not: **{_pct(mpn['worst_abs_rel_dev'])} worst, "
+          f"{_pct(mpn['median_rel_dev'])} median**, collapsing into the "
+          f"{_pct(sc['yield_term'])} yield band from "
+          f"{_pct(s['cross']['worst_abs_rel_dev'])}. So at the needle the plateau IS what "
+          "is read, and the disagreement is about its value. (Supplied by code review "
+          "after this study's own first two nulls were shown not to discriminate.)", "",
+          f"**Neither registry null discriminates, and `newtonian`'s number is an "
+          f"identity.** For a Newtonian fluid `dp = 8 mu L Q / (pi R^4)` exactly, so "
+          f"`F_newt/F_casson = (mu/eta_c)/(1+y)` -- computable from the registry with no "
+          f"needle, no quadrature and no solver. Its "
+          f"{_pct(s['newtonian']['worst_abs_rel_dev'])} is a restatement of *blood "
+          f"shear-thins by 2-4x between 0.1 and 700 1/s*, which is visible in the raw "
+          "data. G12.3 therefore does NOT license \"the needle has not washed out the "
+          "difference between models\"; the matched-plateau null is what licenses it. "
+          f"And `power_law`, a family with NO plateau at all, lands in the SAME band as "
+          f"`cross` -- so the four-band verdict is coarser than the claim it was being "
+          "used to support. The bar is not changed; this is reported as the finding it "
+          "is.", "",
+          "**A fourth control was attempted and it is NOT independent evidence. Recorded "
           "anyway, because what it turned out to be is worth knowing.** The registry "
           f"nulls are off partly by construction -- `newtonian` misses by "
           f"{_pct(s['newtonian']['worst_abs_rel_dev'])}, but its `mu` is fitted over the "
@@ -493,8 +829,9 @@ def _report(p: dict) -> str:
           "this a cross-implementation check of that number (one route through "
           "`flow_rate_casson`, one through `flow_rate_gnf`) and nothing more. It shares "
           "the identity it was meant to test, so it cannot test it -- this repo's own "
-          "2026-09-05 lesson, walked into again. The mechanism therefore rests on the "
-          "plateau control above and on that alone.", "",
+          "2026-09-05 lesson, walked into again. The mechanism rests on the "
+          "MATCHED-PLATEAU null, which is the only control here that both goes through "
+          "the solver and could have come out the other way.", "",
           f"**G12.3 does not rest on which null was picked.** The separation is "
           f"{g3['separation_worst_null']:.4g}x on the worse null and "
           f"{g3['separation_least_extreme_null']:.4g}x on the milder one, both above the "
@@ -502,13 +839,26 @@ def _report(p: dict) -> str:
           f"({'informative either way' if g3['informative_on_either_null'] else 'NOT informative on the milder null'}).",
           "",
           "## What this does not establish", "",
-          "**It does not validate the extrapolation.** Every family is read "
-          f"a median {p['median_decades_past_high']:.2f} decades "
-          "past the top of its own envelope on every donor, so if they agree they agree "
-          "about an extrapolation. The measurement that would settle it is tube "
-          "viscometry at this diameter, which the Horner dataset does not contain. No "
-          "amount of agreement here is evidence that any of these families is RIGHT at "
-          "the needle's wall rate.", "",
+          "**It does not say which family is RIGHT.** At the 27G every family is read a "
+          f"median {p['median_decades_past_high']:.2f} decades past the top of its own "
+          "envelope, and the measurement that would settle which extrapolation is correct "
+          "is tube viscometry at this diameter, which the Horner dataset does not "
+          "contain. Casson fitting worse over the MEASURED range is a reason to doubt its "
+          "plateau; it is not a demonstration that Cross's is right.", "",
+          "**It does not propagate the plateaux's own uncertainty, and today it could "
+          "not.** The forces here carry no parameter error, and "
+          "`injectability.force_with_uq` -- which is in the module under test -- is never "
+          "called. A code review then found why that is not a simple omission to fix: "
+          "**the stored profile-likelihood UPPER bounds are corrupted by a step-size bug "
+          "upstream in `dst_fit.profiling`.** `step = max(wald/4, span/5000)` takes "
+          "`span` from the parameter's arbitrary BOUND, so for a viscosity bounded at "
+          "1e6 the step is 200 and 10 bisections leave a resolution of 200/1024 = 0.195 "
+          "on a parameter of size 0.0038. Verified in this session: 117 of 296 closed "
+          "upper ends in the registry sit exactly on that grid, and the worst sits 82x "
+          "the best-fit value above it. **Whether the plateau disagreement is resolved at "
+          "95 % is therefore UNKNOWN here and is not claimed either way.** See NEXT_STEPS "
+          "item 13; the same denominator is used by the item 9/10 seed-scatter metric, "
+          "whose margin to its bar is only 33.6x.", "",
           "**It resolves nothing at the 1 % level**, for the reason in the scales table.",
           ""]
     return "\n".join(L)

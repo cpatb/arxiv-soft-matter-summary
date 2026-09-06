@@ -214,7 +214,16 @@
       "worst_abs_rel_dev_measurable_only": 0.2527367201496691,
       "median_rel_dev": -0.11192116946164893,
       "band": "above the neglected yield term, below the donor spread",
-      "band_measurable_only": "above the neglected yield term, below the donor spread"
+      "band_measurable_only": "above the neglected yield term, below the donor spread",
+      "signs": {
+        "n": 20,
+        "n_negative": 16,
+        "n_positive": 4,
+        "most_negative": -0.3017920308979444,
+        "most_positive": 0.14190538949467313,
+        "sign_test_p": 0.01181793212890625,
+        "claim": "lower on 16 of 20 donors (two-sided sign test p = 0.01182), NOT on all of them"
+      }
     },
     "carreau_yasuda": {
       "rows": [
@@ -389,7 +398,16 @@
       "worst_abs_rel_dev_measurable_only": 0.26991952114670215,
       "median_rel_dev": -0.13420849036731353,
       "band": "above the neglected yield term, below the donor spread",
-      "band_measurable_only": "above the neglected yield term, below the donor spread"
+      "band_measurable_only": "above the neglected yield term, below the donor spread",
+      "signs": {
+        "n": 20,
+        "n_negative": 18,
+        "n_positive": 2,
+        "most_negative": -0.3302397053587467,
+        "most_positive": 0.12328848531406833,
+        "sign_test_p": 0.0004024505615234375,
+        "claim": "lower on 18 of 20 donors (two-sided sign test p = 0.0004025), NOT on all of them"
+      }
     },
     "newtonian": {
       "rows": [
@@ -564,7 +582,16 @@
       "worst_abs_rel_dev_measurable_only": 2.711072958360395,
       "median_rel_dev": 1.7654918509604016,
       "band": "above the donor spread",
-      "band_measurable_only": "above the donor spread"
+      "band_measurable_only": "above the donor spread",
+      "signs": {
+        "n": 20,
+        "n_negative": 0,
+        "n_positive": 20,
+        "most_negative": 0.7936421740227078,
+        "most_positive": 2.711072958360395,
+        "sign_test_p": 1.9073486328125e-06,
+        "claim": "lower on 0 of 20 donors (two-sided sign test p = 1.907e-06), NOT on all of them"
+      }
     },
     "power_law": {
       "rows": [
@@ -739,7 +766,16 @@
       "worst_abs_rel_dev_measurable_only": 0.8162434177098747,
       "median_rel_dev": -0.7711193495680975,
       "band": "above the neglected yield term, below the donor spread",
-      "band_measurable_only": "above the neglected yield term, below the donor spread"
+      "band_measurable_only": "above the neglected yield term, below the donor spread",
+      "signs": {
+        "n": 20,
+        "n_negative": 20,
+        "n_positive": 0,
+        "most_negative": -0.8162434177098747,
+        "most_positive": 0.0,
+        "sign_test_p": 1.9073486328125e-06,
+        "claim": "lower on 20 of 20 donors (two-sided sign test p = 1.907e-06), NOT on all of them"
+      }
     }
   },
   "G12_1_item12_own_bar": {
@@ -946,250 +982,311 @@
   "plateau_control": {
     "cross": {
       "worst_gap": 0.03188856705535936,
+      "worst_gap_donor": "A",
+      "n_wrong_sign": 6,
+      "wrong_sign_donors": [
+        "A",
+        "F",
+        "K",
+        "N",
+        "P",
+        "U"
+      ],
       "rows": [
         {
           "donor": "A",
           "plateau_ratio": -0.33368059795330374,
           "force_ratio": -0.3017920308979444,
+          "signed_gap": 0.03188856705535936,
           "gap": 0.03188856705535936
         },
         {
           "donor": "B",
           "plateau_ratio": -0.042862917212534324,
           "force_ratio": -0.0500646613284651,
+          "signed_gap": -0.007201744115930775,
           "gap": 0.007201744115930775
         },
         {
           "donor": "C",
           "plateau_ratio": 0.04755169870791098,
           "force_ratio": 0.027197337383299214,
+          "signed_gap": -0.02035436132461177,
           "gap": 0.02035436132461177
         },
         {
           "donor": "D",
           "plateau_ratio": 0.17342754234644797,
           "force_ratio": 0.14190538949467313,
+          "signed_gap": -0.03152215285177484,
           "gap": 0.03152215285177484
         },
         {
           "donor": "F",
           "plateau_ratio": -0.15673701543693264,
           "force_ratio": -0.15276653039218302,
+          "signed_gap": 0.0039704850447496165,
           "gap": 0.0039704850447496165
         },
         {
           "donor": "G",
           "plateau_ratio": -0.21641615336123288,
           "force_ratio": -0.2192709057916209,
+          "signed_gap": -0.002854752430388019,
           "gap": 0.002854752430388019
         },
         {
           "donor": "H",
           "plateau_ratio": -0.07864097535170855,
           "force_ratio": -0.09234321630003284,
+          "signed_gap": -0.013702240948324285,
           "gap": 0.013702240948324285
         },
         {
           "donor": "I",
           "plateau_ratio": -0.06484629970046263,
           "force_ratio": -0.07806060248487456,
+          "signed_gap": -0.013214302784411935,
           "gap": 0.013214302784411935
         },
         {
           "donor": "J",
           "plateau_ratio": 0.029817697232928486,
           "force_ratio": 0.012920274033103807,
+          "signed_gap": -0.01689742319982468,
           "gap": 0.01689742319982468
         },
         {
           "donor": "K",
           "plateau_ratio": -0.2800695242817368,
           "force_ratio": -0.25841342590060323,
+          "signed_gap": 0.02165609838113358,
           "gap": 0.02165609838113358
         },
         {
           "donor": "L",
           "plateau_ratio": -0.12720924879146744,
           "force_ratio": -0.13112685207931307,
+          "signed_gap": -0.003917603287845628,
           "gap": 0.003917603287845628
         },
         {
           "donor": "M",
           "plateau_ratio": 0.02859953955326633,
           "force_ratio": 0.00340214319551424,
+          "signed_gap": -0.02519739635775209,
           "gap": 0.02519739635775209
         },
         {
           "donor": "N",
           "plateau_ratio": -0.26210308213383526,
           "force_ratio": -0.2527367201496691,
+          "signed_gap": 0.009366361984166183,
           "gap": 0.009366361984166183
         },
         {
           "donor": "O",
           "plateau_ratio": -0.12128135117099736,
           "force_ratio": -0.12556307940968392,
+          "signed_gap": -0.004281728238686555,
           "gap": 0.004281728238686555
         },
         {
           "donor": "P",
           "plateau_ratio": -0.15778643420574423,
           "force_ratio": -0.1541110614208684,
+          "signed_gap": 0.003675372784875841,
           "gap": 0.003675372784875841
         },
         {
           "donor": "Q",
           "plateau_ratio": -0.11498431628999894,
           "force_ratio": -0.123570974694581,
+          "signed_gap": -0.00858665840458206,
           "gap": 0.00858665840458206
         },
         {
           "donor": "R",
           "plateau_ratio": -0.03488800735063513,
           "force_ratio": -0.05056593092786499,
+          "signed_gap": -0.015677923577229858,
           "gap": 0.015677923577229858
         },
         {
           "donor": "S",
           "plateau_ratio": -0.04033222401776282,
           "force_ratio": -0.05503699780652127,
+          "signed_gap": -0.014704773788758452,
           "gap": 0.014704773788758452
         },
         {
           "donor": "T",
           "plateau_ratio": -0.09292825490190504,
           "force_ratio": -0.10027136422871685,
+          "signed_gap": -0.007343109326811814,
           "gap": 0.007343109326811814
         },
         {
           "donor": "U",
           "plateau_ratio": -0.1887688363007255,
           "force_ratio": -0.1814530214786354,
+          "signed_gap": 0.007315814822090094,
           "gap": 0.007315814822090094
         }
       ]
     },
     "carreau_yasuda": {
       "worst_gap": 0.0494408977905364,
+      "worst_gap_donor": "A",
+      "n_wrong_sign": 7,
+      "wrong_sign_donors": [
+        "A",
+        "F",
+        "G",
+        "K",
+        "N",
+        "P",
+        "U"
+      ],
       "rows": [
         {
           "donor": "A",
           "plateau_ratio": -0.3796806031492831,
           "force_ratio": -0.3302397053587467,
+          "signed_gap": 0.0494408977905364,
           "gap": 0.0494408977905364
         },
         {
           "donor": "B",
           "plateau_ratio": -0.04301198567796061,
           "force_ratio": -0.05019264330717499,
+          "signed_gap": -0.007180657629214382,
           "gap": 0.007180657629214382
         },
         {
           "donor": "C",
           "plateau_ratio": 0.06013584275376216,
           "force_ratio": 0.03869869368012102,
+          "signed_gap": -0.021437149073641137,
           "gap": 0.021437149073641137
         },
         {
           "donor": "D",
           "plateau_ratio": 0.1529397086393649,
           "force_ratio": 0.12328848531406833,
+          "signed_gap": -0.029651223325296572,
           "gap": 0.029651223325296572
         },
         {
           "donor": "F",
           "plateau_ratio": -0.16887393898336922,
           "force_ratio": -0.16168460504683002,
+          "signed_gap": 0.0071893339365391995,
           "gap": 0.0071893339365391995
         },
         {
           "donor": "G",
           "plateau_ratio": -0.3605771299960252,
           "force_ratio": -0.3277392714170685,
+          "signed_gap": 0.03283785857895671,
           "gap": 0.03283785857895671
         },
         {
           "donor": "H",
           "plateau_ratio": -0.13599728514465093,
           "force_ratio": -0.14212521879797502,
+          "signed_gap": -0.006127933653324091,
           "gap": 0.006127933653324091
         },
         {
           "donor": "I",
           "plateau_ratio": -0.13159396507062415,
           "force_ratio": -0.13552693860814402,
+          "signed_gap": -0.003932973537519868,
           "gap": 0.003932973537519868
         },
         {
           "donor": "J",
           "plateau_ratio": -0.0021402515356416796,
           "force_ratio": -0.01594754754764649,
+          "signed_gap": -0.01380729601200481,
           "gap": 0.01380729601200481
         },
         {
           "donor": "K",
           "plateau_ratio": -0.25603297499632227,
           "force_ratio": -0.24377006703594073,
+          "signed_gap": 0.012262907960381542,
           "gap": 0.012262907960381542
         },
         {
           "donor": "L",
           "plateau_ratio": -0.12740363710770652,
           "force_ratio": -0.13128749383873328,
+          "signed_gap": -0.003883856731026758,
           "gap": 0.003883856731026758
         },
         {
           "donor": "M",
           "plateau_ratio": -0.053316498598034445,
           "force_ratio": -0.06910060792578465,
+          "signed_gap": -0.015784109327750206,
           "gap": 0.015784109327750206
         },
         {
           "donor": "N",
           "plateau_ratio": -0.28553448291216077,
           "force_ratio": -0.26991952114670215,
+          "signed_gap": 0.015614961765458624,
           "gap": 0.015614961765458624
         },
         {
           "donor": "O",
           "plateau_ratio": -0.1305129542586888,
           "force_ratio": -0.13289004212648303,
+          "signed_gap": -0.0023770878677942253,
           "gap": 0.0023770878677942253
         },
         {
           "donor": "P",
           "plateau_ratio": -0.1608321090914675,
           "force_ratio": -0.15635746955072416,
+          "signed_gap": 0.0044746395407433415,
           "gap": 0.0044746395407433415
         },
         {
           "donor": "Q",
           "plateau_ratio": -0.160480930160384,
           "force_ratio": -0.16073288787517526,
+          "signed_gap": -0.00025195771479125106,
           "gap": 0.00025195771479125106
         },
         {
           "donor": "R",
           "plateau_ratio": -0.06671691801510837,
           "force_ratio": -0.07784314020645844,
+          "signed_gap": -0.011126222191350066,
           "gap": 0.011126222191350066
         },
         {
           "donor": "S",
           "plateau_ratio": -0.06501038848525253,
           "force_ratio": -0.07597033394502861,
+          "signed_gap": -0.010959945459776077,
           "gap": 0.010959945459776077
         },
         {
           "donor": "T",
           "plateau_ratio": -0.12037097493052018,
           "force_ratio": -0.12262913801137398,
+          "signed_gap": -0.0022581630808538034,
           "gap": 0.0022581630808538034
         },
         {
           "donor": "U",
           "plateau_ratio": -0.19031520630263676,
           "force_ratio": -0.18247227465560945,
+          "signed_gap": 0.007842931647027318,
           "gap": 0.007842931647027318
         }
       ]
@@ -1340,6 +1437,438 @@
       }
     ],
     "claim": "A Newtonian fluid AT the Casson plateau reproduces the Casson force to about the yield term, so the needle is reading the high-rate plateau and essentially nothing else. The 30 % is therefore a disagreement between plateaux, not a difference in what the geometry samples."
+  },
+  "viscosity_ladder": {
+    "rows": [
+      {
+        "gammadot": 0.1,
+        "inside_envelope": true,
+        "cross": 0.41961830893787866,
+        "carreau_yasuda": 0.4480511807825208
+      },
+      {
+        "gammadot": 0.9146912192286945,
+        "inside_envelope": true,
+        "cross": 0.3269915952896427,
+        "carreau_yasuda": 0.3511353546305356
+      },
+      {
+        "gammadot": 8.366600265340756,
+        "inside_envelope": true,
+        "cross": 0.20618173394926154,
+        "carreau_yasuda": 0.20271226832766365
+      },
+      {
+        "gammadot": 76.52855797503655,
+        "inside_envelope": true,
+        "cross": 0.12084698209630684,
+        "carreau_yasuda": 0.09135422172597518
+      },
+      {
+        "gammadot": 700.0,
+        "inside_envelope": true,
+        "cross": 0.21609390200191392,
+        "carreau_yasuda": 0.24597861523710463
+      },
+      {
+        "gammadot": 18377.423532011653,
+        "inside_envelope": false,
+        "cross": 0.3053613865376692,
+        "carreau_yasuda": 0.3351243883607121
+      }
+    ],
+    "envelope": [
+      0.1,
+      700.0
+    ],
+    "gd_needle": 18377.423532011653,
+    "median_rmse_log": {
+      "casson": 0.1462005,
+      "cross": 0.030098,
+      "carreau_yasuda": 0.0271809
+    },
+    "n_structured_of_20": {
+      "casson": 19,
+      "cross": 2,
+      "carreau_yasuda": 1
+    },
+    "n_donors": 20,
+    "worst_inside_cross": 0.41961830893787866,
+    "worst_inside_cy": 0.4480511807825208,
+    "at_needle_cross": 0.3053613865376692,
+    "at_needle_cy": 0.3351243883607121,
+    "needle_is_the_worst_rate": false,
+    "claim": "The families disagree across the whole MEASURED range, by more at the bottom of the envelope than at the needle. The 30 % is a misfit between two differently-shaped fits to the same 16 points, not an artefact of reading them past the data."
+  },
+  "matched_plateau_null": {
+    "worst_abs_rel_dev": 0.027192743972099587,
+    "median_rel_dev": -0.008664776591822632,
+    "rows": [
+      {
+        "donor": "A",
+        "rel_dev": 0.027192743972099587
+      },
+      {
+        "donor": "B",
+        "rel_dev": -0.008029919289307408
+      },
+      {
+        "donor": "C",
+        "rel_dev": -0.01905406750259453
+      },
+      {
+        "donor": "D",
+        "rel_dev": -0.026415778359681674
+      },
+      {
+        "donor": "F",
+        "rel_dev": 0.0015349637210271272
+      },
+      {
+        "donor": "G",
+        "rel_dev": -0.005069245047594317
+      },
+      {
+        "donor": "H",
+        "rel_dev": -0.015207561349234289
+      },
+      {
+        "donor": "I",
+        "rel_dev": -0.01442863709415143
+      },
+      {
+        "donor": "J",
+        "rel_dev": -0.016335971574807484
+      },
+      {
+        "donor": "K",
+        "rel_dev": 0.016809102990714253
+      },
+      {
+        "donor": "L",
+        "rel_dev": -0.007396015269422795
+      },
+      {
+        "donor": "M",
+        "rel_dev": -0.024386841297576622
+      },
+      {
+        "donor": "N",
+        "rel_dev": 0.0030742499661076117
+      },
+      {
+        "donor": "O",
+        "rel_dev": -0.006482736049278404
+      },
+      {
+        "donor": "P",
+        "rel_dev": 0.0006755640787743378
+      },
+      {
+        "donor": "Q",
+        "rel_dev": -0.010985268359998357
+      },
+      {
+        "donor": "R",
+        "rel_dev": -0.01647133971036918
+      },
+      {
+        "donor": "S",
+        "rel_dev": -0.015629931942262254
+      },
+      {
+        "donor": "T",
+        "rel_dev": -0.009299633894337855
+      },
+      {
+        "donor": "U",
+        "rel_dev": 0.0034521312901540924
+      }
+    ],
+    "claim": "Cross with its plateau set to Casson's, keeping all its other fitted parameters, collapses the difference into the yield band. So at the needle the plateau IS what is being read, and the 30 % is a disagreement about its value."
+  },
+  "misfit_correlation": {
+    "cross": {
+      "spearman_rho": 0.5593984962406015,
+      "p": 0.010333258461010717,
+      "n": 20,
+      "rmse_ratio_min": 1.538971894905436,
+      "rmse_ratio_max": 12.294100129049335,
+      "casson_worse_on": 20
+    },
+    "carreau_yasuda": {
+      "spearman_rho": 0.6827067669172932,
+      "p": 0.0009099086324726495,
+      "n": 20,
+      "rmse_ratio_min": 2.0032059552216652,
+      "rmse_ratio_max": 14.266515121261921,
+      "casson_worse_on": 20
+    }
+  },
+  "in_envelope_needle": {
+    "radius_m": 0.00031180777681121154,
+    "id_mm": 0.623615553622423,
+    "target_gd": 700.0,
+    "families": {
+      "cross": {
+        "rows": [
+          {
+            "donor": "A",
+            "rel_dev": -0.20280416011117464,
+            "gd_wall": 705.6897076241564,
+            "decades_past_high": 0.011778514031261435
+          },
+          {
+            "donor": "B",
+            "rel_dev": -0.053943848106278613,
+            "gd_wall": 708.7710569560849,
+            "decades_past_high": 0.005782499420515949
+          },
+          {
+            "donor": "C",
+            "rel_dev": -0.015010428145929344,
+            "gd_wall": 712.4785648914271,
+            "decades_past_high": 0.007673762996950778
+          },
+          {
+            "donor": "D",
+            "rel_dev": 0.050916657085150696,
+            "gd_wall": 713.4486399228108,
+            "decades_past_high": 0.008264674365687329
+          },
+          {
+            "donor": "F",
+            "rel_dev": -0.12072034202331783,
+            "gd_wall": 706.8603108883557,
+            "decades_past_high": 0.007205469950087602
+          },
+          {
+            "donor": "G",
+            "rel_dev": -0.20397553203158725,
+            "gd_wall": 704.1466503209706,
+            "decades_past_high": 0.0050890736150675155
+          },
+          {
+            "donor": "H",
+            "rel_dev": -0.11641949700985676,
+            "gd_wall": 708.572602196052,
+            "decades_past_high": 0.0052863157939276465
+          },
+          {
+            "donor": "I",
+            "rel_dev": -0.10130985079575261,
+            "gd_wall": 708.3812928581403,
+            "decades_past_high": 0.005169043678601362
+          },
+          {
+            "donor": "J",
+            "rel_dev": -0.03198919314833282,
+            "gd_wall": 708.4900607566801,
+            "decades_past_high": 0.005235721995043137
+          },
+          {
+            "donor": "K",
+            "rel_dev": -0.1766918642136125,
+            "gd_wall": 707.7115552428438,
+            "decades_past_high": 0.011782456044353124
+          },
+          {
+            "donor": "L",
+            "rel_dev": -0.10852945773596934,
+            "gd_wall": 712.4858701839036,
+            "decades_past_high": 0.010567207304511179
+          },
+          {
+            "donor": "M",
+            "rel_dev": -0.05675363837883274,
+            "gd_wall": 712.8978687680053,
+            "decades_past_high": 0.00792927636281134
+          },
+          {
+            "donor": "N",
+            "rel_dev": -0.18506804058022264,
+            "gd_wall": 710.7662974283542,
+            "decades_past_high": 0.013613427988147284
+          },
+          {
+            "donor": "O",
+            "rel_dev": -0.11403346534449199,
+            "gd_wall": 708.062893805984,
+            "decades_past_high": 0.006755063426668196
+          },
+          {
+            "donor": "P",
+            "rel_dev": -0.11942228959923851,
+            "gd_wall": 708.572892815821,
+            "decades_past_high": 0.008589361609573272
+          },
+          {
+            "donor": "Q",
+            "rel_dev": -0.12175388520136943,
+            "gd_wall": 709.3247290768157,
+            "decades_past_high": 0.007115241161415089
+          },
+          {
+            "donor": "R",
+            "rel_dev": -0.07759914379273092,
+            "gd_wall": 710.2628328698945,
+            "decades_past_high": 0.006321049187100058
+          },
+          {
+            "donor": "S",
+            "rel_dev": -0.07756898271301582,
+            "gd_wall": 710.355406512707,
+            "decades_past_high": 0.006377650209366918
+          },
+          {
+            "donor": "T",
+            "rel_dev": -0.09703209575200156,
+            "gd_wall": 709.47166431894,
+            "decades_past_high": 0.007070159238003275
+          },
+          {
+            "donor": "U",
+            "rel_dev": -0.13395149946397766,
+            "gd_wall": 709.2769323023592,
+            "decades_past_high": 0.010100346755190072
+          }
+        ],
+        "n": 20,
+        "worst_abs_rel_dev": 0.20397553203158725,
+        "median_rel_dev": -0.11128146154023066
+      },
+      "carreau_yasuda": {
+        "rows": [
+          {
+            "donor": "A",
+            "rel_dev": -0.2083146025869369,
+            "gd_wall": 705.6897076241564,
+            "decades_past_high": 0.013150692674124923
+          },
+          {
+            "donor": "B",
+            "rel_dev": -0.05400236270214087,
+            "gd_wall": 708.7710569560849,
+            "decades_past_high": 0.005786925811064176
+          },
+          {
+            "donor": "C",
+            "rel_dev": -0.008470054146504369,
+            "gd_wall": 712.4785648914271,
+            "decades_past_high": 0.007673762996950778
+          },
+          {
+            "donor": "D",
+            "rel_dev": 0.04194896305414364,
+            "gd_wall": 713.4486399228108,
+            "decades_past_high": 0.008264674365687329
+          },
+          {
+            "donor": "F",
+            "rel_dev": -0.12286297835257187,
+            "gd_wall": 706.8603108883557,
+            "decades_past_high": 0.007586110179933821
+          },
+          {
+            "donor": "G",
+            "rel_dev": -0.23341605698197687,
+            "gd_wall": 704.1466503209706,
+            "decades_past_high": 0.01054819817207294
+          },
+          {
+            "donor": "H",
+            "rel_dev": -0.1350962305528155,
+            "gd_wall": 708.572602196052,
+            "decades_past_high": 0.006900440086387852
+          },
+          {
+            "donor": "I",
+            "rel_dev": -0.12329641792533963,
+            "gd_wall": 708.3812928581403,
+            "decades_past_high": 0.006995046492827297
+          },
+          {
+            "donor": "J",
+            "rel_dev": -0.045702562775474576,
+            "gd_wall": 708.4900607566801,
+            "decades_past_high": 0.005235721995043137
+          },
+          {
+            "donor": "K",
+            "rel_dev": -0.17435632833127956,
+            "gd_wall": 707.7115552428438,
+            "decades_past_high": 0.011168504132982178
+          },
+          {
+            "donor": "L",
+            "rel_dev": -0.10858870919150221,
+            "gd_wall": 712.4858701839036,
+            "decades_past_high": 0.010574256905810065
+          },
+          {
+            "donor": "M",
+            "rel_dev": -0.0870892404706396,
+            "gd_wall": 712.8978687680053,
+            "decades_past_high": 0.007968263339003348
+          },
+          {
+            "donor": "N",
+            "rel_dev": -0.18875124912016794,
+            "gd_wall": 710.7662974283542,
+            "decades_past_high": 0.014520045103936638
+          },
+          {
+            "donor": "O",
+            "rel_dev": -0.1161285664446221,
+            "gd_wall": 708.062893805984,
+            "decades_past_high": 0.00707018817617957
+          },
+          {
+            "donor": "P",
+            "rel_dev": -0.11994655119040376,
+            "gd_wall": 708.572892815821,
+            "decades_past_high": 0.008686875708695538
+          },
+          {
+            "donor": "Q",
+            "rel_dev": -0.13329728727245072,
+            "gd_wall": 709.3247290768157,
+            "decades_past_high": 0.008815534675398608
+          },
+          {
+            "donor": "R",
+            "rel_dev": -0.08745085496416805,
+            "gd_wall": 710.2628328698945,
+            "decades_past_high": 0.006668454383933598
+          },
+          {
+            "donor": "S",
+            "rel_dev": -0.08482069896693523,
+            "gd_wall": 710.355406512707,
+            "decades_past_high": 0.006772692995643031
+          },
+          {
+            "donor": "T",
+            "rel_dev": -0.10430613426863122,
+            "gd_wall": 709.47166431894,
+            "decades_past_high": 0.008029161497914538
+          },
+          {
+            "donor": "U",
+            "rel_dev": -0.13397628157696617,
+            "gd_wall": 709.2769323023592,
+            "decades_past_high": 0.010150666136474732
+          }
+        ],
+        "n": 20,
+        "worst_abs_rel_dev": 0.23341605698197687,
+        "median_rel_dev": -0.11803755881751293
+      }
+    },
+    "every_record_inside_its_envelope": false,
+    "worst_decades_past_high": 0.014520045103936638,
+    "n_records_outside": 40,
+    "n_records_total": 40
   },
   "median_decades_past_high": 1.419126894948016
 }

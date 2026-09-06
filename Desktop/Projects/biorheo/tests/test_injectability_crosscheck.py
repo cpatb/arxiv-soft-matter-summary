@@ -183,7 +183,7 @@ def test_the_plateau_null_is_not_independent_evidence(cc, case):
     md = MD.read_text(encoding="utf-8")
     assert "NOT independent evidence" in md
     assert "the same number" in md
-    assert "rests on the plateau control above and on that alone" in md
+    assert "MATCHED-PLATEAU null" in md
 
 
 def test_g12_3_does_not_rest_on_which_null_was_picked(cc):
@@ -194,6 +194,115 @@ def test_g12_3_does_not_rest_on_which_null_was_picked(cc):
     assert g["informative_on_either_null"]
     assert g["separation_least_extreme_null"] == pytest.approx(2.705, rel=1e-3)
     assert g["separation_worst_null"] == pytest.approx(8.9832, rel=1e-3)
+
+
+
+def test_the_yield_explanation_of_the_plateau_residual_is_withdrawn(cc):
+    """**A claim this study made and its own artifact refutes.**
+
+    "The residual is the size of the yield term, which is what it should be" is signed and
+    quantitative: `F_casson = F_newt(eta_c)(1+y)` puts the force ratio BELOW the plateau
+    ratio on EVERY donor. It does not. Six Cross donors and seven Carreau-Yasuda ones have
+    the wrong sign, the worst gap in both families is a wrong-sign row, and CY's gap is
+    1.68x the yield term rather than equal to it. The first version tested it with an
+    unsigned bound and a factor-2 slop, which cannot see any of that."""
+    pc, sc = cc["plateau_control"], cc["scales"]
+    assert pc["cross"]["n_wrong_sign"] == 6
+    assert pc["carreau_yasuda"]["n_wrong_sign"] == 7
+    assert pc["cross"]["worst_gap_donor"] == "A"
+    assert pc["cross"]["worst_gap_donor"] in pc["cross"]["wrong_sign_donors"]
+    assert pc["carreau_yasuda"]["worst_gap"] > sc["yield_term"]
+    md = MD.read_text(encoding="utf-8")
+    assert "The sentence is withdrawn" in md
+
+
+def test_the_matched_plateau_null_is_the_discriminating_control(cc):
+    """The only null here that goes through the solver AND could have come out the other
+    way: Cross with `eta_inf` set to Casson's `eta_c`, keeping its whole low-rate
+    structure. It collapses 30.2 % into the yield band."""
+    mpn, sc, s = cc["matched_plateau_null"], cc["scales"], cc["summary"]
+    assert mpn["worst_abs_rel_dev"] == pytest.approx(0.02719, rel=1e-3)
+    assert mpn["worst_abs_rel_dev"] < sc["yield_term"]
+    assert mpn["worst_abs_rel_dev"] < 0.1 * s["cross"]["worst_abs_rel_dev"]
+    assert len(mpn["rows"]) == 20
+
+
+def test_the_in_envelope_needle_shows_the_extrapolation_is_not_the_cause(cc):
+    """Run the same comparison at a needle wide enough that the wall rate is in the
+    measured range. 99.5 % of the median difference survives, so the extrapolation
+    contributes ~nothing to the typical donor and about a third of the worst one."""
+    ien, s = cc["in_envelope_needle"], cc["summary"]
+    assert ien["id_mm"] == pytest.approx(0.6236, rel=1e-3)
+    c = ien["families"]["cross"]
+    assert c["worst_abs_rel_dev"] == pytest.approx(0.204, rel=1e-2)
+    assert c["median_rel_dev"] == pytest.approx(-0.1113, rel=1e-2)
+    # the median barely moves; the worst does
+    assert abs(c["median_rel_dev"] / s["cross"]["median_rel_dev"]) > 0.99
+    assert c["worst_abs_rel_dev"] < s["cross"]["worst_abs_rel_dev"]
+    # and it is still above the yield term, so the finding survives with NO extrapolation
+    assert c["worst_abs_rel_dev"] > cc["scales"]["yield_term"]
+    # honest about the residual extrapolation rather than claiming none
+    assert ien["worst_decades_past_high"] < 0.2
+
+
+def test_the_sign_and_misfit_claims_are_the_ones_the_data_supports(cc):
+    """"Both families predict a LOWER force, consistently" was false: 4 of 20 Cross donors
+    are POSITIVE, up to +14.2 %. And the families are not equally good -- Casson is worse
+    on 20/20 and the force difference TRACKS the misfit."""
+    s, mc = cc["summary"], cc["misfit_correlation"]
+    g = s["cross"]["signs"]
+    assert g["n_negative"] == 16 and g["n_positive"] == 4
+    assert g["most_positive"] == pytest.approx(0.1419, rel=1e-2)
+    assert g["sign_test_p"] == pytest.approx(0.01182, rel=1e-2)
+    assert s["carreau_yasuda"]["signs"]["n_negative"] == 18
+    for fam in ("cross", "carreau_yasuda"):
+        assert mc[fam]["casson_worse_on"] == 20
+        assert mc[fam]["rmse_ratio_min"] > 1.0
+        assert mc[fam]["spearman_rho"] > 0.5 and mc[fam]["p"] < 0.02
+    md = MD.read_text(encoding="utf-8")
+    assert "OPPOSITE directions" in md and "not a symmetric" in md
+
+def test_the_disagreement_is_misfit_not_extrapolation(cc):
+    """**This study's own first explanation, refuted by its own data.**
+
+    Finding a 30 % difference at a rate 1.42 decades past the data, both pages first said
+    "the cause is the extrapolation". The families in fact disagree by MORE inside the
+    measured envelope (42 % at the bottom of it) than at the needle (30.5 %), so the
+    needle is not where the disagreement is created. The mechanism is that Casson misfits
+    the curve: median rmse_log 0.146 against Cross's 0.030, and `residual_structure`
+    flags 19/20 donors on Casson against 2/20 on Cross.
+
+    Both pages now say this, and this pins that they do."""
+    vl = cc["viscosity_ladder"]
+    assert vl["worst_inside_cross"] > vl["at_needle_cross"]
+    assert not vl["needle_is_the_worst_rate"]
+    assert vl["worst_inside_cross"] == pytest.approx(0.4196, rel=1e-3)
+    assert vl["at_needle_cross"] == pytest.approx(0.3054, rel=1e-3)
+    # the worst rate is the BOTTOM of the envelope, not the top
+    inside = [r for r in vl["rows"] if r["inside_envelope"]]
+    assert max(inside, key=lambda r: r["cross"])["gammadot"] == min(
+        r["gammadot"] for r in inside)
+    # the misfit, computed from the records' own `extra`, not quoted from another .md
+    assert vl["median_rmse_log"]["casson"] == pytest.approx(0.1462, rel=1e-3)
+    assert vl["median_rmse_log"]["cross"] == pytest.approx(0.0301, rel=1e-3)
+    assert vl["median_rmse_log"]["casson"] > 4 * vl["median_rmse_log"]["cross"]
+    assert vl["n_structured_of_20"] == {"casson": 19, "cross": 2, "carreau_yasuda": 1}
+    for page in (MD, CASE / "results.md"):
+        t = page.read_text(encoding="utf-8")
+        assert "NOT the extrapolation" in t or "was WRONG" in t, page.name
+
+
+def test_the_case_study_page_carries_the_caveat(cc):
+    """A reader of `results.md` must not take its forces at face value. The section is
+    printed by `run.py` from `crosscheck.json`, so it cannot go stale silently."""
+    t = (CASE / "results.md").read_text(encoding="utf-8")
+    assert "moves these forces by more than the yield stress does" in t
+    s = cc["summary"]
+    assert f"{100 * s['cross']['worst_abs_rel_dev']:.4g} %" in t
+    assert f"{100 * s['newtonian']['worst_abs_rel_dev']:.4g} %" in t
+    # it must say which way the asymmetry runs: Cross is the BETTER fit, not an equal one
+    assert "BETTER-fitting family" in t
+    assert "not two equally good descriptions" in t
 
 def test_the_prereg_predates_the_result_and_names_what_it_cannot_settle(cc):
     text = PREREG.read_text(encoding="utf-8")
