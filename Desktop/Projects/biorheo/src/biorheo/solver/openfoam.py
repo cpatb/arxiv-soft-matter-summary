@@ -85,9 +85,11 @@ itself. ``power_law`` is the opposite case and it is why the ``eta_min`` argumen
 ``eta = k gd^(n-1)`` has no plateau at EITHER end -- it diverges as ``gd -> 0`` for
 ``n < 1`` and as ``gd -> inf`` for ``n > 1``, and the bounds allow both -- so no floor
 "never changes the law" the way Casson's ``eta_c`` does, and OpenFOAM agrees: it reads
-``nuMin`` and ``nuMax`` with ``readEntry`` and stops if either is missing. That
-"required, not optional like ``BirdCarreau``'s ``a``" claim was decided by handing
-``simpleFoam`` a dictionary with ``nuMin`` deleted (gate G11.3b), not by reading the C++.
+``nuMin`` and ``nuMax`` with ``readEntry`` and stops if either is missing
+(``powerLaw.C:90-91, 118-121``). That "required, not optional like ``BirdCarreau``'s
+``a``" claim is READ FROM THE C++ here; gate G11.3b tests it by handing ``simpleFoam`` a
+dictionary with ``nuMin`` deleted, and its verdict is in
+``data/openfoam/couette_anchor.md``, not in this sentence.
 
 **``Newtonian`` IS THE ONE MODEL WITH NO ``<Model>Coeffs`` BLOCK.** It reads ``nu``
 straight out of the top-level ``transportProperties``
@@ -95,8 +97,11 @@ straight out of the top-level ``transportProperties``
 in that directory constructs from ``optionalSubDict(typeName + "Coeffs")``. So the export
 writes a top-level entry and no block, and ``parse_transport_properties`` REFUSES a
 ``NewtonianCoeffs`` block rather than ignoring it -- OpenFOAM would never read it, so a
-caller who wrote one believes a number reached the solver that did not. That the
-sub-dictionary form is actually illegal was also decided by running the solver (G11.4b).
+caller who wrote one believes a number reached the solver that did not. Two independent
+checks of that layout: ``foamDictionary -entry nu`` resolves on the exported file with no
+``NewtonianCoeffs/`` prefix (``tests/test_openfoam_export.py``), and gate G11.4b hands
+``simpleFoam`` the sub-dictionary form and requires it to fail -- its verdict is in
+``data/openfoam/couette_anchor.md``, not here.
 
 **``a`` IS OPTIONAL IN OPENFOAM, NOT ABSENT.** NEXT_STEPS item 6 was written believing
 v2606's ``BirdCarreau`` has no ``a`` exponent and that the export would have to refuse
@@ -109,7 +114,8 @@ missing one with 2 rather than reporting it missing, which is what OpenFOAM mean
 file. That ``a`` is really honoured was decided by running ``simpleFoam``, not by reading
 the C++: see ``data/openfoam/couette_anchor.md``, gate G4.
 
-``eta_max`` is required for the two yield-stress families: OpenFOAM has no unregularised yield-stress law, and its scheme
+``eta_max`` is required for the two yield-stress families (and, since item 11, for
+``power_law``; see the table above): OpenFOAM has no unregularised yield-stress law, and its scheme
 is exactly biorheo's ``regularise(model, "clamp", eta_max=...)`` (``min(eta, eta_max)``),
 so the exported law equals the clamped record, not the record. ``nuMin`` defaults to
 the Casson high-rate limit ``eta_c``, the largest floor that never changes the law
@@ -167,8 +173,15 @@ OPENFOAM_VERSION = "v2606"
 OPENFOAM_SRC = "/usr/lib/openfoam/openfoam2606/src/transportModels/incompressible/viscosityModels"
 VSMALL = 1.0e-300  # doubleScalar.H:64
 # powerLaw uses SMALL, NOT VSMALL, and applies it to the DIMENSIONLESS product
-# `1[s]*strainRate()` rather than to the rate (powerLaw.C:64-68). The other five models
-# this bridge covers use VSMALL. doubleScalar.H:62.
+# `1[s]*strainRate()` rather than to the rate (powerLaw.C:64-68). doubleScalar.H:62.
+#
+# The floors across the six mapped models are NOT uniform, and a first version of this
+# comment said "the other five use VSMALL", which is false and was caught by review.
+# Read from the source: `HerschelBulkley.C:65` and `Casson.C:69` floor the RATE at
+# `VSMALL` because they divide by it; `powerLaw.C:64-68` floors the dimensionless
+# `1[s]*sr` at `SMALL` because it raises it to a negative power; and `CrossPowerLaw.C:56`,
+# `BirdCarreau.C:55-59` and `Newtonian.C:48-57` have NO floor at all, because nothing in
+# them is singular at zero rate. `nu_openfoam` transcribes each as it is.
 SMALL = 1.0e-15
 
 # biorheo model name -> (OpenFOAM transportModel name, coefficient keys in file order)
@@ -247,11 +260,33 @@ class ThixotropyNotRepresentable(NotImplementedError):
 # transient -- startup, oscillation, a contraction, anything where lambda lags. That is
 # the same silent-drop class the whole bridge exists to prevent, and it is not visible in
 # the exported dictionary, so it is refused rather than warned about.
+#
+# The substitution differs BETWEEN the two structural models and a first version of this
+# message gave `structural_steady`'s to both, which a code review caught:
+# `structural_steady_separate` has no `alpha_tr` parameter at all -- it carries `alpha`
+# and `t_r` separately and multiplies them (`constitutive/structural.py:115-116`), which
+# is the whole point of that diagnostic model, so a caller following the message would
+# have looked for a parameter that does not exist.
+#
+# `tau` is the model's own structure timescale, and it is spelled DIFFERENTLY in the two
+# families. Every occurrence in the message is substituted; a first version hardcoded
+# `alpha_tr` in both the identity and the instruction, which the separate family does not
+# have.
+_STRUCTURAL_LAM = {
+    "structural_steady": "alpha_tr",
+    "structural_steady_separate": "alpha*t_r",
+}
+_STRUCTURAL_NOTE = {
+    "structural_steady": "",
+    "structural_steady_separate":
+        " (this family keeps alpha and t_r apart although only their product enters, "
+        "which is why it has no alpha_tr to read)",
+}
 _STRUCTURAL_REFUSAL = (
-    "structural_steady has no OpenFOAM {ver} export, and NOT because no counterpart "
+    "{name} has no OpenFOAM {ver} export, and NOT because no counterpart "
     "exists -- one does, exactly. Its steady flow curve equals CrossPowerLaw with n = 1: "
-    "eta_inf(1 + beta lam_ss) with lam_ss = 1/(1 + alpha_tr gd) is "
-    "Cross(eta_0 = eta_inf(1 + beta), eta_inf = eta_inf, lam = alpha_tr, m = 1), verified "
+    "eta_inf(1 + beta lam_ss) with lam_ss = 1/(1 + {tau} gd) is "
+    "Cross(eta_0 = eta_inf(1 + beta), eta_inf = eta_inf, lam = {tau}, m = 1), verified "
     "to 1e-12 relative. What OpenFOAM's `viscosityModel` interface cannot carry is the "
     "STRUCTURE EQUATION: it is a function of the instantaneous strainRate() alone, so the "
     "exported law would be correct wherever the flow is steady and silently wrong in "
@@ -259,8 +294,8 @@ _STRUCTURAL_REFUSAL = (
     "dictionary, so it is refused here.\n"
     "If you want the steady curve DELIBERATELY, refit the same data to `cross` (the "
     "registry generators already do) and export that, or build the record by hand with "
-    "eta_0 = eta_inf*(1 + beta), lam = alpha_tr, m = 1 -- and then say in the case that "
-    "the simulation is only valid where the structure is at steady state.")
+    "eta_0 = eta_inf*(1 + beta), lam = {tau}{note}, m = 1 -- and then say in the case "
+    "that the simulation is only valid where the structure is at steady state.")
 
 
 def _envelope_eta_range(record: FluidRecord) -> tuple[float, float]:
@@ -299,8 +334,10 @@ def coefficients(record: FluidRecord, rho: float, eta_max: float | None = None, 
     if not (rho > 0 and np.isfinite(rho)):
         raise ValueError(f"rho must be a positive density in kg/m^3, got {rho!r}")
     name = record.model.name
-    if name in ("structural_steady", "structural_steady_separate"):
-        raise ThixotropyNotRepresentable(_STRUCTURAL_REFUSAL.format(ver=OPENFOAM_VERSION))
+    if name in _STRUCTURAL_LAM:
+        raise ThixotropyNotRepresentable(_STRUCTURAL_REFUSAL.format(
+            name=name, ver=OPENFOAM_VERSION, tau=_STRUCTURAL_LAM[name],
+            note=_STRUCTURAL_NOTE[name]))
     if name not in _MODELS:
         raise NotImplementedError(
             f"no OpenFOAM {OPENFOAM_VERSION} export for model '{name}'; "
@@ -614,6 +651,53 @@ _MODEL_ENTRY = re.compile(r"(?<![A-Za-z0-9_])transportModel\s+(\w+)\s*;")
 # was meant to catch looked well-formed.
 
 
+def _strip_subdicts(text: str) -> str:
+    """``text`` with every brace-delimited sub-dictionary, and the name in front of it,
+    removed -- leaving only what OpenFOAM would read at the TOP LEVEL.
+
+    Written 2026-09-06 to replace ``re.sub(r"\\w+\\s*\\{[^}]*\\}", "", text)``, which a
+    code review showed is FAIL-OPEN on nesting: ``[^}]*`` stops at the INNER closing
+    brace, so everything after a nested block leaks out as top level. On
+
+        transportModel Newtonian;
+        nu    1e-06;
+        other { inner { a 1; } nu 999; }
+
+    the regex version returned ``nu = 999``, and returned it even with the real entry
+    deleted -- a silently wrong viscosity from a dictionary OpenFOAM would reject. A
+    regex cannot match balanced braces; this counts them.
+
+    Raises on unbalanced braces rather than guessing, because either direction of
+    imbalance means the reader and OpenFOAM disagree about where an entry lives."""
+    out: list[str] = []
+    depth = 0
+    for ch in text:
+        if ch == "{":
+            if depth == 0:
+                # drop the sub-dictionary's NAME, which is the word just written out;
+                # leaving it behind would turn a legal block into unparsable residue
+                while out and out[-1].isspace():
+                    out.pop()
+                while out and (out[-1].isalnum() or out[-1] in "_.-"):
+                    out.pop()
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth < 0:
+                raise ValueError("unbalanced '}' in the dictionary: this parser and "
+                                 "OpenFOAM would disagree about which entries are at "
+                                 "the top level, so it refuses rather than guessing")
+            if depth == 0:
+                out.append("\n")   # keep the delimiter `_ENTRY` looks behind for
+        elif depth == 0:
+            out.append(ch)
+    if depth:
+        raise ValueError(f"unbalanced '{{' in the dictionary ({depth} unclosed): this "
+                         "parser and OpenFOAM would disagree about which entries are at "
+                         "the top level, so it refuses rather than guessing")
+    return "".join(out)
+
+
 def parse_transport_properties(text: str, *, expect: str | None = None,
                                defaults_applied: set[str] | None = None
                                ) -> tuple[str, dict[str, float]]:
@@ -661,15 +745,34 @@ def parse_transport_properties(text: str, *, expect: str | None = None,
                 "(Newtonian.C:71; it is the only viscosityModel that does not use a "
                 "<Model>Coeffs sub-dictionary), so that block would be IGNORED, not read. "
                 "Move `nu` to the top level.")
-        top = re.sub(r"(?<![A-Za-z0-9_])FoamFile\s*\{[^}]*\}", "", text)
-        top = re.sub(r"(?<![A-Za-z0-9_])\w+\s*\{[^}]*\}", "", top)
-        entries = dict(_ENTRY.findall(top))
+        top = _strip_subdicts(text)
+        pairs = _ENTRY.findall(top)
+        entries = dict(pairs)
+        if [k for k, _ in pairs].count("nu") > 1:
+            raise ValueError(
+                "more than one top-level `nu` entry. OpenFOAM's dictionary reader takes "
+                "the LAST, and silently taking it here would be a coin flip on which "
+                "viscosity the solver runs; say which one you mean.")
         if "nu" not in entries:
+            # ABSENT and MALFORMED are the same ERROR here -- `nu` has no default, unlike
+            # BirdCarreau's `a` -- but they are not the same MESSAGE, and neither is an
+            # unsupported construct. Same three-way distinction the Coeffs branch makes.
+            stray = re.search(r"(?:(?<=[;\n])|^)\s*nu\s+([^;]*);?", top)
+            if stray is not None:
+                bad = stray.group(1).strip()
+                tok = sorted({t for t in ("$", "#") if t in bad})
+                hint = (f"This looks like an OpenFOAM construct this parser does not "
+                        f"implement ({', '.join(tok)}...): expansion, includes and "
+                        "computed entries are not evaluated here. Resolve them with "
+                        "`foamDictionary -expand` first." if tok else
+                        "A malformed entry is NOT treated as an absent one, and for "
+                        "`nu` there is no default to fall back to anyway.")
+                raise ValueError(
+                    f"the top-level `nu` entry is present but unreadable: {bad!r}. {hint}")
             raise ValueError(
                 "no top-level `nu` entry for transportModel Newtonian. It is required "
-                "(readEntry, Newtonian.C) and has no default, so an absent entry and a "
-                "malformed one (a dropped semicolon, a comma decimal) raise the same way "
-                f"here; the top-level entries parsed were {sorted(entries)}.")
+                "(readEntry, Newtonian.C:71) and has no default; the top-level entries "
+                f"parsed were {sorted(entries)}.")
         if expect is not None and _MODELS[expect][0] != of_name:
             raise ValueError(f"expected a {_MODELS[expect][0]} dictionary for model "
                              f"'{expect}', found transportModel {of_name}")
@@ -713,7 +816,7 @@ def parse_transport_properties(text: str, *, expect: str | None = None,
 
 def nu_openfoam(of_name: str, c: dict[str, float], sr) -> np.ndarray:
     """Kinematic viscosity OpenFOAM v2606 computes from ``c`` at strain rate ``sr``:
-    the two ``calcNu`` bodies in the module docstring, transcribed term for term."""
+    the six ``calcNu`` bodies in the module docstring, transcribed term for term."""
     sr = np.asarray(sr, dtype=float)
     if of_name == "HerschelBulkley":
         return np.minimum(c["nu0"], (c["tau0"] + c["k"] * sr ** c["n"]) / np.maximum(sr, VSMALL))

@@ -215,6 +215,66 @@ def test_g11_4a_a_coeffs_block_is_refused_not_ignored(records):
         parse_transport_properties("transportModel  Newtonian;\n")
 
 
+NESTED = """transportModel  Newtonian;
+nu              1e-06;
+somethingElse
+{
+    inner { a 1; }
+    nu   999;
+}
+"""
+
+
+def test_the_newtonian_top_level_strip_is_not_fail_open_on_nesting():
+    """REGRESSION, found by code review 2026-09-06 and it was a silently WRONG number.
+
+    The first version stripped sub-dictionaries with `re.sub(r"\\w+\\s*\\{[^}]*\\}", ...)`.
+    A regex cannot match balanced braces: `[^}]*` stops at the INNER `}`, so everything
+    after a NESTED block leaked out as top level. On `NESTED` below it returned
+    `nu = 999` -- and returned it with the real entry deleted too, i.e. it succeeded on a
+    dictionary OpenFOAM rejects. `_strip_subdicts` counts braces instead."""
+    assert parse_transport_properties(NESTED)[1] == {"nu": 1e-06}
+    # with the real entry gone the parser must RAISE, not fall back on the buried one
+    without = NESTED.replace("nu              1e-06;\n", "")
+    with pytest.raises(ValueError, match="no top-level `nu` entry"):
+        parse_transport_properties(without)
+
+
+def test_the_newtonian_branch_reports_which_kind_of_failure(records):
+    """One check, three reasons, and the caller needs to tell them apart: absent (the file
+    is incomplete), malformed (the file is wrong), and an OpenFOAM construct this parser
+    does not implement (the file is fine, this is not OpenFOAM). The Coeffs branch already
+    made that distinction; the Newtonian branch did not until review."""
+    head = "transportModel  Newtonian;\n"
+    with pytest.raises(ValueError, match="no top-level `nu` entry"):
+        parse_transport_properties(head)
+    with pytest.raises(ValueError, match="does not implement"):
+        parse_transport_properties(head + "nu  $nuWater;\n")
+    with pytest.raises(ValueError, match="present but unreadable"):
+        parse_transport_properties(head + "nu  1,5e-6;\n")
+    # a duplicate is not a silent last-one-wins either
+    with pytest.raises(ValueError, match="more than one top-level"):
+        parse_transport_properties(head + "nu 1e-06;\nnu 5e-06;\n")
+    # unbalanced braces are refused rather than guessed
+    with pytest.raises(ValueError, match="unbalanced"):
+        parse_transport_properties(head + "nu 1e-06;\nblock\n{\n")
+
+
+def test_the_newtonian_branch_still_accepts_ordinary_dictionaries(records):
+    """The mirror of the above, and the reason the fix is a brace counter rather than a
+    blanket residue check: a real `transportProperties` carries top-level entries this
+    parser has no opinion about, and refusing them would bite exactly the foreign
+    dictionaries `expect=None` exists for."""
+    rec = sorted(_null_records(records, "newtonian").items())[0][1]
+    text = export_transport_properties(rec, RHO, None)
+    nu = parse_transport_properties(text)[1]["nu"]
+    for extra in ("rho             rho [1 -3 0 0 0 0 0] 1000;\n",
+                  "phases          (water air);\n",
+                  "sigma           sigma [1 0 -2 0 0 0 0] 0.07;\n",
+                  "HerschelBulkleyCoeffs { k 1; n 0.5; tau0 1; nu0 1; }\n"):
+        assert parse_transport_properties(text + extra)[1] == {"nu": nu}, extra
+
+
 def test_g11_4a_expect_still_discriminates_the_model(records):
     rec = sorted(_null_records(records, "newtonian").items())[0][1]
     text = export_transport_properties(rec, RHO, None)
@@ -258,9 +318,13 @@ def test_g11_5b_power_law_wrong_map_subtracting_one_twice(records):
 
 def test_the_power_law_floor_is_SMALL_not_VSMALL():
     """powerLaw.C:64-68 floors the DIMENSIONLESS product `1[s]*strainRate()` at
-    SMALL = 1e-15; the five other mapped models use VSMALL = 1e-300. Transcribing VSMALL
-    would change `nu` at zero rate by 285 decades of argument, which is what a cell of a
-    run started from rest sees."""
+    SMALL = 1e-15. Transcribing VSMALL = 1e-300 would change `nu` at zero rate by 285
+    decades of argument, which is what a cell of a run started from rest sees.
+
+    A first version of this docstring said "the five other mapped models use VSMALL",
+    which is false and a review caught it: only `HerschelBulkley` and `Casson` do (they
+    divide by the rate); `CrossPowerLaw`, `BirdCarreau` and `Newtonian` have no floor at
+    all, because nothing in them is singular at zero rate."""
     assert SMALL == 1.0e-15
     c = {"k": 1.0, "n": 0.5, "nuMin": 0.0, "nuMax": 1e300}
     at_zero = float(nu_openfoam("powerLaw", c, np.array([0.0]))[0])
@@ -289,20 +353,55 @@ def test_g11_6_structural_steady_equals_cross_with_m_one():
     assert worst < 1e-15, worst
 
 
+def test_g11_6_the_separate_family_needs_its_own_substitution():
+    """`structural_steady_separate` is refused by the same code path, and the refusal
+    tells the caller what to write instead -- but it carries `alpha` and `t_r` SEPARATELY
+    and multiplies them, so it has no `alpha_tr` to read. A first version of the message
+    gave `structural_steady`'s substitution to both families and a review caught it; this
+    anchors the one that is actually right, which the message had no test for at all."""
+    sss, cr = STRUCTURAL_STEADY_SEPARATE, get_model("cross")
+    assert sss.param_names == ("eta_inf", "beta", "alpha", "t_r")
+    assert "alpha_tr" not in sss.param_names
+    gd = np.logspace(-2, 2, N_RATES)
+    worst = 0.0
+    for eta_inf, beta, alpha, t_r in ((3.5e-3, 28.0714286, 0.4, 0.5), (1.0, 5.0, 2.0, 5.0),
+                                      (1e-4, 1e3, 1e-2, 0.1)):
+        a = sss(gd, eta_inf, beta, alpha, t_r)
+        b = cr(gd, eta_inf * (1.0 + beta), eta_inf, alpha * t_r, 1.0)
+        worst = max(worst, float(np.abs(a - b).max() / np.abs(a).max()))
+    assert worst <= BAR_G116, f"G11.6 (separate): {worst:.3e} > {BAR_G116:.0e}"
+
+
 def test_g11_6_the_refusal_is_explicit_and_says_the_true_reason(records):
     """A bare NotImplementedError was what item 11 asked to replace. The message must
     (a) not claim no counterpart exists, (b) name the structure equation as the reason,
     (c) give the substitution a caller can make deliberately."""
     rec = records["blood_horner2020_donor_A"]
-    for model in (STRUCTURAL_STEADY, STRUCTURAL_STEADY_SEPARATE):
+    # the substitution DIFFERS between the two families; asserting one string for both is
+    # what certified a wrong instruction before the review
+    want = {STRUCTURAL_STEADY: "lam = alpha_tr, m = 1",
+            STRUCTURAL_STEADY_SEPARATE: "lam = alpha*t_r"}
+    for model, sub in want.items():
         with pytest.raises(ThixotropyNotRepresentable) as e:
             coefficients(replace(rec, model=model), RHO, 1.0)
         msg = str(e.value)
+        assert msg.startswith(model.name), msg[:80]
         assert "NOT because no counterpart exists" in msg
         assert "CrossPowerLaw with n = 1" in msg
         assert "STRUCTURE EQUATION" in msg
         assert "silently wrong in every transient" in msg
-        assert "lam = alpha_tr, m = 1" in msg
+        assert sub in msg, (model.name, msg)
+    # and the two messages must not be interchangeable
+    msgs = []
+    for model in want:
+        with pytest.raises(ThixotropyNotRepresentable) as e:
+            coefficients(replace(rec, model=model), RHO, 1.0)
+        msgs.append(str(e.value))
+    assert msgs[0] != msgs[1]
+    # the separate family's message may NAME alpha_tr (it says explicitly that this
+    # family has none) but must never INSTRUCT the caller to use one
+    assert "lam = alpha_tr," not in msgs[1] and "alpha_tr gd" not in msgs[1]
+    assert "has no alpha_tr to read" in msgs[1]
     assert issubclass(ThixotropyNotRepresentable, NotImplementedError)
 
 

@@ -2,3 +2,9 @@
 # scripts/openfoam_couette_diagnose.py. Regenerate with those scripts; the JSON and .md
 # results beside this file are the committed artifacts.
 runs/
+
+# Scratch output directories for a `BIORHEO_OF_OUT`-redirected anchor run. The redirect
+# exists so a test or a trial run cannot overwrite the committed artifacts; its own
+# output is not an artifact. Added 2026-09-06 after a zero-byte stdout.log from one such
+# run was committed by accident.
+_*_run/

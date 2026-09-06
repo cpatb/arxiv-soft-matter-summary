@@ -111,8 +111,9 @@ from pathlib import Path
 import numpy as np
 
 from biorheo.registry.loader import load_all
-from biorheo.solver.openfoam import (coefficients, export_transport_properties,
-                                    nu_openfoam, parse_transport_properties)
+from biorheo.solver.openfoam import (_envelope_eta_range, coefficients,
+                                    export_transport_properties, nu_openfoam,
+                                    parse_transport_properties)
 
 ROOT = Path(__file__).resolve().parent.parent
 # BIORHEO_OF_OUT lets a test run the whole anchor without overwriting the COMMITTED
@@ -182,11 +183,19 @@ def _clamps_for(rec) -> tuple[float | None, float | None]:
     own viscosity range so neither can bind inside the envelope."""
     if rec.model.name in TAKES_NO_CLAMP:
         return None, None
-    gmin, gmax = rec.envelope.gammadot_min, rec.envelope.gammadot_max
-    eta_max = CLAMP_DECADES * float(rec.eta_at(np.array([gmin]))[0])
+    # `_envelope_eta_range`, not the endpoints. Taking `eta_at(gammadot_min)` for the cap
+    # and `eta_at(gammadot_max)` for the floor assumes the law is monotonically shear
+    # thinning, which is the very assumption `_envelope_eta_range` was written to remove:
+    # `herschel_bulkley` and `power_law` both admit n > 1, and there the endpoint is not
+    # the extremum and a clamp built from it can bind INSIDE the envelope. Inert on every
+    # record now shipped (max n = 0.775), which
+    # `tests/test_openfoam_export_null.py::test_envelope_eta_range_is_inert_on_the_registry`
+    # pins, so it does not move any number on this page.
+    eta_lo, eta_hi = _envelope_eta_range(rec)
+    eta_max = CLAMP_DECADES * eta_hi
     if rec.model.name not in NEEDS_FLOOR:
         return eta_max, None
-    return eta_max, float(rec.eta_at(np.array([gmax]))[0]) / CLAMP_DECADES
+    return eta_max, eta_lo / CLAMP_DECADES
 
 
 # --------------------------------------------------------------------------- case files
@@ -791,6 +800,15 @@ def diagnosis_section() -> list[str]:
 
 G7P_RELAX_U = 0.7    # the diagnosis's setting, where the Herschel-Bulkley record fails
 G7P_END_TIME = 2000  # ditto; NOT bars, they are the configuration being matched
+# G7' is ITEM 6's gate and it runs on exactly the records item 6 pre-registered it on.
+# It used to iterate `RECORD_IDS`, so item 11 appending two records to that list would
+# have silently changed an item-6 verdict -- and worse, the yield/no-yield split below
+# keys on `NO_CLAMP_MODELS`, which does not contain `newtonian` or `power_law`, so both
+# NULL families would have been counted as YIELD-STRESS arms. Adding a record to a list
+# is not supposed to re-decide a closed gate.
+G7P_RECORD_IDS = ("carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A",
+                  "blood_horner2020_donor_N_cross",
+                  "blood_horner2020_donor_S_carreau_yasuda")
 
 
 def bingham_number(rec, gd: float) -> float:
@@ -813,7 +831,8 @@ def g7_prime(recs: dict) -> dict | None:
     """G7', added 2026-09-05 after the code review showed G7 compares two arms taken at
     DIFFERENT solver settings and therefore cannot discriminate.
 
-    Every record in `RECORD_IDS` is run once, at its own lowest envelope rate, at the
+    Every record in `G7P_RECORD_IDS` -- item 6's four, NOT `RECORD_IDS`, see the constant
+    -- is run once, at its own lowest envelope rate, at the
     SAME `(relax_U, endTime)` -- the diagnosis's `(0.7, 2000)`, chosen because that is
     where the Herschel-Bulkley record is known to fail A2. Pre-registered before this
     ran: the comparison is INFORMATIVE only if at least one yield-stress record fails
@@ -822,12 +841,11 @@ def g7_prime(recs: dict) -> dict | None:
     rather than argued away; the magnitude control is the constant-B 2x2 already in
     `couette_diagnosis.json`, not this table."""
     rows = []
-    for rid in RECORD_IDS:
+    for rid in G7P_RECORD_IDS:
         rec = recs[rid]
         gmin = rec.envelope.gammadot_min
-        has_clamp = rec.model.name not in NO_CLAMP_MODELS
-        eta_max = 10.0 * float(rec.eta_at(gmin)) if has_clamp else None
-        text = export_transport_properties(rec, RHO, eta_max)
+        eta_max, eta_min = _clamps_for(rec)
+        text = export_transport_properties(rec, RHO, eta_max, eta_min=eta_min)
         eta = float(rec.eta_at(np.array([gmin]))[0])
         try:
             r = matched_settings_case(f"g7p_{rid}", text, float(gmin), eta,
@@ -1151,15 +1169,21 @@ def main() -> int:
                                                                           "power_law")],
               "n_rates": N_RATES,
               "per_family": {}}
+    def _worst(frows: list[dict], key: str) -> float:
+        """`np.max`, NOT the builtin: `max([5.0, nan])` returns 5.0, so a NaN row is
+        silently dropped and the family can report PASS on a case that never produced a
+        number. `np.max` propagates the NaN and every comparison against a bar is then
+        False. Same reason the A5' aggregation two blocks down uses np.max."""
+        return float(np.max([r[key] for r in frows])) if frows else float("nan")
+
     for fam in ("newtonian", "power_law"):
         frows = [r for r in rows if r.get("model") == fam]
         item11["per_family"][fam] = {
             "n_cases": len(frows),
-            "worst_err_nu": max((r["err_nu"] for r in frows), default=float("nan")),
-            "worst_err_tau": max((r["err_tau"] for r in frows), default=float("nan")),
-            "worst_err_profile": max((r["err_profile"] for r in frows), default=float("nan")),
-            "worst_wall_imbalance": max((r["wall_imbalance"] for r in frows),
-                                        default=float("nan")),
+            "worst_err_nu": _worst(frows, "err_nu"),
+            "worst_err_tau": _worst(frows, "err_tau"),
+            "worst_err_profile": _worst(frows, "err_profile"),
+            "worst_wall_imbalance": _worst(frows, "wall_imbalance"),
             "cap_bound_fraction_final": [r["cap_bound_fraction_final"] for r in frows],
             "bars": {"A1prime": BAR_A1P, "A2": BAR_A2, "A3": BAR_A3},
         }
@@ -1263,7 +1287,18 @@ def main() -> int:
               + item11_section(item11) + [""]
     (OUT / "couette_anchor.md").write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines[8:]))
-    return 0 if all(v.get("pass") for v in verdict.values()) else 1
+    # The exit code must carry the item-11 verdicts too. They live in `payload`, not in
+    # `verdict`, so before 2026-09-06 a FAILED G11.7 or a REFUTED refusal probe left
+    # rc = 0 -- this repo's own "rc = 0 proves *a* run finished, not *your* run" trap, and
+    # unlike the gate report nothing else reads these back.
+    item11_ok = bool(item11["G11_7_pass"]
+                     and item11["refusal_probes"]["G11_3b"]["pass"]
+                     and item11["refusal_probes"]["G11_4b"]["pass"])
+    ok = all(v.get("pass") for v in verdict.values()) and item11_ok
+    if not item11_ok:
+        print("FAILED: an item-11 gate did not pass; see the item 11 section of "
+              "couette_anchor.md and `item11_null_families` in the JSON")
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":

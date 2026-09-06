@@ -212,14 +212,16 @@ def _null_paragraph(summary: dict) -> str:
     published two-parameter Casson fit beat a one-parameter constant, and a two-parameter
     power law, on these curves? Written whichever way it falls."""
     cas = np.asarray(summary["casson"]["rmse"])
+    n = cas.size
     out = []
     for m in ("newtonian", "power_law"):
         if m not in summary:
             continue
         r = np.asarray(summary[m]["rmse"])
+        assert r.size == n, (m, r.size, n)
         wins = int((r < cas).sum())
         out.append(
-            f"Casson beats {m} on {20 - wins} of 20 donors on rmse_log "
+            f"Casson beats {m} on {n - wins} of {n} donors on rmse_log "
             f"(median {np.median(cas):.3f} against {np.median(r):.3f}, "
             f"worst-donor ratio {float(np.max(r / cas)):.2f}x, best {float(np.min(r / cas)):.2f}x)")
     # What the `structured` column does and does not separate, read off the counts rather
@@ -228,13 +230,19 @@ def _null_paragraph(summary: dict) -> str:
     struct = {m: summary[m]["structured"] for m in COMPARE if m in summary}
     nulls = [m for m in ("newtonian", "power_law") if m in struct]
     same_as_null = sorted(m for m in struct
-                          if m not in nulls and struct[m] >= min(struct[n] for n in nulls))
+                          if m not in nulls and struct[m] >= min(struct[k] for k in nulls))
+    # said explicitly rather than emitting an ungrammatical empty list: if no fitted form
+    # is flagged as often as a null, the flag DOES separate them and the reading flips
+    verdict = (", ".join(same_as_null) + " is flagged at least as often as a null"
+               if same_as_null else
+               "every fitted form is flagged LESS often than a null, so on this set the "
+               "flag does separate a fit from a null")
     return ("The two NULL columns are the floor this table is read against, and they are "
             "the reason the comparison above means anything. "
             + "; ".join(out) + ". "
-            + "The `structured` flag does NOT separate a fit from a null here: it fires on "
+            + "The `structured` flag: it fires on "
             + ", ".join(f"{struct[m]}/20 for {m}" for m in COMPARE if m in struct)
-            + f", so {', '.join(same_as_null)} is flagged at least as often as a null. What it "
+            + f", so {verdict}. What it "
               "does separate is cross and carreau_yasuda, the only two forms it clears. "
               "Read the flag as a statement about the FORM's residual shape, not as a "
               "ranking -- the rmse column is the ranking, and the nulls bound it.")
