@@ -37,6 +37,33 @@ degenerate
 ``measurable`` verdict is a statement about closure, not precision; ``ParamEstimate.decades``
 carries the width and must be quoted beside it.
 
+**CAVEAT ON THE CORRELATION SIGNATURE, and it is a real one.** ``|corr| > 0.99`` is read
+off the Wald covariance -- a local quadratic approximation to the likelihood at the
+optimum -- and it is consulted ONLY when ``open_side`` is true, i.e. only when the profile
+ran into a bound. That is exactly the regime where the quadratic approximation is least
+trustworthy: at or near a bound the likelihood is not locally quadratic, the covariance
+linearises a problem the optimiser solved under a constraint, and the curvature the
+correlation is computed from need not describe the surface the profile actually walked.
+So the first signature is being used where it is weakest, by construction.
+
+Three things follow, and they are why the code is shaped as it is rather than being a
+reason to distrust the verdicts:
+
+* the SECOND signature (a null direction of the log-log sensitivity Jacobian) does not go
+  through the covariance at all, so it survives the case where the covariance is singular
+  or all-NaN -- which is precisely how it was found (see above);
+* the two signatures are ORed, never ANDed, so a failure of the Wald channel can only
+  cost a ``degenerate`` label, never manufacture one out of nothing;
+* ``degenerate`` and ``bounded_only`` and ``not_identifiable`` all refuse an export
+  the same way, so a mislabel among the three does not change what ships.
+
+What the caveat DOES forbid is quoting ``ParamEstimate.corr_with`` as a measured
+correlation between two parameters when either sits at a bound. It is a detector input
+there, not an estimate. Measured 2026-09-06 (``data/horner2020/multistart_scatter.md``):
+the verdicts nevertheless predict which records move when only the optimiser's seed
+changes, on 20 donors x 4 families, with no all-``measurable`` record moving more than
+1e-3 -- an independent check that does not go through the covariance either.
+
 Every verdict above is conditional on the model describing the curve. A parameter can
 be ``measurable`` in a model that is wrong: the interval then says how precisely the
 wrong model's constant is pinned, not how well the fluid is described. So the fit
@@ -252,6 +279,30 @@ def fit_rate_curve(model: RateModel, gammadot, eta, *, level: float = 0.95,
 
     The envelope is the measured rate range of the data passed in; ``eta_at`` on a
     record built from this result will refuse to extrapolate beyond it.
+
+    ``n_starts`` IS NOT A COUNT OF DISTINCT OPTIMA. ``dst_fit.fit_model`` builds its start
+    list as ``[start, heuristic, *(n_starts - 1) log-uniform draws]``, and three things
+    make the effective count smaller than the nominal one: ``start`` (this function always
+    passes ``model.guess``) can coincide with ``dst_fit``'s own heuristic; several random
+    draws can fall into the same basin; and for a 5-parameter model, 8 draws from a box
+    spanning decades is sparse. So a fit is not "well searched" because ``n_starts`` is 8.
+
+    What that costs was MEASURED rather than left as a caveat
+    (``scripts/multistart_seed_scatter.py`` -> ``data/horner2020/multistart_scatter.md``,
+    2026-09-06): refitting all 20 blood curves under four models with five different seeds
+    moves the OBJECTIVE by at most ~1e-9 relative, so no start is landing on a worse
+    optimum -- the search is fine. Where the PARAMETERS move, they move on a flat
+    direction, and no record with all parameters ``measurable`` moved by more than 1e-3
+    (54 such records, worst 6.0e-5).
+
+    **But "the flagged set catches every mover" is FALSE, and the pre-registered gate that
+    said so failed.** Herschel-Bulkley on donor G moves 4.149 in ``tau_y`` while that
+    parameter is graded ``bounded_only`` -- which is neither ``degenerate`` nor
+    ``not_identifiable``, and so is NOT one of the verdicts
+    ``solver.openfoam.check_exportable`` refuses. Do not read ``bounded_only`` as
+    "determined, with a one-sided interval": it can be a parameter the optimiser places
+    anywhere along a flat direction. The seed is recorded on the result, so such a value
+    is reproducible; it is not, on its own, a measurement.
     """
     gd = np.asarray(gammadot, dtype=float)
     et = np.asarray(eta, dtype=float)

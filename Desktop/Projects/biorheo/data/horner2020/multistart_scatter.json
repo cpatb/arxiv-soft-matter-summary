@@ -1,0 +1,1580 @@
+{
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "families": [
+    "casson",
+    "herschel_bulkley",
+    "cross",
+    "carreau_yasuda"
+  ],
+  "exploratory": [
+    "carreau_yasuda"
+  ],
+  "G91_bar": 0.001,
+  "G92_bar": 0.1,
+  "G91_violations": [],
+  "G92_violations": [
+    [
+      "herschel_bulkley",
+      "G",
+      4.1485973932768605
+    ]
+  ],
+  "G93_bar": 0.001,
+  "G93_violations": [
+    [
+      "herschel_bulkley",
+      "G",
+      4.1485973932768605
+    ]
+  ],
+  "G93_violations_shipped": [],
+  "n_export_accepted": 63,
+  "n_export_accepted_shipped": 43,
+  "worst_spread_export_accepted": 4.1485973932768605,
+  "worst_spread_export_accepted_shipped": 5.996843229775683e-05,
+  "shipped_families": [
+    "casson",
+    "cross",
+    "carreau_yasuda"
+  ],
+  "n_all_measurable": 54,
+  "worst_spread_all_measurable": 5.996843229775683e-05,
+  "worst_cost_spread": 6.500759433213427e-10,
+  "n_movers": 3,
+  "records": {
+    "casson": {
+      "A": {
+        "param_spread": 7.716541712131671e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 3.2243225073232294e-13,
+        "rmse_log": 0.17810341806163246,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 7.716541712131671e-07,
+          "eta_c": 2.8999419429104723e-07
+        }
+      },
+      "B": {
+        "param_spread": 7.455995680873612e-09,
+        "worst_param": "tau_y",
+        "cost_spread": 1.2648411918776568e-15,
+        "rmse_log": 0.07680372467194088,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 7.455995680873612e-09,
+          "eta_c": 3.866311093373604e-09
+        }
+      },
+      "C": {
+        "param_spread": 2.1668654007057594e-08,
+        "worst_param": "tau_y",
+        "cost_spread": 3.8939342782852986e-15,
+        "rmse_log": 0.06771505359473769,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 2.1668654007057594e-08,
+          "eta_c": 1.453537259197807e-08
+        }
+      },
+      "D": {
+        "param_spread": 2.407306054218147e-09,
+        "worst_param": "tau_y",
+        "cost_spread": 4.745765464341835e-16,
+        "rmse_log": 0.0877273934758537,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 2.407306054218147e-09,
+          "eta_c": 1.682543649340857e-09
+        }
+      },
+      "F": {
+        "param_spread": 4.7908275395214654e-08,
+        "worst_param": "tau_y",
+        "cost_spread": 2.5146524876197245e-14,
+        "rmse_log": 0.13245047139806596,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 4.7908275395214654e-08,
+          "eta_c": 2.0729689149734326e-08
+        }
+      },
+      "G": {
+        "param_spread": 3.99464991541404e-06,
+        "worst_param": "tau_y",
+        "cost_spread": 2.1830331941665834e-12,
+        "rmse_log": 0.2523010845590671,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 3.99464991541404e-06,
+          "eta_c": 1.1752689375941467e-06
+        }
+      },
+      "H": {
+        "param_spread": 9.849205571407415e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 2.865960809008449e-13,
+        "rmse_log": 0.2151909712933558,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 9.849205571407415e-07,
+          "eta_c": 5.030495614430836e-07
+        }
+      },
+      "I": {
+        "param_spread": 5.926100296406939e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 3.382822218123488e-14,
+        "rmse_log": 0.19609610391571047,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 5.926100296406939e-07,
+          "eta_c": 2.976862299044287e-07
+        }
+      },
+      "J": {
+        "param_spread": 3.0747576316116695e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 6.359079497576511e-14,
+        "rmse_log": 0.14578151223228497,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 3.0747576316116695e-07,
+          "eta_c": 1.5592302405007176e-07
+        }
+      },
+      "K": {
+        "param_spread": 7.030774107983047e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 3.8440371915456476e-13,
+        "rmse_log": 0.1613764602418024,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 7.030774107983047e-07,
+          "eta_c": 3.3206866602645375e-07
+        }
+      },
+      "L": {
+        "param_spread": 1.6272690112380756e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 2.6773829340520185e-14,
+        "rmse_log": 0.12180850536388209,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 1.6272690112380756e-07,
+          "eta_c": 1.092590699779575e-07
+        }
+      },
+      "M": {
+        "param_spread": 3.4475020057768817e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 2.235196796915257e-14,
+        "rmse_log": 0.20240539139959307,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 3.4475020057768817e-07,
+          "eta_c": 2.3696468106552227e-07
+        }
+      },
+      "N": {
+        "param_spread": 5.920679126443498e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 9.696581948662866e-14,
+        "rmse_log": 0.18577029173694584,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 5.920679126443498e-07,
+          "eta_c": 3.5720000429701063e-07
+        }
+      },
+      "O": {
+        "param_spread": 4.212151152594397e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 1.5201091149560758e-13,
+        "rmse_log": 0.14661925910493828,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 4.212151152594397e-07,
+          "eta_c": 2.056266426800631e-07
+        }
+      },
+      "P": {
+        "param_spread": 2.2745250259455205e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 4.4157087694672427e-14,
+        "rmse_log": 0.12634145479241998,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 2.2745250259455205e-07,
+          "eta_c": 1.1615911866454037e-07
+        }
+      },
+      "Q": {
+        "param_spread": 6.70397818637323e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 3.63523770280645e-13,
+        "rmse_log": 0.17110365274490516,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 6.70397818637323e-07,
+          "eta_c": 3.6421809658429994e-07
+        }
+      },
+      "R": {
+        "param_spread": 3.1992304097181883e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 4.991876653493465e-14,
+        "rmse_log": 0.15401611416316988,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 3.1992304097181883e-07,
+          "eta_c": 1.863878716926315e-07
+        }
+      },
+      "S": {
+        "param_spread": 2.3605174902129035e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 3.9753283797347146e-14,
+        "rmse_log": 0.1431301381342378,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 2.3605174902129035e-07,
+          "eta_c": 1.3843521477826993e-07
+        }
+      },
+      "T": {
+        "param_spread": 2.360816316972047e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 3.142755797909698e-14,
+        "rmse_log": 0.13247406448549073,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 2.360816316972047e-07,
+          "eta_c": 1.297214337219546e-07
+        }
+      },
+      "U": {
+        "param_spread": 3.205396081718423e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 1.33543560225072e-13,
+        "rmse_log": 0.13156216095393636,
+        "verdicts": {
+          "tau_y": "measurable",
+          "eta_c": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 3.205396081718423e-07,
+          "eta_c": 1.734905841409115e-07
+        }
+      }
+    },
+    "herschel_bulkley": {
+      "A": {
+        "param_spread": 2.6143242353395727e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 1.1390841637513537e-13,
+        "rmse_log": 0.0717595527962021,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 2.6143242353395727e-07,
+          "k": 4.794633388692875e-08,
+          "n": 1.33845138952528e-08
+        }
+      },
+      "B": {
+        "param_spread": 4.281187168300315e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 2.3172549189919918e-12,
+        "rmse_log": 0.0840660670786138,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 4.281187168300315e-07,
+          "k": 3.1751174675040684e-07,
+          "n": 8.07221626036327e-08
+        }
+      },
+      "C": {
+        "param_spread": 0.0,
+        "worst_param": "tau_y",
+        "cost_spread": 0.0,
+        "rmse_log": 0.0893169878754809,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 0.0,
+          "k": 0.0,
+          "n": 0.0
+        }
+      },
+      "D": {
+        "param_spread": 3.8557354254169124e-06,
+        "worst_param": "k",
+        "cost_spread": 2.902860270336842e-12,
+        "rmse_log": 0.11782106221885912,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 2.6494039954988954e-06,
+          "k": 3.8557354254169124e-06,
+          "n": 9.457542312366189e-07
+        }
+      },
+      "F": {
+        "param_spread": 2.6657774098787955e-06,
+        "worst_param": "tau_y",
+        "cost_spread": 1.6635914316452322e-12,
+        "rmse_log": 0.09318920778985702,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 2.6657774098787955e-06,
+          "k": 1.0385992683862817e-06,
+          "n": 2.7759985137799574e-07
+        }
+      },
+      "G": {
+        "param_spread": 4.1485973932768605,
+        "worst_param": "tau_y",
+        "cost_spread": 1.0082869961194946e-15,
+        "rmse_log": 0.11010982278835041,
+        "verdicts": {
+          "tau_y": "bounded_only",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 4.1485973932768605,
+          "k": 3.505715116348948e-10,
+          "n": 2.161506735659254e-10
+        }
+      },
+      "H": {
+        "param_spread": 1.9670947018943333e-05,
+        "worst_param": "tau_y",
+        "cost_spread": 8.609389128665328e-12,
+        "rmse_log": 0.15617407105876902,
+        "verdicts": {
+          "tau_y": "bounded_only",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 1.9670947018943333e-05,
+          "k": 4.648700420334846e-06,
+          "n": 1.3612320431065774e-06
+        }
+      },
+      "I": {
+        "param_spread": 1.6816436324675036e-05,
+        "worst_param": "tau_y",
+        "cost_spread": 7.986350665687036e-12,
+        "rmse_log": 0.1522944746556306,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 1.6816436324675036e-05,
+          "k": 5.089909489454805e-06,
+          "n": 1.4580050171418312e-06
+        }
+      },
+      "J": {
+        "param_spread": 3.56389314604266e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 2.081893426132295e-12,
+        "rmse_log": 0.14698409501703671,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 3.56389314604266e-07,
+          "k": 1.9840411251162645e-07,
+          "n": 5.294390660160452e-08
+        }
+      },
+      "K": {
+        "param_spread": 2.6230586662921134e-07,
+        "worst_param": "tau_y",
+        "cost_spread": 3.405426054438248e-13,
+        "rmse_log": 0.0815854778436003,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 2.6230586662921134e-07,
+          "k": 8.586159693072998e-08,
+          "n": 2.381635583387874e-08
+        }
+      },
+      "L": {
+        "param_spread": 2.23509353574188e-06,
+        "worst_param": "tau_y",
+        "cost_spread": 1.8104366297461604e-12,
+        "rmse_log": 0.09554967137879913,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 2.23509353574188e-06,
+          "k": 1.6470415255693836e-06,
+          "n": 4.5044931913336537e-07
+        }
+      },
+      "M": {
+        "param_spread": 1.965364183001501e-05,
+        "worst_param": "tau_y",
+        "cost_spread": 1.5280856689556258e-12,
+        "rmse_log": 0.18659492336855554,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 1.965364183001501e-05,
+          "k": 1.1760657602346831e-05,
+          "n": 3.410445892629761e-06
+        }
+      },
+      "N": {
+        "param_spread": 5.486410084462469e-06,
+        "worst_param": "tau_y",
+        "cost_spread": 6.263777388631781e-12,
+        "rmse_log": 0.09459563957659385,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 5.486410084462469e-06,
+          "k": 2.004135465287503e-06,
+          "n": 5.900870832261705e-07
+        }
+      },
+      "O": {
+        "param_spread": 3.05240827551538e-08,
+        "worst_param": "tau_y",
+        "cost_spread": 9.039810788203525e-14,
+        "rmse_log": 0.1094587369006015,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 3.05240827551538e-08,
+          "k": 1.2513389247354023e-08,
+          "n": 3.3758118074367387e-09
+        }
+      },
+      "P": {
+        "param_spread": 2.100850132018233e-06,
+        "worst_param": "tau_y",
+        "cost_spread": 5.090345953852657e-13,
+        "rmse_log": 0.0916580582790409,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 2.100850132018233e-06,
+          "k": 1.0642214112839428e-06,
+          "n": 2.863620671506612e-07
+        }
+      },
+      "Q": {
+        "param_spread": 6.945031628990342e-06,
+        "worst_param": "tau_y",
+        "cost_spread": 4.790228294460697e-13,
+        "rmse_log": 0.1269510813172951,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 6.945031628990342e-06,
+          "k": 2.786908790316874e-06,
+          "n": 7.882557480020749e-07
+        }
+      },
+      "R": {
+        "param_spread": 7.439837214601073e-06,
+        "worst_param": "tau_y",
+        "cost_spread": 2.2413952233174345e-12,
+        "rmse_log": 0.1387657906616735,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 7.439837214601073e-06,
+          "k": 4.137879402704785e-06,
+          "n": 1.1439892932845605e-06
+        }
+      },
+      "S": {
+        "param_spread": 1.0649343241896624e-05,
+        "worst_param": "tau_y",
+        "cost_spread": 3.065657057328714e-11,
+        "rmse_log": 0.13128425399347285,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 1.0649343241896624e-05,
+          "k": 6.35738204813827e-06,
+          "n": 1.7403370114938285e-06
+        }
+      },
+      "T": {
+        "param_spread": 3.803338305763228e-06,
+        "worst_param": "tau_y",
+        "cost_spread": 1.8654498605435694e-12,
+        "rmse_log": 0.11053428752473142,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 3.803338305763228e-06,
+          "k": 2.1334815627930454e-06,
+          "n": 5.794588110269371e-07
+        }
+      },
+      "U": {
+        "param_spread": 3.2187804881488702e-06,
+        "worst_param": "tau_y",
+        "cost_spread": 4.638383202725251e-12,
+        "rmse_log": 0.08526744286713109,
+        "verdicts": {
+          "tau_y": "measurable",
+          "k": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "tau_y": 3.2187804881488702e-06,
+          "k": 1.6533516123067624e-06,
+          "n": 4.5162238294508837e-07
+        }
+      }
+    },
+    "cross": {
+      "A": {
+        "param_spread": 2.2453270762331868e-06,
+        "worst_param": "lam",
+        "cost_spread": 5.4027514289271316e-14,
+        "rmse_log": 0.02549387026304769,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "m": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 6.982620420650094e-07,
+          "eta_inf": 7.887438974603175e-08,
+          "lam": 2.2453270762331868e-06,
+          "m": 1.1099353323864312e-07
+        }
+      },
+      "B": {
+        "param_spread": 9.910129612891696e-08,
+        "worst_param": "eta_0",
+        "cost_spread": 3.509876623852396e-14,
+        "rmse_log": 0.03004982757018639,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "m": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 9.910129612891696e-08,
+          "eta_inf": 1.0847472330574124e-08,
+          "lam": 1.4830764849201224e-10,
+          "m": 1.2210569100807748e-08
+        }
+      },
+      "C": {
+        "param_spread": 0.0,
+        "worst_param": "eta_0",
+        "cost_spread": 0.0,
+        "rmse_log": 0.03770973398404615,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "m": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 0.0,
+          "eta_inf": 0.0,
+          "lam": 0.0,
+          "m": 0.0
+        }
+      },
+      "D": {
+        "param_spread": 3.8003145859181233e-06,
+        "worst_param": "lam",
+        "cost_spread": 2.879687447515673e-12,
+        "rmse_log": 0.05700389923436319,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "m": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 2.219166621822567e-06,
+          "eta_inf": 1.5183110588582424e-07,
+          "lam": 3.8003145859181233e-06,
+          "m": 2.1893873709834336e-07
+        }
+      },
+      "F": {
+        "param_spread": 4.958384760564933e-06,
+        "worst_param": "lam",
+        "cost_spread": 3.3878874691075637e-13,
+        "rmse_log": 0.03436791828809614,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "m": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 1.9109470021622333e-06,
+          "eta_inf": 1.739202915230391e-07,
+          "lam": 4.958384760564933e-06,
+          "m": 2.749037642922421e-07
+        }
+      },
+      "G": {
+        "param_spread": 1.4059659855037268e-05,
+        "worst_param": "lam",
+        "cost_spread": 8.634915718904009e-12,
+        "rmse_log": 0.05861915855189344,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "m": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 3.3953145148833243e-06,
+          "eta_inf": 1.383579926754285e-06,
+          "lam": 1.4059659855037268e-05,
+          "m": 4.500360202694012e-06
+        }
+      },
+      "H": {
+        "param_spread": 6.759119562205206e-07,
+        "worst_param": "lam",
+        "cost_spread": 1.7518429274108468e-12,
+        "rmse_log": 0.039573461700895894,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "m": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 2.2070936417583294e-07,
+          "eta_inf": 2.0448318732982797e-07,
+          "lam": 6.759119562205206e-07,
+          "m": 2.3838489162605614e-07
+        }
+      },
+      "I": {
+        "param_spread": 2.382492191137156e-06,
+        "worst_param": "lam",
+        "cost_spread": 1.782732404535767e-12,
+        "rmse_log": 0.04714718913735404,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "m": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 8.636464217115056e-07,
+          "eta_inf": 1.0536157308893865e-07,
+          "lam": 2.382492191137156e-06,
+          "m": 3.5526829374746526e-07
+        }
+      },
+      "J": {
+        "param_spread": 9.357575131513297e-06,
+        "worst_param": "lam",
+        "cost_spread": 4.1319784897553e-12,
+        "rmse_log": 0.05106797243512637,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "m": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 3.4244107735589323e-06,
+          "eta_inf": 1.05890514323449e-06,
+          "lam": 9.357575131513297e-06,
+          "m": 2.185102852449631e-06
+        }
+      },
+      "K": {
+        "param_spread": 2.6669671979189888e-05,
+        "worst_param": "lam",
+        "cost_spread": 1.7574904894714304e-12,
+        "rmse_log": 0.024895267299133234,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "m": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 1.1122255864694523e-05,
+          "eta_inf": 3.734468831711591e-07,
+          "lam": 2.6669671979189888e-05,
+          "m": 5.258240349984675e-07
+        }
+      },
+      "L": {
+        "param_spread": 7.422039207395986e-08,
+        "worst_param": "eta_0",
+        "cost_spread": 2.4664380132286248e-12,
+        "rmse_log": 0.030146193510026193,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "m": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 7.422039207395986e-08,
+          "eta_inf": 8.578193404601215e-09,
+          "lam": 3.1382975648132094e-08,
+          "m": 6.275617176031983e-09
+        }
+      },
+      "M": {
+        "param_spread": 1.1192205351289112e-05,
+        "worst_param": "lam",
+        "cost_spread": 7.763390370783485e-12,
+        "rmse_log": 0.08471764118181555,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "m": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 4.7869608270439495e-06,
+          "eta_inf": 4.1425917630440647e-07,
+          "lam": 1.1192205351289112e-05,
+          "m": 1.449269318341307e-06
+        }
+      },
+      "N": {
+        "param_spread": 5.910326989417664e-07,
+        "worst_param": "lam",
+        "cost_spread": 4.2477051025739907e-14,
+        "rmse_log": 0.015110457779248106,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "m": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 2.3831034411654826e-07,
+          "eta_inf": 3.0454322050165274e-08,
+          "lam": 5.910326989417664e-07,
+          "m": 3.097963520296869e-08
+        }
+      },
+      "O": {
+        "param_spread": 3.809086487838253e-06,
+        "worst_param": "lam",
+        "cost_spread": 1.1106918742741038e-12,
+        "rmse_log": 0.027079189398171968,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "m": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 1.4129043908553463e-06,
+          "eta_inf": 2.3858526853173616e-07,
+          "lam": 3.809086487838253e-06,
+          "m": 3.767168548627651e-07
+        }
+      },
+      "P": {
+        "param_spread": 1.3724512025459583e-05,
+        "worst_param": "lam",
+        "cost_spread": 5.81598197113437e-13,
+        "rmse_log": 0.027518240030305764,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "m": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 6.536455655634305e-06,
+          "eta_inf": 2.3649341622202385e-07,
+          "lam": 1.3724512025459583e-05,
+          "m": 3.119430961660217e-07
+        }
+      },
+      "Q": {
+        "param_spread": 4.0289973910986604e-07,
+        "worst_param": "lam",
+        "cost_spread": 9.751408088471882e-15,
+        "rmse_log": 0.025261042441646776,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "m": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 1.550061930831155e-07,
+          "eta_inf": 1.9642114514110748e-08,
+          "lam": 4.0289973910986604e-07,
+          "m": 4.1577530424571995e-08
+        }
+      },
+      "R": {
+        "param_spread": 4.890737568989567e-07,
+        "worst_param": "lam",
+        "cost_spread": 5.844023364879463e-14,
+        "rmse_log": 0.030218025977739288,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "m": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 2.0064545981720482e-07,
+          "eta_inf": 2.5381331487229376e-08,
+          "lam": 4.890737568989567e-07,
+          "m": 5.6165649061217075e-08
+        }
+      },
+      "S": {
+        "param_spread": 2.104258806327869e-07,
+        "worst_param": "lam",
+        "cost_spread": 9.829979011900798e-15,
+        "rmse_log": 0.02470618567371606,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "m": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 8.930677674741043e-08,
+          "eta_inf": 1.3864442471716916e-08,
+          "lam": 2.104258806327869e-07,
+          "m": 2.021020262764781e-08
+        }
+      },
+      "T": {
+        "param_spread": 1.6402854041128061e-06,
+        "worst_param": "lam",
+        "cost_spread": 2.0691861908119352e-13,
+        "rmse_log": 0.028453947274585063,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "m": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 7.090537552975639e-07,
+          "eta_inf": 6.125561543533362e-08,
+          "lam": 1.6402854041128061e-06,
+          "m": 1.0524501813304411e-07
+        }
+      },
+      "U": {
+        "param_spread": 4.830606996248785e-05,
+        "worst_param": "lam",
+        "cost_spread": 2.7809381896009546e-12,
+        "rmse_log": 0.014501886996386585,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "m": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 2.473583367374558e-05,
+          "eta_inf": 2.654012621547875e-07,
+          "lam": 4.830606996248785e-05,
+          "m": 3.809781212093084e-07
+        }
+      }
+    },
+    "carreau_yasuda": {
+      "A": {
+        "param_spread": 2.2815380280342996e-08,
+        "worst_param": "lam",
+        "cost_spread": 2.3164758651359472e-15,
+        "rmse_log": 0.02396362166631081,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "degenerate",
+          "n": "bounded_only"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 5.435116231554964e-09,
+          "eta_inf": 3.75164034154974e-09,
+          "lam": 2.2815380280342996e-08,
+          "a": 5.151434834260732e-15,
+          "n": 2.367925728488554e-09
+        }
+      },
+      "B": {
+        "param_spread": 3.425483885446483,
+        "worst_param": "lam",
+        "cost_spread": 1.166571001113975e-14,
+        "rmse_log": 0.030037960982460553,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "a": "not_identifiable",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 2.588436163336316,
+          "eta_inf": 6.043812881655263e-09,
+          "lam": 3.425483885446483,
+          "a": 0.8662651772701665,
+          "n": 1.1165287942367854e-08
+        }
+      },
+      "C": {
+        "param_spread": 1.0598633934090018e-07,
+        "worst_param": "n",
+        "cost_spread": 1.9637793010059774e-13,
+        "rmse_log": 0.031588942540110125,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "a": "degenerate",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 1.3425859762069127e-08,
+          "eta_inf": 5.1728744401580885e-08,
+          "lam": 8.911047182344662e-08,
+          "a": 1.4697576489210647e-12,
+          "n": 1.0598633934090018e-07
+        }
+      },
+      "D": {
+        "param_spread": 9.196215974321615e-09,
+        "worst_param": "n",
+        "cost_spread": 6.337832005801027e-16,
+        "rmse_log": 0.04379348583273303,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "bounded_only",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 2.8889802294687107e-09,
+          "eta_inf": 2.253000944317849e-09,
+          "lam": 7.076564320450242e-09,
+          "a": 1.8154366898671419e-13,
+          "n": 9.196215974321615e-09
+        }
+      },
+      "F": {
+        "param_spread": 0.00016324561596900992,
+        "worst_param": "lam",
+        "cost_spread": 3.875510569504947e-10,
+        "rmse_log": 0.03359595394541478,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "a": "not_identifiable",
+          "n": "bounded_only"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 7.901557538513705e-05,
+          "eta_inf": 2.286588152317179e-06,
+          "lam": 0.00016324561596900992,
+          "a": 6.761228717566815e-05,
+          "n": 3.499258656694356e-06
+        }
+      },
+      "G": {
+        "param_spread": 5.11536692206302e-08,
+        "worst_param": "lam",
+        "cost_spread": 3.708605205579585e-15,
+        "rmse_log": 0.03180742889239079,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "bounded_only",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 5.123885555990323e-09,
+          "eta_inf": 2.060267210047176e-08,
+          "lam": 5.11536692206302e-08,
+          "a": 6.998845947237086e-14,
+          "n": 1.852466100583827e-08
+        }
+      },
+      "H": {
+        "param_spread": 2.7160641163676782e-05,
+        "worst_param": "a",
+        "cost_spread": 1.0827576485953045e-10,
+        "rmse_log": 0.029858245280379198,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 4.693482756074531e-06,
+          "eta_inf": 1.2048759403914102e-06,
+          "lam": 2.066607650864709e-06,
+          "a": 2.7160641163676782e-05,
+          "n": 5.841179016817462e-06
+        }
+      },
+      "I": {
+        "param_spread": 0.0,
+        "worst_param": "eta_0",
+        "cost_spread": 0.0,
+        "rmse_log": 0.023438606340627555,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "bounded_only",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 0.0,
+          "eta_inf": 0.0,
+          "lam": 0.0,
+          "a": 0.0,
+          "n": 0.0
+        }
+      },
+      "J": {
+        "param_spread": 1.1170738916934893e-06,
+        "worst_param": "a",
+        "cost_spread": 5.19416399685983e-12,
+        "rmse_log": 0.04708119304733148,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "measurable",
+          "n": "bounded_only"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 3.2164215079121123e-07,
+          "eta_inf": 5.041946979435855e-09,
+          "lam": 1.2973758994608804e-07,
+          "a": 1.1170738916934893e-06,
+          "n": 1.839994354334599e-07
+        }
+      },
+      "K": {
+        "param_spread": 0.0003871039343883425,
+        "worst_param": "lam",
+        "cost_spread": 6.500759433213427e-10,
+        "rmse_log": 0.02459175334561041,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "bounded_only",
+          "a": "degenerate",
+          "n": "degenerate"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 9.977253899925272e-05,
+          "eta_inf": 1.9350069637832895e-06,
+          "lam": 0.0003871039343883425,
+          "a": 0.0,
+          "n": 1.6692882550147006e-05
+        }
+      },
+      "L": {
+        "param_spread": 3.7726291808537646,
+        "worst_param": "lam",
+        "cost_spread": 2.924166493074261e-10,
+        "rmse_log": 0.030142378935099134,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "a": "not_identifiable",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 2.7714705130459656,
+          "eta_inf": 7.809157283794342e-09,
+          "lam": 3.7726291808537646,
+          "a": 1.1652975457421184,
+          "n": 9.0606499256717e-09
+        }
+      },
+      "M": {
+        "param_spread": 1.2083463338110738e-06,
+        "worst_param": "lam",
+        "cost_spread": 5.978945396161147e-11,
+        "rmse_log": 0.043828584925900534,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "bounded_only",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 3.757817313778474e-07,
+          "eta_inf": 1.8227906607350003e-07,
+          "lam": 1.2083463338110738e-06,
+          "a": 6.927791673660988e-15,
+          "n": 5.536955528503003e-07
+        }
+      },
+      "N": {
+        "param_spread": 4.090849001373482e-06,
+        "worst_param": "lam",
+        "cost_spread": 1.1777521374284314e-10,
+        "rmse_log": 0.013021397735428373,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 2.575772254513909e-06,
+          "eta_inf": 1.405240979850524e-07,
+          "lam": 4.090849001373482e-06,
+          "a": 4.035426136287023e-06,
+          "n": 1.9469448124058616e-07
+        }
+      },
+      "O": {
+        "param_spread": 4.170344482498684e-05,
+        "worst_param": "a",
+        "cost_spread": 3.890708595273349e-10,
+        "rmse_log": 0.02688441368454048,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "measurable",
+          "n": "bounded_only"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 3.8835082762170445e-05,
+          "eta_inf": 1.6546869997035737e-06,
+          "lam": 4.015939184076088e-05,
+          "a": 4.170344482498684e-05,
+          "n": 7.344486836087196e-06
+        }
+      },
+      "P": {
+        "param_spread": 5.7401692664752204e-05,
+        "worst_param": "lam",
+        "cost_spread": 1.0911349615592558e-11,
+        "rmse_log": 0.027477419234393754,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "a": "degenerate",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 3.205650335031828e-05,
+          "eta_inf": 4.2376384081756955e-08,
+          "lam": 5.7401692664752204e-05,
+          "a": 1.4617272102208659e-05,
+          "n": 1.9875007112776577e-08
+        }
+      },
+      "Q": {
+        "param_spread": 4.6038526240278826e-05,
+        "worst_param": "a",
+        "cost_spread": 3.940653309496208e-11,
+        "rmse_log": 0.02155401958491126,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 1.1942377505573066e-05,
+          "eta_inf": 1.95606894019163e-06,
+          "lam": 1.0231483926343268e-05,
+          "a": 4.6038526240278826e-05,
+          "n": 4.755734382776491e-06
+        }
+      },
+      "R": {
+        "param_spread": 5.996843229775683e-05,
+        "worst_param": "a",
+        "cost_spread": 6.35966510321081e-10,
+        "rmse_log": 0.026233498826735972,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 2.2165252296332882e-05,
+          "eta_inf": 2.4898117080144847e-06,
+          "lam": 1.4712562863246476e-05,
+          "a": 5.996843229775683e-05,
+          "n": 1.1030736513839664e-05
+        }
+      },
+      "S": {
+        "param_spread": 3.3001465707000535e-05,
+        "worst_param": "a",
+        "cost_spread": 1.5581642717613976e-10,
+        "rmse_log": 0.02249075690442884,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "measurable",
+          "n": "measurable"
+        },
+        "all_measurable": true,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 1.646913834512998e-05,
+          "eta_inf": 1.2616665153372029e-06,
+          "lam": 1.4423003516113631e-05,
+          "a": 3.3001465707000535e-05,
+          "n": 5.60887924739198e-06
+        }
+      },
+      "T": {
+        "param_spread": 2.29976517206179e-05,
+        "worst_param": "a",
+        "cost_spread": 5.880118470147191e-11,
+        "rmse_log": 0.025093095563203226,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "measurable",
+          "a": "bounded_only",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": false,
+        "per_param_spread": {
+          "eta_0": 5.6015184007454384e-06,
+          "eta_inf": 4.206722715454972e-07,
+          "lam": 7.80984034337968e-06,
+          "a": 2.29976517206179e-05,
+          "n": 9.233083977490742e-07
+        }
+      },
+      "U": {
+        "param_spread": 0.0,
+        "worst_param": "eta_0",
+        "cost_spread": 0.0,
+        "rmse_log": 0.014083130768649105,
+        "verdicts": {
+          "eta_0": "measurable",
+          "eta_inf": "measurable",
+          "lam": "degenerate",
+          "a": "degenerate",
+          "n": "measurable"
+        },
+        "all_measurable": false,
+        "has_bad_verdict": true,
+        "per_param_spread": {
+          "eta_0": 0.0,
+          "eta_inf": 0.0,
+          "lam": 0.0,
+          "a": 0.0,
+          "n": 0.0
+        }
+      }
+    }
+  }
+}
