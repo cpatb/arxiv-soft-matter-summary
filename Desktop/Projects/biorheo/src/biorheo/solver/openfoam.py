@@ -1,10 +1,12 @@
 """Export a registry record to an OpenFOAM ``transportProperties`` viscosity model and
-read it back (the L3 solver bridge: Herschel-Bulkley, Casson, Cross and Carreau-Yasuda).
+read it back (the L3 solver bridge: Herschel-Bulkley, Casson, Cross, Carreau-Yasuda,
+Newtonian and power law -- six of the registry's seven families; ``structural_steady``
+is refused, and the reason is NOT the one you would guess: see ``_STRUCTURAL_REFUSAL``).
 
 Ground truth is the OpenFOAM v2606 (ESI) source, read in WSL at
 ``/usr/lib/openfoam/openfoam2606/src/transportModels/incompressible/viscosityModels/``
-on 2026-09-05 (the two yield-stress families) and 2026-09-05 (the other two). The four
-``calcNu`` bodies, verbatim:
+on 2026-09-05 (the two yield-stress families, then the two non-yield ones) and
+2026-09-06 (``Newtonian`` and ``powerLaw``). The six ``calcNu`` bodies, verbatim:
 
 HerschelBulkley/HerschelBulkley.C (lines 56-67)::
 
@@ -21,6 +23,14 @@ CrossPowerLaw/CrossPowerLaw.C (lines 53-57)::
 BirdCarreau/BirdCarreau.C (lines 52-59)::
 
     nuInf_ + (nu0_ - nuInf_)*pow(scalar(1) + pow(k_*strainRate(), a_), (n_ - 1.0)/a_)
+
+Newtonian/Newtonian.C (lines 48-57)::
+
+    a uniform field of nu0_
+
+powerLaw/powerLaw.C (lines 53-73)::
+
+    max(nuMin_, min(nuMax_, k_*pow(max(1[s]*strainRate(), SMALL), n_.value() - 1)))
 
 with ``VSMALL = 1.0e-300`` (OpenFOAM/primitives/Scalar/doubleScalar/doubleScalar.H:64),
 ``strainRate() = sqrt(2.0)*mag(symm(fvc::grad(U_)))`` (viscosityModel.C:62), which is
@@ -41,6 +51,10 @@ Parameter map (biorheo -> OpenFOAM), exact, no fitting involved::
         nu0 = eta_0/rho   nuInf = eta_inf/rho   m = lam   n = m        <- SWAPPED NAMES
     carreau_yasuda    eta = eta_inf + (eta_0 - eta_inf)[1 + (lam gd)^a]^((n-1)/a)
         nu0 = eta_0/rho   nuInf = eta_inf/rho   k = lam   n = n   a = a
+    newtonian         eta = mu                             <- TOP LEVEL, no Coeffs block
+        nu = mu/rho
+    power_law         eta = k gd^(n-1)
+        k = k/rho   n = n   nuMin = eta_min/rho   nuMax = eta_max/rho
 
 **THE CROSS NAMES COLLIDE WITH THEIR MEANINGS SWAPPED.** biorheo's ``lam`` is a time
 constant in seconds and OpenFOAM calls it ``m`` (declared ``dimTime``,
@@ -51,12 +65,38 @@ both are plain scalars in the dictionary. ``tests/test_openfoam_export.py`` carr
 wrong map explicitly as a discriminator: it must FAIL the round trip by more than 1e-3,
 or the round trip passing at 1e-10 has proved nothing.
 
-**THE CLAMP IS NOT UNIVERSAL.** For Herschel-Bulkley and Casson, ``nu0``/``nuMax`` is a
-regularisation the caller picks and ``eta_max`` is required. ``cross`` and
-``carreau_yasuda`` have no yield stress: their ``eta_0`` is a FITTED PARAMETER and the
-law is already bounded by it at every rate, so there is nothing to clamp, ``nu0`` is the
-record itself, and ``coefficients`` REFUSES an ``eta_max`` rather than accepting and
-ignoring one.
+**THE CLAMP IS NOT UNIVERSAL, AND NEITHER IS ITS SHAPE.** Three families take a cap and
+three refuse one; one family takes a FLOOR as well and five refuse one. Accepting a limit
+the model has no slot for and dropping it silently is the failure this whole layer exists
+to prevent, so every one of those is a raise:
+
+===================  ``eta_max``  ``eta_min``  why
+herschel_bulkley     required     REFUSED      ``min(nu0, .)`` only; no floor slot
+casson               required     REFUSED      ``nuMin`` is fixed by the record at ``eta_c``
+power_law            required     required     both are ``readEntry``, both are the caller's
+cross                REFUSED      REFUSED      ``eta_0`` is a fitted parameter
+carreau_yasuda       REFUSED      REFUSED      ditto
+newtonian            REFUSED      REFUSED      a constant has nothing to regularise
+===================  ===========  ===========  ================================
+
+``cross`` and ``carreau_yasuda`` have no yield stress: their ``eta_0`` is a FITTED
+PARAMETER and the law is already bounded by it at every rate, so ``nu0`` is the record
+itself. ``power_law`` is the opposite case and it is why the ``eta_min`` argument exists:
+``eta = k gd^(n-1)`` has no plateau at EITHER end -- it diverges as ``gd -> 0`` for
+``n < 1`` and as ``gd -> inf`` for ``n > 1``, and the bounds allow both -- so no floor
+"never changes the law" the way Casson's ``eta_c`` does, and OpenFOAM agrees: it reads
+``nuMin`` and ``nuMax`` with ``readEntry`` and stops if either is missing. That
+"required, not optional like ``BirdCarreau``'s ``a``" claim was decided by handing
+``simpleFoam`` a dictionary with ``nuMin`` deleted (gate G11.3b), not by reading the C++.
+
+**``Newtonian`` IS THE ONE MODEL WITH NO ``<Model>Coeffs`` BLOCK.** It reads ``nu``
+straight out of the top-level ``transportProperties``
+(``nu0_("nu", dimViscosity, viscosityProperties_)``, Newtonian.C:71); every other model
+in that directory constructs from ``optionalSubDict(typeName + "Coeffs")``. So the export
+writes a top-level entry and no block, and ``parse_transport_properties`` REFUSES a
+``NewtonianCoeffs`` block rather than ignoring it -- OpenFOAM would never read it, so a
+caller who wrote one believes a number reached the solver that did not. That the
+sub-dictionary form is actually illegal was also decided by running the solver (G11.4b).
 
 **``a`` IS OPTIONAL IN OPENFOAM, NOT ABSENT.** NEXT_STEPS item 6 was written believing
 v2606's ``BirdCarreau`` has no ``a`` exponent and that the export would have to refuse
@@ -126,6 +166,10 @@ from ..registry.schema import FluidRecord
 OPENFOAM_VERSION = "v2606"
 OPENFOAM_SRC = "/usr/lib/openfoam/openfoam2606/src/transportModels/incompressible/viscosityModels"
 VSMALL = 1.0e-300  # doubleScalar.H:64
+# powerLaw uses SMALL, NOT VSMALL, and applies it to the DIMENSIONLESS product
+# `1[s]*strainRate()` rather than to the rate (powerLaw.C:64-68). The other five models
+# this bridge covers use VSMALL. doubleScalar.H:62.
+SMALL = 1.0e-15
 
 # biorheo model name -> (OpenFOAM transportModel name, coefficient keys in file order)
 _MODELS = {
@@ -133,10 +177,28 @@ _MODELS = {
     "casson": ("Casson", ("m", "tau0", "nuMin", "nuMax")),
     "cross": ("CrossPowerLaw", ("nu0", "nuInf", "m", "n")),
     "carreau_yasuda": ("BirdCarreau", ("nu0", "nuInf", "k", "n", "a")),
+    "newtonian": ("Newtonian", ("nu",)),
+    "power_law": ("powerLaw", ("k", "n", "nuMin", "nuMax")),
 }
+# `Newtonian` is the ONLY model in that directory with no `<Model>Coeffs` sub-dictionary:
+# it reads `nu` straight out of the top-level `transportProperties`
+# (`nu0_("nu", dimViscosity, viscosityProperties_)`, Newtonian.C:71; every other model
+# constructs from `viscosityProperties.optionalSubDict(typeName + "Coeffs")`). Writing a
+# `NewtonianCoeffs` block would produce a file OpenFOAM stops on, so both the export and
+# the parser special-case it -- and the parser REFUSES such a block rather than ignoring
+# it, because a caller who wrote one believes it was read.
+_TOPLEVEL = ("newtonian",)
 # The families whose zero-shear plateau is a FITTED PARAMETER rather than a clamp, so
 # they take no `eta_max` at all. See the module docstring, "The clamp is not universal".
-_NO_CLAMP = ("cross", "carreau_yasuda")
+# `newtonian` is here for a different reason: a constant viscosity has nothing to
+# regularise and OpenFOAM's `Newtonian` has no limiter slot to put a clamp in.
+_NO_CLAMP = ("cross", "carreau_yasuda", "newtonian")
+# The one family that takes a FLOOR as well as a cap. OpenFOAM's `powerLaw` reads
+# `nuMin` and `nuMax` with the required `dimensionedScalar(name, dims, dict)` form and
+# re-reads them with `readEntry` (powerLaw.C:90-91, 120-121) -- both raise on a missing
+# key, unlike `BirdCarreau`'s `a`. And `eta = k gd^(n-1)` has no plateau at either end,
+# so neither limit is anywhere in the record: both are the caller's regularisation.
+_NEEDS_FLOOR = ("power_law",)
 # `a` is the one coefficient OpenFOAM reads with `getOrDefault` rather than `readEntry`
 # (BirdCarreau.C:81-88, 120-124): a dictionary that omits it is a legal BirdCarreau that
 # runs as a Carreau fluid. The parser mirrors that default; it does not raise.
@@ -159,22 +221,124 @@ class ExportRefused(ValueError):
     """The record's own identifiability sidecar says a parameter is not a measurement."""
 
 
-def coefficients(record: FluidRecord, rho: float, eta_max: float | None = None
-                 ) -> dict[str, float]:
-    """Kinematic OpenFOAM coefficients for ``record`` at density ``rho`` (kg/m^3), with
-    the clamp ``eta_max`` (Pa s) for the yield-stress families and ``None`` for the two
-    that do not take one. Pure arithmetic; no verdict check."""
+class ThixotropyNotRepresentable(NotImplementedError):
+    """A time-dependent model cannot be an OpenFOAM ``viscosityModel``, which is a
+    function of the instantaneous strain rate alone. Raised for ``structural_steady``.
+
+    It subclasses ``NotImplementedError`` so a caller that already catches the generic
+    "this family has no export" case still catches it -- but the message is specific,
+    which is what NEXT_STEPS item 11 asked for, and **it does not say what item 11 said
+    it would say.** See ``_STRUCTURAL_REFUSAL`` below."""
+
+
+# Item 11's wording was "structural_steady is thixotropic and has NO COUNTERPART there".
+# That was tested before it was written into an error message (gate G11.6 in
+# `data/openfoam/newtonian_powerlaw_prereg.md`) and it is FALSE: the steady flow curve of
+# first-order structure kinetics is ALGEBRAICALLY IDENTICAL to Cross with m = 1, which
+# `STRUCTURAL_STEADY.limits` already said, and which reproduces to 1.4e-16 relative over
+# 20 rates and four decades on three parameter sets (`tests/test_openfoam_export_null.py`,
+# bar 1e-12). So a counterpart exists and refusing on "no counterpart" would refuse
+# something OpenFOAM can do -- item 6's mistake, made again.
+#
+# The real reason is narrower and worse: `structural_steady` is the STEADY STATE of a
+# model whose state variable is the structure parameter lambda, and OpenFOAM's
+# `viscosityModel` interface takes the instantaneous `strainRate()` and nothing else. An
+# export would therefore be RIGHT wherever the flow is steady and SILENTLY WRONG in every
+# transient -- startup, oscillation, a contraction, anything where lambda lags. That is
+# the same silent-drop class the whole bridge exists to prevent, and it is not visible in
+# the exported dictionary, so it is refused rather than warned about.
+_STRUCTURAL_REFUSAL = (
+    "structural_steady has no OpenFOAM {ver} export, and NOT because no counterpart "
+    "exists -- one does, exactly. Its steady flow curve equals CrossPowerLaw with n = 1: "
+    "eta_inf(1 + beta lam_ss) with lam_ss = 1/(1 + alpha_tr gd) is "
+    "Cross(eta_0 = eta_inf(1 + beta), eta_inf = eta_inf, lam = alpha_tr, m = 1), verified "
+    "to 1e-12 relative. What OpenFOAM's `viscosityModel` interface cannot carry is the "
+    "STRUCTURE EQUATION: it is a function of the instantaneous strainRate() alone, so the "
+    "exported law would be correct wherever the flow is steady and silently wrong in "
+    "every transient, where lambda lags the rate. That failure is invisible in the "
+    "dictionary, so it is refused here.\n"
+    "If you want the steady curve DELIBERATELY, refit the same data to `cross` (the "
+    "registry generators already do) and export that, or build the record by hand with "
+    "eta_0 = eta_inf*(1 + beta), lam = alpha_tr, m = 1 -- and then say in the case that "
+    "the simulation is only valid where the structure is at steady state.")
+
+
+def _envelope_eta_range(record: FluidRecord) -> tuple[float, float]:
+    """(min, max) of ``record.eta_at`` over its own measured envelope, on 200 log-spaced
+    rates including both endpoints.
+
+    The clamp checks below need "the smallest viscosity anywhere in the envelope", which
+    is what decides whether a cap binds at EVERY measured rate. Until 2026-09-06 that was
+    read as ``eta_at(gammadot_max)``, correct only for a monotonically shear-thinning law
+    -- true of all four families the bridge covered then, and asserted in a comment. It is
+    not true in general: `power_law` and `herschel_bulkley` both admit n > 1. On every
+    record now in the registry the two agree exactly, which
+    ``tests/test_openfoam_export_null.py::test_envelope_eta_range_is_inert_on_the_registry``
+    checks, so this is a generalisation and not a relaxation of a shipped refusal."""
+    lo, hi = record.envelope.gammadot_min, record.envelope.gammadot_max
+    gd = np.logspace(np.log10(lo), np.log10(hi), 200)
+    # `logspace` misses its own endpoints by an ulp or two (700 comes back as
+    # 700.0000000000001), and `eta_at` refuses to extrapolate by even that much -- which
+    # is the guard working, not a nuisance. Pin the ends and clip the interior.
+    gd[0], gd[-1] = lo, hi
+    gd = np.clip(gd, lo, hi)
+    eta = np.asarray(record.eta_at(gd), dtype=float)
+    return float(eta.min()), float(eta.max())
+
+
+def coefficients(record: FluidRecord, rho: float, eta_max: float | None = None, *,
+                 eta_min: float | None = None) -> dict[str, float]:
+    """Kinematic OpenFOAM coefficients for ``record`` at density ``rho`` (kg/m^3).
+
+    ``eta_max`` (Pa s) is the viscosity CAP: required for ``herschel_bulkley``,
+    ``casson`` and ``power_law``, refused for the three families that have no clamp slot
+    or whose plateau is a fitted parameter. ``eta_min`` is the FLOOR and is required for
+    ``power_law`` alone -- OpenFOAM's ``powerLaw`` is the only mapped model with a
+    caller-set ``nuMin`` (``Casson``'s ``nuMin`` is fixed by the record at ``eta_c``).
+    Pure arithmetic; no verdict check."""
     if not (rho > 0 and np.isfinite(rho)):
         raise ValueError(f"rho must be a positive density in kg/m^3, got {rho!r}")
-    if record.model.name not in _MODELS:
+    name = record.model.name
+    if name in ("structural_steady", "structural_steady_separate"):
+        raise ThixotropyNotRepresentable(_STRUCTURAL_REFUSAL.format(ver=OPENFOAM_VERSION))
+    if name not in _MODELS:
         raise NotImplementedError(
-            f"no OpenFOAM {OPENFOAM_VERSION} export for model '{record.model.name}'; "
+            f"no OpenFOAM {OPENFOAM_VERSION} export for model '{name}'; "
             f"available: {sorted(_MODELS)}")
-    p = {name: float(v) for name, v in zip(record.model.param_names, record.params_si)}
-    if record.model.name in _NO_CLAMP:
+    p = {pn: float(v) for pn, v in zip(record.model.param_names, record.params_si)}
+
+    # --- the floor. Only `power_law` has one the caller sets; refusing it elsewhere
+    # rather than accepting and dropping it is the whole point of G8.
+    if name not in _NEEDS_FLOOR and eta_min is not None:
+        why = {
+            "herschel_bulkley": "OpenFOAM's HerschelBulkley has only the one-sided "
+                                "min(nu0, ...) and no nuMin slot at all",
+            "casson": "OpenFOAM's Casson does have a nuMin, but it is DETERMINED by the "
+                      "record: it is set to eta_c, the fit's own infinite-rate limit, "
+                      "which is the largest floor that cannot change the law "
+                      "(eta > eta_c at every finite rate). It is not a free knob",
+            "cross": "cross has a fitted eta_inf plateau and OpenFOAM's CrossPowerLaw "
+                     "has no limiter slots",
+            "carreau_yasuda": "carreau_yasuda has a fitted eta_inf plateau and "
+                              "OpenFOAM's BirdCarreau has no limiter slots",
+            "newtonian": "a constant viscosity has nothing to regularise and OpenFOAM's "
+                         "Newtonian has no limiter slot",
+        }[name]
+        raise ValueError(f"{record.id}: model '{name}' takes no eta_min -- {why}. "
+                         "Pass eta_min=None.")
+
+    if name in _NO_CLAMP:
         # Refusing rather than ignoring is the point: eta_0 is a fitted parameter here,
         # so accepting a clamp and dropping it would put the caller's regularisation
         # request into the same silent-drop class this bridge exists to prevent.
+        if eta_max is not None and name == "newtonian":
+            raise ValueError(
+                f"{record.id}: model 'newtonian' takes no eta_max. eta = mu is constant, "
+                f"so there is nothing to regularise ({p['mu']:g} Pa s at every rate), and "
+                "OpenFOAM's Newtonian has no limiter slot to write one into. Pass "
+                "eta_max=None.")
+        if name == "newtonian":
+            return {"nu": p["mu"] / rho}
         if eta_max is not None:
             raise ValueError(
                 f"{record.id}: model '{record.model.name}' takes no eta_max. Its "
@@ -195,29 +359,63 @@ def coefficients(record: FluidRecord, rho: float, eta_max: float | None = None
         return {"nu0": p["eta_0"] / rho, "nuInf": p["eta_inf"] / rho,
                 "k": p["lam"], "n": p["n"], "a": p["a"]}
     if eta_max is None:
-        raise ValueError(
-            f"{record.id}: model '{record.model.name}' requires eta_max. OpenFOAM has no "
-            "unregularised yield-stress law, so the exported dictionary is the CLAMPED "
-            "record and the clamp has to be chosen here.")
+        need = ("OpenFOAM's powerLaw reads nuMax with readEntry, so the entry is REQUIRED "
+                "(powerLaw.C:91,121), and eta = k gd^(n-1) has no plateau to bound it: "
+                "it diverges as gd -> 0 for n < 1 and as gd -> inf for n > 1"
+                if name in _NEEDS_FLOOR else
+                "OpenFOAM has no unregularised yield-stress law, so the exported "
+                "dictionary is the CLAMPED record and the clamp has to be chosen here")
+        raise ValueError(f"{record.id}: model '{name}' requires eta_max. {need}.")
     if not (eta_max > 0 and np.isfinite(eta_max)):
         raise ValueError(f"eta_max must be a positive viscosity in Pa s, got {eta_max!r}")
-    # A clamp at or below the viscosity at the TOP of the envelope makes the exported law
-    # a constant-viscosity Newtonian fluid over the whole measured range, silently. Both
-    # families are shear-thinning, so eta_at(gammadot_max) is that minimum. This also
-    # SUBSUMES the Casson-specific check that used to live here (eta_max <= eta_c would
-    # put nuMax at or below the nuMin floor and defeat OpenFOAM's max(nuMin, min(nuMax,.))
-    # ordering): eta_c is Casson's infinite-rate limit and eta > eta_c at every finite
-    # rate, so eta_c < eta_at(gammadot_max) always and this branch fires first.
-    eta_hi = float(np.min(record.eta_at(np.array([record.envelope.gammadot_max]))))
-    if eta_max <= eta_hi:
+    # A clamp at or below the SMALLEST viscosity anywhere in the envelope makes the
+    # exported law a constant-viscosity Newtonian fluid over the whole measured range,
+    # silently. For Casson this also SUBSUMES the nuMin check that used to live here
+    # (eta_max <= eta_c would put nuMax at or below the floor and defeat OpenFOAM's
+    # max(nuMin, min(nuMax, .)) ordering): eta_c is Casson's infinite-rate limit and
+    # eta > eta_c at every finite rate, so eta_c < eta_lo always and this branch fires
+    # first. `_envelope_eta_range` replaced `eta_at(gammadot_max)` on 2026-09-06 -- see
+    # its docstring; the two agree exactly on every record in the registry.
+    eta_lo, eta_hi = _envelope_eta_range(record)
+    if eta_max <= eta_lo:
         raise ValueError(
-            f"eta_max = {eta_max:g} Pa s is at or below the record's viscosity at the top "
-            f"of its envelope ({eta_hi:g} Pa s at {record.envelope.gammadot_max:g} 1/s); "
+            f"eta_max = {eta_max:g} Pa s is at or below the record's smallest viscosity "
+            f"inside its envelope ({eta_lo:g} Pa s over "
+            f"[{record.envelope.gammadot_min:g}, {record.envelope.gammadot_max:g}] 1/s); "
             "the clamp would bind everywhere and the exported law would be Newtonian. "
             "For a Casson record this also covers the nuMin floor, which is lower still.")
-    if record.model.name == "herschel_bulkley":
+    if name in _NEEDS_FLOOR:
+        if eta_min is None:
+            raise ValueError(
+                f"{record.id}: model 'power_law' requires eta_min as well as eta_max. "
+                "OpenFOAM's powerLaw reads nuMin with readEntry, so the entry is REQUIRED "
+                "(powerLaw.C:90,120), and unlike Casson's nuMin there is no value the "
+                "record determines: eta = k gd^(n-1) has no plateau, so no non-zero floor "
+                "leaves the law unchanged. Both limits are the caller's regularisation "
+                "and both are written into the dictionary.")
+        if not (eta_min > 0 and np.isfinite(eta_min)):
+            raise ValueError(f"eta_min must be a positive viscosity in Pa s, got {eta_min!r}")
+        if eta_min >= eta_hi:
+            raise ValueError(
+                f"eta_min = {eta_min:g} Pa s is at or above the record's largest viscosity "
+                f"inside its envelope ({eta_hi:g} Pa s over "
+                f"[{record.envelope.gammadot_min:g}, {record.envelope.gammadot_max:g}] "
+                "1/s); the floor would bind everywhere and the exported law would be "
+                "Newtonian.")
+        if eta_min >= eta_max:
+            raise ValueError(f"eta_min = {eta_min:g} must be below eta_max = {eta_max:g} "
+                             "Pa s; OpenFOAM evaluates max(nuMin, min(nuMax, .)), so a "
+                             "floor at or above the cap makes the law the constant nuMin.")
+        # `n` goes into the exponent slot UNCHANGED. OpenFOAM writes
+        # `pow(max(1[s]*sr, SMALL), n_.value() - scalar(1))` (powerLaw.C:62-70), i.e. it
+        # subtracts the 1 itself, and biorheo's `eta = k gd^(n-1)` writes the -1
+        # explicitly. Mapping `n -> n - 1` applies it twice; that is the discriminating
+        # wrong map G11.5b carries.
+        return {"k": p["k"] / rho, "n": p["n"],
+                "nuMin": eta_min / rho, "nuMax": eta_max / rho}
+    if name == "herschel_bulkley":
         return {"k": p["k"] / rho, "n": p["n"], "tau0": p["tau_y"] / rho, "nu0": eta_max / rho}
-    assert eta_max > p["eta_c"], "unreachable: eta_c < eta_at(gammadot_max) <= eta_max"
+    assert eta_max > p["eta_c"], "unreachable: eta_c < eta_lo <= eta_max"
     return {"m": p["eta_c"] / rho, "tau0": p["tau_y"] / rho,
             "nuMin": p["eta_c"] / rho, "nuMax": eta_max / rho}
 
@@ -273,8 +471,11 @@ def check_exportable(record: FluidRecord, allow_unidentified: bool = False,
     ``carbopol/fit_hb.py`` -- so the loader's containment rule is not resting on seed 0
     being lucky.
 
-    Turning this flag on refuses 7 of the 58 records the default accepts. All 7 are
-    Carreau-Yasuda blood records; no Carbopol record carries a ``bounded_only`` at all.
+    Turning this flag on refuses 7 of the 98 records the default accepts (measured
+    2026-09-06 over the 115-record registry; it was 7 of 58 over the 75-record one, and
+    the 40 records item 11 added are all-``measurable``, so the refused SET is unchanged).
+    All 7 are Carreau-Yasuda blood records; no Carbopol record carries a ``bounded_only``
+    at all.
 
     A caller about to QUOTE an exported parameter, rather than run a simulation with it,
     should pass ``strict_identifiability=True``."""
@@ -310,22 +511,37 @@ def check_exportable(record: FluidRecord, allow_unidentified: bool = False,
 
 
 def export_transport_properties(record: FluidRecord, rho: float, eta_max: float | None = None, *,
+                                eta_min: float | None = None,
                                 allow_unidentified: bool = False,
                                 strict_form: bool = False,
                                 strict_identifiability: bool = False) -> str:
     """The full ``constant/transportProperties`` text for ``record``. ``eta_max`` is
-    required for the yield-stress families and refused for the other two."""
+    required for the three clamped families and refused for the other three; ``eta_min``
+    is required for ``power_law`` alone. See ``coefficients``."""
     check_exportable(record, allow_unidentified, strict_form, strict_identifiability)
     of_name, keys = _MODELS[record.model.name]
-    c = coefficients(record, rho, eta_max)
+    c = coefficients(record, rho, eta_max, eta_min=eta_min)
     verd = record.verdicts or {}
     rs = structured_flag(record)
-    clamp_line = (
-        f"// clamp eta_max = {eta_max:.10g} Pa s (OpenFOAM {OPENFOAM_VERSION} form, "
-        f"{OPENFOAM_SRC}/{of_name})" if eta_max is not None else
-        f"// no clamp: {record.model.name} has no yield stress and its zero-shear plateau "
-        f"eta_0 is a fitted parameter, so nu0 below is the RECORD, not a regularisation "
-        f"(OpenFOAM {OPENFOAM_VERSION} form, {OPENFOAM_SRC}/{of_name})")
+    if record.model.name == "newtonian":
+        clamp_line = (
+            f"// no clamp: newtonian is a constant viscosity, so there is nothing to "
+            f"regularise and OpenFOAM's Newtonian has no limiter slot. NOTE the entry "
+            f"below is at the TOP LEVEL and there is deliberately no NewtonianCoeffs "
+            f"block: Newtonian.C:71 reads `nu` from viscosityProperties_ itself, the only "
+            f"model in {OPENFOAM_SRC} that does")
+    elif eta_max is not None:
+        clamp_line = (
+            f"// clamp eta_max = {eta_max:.10g} Pa s"
+            + (f", eta_min = {eta_min:.10g} Pa s (BOTH required: powerLaw reads nuMin and "
+               f"nuMax with readEntry and eta = k gd^(n-1) has no plateau at either end)"
+               if eta_min is not None else "")
+            + f" (OpenFOAM {OPENFOAM_VERSION} form, {OPENFOAM_SRC}/{of_name})")
+    else:
+        clamp_line = (
+            f"// no clamp: {record.model.name} has no yield stress and its zero-shear plateau "
+            f"eta_0 is a fitted parameter, so nu0 below is the RECORD, not a regularisation "
+            f"(OpenFOAM {OPENFOAM_VERSION} form, {OPENFOAM_SRC}/{of_name})")
     lines = [_HEADER,
              f"// biorheo export of record {record.id} ({record.fluid})",
              f"// model {record.model.name}; kinematic coefficients = dynamic / rho, rho = {rho:.10g} kg/m^3",
@@ -344,22 +560,28 @@ def export_transport_properties(record: FluidRecord, rho: float, eta_max: float 
              "// residual_structure: not flagged (or no sidecar).",
              "",
              f"transportModel  {of_name};",
-             "",
-             f"{of_name}Coeffs",
-             "{"]
-    lines += [f"    {k:<8}{c[k]:.17g};" for k in keys]
-    lines += ["}", "",
+             ""]
+    if record.model.name in _TOPLEVEL:
+        # Top level, no Coeffs block. See `_TOPLEVEL`: OpenFOAM would not read a
+        # NewtonianCoeffs block, it would stop looking for a top-level `nu`.
+        lines += [f"{k:<16}{c[k]:.17g};" for k in keys]
+    else:
+        lines += [f"{of_name}Coeffs", "{"]
+        lines += [f"    {k:<8}{c[k]:.17g};" for k in keys]
+        lines += ["}"]
+    lines += ["",
               "// ************************************************************************* //", ""]
     return "\n".join(lines)
 
 
 def write_transport_properties(record: FluidRecord, rho: float, eta_max: float | None,
                                path: str | Path, *,
+                               eta_min: float | None = None,
                                allow_unidentified: bool = False,
                                strict_form: bool = False,
                                strict_identifiability: bool = False) -> Path:
     path = Path(path)
-    path.write_text(export_transport_properties(record, rho, eta_max,
+    path.write_text(export_transport_properties(record, rho, eta_max, eta_min=eta_min,
                                                 allow_unidentified=allow_unidentified,
                                                 strict_form=strict_form,
                                                 strict_identifiability=strict_identifiability),
@@ -426,6 +648,32 @@ def parse_transport_properties(text: str, *, expect: str | None = None,
     if m is None:
         raise ValueError("no transportModel entry")
     of_name = m.group(1)
+    if of_name == "Newtonian":
+        # The one model with no Coeffs block (see `_TOPLEVEL`). A `NewtonianCoeffs` block
+        # is REFUSED rather than ignored: OpenFOAM would never read it, so a caller who
+        # wrote one believes a number reached the solver that did not -- the silent-drop
+        # class this bridge exists to prevent. `nu` has no default, so an absent and a
+        # malformed entry are the same error here and both raise.
+        if re.search(r"(?<![A-Za-z0-9_])NewtonianCoeffs\s*\{", text):
+            raise ValueError(
+                "this dictionary has a NewtonianCoeffs block. OpenFOAM's Newtonian reads "
+                "`nu` from the TOP LEVEL of transportProperties "
+                "(Newtonian.C:71; it is the only viscosityModel that does not use a "
+                "<Model>Coeffs sub-dictionary), so that block would be IGNORED, not read. "
+                "Move `nu` to the top level.")
+        top = re.sub(r"(?<![A-Za-z0-9_])FoamFile\s*\{[^}]*\}", "", text)
+        top = re.sub(r"(?<![A-Za-z0-9_])\w+\s*\{[^}]*\}", "", top)
+        entries = dict(_ENTRY.findall(top))
+        if "nu" not in entries:
+            raise ValueError(
+                "no top-level `nu` entry for transportModel Newtonian. It is required "
+                "(readEntry, Newtonian.C) and has no default, so an absent entry and a "
+                "malformed one (a dropped semicolon, a comma decimal) raise the same way "
+                f"here; the top-level entries parsed were {sorted(entries)}.")
+        if expect is not None and _MODELS[expect][0] != of_name:
+            raise ValueError(f"expected a {_MODELS[expect][0]} dictionary for model "
+                             f"'{expect}', found transportModel {of_name}")
+        return of_name, {"nu": float(entries["nu"])}
     block = re.search(r"(?<![A-Za-z0-9_])" + re.escape(of_name) + r"Coeffs\s*\{([^}]*)\}", text)
     if block is None:
         raise ValueError(f"no {of_name}Coeffs block")
@@ -481,10 +729,20 @@ def nu_openfoam(of_name: str, c: dict[str, float], sr) -> np.ndarray:
         # `a` absent means 2, exactly as OpenFOAM's getOrDefault does.
         a = c.get("a", _BIRDCARREAU_A_DEFAULT)
         return c["nuInf"] + (c["nu0"] - c["nuInf"]) * (1.0 + (c["k"] * sr) ** a) ** ((c["n"] - 1.0) / a)
+    if of_name == "Newtonian":
+        # calcNu() returns a uniform field of nu0_ (Newtonian.C:48-57).
+        return np.full(np.shape(sr), c["nu"], dtype=float)
+    if of_name == "powerLaw":
+        # max(nuMin_, min(nuMax_, k_*pow(max(1[s]*strainRate(), SMALL), n_.value() - 1)))
+        # SMALL is 1e-15, NOT VSMALL, and it floors the DIMENSIONLESS product `1[s]*sr`;
+        # in SI that is numerically `sr`. And OpenFOAM subtracts the 1 from `n` itself.
+        return np.maximum(c["nuMin"], np.minimum(
+            c["nuMax"], c["k"] * np.maximum(sr, SMALL) ** (c["n"] - 1.0)))
     raise NotImplementedError(of_name)
 
 
 def export_report(record: FluidRecord, rho: float, eta_max: float | None, gammadot, *,
+                  eta_min: float | None = None,
                   allow_unidentified: bool = False, strict_form: bool = False,
                   strict_identifiability: bool = False) -> dict:
     """Round trip at the rates ``gammadot`` (all inside the envelope): export, parse,
@@ -493,7 +751,7 @@ def export_report(record: FluidRecord, rho: float, eta_max: float | None, gammad
     the rates where it does (there the OpenFOAM law is ``eta_max`` by construction).
     With ``eta_max=None`` -- the only option for ``cross`` and ``carreau_yasuda`` -- no
     cap exists and ``cap_binds`` is False everywhere."""
-    text = export_transport_properties(record, rho, eta_max,
+    text = export_transport_properties(record, rho, eta_max, eta_min=eta_min,
                                        allow_unidentified=allow_unidentified,
                                        strict_form=strict_form,
                                        strict_identifiability=strict_identifiability)
@@ -501,14 +759,20 @@ def export_report(record: FluidRecord, rho: float, eta_max: float | None, gammad
     gd = np.asarray(gammadot, dtype=float)
     nu_of = nu_openfoam(of_name, c, gd)
     nu_rec = record.eta_at(gd) / rho
-    binds = (nu_rec > eta_max / rho) if eta_max is not None else np.zeros(gd.shape, dtype=bool)
+    cap = (nu_rec > eta_max / rho) if eta_max is not None else np.zeros(gd.shape, dtype=bool)
+    # Only `power_law` has a caller-set floor. Casson's nuMin is eta_c, which cannot bind
+    # (eta > eta_c at every finite rate), so `floor` stays all-False for every other
+    # family and `cap_binds` keeps the meaning it had before 2026-09-06 on all of them.
+    floor = (nu_rec < eta_min / rho) if eta_min is not None else np.zeros(gd.shape, dtype=bool)
+    binds = cap | floor
     rel = np.abs(nu_of - nu_rec) / nu_rec
     return {
         "transportModel": of_name, "coefficients": c, "text": text, "gammadot": gd,
-        "nu_openfoam": nu_of, "nu_record": nu_rec, "cap_binds": binds,
+        "nu_openfoam": nu_of, "nu_record": nu_rec, "cap_binds": cap, "floor_binds": floor,
         "max_rel_err_unbound": float(rel[~binds].max()) if (~binds).any() else float("nan"),
         "n_bound": int(binds.sum()),
-        "rate_where_cap_binds": float(gd[binds].max()) if binds.any() else None,
+        "rate_where_cap_binds": float(gd[cap].max()) if cap.any() else None,
+        "rate_where_floor_binds": float(gd[floor].min()) if floor.any() else None,
         # the two things the dictionary cannot enforce, carried so a caller can
         "envelope": (record.envelope.gammadot_min, record.envelope.gammadot_max),
         "residual_structure": structured_flag(record),

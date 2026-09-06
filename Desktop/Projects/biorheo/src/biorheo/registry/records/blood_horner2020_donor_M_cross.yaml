@@ -23,8 +23,8 @@ notes: >-
   used for this donor's Casson record blood_horner2020_donor_M. The source study publishes no cross
   table, so unlike the Casson record there is nothing here to reproduce and these numbers
   are biorheo's fit alone. This family fits the curve rmse 0.085 against Casson's
-  0.202, at the price of the verdicts in the sidecar. Not a licensed dataset:
-  for validation and demonstration only.
+  0.202, at the price of the verdicts in the sidecar.  Not a
+  licensed dataset: for validation and demonstration only.
 extra:
   donor: M
   sex: F

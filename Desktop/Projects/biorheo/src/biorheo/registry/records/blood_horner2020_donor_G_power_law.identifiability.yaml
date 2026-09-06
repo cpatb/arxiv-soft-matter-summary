@@ -1,0 +1,38 @@
+# written by biorheo.identify; do not edit by hand
+written_by: biorheo.identify
+written_on: '2026-09-06'
+record_id: blood_horner2020_donor_G_power_law
+model: power_law
+level: 0.95
+fit:
+  n_points: 16
+  rmse_log_eta: 0.11010982278835031
+  gammadot_min: 0.1
+  gammadot_max: 700.0
+residual_structure:
+  n: 16
+  n_runs: 4
+  expected_runs: 9.0
+  z: -2.5877458475338284
+  structured: true
+  signs: -+++++-------+++
+parameters:
+  k:
+    value: 0.011522924114691626
+    lo: 0.010630053070923125
+    hi: 0.20683542186412052
+    verdict: measurable
+    decades: 1.2890894836874316
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+  n:
+    value: 0.7753749814332844
+    lo: 0.7517525626619269
+    hi: 0.7989974002046419
+    verdict: measurable
+    decades: 0.02647044895050296
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+data_note: Horner 2020 steady shear, human donor G, 16 points; see data/horner2020/SOURCE.md

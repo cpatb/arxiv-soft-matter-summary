@@ -313,9 +313,13 @@ def test_strict_identifiability_refuses_bounded_only_and_is_off_by_default():
             refused_by_flag.append(rid)
             assert "bounded_only" in str(e) and "covariance row is NaN" in str(e)
 
-    # measured 2026-09-06 over the 75-record registry
-    assert len(default_ok) == 58, len(default_ok)
-    assert len(strict_ok) == 51, len(strict_ok)
+    # Re-measured 2026-09-06 over the 115-record registry (item 11 added 20 `newtonian`
+    # and 20 `power_law` blood records). Over the 75-record registry it was 58 / 51 / 7;
+    # all 40 new records are all-`measurable`, so only `default_ok` and `strict_ok` moved
+    # and the set the flag refuses is unchanged.
+    assert len(recs) == 115, len(recs)
+    assert len(default_ok) == 98, len(default_ok)
+    assert len(strict_ok) == 91, len(strict_ok)
     assert len(refused_by_flag) == 7, refused_by_flag
     # every record the flag adds must actually carry a bounded_only verdict, and none of
     # the ones it still accepts may

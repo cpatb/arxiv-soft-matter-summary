@@ -122,11 +122,14 @@ def test_rejects_bad_density_or_cap(records):
     rec = records["blood_horner2020_donor_A"]
     with pytest.raises(ValueError, match="rho"):
         coefficients(rec, 0.0, 1.0)
-    # `cross` used to be the unimplemented example here; it is implemented as of
-    # 2026-09-05 (NEXT_STEPS item 6), so the check moved to a family that still is not.
-    with pytest.raises(NotImplementedError, match="power_law"):
-        from biorheo.constitutive.gnf import POWER_LAW
-        coefficients(replace(rec, model=POWER_LAW), RHO, 1.0)
+    # `cross` used to be the unimplemented example here (implemented 2026-09-05, item 6),
+    # then `power_law` (implemented 2026-09-06, item 11). The only families left are the
+    # two structural ones, and they now raise the SPECIFIC ThixotropyNotRepresentable
+    # rather than a bare NotImplementedError -- it still subclasses NotImplementedError,
+    # which is what this line checks. `test_openfoam_export_null.py` grades the message.
+    from biorheo.constitutive.structural import STRUCTURAL_STEADY
+    with pytest.raises(NotImplementedError, match="structural_steady"):
+        coefficients(replace(rec, model=STRUCTURAL_STEADY), RHO, 1.0)
 
 
 @pytest.mark.parametrize("rid", ["carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A"])

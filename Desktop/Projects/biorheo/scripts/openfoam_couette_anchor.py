@@ -152,10 +152,41 @@ RECORD_IDS = ["carbopol_etd2020_0p1wt_30uL", "blood_horner2020_donor_A",
               # relative -- 1e5 times BAR_A2, so A2 can decide whether OpenFOAM honours
               # `a` at all). Both numbers are printed by the script.
               "blood_horner2020_donor_N_cross",
-              "blood_horner2020_donor_S_carreau_yasuda"]
+              "blood_horner2020_donor_S_carreau_yasuda",
+              # Added 2026-09-06 (NEXT_STEPS item 11, gate G11.7): the two NULL families.
+              # Donor A for both, because `blood_horner2020_donor_A` is already the Casson
+              # case above -- so these three cases are the SAME 16-point curve under three
+              # forms and their A2/A3 numbers are directly comparable. The item-6
+              # criterion (pick the record maximising the discriminating separation) does
+              # not apply here: G11.5a's separation is exactly rho - 1 for every donor and
+              # G11.5b's is exactly 1/gammadot_min - 1 = 9.0 for all 20, because both
+              # wrong maps are rate- or density-scalings rather than parameter errors.
+              "blood_horner2020_donor_A_newtonian",
+              "blood_horner2020_donor_A_power_law"]
 # The families whose `nu0` is a FITTED PARAMETER rather than a clamp; `eta_max` is None
-# for them and `clamped_frac` is meaningless, so it is not read.
+# for them and `clamped_frac` is meaningless, so it is not read. `newtonian` is NOT in
+# this tuple even though it also takes no `eta_max`: the tuple keys item 6's non-yield
+# analysis, and adding a family to it there would silently change what item 6 reports.
+# `_clamps_for` below is what decides the export arguments.
 NO_CLAMP_MODELS = ("cross", "carreau_yasuda")
+# item 11: `power_law` needs BOTH limits and `newtonian` takes neither. See
+# `data/openfoam/newtonian_powerlaw_prereg.md` §1.
+TAKES_NO_CLAMP = NO_CLAMP_MODELS + ("newtonian",)
+NEEDS_FLOOR = ("power_law",)
+CLAMP_DECADES = 10.0   # how far outside the envelope the cap and floor are put, so that
+                       # neither binds and A2/A3 grade the LAW rather than the clamp
+
+
+def _clamps_for(rec) -> tuple[float | None, float | None]:
+    """(eta_max, eta_min) for `rec`, each a factor CLAMP_DECADES clear of the record's
+    own viscosity range so neither can bind inside the envelope."""
+    if rec.model.name in TAKES_NO_CLAMP:
+        return None, None
+    gmin, gmax = rec.envelope.gammadot_min, rec.envelope.gammadot_max
+    eta_max = CLAMP_DECADES * float(rec.eta_at(np.array([gmin]))[0])
+    if rec.model.name not in NEEDS_FLOOR:
+        return eta_max, None
+    return eta_max, float(rec.eta_at(np.array([gmax]))[0]) / CLAMP_DECADES
 
 
 # --------------------------------------------------------------------------- case files
@@ -548,6 +579,71 @@ def newtonian_control() -> dict:
     return r
 
 
+def must_fail_case(name: str, transport_text: str, gd: float) -> dict:
+    """Build a case whose `transportProperties` is PREDICTED to be rejected by OpenFOAM,
+    run it, and report whether it was. Returns rc and the tail of whichever log exists.
+
+    This is how G11.3b and G11.4b decide a question about the C++ by RUNNING the solver
+    rather than by reading it -- the same discipline that settled item 6's `a` premise,
+    where reading the source alone had already produced one false conclusion."""
+    case = RUNS / name
+    build_case(case, transport_text, u0=gd * H)
+    try:
+        run_case(case)
+        rc, tail = 0, "(the run SUCCEEDED; the prediction is refuted)"
+    except RuntimeError as e:
+        rc, tail = 1, str(e)
+    return {"case": name, "rc": rc, "tail": tail[-1200:]}
+
+
+def item11_refusal_probes(recs: dict) -> dict:
+    """G11.3b and G11.4b of `data/openfoam/newtonian_powerlaw_prereg.md`.
+
+    Both are PREDICTIONS that a dictionary is illegal, and both are graded on `rc != 0`
+    plus, for G11.3b, the offending keyword appearing in OpenFOAM's own message. A run
+    that SUCCEEDS is recorded as a refuted premise, not worked around."""
+    out: dict = {"predicted": "both dictionaries are rejected by OpenFOAM (rc != 0)"}
+
+    pl = recs["blood_horner2020_donor_A_power_law"]
+    eta_max, eta_min = _clamps_for(pl)
+    text = export_transport_properties(pl, RHO, eta_max, eta_min=eta_min)
+    gd = float(np.sqrt(pl.envelope.gammadot_min * pl.envelope.gammadot_max))
+    # sanity: the unmodified dictionary must RUN, or "the broken one failed" says nothing
+    ok = must_fail_case("item11_powerlaw_control", text, gd)
+    stripped = "\n".join(ln for ln in text.splitlines()
+                         if not re.match(r"\s*nuMin\s", ln))
+    assert "nuMin" not in stripped.split("powerLawCoeffs")[-1], "nuMin was not removed"
+    broken = must_fail_case("item11_powerlaw_no_nuMin", stripped, gd)
+    out["G11_3b"] = {
+        "control_rc": ok["rc"], "control_tail": ok["tail"],
+        "rc": broken["rc"], "tail": broken["tail"],
+        "keyword_named": "nuMin" in broken["tail"],
+        "pass": bool(ok["rc"] == 0 and broken["rc"] != 0 and "nuMin" in broken["tail"]),
+        "claim": ("powerLaw's nuMin is REQUIRED, not optional like BirdCarreau's `a`: "
+                  "it is read with the dimensionedScalar(name, dims, dict) constructor "
+                  "and re-read with readEntry (powerLaw.C:90,120)."),
+    }
+
+    nw = recs["blood_horner2020_donor_A_newtonian"]
+    ntext = export_transport_properties(nw, RHO, None)
+    nu = parse_transport_properties(ntext)[1]["nu"]
+    moved = ntext.replace(f"nu              {nu:.17g};",
+                          "NewtonianCoeffs\n{\n" f"    nu      {nu:.17g};\n" "}")
+    assert "NewtonianCoeffs\n{" in moved, "the nu entry was not moved into a block"
+    nok = must_fail_case("item11_newtonian_control", ntext, gd)
+    nbad = must_fail_case("item11_newtonian_in_coeffs", moved, gd)
+    out["G11_4b"] = {
+        "control_rc": nok["rc"], "control_tail": nok["tail"],
+        "rc": nbad["rc"], "tail": nbad["tail"],
+        "pass": bool(nok["rc"] == 0 and nbad["rc"] != 0),
+        "claim": ("Newtonian reads `nu` from the TOP LEVEL of transportProperties "
+                  "(Newtonian.C:71) and is the only viscosityModel in that directory "
+                  "with no <Model>Coeffs sub-dictionary, so a NewtonianCoeffs block is "
+                  "not read -- it is a file OpenFOAM stops on."),
+    }
+    return out
+
+
 def diagnosis_section() -> list[str]:
     """The 'why A5 failed' table, rendered from `couette_diagnosis.json` (written by
     `openfoam_couette_diagnose.py`). Every number comes from that file; if it is missing
@@ -770,6 +866,59 @@ def g7_prime(recs: dict) -> dict | None:
             "splits_on_yield_term": not passing_yield}
 
 
+def item11_section(item11: dict) -> list[str]:
+    """The item-11 block: the two NULL families through the solver (G11.7) and the two
+    dictionaries predicted to be REJECTED by it (G11.3b, G11.4b)."""
+    pf = item11["per_family"]
+    out = ["## Item 11: the two families with no material parameter to speak of "
+           "(`newtonian`, `power_law`)", "",
+           "Both are NULL MODELS and are in the registry for that reason -- see "
+           "`scripts/records_from_horner.py`'s `EXTRA_FAMILIES` and "
+           "`data/openfoam/newtonian_powerlaw_prereg.md` §3. Records: "
+           + ", ".join(f"`{r}`" for r in item11["records"]) + ". They are the SAME 16-point "
+           "curve as the Casson record `blood_horner2020_donor_A` above, under two more "
+           "forms, so their columns are directly comparable with its.", "",
+           "| family | cases | worst err nu | worst err tau | worst profile | "
+           "worst wall imbal | verdict |", "|---|---|---|---|---|---|---|"]
+    for fam, f in pf.items():
+        out.append(f"| {fam} | {f['n_cases']} | {f['worst_err_nu']:.3e} | "
+                   f"{f['worst_err_tau']:.3e} | {f['worst_err_profile']:.3e} | "
+                   f"{f['worst_wall_imbalance']:.3e} | "
+                   f"{'PASS' if f['pass'] else 'FAILED'} |")
+    out += ["", f"Bars, unchanged from the rest of this page: A1' {BAR_A1P:g}, "
+            f"A2 {BAR_A2:g}, A3 {BAR_A3:g}. **G11.7 "
+            f"{'PASS' if item11['G11_7_pass'] else 'FAILED'}.** The per-family rows are "
+            "reported separately on purpose: A2 and A3 above are maxima over every case "
+            "on the page, and a maximum cannot say which family moved.", ""]
+
+    p = item11["refusal_probes"]
+    out += ["### Two dictionaries that OpenFOAM must REFUSE", "",
+            "Both are predictions about the C++ decided by RUNNING `simpleFoam`, not by "
+            "reading it -- item 6's premise about `BirdCarreau`'s `a` was false and was "
+            "settled the same way. Each is run beside an unmodified CONTROL, because "
+            "\"the broken one failed\" says nothing unless the intact one ran.", "",
+            "| gate | claim | control rc | broken rc | keyword named | verdict |",
+            "|---|---|---|---|---|---|"]
+    g3 = p["G11_3b"]
+    out.append(f"| G11.3b | `powerLaw` `nuMin` is REQUIRED | {g3['control_rc']} | "
+               f"{g3['rc']} | {g3['keyword_named']} | "
+               f"{'PASS' if g3['pass'] else 'FAILED'} |")
+    g4 = p["G11_4b"]
+    out.append(f"| G11.4b | `Newtonian` reads `nu` at the TOP LEVEL | "
+               f"{g4['control_rc']} | {g4['rc']} | n/a | "
+               f"{'PASS' if g4['pass'] else 'FAILED'} |")
+    out += ["", "G11.3b: " + g3["claim"], "", "G11.4b: " + g4["claim"], "",
+            "OpenFOAM's own message on the `nuMin`-less dictionary, tail:", "",
+            "```", g3["tail"][-700:].strip(), "```", "",
+            "and on the `NewtonianCoeffs` one:", "",
+            "```", g4["tail"][-700:].strip(), "```"]
+    if not (g3["pass"] and g4["pass"]):
+        out += ["", "**One of these predictions was REFUTED.** The premise it rests on is "
+                "wrong and is recorded here rather than worked around; see the JSON for "
+                "the full logs."]
+    return out
+
+
 def item6_section(item6: dict, nc_rows: list[dict]) -> list[str]:
     """The families with no yield stress: G3/G4/G7 of
     `data/openfoam/nonyield_bridge_prereg.md` (written before the code), plus G7', the
@@ -908,10 +1057,10 @@ def main() -> int:
     for rid in RECORD_IDS:
         rec = recs[rid]
         gmin, gmax = rec.envelope.gammadot_min, rec.envelope.gammadot_max
-        has_clamp = rec.model.name not in NO_CLAMP_MODELS
-        # cap far above the envelope for the yield families; the other two take none
-        eta_max = 10.0 * float(rec.eta_at(gmin)) if has_clamp else None
-        text = export_transport_properties(rec, RHO, eta_max)
+        has_clamp = rec.model.name not in TAKES_NO_CLAMP
+        # cap far above the envelope for the clamped families; the other three take none
+        eta_max, eta_min = _clamps_for(rec)
+        text = export_transport_properties(rec, RHO, eta_max, eta_min=eta_min)
         for k, gd in enumerate(np.geomspace(gmin, gmax, N_RATES)):
             eta = float(rec.eta_at(np.array([gd]))[0])
             rows.append(one_case(f"{rid}_g{k}", text, float(gd), eta, has_clamp=has_clamp)
@@ -994,6 +1143,33 @@ def main() -> int:
                  "G7prime is the matched-settings replacement."),
     }
 
+    # ---- item 11: the two NULL families (G11.7) and the two refusal probes
+    # A2/A3 are already taken over ALL rows including these, so the item-11 block reports
+    # the per-family worst separately -- a maximum over 44 rows cannot say which family
+    # moved, which is the byte-identity-on-an-extremal trap this repo has already hit.
+    item11 = {"records": [r for r in RECORD_IDS if recs[r].model.name in ("newtonian",
+                                                                          "power_law")],
+              "n_rates": N_RATES,
+              "per_family": {}}
+    for fam in ("newtonian", "power_law"):
+        frows = [r for r in rows if r.get("model") == fam]
+        item11["per_family"][fam] = {
+            "n_cases": len(frows),
+            "worst_err_nu": max((r["err_nu"] for r in frows), default=float("nan")),
+            "worst_err_tau": max((r["err_tau"] for r in frows), default=float("nan")),
+            "worst_err_profile": max((r["err_profile"] for r in frows), default=float("nan")),
+            "worst_wall_imbalance": max((r["wall_imbalance"] for r in frows),
+                                        default=float("nan")),
+            "cap_bound_fraction_final": [r["cap_bound_fraction_final"] for r in frows],
+            "bars": {"A1prime": BAR_A1P, "A2": BAR_A2, "A3": BAR_A3},
+        }
+        f = item11["per_family"][fam]
+        f["pass"] = bool(f["n_cases"] == N_RATES and f["worst_err_nu"] <= BAR_A2
+                         and f["worst_err_tau"] <= BAR_A3
+                         and f["worst_err_profile"] <= BAR_A1P)
+    item11["refusal_probes"] = item11_refusal_probes(recs)
+    item11["G11_7_pass"] = bool(all(v["pass"] for v in item11["per_family"].values()))
+
     verdict = {"A1_shear_uniformity": {"worst": a1, "bar": BAR_A1, "pass": a1 <= BAR_A1,
                                        "note": "reported only; A1' is the real test"},
                "A1prime_profile": {"worst": a1p, "bar": BAR_A1P, "pass": a1p <= BAR_A1P},
@@ -1012,7 +1188,8 @@ def main() -> int:
     payload = {"rho": RHO, "H": H, "NY": NY, "n_rates": N_RATES, "rows": rows,
                "relax_U": RELAX_U, "end_time": END_TIME, "windows": list(WINDOWS),
                "verdict": verdict, "openfoam": "v2606",
-               "item6_no_yield_stress": item6}
+               "item6_no_yield_stress": item6,
+               "item11_null_families": item11}
     (OUT / "couette_anchor.json").write_text(json.dumps(payload, indent=2), encoding="ascii")
 
     lines = ["# OpenFOAM plane-Couette anchor for the L3 bridge", "",
@@ -1082,7 +1259,8 @@ def main() -> int:
               "self-consistently wrong on every non-Newtonian case and A4 is the only "
               "row where the answer is known without OpenFOAM).",
               "",
-              ] + diagnosis_section() + [""] + item6_section(item6, nc_rows) + [""]
+              ] + diagnosis_section() + [""] + item6_section(item6, nc_rows) + [""] \
+              + item11_section(item11) + [""]
     (OUT / "couette_anchor.md").write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines[8:]))
     return 0 if all(v.get("pass") for v in verdict.values()) else 1
