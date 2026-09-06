@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import replace
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -303,6 +304,21 @@ def test_g11_6_the_refusal_is_explicit_and_says_the_true_reason(records):
         assert "silently wrong in every transient" in msg
         assert "lam = alpha_tr, m = 1" in msg
     assert issubclass(ThixotropyNotRepresentable, NotImplementedError)
+
+
+def test_the_gate_report_on_disk_matches_what_the_code_computes():
+    """`data/openfoam/newtonian_powerlaw_gates.md` is written by
+    `scripts/item11_gate_report.py`. This READS it and re-derives the numbers; it does not
+    re-run the script, so a failure here cannot overwrite the artifact it is checking --
+    three tests in this repo used to do exactly that."""
+    md = (Path(__file__).resolve().parents[1] / "data" / "openfoam"
+          / "newtonian_powerlaw_gates.md").read_text(encoding="utf-8")
+    # the verdicts, and the two constants the report identifies rather than just prints
+    assert md.count("| PASS |") == 6, md
+    assert "FAILED" not in md and "UNINFORMATIVE |" not in md
+    assert f"`rho - 1` = {RHO - 1.0:.6g}" in md
+    assert "115 records, of which 20 `newtonian` and 20 `power_law`" in md
+    assert f"{BAR_G111:g}" in md and f"{BAR_G116:g}" in md and f"{BAR_G115:g}" in md
 
 
 def test_the_exported_file_says_the_newtonian_layout_is_deliberate(records):
