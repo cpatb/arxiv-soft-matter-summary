@@ -19,46 +19,46 @@ residual_structure:
 parameters:
   eta_0:
     value: 0.09334170166549151
-    lo: 0.08492747601856798
-    hi: 269.92534776508444
+    lo: 0.08494829768705275
+    hi: 270.3166985253597
     verdict: measurable
-    decades: 3.502195452211639
+    decades: 3.502718194313933
     partner: null
     lo_at_bound: false
     hi_at_bound: false
   eta_inf:
     value: 0.0031481915432731984
-    lo: 0.002959519882614698
-    hi: 0.19846069092839203
+    lo: 0.00295953667245322
+    hi: 0.0033349788002383154
     verdict: measurable
-    decades: 1.8264532370007645
+    decades: 0.05186935173571893
     partner: null
     lo_at_bound: false
     hi_at_bound: false
   lam:
     value: 8.649289670322522
-    lo: 7.251938512076023
+    lo: 7.254662199177967
     hi: 1000000.0
     verdict: degenerate
-    decades: 5.139545886868214
+    decades: 5.139382804928309
     partner: eta_0
     lo_at_bound: false
     hi_at_bound: true
   a:
     value: 9.9999999999853
-    lo: 0.4190429687495263
+    lo: 0.42493595744701657
     hi: 10.0
     verdict: degenerate
-    decades: 1.377741442107631
+    decades: 1.3716765180041604
     partner: eta_0
     lo_at_bound: false
     hi_at_bound: true
   n:
     value: 0.29281266495968555
-    lo: 0.25853968562492874
-    hi: 0.3259361033559398
+    lo: 0.25854262835502856
+    hi: 0.3259317081346595
     verdict: measurable
-    decades: 0.10060525276261369
+    decades: 0.10059445313370868
     partner: null
     lo_at_bound: false
     hi_at_bound: false

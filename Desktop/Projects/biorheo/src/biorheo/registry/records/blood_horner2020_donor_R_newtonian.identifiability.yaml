@@ -19,10 +19,10 @@ residual_structure:
 parameters:
   mu:
     value: 0.01124501511802071
-    lo: 0.00657639934124617
-    hi: 0.20655751292172872
+    lo: 0.006576926016202511
+    hi: 0.019226362692136935
     verdict: measurable
-    decades: 1.4970528186188576
+    decades: 0.46587417420970834
     partner: null
     lo_at_bound: false
     hi_at_bound: false

@@ -19,19 +19,19 @@ residual_structure:
 parameters:
   tau_y:
     value: 0.005634345022478146
-    lo: 0.004355951876547184
-    hi: 0.025165593922020134
+    lo: 0.004356217082091271
+    hi: 0.0071616813127190655
     verdict: measurable
-    decades: 0.7617241113107208
+    decades: 0.215905477765652
     partner: null
     lo_at_bound: false
     hi_at_bound: false
   eta_c:
     value: 0.004457419642848317
-    lo: 0.0038487521914334264
-    hi: 0.19976991877225853
+    lo: 0.0038488424253825633
+    hi: 0.0051435533948331474
     verdict: measurable
-    decades: 1.7152101438318925
+    decades: 0.12593312146873528
     partner: null
     lo_at_bound: false
     hi_at_bound: false

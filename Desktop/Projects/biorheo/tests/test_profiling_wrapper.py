@@ -1,0 +1,276 @@
+"""Tests for the corrected profile-likelihood interval (NEXT_STEPS item 13).
+
+Three things are pinned here and they are different in kind:
+
+1. **The coupling to `dst_fit`.** The wrapper imports a PRIVATE name so that both
+   routines re-minimise the nuisance parameters identically. A private name can move
+   without warning, and a silent fallback to a local copy of the objective is how two
+   implementations drift apart, so its presence and contract are asserted.
+2. **The anchor.** `newtonian` has a closed-form profile interval that passes through
+   neither the outward walk nor the root finder. This is the only test here that can
+   fail for a reason the module's own self-check would not already catch.
+3. **The defect, as a negative control.** `dst_fit`'s endpoint is asserted to sit ON the
+   bisection grid and to be far past `f_crit`. If that ever stops being true the wrapper
+   has become unnecessary, which is worth failing a test over rather than discovering by
+   reading.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import numpy as np
+import pytest
+from dst_fit.fitting import fit_model
+from dst_fit.profiling import profile_likelihood
+from scipy.stats import f as f_dist
+
+from biorheo.constitutive import get_model
+from biorheo.identify import verdict_for
+from biorheo.identify.profiling import (
+    ProfileInterval,
+    newtonian_closed_form,
+    profile_interval,
+    profile_statistic,
+)
+
+REPO = Path(__file__).resolve().parent.parent
+GATES = REPO / "data" / "profile_interval_gates.json"
+DIAG = REPO / "data" / "profile_interval_diagnosis.json"
+
+# dst_fit.profiling: step floor span/5000, then _REFINEMENTS = 10 bisections
+GRID_DIVISOR = 5000.0 * 1024
+
+
+def _curve(model_name: str, params: tuple[float, ...], n: int = 24, noise: float = 0.05,
+           seed: int = 12345) -> tuple[np.ndarray, np.ndarray]:
+    """A synthetic rate curve with multiplicative log-normal noise.
+
+    Noise is required: `profile_interval` refuses a curve whose rmse is at the level of
+    float64 rounding, because a profile against no residual scale is a statement about
+    arithmetic precision rather than about data.
+    """
+    model = get_model(model_name)
+    gd = np.logspace(-1, 2.5, n)
+    rng = np.random.default_rng(seed)
+    eta = np.asarray(model(gd, *params), dtype=float)
+    return gd, eta * np.exp(rng.normal(0.0, noise, size=gd.shape))
+
+
+def _fit(model, gd, eta, seed: int = 0):
+    return fit_model(model, gd, eta, n_starts=8, seed=seed, start=model.guess(gd, eta))
+
+
+# --------------------------------------------------------------------------------------
+# 1. the coupling to dst_fit
+# --------------------------------------------------------------------------------------
+
+def test_dst_fit_private_nuisance_minimiser_is_present_and_has_its_contract():
+    """The wrapper depends on `dst_fit.profiling._nuisance_minimiser(model, x, log_eta, i)`
+    returning a callable `(value, warm) -> (ssr, params)`. Asserted rather than assumed:
+    if dst_fit renames it the import fails loudly at import time, and if it changes SHAPE
+    this test says so."""
+    from dst_fit.profiling import _nuisance_minimiser
+
+    model = get_model("casson")
+    gd, eta = _curve("casson", (0.01, 0.004))
+    run = _nuisance_minimiser(model, gd, np.log(eta), 0)
+    ssr, params = run(0.01, np.array([0.01, 0.004]))
+    assert isinstance(ssr, float)
+    assert np.asarray(params).shape == (model.n_params,)
+    assert ssr >= 0.0
+
+
+# --------------------------------------------------------------------------------------
+# 2. the anchor: a closed form that uses none of the module's machinery
+# --------------------------------------------------------------------------------------
+
+def test_newtonian_closed_form_matches_the_walk_and_root_finder():
+    """For `eta = eta_0` with log-space residuals the profile is exactly
+    `SSR(u) - SSR_min = n (u - ybar)^2`, so `F = f_crit` at `u = ybar +/- s sqrt(f_crit/n)`.
+    Nothing in that derivation goes through the outward walk or Brent."""
+    model = get_model("newtonian")
+    gd, eta = _curve("newtonian", (0.004,), n=30, noise=0.2)
+    fit = _fit(model, gd, eta)
+    got = profile_interval(model, gd, eta, model.param_names[0], fit=fit)
+    best, lo, hi = newtonian_closed_form(eta)
+
+    assert got.best == pytest.approx(best, rel=1e-8)
+    assert got.lower == pytest.approx(lo, rel=1e-6)
+    assert got.upper == pytest.approx(hi, rel=1e-6)
+    assert not got.lower_at_bound and not got.upper_at_bound
+
+
+def test_newtonian_closed_form_is_not_a_restatement_of_the_wald_interval():
+    """A discriminating negative case. If the closed form happened to equal the Wald
+    interval it would anchor nothing, because the Wald error is what the walk starts
+    from. The two must differ: the profile of a log-space location fit is symmetric in
+    `log eta` and therefore ASYMMETRIC in `eta`."""
+    _, eta = _curve("newtonian", (0.004,), n=30, noise=0.2)
+    best, lo, hi = newtonian_closed_form(eta)
+    assert (hi - best) / (best - lo) > 1.05
+
+
+def test_closed_form_refuses_too_few_points():
+    with pytest.raises(ValueError, match="at least 2 points"):
+        newtonian_closed_form(np.array([1.0]))
+
+
+# --------------------------------------------------------------------------------------
+# 3. the defect, as a negative control on dst_fit
+# --------------------------------------------------------------------------------------
+
+def test_dst_fit_endpoint_is_a_bisection_grid_point_and_is_far_past_f_crit():
+    """The reason this module exists, asserted rather than described.
+
+    `dst_fit` sizes its step floor as `span/5000` from the parameter's BOX bound and then
+    bisects 10 times, so a crossing found on the first step lands on
+    `best + m * span / 5.12e6` for an integer `m`. The endpoint is then not a confidence
+    limit: `F` there is orders of magnitude past `f_crit`.
+    """
+    model = get_model("casson")
+    gd, eta = _curve("casson", (0.01, 0.004))
+    fit = _fit(model, gd, eta)
+    old = profile_likelihood(model, gd, eta, "eta_c", fit=fit, seed=0)
+
+    hi_b = float(model.bounds[1][model.param_names.index("eta_c")])
+    span = abs(hi_b - old.best)
+    m = (old.upper - old.best) * GRID_DIVISOR / span
+    assert abs(m - round(m)) < 1e-6, f"grid index {m} is not an integer"
+
+    f_there, f_crit = profile_statistic(model, gd, eta, "eta_c", old.upper, fit=fit)
+    assert f_there > 10 * f_crit, f"F = {f_there} against f_crit = {f_crit}"
+
+
+def test_the_wrapper_endpoint_is_the_crossing_where_dst_fit_s_is_not():
+    """Same curve, same fit, same nuisance minimiser: only the walk differs."""
+    model = get_model("casson")
+    gd, eta = _curve("casson", (0.01, 0.004))
+    fit = _fit(model, gd, eta)
+    new = profile_interval(model, gd, eta, "eta_c", fit=fit)
+    old = profile_likelihood(model, gd, eta, "eta_c", fit=fit, seed=0)
+
+    assert new.crossing_error() < 1e-2
+    assert new.upper < old.upper
+    f_there, f_crit = profile_statistic(model, gd, eta, "eta_c", new.upper, fit=fit)
+    assert f_there == pytest.approx(f_crit, rel=1e-2)
+
+
+# --------------------------------------------------------------------------------------
+# the object's own contract
+# --------------------------------------------------------------------------------------
+
+def test_profile_statistic_is_zero_at_the_best_fit():
+    model = get_model("casson")
+    gd, eta = _curve("casson", (0.01, 0.004))
+    fit = _fit(model, gd, eta)
+    f_at, _ = profile_statistic(model, gd, eta, "eta_c", float(fit.params[1]), fit=fit)
+    assert abs(f_at) < 1e-6
+
+
+def test_f_crit_is_the_F_distribution_critical_value_and_not_a_chi2_one():
+    """A profile interval quoted against the wrong reference distribution is wrong by a
+    fixed factor, which no self-check inside the module could see."""
+    model = get_model("casson")
+    gd, eta = _curve("casson", (0.01, 0.004))
+    fit = _fit(model, gd, eta)
+    p = profile_interval(model, gd, eta, "eta_c", fit=fit)
+    assert p.f_crit == pytest.approx(f_dist.ppf(0.95, 1, gd.size - model.n_params))
+    assert p.n_points == gd.size and p.n_params == model.n_params
+
+
+def test_unknown_parameter_name_raises():
+    model = get_model("casson")
+    gd, eta = _curve("casson", (0.01, 0.004))
+    fit = _fit(model, gd, eta)
+    with pytest.raises(ValueError, match="has no parameter"):
+        profile_interval(model, gd, eta, "not_a_parameter", fit=fit)
+    with pytest.raises(ValueError, match="has no parameter"):
+        profile_statistic(model, gd, eta, "not_a_parameter", 1.0, fit=fit)
+
+
+def test_a_noise_free_curve_is_refused_rather_than_given_an_interval():
+    """`rmse` at the level of float64 rounding leaves no residual scale, so an interval
+    would describe arithmetic precision. dst_fit refuses this and so does the wrapper."""
+    model = get_model("casson")
+    gd = np.logspace(-1, 2.5, 24)
+    eta = np.asarray(model(gd, 0.01, 0.004), dtype=float)
+    fit = _fit(model, gd, eta)
+    with pytest.raises(ValueError, match="float64 rounding"):
+        profile_interval(model, gd, eta, "eta_c", fit=fit)
+
+
+def test_verdict_for_accepts_a_ProfileInterval():
+    """`verdict_for` is typed for either object; a shim between them would be a place for
+    the two to disagree."""
+    model = get_model("casson")
+    gd, eta = _curve("casson", (0.01, 0.004))
+    fit = _fit(model, gd, eta)
+    p = profile_interval(model, gd, eta, "eta_c", fit=fit)
+    verdict, partner = verdict_for(p, fit.corr[1], 1, model.param_names)
+    assert verdict in ("measurable", "bounded_only", "degenerate", "not_identifiable")
+
+
+def test_an_unverified_end_is_reported_open_and_carries_what_was_rejected():
+    """Constructed, not sampled: an end rejected as a discontinuity must be OPEN (so no
+    downstream reader quotes it) and must still carry the value and F that were rejected
+    (so the rejection is auditable)."""
+    p = ProfileInterval(
+        param="x", best=1.0, lower=0.5, upper=1e6, lower_at_bound=False,
+        upper_at_bound=True, wald_stderr=0.1, f_crit=4.0, n_points=16, n_params=2,
+        bounds=(0.0, 1e6), f_at_lower=4.0, f_at_upper=0.2, step_rule="wald", n_evals=10,
+        upper_unverified=(123.0, 0.24),
+    )
+    assert not p.verified
+    assert p.upper_at_bound and p.upper == 1e6
+    assert p.upper_unverified == (123.0, 0.24)
+    # the rejected end is excluded from crossing_error and reported by rejected_error
+    assert p.crossing_error() == pytest.approx(0.0)
+    assert p.rejected_error() == pytest.approx(abs(0.24 - 4.0) / 4.0)
+
+
+# --------------------------------------------------------------------------------------
+# the committed artifacts
+# --------------------------------------------------------------------------------------
+
+def test_gate_artifact_records_all_gates_passing():
+    assert GATES.exists(), "run scripts/profile_interval_gates.py"
+    g = json.loads(GATES.read_text(encoding="utf-8"))["verdict"]
+    for gid in ("G13.2", "G13.3", "G13.4", "G13.5", "G13.8"):
+        assert g[gid]["pass"], f"{gid} is recorded as failing: {g[gid]}"
+
+
+def test_gate_artifact_numbers_are_the_ones_quoted_in_prose():
+    """Every number in a `.md` under `data/` is printed by a script; these are the ones
+    the Status card and NEXT_STEPS quote, so they are pinned rather than re-derived."""
+    g = json.loads(GATES.read_text(encoding="utf-8"))["verdict"]
+    assert g["G13.2"]["n"] == 70
+    assert g["G13.2"]["rate"] == 1.0
+    assert g["G13.2"]["median_ratio"] == pytest.approx(710.559, rel=1e-3)
+    assert g["G13.2"]["worst_ratio"] == pytest.approx(8130.12, rel=1e-3)
+    assert g["G13.3"]["worst_crossing_error"] < 1e-3
+    assert g["G13.4"]["worst_rel"] < 1e-8
+    assert g["G13.5"]["max_old_over_new"] == pytest.approx(1227.39, rel=1e-3)
+
+
+def test_diagnosis_artifact_counts_the_grid_points():
+    assert DIAG.exists(), "run scripts/profile_interval_diagnosis.py"
+    s = json.loads(DIAG.read_text(encoding="utf-8"))["summary"]
+    # item 13 as written in NEXT_STEPS said 117 of 296 and flagged itself conservative;
+    # reading each model's own declared bound gives these. Pinned so the correction to
+    # the item's own numbers cannot quietly revert.
+    assert s["n_closed_upper"] == 296
+    assert s["n_upper_on_grid"] == 203
+    assert s["worst"]["delta_over_value"] > 1000
+
+
+def test_every_registry_value_lies_inside_its_corrected_interval():
+    """G13.7. Narrowing every interval can only make containment harder, and the Carbopol
+    records were the pre-registered risk because their shipped values come from a
+    different fitter. `load_all` enforces it; this asserts the population is the whole
+    registry and not an empty set."""
+    from biorheo.registry import load_all
+
+    recs = load_all()
+    assert len(recs) >= 115

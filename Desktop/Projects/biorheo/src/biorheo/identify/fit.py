@@ -99,9 +99,10 @@ from dataclasses import dataclass
 
 import numpy as np
 from dst_fit import FitResult, fit_model
-from dst_fit.profiling import Profile, profile_likelihood
+from dst_fit.profiling import Profile
 
 from ..constitutive import RateModel
+from .profiling import ProfileInterval, profile_interval
 from ..registry.schema import Envelope
 
 __all__ = ["VERDICTS", "ParamEstimate", "IdentifiedModel", "ResidualStructure",
@@ -250,7 +251,7 @@ def null_direction(model: RateModel, gd: np.ndarray, params: np.ndarray
     return float(s[-1] / s[0]) if s[0] > 0 else 0.0, vt[-1]
 
 
-def verdict_for(profile: Profile, corr_row: np.ndarray, index: int,
+def verdict_for(profile: Profile | ProfileInterval, corr_row: np.ndarray, index: int,
                 param_names: tuple[str, ...], *, cond: float = np.inf,
                 null_vec: np.ndarray | None = None) -> tuple[str, str | None]:
     """Apply the rules in the module docstring to one parameter's profile."""
@@ -342,7 +343,12 @@ def fit_rate_curve(model: RateModel, gammadot, eta, *, level: float = 0.95,
     cond, null_vec = null_direction(model, gd, np.asarray(fit.params, dtype=float))
     params: dict[str, ParamEstimate] = {}
     for i, name in enumerate(model.param_names):
-        prof = profile_likelihood(model, gd, et, name, level=level, fit=fit, seed=seed)
+        # NOT dst_fit's profile_likelihood: its outward step and its ten bisections are
+        # both sized from the parameter's declared BOX BOUND, so 203 of the registry's
+        # 296 closed upper ends were bisection-grid points rather than F-crossings
+        # (NEXT_STEPS item 13; gate in data/profile_interval_prereg.md). The wrapper uses
+        # dst_fit's own nuisance minimiser, so only the WALK differs.
+        prof = profile_interval(model, gd, et, name, level=level, fit=fit)
         verdict, partner = verdict_for(prof, fit.corr[i], i, model.param_names,
                                        cond=cond, null_vec=null_vec)
         params[name] = ParamEstimate(

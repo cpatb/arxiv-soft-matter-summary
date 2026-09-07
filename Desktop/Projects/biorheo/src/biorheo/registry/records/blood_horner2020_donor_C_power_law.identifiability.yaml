@@ -19,19 +19,19 @@ residual_structure:
 parameters:
   k:
     value: 0.024454001274362574
-    lo: 0.01984073736366799
-    hi: 0.21976649649819047
+    lo: 0.01984196087521372
+    hi: 0.030138058617337992
     verdict: measurable
-    decades: 1.0444036764504414
+    decades: 0.181530684282286
     partner: null
     lo_at_bound: false
     hi_at_bound: false
   n:
     value: 0.6100294445371216
-    lo: 0.5488010382837906
-    hi: 0.6712578507904526
+    lo: 0.5488042022608238
+    hi: 0.6712546868134198
     verdict: measurable
-    decades: 0.08747445374258622
+    decades: 0.0874699028781752
     partner: null
     lo_at_bound: false
     hi_at_bound: false

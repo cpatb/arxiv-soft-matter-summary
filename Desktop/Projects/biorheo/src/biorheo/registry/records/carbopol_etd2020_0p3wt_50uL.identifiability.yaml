@@ -1,6 +1,6 @@
 # written by biorheo.identify; do not edit by hand
 written_by: biorheo.identify
-written_on: '2026-09-05'
+written_on: '2026-09-06'
 record_id: carbopol_etd2020_0p3wt_50uL
 model: herschel_bulkley
 level: 0.95
@@ -19,28 +19,28 @@ residual_structure:
 parameters:
   tau_y:
     value: 39.09690267297421
-    lo: 38.821403417425685
-    hi: 39.37023326738096
+    lo: 38.82142037371114
+    hi: 39.36940559302559
     verdict: measurable
-    decades: 0.006096756632158559
+    decades: 0.0060874367404463
     partner: null
     lo_at_bound: false
     hi_at_bound: false
   k:
     value: 15.893435078844456
-    lo: 15.477867646593662
-    hi: 16.479363266284842
+    lo: 15.477908402364404
+    hi: 16.31603288871526
     verdict: measurable
-    decades: 0.02722929868079389
+    decades: 0.022902299872194276
     partner: null
     lo_at_bound: false
     hi_at_bound: false
   n:
     value: 0.39778110841364195
-    lo: 0.3916694586405711
-    hi: 0.403946321824436
+    lo: 0.39167086571409826
+    hi: 0.4039446772712987
     verdict: measurable
-    decades: 0.013403950250322752
+    decades: 0.013400621938411465
     partner: null
     lo_at_bound: false
     hi_at_bound: false
