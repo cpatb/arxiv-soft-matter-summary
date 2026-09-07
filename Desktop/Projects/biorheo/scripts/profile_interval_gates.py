@@ -158,6 +158,7 @@ def main() -> int:
                 "lo_unverified": list(new.lower_unverified or ()),
                 "hi_unverified": list(new.upper_unverified or ()),
                 "n_false_crossings": len(new.false_crossings),
+                "worst_negative_f": new.worst_negative_f,
                 "lo_at_bound": new.lower_at_bound, "hi_at_bound": new.upper_at_bound,
                 "step_rule": new.step_rule, "n_evals": new.n_evals,
             })
@@ -183,6 +184,11 @@ def main() -> int:
     # REFUSED to close, which is the number a loosened bar would have hidden.
     rejected = [r for r in g133_rows if not r["verified"]]
     n_false = sum(r["n_false_crossings"] for r in g133_rows)
+    # A negative F means the nuisance re-minimisation beat the fit the interval is
+    # centred on -- the reported optimum was not the optimum. Reported over the whole
+    # registry because it is a check on the FITS, which nothing else here performs.
+    worst_neg = min((r["worst_negative_f"] for r in g133_rows), default=0.0)
+    n_neg = sum(1 for r in g133_rows if r["worst_negative_f"] < -1e-6)
     n135 = len(g135_rows)
     narrowed = [r for r in g135_rows if r["narrowed"]]
     g135_rate = len(narrowed) / n135 if n135 else float("nan")
@@ -241,6 +247,11 @@ def main() -> int:
                   "median_old_over_new": float(np.median(
                       [r["old_over_new"] for r in g135_rows
                        if np.isfinite(r["old_over_new"])])) if g135_rows else float("nan")},
+        "fit_quality_scan": {"worst_negative_f": worst_neg,
+                             "n_profiles_beating_their_own_fit": n_neg,
+                             "n": len(g133_rows), "pass": True,
+                             "note": "not a pre-registered gate; a diagnostic the "
+                                     "corrected profile makes available for free"},
         "G13.8": {"pass": g138, "dst_fit_porcelain": porcelain, "figure_md5": fig_md5},
     }
     all_pass = all(v["pass"] for v in verdict.values())
@@ -315,6 +326,18 @@ def main() -> int:
         "a root finder returns a number from it; that number is a discontinuity, not a",
         "confidence limit. Both records already carry `degenerate` / `not_identifiable`",
         "verdicts, which is the layer that was meant to catch exactly this.",
+        "",
+        "## A free by-product: did any profile beat its own fit?",
+        "",
+        "`F < 0` anywhere on a profile means the nuisance re-minimisation found a LOWER",
+        "sum of squares than the fit the interval is centred on -- the reported optimum",
+        "was not the optimum, and the interval is then drawn around the wrong point. The",
+        "corrected walk evaluates the profile densely enough to notice, which the old one",
+        "could not, so this is a check on the FITS that nothing else here performs.",
+        "",
+        f"Over {len(g133_rows)} profiles: **{n_neg}** went below zero by more than 1e-6,",
+        f"worst `F` = **{worst_neg:.3e}**. It is not a pre-registered gate and is reported",
+        "as a diagnostic.",
         "",
         "## What G13.4 says, and why it is the load-bearing one",
         "",

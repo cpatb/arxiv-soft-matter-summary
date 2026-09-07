@@ -63,7 +63,7 @@ import numpy as np
 from scipy.optimize import brentq
 from scipy.stats import f as f_dist
 
-from dst_fit.fitting import FitResult
+from dst_fit.fitting import _PENALTY, FitResult
 from dst_fit.models import Model
 
 # A private name from dst_fit, imported deliberately: using the SAME nuisance minimiser is
@@ -133,6 +133,12 @@ class ProfileInterval:
     f_at_upper: float
     step_rule: str
     n_evals: int
+    # How far below zero the statistic went. F < 0 means the nuisance re-minimisation
+    # found a LOWER SSR than the fit this interval is centred on, i.e. the reported
+    # optimum is not the optimum and the interval is drawn around the wrong point.
+    # Recorded rather than raised: it is a statement about the FIT, and the caller who
+    # owns the fit is the one who can act on it.
+    worst_negative_f: float = 0.0
     # values where a warm-started nuisance solve claimed F >= f_crit and a second
     # start refuted it; a nonzero count means multiple local optima along the profile
     false_crossings: tuple[float, ...] = ()
@@ -224,7 +230,10 @@ def _direct_ssr(model: Model, x: np.ndarray, log_eta: np.ndarray):
         p[0] = value
         with np.errstate(all="ignore"):
             pred = np.asarray(model(x, *p), dtype=float)
-        out = np.full(pred.shape, 25.0)  # dst_fit.fitting._PENALTY
+        # dst_fit.fitting._PENALTY, imported rather than copied: a residual penalty
+        # that drifts between the two would make the one-parameter path disagree with
+        # the nuisance path on exactly the models where predictions go non-positive.
+        out = np.full(pred.shape, _PENALTY)
         ok = np.isfinite(pred) & (pred > 0)
         out[ok] = np.log(pred[ok]) - log_eta[ok]
         return float(out @ out), p
@@ -273,7 +282,8 @@ def profile_interval(
         raise ValueError(
             f"profile_interval: rmse in log viscosity is {rmse:.2e}, at the level of "
             "float64 rounding. There is no residual scale to compare the profile "
-            "against, so the interval would be a statement about arithmetic precision."
+            "against, so the interval would be a statement about arithmetic precision. "
+            "This is a synthetic noise-free curve, not a measurement."
         )
 
     minimise = (_direct_ssr(model, x, log_eta) if k == 1
@@ -434,6 +444,7 @@ def profile_interval(
         wald_stderr=wald, f_crit=f_crit, n_points=n, n_params=k,
         bounds=(lo_b, hi_b), f_at_lower=float(f_dn), f_at_upper=float(f_up),
         step_rule=step_rule, n_evals=n_evals,
+        worst_negative_f=float(min(0.0, stats.min())) if stats.size else 0.0,
         false_crossings=tuple(false_crossings),
         lower_unverified=dn_unver, upper_unverified=up_unver,
         values=values, stats=stats,

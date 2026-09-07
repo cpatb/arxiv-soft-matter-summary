@@ -48,6 +48,18 @@ a root finder returns a number from it; that number is a discontinuity, not a
 confidence limit. Both records already carry `degenerate` / `not_identifiable`
 verdicts, which is the layer that was meant to catch exactly this.
 
+## A free by-product: did any profile beat its own fit?
+
+`F < 0` anywhere on a profile means the nuisance re-minimisation found a LOWER
+sum of squares than the fit the interval is centred on -- the reported optimum
+was not the optimum, and the interval is then drawn around the wrong point. The
+corrected walk evaluates the profile densely enough to notice, which the old one
+could not, so this is a check on the FITS that nothing else here performs.
+
+Over 325 profiles: **0** went below zero by more than 1e-6,
+worst `F` = **-2.348e-09**. It is not a pre-registered gate and is reported
+as a diagnostic.
+
 ## What G13.4 says, and why it is the load-bearing one
 
 G13.3 grades this module with this module's own machinery: it re-evaluates the
