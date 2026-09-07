@@ -170,6 +170,28 @@ the narrower reading. The standard could not be checked offline, so the section 
 rebuilt on the `R^-4` scaling, which needs no standard; the retraction, both readings and
 both verdicts are on the page.
 
+## The needle study carries uncertainty now, and it cannot rank patients
+
+Phase 0's own exit gate asks this package for "full UQ from the L2 posterior". Pushing
+each Casson parameter through its corrected 95 % profile interval gives a plunger-force
+hull a median **29.1 %** of the force wide (covariance-sampled joint interval: 25.2 %),
+against a donor-to-donor spread of 128 % and a family-choice effect of 12.5 %.
+
+The useful question is not whether 29 % is smaller than 128 %. It is whether two given
+patients can be told apart, and **they mostly cannot**: only **36 of 190** donor pairs
+have disjoint intervals, and ranked by force two donors must be **17 places apart out of
+20** to be reliably separated. The extremes are distinguishable; the middle of the
+distribution is not.
+
+That distinction cost a sentence. The page had said *"which patient the blood came from
+still matters more than which family was fitted"* — true as a comparison of a range with
+an effect size, and not a licence for the per-patient reading it invites. The range
+comparison is kept, the pairwise one is withdrawn on the page with the old wording
+quoted, and a test asserts the two sections cannot drift apart again.
+
+`case_studies/blood_injectability/uq_prereg.md` (gate, committed before the code) and
+`uq.md`.
+
 ## Every confidence interval in the registry was rebuilt on 2026-09-06
 
 `dst_fit.profiling` sizes both its outward step floor and its ten bisections from a
