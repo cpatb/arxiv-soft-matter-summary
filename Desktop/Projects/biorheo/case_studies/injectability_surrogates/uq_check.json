@@ -1,0 +1,233 @@
+{
+  "verdict": {
+    "G15.1": {
+      "pass": true,
+      "worst_interval_rel_move": 0.029449202792812223,
+      "bar": 0.01,
+      "note": "FAIL means item 13 did not reach this study"
+    },
+    "G15.2": {
+      "pass": true,
+      "n_narrowed": 2,
+      "n": 2,
+      "bar": 2
+    },
+    "G15.3": {
+      "pass": true,
+      "n_open_ends": 0,
+      "open": []
+    },
+    "G15.4": {
+      "flipped": [],
+      "ratios": {
+        "carbopol_etd2020_0p5wt_50uL": {
+          "old": 7.535026457495954,
+          "new": 7.533364336443327
+        },
+        "carbopol_etd2020_0p1wt_40uL": {
+          "old": 2.2638082305324283,
+          "new": 2.26356529803948
+        }
+      }
+    }
+  },
+  "gels": [
+    {
+      "record": "carbopol_etd2020_0p5wt_50uL",
+      "force_N": 20.240483680646864,
+      "rmse_log": 0.003509700611480075,
+      "hull_old": [
+        19.713314216941455,
+        20.783861207834484
+      ],
+      "hull_new": [
+        19.7133987076456,
+        20.783709550901797
+      ],
+      "half_old_pct": 2.6445686965392095,
+      "half_new_pct": 2.6439853418117334,
+      "hull_rel_move": 7.296860346119831e-06,
+      "narrowed": true,
+      "widest_parameter": "n",
+      "per_param_force_span": {
+        "tau_y": [
+          20.239545003280753,
+          20.241419466200146
+        ],
+        "k": [
+          20.043101824429854,
+          20.439100758702498
+        ],
+        "n": [
+          19.7133987076456,
+          20.783709550901797
+        ]
+      },
+      "ratio_old": 7.535026457495954,
+      "ratio_new": 7.533364336443327
+    },
+    {
+      "record": "carbopol_etd2020_0p1wt_40uL",
+      "force_N": 78.54502137868273,
+      "rmse_log": 0.16581667541935083,
+      "hull_old": [
+        54.80127898666806,
+        113.76929224881243
+      ],
+      "hull_new": [
+        54.80572462879673,
+        113.76740994925737
+      ],
+      "half_old_pct": 37.53771545738506,
+      "half_new_pct": 37.53368723155186,
+      "hull_rel_move": 8.112296301978673e-05,
+      "narrowed": true,
+      "widest_parameter": "n",
+      "per_param_force_span": {
+        "tau_y": [
+          78.54400710344301,
+          78.54607925645628
+        ],
+        "k": [
+          71.217494028208,
+          86.24690365569222
+        ],
+        "n": [
+          54.80572462879673,
+          113.76740994925737
+        ]
+      },
+      "ratio_old": 2.2638082305324283,
+      "ratio_new": 2.26356529803948
+    }
+  ],
+  "parameters": [
+    {
+      "record": "carbopol_etd2020_0p5wt_50uL",
+      "param": "tau_y",
+      "value": 41.11135965856218,
+      "old_lo": 41.019403065523875,
+      "old_hi": 41.20897576075001,
+      "new_lo": 41.01942391215761,
+      "new_hi": 41.203012499444526,
+      "old_at_bound": [
+        false,
+        false
+      ],
+      "new_at_bound": [
+        false,
+        false
+      ],
+      "rel_move_lo": 5.082139714480542e-07,
+      "rel_move_hi": 0.0001447078262780173,
+      "crossing_error": 5.647726712608634e-07,
+      "step_rule": "value"
+    },
+    {
+      "record": "carbopol_etd2020_0p5wt_50uL",
+      "param": "k",
+      "value": 13.732140412352805,
+      "old_lo": 13.595387625521727,
+      "old_hi": 13.92745023029413,
+      "new_lo": 13.595390922843706,
+      "new_hi": 13.869745730515112,
+      "old_at_bound": [
+        false,
+        false
+      ],
+      "new_at_bound": [
+        false,
+        false
+      ],
+      "rel_move_lo": 2.425323991450012e-07,
+      "rel_move_hi": 0.004143220677500896,
+      "crossing_error": 1.8749345581502665e-09,
+      "step_rule": "wald"
+    },
+    {
+      "record": "carbopol_etd2020_0p5wt_50uL",
+      "param": "n",
+      "value": 0.42826086589537726,
+      "old_lo": 0.4259390916634302,
+      "old_hi": 0.4305905402906455,
+      "new_lo": 0.4259394688176954,
+      "new_hi": 0.43058989875215137,
+      "old_at_bound": [
+        false,
+        false
+      ],
+      "new_at_bound": [
+        false,
+        false
+      ],
+      "rel_move_lo": 8.854652521670625e-07,
+      "rel_move_hi": 1.489903827596985e-06,
+      "crossing_error": 6.4878271455481655e-09,
+      "step_rule": "value"
+    },
+    {
+      "record": "carbopol_etd2020_0p1wt_40uL",
+      "param": "tau_y",
+      "value": 0.8386483388494589,
+      "old_lo": 0.7433798653668053,
+      "old_hi": 0.9558348560584368,
+      "new_lo": 0.7434031179436923,
+      "new_hi": 0.937988105250536,
+      "old_at_bound": [
+        false,
+        false
+      ],
+      "new_at_bound": [
+        false,
+        false
+      ],
+      "rel_move_lo": 3.127953549761905e-05,
+      "rel_move_hi": 0.0186713747618445,
+      "crossing_error": 6.28786036181894e-10,
+      "step_rule": "wald"
+    },
+    {
+      "record": "carbopol_etd2020_0p1wt_40uL",
+      "param": "k",
+      "value": 4.459628019252426,
+      "old_lo": 4.043507700815152,
+      "old_hi": 5.045562906189133,
+      "new_lo": 4.043538472904005,
+      "new_hi": 4.896975100960878,
+      "old_at_bound": [
+        false,
+        false
+      ],
+      "new_at_bound": [
+        false,
+        false
+      ],
+      "rel_move_lo": 7.61024613526636e-06,
+      "rel_move_hi": 0.029449202792812223,
+      "crossing_error": 6.107381575931412e-10,
+      "step_rule": "wald"
+    },
+    {
+      "record": "carbopol_etd2020_0p1wt_40uL",
+      "param": "n",
+      "value": 0.6444844450146164,
+      "old_lo": 0.6133034199693455,
+      "old_hi": 0.6765932471770502,
+      "new_lo": 0.6133104452082733,
+      "new_hi": 0.6765918130209876,
+      "old_at_bound": [
+        false,
+        false
+      ],
+      "new_at_bound": [
+        false,
+        false
+      ],
+      "rel_move_lo": 1.145475257282432e-05,
+      "rel_move_hi": 2.11967244508848e-06,
+      "crossing_error": 7.681990557853198e-10,
+      "step_rule": "wald"
+    }
+  ],
+  "dose_s": 10.0
+}

@@ -24,9 +24,12 @@ pre-registered in ``data/profile_interval_prereg.md`` before this file was writt
 
 What is different
 -----------------
-1. **The step is sized from the parameter, not from its box.** ``wald/4`` where the Wald
-   error is usable, else a fixed fraction of ``|best|``, and only if both are unusable
-   does it fall back to the box. Which rule fired is recorded in ``step_rule``.
+1. **The step is sized from the parameter, not from its box.** It is
+   ``max(wald/4, |best| * VALUE_FRACTION)`` -- a Wald-scaled step with a floor at 0.1 % of
+   the parameter -- and only if BOTH are zero does it fall back to the box. The floor is
+   not a rare fallback: it wins on 2 of the 6 Carbopol case-study parameters, all of which
+   have finite positive Wald errors. Which term won is recorded in ``step_rule``, whose
+   values are ``wald``, ``value`` and ``box_fallback``.
 2. **The endpoint is located by Brent's method on ``F(p) - f_crit``**, not by a fixed
    count of bisections, so its accuracy is set by a tolerance rather than by how wide the
    first step happened to be.
@@ -81,9 +84,13 @@ STEP_GROWTH = 1.35
 # Initial step, in units of the Wald standard error. Same as dst_fit's.
 WALD_FRACTION = 0.25
 
-# Fallback initial step as a fraction of |best|, used when the Wald error is zero or
-# non-finite (a flat or degenerate direction). Deliberately small: overshooting is what
-# this module exists to stop.
+# A FLOOR on the initial step, as a fraction of |best|. Not a fallback: the step is
+# `max(wald/4, |best| * VALUE_FRACTION)`, so this term wins whenever it is the larger, and
+# it does so routinely -- on 2 of the 6 Carbopol case-study parameters, where every Wald
+# error is finite and positive. Its purpose is dst_fit's own purpose for a floor (a
+# pathologically small Wald error would otherwise need hundreds of steps to escape),
+# scaled to the parameter instead of to its arbitrary box. Deliberately small at 0.1 %:
+# overshooting is what this module exists to stop. `step_rule` records which term won.
 VALUE_FRACTION = 1e-3
 
 MAX_STEPS = 300

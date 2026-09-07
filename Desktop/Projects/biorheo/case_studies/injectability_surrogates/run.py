@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import hashlib
 import io
+import json
 from pathlib import Path
 
 import matplotlib
@@ -59,6 +60,53 @@ def load(path: Path) -> tuple[np.ndarray, np.ndarray]:
     tau = a[:, [2, 4, 6]]
     eta = a[:, [3, 5, 7]] * 1e-3
     return np.nanmean(tau / eta, axis=1), np.nanmean(tau, axis=1)
+
+
+
+def _interval_provenance_section() -> list[str]:
+    """Which profile routine drew the bands above, and how much that choice is worth.
+
+    The intervals on this page were computed by `dst_fit.profiling` until 2026-09-06,
+    when NEXT_STEPS item 13 found that its endpoints are bisection-grid points rather
+    than likelihood crossings -- 203 of 296 closed upper ends in the registry, worst
+    1639x the best-fit value above it. This page is now drawn with the corrected routine,
+    and the honest question is how much that changed, which is measured rather than
+    asserted: `uq_check.py` profiles every parameter BOTH ways off the same fit.
+
+    Read from `uq_check.json`; if it is absent the section says so rather than quoting
+    numbers that are not there."""
+    path = HERE / "uq_check.json"
+    head = ["## Which routine drew these intervals, and how much it matters", ""]
+    if not path.exists():
+        return head + ["Not computed: `uq_check.json` is missing. Run "
+                       "`python case_studies/injectability_surrogates/uq_check.py`. The "
+                       "bands above are drawn with the post-item-13 profile routine; how "
+                       "much they differ from the pre-item-13 ones is unmeasured until "
+                       "it has been run -- see `uq_prereg.md`.", ""]
+    u = json.loads(path.read_text(encoding="utf-8"))
+    v, gels = u["verdict"], u["gels"]
+    worst_par = 100 * v["G15.1"]["worst_interval_rel_move"]
+    worst_hull = 100 * max(g["hull_rel_move"] for g in gels)
+    return head + [
+        f"**The parameter intervals moved by up to {worst_par:.2f} % and the forces did "
+        f"not** -- the push-through hulls above move at most **{worst_hull:.4f} %** "
+        f"between the two routines. Both gels narrowed. Full table in `uq_check.md`.", "",
+        "**Why, and it is not a property of the fix.** Item 13's step floor is "
+        "`box_bound/5000`, so its size scales with how wide a parameter's declared box "
+        "is. Herschel-Bulkley's are not alike: `tau_y` is bounded at `1e5` and `k` at "
+        "`1e6`, while the flow index `n` is bounded at O(1). The floor inflated the first "
+        "two (`k` by 2.94 %, `tau_y` by 1.87 %) and could not touch the third (0.001 %) "
+        "-- and the force here is set by `n`, whose `d ln F / d ln n` reaches 4.87 and "
+        "7.44. **The correction moved the parameters this force does not depend on.**", "",
+        "A second reason works the same way: these curves carry 54 points against the "
+        "blood records' 16, so their Wald errors are large and `wald/4` wins the `max` "
+        "before the box is consulted at all.", "",
+        "**The quoted interval is a PARAMETER interval, not a total error.** Point 6 "
+        f"below gives each gel's own misfit; against it the hull is "
+        f"{gels[0]['ratio_new']:.1f}x and {gels[1]['ratio_new']:.1f}x. On the 0.1 wt% gel "
+        "the error bar is only about twice the model-form error, so the two are the same "
+        "order and neither can be neglected.", "",
+    ]
 
 
 def flow_fraction_outside_envelope(dp: float, params, gd_max: float) -> float:
@@ -156,6 +204,7 @@ def main() -> None:
     re_3s = max(f.reynolds for f in fast)
     gdw_3s = max(f.wall_shear_rate for f in fast)
     assert re_3s < LAMINAR_RE, f"Re = {re_3s:.0f} at the 3 s dose is not below {LAMINAR_RE}"
+    md += _interval_provenance_section()
     md += ["## Reading", "",
            f"1. Every force above is an extrapolation of the rheometry: the wall shear rate is "
            f"{dec_a:.1f} decades ({rid_a}) and {dec_b:.1f} decades ({rid_b}) above the top of the "

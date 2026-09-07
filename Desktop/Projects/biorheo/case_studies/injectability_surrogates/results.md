@@ -22,11 +22,21 @@ Refit: tau_y = 0.83865 Pa, k = 4.4596 Pa s^n, n = 0.64448 (five figures: d ln F 
 
 | dose time (s) | Q (mL/s) | F (N) | one-at-a-time profile envelope 95 % (N) | covariance 95 % (N) | dp (bar) | gd_w (1/s) | Re | plug r_p/R | Q share outside envelope | extrapolated |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 30 | 0.0333 | 38.697 | [27.941, 54.106] | [29.537, 50.730] | 23.284 | 4.83e+04 | 2.2 | 0.000 | 100.0% | YES |
-| 10 | 0.1 | 78.545 | [54.801, 113.769] | [58.099, 106.669] | 47.262 | 1.45e+05 | 9.8 | 0.000 | 100.0% | YES |
-| 3 | 0.333 | 170.639 | [114.667, 256.911] | [121.806, 240.960] | 102.677 | 4.83e+05 | 50 | 0.000 | 100.0% | YES |
+| 30 | 0.0333 | 38.697 | [27.943, 54.105] | [29.537, 50.730] | 23.284 | 4.83e+04 | 2.2 | 0.000 | 100.0% | YES |
+| 10 | 0.1 | 78.545 | [54.806, 113.767] | [58.099, 106.669] | 47.262 | 1.45e+05 | 9.8 | 0.000 | 100.0% | YES |
+| 3 | 0.333 | 170.639 | [114.677, 256.906] | [121.806, 240.960] | 102.677 | 4.83e+05 | 50 | 0.000 | 100.0% | YES |
 
 Sensitivity d ln F / d ln p at 10 s: tau_y +0.000, k +1.000, n +7.438. Insensitive to: tau_y.
+
+## Which routine drew these intervals, and how much it matters
+
+**The parameter intervals moved by up to 2.94 % and the forces did not** -- the push-through hulls above move at most **0.0081 %** between the two routines. Both gels narrowed. Full table in `uq_check.md`.
+
+**Why, and it is not a property of the fix.** Item 13's step floor is `box_bound/5000`, so its size scales with how wide a parameter's declared box is. Herschel-Bulkley's are not alike: `tau_y` is bounded at `1e5` and `k` at `1e6`, while the flow index `n` is bounded at O(1). The floor inflated the first two (`k` by 2.94 %, `tau_y` by 1.87 %) and could not touch the third (0.001 %) -- and the force here is set by `n`, whose `d ln F / d ln n` reaches 4.87 and 7.44. **The correction moved the parameters this force does not depend on.**
+
+A second reason works the same way: these curves carry 54 points against the blood records' 16, so their Wald errors are large and `wald/4` wins the `max` before the box is consulted at all.
+
+**The quoted interval is a PARAMETER interval, not a total error.** Point 6 below gives each gel's own misfit; against it the hull is 7.5x and 2.3x. On the 0.1 wt% gel the error bar is only about twice the model-form error, so the two are the same order and neither can be neglected.
 
 ## Reading
 
@@ -46,5 +56,5 @@ Sensitivity d ln F / d ln p at 10 s: tau_y +0.000, k +1.000, n +7.438. Insensiti
 
 `force_vs_Q.png`: plunger force against dose rate, left the 0.5 wt% and right the 0.1 wt% surrogate. Light band: one-at-a-time profile interval; dark band: covariance sample; points: the fit. Both axes start at zero.
 
-png md5: `d15c1e1a09e2ee05d74290b8dccd694a`
+png md5: `0b4d53cd189ea677ed6cdf0f9de77df7`
 
