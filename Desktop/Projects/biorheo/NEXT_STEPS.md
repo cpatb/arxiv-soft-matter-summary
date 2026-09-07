@@ -9,7 +9,7 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 290 passed, 7 deselected, 1 xfailed
+python -m pytest -q -m "not slow"      # must print: 300 passed, 7 deselected, 1 xfailed
 git -C C:\Users\compl log --oneline -3  # top should be 63de55a or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
@@ -505,55 +505,114 @@ Tests: `tests/test_profiling_wrapper.py` (16), including a NEGATIVE CONTROL that
 `dst_fit`'s endpoint is still on the grid and still past `f_crit` -- if that ever stops
 being true the wrapper is unnecessary, which is worth failing a test over.
 
-### 14. NEXT ITEM, not started: the shipped case study quotes forces with no uncertainty, and Phase 0's own exit gate requires it
+### 14. DONE 2026-09-06 (four gates PASS, G14.5 FAILED as predicted): the case study now carries uncertainty, and it cannot rank donors
+
+`case_studies/blood_injectability/uq.py` -> `uq.md` / `uq.json`, with a section added to
+`results.md` by `run.py`. Gate pre-registered in `uq_prereg.md`, committed at `3d267db`
+BEFORE any of it was computed. Pinned in `tests/test_injectability_uq.py`.
+
+Phase 0's unit 0.6 (`../biofluids_venture/05_ROADMAP.md`) requires this study to carry
+"full UQ from the L2 posterior" and to state which parameters the force is insensitive
+to. Both are now on the page.
+
+**The intervals are READ from `data/profile_interval_g139.json`, not recomputed.** That
+artifact already pushed each Casson parameter through its corrected interval at this
+exact needle. G14.2 and G14.3 exist to check that borrowing is legitimate.
+
+| gate | result |
+|---|---|
+| G14.2 the borrowed intervals belong to these forces | PASS, worst 1.2e-06 relative over 20 donors |
+| G14.3 both modules describe the SAME device | PASS, all four constants exactly equal |
+| G14.4 an open interval is never printed as a number | PASS, 0 donors |
+| **G14.5 donors can still be ranked at 95 %** | **FAIL, 36/190 pairs = 18.9 % against a 50 % bar** |
+| G14.6 insensitivity by an independent route | PASS, `tau_y` insensitive 20/20 |
+
+**G14.5 is the result and it FAILED.** Only **36 of 190** donor pairs have disjoint 95 %
+force intervals, and ranked by force **two donors must be 17 places apart out of 20** to
+be reliably separated. The pre-registration predicted a failure at 35-50 %; the measured
+18.9 % is worse, so the prediction was right in direction and wrong in size. Both are
+recorded, and the bar was not moved.
+
+**Why that gate and not the obvious one.** Re-checking "the 128 % donor spread beats the
+12.5 % family effect" cannot fail — adding a 29 % uncertainty does not change that
+arithmetic. The comparison that CAN fail is the pairwise one, because **the hull is PER
+DONOR and the spread is ACROSS donors**. A customer does not use the spread; they ask
+whether this patient needs more force than that one.
+
+**A sentence on the same page had to be corrected**, and it is the reason this item was
+worth doing. The crosscheck section said *"which patient the blood came from still
+matters more than which family was fitted"* — a range-versus-effect-size comparison read
+as a per-patient claim — twenty lines below the new section saying donors cannot be
+ranked pairwise. The RANGE comparison is kept because it is true; the pairwise reading is
+withdrawn on the page, with the old wording quoted so the correction is visible.
+
+**Sizes, and they are different objects.** The one-at-a-time push-through hull is a
+median **29.1 %** of the force; the covariance-sampled joint interval is **25.2 %**; the
+donor spread is **128 %**. The hull is WIDER than the joint region it is drawn from (the
+joint region is an ellipse inscribed in that box); the sample IS joint but assumes the
+Wald normal, which is the approximation a profile likelihood exists because it distrusts.
+**Neither is simply the better number and the page names which one it is quoting, every
+time.**
+
+**G14.6 is a third independent route to a claim the page already made twice.** `results.md`
+argues the yield stress is invisible from `x = tau_y/tau_w <= 1.7e-4` and from zeroing
+`tau_y` (under 2.9 %). `sensitivities()` is a finite-difference `d ln F / d ln p` on the
+force solver and shares neither construction: `|d ln F / d ln tau_y| <= 1.48e-02` on
+20/20, while `|d ln F / d ln eta_c| = 0.995` — the force is very nearly proportional to
+the plateau viscosity and to nothing else. All three agree. The test asserts the SECOND
+half too, because a sensitivity route that called everything insensitive would pass the
+first half and mean nothing.
+
+**Not added into these intervals:** the family term (median 12.5 %, worst 30.2 %), the
+needle bore (`F ~ R^-4`, still [UNVERIFIED]), and any error in the Casson FORM, which
+misfits these curves on 20/20 donors. A correct interval on a wrong model is still a
+wrong uncertainty.
+
+### 15. NEXT ITEM, not started: the Carbopol case study ships point forces too, and it is the harder case
 
 Written for zero context.
 
-**Why this is the next item and not something else.** The venture's Phase-0 unit 0.6
-(`../biofluids_venture/05_ROADMAP.md`) reads: *"injectability ... closed form
-(Buckingham-Reiner) with full UQ from the L2 posterior"*, and its acceptance line
-requires the report to *state which parameters the injection force is insensitive to*.
-`case_studies/blood_injectability/results.md` ships POINT forces. Until item 13 that was
-not fixable, because `force_with_uq` read corrupted upper ends. It is fixable now, and
-item 13 measured that the uncertainty is the DOMINANT term (29.1 % against a 12.5 %
-family effect), so shipping point values understates the honest error by more than the
-effect the study's own cross-check is about.
+**Why this one next.** `case_studies/injectability_surrogates/results.md` is the OTHER
+shipped case study and it also quotes point forces, so Phase-0 unit 0.6 is only half
+closed. It is not a copy of item 14: the Carbopol records are `herschel_bulkley`
+(THREE parameters, not two), and **2 of the 20 blood HB fits carry `bounded_only` on
+`tau_y`**, so an open profile end is a live possibility here in a way it was not for
+`casson`. **G14.4 — "an open interval is never printed as a number" — passed trivially
+for item 14 and can actually fail here.** That is the interesting part.
 
 **What to do.**
 
-1. **Reproduce the study's own numbers first**, before adding anything. This repo has
-   been bitten four times by extending a claim without reproducing it. Run
-   `case_studies/blood_injectability/run.py` and check `results.json` against the
-   committed one: only `git_head` should move.
-2. Add the UQ column to `results.md` from `force_with_uq`. **Report BOTH intervals and
-   say which is which** -- the one-at-a-time push-through hull (wider than the joint
-   region it is drawn from) and the covariance sample (a joint region, but Wald-normal,
-   which is the approximation the profile likelihood exists because it distrusts).
-   `data/profile_interval_g139.md` already computes both for `casson`; read them from
-   there rather than recomputing them a second way.
-3. **`sensitivities()` and `INSENSITIVE` already exist** in `injectability.py`, and the
-   gate asks for exactly that list. Check what they currently return before writing
-   anything: the gate may already be satisfiable from shipped code.
-4. **Pre-register before computing**, as items 6, 11, 12 and 13 did. State in advance
-   what "the study now carries UQ" must satisfy, and state what you will do if the
-   uncertainty swallows the donor-to-donor spread (128 %) the study's ordinal claim rests
-   on. **That is the live risk**: 29 % against 128 % sounds safe, but the hull is
-   PER DONOR and the spread is ACROSS donors, and those are not the same comparison.
-   Work out which one the ordinal claim actually needs before running anything.
+1. **Reproduce first.** Run `case_studies/injectability_surrogates/run.py` and check its
+   artifact against the committed one before adding anything. Four items in this file
+   were caught by doing exactly this.
+2. **Check `profile_open` and `hi_at_bound` on all 15 Carbopol records before promising a
+   UQ column.** If any parameter is open, the hull is infinite in that direction and the
+   honest output is "not bounded above", not a number. `uq.py`'s `open_records` branch is
+   the pattern; it has never fired, so **it has never been exercised** — treat it as
+   untested code until it is.
+3. **Do not reuse `profile_interval_g139.json`.** That artifact is blood, Casson, and one
+   needle geometry. The Carbopol study runs different gels at a different operating point,
+   so this item must compute its own intervals — which is the opposite of item 14's rule
+   for a good reason, and the reason should be stated on the page.
+4. **Pre-register before computing**, and pre-register the RIGHT gate. Item 14's lesson is
+   that the obvious gate could not fail. The Carbopol study's headline is that **the force
+   ordering of two gels REVERSES between rheometer and needle**. So the gate to write is
+   whether that reversal survives the uncertainty: are the two gels' 95 % force intervals
+   disjoint at the needle, and at the rheometer? **A reversal between two overlapping
+   intervals is not a reversal**, and that is a claim the study currently makes without
+   an interval.
 
-**Two traps this item walks into, both recorded above.**
+**Two traps carried forward from item 14.**
 
-- **A hull is not a confidence interval for a function of several parameters.** Say which
-  object you are quoting, every time you quote one.
-- **`profile_open` is not empty for every record.** A parameter sitting at a box bound
-  has no limit in that direction, so the hull is infinite there; `force_with_uq` returns
-  `profile_open` naming those parameters and it must be PRINTED, not dropped. Check it
-  for `cross` and `carreau_yasuda` before promising a UQ column for those families --
-  item 13 made MORE parameters open, not fewer.
+- **Name which interval object you are quoting, every time.** A one-at-a-time hull and a
+  covariance sample are not the same thing, and with THREE parameters the hull is
+  relatively wider than it was with two.
+- **A range comparison is not a pairwise comparison.** Item 14 had to correct a sentence
+  on a shipped page for exactly this. Before writing "X matters more than Y", ask whether
+  the claim is about the spread of a cohort or about telling two members of it apart.
 
-**Do not** patch `dst_fit` as part of this. If the upstream fix is ever made it needs its
-own justification and its own release; `tests/test_gate_0_1_dstfit_unchanged.py` exists
-to detect the absence of change.
+**Do not** patch `dst_fit`, and do not add the family term into a parameter interval
+without labelling it.
 
 ## What NOT to do
 
@@ -601,3 +660,11 @@ to detect the absence of change.
 - Do not expect a corrected interval to have changed item 12. It did not, and G13.9
   measured why: the bug inflated only the UPPER ends and the force difference is
   signed downward, so exactly one donor of twenty flips.
+- Do not read "the donor spread is bigger than the family effect" as "which patient it is
+  matters more". The first is a range against an effect size; the second is a claim about
+  telling two patients apart, and item 14 measured that one directly: 36 of 190 pairs
+  separate at 95 %, and two donors must be 17 places apart out of 20. A shipped page said
+  the second for a day; the correction is on it, with the old wording quoted.
+- Do not quote a `force_with_uq` interval without naming the object. The push-through hull
+  is one-at-a-time and WIDER than the joint region; the covariance sample IS joint but
+  assumes the Wald normal. Neither is simply better.

@@ -1,0 +1,500 @@
+{
+  "verdict": {
+    "G14.2": {
+      "pass": true,
+      "worst_force_rel_dev": 1.225177475070043e-06,
+      "bar": 1e-05,
+      "n": 20
+    },
+    "G14.3": {
+      "pass": true,
+      "mismatches": {},
+      "geometry": {
+        "needle_ID_mm": [
+          0.21,
+          0.21
+        ],
+        "needle_length_m": [
+          0.0127,
+          0.0127
+        ],
+        "barrel_radius_m": [
+          0.0023,
+          0.0023
+        ],
+        "Q_m3_per_s": [
+          1.6666666666666667e-08,
+          1.6666666666666667e-08
+        ]
+      }
+    },
+    "G14.4": {
+      "pass": true,
+      "records_with_an_open_end": []
+    },
+    "G14.5": {
+      "pass": false,
+      "n_pairs": 190,
+      "n_disjoint_hull": 36,
+      "rate_hull": 0.18947368421052632,
+      "bar": 0.5,
+      "n_pairs_sampled": 190,
+      "n_disjoint_sampled": 39,
+      "rate_sampled": 0.20526315789473684,
+      "min_rank_gap_always_separated": 17
+    },
+    "G14.6": {
+      "pass": true,
+      "n_tau_y_insensitive": 20,
+      "bar": 19,
+      "worst_abs_sens_tau_y": 0.014814890069739304,
+      "worst_abs_sens_eta_c": 0.9953891512060405,
+      "INSENSITIVE": 0.05
+    }
+  },
+  "rows": [
+    {
+      "donor": "A",
+      "record": "blood_horner2020_donor_A",
+      "force_N": 0.28728169584068497,
+      "force_refit_N": 0.28728199701083135,
+      "force_rel_dev": 1.0483443628247496e-06,
+      "hull_lo": 0.24263874651000245,
+      "hull_hi": 0.3385941840480952,
+      "hull_width_pct": 33.401166495238826,
+      "sampled_lo": 0.2443003348124372,
+      "sampled_hi": 0.3269213709805684,
+      "sampled_usable": true,
+      "sampled_width_pct": 28.759589408003748,
+      "sensitivities": {
+        "tau_y": 0.006316768326301277,
+        "eta_c": 0.9936832316893709
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "B",
+      "record": "blood_horner2020_donor_B",
+      "force_N": 0.2621394508870999,
+      "force_refit_N": 0.2621392725314359,
+      "force_rel_dev": 6.803846708765678e-07,
+      "hull_lo": 0.2429247115929677,
+      "hull_hi": 0.2825973972004439,
+      "hull_width_pct": 15.134191161696886,
+      "sampled_lo": 0.24442634755045178,
+      "sampled_hi": 0.27931563473357657,
+      "sampled_usable": true,
+      "sampled_width_pct": 13.309437806883617,
+      "sensitivities": {
+        "tau_y": 0.009707499053981418,
+        "eta_c": 0.9902925009784186
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "C",
+      "record": "blood_horner2020_donor_C",
+      "force_N": 0.2249968957337873,
+      "force_refit_N": 0.2249967098815088,
+      "force_rel_dev": 8.260215231205675e-07,
+      "hull_lo": 0.2094925385998775,
+      "hull_hi": 0.24142686080917833,
+      "hull_width_pct": 14.193227913279753,
+      "sampled_lo": 0.21083559909389013,
+      "sampled_hi": 0.23894043359739864,
+      "sampled_usable": true,
+      "sampled_width_pct": 12.49120989507415,
+      "sensitivities": {
+        "tau_y": 0.013759590294129789,
+        "eta_c": 0.986240409741691
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "D",
+      "record": "blood_horner2020_donor_D",
+      "force_N": 0.2312575132163842,
+      "force_refit_N": 0.23125763417200854,
+      "force_rel_dev": 5.230343553707416e-07,
+      "hull_lo": 0.2105585760166164,
+      "hull_hi": 0.25358922000745343,
+      "hull_width_pct": 18.607241508548913,
+      "sampled_lo": 0.21212592948812264,
+      "sampled_hi": 0.25010653599235355,
+      "sampled_usable": true,
+      "sampled_width_pct": 16.423512462789922,
+      "sensitivities": {
+        "tau_y": 0.014814890069739304,
+        "eta_c": 0.9851851099634483
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "F",
+      "record": "blood_horner2020_donor_F",
+      "force_N": 0.22312815921704846,
+      "force_refit_N": 0.22312806414440944,
+      "force_rel_dev": 4.260898281285356e-07,
+      "hull_lo": 0.19637268690029802,
+      "hull_hi": 0.2528587071174049,
+      "hull_width_pct": 25.31550496150508,
+      "sampled_lo": 0.19782451627523973,
+      "sampled_hi": 0.24669903581713162,
+      "sampled_usable": true,
+      "sampled_width_pct": 21.90423643227796,
+      "sensitivities": {
+        "tau_y": 0.007607382758775728,
+        "eta_c": 0.9923926172479275
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "G",
+      "record": "blood_horner2020_donor_G",
+      "force_N": 0.2937922414358167,
+      "force_refit_N": 0.2937924048106631,
+      "force_rel_dev": 5.560897237285397e-07,
+      "hull_lo": 0.23264844930914222,
+      "hull_hi": 0.36792666262354895,
+      "hull_width_pct": 46.04553634679977,
+      "sampled_lo": 0.23482357825257388,
+      "sampled_hi": 0.3488057053945817,
+      "sampled_usable": true,
+      "sampled_width_pct": 38.79684724993289,
+      "sensitivities": {
+        "tau_y": 0.004610848814979981,
+        "eta_c": 0.9953891512060405
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "H",
+      "record": "blood_horner2020_donor_H",
+      "force_N": 0.3010273928234139,
+      "force_refit_N": 0.30102776163539496,
+      "force_rel_dev": 1.225177475070043e-06,
+      "hull_lo": 0.24184924708176134,
+      "hull_hi": 0.37171224110738843,
+      "hull_width_pct": 43.139925841169614,
+      "sampled_lo": 0.24441707053915093,
+      "sampled_hi": 0.3557679466579515,
+      "sampled_usable": true,
+      "sampled_width_pct": 36.99028021151558,
+      "sensitivities": {
+        "tau_y": 0.009489750727185633,
+        "eta_c": 0.9905102492845509
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "I",
+      "record": "blood_horner2020_donor_I",
+      "force_N": 0.28550407138989103,
+      "force_refit_N": 0.2855040090011165,
+      "force_rel_dev": 2.1852148808855525e-07,
+      "hull_lo": 0.23428768241103812,
+      "hull_hi": 0.34567108037238997,
+      "hull_width_pct": 39.01289302779997,
+      "sampled_lo": 0.2369264787606812,
+      "sampled_hi": 0.33231720305744833,
+      "sampled_usable": true,
+      "sampled_width_pct": 33.41133589877929,
+      "sensitivities": {
+        "tau_y": 0.009279760425465486,
+        "eta_c": 0.9907202396023206
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "J",
+      "record": "blood_horner2020_donor_J",
+      "force_N": 0.33475565405128743,
+      "force_refit_N": 0.33475562470140435,
+      "force_rel_dev": 8.767554102299968e-08,
+      "hull_lo": 0.28946498150596883,
+      "hull_hi": 0.3857832945755755,
+      "hull_width_pct": 28.772721805872727,
+      "sampled_lo": 0.29225285477472657,
+      "sampled_hi": 0.37581420760189066,
+      "sampled_usable": true,
+      "sampled_width_pct": 24.961894389500518,
+      "sensitivities": {
+        "tau_y": 0.009399159174797691,
+        "eta_c": 0.9906008408455692
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "K",
+      "record": "blood_horner2020_donor_K",
+      "force_N": 0.2751939385755543,
+      "force_refit_N": 0.2751940323766035,
+      "force_rel_dev": 3.408543432725428e-07,
+      "hull_lo": 0.23457443560291452,
+      "hull_hi": 0.3214794548927611,
+      "hull_width_pct": 31.57955430983697,
+      "sampled_lo": 0.2370097762869303,
+      "sampled_hi": 0.3113230964797814,
+      "sampled_usable": true,
+      "sampled_width_pct": 27.0039814748494,
+      "sensitivities": {
+        "tau_y": 0.008543988432007597,
+        "eta_c": 0.9914560115903946
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "L",
+      "record": "blood_horner2020_donor_L",
+      "force_N": 0.29622898558864624,
+      "force_refit_N": 0.296229338081641,
+      "force_rel_dev": 1.1899341789154606e-06,
+      "hull_lo": 0.26001597566061313,
+      "hull_hi": 0.3364529827646284,
+      "hull_width_pct": 25.80335173890051,
+      "sampled_lo": 0.2626678168099316,
+      "sampled_hi": 0.3292410302933315,
+      "sampled_usable": true,
+      "sampled_width_pct": 22.473564952163645,
+      "sensitivities": {
+        "tau_y": 0.01376754499698523,
+        "eta_c": 0.9862324550473389
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "M",
+      "record": "blood_horner2020_donor_M",
+      "force_N": 0.2720883307413757,
+      "force_refit_N": 0.27208848672343405,
+      "force_rel_dev": 5.732772807849929e-07,
+      "hull_lo": 0.21817620382894945,
+      "hull_hi": 0.3363986967341602,
+      "hull_width_pct": 43.45004160343176,
+      "sampled_lo": 0.22049553631773003,
+      "sampled_hi": 0.32276783286294525,
+      "sampled_usable": true,
+      "sampled_width_pct": 37.58790252656101,
+      "sensitivities": {
+        "tau_y": 0.014215981413384936,
+        "eta_c": 0.9857840186243833
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "N",
+      "record": "blood_horner2020_donor_N",
+      "force_N": 0.5085512098114549,
+      "force_refit_N": 0.5085514182375908,
+      "force_rel_dev": 4.0984296543735554e-07,
+      "hull_lo": 0.4179226484826776,
+      "hull_hi": 0.6146591163410482,
+      "hull_width_pct": 38.68567492569934,
+      "sampled_lo": 0.42313290037033585,
+      "sampled_hi": 0.5924376797121422,
+      "sampled_usable": true,
+      "sampled_width_pct": 33.29158914095909,
+      "sensitivities": {
+        "tau_y": 0.011891910975691897,
+        "eta_c": 0.9881080890622143
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "O",
+      "record": "blood_horner2020_donor_O",
+      "force_N": 0.2574785989698779,
+      "force_refit_N": 0.25747857499518234,
+      "force_rel_dev": 9.31133525584795e-08,
+      "hull_lo": 0.22260437321001805,
+      "hull_hi": 0.2967703479673588,
+      "hull_width_pct": 28.804714276862025,
+      "sampled_lo": 0.22495934973332227,
+      "sampled_hi": 0.28861709786484707,
+      "sampled_usable": true,
+      "sampled_width_pct": 24.72351037570002,
+      "sensitivities": {
+        "tau_y": 0.008930091492289445,
+        "eta_c": 0.9910699085418869
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "P",
+      "record": "blood_horner2020_donor_P",
+      "force_N": 0.2934860854379956,
+      "force_refit_N": 0.29348578575982287,
+      "force_rel_dev": 1.0210984015625411e-06,
+      "hull_lo": 0.2586916796463759,
+      "hull_hi": 0.33206776969452073,
+      "hull_width_pct": 25.001556696849565,
+      "sampled_lo": 0.26109241892175716,
+      "sampled_hi": 0.3248223759338936,
+      "sampled_usable": true,
+      "sampled_width_pct": 21.714813810346932,
+      "sensitivities": {
+        "tau_y": 0.009490069671661855,
+        "eta_c": 0.9905099303485898
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "Q",
+      "record": "blood_horner2020_donor_Q",
+      "force_N": 0.2715283403699404,
+      "force_refit_N": 0.27152862186540666,
+      "force_rel_dev": 1.036707497591108e-06,
+      "hull_lo": 0.22791789288350722,
+      "hull_hi": 0.3218036042208457,
+      "hull_width_pct": 34.57676322457724,
+      "sampled_lo": 0.23036049667412856,
+      "sampled_hi": 0.3116400667842093,
+      "sampled_usable": true,
+      "sampled_width_pct": 29.93410190602661,
+      "sensitivities": {
+        "tau_y": 0.010314540643512301,
+        "eta_c": 0.9896854593836023
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "R",
+      "record": "blood_horner2020_donor_R",
+      "force_N": 0.27406976635292646,
+      "force_refit_N": 0.274069774327875,
+      "force_rel_dev": 2.9098242542425905e-08,
+      "hull_lo": 0.23366006222397584,
+      "hull_hi": 0.320064806058848,
+      "hull_width_pct": 31.52655069717053,
+      "sampled_lo": 0.2361564418412214,
+      "sampled_hi": 0.31121992474641785,
+      "sampled_usable": true,
+      "sampled_width_pct": 27.38845802077101,
+      "sensitivities": {
+        "tau_y": 0.01134153464410532,
+        "eta_c": 0.98865846538076
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "S",
+      "record": "blood_horner2020_donor_S",
+      "force_N": 0.29072930526193785,
+      "force_refit_N": 0.290729277944669,
+      "force_rel_dev": 9.396118086980316e-08,
+      "hull_lo": 0.25068821544644065,
+      "hull_hi": 0.33589112645934754,
+      "hull_width_pct": 29.306612532968348,
+      "sampled_lo": 0.25330122068231087,
+      "sampled_hi": 0.32743566020892206,
+      "sampled_usable": true,
+      "sampled_width_pct": 25.49947259696384,
+      "sensitivities": {
+        "tau_y": 0.011442775668256742,
+        "eta_c": 0.988557224357828
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "T",
+      "record": "blood_horner2020_donor_T",
+      "force_N": 0.26512667868372364,
+      "force_refit_N": 0.2651268148337323,
+      "force_rel_dev": 5.135281342942262e-07,
+      "hull_lo": 0.23170776153953118,
+      "hull_hi": 0.3024277006757854,
+      "hull_width_pct": 26.67401843049444,
+      "sampled_lo": 0.23399896014356555,
+      "sampled_hi": 0.295626753923653,
+      "sampled_usable": true,
+      "sampled_width_pct": 23.244659528815212,
+      "sensitivities": {
+        "tau_y": 0.010475526179661188,
+        "eta_c": 0.9895244738488181
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    },
+    {
+      "donor": "U",
+      "record": "blood_horner2020_donor_U",
+      "force_N": 0.303093198195463,
+      "force_refit_N": 0.3030931171132475,
+      "force_rel_dev": 2.67515787157346e-07,
+      "hull_lo": 0.2652285988556255,
+      "hull_hi": 0.3453092731019075,
+      "hull_width_pct": 26.421138687064325,
+      "sampled_lo": 0.26780926950919826,
+      "sampled_hi": 0.337494408203824,
+      "sampled_usable": true,
+      "sampled_width_pct": 22.991323826965658,
+      "sensitivities": {
+        "tau_y": 0.010262163208020338,
+        "eta_c": 0.9897378368191817
+      },
+      "insensitive_to": [
+        "tau_y"
+      ],
+      "open_parameters": []
+    }
+  ],
+  "median_hull_width_pct": 29.055663404915187,
+  "median_sampled_width_pct": 25.230683493232178,
+  "total_donor_spread_pct": 127.91888374643044
+}

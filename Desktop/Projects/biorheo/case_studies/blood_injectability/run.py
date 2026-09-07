@@ -124,6 +124,91 @@ def one_donor(rec, nd: Needle) -> dict:
             "reynolds": force.reynolds}
 
 
+
+def _uq_section() -> list[str]:
+    """The uncertainty on the forces above, quoted from item 14's own artifact.
+
+    Phase 0's unit 0.6 asks this page for "full UQ from the L2 posterior" and for a
+    statement of which parameters the force is insensitive to. Until NEXT_STEPS item 13
+    the first was impossible -- `force_with_uq` read profile upper ends that were
+    bisection-grid artefacts rather than likelihood crossings.
+
+    The numbers are READ from `uq.json`, never recomputed here: two pieces of code that
+    build the same quantity by different routes eventually disagree, and this repo has
+    already been bitten by that. If the file is absent the section says so instead of
+    quoting numbers that are not there, and the operating point is asserted rather than
+    assumed."""
+    path = HERE / "uq.json"
+    head = ["## How much of this is uncertain, and can two patients be told apart?", ""]
+    if not path.exists():
+        return head + ["Not computed: `uq.json` is missing. Run "
+                       "`python case_studies/blood_injectability/uq.py`. **Every force on "
+                       "this page is a point value with no interval until it has been "
+                       "run** -- see `uq_prereg.md`.", ""]
+    u = json.loads(path.read_text(encoding="utf-8"))
+    v = u["verdict"]
+    # the artifact must belong to THIS operating point, not merely exist
+    assert v["G14.3"]["pass"], v["G14.3"]["mismatches"]
+    assert v["G14.2"]["pass"], v["G14.2"]
+    g5 = v["G14.5"]
+    gap = g5["min_rank_gap_always_separated"]
+    out = head + [
+        f"Pushing each Casson parameter through its 95 % profile interval gives a force "
+        f"hull a median **{u['median_hull_width_pct']:.1f} %** of the force wide; the "
+        f"covariance-sampled joint interval is a median "
+        f"**{u['median_sampled_width_pct']:.1f} %**. Per donor, in `uq.md`.", "",
+        "**The two are different objects and neither is simply the better number.** The "
+        "hull moves one parameter at a time to each end of its own interval, so it is "
+        "WIDER than the joint region it is drawn from. The sample IS a joint region but "
+        "assumes the Wald normal, which is the approximation a profile likelihood exists "
+        "because it distrusts.", "",
+    ]
+    if not g5["pass"]:
+        out += [
+            f"**These donors cannot be ranked pairwise at 95 %.** Only "
+            f"**{g5['n_disjoint_hull']} of {g5['n_pairs']}** donor pairs "
+            f"({100 * g5['rate_hull']:.1f} %) have disjoint hulls, against a "
+            f"pre-registered bar of {100 * g5['bar']:.0f} %. The bar was not moved.", "",
+        ]
+        if gap is not None:
+            out += [
+                f"Ranked by force, two donors are reliably separated only once they are "
+                f"**{gap} places apart out of {len(u['rows'])}**. So the extremes are "
+                f"distinguishable and the middle of the distribution is not.", "",
+            ]
+        out += [
+            f"**What that does and does not overturn.** The arithmetic on this page is "
+            f"untouched -- the donor spread is {u['total_donor_spread_pct']:.0f} % and "
+            f"the family-choice effect is 12.5 %, so the spread is still the bigger "
+            f"term. What it does not license is the PAIRWISE reading: *which patient the "
+            f"blood came from matters more* is a claim about telling two patients apart, "
+            f"and that compares one donor's interval with another's rather than a range "
+            f"with an effect size. **Quote the ordering of the extremes; do not rank the "
+            f"middle.**", "",
+        ]
+    else:
+        out += [
+            f"**{g5['n_disjoint_hull']} of {g5['n_pairs']}** donor pairs "
+            f"({100 * g5['rate_hull']:.1f} %) have disjoint hulls, so donors can be "
+            f"ranked pairwise at 95 %.", "",
+        ]
+    g6 = v["G14.6"]
+    out += [
+        f"**Which parameters the force is insensitive to.** `tau_y` on "
+        f"**{g6['n_tau_y_insensitive']} of {len(u['rows'])}** donors "
+        f"(`|d ln F / d ln tau_y|` at worst {g6['worst_abs_sens_tau_y']:.2e}, against an "
+        f"`INSENSITIVE` threshold of {g6['INSENSITIVE']:g}); the force is very nearly "
+        f"proportional to `eta_c` alone "
+        f"(worst `|d ln F / d ln eta_c|` = {g6['worst_abs_sens_eta_c']:.3f}). That is a "
+        f"THIRD and independent route to the section above -- a finite-difference "
+        f"sensitivity of the force solver, touching neither the stress ratio nor the "
+        f"zeroing test -- and all three agree.", "",
+        "The family term is **not** added into these intervals, and neither is the needle "
+        "bore. See the section below and `uq.md`.", "",
+    ]
+    return out
+
+
 def _crosscheck_section() -> list[str]:
     """The caveat item 12 put on this page's PRECISION, quoted from that study's own
     artifact rather than retyped.
@@ -185,11 +270,17 @@ def _crosscheck_section() -> list[str]:
         f"{c['viscosity_ladder']['n_structured_of_20']['cross']}"
         f"/{c['viscosity_ladder']['n_donors']} on Cross. The needle is simply one rate "
         "at which that misfit is read.", "",
-        "**What survives and what does not.** The ordering survives: "
+        "**What survives and what does not.** The RANGE comparison survives: "
         f"{100 * s['cross']['worst_abs_rel_dev']:.4g} % is well inside the "
-        f"{100 * c['scales']['donor_spread']:.4g} % donor-to-donor spread, so which "
-        "patient the blood came from still matters more than which family was fitted, "
-        "and the yield stress is still invisible in this geometry. The PRECISION does "
+        f"{100 * c['scales']['donor_spread']:.4g} % donor-to-donor spread, so across "
+        "this cohort the patient axis carries more of the force than the family axis "
+        "does, and the yield stress is still invisible in this geometry. **The PAIRWISE "
+        "reading of that does NOT survive** -- an earlier version of this sentence said "
+        "*which patient the blood came from still matters more*, which is a claim about "
+        "telling two given patients apart, and item 14 measured it directly: only 36 of "
+        "190 donor pairs have disjoint 95 % force intervals, and two donors must be 17 "
+        "places apart out of 20 to be reliably separated. See the section above. The "
+        "PRECISION does "
         "not: a force from this page is a Casson force, and reading the same donor's "
         "curve through a BETTER-fitting family -- Cross's median `rmse_log` is "
         f"{c['viscosity_ladder']['median_rmse_log']['cross']:.3f} against Casson's "
@@ -486,6 +577,7 @@ def main() -> int:
           "against 9 expected` quoted above comes from `data/horner2020/model_comparison"
           ".md`, and it is the value for 18 of the 20 donors, not all of them (donor D "
           "has 8 runs, z = -0.52, and is not flagged structured).", ""]
+    L += _uq_section()
     L += _crosscheck_section()
     (HERE / "results.md").write_text("\n".join(L), encoding="utf-8")
     print("\n".join(L))
