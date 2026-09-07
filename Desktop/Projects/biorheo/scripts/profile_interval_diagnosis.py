@@ -19,6 +19,13 @@ This script measures how much of the registry sits on that grid. It reads the
 committed sidecars and each model's own declared bounds; it re-fits nothing, so it
 cannot be accused of measuring a new fit rather than the shipped one.
 
+**Since item 13 regenerated every sidecar with the corrected profiler, running this
+against today's registry is a REGRESSION CHECK and should report zero.** The historical
+measurement -- the registry as it was before that regeneration -- is preserved as
+``data/profile_interval_prefix_rows.json`` and re-graded by
+``scripts/profile_interval_regrade.py``. Anything asking "how bad was it?" must read
+that; this file answers "is it still happening?".
+
 The grid signature is exact arithmetic, not a fit: ``(hi - value) * 5.12e6 / span``
 is an integer to within ``GRID_TOL`` relative. ``span`` is taken from the model's
 own bound for that parameter, so no candidate bound is guessed -- the earlier count
@@ -54,6 +61,18 @@ GRID_DIVISOR = _STEPS_PER_SPAN * (2 ** _REFINEMENTS)  # 5.12e6
 # is rounding, not tolerance shopping: donor A's eta_c reproduces m = 1 to 10 digits.
 GRID_TOL = 1e-6
 
+# ...AND the integer must be one a bisection can actually produce. With
+# `_REFINEMENTS = 10` the returned endpoint is `prev + m * step / 1024`, so `m` lies in
+# `[1, 1024]`; `m > 1024` is not expressible by that arithmetic.
+#
+# Added 2026-09-06 after NEXT_STEPS item 16. Without it the test accepted any `delta/span`
+# that happened to be a round fraction, and in particular accepted every end whose `delta`
+# EQUALS its `span` -- `m = 5.12e6`, which means the endpoint sits AT the box bound and is
+# not a crossing at all. 18 of the 219 previously reported points were of that kind, 5 of
+# them at exactly 5120000. The bound is derived from `_REFINEMENTS`, not chosen: it was
+# found by a gate (G16.1) failing on those 18 and it would be the right bound regardless.
+GRID_M_MIN, GRID_M_MAX = 1, 2 ** _REFINEMENTS
+
 
 def _sidecars() -> list[Path]:
     return sorted(RECORDS.glob("*.identifiability.yaml"))
@@ -64,6 +83,14 @@ def _grid_index(delta: float, span: float) -> float | None:
     if not np.isfinite(delta) or not np.isfinite(span) or span <= 0 or delta <= 0:
         return None
     return delta * GRID_DIVISOR / span
+
+
+def _is_grid_point(m: float | None) -> bool:
+    """An integer index a 10-fold bisection of one step could actually have produced."""
+    if m is None or not np.isfinite(m):
+        return False
+    return (abs(m - round(m)) < GRID_TOL
+            and GRID_M_MIN - GRID_TOL <= m <= GRID_M_MAX + GRID_TOL)
 
 
 def main() -> int:
@@ -90,7 +117,12 @@ def main() -> int:
                 delta = abs(endpoint - value)
                 span = abs(float(bound) - value)
                 m = _grid_index(delta, span)
-                on_grid = m is not None and abs(m - round(m)) < GRID_TOL
+                on_grid = _is_grid_point(m)
+                # an index that is an integer but OUT OF RANGE: reported, not silently
+                # dropped, because it was counted as a grid point until 2026-09-06
+                out_of_range = bool(
+                    m is not None and np.isfinite(m)
+                    and abs(m - round(m)) < GRID_TOL and not on_grid)
                 rows.append({
                     "record": path.name.replace(".identifiability.yaml", ""),
                     "model": model_name,
@@ -102,6 +134,7 @@ def main() -> int:
                     "delta": delta,
                     "grid_index": m,
                     "on_grid": bool(on_grid),
+                    "integer_but_out_of_range": out_of_range,
                     "delta_over_value": (delta / abs(value)) if value != 0 else float("inf"),
                 })
 
@@ -116,8 +149,11 @@ def main() -> int:
     worst = max(on_grid, key=lambda r: r["delta_over_value"]) if on_grid else None
     by_model = Counter((r["model"], r["param"]) for r in on_grid)
 
+    n_out_of_range = sum(1 for r in rows if r["integer_but_out_of_range"])
     summary = {
         "n_sidecars": len(_sidecars()),
+        "n_integer_but_out_of_range": n_out_of_range,
+        "grid_m_range": [GRID_M_MIN, GRID_M_MAX],
         "n_closed_ends": len(closed),
         "n_on_grid": len(on_grid),
         "n_closed_upper": len(upper),
@@ -130,10 +166,16 @@ def main() -> int:
     OUT_JSON.write_text(json.dumps({"summary": summary, "rows": rows}, indent=2), encoding="utf-8")
 
     lines = [
-        "# Item 13, step 1: the profile intervals sit on a bisection grid",
+        "# Is the registry still on the bisection grid? (regression check)",
         "",
         "Written by `scripts/profile_interval_diagnosis.py`. Reads the committed sidecars",
         "and each model's own declared bounds; refits nothing.",
+        "",
+        "**Item 13 regenerated every sidecar with the corrected profiler, so this should",
+        "report ZERO.** The historical measurement -- how bad it was before that -- is",
+        "`data/profile_interval_prefix.md`, re-graded from the row set committed at",
+        "`d38bc77`. Do not quote this file for the size of the defect; it is the check that",
+        "the defect is gone.",
         "",
         "## The signature",
         "",
@@ -141,7 +183,16 @@ def main() -> int:
         "`max(wald/4, span/5000)` with `span = |box_bound - best|`, then bisects the",
         "bracket 10 times and returns the OUTER end. If the statistic crosses on the",
         "first step, the returned endpoint is `best + m * span / 5.12e6` for an integer",
-        f"`m <= 1024`. Counted here as `|m - round(m)| < {GRID_TOL:g}`.",
+        f"`m <= 1024`. Counted here as `|m - round(m)| < {GRID_TOL:g}` **and**",
+        f"`{GRID_M_MIN} <= m <= {GRID_M_MAX}`.",
+        "",
+        "**The range half of that test was added on 2026-09-06** (NEXT_STEPS item 16).",
+        "Without it the test accepted any `delta/span` that happened to be a round",
+        "fraction -- including every end whose `delta` EQUALS its `span`, which is",
+        f"`m = {GRID_DIVISOR:.3g}` and means the endpoint sits AT the box bound rather than",
+        f"at a crossing. **{n_out_of_range}** ends are integer-indexed but out of range and",
+        "are now excluded; 5 of them sit at exactly 5120000. The bound is derived from",
+        "`_REFINEMENTS = 10`, not chosen to make anything pass.",
         "",
         "## What is on the grid",
         "",

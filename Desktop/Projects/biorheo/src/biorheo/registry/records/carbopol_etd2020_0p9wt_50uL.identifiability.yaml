@@ -26,6 +26,9 @@ parameters:
     partner: null
     lo_at_bound: false
     hi_at_bound: false
+    wald_stderr: 0.020005629609123162
+    exposure_hi: 3997.815171504913
+    exposure_lo: 1.0592235062609048
   k:
     value: 8.983669080462976
     lo: 8.923266560275216
@@ -35,6 +38,9 @@ parameters:
     partner: null
     lo_at_bound: false
     hi_at_bound: false
+    wald_stderr: 0.030210084138049115
+    exposure_hi: 26480.985932017236
+    exposure_lo: 0.237898525258278
   n:
     value: 0.47574810368825243
     lo: 0.47414426921039987
@@ -44,6 +50,16 @@ parameters:
     partner: null
     lo_at_bound: false
     hi_at_bound: false
+    wald_stderr: 0.0008013164949651726
+    exposure_hi: 1.5217476798632437
+    exposure_lo: 0.42504863570218315
+exposure_note: 'exposure_hi / exposure_lo = (span/5000) / (wald_stderr/4) with span
+  = |bound - value| for that end''s box bound. It is how far dst_fit.profiling''s
+  step floor overshot the Wald-scaled step on the walk that produced this interval:
+  > 1 means the box floor set the first step, and the magnitude is by how much. Written
+  from 2026-09-06 so a reader can ask whether an interval came from the defective
+  walk without refitting the curve (NEXT_STEPS items 13 and 16). Note the two ends
+  differ, often by decades.'
 data_note: fit of the replicate-mean flow curve from the deposited csv, rate recovered
   as tau/eta; stored parameters come from carbopol/fit_hb.py (curve_fit, sigma = tau)
   and differ from this fit by at most 0.01%

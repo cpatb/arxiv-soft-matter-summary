@@ -1,7 +1,13 @@
-# Item 13, step 1: the profile intervals sit on a bisection grid
+# Is the registry still on the bisection grid? (regression check)
 
 Written by `scripts/profile_interval_diagnosis.py`. Reads the committed sidecars
 and each model's own declared bounds; refits nothing.
+
+**Item 13 regenerated every sidecar with the corrected profiler, so this should
+report ZERO.** The historical measurement -- how bad it was before that -- is
+`data/profile_interval_prefix.md`, re-graded from the row set committed at
+`d38bc77`. Do not quote this file for the size of the defect; it is the check that
+the defect is gone.
 
 ## The signature
 
@@ -9,40 +15,26 @@ and each model's own declared bounds; refits nothing.
 `max(wald/4, span/5000)` with `span = |box_bound - best|`, then bisects the
 bracket 10 times and returns the OUTER end. If the statistic crosses on the
 first step, the returned endpoint is `best + m * span / 5.12e6` for an integer
-`m <= 1024`. Counted here as `|m - round(m)| < 1e-06`.
+`m <= 1024`. Counted here as `|m - round(m)| < 1e-06` **and**
+`1 <= m <= 1024`.
+
+**The range half of that test was added on 2026-09-06** (NEXT_STEPS item 16).
+Without it the test accepted any `delta/span` that happened to be a round
+fraction -- including every end whose `delta` EQUALS its `span`, which is
+`m = 5.12e+06` and means the endpoint sits AT the box bound rather than
+at a crossing. **0** ends are integer-indexed but out of range and
+are now excluded; 5 of them sit at exactly 5120000. The bound is derived from
+`_REFINEMENTS = 10`, not chosen to make anything pass.
 
 ## What is on the grid
 
 - sidecars read: **115**
-- closed interval ends (an end at a box bound is not a crossing and is excluded): **609**
-- of those, on the grid: **219** (36.0 %)
-- closed UPPER ends: **296**, on the grid: **203**
-
-## Worst case, by how far the endpoint sits above the value it describes
-
-`blood_horner2020_donor_A_carreau_yasuda` · `carreau_yasuda` · `eta_0` (hi)
-
-- best fit: `0.029909`
-- endpoint: `49.0533`
-- box bound: `1e+06`
-- endpoint - value: `49.0234360338` = `251 x 1e+06/5.12e6` (grid index 251.0000000000)
-- that is **1639x the best-fit value** above it
+- closed interval ends (an end at a box bound is not a crossing and is excluded): **601**
+- of those, on the grid: **0** (0.0 %)
+- closed UPPER ends: **292**, on the grid: **0**
 
 ## Which (model, parameter) slots are affected
 
-- `('casson', 'tau_y')`: 20
-- `('casson', 'eta_c')`: 20
-- `('carreau_yasuda', 'eta_inf')`: 20
-- `('cross', 'eta_inf')`: 20
-- `('newtonian', 'mu')`: 20
-- `('power_law', 'k')`: 20
-- `('carreau_yasuda', 'eta_0')`: 19
-- `('cross', 'eta_0')`: 18
-- `('carreau_yasuda', 'lam')`: 16
-- `('herschel_bulkley', 'tau_y')`: 15
-- `('herschel_bulkley', 'k')`: 15
-- `('cross', 'lam')`: 13
-- `('carreau_yasuda', 'a')`: 3
 
 ## What this does NOT show
 

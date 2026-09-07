@@ -37,7 +37,8 @@ from biorheo.identify.profiling import (
 
 REPO = Path(__file__).resolve().parent.parent
 GATES = REPO / "data" / "profile_interval_gates.json"
-DIAG = REPO / "data" / "profile_interval_diagnosis.json"
+DIAG = REPO / "data" / "profile_interval_diagnosis.json"     # today: a regression check
+PREFIX = REPO / "data" / "profile_interval_prefix.json"       # how bad it was
 
 # dst_fit.profiling: step floor span/5000, then _REFINEMENTS = 10 bisections
 GRID_DIVISOR = 5000.0 * 1024
@@ -283,15 +284,78 @@ def test_the_g139_gates_are_recorded_as_FAILED_and_stay_that_way():
     assert v["median_new_hull_width_pct"] > v["median_abs_pct_diff"]
 
 
-def test_diagnosis_artifact_counts_the_grid_points():
+def test_the_prefix_artifact_counts_how_bad_it_was():
+    """The HISTORICAL measurement, re-gradable forever from the rows committed at
+    `d38bc77`. It cannot be reproduced from the working tree, because item 13 regenerated
+    every sidecar in that same commit -- which is why the rows are preserved separately.
+
+    `NEXT_STEPS` first said 117 of 296 and flagged itself conservative; reading each
+    model's own declared bound gave 203; requiring the grid index to be one a 10-fold
+    bisection can actually produce (item 16) gives 201. All three numbers are pinned in
+    the artifact's own prose so the correction cannot quietly revert."""
+    assert PREFIX.exists(), "run scripts/profile_interval_regrade.py"
+    s = json.loads(PREFIX.read_text(encoding="utf-8"))["summary"]
+    assert s["n_closed_upper"] == 296
+    assert s["n_upper_on_grid"] == 201
+    assert s["as_shipped_upper_before_regrade"] == 203
+    assert s["n_rejected_out_of_range"] == 18
+    assert s["n_rejected_at_the_bound"] == 5
+    assert s["worst"]["delta_over_value"] > 1000
+    # a bisection index the arithmetic can produce
+    assert 1 <= s["worst"]["grid_index"] <= 1024
+
+
+def test_the_live_scan_says_the_defect_is_gone():
+    """The same scan against TODAY's registry is a regression check and must report zero.
+    If this ever fires, some sidecar has been written by the old walk again."""
     assert DIAG.exists(), "run scripts/profile_interval_diagnosis.py"
     s = json.loads(DIAG.read_text(encoding="utf-8"))["summary"]
-    # item 13 as written in NEXT_STEPS said 117 of 296 and flagged itself conservative;
-    # reading each model's own declared bound gives these. Pinned so the correction to
-    # the item's own numbers cannot quietly revert.
-    assert s["n_closed_upper"] == 296
-    assert s["n_upper_on_grid"] == 203
-    assert s["worst"]["delta_over_value"] > 1000
+    assert s["n_closed_ends"] > 500, "the scan found almost nothing; did it read the records?"
+    assert s["n_on_grid"] == 0, s["on_grid_by_model_param"]
+
+
+def test_every_sidecar_carries_the_exposure_ratio():
+    """G16.4. `exposure = (span/5000)/(wald/4)` says whether the defective step floor set
+    the walk that produced an interval, and by how much it overshot -- so a reader can ask
+    that of a shipped number without refitting the curve. Two ends, because the two spans
+    differ by decades."""
+    import yaml
+
+    records = REPO / "src" / "biorheo" / "registry" / "records"
+    sidecars = sorted(records.glob("*.identifiability.yaml"))
+    assert len(sidecars) >= 115
+    n_defined = 0
+    for path in sidecars:
+        block = yaml.safe_load(path.read_text(encoding="utf-8"))
+        assert "exposure_note" in block, path.name
+        for name, est in block["parameters"].items():
+            assert "wald_stderr" in est, (path.name, name)
+            assert "exposure_hi" in est and "exposure_lo" in est, (path.name, name)
+            if est["exposure_hi"] is not None:
+                n_defined += 1
+                # the two ends are different questions and must not be the same number
+                assert est["exposure_lo"] is not None
+                assert est["exposure_hi"] != est["exposure_lo"], (path.name, name)
+    assert n_defined > 300, n_defined
+
+
+def test_the_exposure_ratio_reproduces_the_item_15_numbers():
+    """A discriminating check: the field must reproduce numbers measured independently by
+    `case_studies/injectability_surrogates/uq_check.py`, which computes them from a refit
+    and never reads a sidecar. If they agreed only with themselves this would anchor
+    nothing."""
+    import yaml
+
+    records = REPO / "src" / "biorheo" / "registry" / "records"
+    block = yaml.safe_load(
+        (records / "carbopol_etd2020_0p5wt_50uL.identifiability.yaml").read_text(
+            encoding="utf-8"))
+    got = {k: v["exposure_hi"] for k, v in block["parameters"].items()}
+    assert got["k"] == pytest.approx(1.177e4, rel=2e-3)
+    assert got["tau_y"] == pytest.approx(1755, rel=2e-3)
+    # the flow index is the one the defect could barely touch, and it is why that study's
+    # forces did not move: its box is O(1), so the floor was the right size anyway
+    assert got["n"] == pytest.approx(1.092, rel=2e-3)
 
 
 def test_every_registry_value_lies_inside_its_corrected_interval():

@@ -26,6 +26,9 @@ parameters:
     partner: null
     lo_at_bound: false
     hi_at_bound: false
+    wald_stderr: 1.8381827492667608
+    exposure_hi: 435.21232292990123
+    exposure_lo: 0.00011735565512298268
   eta_inf:
     value: 0.003278784482895616
     lo: 0.0030037350666774058
@@ -35,6 +38,9 @@ parameters:
     partner: null
     lo_at_bound: false
     hi_at_bound: false
+    wald_stderr: 0.0001833263646044285
+    exposure_hi: 4363802.222899954
+    exposure_lo: 0.014307967061782504
   lam:
     value: 132.2241316648629
     lo: 8.81658746496249
@@ -44,6 +50,9 @@ parameters:
     partner: eta_0
     lo_at_bound: false
     hi_at_bound: true
+    wald_stderr: 1543.8292238902252
+    exposure_hi: 0.5181235128319769
+    exposure_lo: 6.851749072694832e-05
   a:
     value: 0.8418689797260129
     lo: 0.1
@@ -53,6 +62,9 @@ parameters:
     partner: eta_0
     lo_at_bound: true
     hi_at_bound: true
+    wald_stderr: 3.3758877808701095
+    exposure_hi: 0.0021702453670811414
+    exposure_lo: 0.00017580418020525594
   n:
     value: 0.43883369445817016
     lo: 0.05
@@ -62,4 +74,14 @@ parameters:
     partner: null
     lo_at_bound: true
     hi_at_bound: false
+    wald_stderr: 0.05579631183949209
+    exposure_hi: 0.02238379210486599
+    exposure_lo: 0.005575045111608362
+exposure_note: 'exposure_hi / exposure_lo = (span/5000) / (wald_stderr/4) with span
+  = |bound - value| for that end''s box bound. It is how far dst_fit.profiling''s
+  step floor overshot the Wald-scaled step on the walk that produced this interval:
+  > 1 means the box floor set the first step, and the magnitude is by how much. Written
+  from 2026-09-06 so a reader can ask whether an interval came from the defective
+  walk without refitting the curve (NEXT_STEPS items 13 and 16). Note the two ends
+  differ, often by decades.'
 data_note: Horner 2020 steady shear, human donor P, 16 points; see data/horner2020/SOURCE.md

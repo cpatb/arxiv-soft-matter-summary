@@ -26,6 +26,9 @@ parameters:
     partner: null
     lo_at_bound: false
     hi_at_bound: false
+    wald_stderr: 0.0569319794368728
+    exposure_hi: 14051.85366975011
+    exposure_lo: 0.0027370037499694997
   eta_inf:
     value: 0.003195259633976757
     lo: 0.0029491035353858114
@@ -35,6 +38,9 @@ parameters:
     partner: null
     lo_at_bound: false
     hi_at_bound: false
+    wald_stderr: 0.00010604423956473749
+    exposure_hi: 7544021.256858665
+    exposure_lo: 0.024105106676925166
   lam:
     value: 35.132837655121534
     lo: 11.87209376024335
@@ -44,6 +50,9 @@ parameters:
     partner: null
     lo_at_bound: false
     hi_at_bound: false
+    wald_stderr: 23.437219208875568
+    exposure_hi: 34.13254305472085
+    exposure_lo: 0.0011992151915980506
   m:
     value: 0.6437161143608209
     lo: 0.5826680828297408
@@ -53,4 +62,14 @@ parameters:
     partner: null
     lo_at_bound: false
     hi_at_bound: false
+    wald_stderr: 0.028159635610027222
+    exposure_hi: 0.06694074932703013
+    exposure_lo: 0.01686715332777694
+exposure_note: 'exposure_hi / exposure_lo = (span/5000) / (wald_stderr/4) with span
+  = |bound - value| for that end''s box bound. It is how far dst_fit.profiling''s
+  step floor overshot the Wald-scaled step on the walk that produced this interval:
+  > 1 means the box floor set the first step, and the magnitude is by how much. Written
+  from 2026-09-06 so a reader can ask whether an interval came from the defective
+  walk without refitting the curve (NEXT_STEPS items 13 and 16). Note the two ends
+  differ, often by decades.'
 data_note: Horner 2020 steady shear, human donor T, 16 points; see data/horner2020/SOURCE.md

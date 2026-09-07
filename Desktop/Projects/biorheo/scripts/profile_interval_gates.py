@@ -45,7 +45,11 @@ from biorheo.identify.profiling import (
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
 RECORDS = REPO / "src" / "biorheo" / "registry" / "records"
-DIAG = REPO / "data" / "profile_interval_diagnosis.json"
+# The PRE-FIX row set, not the live scan: item 13 regenerated the sidecars, so
+# `profile_interval_diagnosis.json` now describes the CORRECTED registry and
+# contains zero grid points. Reading it here would give a gate an empty sample,
+# which passes by vacuum. See scripts/profile_interval_regrade.py.
+DIAG = REPO / "data" / "profile_interval_prefix.json"
 OUT_MD = REPO / "data" / "profile_interval_gates.md"
 OUT_JSON = REPO / "data" / "profile_interval_gates.json"
 
@@ -97,7 +101,7 @@ def _fit(model, gd, eta):
 
 def main() -> int:
     if not DIAG.exists():
-        print("run scripts/profile_interval_diagnosis.py first", file=sys.stderr)
+        print("run scripts/profile_interval_regrade.py first", file=sys.stderr)
         return 2
     diag = json.loads(DIAG.read_text(encoding="utf-8"))
 

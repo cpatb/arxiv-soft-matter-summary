@@ -12,6 +12,7 @@ numbers the record quotes, and the function refuses.
 
 from __future__ import annotations
 
+import math
 from datetime import date
 from pathlib import Path
 
@@ -28,6 +29,40 @@ WRITTEN_BY = "biorheo.identify"
 def sidecar_path(record_path: str | Path) -> Path:
     p = Path(record_path)
     return p.with_name(p.stem + ".identifiability.yaml")
+
+
+
+_EXPOSURE_NOTE = (
+    "exposure_hi / exposure_lo = (span/5000) / (wald_stderr/4) with span = |bound - value| "
+    "for that end's box bound. It is how far dst_fit.profiling's step floor overshot the "
+    "Wald-scaled step on the walk that produced this interval: > 1 means the box floor set "
+    "the first step, and the magnitude is by how much. Written from 2026-09-06 so a reader "
+    "can ask whether an interval came from the defective walk without refitting the curve "
+    "(NEXT_STEPS items 13 and 16). Note the two ends differ, often by decades."
+)
+
+_STEPS_PER_SPAN = 5000.0
+_WALD_FRACTION = 0.25
+
+
+def _exposure(model, name: str, est) -> dict[str, float | None]:
+    """The per-END exposure ratio for one parameter; ``None`` where it is undefined.
+
+    Undefined means the Wald standard error is zero or non-finite -- a flat or degenerate
+    direction -- in which case the floor won by construction and no finite ratio describes
+    it. ``None`` rather than ``inf`` because YAML round-trips ``.inf`` inconsistently and a
+    reader should see an absence, not a number.
+    """
+    i = model.param_names.index(name)
+    wald = float(est.wald_stderr)
+    if not math.isfinite(wald) or wald <= 0.0:
+        return {"exposure_hi": None, "exposure_lo": None}
+    step_wald = _WALD_FRACTION * wald
+    out: dict[str, float | None] = {}
+    for key, bound in (("exposure_hi", float(model.bounds[1][i])),
+                       ("exposure_lo", float(model.bounds[0][i]))):
+        out[key] = float(abs(bound - est.value) / _STEPS_PER_SPAN / step_wald)
+    return out
 
 
 def write_identifiability(record: FluidRecord, ident: IdentifiedModel,
@@ -64,8 +99,11 @@ def write_identifiability(record: FluidRecord, ident: IdentifiedModel,
             name: {"value": est.value, "lo": est.lo, "hi": est.hi, "verdict": est.verdict,
                    "decades": (None if est.decades == float("inf") else est.decades),
                    "partner": est.partner, "lo_at_bound": est.lo_at_bound,
-                   "hi_at_bound": est.hi_at_bound}
+                   "hi_at_bound": est.hi_at_bound,
+                   "wald_stderr": est.wald_stderr,
+                   **_exposure(ident.model, name, est)}
             for name, est in ident.params.items()},
+        "exposure_note": _EXPOSURE_NOTE,
     }
     if data_note:
         block["data_note"] = data_note
