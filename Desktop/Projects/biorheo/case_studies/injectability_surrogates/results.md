@@ -32,7 +32,7 @@ Sensitivity d ln F / d ln p at 10 s: tau_y +0.000, k +1.000, n +7.438. Insensiti
 
 **The parameter intervals moved by up to 2.94 % and the forces did not** -- the push-through hulls above move at most **0.0081 %** between the two routines. Both gels narrowed. Full table in `uq_check.md`.
 
-**Why, and it is not a property of the fix.** Item 13's step floor is `box_bound/5000`, so its size scales with how wide a parameter's declared box is. Herschel-Bulkley's are not alike: `tau_y` is bounded at `1e5` and `k` at `1e6`, while the flow index `n` is bounded at O(1). The floor inflated the first two (`k` by 2.94 %, `tau_y` by 1.87 %) and could not touch the third (0.001 %) -- and the force here is set by `n`, whose `d ln F / d ln n` reaches 4.87 and 7.44. **The correction moved the parameters this force does not depend on.**
+**Why, and it is not a property of the fix.** Item 13's step floor is `box_bound/5000`, so its size scales with how wide a parameter's declared box is. Herschel-Bulkley's are not alike: `tau_y` is bounded at `1e5` and `k` at `1e6`, while the flow index `n` is bounded at O(1). The floor inflated the first two (`k` by 2.94 %, `tau_y` by 1.87 %) and barely moved the third (0.001 %). The floor was APPLIED to all three -- it exceeded `wald/4` on five of the six parameters -- but for `n` it exceeded it by a factor of 1.09, i.e. it happened to be the right size, against 11 770 for `k`. -- and the force here is set by `n`, whose `d ln F / d ln n` reaches 4.87 and 7.44. **The correction moved the parameters this force does not depend on.**
 
 A second reason works the same way: these curves carry 54 points against the blood records' 16, so their Wald errors are large and `wald/4` wins the `max` before the box is consulted at all.
 

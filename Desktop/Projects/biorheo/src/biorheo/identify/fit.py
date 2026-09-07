@@ -344,7 +344,7 @@ def fit_rate_curve(model: RateModel, gammadot, eta, *, level: float = 0.95,
     params: dict[str, ParamEstimate] = {}
     for i, name in enumerate(model.param_names):
         # NOT dst_fit's profile_likelihood: its outward step and its ten bisections are
-        # both sized from the parameter's declared BOX BOUND, so 203 of the registry's
+        # both sized from the parameter's declared BOX BOUND, so 201 of the registry's
         # 296 closed upper ends were bisection-grid points rather than F-crossings
         # (NEXT_STEPS item 13; gate in data/profile_interval_prereg.md). The wrapper uses
         # dst_fit's own nuisance minimiser, so only the WALK differs.

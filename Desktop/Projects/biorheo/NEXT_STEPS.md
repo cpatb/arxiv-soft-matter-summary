@@ -9,7 +9,7 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 311 passed, 7 deselected, 1 xfailed
+python -m pytest -q -m "not slow"      # must print: 314 passed, 7 deselected, 1 xfailed
 git -C C:\Users\compl log --oneline -3  # top should be c771970 or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
@@ -421,7 +421,7 @@ pre-registration is never rewritten**; sections 0-6 stand as committed.
 
 **The item's own numbers were UNDERSTATED and the reproduction is what found that.**
 `scripts/profile_interval_diagnosis.py` reads each model's declared bound rather than
-three guessed candidates: **203 of 296 closed upper ends** on the grid (this file used to
+three guessed candidates: **201 of 296 closed upper ends** on the grid (this file used to
 say 117), worst **1639x the best-fit value** above it (used to say 82x).
 
 **G13.2 is the gate that could have made this cosmetic.** Evaluating the profile F
@@ -466,7 +466,7 @@ finder. Derived in the pre-registration, not reverse-engineered from the answer.
    genuine crossing `F - f_crit` is below the inner solver's own noise. Over-rejection
    discards good data as surely as under-rejection keeps bad data.
 3. **The prediction that intervals narrow "dramatically in most cases" is wrong.** The
-   MEDIAN narrowing is 1.0002x. The effect is a TAIL -- 203 of 296 upper ends -- not a
+   MEDIAN narrowing is 1.0002x. The effect is a TAIL -- 201 of 296 upper ends -- not a
    shift.
 
 **Registry effect.** Verdicts move ONLY in the `carreau_yasuda` column, on 4 donors, and
@@ -613,8 +613,17 @@ report and `profiling.py`'s docstring called `step_rule = "value"` a fallback fo
 unusable Wald error; it is not. The step is `max(wald/4, |best| * 1e-3)` and the floor
 wins whenever it is larger, which it does on **2 of these 6 parameters, all of which have
 finite positive Wald errors**. Behaviour right, description wrong. The description is
-fixed and the test now asserts the invariant that matters — **the BOX never entered
-(`step_rule != "box_fallback"`)** — rather than the one I had assumed.
+fixed and the test now asserts `step_rule != "box_fallback"` rather than the one I had
+assumed.
+
+**CORRECTED 2026-09-06 by item 16.** This item read that assertion as *"the box never
+entered, which is the direct statement that the defect could not act here"*. It is not:
+`box_fallback` belongs to the CORRECTED routine and needs both `wald/4` and `|best|·1e-3`
+to be zero, while the DEFECT acted whenever `span/5000 > wald/4` — true on **five of
+these six parameters**. The conclusion survives and the reason does not. `n`'s box is
+`2.0`, so its `(span/5000)/(wald/4)` is **1.09** — the floor was applied to the flow index
+too and happened to be the right size — against **11 770** for `k`. The ratio explains
+the three orders of magnitude this item could only assert.
 
 **G15.4 puts two error terms in the same units for the first time here.** `rmse_log` is a
 relative viscosity error and `d ln F / d ln k` is ~1, so they are comparable as
@@ -630,48 +639,120 @@ are unchanged.
 **Still untested:** the "an open interval is never printed as a number" branch has now
 failed to fire in BOTH case studies. It is unexercised code, recorded as such.
 
-### 16. NEXT ITEM, not started: nothing in this repo tells a caller whether ITS numbers were affected by item 13
+### 16. DONE 2026-09-06 (all four gates PASS, after G16.1 failed TWICE on my own instruments): which numbers were exposed, and by how much
+
+`scripts/exposure_scan.py` -> `data/exposure_scan.md` / `.json`, plus
+`scripts/profile_interval_regrade.py` -> `data/profile_interval_prefix.md` / `.json`.
+Gate pre-registered in `data/exposure_prereg.md`, committed at `1e33b56` before the scan
+was run. Pinned in `tests/test_profiling_wrapper.py`.
+
+**The question.** The same defect was **large** in the registry, **irrelevant** to the
+Carbopol needle forces (0.008 %), and **irrelevant** to the blood family comparison for a
+third and different reason. Three studies, one bug, three answers, and what decides which
+you get was not written anywhere a caller would look.
+
+**The answer is a RATIO, not a boolean:**
+
+```
+exposure = (span / 5000) / (wald / 4),   span = |bound - best|
+```
+
+`exposure = 1.09` means the floor was applied and happened to be the right size;
+`exposure = 11 770` means the first step overshot by four orders of magnitude. **Both
+ends, always** — a viscosity at `best = 21` has `span_hi/5000 = 200` against
+`span_lo/5000 = 0.0043`.
+
+| gate | result |
+|---|---|
+| G16.1 the grid signature implies the box floor won | PASS, **0** counterexamples over 609 ends (201 on the grid) |
+| G16.2 the converse is NOT claimed | 8 inflated but not detectably on the grid — a limit of the DETECTOR |
+| G16.3 the ratio tracks the overreach | Spearman **0.784** (p = 5e-43, n = 201) |
+| G16.4 exposure surfaced where a reader will find it | every sidecar carries `wald_stderr`, `exposure_hi`, `exposure_lo` |
+
+**G16.1 FAILED TWICE and both failures were in my own measuring code.**
+
+1. **15 counterexamples.** The scan computed one ratio per PARAMETER from the upper bound
+   and compared it against grid points detected on either end. 14 of the 15 were
+   lower-end points graded against the upper ratio. Fixed by working per END.
+2. **18 counterexamples, and this one was upstream.** The grid detector asked only whether
+   `m = delta * 5.12e6 / span` is an INTEGER. With `_REFINEMENTS = 10` a bisection can
+   only return `m` in `[1, 1024]`; `m > 1024` is not expressible. It therefore accepted
+   any `delta/span` that happened to be round — **including every end with `delta == span`,
+   i.e. `m = 5 120 000`, the endpoint sitting AT the box bound and not at a crossing at
+   all.** Five of the eighteen were exactly that.
+
+**It corrects item 13's own headline: 201 of 296, not 203.** The worst case is unchanged
+at 1639x (`m = 251`) and **G13.2 is untouched** — still `n = 70`, still a median 710x
+`f_crit` — because every rejected end was on a `cross` or `carreau_yasuda` record.
+Addendum B of `data/profile_interval_prereg.md` records it; the pre-registration itself is
+not edited.
+
+**This is a change to a measuring instrument that makes a failing gate pass**, so the
+justification has to stand alone, and it does: the range comes from `_REFINEMENTS`, not
+from the gate, and would be the right bound if G16.1 had never been written. The
+corroboration is the rejected set itself.
+
+**A reproducibility defect surfaced with it.** `profile_interval_diagnosis.py` reads the
+committed sidecars, and item 13 regenerated those sidecars **in the same commit that first
+wrote the artifact** — so from `d38bc77` onward nobody could reproduce it, and running it
+today finds zero. The rows are preserved verbatim as
+`data/profile_interval_prefix_rows.json` and re-graded by
+`scripts/profile_interval_regrade.py`; the live scan is relabelled as what it now is, a
+**regression check that must report zero**. Both consumers were re-pointed, because
+reading the live scan would have handed them an empty sample — a gate that passes by
+vacuum.
+
+**It also corrects an item-15 sentence.** Item 15 said `box_fallback` firing on none of
+the Carbopol parameters is "the direct statement that the defect could not act here".
+`box_fallback` is a property of the CORRECTED routine (it needs both `wald/4` and
+`|best|·1e-3` to be zero); the DEFECT acted whenever `span/5000 > wald/4`, which was true
+on **five of the six**. Item 15's conclusion survives and its reason does not: `n`'s box
+is `2.0`, so its `exposure` is **1.09** while `k`'s is **11 770**. The ratio explains the
+three orders of magnitude that the boolean could only assert.
+
+### 17. NEXT ITEM, not started: `dst_fit` still ships the defect, and the decision about that has never been made
 
 Written for zero context.
 
-**The problem, stated from what items 13, 14 and 15 measured.** The same bug was:
+**The state of play.** `biorheo` routes around the defect and `dst_fit` still has it.
+Every item from 13 to 16 has deferred the upstream question with the same sentence — *"if
+the fix goes upstream it needs its own justification, not this one"* — and four items
+later that justification now exists in measured form and has still never been written
+down as a decision.
 
-- **large** in the registry — 203 of 296 closed upper ends on the grid, worst 1639x the
-  best-fit value, shipped endpoints at a median 710x `f_crit`;
-- **irrelevant** to the Carbopol needle forces — 0.0081 %;
-- **irrelevant** to the blood family comparison, for a third and different reason (it
-  moved the upper ends and that comparison binds on the lower ones).
+**What is known, and it is enough to decide on.**
 
-Three studies, one bug, three answers, and **the thing that decides which you get is not
-written down anywhere a caller would look**. It is: how wide the parameter's declared box
-is (the floor is `box/5000`), how many points the curve has (a large Wald error means
-`wald/4` wins the `max`), and which parameter the downstream quantity is sensitive to.
+- The endpoints are not confidence limits: a median **710x `f_crit`** over a 70-end
+  pre-registered sample (item 13, G13.2).
+- The corrected routine matches a **closed form** that touches none of its code, to
+  **2.4e-9** on 20 records (G13.4).
+- The blast radius is computable per parameter and is now a field in every sidecar
+  (item 16, G16.4).
+- `dst_fit`'s own suite is green and its one figure is byte-identical; nothing in it
+  depends on the profile step floor being sized from the box (`tests/test_gate_0_1_dstfit_unchanged.py`).
 
-**What to do.**
+**What to do, and the first step is NOT to write code.**
 
-1. **Do not build a general "impact estimator".** That is the over-engineering trap this
-   repo's rules warn about. Build the smallest thing that answers the question a caller
-   actually asks, which is *"is the number I am about to quote affected?"*
-2. The cheapest honest answer already exists per-profile and is not surfaced:
-   `ProfileInterval.step_rule`. **`box_fallback` never fires and `value`/`wald` both mean
-   the box was not consulted**, so a profile whose rule is not `box_fallback` is one the
-   defect could not have acted on. Consider exposing that in the sidecar, where a reader
-   can see it without re-running anything.
-3. **Pre-register, and pick a gate that can fail.** Items 14 and 15 both had to have their
-   obvious gate discarded as unfalsifiable. A candidate that can fail: *does `step_rule`
-   actually predict which registry parameters were on the grid?* The diagnosis artifact
-   (`data/profile_interval_diagnosis.json`) lists all 219 grid points by record and
-   parameter, and the profiler can report its rule for each. **If they do not agree, the
-   explanation on three pages of this repo is wrong** — and that is worth knowing before
-   it is quoted again.
-4. Note the asymmetry before predicting: `wald/4 > box/5000` means the box did not set the
-   step, but a parameter can still land on the grid through a LATER step, because the step
-   grows geometrically from wherever it starts. So the prediction is one-directional and
-   should be stated that way.
+1. **Decide whether this is a decision an agent may make.** `dst_fit` is the founder's own
+   package and the repo rule says it is consumed unchanged. Item 17 is a *proposal* to be
+   read, not a patch to be landed. **Write the case; do not merge it.**
+2. If it proceeds: the fix is one line in `dst_fit.profiling.profile_likelihood` (size the
+   floor from the parameter rather than its box) plus the endpoint verification item 13
+   added, and `tests/test_gate_0_1_dstfit_unchanged.py` **must be updated in the same
+   commit** — it pins a figure hash that will move, and a gate whose whole purpose is to
+   detect change cannot be left to fail silently.
+3. **Pre-register what "unchanged results" means before touching it.** `dst_fit`'s own
+   published numbers (`phim_drift`, the steady-subset study) were computed with the
+   defective walk. The honest question is not whether they change but by how much, and
+   the exposure ratio computes that per parameter without running anything.
+4. **Do not delete biorheo's wrapper if the upstream fix lands.** It carries the endpoint
+   verification, the second nuisance start and the `step_rule` / `exposure` reporting, none
+   of which is part of the one-line fix, and all of which caught something real.
 
-**Do not** patch `dst_fit` as part of this, and do not restate any of the three numbers
-above without its condition — "the bug moved things by 1639x" and "the bug moved things by
-0.008 %" are both true and both useless without the clause that follows.
+**The counter-argument, which is not weak.** `dst_fit` is consumed unchanged precisely so
+that biorheo cannot quietly reshape it, and the wrapper already gives biorheo correct
+intervals. Patching upstream buys correctness for OTHER callers of `dst_fit` — of which
+there is currently one, `dst_fit` itself. Write that down too.
 
 ## What NOT to do
 
@@ -714,7 +795,7 @@ above without its condition — "the bug moved things by 1639x" and "the bug mov
   is a ONE-AT-A-TIME box hull and is wider than the joint region it is drawn from;
   the covariance-sampled interval beside it is a joint region but assumes the Wald
   normal. Name which one you are quoting. (The blanket ban on `force_with_uq` was
-  lifted when item 13 closed; the reason it existed -- 203 of 296 closed upper ends
+  lifted when item 13 closed; the reason it existed -- 201 of 296 closed upper ends
   were bisection-grid artefacts -- is fixed, not waived.)
 - Do not expect a corrected interval to have changed item 12. It did not, and G13.9
   measured why: the bug inflated only the UPPER ends and the force difference is
@@ -734,5 +815,9 @@ above without its condition — "the bug moved things by 1639x" and "the bug mov
   `wald/4` wins the `max`), and which parameter the downstream quantity is sensitive to.
 - Do not call `step_rule = "value"` a fallback for an unusable Wald error. The step is
   `max(wald/4, |best| * 1e-3)` and that floor wins whenever it is larger -- on 2 of the 6
-  Carbopol parameters, all with finite positive Wald errors. `box_fallback` is the branch
-  that means the box was consulted, and it has never fired.
+  Carbopol parameters, all with finite positive Wald errors.
+- Do not read `box_fallback` never firing as "the defect could not act here". That branch
+  belongs to the CORRECTED routine and needs BOTH terms to be zero; the defect acted
+  whenever `span/5000 > wald/4`, which was true on five of those same six parameters. The
+  quantity that answers it is `exposure_hi` / `exposure_lo` in the sidecar, and it is a
+  ratio: 1.09 for a flow index bounded at 2.0, 11 770 for a consistency bounded at 1e6.

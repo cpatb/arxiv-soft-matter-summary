@@ -95,7 +95,10 @@ def _interval_provenance_section() -> list[str]:
         "`box_bound/5000`, so its size scales with how wide a parameter's declared box "
         "is. Herschel-Bulkley's are not alike: `tau_y` is bounded at `1e5` and `k` at "
         "`1e6`, while the flow index `n` is bounded at O(1). The floor inflated the first "
-        "two (`k` by 2.94 %, `tau_y` by 1.87 %) and could not touch the third (0.001 %) "
+        "two (`k` by 2.94 %, `tau_y` by 1.87 %) and barely moved the third (0.001 %). "
+        "The floor was APPLIED to all three -- it exceeded `wald/4` on five of the six "
+        "parameters -- but for `n` it exceeded it by a factor of 1.09, i.e. it happened "
+        "to be the right size, against 11 770 for `k`. "
         "-- and the force here is set by `n`, whose `d ln F / d ln n` reaches 4.87 and "
         "7.44. **The correction moved the parameters this force does not depend on.**", "",
         "A second reason works the same way: these curves carry 54 points against the "

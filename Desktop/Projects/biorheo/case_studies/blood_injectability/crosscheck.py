@@ -850,7 +850,7 @@ def _report(p: dict) -> str:
           "page.** When this study was written, the stored profile-likelihood UPPER "
           "bounds were corrupted by a step-size bug upstream in `dst_fit.profiling` -- "
           "`step = max(wald/4, span/5000)` takes `span` from the parameter's arbitrary "
-          "BOX BOUND, so 203 of the registry's 296 closed upper ends were bisection-grid "
+          "BOX BOUND, so 201 of the registry's 296 closed upper ends were bisection-grid "
           "points rather than likelihood crossings, the worst sitting 1639x the "
           "best-fit value above it. **That is fixed (NEXT_STEPS item 13, "
           "`data/profile_interval_prereg.md`), and the question it blocked has been "

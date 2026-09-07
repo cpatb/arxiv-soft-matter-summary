@@ -15,7 +15,7 @@ magnitude and ten bisections leave a resolution of ``200/1024 = 0.195``.
 
 The returned endpoint is then a point on the grid ``best + m * span / 5.12e6`` for an
 integer ``m <= 1024``. Measured over this registry (``scripts/profile_interval_diagnosis.py``):
-**203 of 296 closed upper ends** sit exactly on that grid, worst 1639x the best-fit value
+**201 of 296 closed upper ends** sit exactly on that grid, worst 1639x the best-fit value
 above it.
 
 ``dst_fit`` is consumed unchanged (``tests/test_gate_0_1_dstfit_unchanged.py`` exists to

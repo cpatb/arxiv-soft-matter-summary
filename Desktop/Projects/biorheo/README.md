@@ -198,7 +198,7 @@ quoted, and a test asserts the two sections cannot drift apart again.
 parameter's declared BOX BOUND -- a guard-rail so the fitter cannot wander, not a
 statement about the data. For a viscosity bounded at `1e6` the first step is 200 on a
 parameter of value 0.0038, and the returned endpoint is a point on the grid
-`best + m*span/5.12e6`: **203 of 296 closed upper ends in this registry sat on it**,
+`best + m*span/5.12e6`: **201 of 296 closed upper ends in this registry sat on it**,
 worst 1639x the best-fit value above it.
 
 They were not confidence limits. Evaluating the profile F statistic at the shipped

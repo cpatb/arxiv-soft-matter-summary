@@ -201,9 +201,14 @@ def main() -> int:
         f"{sum(1 for p in per_param if p['step_rule'] == 'wald')} of {len(per_param)} "
         f"parameters and the 0.1 %-of-value floor on "
         f"{sum(1 for p in per_param if p['step_rule'] == 'value')}. **Neither is the box**",
-        "-- `box_fallback` fires on none of them, which is the direct statement that the",
-        "defect could not act here. These curves carry 54 points against the blood",
-        "records' 16, so the Wald errors are large.",
+        "-- but `box_fallback` is a property of the CORRECTED routine and says nothing",
+        "about whether the DEFECT acted. It acted whenever `span/5000 > wald/4`, which",
+        "was true on FIVE of these six parameters. What separates them is the RATIO:",
+        "`(span/5000)/(wald/4)` is 11 770 for `k` and 1 755 for `tau_y`, and **1.09 for",
+        "`n`** -- the floor was applied to the flow index too and happened to be the",
+        "right size. That ratio is now written into every sidecar as `exposure_hi` /",
+        "`exposure_lo` (NEXT_STEPS item 16). These curves carry 54 points against the",
+        "blood records' 16, so the Wald errors are large.",
         "",
         "**This is the same shape as item 13's own G13.9 failure**, one item later: a",
         "correction reaches a downstream number only through the parameters that number",

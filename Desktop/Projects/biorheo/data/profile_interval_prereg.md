@@ -211,3 +211,33 @@ upper ends were 40x the best-fit value, which moves the force by orders of magni
 **If G13.9a fails**, the honest conclusion is that item 12's 30 % is inside the Casson
 record's own uncertainty and the misfit finding stands on `rmse_log` alone, which is
 where it already stands. That is recorded, not worked around.
+
+---
+
+## Addendum B, added 2026-09-06 after NEXT_STEPS item 16
+
+Sections 0-6 and Addendum A stand as committed. This is added, not substituted.
+
+**Section 0.1's count of 203 is too high by two, and 219 by eighteen.** The grid detector
+asked only whether `m = delta * 5.12e6 / span` is an INTEGER. With `_REFINEMENTS = 10` a
+bisection can only return `m` in `[1, 1024]`, so an integer outside that range is not a
+grid point -- and in particular `m = 5.12e6` means `delta == span`, i.e. the endpoint sits
+AT the box bound and is not a crossing at all. Five of the eighteen rejected ends are
+exactly that.
+
+Corrected: **201 of 296** closed upper ends, 201 grid points in all. The worst case is
+unchanged at **1639x** the best-fit value (`m = 251`, a legitimate index), and **G13.2 is
+unaffected** -- its sample is still 70 and its median still 710 x `f_crit`, because every
+rejected end was on a `cross` or `carreau_yasuda` record.
+
+The range test was forced by item 16's G16.1 failing on those eighteen. It is a change to
+a measuring instrument that makes a failing gate pass, so it is worth stating that the
+bound comes from `_REFINEMENTS` and would be the right bound if G16.1 had never been
+written.
+
+**A reproducibility defect surfaced with it.** `profile_interval_diagnosis.py` reads the
+committed sidecars, and item 13 regenerated those sidecars in the same commit that first
+wrote the artifact -- so from `d38bc77` onward nobody could reproduce it, and running it
+today finds zero. The rows are now preserved as `profile_interval_prefix_rows.json` and
+re-graded by `scripts/profile_interval_regrade.py`; the live scan is relabelled as a
+regression check, which is what it now is.
