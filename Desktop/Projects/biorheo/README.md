@@ -170,6 +170,45 @@ the narrower reading. The standard could not be checked offline, so the section 
 rebuilt on the `R^-4` scaling, which needs no standard; the retraction, both readings and
 both verdicts are on the page.
 
+## Every confidence interval in the registry was rebuilt on 2026-09-06
+
+`dst_fit.profiling` sizes both its outward step floor and its ten bisections from a
+parameter's declared BOX BOUND -- a guard-rail so the fitter cannot wander, not a
+statement about the data. For a viscosity bounded at `1e6` the first step is 200 on a
+parameter of value 0.0038, and the returned endpoint is a point on the grid
+`best + m*span/5.12e6`: **203 of 296 closed upper ends in this registry sat on it**,
+worst 1639x the best-fit value above it.
+
+They were not confidence limits. Evaluating the profile F statistic at the shipped
+endpoints gives a **median of 710 times `f_crit`** where a limit has `F = f_crit`
+exactly. `biorheo.identify.profiling` sizes the step from the parameter's own Wald error
+and locates the end with Brent's method on `F - f_crit`; `dst_fit` is consumed unchanged
+and its own nuisance minimiser is reused, so only the WALK differs. The routine is
+anchored against a closed form it does not touch -- a one-parameter fit in log space has
+`SSR(u) - SSR_min = n (u - ybar)^2` exactly -- to 2.4e-9 on 20 donors.
+
+Three things worth carrying:
+
+- **Verdicts moved only toward more flagging**, and only in `carreau_yasuda`, on 4 of 20
+  donors. No fit, rmse or verdict changed for the other five families, and no number in
+  either case study moved.
+- **On two records the profile is not a function of the parameter.** The nuisance
+  re-minimisation lands on different local optima at neighbouring values, so `F` moves
+  0.239 to 10.06 between points 0.1 % apart. A root finder returns a number from that
+  sign change; it is a discontinuity, not a limit, and such an end is now reported OPEN
+  with the rejected value and its `F` kept so the rejection is auditable.
+- **A correct interval did not change the conclusion it was expected to.** The gate
+  asking whether the case study's Cross-vs-Casson force difference is resolved at 95 %
+  FAILED both arms: the bug inflated only the UPPER ends while that difference is signed
+  downward, so exactly one donor of twenty flips. What the corrected intervals do say is
+  useful and was not the question asked: the Casson record's own parameter uncertainty at
+  a 27G needle is a median **29 %** of the force, against a **12.5 %** family-choice
+  effect -- **the uncertainty is the larger of the two**, so a needle force from that
+  study should not be quoted to better than about 30 %.
+
+`data/profile_interval_prereg.md` (gate, committed before the code), `..._diagnosis.md`,
+`..._gates.md` and `..._g139.md`.
+
 ## Conventions
 
 - Models return viscosity `eta(gd)` in Pa s; `fit_rate_curve` takes `eta = sigma/gd`.

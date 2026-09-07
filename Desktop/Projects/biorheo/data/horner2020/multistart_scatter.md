@@ -16,7 +16,7 @@ G9.3 is G9.2's predicate at a lower bar over the same set, so it is one nested c
 
 ## Retraction, 2026-09-06
 
-An earlier run of this script reported G9.2 and G9.3 as FAILED on one record -- Herschel-Bulkley, donor G, "4.149, i.e. 415 %, in `tau_y`" -- and a docstring claim, a pinned test and a new `strict_identifiability` API flag were built on it before a code review caught it. **That failure is withdrawn.** The five seeds return `tau_y` = 1.61e-19, 9.81e-19, 5.00e-22, 3.27e-20, 5.94e-21 Pa against a smallest measured stress of 1.583e-03 Pa on that curve, with `lo_at_bound=True` and an identical profile interval [0, 0.01953] on all five. The optimiser converged the parameter to zero five times out of five; the "415 % move" was a span of 9.8e-19 over a mean of 2.4e-19.
+An earlier run of this script reported G9.2 and G9.3 as FAILED on one record -- Herschel-Bulkley, donor G, "4.149, i.e. 415 %, in `tau_y`" -- and a docstring claim, a pinned test and a new `strict_identifiability` API flag were built on it before a code review caught it. **That failure is withdrawn.** The five seeds return `tau_y` = 1.61e-19, 9.81e-19, 5.00e-22, 3.27e-20, 5.94e-21 Pa against a smallest measured stress of 1.583e-03 Pa on that curve, with `lo_at_bound=True` and an identical profile interval [0, 0.0005488] on all five. The optimiser converged the parameter to zero five times out of five; the "415 % move" was a span of 9.8e-19 over a mean of 2.4e-19.
 
 The retracted metric is still computed and printed so the number stays visible: its worst value is 4.149e+00, on `herschel_bulkley` donor G. Under the corrected metric that same record scores 3.031e-09.
 

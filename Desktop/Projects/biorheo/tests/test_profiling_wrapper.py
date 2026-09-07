@@ -254,6 +254,35 @@ def test_gate_artifact_numbers_are_the_ones_quoted_in_prose():
     assert g["G13.5"]["max_old_over_new"] == pytest.approx(1227.39, rel=1e-3)
 
 
+def test_no_profile_beats_the_fit_it_is_centred_on():
+    """A free by-product of the corrected walk, and a check on the FITS that nothing else
+    in this repo performs. `F < 0` somewhere on a profile means the nuisance
+    re-minimisation found a lower SSR than the reported optimum, i.e. the interval is
+    drawn around the wrong point. The old walk took one or two steps and could not have
+    noticed; this one evaluates the profile densely enough to."""
+    g = json.loads(GATES.read_text(encoding="utf-8"))["verdict"]["fit_quality_scan"]
+    assert g["n"] == 325
+    assert g["n_profiles_beating_their_own_fit"] == 0
+    assert g["worst_negative_f"] > -1e-6, g["worst_negative_f"]
+
+
+def test_the_g139_gates_are_recorded_as_FAILED_and_stay_that_way():
+    """Both arms of G13.9 failed against a 20/20 prediction, and the bars were not
+    touched. Pinned so a later run cannot quietly turn a recorded failure into a pass by
+    moving a bar: if these ever flip, the change must be deliberate and explained."""
+    p = REPO / "data" / "profile_interval_g139.json"
+    assert p.exists(), "run scripts/profile_interval_g139.py"
+    v = json.loads(p.read_text(encoding="utf-8"))["verdict"]
+    assert v["G13.9a"]["pass"] is False and v["G13.9a"]["bar"] == 11
+    assert v["G13.9b"]["pass"] is False and v["G13.9b"]["bar"] == 19
+    # the reason both failed: the comparison binds on the LOWER end, which the bug never
+    # touched, so exactly one donor differs between the old and corrected hulls
+    assert v["binding_end_new"]["lower"] == 8 and v["binding_end_new"]["upper"] == 1
+    assert v["binding_end_old"]["lower"] == 8 and v["binding_end_old"]["upper"] == 0
+    # and the salvage: parameter uncertainty is the LARGER of the two effects
+    assert v["median_new_hull_width_pct"] > v["median_abs_pct_diff"]
+
+
 def test_diagnosis_artifact_counts_the_grid_points():
     assert DIAG.exists(), "run scripts/profile_interval_diagnosis.py"
     s = json.loads(DIAG.read_text(encoding="utf-8"))["summary"]

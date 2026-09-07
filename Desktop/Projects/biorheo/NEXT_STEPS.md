@@ -9,8 +9,8 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 272 passed, 7 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be d77f468 or later
+python -m pytest -q -m "not slow"      # must print: 290 passed, 7 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be the item-13 closeout or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -244,7 +244,8 @@ Herschel-Bulkley, donor G, "4.149, i.e. 415 %, in `tau_y`". A docstring claim, a
 test and a new `strict_identifiability` API flag were built on that before a code review
 caught it. The five seeds return `tau_y` = 1.61e-19, 9.81e-19, 5.00e-22, 3.27e-20,
 5.94e-21 Pa against a smallest measured stress of 1.583e-03 Pa, with an identical profile
-interval [0, 0.01953] on all five: **the optimiser converged the parameter to zero five
+interval on all five (width 5.488e-04; quoted here as 0.01953 until item 13, and that
+number was itself a bisection-grid point): **the optimiser converged the parameter to zero five
 times out of five and the ratio was dust over dust.** Had `least_squares` returned exactly
 0.0 the criterion would have passed. This repo's own lesson -- "a relative sensitivity
 whose denominator is itself shrinking measures the shrinkage" -- applied to its own
@@ -405,60 +406,154 @@ A fourth control is on the page labelled as NOT independent evidence: a Newtonia
 `yield_share_max`. It agrees to 1e-5, which makes it a cross-implementation check of that
 number and nothing more.
 
-### 13. NEXT ITEM, not started: an upstream `dst_fit` bug corrupts 40 % of the registry's profile intervals
-Written for zero context. **Found while reviewing item 12; verified in this session; NOT
-fixed, because `dst_fit` is consumed unchanged and the fix is a judgement call about
-someone else's library.**
+### 13. DONE 2026-09-06 (all seven gates PASS; G13.9, added afterwards, FAILED): the profile intervals ended on a bisection grid
 
-**The bug.** `dst_fit.profiling.profile_likelihood` walks outward from the best fit with
-`step = max(wald/4, span/5000)` where `span = |bound - best|` and `bound` is the
-parameter's declared box limit. For a viscosity bounded at `1e6` that is `step = 200`, so
-the FIRST step overshoots to `best + 200`, the statistic is astronomically past `f_crit`,
-and `_REFINEMENTS = 10` bisections on `[best, best+200]` leave a resolution of
-`200/1024 = 0.1953125` -- on a parameter whose value is `0.0038`. The returned `hi` is a
-bisection endpoint, not the F-crossing.
+`dst_fit.profiling.profile_likelihood` sizes BOTH its outward step floor (`span/5000`)
+and its ten bisections from the parameter's declared BOX BOUND. For a viscosity bounded
+at `1e6` the first step is 200 on a parameter of value 0.0038, and the returned endpoint
+is `best + m*span/5.12e6` for an integer `m` -- a bisection-grid point, not a likelihood
+crossing.
 
-**Verified here, not taken on report.** `blood_horner2020_donor_A` `eta_c`: stored
-`hi - best = 0.19531250328`, which is `200/1024` to ten digits. Across the registry,
-**117 of 296 closed upper profile ends sit exactly on that grid** (a conservative count --
-only three candidate bounds were tested), and the worst sits **82x the best-fit value**
-above it.
+Gate pre-registered in `data/profile_interval_prereg.md`, committed at `05abaee` BEFORE
+any fix code (that commit contains that file and nothing else). Addendum A, at `eac96db`,
+records what the pre-registration itself got wrong and pre-registers G13.9. **A
+pre-registration is never rewritten**; sections 0-6 stand as committed.
 
-**What it touches, in descending order of how much it matters.**
-1. **The item 9/10 seed-scatter metric divides by this interval** (`metric` in
-   `data/horner2020/multistart_scatter.json`: *"seed span in units of the parameter's own
-   95 % profile interval"*). An inflated denominator makes the metric too SMALL, i.e.
-   those gates passed more easily than they should have. The reported worst is
-   `2.972e-05` against a `1e-3` bar -- a margin of only **33.6x** -- and the interval
-   inflation on the worst-affected parameters is of that order or more. **So G9.1/G9.3
-   and G10.1/G10.2 may not survive correct intervals. This is not a claim that they
-   fail; it is a claim that nobody knows.**
-2. `verdict_for`'s `measurable` / `bounded_only` labels, `decades`, `asymmetry` and
-   `widening` all read `hi`.
-3. `injectability.force_with_uq`'s `profile_hi`, and any uncertainty item 12 might have
-   propagated (it propagated none, which is now the honest reason why).
-4. The loader's containment rule (record value must lie inside its sidecar interval) is
-   made MORE permissive, so it cannot have produced a wrong acceptance -- only a missed
-   rejection.
+**The item's own numbers were UNDERSTATED and the reproduction is what found that.**
+`scripts/profile_interval_diagnosis.py` reads each model's declared bound rather than
+three guessed candidates: **203 of 296 closed upper ends** on the grid (this file used to
+say 117), worst **1639x the best-fit value** above it (used to say 82x).
 
-**What to do, in order.**
-1. **Reproduce the diagnosis before changing anything** -- the one-line check is that
-   `hi - best` equals `bound/5.12e6` times an integer.
-2. Decide whether the fix belongs in `dst_fit` (a step floor tied to the parameter's own
-   scale rather than to its box) or in a biorheo-side wrapper. **The repo rule is that
-   `dst_fit` is consumed unchanged and `tests/test_gate_0_1_dstfit_unchanged.py` runs its
-   suite; do not edit it to make biorheo convenient.** If the fix goes upstream it needs
-   its own justification, not this one.
-3. **Re-derive the intervals and re-grade items 9 and 10 against their UNCHANGED bars.**
-   Record whatever comes out. If a gate now fails, that is a result, and the retraction
-   goes on the page the way item 9's did.
-4. Only then is `force_with_uq` usable, and only then can item 12 say whether the plateau
-   disagreement is resolved at 95 %.
+**G13.2 is the gate that could have made this cosmetic.** Evaluating the profile F
+statistic AT the shipped endpoint over the 70-end pre-registered sample: **median 710x
+`f_crit`, worst 8130x**. A confidence limit has `F = f_crit` there, by definition.
 
-**Pre-register the gate before touching code**, as items 6, 11 and 12 did. State in
-advance what a corrected interval must satisfy (it should be near where the F statistic
-crosses `f_crit`, which is checkable directly by evaluating the profile at the returned
-endpoint) and what you will do if items 9/10 flip.
+The fix is `src/biorheo/identify/profiling.py`, called by `fit_rate_curve`. `dst_fit` is
+untouched (G13.8 checks a pathspec-scoped `git status` plus the pinned figure md5). It
+imports `dst_fit`'s own private `_nuisance_minimiser`, so **only the WALK differs** and a
+difference between the two routines cannot be an objective difference; that coupling is
+pinned by `tests/test_profiling_wrapper.py`.
+
+Gates (`scripts/profile_interval_gates.py` -> `data/profile_interval_gates.md`):
+
+| gate | result |
+|---|---|
+| G13.2 shipped endpoint is not the crossing | PASS, 70/70, median 710x `f_crit` |
+| G13.3 corrected endpoint IS the crossing | PASS, worst 2.8e-4 against a 1e-2 bar |
+| G13.4 matches a CLOSED FORM using none of this code | PASS, worst 2.4e-9 against 1e-6 |
+| G13.5 the correction can only NARROW | PASS, 98.3 %, worst narrowing 1227x |
+| G13.6 items 9 and 10 re-graded, bars unchanged | PASS, all six |
+| G13.7 loader containment survives | PASS, 115 records, 325 params, 0 failures |
+| G13.8 `dst_fit` untouched | PASS |
+
+**G13.4 is the load-bearing one.** G13.3 grades this module with this module's own
+machinery. The `newtonian` closed form does not: for a one-parameter fit in log space the
+profile is exactly `SSR(u) - SSR_min = n (u - ybar)^2`, so the crossing is
+`exp(ybar +/- s sqrt(f_crit/n))`, and it passes through neither the walk nor the root
+finder. Derived in the pre-registration, not reverse-engineered from the answer.
+
+**Three things the run found that the pre-registration did not anticipate.**
+
+1. **On two blood Carreau-Yasuda records the profile is NOT A FUNCTION of the
+   parameter.** The nuisance re-minimisation lands on different local optima at
+   neighbouring values, so `F` moves 0.239 -> 10.06 between points 0.1 % apart. A sign
+   change exists and a root finder returns a number from it; that number is a
+   DISCONTINUITY. Such an end is now rejected, reported OPEN, and carries the value and
+   `F` that were rejected so the rejection is auditable. 5 ends across donors B and L;
+   11 further apparent crossings were refuted mid-walk by a second nuisance start.
+2. **The first version of that check rejected a GOOD end** (donor C, `F = f_crit` to
+   3e-4) because the flanking test compared without a noise band, and just outside a
+   genuine crossing `F - f_crit` is below the inner solver's own noise. Over-rejection
+   discards good data as surely as under-rejection keeps bad data.
+3. **The prediction that intervals narrow "dramatically in most cases" is wrong.** The
+   MEDIAN narrowing is 1.0002x. The effect is a TAIL -- 203 of 296 upper ends -- not a
+   shift.
+
+**Registry effect.** Verdicts move ONLY in the `carreau_yasuda` column, on 4 donors, and
+only toward MORE flagging (`eta_0` measurable 20 -> degenerate 2 / measurable 18). No
+fit, rmse or verdict changed for `casson`, `herschel_bulkley`, `cross`, `newtonian` or
+`power_law`. Item 9's worst spread moved 2.972e-05 -> 2.973e-05 and its `casson` column
+moved 8.9x (3.51e-07 -> 3.14e-06) -- the predicted direction, from a number 300x under
+its bar. Item 10's `.md` is bit-identical. Every number in the blood injectability case
+study is unchanged; only `git_head` moved in its `results.json`.
+
+**G13.9 (addendum A.2, `eac96db`) FAILED both arms, against a prediction of 20/20 on
+both.** It asked step 4's question: is item 12's Cross-vs-Casson force disagreement
+resolved at 95 %?
+
+- **G13.9a FAIL, 9/20 excluded against a bar of 11/20.**
+- **G13.9b FAIL, 12/20 contained by the old hull against a bar of 19/20.**
+
+**The cause is a sign error in the reasoning, not in any code.** The bug inflated the
+UPPER ends only, but the force difference is SIGNED -- Cross below Casson on 16/20 -- so
+the comparison turns on the LOWER end of the hull, which was never corrupted. Measured:
+the binding end is the lower one on 8 donors and the upper one on 1; on the old intervals
+lower on 8, upper on 0. **Exactly one donor of twenty flips.** G13.9b was additionally
+close to undecidable by construction, since narrowing an interval can only shrink a
+push-through range, so `old_contains >= new_contains` always.
+
+**What IS established, and it is the useful part** (`data/profile_interval_g139.md`):
+the Casson push-through hull is a median **29.1 %** of the force at the 27G needle, the
+covariance-sampled joint interval **25.2 %**, against a median family difference of
+**12.5 %**. **A record's own parameter uncertainty there is LARGER than the family-choice
+effect.** So item 12's precision caveat is STRENGTHENED, not lifted, and `crosscheck.md`
+now says so: do not quote a needle force from that study to better than about 30 %.
+Item 12's mechanism is untouched -- Casson misfits on 20/20 donors in `rmse_log`, which
+is not a statement about parameter uncertainty.
+
+Tests: `tests/test_profiling_wrapper.py` (16), including a NEGATIVE CONTROL that asserts
+`dst_fit`'s endpoint is still on the grid and still past `f_crit` -- if that ever stops
+being true the wrapper is unnecessary, which is worth failing a test over.
+
+### 14. NEXT ITEM, not started: the shipped case study quotes forces with no uncertainty, and Phase 0's own exit gate requires it
+
+Written for zero context.
+
+**Why this is the next item and not something else.** The venture's Phase-0 unit 0.6
+(`../biofluids_venture/05_ROADMAP.md`) reads: *"injectability ... closed form
+(Buckingham-Reiner) with full UQ from the L2 posterior"*, and its acceptance line
+requires the report to *state which parameters the injection force is insensitive to*.
+`case_studies/blood_injectability/results.md` ships POINT forces. Until item 13 that was
+not fixable, because `force_with_uq` read corrupted upper ends. It is fixable now, and
+item 13 measured that the uncertainty is the DOMINANT term (29.1 % against a 12.5 %
+family effect), so shipping point values understates the honest error by more than the
+effect the study's own cross-check is about.
+
+**What to do.**
+
+1. **Reproduce the study's own numbers first**, before adding anything. This repo has
+   been bitten four times by extending a claim without reproducing it. Run
+   `case_studies/blood_injectability/run.py` and check `results.json` against the
+   committed one: only `git_head` should move.
+2. Add the UQ column to `results.md` from `force_with_uq`. **Report BOTH intervals and
+   say which is which** -- the one-at-a-time push-through hull (wider than the joint
+   region it is drawn from) and the covariance sample (a joint region, but Wald-normal,
+   which is the approximation the profile likelihood exists because it distrusts).
+   `data/profile_interval_g139.md` already computes both for `casson`; read them from
+   there rather than recomputing them a second way.
+3. **`sensitivities()` and `INSENSITIVE` already exist** in `injectability.py`, and the
+   gate asks for exactly that list. Check what they currently return before writing
+   anything: the gate may already be satisfiable from shipped code.
+4. **Pre-register before computing**, as items 6, 11, 12 and 13 did. State in advance
+   what "the study now carries UQ" must satisfy, and state what you will do if the
+   uncertainty swallows the donor-to-donor spread (128 %) the study's ordinal claim rests
+   on. **That is the live risk**: 29 % against 128 % sounds safe, but the hull is
+   PER DONOR and the spread is ACROSS donors, and those are not the same comparison.
+   Work out which one the ordinal claim actually needs before running anything.
+
+**Two traps this item walks into, both recorded above.**
+
+- **A hull is not a confidence interval for a function of several parameters.** Say which
+  object you are quoting, every time you quote one.
+- **`profile_open` is not empty for every record.** A parameter sitting at a box bound
+  has no limit in that direction, so the hull is infinite there; `force_with_uq` returns
+  `profile_open` naming those parameters and it must be PRINTED, not dropped. Check it
+  for `cross` and `carreau_yasuda` before promising a UQ column for those families --
+  item 13 made MORE parameters open, not fewer.
+
+**Do not** patch `dst_fit` as part of this. If the upstream fix is ever made it needs its
+own justification and its own release; `tests/test_gate_0_1_dstfit_unchanged.py` exists
+to detect the absence of change.
 
 ## What NOT to do
 
@@ -494,6 +589,15 @@ endpoint) and what you will do if items 9/10 flip.
 - Do not describe item 12's finding as "which constitutive family you pick moves the
   force". It is not symmetric: Casson fits these curves WORSE on 20/20 donors, and the
   effect tracks the misfit. The shipped family is the worse-fitting one.
-- Do not quote a `hi`, `decades`, `asymmetry` or `widening` from any sidecar until item 13
-  is closed, and do not use `force_with_uq` at all. 117 of 296 closed upper profile ends
-  are a bisection-grid artefact, not a likelihood crossing.
+- Do not read a sidecar `hi` as a limit without checking `hi_at_bound`. Item 13 made
+  MORE ends open, not fewer: an end the walk could not verify as a crossing is now
+  reported at the box bound, so it is a `bounded_only` statement and not a number.
+- Do not quote a `force_with_uq` push-through hull as a 95 % confidence interval. It
+  is a ONE-AT-A-TIME box hull and is wider than the joint region it is drawn from;
+  the covariance-sampled interval beside it is a joint region but assumes the Wald
+  normal. Name which one you are quoting. (The blanket ban on `force_with_uq` was
+  lifted when item 13 closed; the reason it existed -- 203 of 296 closed upper ends
+  were bisection-grid artefacts -- is fixed, not waived.)
+- Do not expect a corrected interval to have changed item 12. It did not, and G13.9
+  measured why: the bug inflated only the UPPER ends and the force difference is
+  signed downward, so exactly one donor of twenty flips.

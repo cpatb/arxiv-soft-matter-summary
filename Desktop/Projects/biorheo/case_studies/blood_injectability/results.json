@@ -1,6 +1,6 @@
 {
   "generated_by": "case_studies/blood_injectability/run.py",
-  "git_head": "8a91a11341d3718493dba50ad1f16974353df5dd",
+  "git_head": "239eaed6ba5aa07c8a1f1ef684667e638ee94e26",
   "biorheo_version": "0.0.1",
   "needle": {
     "id_nominal_mm": 0.21,

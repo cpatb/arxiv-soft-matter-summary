@@ -13,7 +13,7 @@ retraction is the more useful part of this file.
 Herschel-Bulkley on donor G that gave 4.149 -- "a 415 % move" -- and a docstring claim, a
 pinned test and a new API flag were built on it. The five seeds return `tau_y` =
 1.61e-19, 9.81e-19, 5.00e-22, 3.27e-20, 5.94e-21 Pa against a smallest measured stress of
-1.583e-03 Pa, with an identical profile interval [0, 0.01953] on all five: the optimiser
+1.583e-03 Pa, with an identical profile interval on all five: the optimiser
 converged the parameter to ZERO five times, and the ratio was dust over dust. Had
 `least_squares` returned exactly 0.0 the criterion would have passed. The metric now
 measures a span in units of the parameter's own 95 % profile interval -- a parameter that
@@ -86,9 +86,18 @@ def test_the_retracted_metric_is_still_visible_and_is_the_artefact_it_was(ms):
     vals = g["values_by_seed"]["tau_y"]
     assert len(vals) == 5 and max(abs(v) for v in vals) < 1e-18, vals
     # against the parameter's own interval it is nothing, which is the corrected metric
-    assert g["ci_width"]["tau_y"] == pytest.approx(0.01953, rel=1e-3)
+    # 5.488e-04 since NEXT_STEPS item 13. This pin used to read 0.01953, and that
+    # number was itself a bisection-grid point: 0.01953125 = 1000 * 1e5/5.12e6 for
+    # the Herschel-Bulkley tau_y box bound of 1e5. The retraction this test guards
+    # does not depend on the width -- it depends on the interval being IDENTICAL
+    # across the five seeds while the parameter sits at ~1e-19 -- so the argument
+    # is unchanged and only the number moved.
+    assert g["ci_width"]["tau_y"] == pytest.approx(5.4877e-04, rel=1e-3)
     # tau_y's OWN contribution, not the record max (which is set by k at ~3e-09)
-    assert g["per_param_spread"]["tau_y"] < 1e-15, g["per_param_spread"]["tau_y"]
+    # 1.79e-15 since item 13, from 5.0e-17: the SAME 9.8e-19 span over an interval
+    # that got 35.6x narrower. Still 5.6e11 times under G9.1's own 1e-3 bar, so the
+    # retraction is untouched; the pin moves because its denominator did.
+    assert g["per_param_spread"]["tau_y"] < 1e-14, g["per_param_spread"]["tau_y"]
     assert g["param_spread"] < 1e-6, g["param_spread"]
     # and it is NOT a violation of anything any more
     assert ("herschel_bulkley", "G") not in [tuple(v[:2]) for v in ms["G92_violations"]]
@@ -115,13 +124,18 @@ def test_the_movers_are_the_two_degenerate_carreau_yasuda_records(ms):
         assert ms["records"][f][d]["has_bad_verdict"], (f, d)
 
 
-def test_verdicts_are_seed_dependent_on_three_records_and_are_read_over_all_seeds(ms):
+def test_verdicts_are_seed_dependent_on_two_records_and_are_read_over_all_seeds(ms):
     """A real finding the review predicted. The verdict SET changes with the seed on 3 of
     80 pairs, so deciding which criterion a record falls under from seed 0 alone would
     make the populations a function of seed 0's luck. Both `all_measurable` and
     `has_bad_verdict` are therefore taken over all five seeds."""
+    # Was three pairs until NEXT_STEPS item 13. Carreau-Yasuda donor A became
+    # seed-STABLE once its intervals stopped being bisection-grid points, so the
+    # correction removed a seed dependence rather than creating one. B and L remain, and
+    # they are the two records whose profile is genuinely discontinuous (item 13 rejects
+    # 5 of their interval ends as jumps rather than crossings).
     assert sorted(tuple(v) for v in ms["verdict_unstable"]) == [
-        ("carreau_yasuda", "A"), ("carreau_yasuda", "B"), ("carreau_yasuda", "L")]
+        ("carreau_yasuda", "B"), ("carreau_yasuda", "L")]
     for f, d in [tuple(v) for v in ms["verdict_unstable"]]:
         r = ms["records"][f][d]
         assert not r["verdict_seed_stable"]
