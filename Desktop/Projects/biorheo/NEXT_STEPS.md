@@ -9,7 +9,7 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 300 passed, 7 deselected, 1 xfailed
+python -m pytest -q -m "not slow"      # must print: 311 passed, 7 deselected, 1 xfailed
 git -C C:\Users\compl log --oneline -3  # top should be e552ea1 or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
@@ -568,51 +568,110 @@ needle bore (`F ~ R^-4`, still [UNVERIFIED]), and any error in the Casson FORM, 
 misfits these curves on 20/20 donors. A correct interval on a wrong model is still a
 wrong uncertainty.
 
-### 15. NEXT ITEM, not started: the Carbopol case study ships point forces too, and it is the harder case
+### 15. DONE 2026-09-06 (three gates PASS; the ITEM'S OWN PREMISE was false): how far item 13 reached the Carbopol study
+
+`case_studies/injectability_surrogates/uq_check.py` -> `uq_check.md` / `uq_check.json`,
+with a section added to `results.md` by `run.py`. Gate pre-registered in that study's
+`uq_prereg.md`, committed at `850a647` before anything was recomputed. Pinned in
+`tests/test_surrogates_uq_check.py`.
+
+**This item's stated premise was FALSE and one grep settled it.** It said the Carbopol
+study "ships point forces too" and asked for a UQ column. `run.py` has called
+`force_with_uq` since it was written, and `results.md` has carried a profile-envelope
+column, a covariance column, a per-parameter sensitivity line and an `Insensitive to:`
+line all along. **Fourth time in this repo** (items 6, 11, 13 and now 15).
+
+**What is actually true is worse and more useful:** those intervals were drawn by
+`dst_fit.profiling` before item 13, so the page's shipped error bars were bisection-grid
+artefacts. The item became a CORRECTION to a shipped page rather than an extension.
+
+| gate | result |
+|---|---|
+| G15.1 the correction reaches this page | PASS, worst endpoint move 2.94 % against a 1 % bar |
+| G15.2 the corrected intervals NARROW | PASS, 2/2 |
+| G15.3 no end is silently open | PASS, 0 open ends |
+| G15.4 is the parameter interval still dominant | nothing flipped; ratios 7.5x and 2.3x |
+
+**THE PARAMETER INTERVALS MOVED AND THE FORCE DID NOT.** Endpoints move up to 2.94 %;
+the push-through hull moves at most **0.0081 %**. The mechanism was measured rather than
+argued: item 13's step floor is `box_bound/5000`, so **the defect's size scales with the
+declared box**. Herschel-Bulkley's boxes are not alike — `tau_y` at `1e5`, `k` at `1e6`,
+the flow index `n` at O(1) — so `k` moved 2.94 %, `tau_y` 1.87 % and **`n` 0.0011 %,
+three orders less**. And the force is set by `n` on BOTH gels
+(`d ln F / d ln n` = 4.87 and 7.44).
+
+**That is the same shape as item 13's own G13.9 failure, one item earlier.** A correction
+reaches a downstream number only through the parameters that number is sensitive to;
+there it was the wrong END of an interval, here the wrong PARAMETER. Neither was
+predicted. The pre-registration's SPLIT prediction (flip on the 0.5 wt% gel, not the
+0.1 wt%) has its flip half **refuted**, and the reasoning behind it was backwards — it
+assumed a grid inflates narrow intervals most, when the grid's size comes from the box.
+
+**Two of my own claims were corrected mid-item, both written before reading the rows.**
+The report's narrative was drafted assuming G15.1 would FAIL and it passed. And both the
+report and `profiling.py`'s docstring called `step_rule = "value"` a fallback for an
+unusable Wald error; it is not. The step is `max(wald/4, |best| * 1e-3)` and the floor
+wins whenever it is larger, which it does on **2 of these 6 parameters, all of which have
+finite positive Wald errors**. Behaviour right, description wrong. The description is
+fixed and the test now asserts the invariant that matters — **the BOX never entered
+(`step_rule != "box_fallback"`)** — rather than the one I had assumed.
+
+**G15.4 puts two error terms in the same units for the first time here.** `rmse_log` is a
+relative viscosity error and `d ln F / d ln k` is ~1, so they are comparable as
+percentages: the hull is 7.5x the misfit on the 0.5 wt% gel and only **2.3x** on the
+0.1 wt%. On that gel the error bar and the form error are the same order, and the page now
+says the quoted interval is a **parameter** interval, not a total error.
+
+**Two gates were named UNFALSIFIABLE in the pre-registration and are reported without
+being counted:** the ordering reversal survives (the hulls were already disjoint by a
+factor of three against a 3.9x effect, and narrowing can only help) and the nominal forces
+are unchanged.
+
+**Still untested:** the "an open interval is never printed as a number" branch has now
+failed to fire in BOTH case studies. It is unexercised code, recorded as such.
+
+### 16. NEXT ITEM, not started: nothing in this repo tells a caller whether ITS numbers were affected by item 13
 
 Written for zero context.
 
-**Why this one next.** `case_studies/injectability_surrogates/results.md` is the OTHER
-shipped case study and it also quotes point forces, so Phase-0 unit 0.6 is only half
-closed. It is not a copy of item 14: the Carbopol records are `herschel_bulkley`
-(THREE parameters, not two), and **2 of the 20 blood HB fits carry `bounded_only` on
-`tau_y`**, so an open profile end is a live possibility here in a way it was not for
-`casson`. **G14.4 — "an open interval is never printed as a number" — passed trivially
-for item 14 and can actually fail here.** That is the interesting part.
+**The problem, stated from what items 13, 14 and 15 measured.** The same bug was:
+
+- **large** in the registry — 203 of 296 closed upper ends on the grid, worst 1639x the
+  best-fit value, shipped endpoints at a median 710x `f_crit`;
+- **irrelevant** to the Carbopol needle forces — 0.0081 %;
+- **irrelevant** to the blood family comparison, for a third and different reason (it
+  moved the upper ends and that comparison binds on the lower ones).
+
+Three studies, one bug, three answers, and **the thing that decides which you get is not
+written down anywhere a caller would look**. It is: how wide the parameter's declared box
+is (the floor is `box/5000`), how many points the curve has (a large Wald error means
+`wald/4` wins the `max`), and which parameter the downstream quantity is sensitive to.
 
 **What to do.**
 
-1. **Reproduce first.** Run `case_studies/injectability_surrogates/run.py` and check its
-   artifact against the committed one before adding anything. Four items in this file
-   were caught by doing exactly this.
-2. **Check `profile_open` and `hi_at_bound` on all 15 Carbopol records before promising a
-   UQ column.** If any parameter is open, the hull is infinite in that direction and the
-   honest output is "not bounded above", not a number. `uq.py`'s `open_records` branch is
-   the pattern; it has never fired, so **it has never been exercised** — treat it as
-   untested code until it is.
-3. **Do not reuse `profile_interval_g139.json`.** That artifact is blood, Casson, and one
-   needle geometry. The Carbopol study runs different gels at a different operating point,
-   so this item must compute its own intervals — which is the opposite of item 14's rule
-   for a good reason, and the reason should be stated on the page.
-4. **Pre-register before computing**, and pre-register the RIGHT gate. Item 14's lesson is
-   that the obvious gate could not fail. The Carbopol study's headline is that **the force
-   ordering of two gels REVERSES between rheometer and needle**. So the gate to write is
-   whether that reversal survives the uncertainty: are the two gels' 95 % force intervals
-   disjoint at the needle, and at the rheometer? **A reversal between two overlapping
-   intervals is not a reversal**, and that is a claim the study currently makes without
-   an interval.
+1. **Do not build a general "impact estimator".** That is the over-engineering trap this
+   repo's rules warn about. Build the smallest thing that answers the question a caller
+   actually asks, which is *"is the number I am about to quote affected?"*
+2. The cheapest honest answer already exists per-profile and is not surfaced:
+   `ProfileInterval.step_rule`. **`box_fallback` never fires and `value`/`wald` both mean
+   the box was not consulted**, so a profile whose rule is not `box_fallback` is one the
+   defect could not have acted on. Consider exposing that in the sidecar, where a reader
+   can see it without re-running anything.
+3. **Pre-register, and pick a gate that can fail.** Items 14 and 15 both had to have their
+   obvious gate discarded as unfalsifiable. A candidate that can fail: *does `step_rule`
+   actually predict which registry parameters were on the grid?* The diagnosis artifact
+   (`data/profile_interval_diagnosis.json`) lists all 219 grid points by record and
+   parameter, and the profiler can report its rule for each. **If they do not agree, the
+   explanation on three pages of this repo is wrong** — and that is worth knowing before
+   it is quoted again.
+4. Note the asymmetry before predicting: `wald/4 > box/5000` means the box did not set the
+   step, but a parameter can still land on the grid through a LATER step, because the step
+   grows geometrically from wherever it starts. So the prediction is one-directional and
+   should be stated that way.
 
-**Two traps carried forward from item 14.**
-
-- **Name which interval object you are quoting, every time.** A one-at-a-time hull and a
-  covariance sample are not the same thing, and with THREE parameters the hull is
-  relatively wider than it was with two.
-- **A range comparison is not a pairwise comparison.** Item 14 had to correct a sentence
-  on a shipped page for exactly this. Before writing "X matters more than Y", ask whether
-  the claim is about the spread of a cohort or about telling two members of it apart.
-
-**Do not** patch `dst_fit`, and do not add the family term into a parameter interval
-without labelling it.
+**Do not** patch `dst_fit` as part of this, and do not restate any of the three numbers
+above without its condition — "the bug moved things by 1639x" and "the bug moved things by
+0.008 %" are both true and both useless without the clause that follows.
 
 ## What NOT to do
 
@@ -668,3 +727,12 @@ without labelling it.
 - Do not quote a `force_with_uq` interval without naming the object. The push-through hull
   is one-at-a-time and WIDER than the joint region; the covariance sample IS joint but
   assumes the Wald normal. Neither is simply better.
+- Do not restate item 13's size without its condition. "The bug moved endpoints by 1639x"
+  and "the bug moved these forces by 0.008 %" are both true, of the registry and of the
+  Carbopol needle study. What decides which you get is the parameter's declared BOX width
+  (the floor is `box/5000`), the number of points on the curve (a large Wald error means
+  `wald/4` wins the `max`), and which parameter the downstream quantity is sensitive to.
+- Do not call `step_rule = "value"` a fallback for an unusable Wald error. The step is
+  `max(wald/4, |best| * 1e-3)` and that floor wins whenever it is larger -- on 2 of the 6
+  Carbopol parameters, all with finite positive Wald errors. `box_fallback` is the branch
+  that means the box was consulted, and it has never fired.

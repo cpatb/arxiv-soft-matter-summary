@@ -231,6 +231,33 @@ Three things worth carrying:
 `data/profile_interval_prereg.md` (gate, committed before the code), `..._diagnosis.md`,
 `..._gates.md` and `..._g139.md`.
 
+## The same bug was 1639x in one place and 0.008 % in another
+
+Worth stating together, because each number alone is misleading. The profile-interval
+defect (above) moved the registry's endpoints by up to **1639x the best-fit value**, and
+it moved the Carbopol needle study's forces by **0.0081 %**. Both are measurements of the
+same bug.
+
+Three things decide which you get, and none of them is a property of the fix:
+
+- **How wide the parameter's declared box is.** The bad step floor is `box/5000`, so a
+  viscosity bounded at `1e6` is exposed and a flow index bounded at O(1) is not. Measured
+  on the two Carbopol gels: `k` (box `1e6`) moved 2.94 %, `tau_y` (box `1e5`) 1.87 %, and
+  `n` (box O(1)) **0.0011 %**.
+- **How many points the curve has.** The step is `max(wald/4, box/5000)`, so a large Wald
+  error means the box is never consulted. These gels carry 54 points; the blood records
+  carry 16.
+- **Which parameter the downstream number is sensitive to.** The needle force here is set
+  by `n` — `d ln F / d ln n` reaches 7.4 — which is exactly the parameter the defect could
+  not touch.
+
+The same lesson landed a second way one item earlier: correcting the intervals did not
+change the blood study's family comparison either, because the bug inflated the UPPER ends
+while that comparison binds on the lower ones. **A correction reaches a downstream number
+only through the parameters, and the ends, that number actually uses.**
+
+`case_studies/injectability_surrogates/uq_check.md`.
+
 ## Conventions
 
 - Models return viscosity `eta(gd)` in Pa s; `fit_rate_curve` takes `eta = sigma/gd`.
