@@ -9,8 +9,8 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 503 passed, 10 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be 4711dba or later
+python -m pytest -q -m "not slow"      # must print: 515 passed, 10 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be 4028a38 or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -1125,11 +1125,69 @@ User-Agent and works with an explicit one. Use `size=20` with backoff; `size=50`
 Do NOT digitise a figure to get around any of this, and do not add a record from a paper's
 table without its raw curve. Both are standing rules.
 
-### 24. OPEN: the licensable YIELD-STRESS curve, at three temperatures
+### 24. DONE 2026-09-08 (G24.1 PASS -- the shift layer's first external anchor; G24.3 and G24.4 REFUTED my own predictions, no bar moved): the licensable yield-stress curve, at three temperatures
 
-Data staged and documented 2026-09-08; **no record built, no gate pre-registered yet.**
-`data/carbopol_pg_vinutha2024/` -- read its `SOURCE.md` first, it carries four traps and the
-reason this dataset was taken ahead of the other three item-20 candidates.
+`scripts/records_from_carbopol_pg.py` -> two records + sidecars,
+`data/carbopol_pg_vinutha2024/records.md` / `.json`. Pre-registered in
+`data/carbopol_pg_prereg.md` at `b36c0fa`, before the generator, every gate BLIND. Pinned in
+`tests/test_carbopol_pg_records.py` (12 tests). Read `SOURCE.md` for the four traps.
+
+**THE RESULT: G24.1 PASSES, and it is the shift layer's first external anchor.**
+`collapse_shift` fits the shift factor from the two flow curves alone and never sees a
+viscosity; the deposit publishes the medium viscosities. `a_fit` = **0.13984** against
+`a_pred` = 0.012/0.102 = **0.11765**, ratio **1.1887** against a bar of 1.30 set before the
+number was known. Item 21 had only ever been exercised on a synthetic pair and on item 22's
+collapse, which was pre-registered to FAIL.
+
+**G24.5 and G24.6 confirm the rest of item 21's derived parameter map on real data**: `n`
+invariant (0.5389 [0.5339, 0.5438] and 0.5325 [0.5277, 0.5373]) and `k` moving as `a^n`
+(ratio 0.3461 against a predicted 0.3237). **G24.2** shows the test is INFORMATIVE rather
+than assuming it: the high-rate residual rises **16.6x** when `a` is doubled, bar 3.
+
+**G24.3 and G24.4 were pre-registered to PASS and FAILED. Neither bar was moved.**
+
+**G24.3** predicted the low-rate half of the curve would be blind to the shift factor; it
+moved **69 %** against a 10 % bar. The §1.1 algebra is right and my SPLIT was wrong -- it
+divided at the geometric mean of the overlap, where this material is far above yield.
+**G24.3ʺ** measures the real thing: the plateau (`sigma < 1.2 tau_y`) ends at **0.00398 1/s**
+while the shiftable window starts at **0.0143 1/s**, so **the plateau lies entirely outside
+the window a shift can act on**. The trap I pre-empted is real algebra and **inoperative on
+this dataset**, which is also why G24.2's separation is so large. *A nuisance you pre-empt
+may not be able to act, and whether it can is a property of the data's range.* A second
+defect found while diagnosing: the three probes ran on DIFFERENT point sets (n = 38, 45, 30),
+so the ratio was partly a change of sample; both gates now also report the intersection and
+both verdicts are unchanged.
+
+**G24.4** predicted the yield stress would be invariant, as item 21 derives and the authors
+state. It is not: **8.855 [8.682, 9.027] against 9.176 [9.049, 9.303] Pa**, intervals missing
+by 0.022 Pa, point estimates differing by 3.56 %. **The scale is reported beside it**: a
+profile interval is statistical and carries no protocol-to-protocol term, and G24.8 measures
+that term at **2.93 %** -- comparable to the difference being called significant. Consistent
+as a material claim, inconsistent as a statistical one, and the page says both.
+
+**G24.8 is the project's FIRST INDEPENDENT REPLICATE for any record.** The cessation files
+carry a second, unannounced steady flow curve (`preshear-stress` at 16 rates per
+temperature); it agrees with `Fig 1(a)` to a median 2.5 % at 10 C and 2.9 % at 50 C. G15.4
+had to approximate this comparison with a model misfit because none existed.
+
+**G24.7 refuses the 20 C block on four RECOMPUTED signals, and caught a defect of mine
+first**: numpy 2's `repr(np.float64(1330.0))` is `"np.float64(1330.0)"`, so the
+significant-figure counter counted the wrapper and returned 0/67 instead of 62/67. The gate
+failed for exactly the reason it exists.
+
+**G24.9** refuses to grade a Herschel-Bulkley `tau_y` against the published 8.9 Pa, which is
+a fit to the three-component model this package does not implement.
+
+⚠ **The pre-registration's own consumer enumeration was incomplete, for the third time in
+this repo.** §4 tabulated five and missed a sixth, because the grep looked for record counts
+and for `load_all` while that one selects on `commercial_ok`. It broke loudly. Fixed in kind:
+`test_registry.py` now selects the Carbopol dataset **by id** rather than as "every
+`herschel_bulkley` record" (item 22's defect from the other side), `test_openfoam_export.py`'s
+closed item-3 gate is frozen, and the licensable set is asserted EXACTLY over both families.
+
+Registry **123 -> 125 records, 10 licensable**.
+
+### 24 (background, kept): why this dataset was taken first
 
 **Zenodo 11389467, CC BY 4.0**, 2 wt% Carbopol 974p in propylene glycol, Anton Paar MCR 300,
 1 deg cone, **both surfaces roughened**, Peltier hood, flow curves at **10 / 20 / 50 deg C**.
@@ -1160,7 +1218,7 @@ derivation and the authors' own sentence -- *"The yield stress is independent of
 viscosity"* -- are the same statement reached independently, and G22.6 tested only the
 NEGATIVE case. This is the positive one.
 
-**Before writing any generator, four things.**
+**The four things that had to be settled before the generator, and were:**
 
 1. **Do not build a record from the 20 deg C block.** `SOURCE.md` trap 2: it is the only one
    whose rates are off the programmed logarithmic grid (3 of 67 against 37 of 48 and 50 of
@@ -1191,6 +1249,24 @@ Rate ranges, in case a later session needs them without re-reading: 10 deg C, 48
 2.0e-3 to 1.0e2 1/s; 50 deg C, 60 points, 1.26e-3 to 1.0e3 1/s.
 
 ## What NOT to do
+
+- **Do not use the Carbopol-in-propylene-glycol records for an injectability number.** They
+  stop at 1e3 1/s against 1e4-1e5 at a needle wall, the medium is propylene glycol, and the
+  sample is a rheology model system. They exist because they are LICENSABLE and because they
+  carry a temperature axis. Their own `notes` say so.
+- **Do not read G24.4's failure as "the shift layer is wrong".** `tau_y` moves 3.56 % between
+  10 and 50 C while the independent replicate's own scatter is 2.93 %. The profile interval
+  is a STATISTICAL interval on one curve and excludes the protocol term; the failure is real
+  at that level and not at the level of the material. Quote both.
+- **Do not reinstate G24.3 as posed.** Its "low-rate half" was the power-law region, not the
+  plateau, and the plateau for this material lies entirely OUTSIDE the range a shift can act
+  on (0.00398 vs 0.0143 1/s). The trap is real algebra and inoperative here; G24.3ʺ is the
+  measurement that settles it.
+- **Do not count significant figures off a numpy scalar's `repr`.** Under numpy 2 it is
+  `"np.float64(1330.0)"` and the count includes the wrapper. Convert with `float()` first.
+- **Do not trust a consumer enumeration that greps only for record counts and `load_all`.**
+  Item 24's missed a sixth consumer that selects on `commercial_ok`. Grep for the PROPERTY a
+  new record changes, not only for the shapes of the last defect.
 
 - **Do not quote item 22's anchor numbers.** "Reproduces the published flow indices on 4/4
   conditions, worst 0.0299, 0.0005 on the flagship" is CORRECTED (item 23). Against the
