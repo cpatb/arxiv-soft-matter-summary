@@ -1,0 +1,52 @@
+# written by biorheo.identify; do not edit by hand
+written_by: biorheo.identify
+written_on: '2026-09-08'
+record_id: dmem_sints2024_10pct_20C_a
+model: power_law
+level: 0.95
+fit:
+  n_points: 14
+  rmse_log_eta: 0.03506867293030663
+  gammadot_min: 0.0714
+  gammadot_max: 1.0
+residual_structure:
+  n: 14
+  n_runs: 9
+  expected_runs: 7.428571428571429
+  z: 0.9591053335977608
+  structured: false
+  signs: +-+++-+-+--+++
+parameters:
+  k:
+    value: 0.027964712234269433
+    lo: 0.02705126836436396
+    hi: 0.028909000491195505
+    verdict: measurable
+    decades: 0.028845443626585154
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+    wald_stderr: 0.0004262392757324457
+    exposure_hi: 1876880.01358748
+    exposure_lo: 0.052484534065926874
+  n:
+    value: 0.29454761318667233
+    lo: 0.26497959061607823
+    hi: 0.32411563581009273
+    verdict: measurable
+    decades: 0.08748755774655885
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+    wald_stderr: 0.013570703456290257
+    exposure_hi: 0.10053730183148736
+    exposure_lo: 0.014416208502342317
+exposure_note: 'exposure_hi / exposure_lo = (span/5000) / (wald_stderr/4) with span
+  = |bound - value| for that end''s box bound. It is how far dst_fit.profiling''s
+  step floor overshot the Wald-scaled step on the walk that produced this interval:
+  > 1 means the box floor set the first step, and the magnitude is by how much. Written
+  from 2026-09-06 so a reader can ask whether an interval came from the defective
+  walk without refitting the curve (NEXT_STEPS items 13 and 16). Note the two ends
+  differ, often by decades.'
+data_note: fit of the deposited DMEM_and_10pct_FBS.txt interval 1, 14 points after
+  dropping 1 below 0.001 1/s; log-viscosity residuals

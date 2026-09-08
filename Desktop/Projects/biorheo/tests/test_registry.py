@@ -410,9 +410,14 @@ def test_every_record_can_be_evaluated_where_it_was_measured():
     with open(ROOT / "data" / "horner2020" / "steady_shear_human.csv",
               newline="", encoding="utf-8") as f:
         gd = np.array([float(r[0]) for r in list(csv.reader(f))[1:]])
-    for rid, rec in sorted(recs.items()):
-        if rec.model.name == "herschel_bulkley":
-            continue
+    # Select the blood records EXPLICITLY. This loop used to say "every record that is not
+    # herschel_bulkley", which was the same set only while blood was the only non-HB
+    # family. Item 22 added eight `power_law` DMEM records whose envelope tops out at
+    # 1 1/s, and the old selector asked them to contain the BLOOD curve's 0.1-700 1/s.
+    # An implicit selector that happens to be right is a gate waiting to be re-decided.
+    blood = {k: v for k, v in recs.items() if k.startswith("blood_horner2020_")}
+    assert len(blood) == 100, len(blood)
+    for rid, rec in sorted(blood.items()):
         assert rec.envelope.contains(np.array([gd.min(), gd.max()])).all(), rid
 
 

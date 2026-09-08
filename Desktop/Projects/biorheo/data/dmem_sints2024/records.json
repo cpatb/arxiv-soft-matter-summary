@@ -1,0 +1,296 @@
+{
+ "generated_by": "scripts/records_from_dmem.py",
+ "prereg": "data/dmem_record_prereg.md",
+ "source": "data/dmem_sints2024/SOURCE.md",
+ "doi_dataset": "10.5281/zenodo.13828992",
+ "doi_paper": "10.48550/arXiv.2409.13650",
+ "min_rate_per_s": 0.001,
+ "rows": [
+  {
+   "id": "dmem_sints2024_10pct_20C_a",
+   "fbs_pct": 10,
+   "temperature_C": 20.0,
+   "interval": 1,
+   "n_points": 14,
+   "n_dropped": 1,
+   "gd_min": 0.0714,
+   "gd_max": 1.0,
+   "envelope": [
+    0.0714,
+    1.0
+   ],
+   "k": 0.027964712234269433,
+   "n": 0.29454761318667233,
+   "paper_n": 0.32,
+   "abs_dev_from_paper_n": 0.025452386813327676,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "commercial_ok": true
+  },
+  {
+   "id": "dmem_sints2024_10pct_20C_b",
+   "fbs_pct": 10,
+   "temperature_C": 20.0,
+   "interval": 2,
+   "n_points": 15,
+   "n_dropped": 0,
+   "gd_min": 0.01,
+   "gd_max": 1.0,
+   "envelope": [
+    0.01,
+    1.0
+   ],
+   "k": 0.027175491459104955,
+   "n": 0.31344947710536547,
+   "paper_n": 0.32,
+   "abs_dev_from_paper_n": 0.006550522894634536,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "commercial_ok": true
+  },
+  {
+   "id": "dmem_sints2024_5pct_20C_a",
+   "fbs_pct": 5,
+   "temperature_C": 20.0,
+   "interval": 1,
+   "n_points": 15,
+   "n_dropped": 0,
+   "gd_min": 0.01,
+   "gd_max": 1.0,
+   "envelope": [
+    0.01,
+    1.0
+   ],
+   "k": 0.04165229783802997,
+   "n": 0.36867922914473467,
+   "paper_n": 0.31,
+   "abs_dev_from_paper_n": 0.05867922914473467,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "commercial_ok": true
+  },
+  {
+   "id": "dmem_sints2024_5pct_20C_b",
+   "fbs_pct": 5,
+   "temperature_C": 20.0,
+   "interval": 2,
+   "n_points": 15,
+   "n_dropped": 0,
+   "gd_min": 0.01,
+   "gd_max": 1.0,
+   "envelope": [
+    0.01,
+    1.0
+   ],
+   "k": 0.032371054700281864,
+   "n": 0.2933742980065731,
+   "paper_n": 0.31,
+   "abs_dev_from_paper_n": 0.01662570199342689,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "commercial_ok": true
+  },
+  {
+   "id": "dmem_sints2024_1pct_20C_a",
+   "fbs_pct": 1,
+   "temperature_C": 20.0,
+   "interval": 1,
+   "n_points": 15,
+   "n_dropped": 0,
+   "gd_min": 0.01,
+   "gd_max": 1.0,
+   "envelope": [
+    0.01,
+    1.0
+   ],
+   "k": 0.01574654036107387,
+   "n": 0.5394308154747307,
+   "paper_n": 0.54,
+   "abs_dev_from_paper_n": 0.0005691845252693284,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "commercial_ok": true
+  },
+  {
+   "id": "dmem_sints2024_1pct_20C_b",
+   "fbs_pct": 1,
+   "temperature_C": 20.0,
+   "interval": 2,
+   "n_points": 15,
+   "n_dropped": 0,
+   "gd_min": 0.01,
+   "gd_max": 1.0,
+   "envelope": [
+    0.01,
+    1.0
+   ],
+   "k": 0.018500471904084128,
+   "n": 0.6002865224078361,
+   "paper_n": 0.54,
+   "abs_dev_from_paper_n": 0.06028652240783605,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "commercial_ok": true
+  },
+  {
+   "id": "dmem_sints2024_10pct_37C_a",
+   "fbs_pct": 10,
+   "temperature_C": 37.0,
+   "interval": 1,
+   "n_points": 5,
+   "n_dropped": 0,
+   "gd_min": 0.01,
+   "gd_max": 1.0,
+   "envelope": [
+    0.01,
+    1.0
+   ],
+   "k": 0.0050048908626730655,
+   "n": 0.43488557617273654,
+   "paper_n": 0.5,
+   "abs_dev_from_paper_n": 0.06511442382726346,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "commercial_ok": true
+  },
+  {
+   "id": "dmem_sints2024_10pct_37C_b",
+   "fbs_pct": 10,
+   "temperature_C": 37.0,
+   "interval": 2,
+   "n_points": 20,
+   "n_dropped": 0,
+   "gd_min": 0.01,
+   "gd_max": 10.0,
+   "envelope": [
+    0.01,
+    10.0
+   ],
+   "k": 0.004571851587895268,
+   "n": 0.5393003039619206,
+   "paper_n": null,
+   "abs_dev_from_paper_n": null,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "commercial_ok": true
+  }
+ ],
+ "gates": {
+  "G22_1_reproduces_the_papers_flow_index": {
+   "bar": "|n - paper n| < 0.05 on the 7 intervals the paper names",
+   "n_graded": 7,
+   "worst_abs_dev": 0.06511442382726346,
+   "n_ungraded": 1,
+   "pass": false,
+   "note": "the paper's indices were published before this repo existed and are not computed by any code here, which is what makes this an anchor rather than a self-check",
+   "why_it_failed": "the bar compares each INTERVAL's index against a value the paper publishes once per CONDITION. The per-interval spread within a condition reaches 0.1044, larger than the 0.05 bar itself, so no fit could have met it on both intervals of that condition. Mis-specified, not failed. The bar and this number stand; G22.1' is beside it.",
+   "per_condition_spread": [
+    {
+     "fbs_pct": 10,
+     "temperature_C": 20.0,
+     "per_interval_n": [
+      0.29454761318667233,
+      0.31344947710536547
+     ],
+     "spread": 0.01890186391869314
+    },
+    {
+     "fbs_pct": 5,
+     "temperature_C": 20.0,
+     "per_interval_n": [
+      0.36867922914473467,
+      0.2933742980065731
+     ],
+     "spread": 0.07530493113816156
+    },
+    {
+     "fbs_pct": 1,
+     "temperature_C": 20.0,
+     "per_interval_n": [
+      0.5394308154747307,
+      0.6002865224078361
+     ],
+     "spread": 0.06085570693310538
+    },
+    {
+     "fbs_pct": 10,
+     "temperature_C": 37.0,
+     "per_interval_n": [
+      0.43488557617273654,
+      0.5393003039619206
+     ],
+     "spread": 0.10441472778918409
+    }
+   ]
+  },
+  "G22_1p_pooled_fit_reproduces_the_papers_flow_index": {
+   "bar": "|n_pooled - paper n| < 0.05 on the 4 conditions the paper names, fitting both intervals of a condition TOGETHER",
+   "n_graded": 4,
+   "worst_abs_dev": 0.02985866862309139,
+   "rows": [
+    {
+     "fbs_pct": 10,
+     "temperature_C": 20.0,
+     "n_points": 29,
+     "n_pooled": 0.3194983090283232,
+     "paper_n": 0.32,
+     "abs_dev": 0.0005016909716767937
+    },
+    {
+     "fbs_pct": 5,
+     "temperature_C": 20.0,
+     "n_points": 30,
+     "n_pooled": 0.3310267636233863,
+     "paper_n": 0.31,
+     "abs_dev": 0.02102676362338629
+    },
+    {
+     "fbs_pct": 1,
+     "temperature_C": 20.0,
+     "n_points": 30,
+     "n_pooled": 0.5698586686230914,
+     "paper_n": 0.54,
+     "abs_dev": 0.02985866862309139
+    },
+    {
+     "fbs_pct": 10,
+     "temperature_C": 37.0,
+     "n_points": 25,
+     "n_pooled": 0.5119785939142992,
+     "paper_n": 0.5,
+     "abs_dev": 0.01197859391429923
+    }
+   ],
+   "pass": true,
+   "note": "stricter in kind rather than looser in size: it removes the interval-choice excuse instead of widening the tolerance, and it is still graded against numbers this repo did not compute"
+  },
+  "G22_2_envelope_contains_its_own_curve": {
+   "bar": "every record's envelope contains both extremes of its source curve",
+   "n": 8,
+   "pass": true,
+   "note": "enforced by the generator itself, which exits non-zero otherwise"
+  },
+  "G22_4_first_licensable_records": {
+   "bar": "commercial_use true on all new records",
+   "n_true": 8,
+   "n": 8,
+   "pass": true
+  }
+ }
+}

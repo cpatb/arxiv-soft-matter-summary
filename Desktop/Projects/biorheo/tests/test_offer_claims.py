@@ -89,12 +89,27 @@ def test_the_eta_c_exponent_quoted_is_the_measured_one(offer):
 
 
 def test_the_record_count_and_licence_claim_are_true(offer):
-    """OFFER §6: 'All 115 records in the registry are commercial_use: false'."""
+    """OFFER §6: '115 of the 123 records are commercial_use: false'.
+
+    Item 22 changed this claim rather than breaking it: eight CC BY 4.0 DMEM records were
+    added and they are the first in the registry that may be shown in public. The OFFER
+    and the registry have to move together, which is what this test enforces."""
     from biorheo.registry.loader import load_all
     recs = load_all()
-    assert len(recs) == 115
-    assert all(not r.commercial_ok for r in recs.values())
-    assert "All 115 records" in offer and "commercial_use: false" in offer
+    n_nc = sum(1 for r in recs.values() if not r.commercial_ok)
+    n_ok = len(recs) - n_nc
+    assert (n_nc, len(recs)) == (115, 123), (n_nc, len(recs))
+    assert n_ok == 8
+    assert f"{n_nc} of the {len(recs)} records" in offer
+    assert "commercial_use: false" in offer
+
+
+def test_the_offer_does_not_oversell_the_licensable_records(offer):
+    """They are cell culture medium measured to 1 1/s. A demo of the METHOD is honest; an
+    injectability demo is not, and the OFFER has to say which."""
+    flat = " ".join(offer.split())
+    assert "not enough for an injectability demo" in flat
+    assert "four to five decades" in flat
 
 
 def test_the_test_count_claim_is_not_wildly_stale(offer):
@@ -125,7 +140,7 @@ def test_the_offer_names_the_capabilities_that_do_not_exist(offer):
     """The section that makes the document usable. If a future edit deletes a gap because
     it reads badly, this fails -- the gaps are the reason the claims are believable."""
     for gap in ("No temperature MODEL", "No wall slip", "No bench",
-                "No commercially-usable reference data", "No regulatory authoring"):
+                "Almost no commercially-usable reference data", "No regulatory authoring"):
         assert gap in offer, gap
 
 

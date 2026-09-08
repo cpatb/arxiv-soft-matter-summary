@@ -287,7 +287,7 @@ def test_block_comments_are_stripped_and_unsupported_constructs_are_named(record
 # -------------------------------------------- the gap NEXT_STEPS item 9's G9.2 exposed
 
 
-def test_strict_identifiability_refuses_bounded_only_and_is_off_by_default():
+def test_strict_identifiability_refuses_bounded_only_and_is_off_by_default(closed_gate_records):
     """`bounded_only` is not one of the verdicts the export refuses, and a pre-registered
     gate FAILED on exactly that: blood Herschel-Bulkley on donor G moves 415 % in `tau_y`
     under nothing but a change of the fitter's seed, with `tau_y` graded `bounded_only`
@@ -298,7 +298,8 @@ def test_strict_identifiability_refuses_bounded_only_and_is_off_by_default():
     default and the override, and the count between them."""
     from biorheo.solver.openfoam import check_exportable
 
-    recs = load_all()
+    # CLOSED gate, frozen to the 115-record registry of 2026-09-07 (conftest.py)
+    recs = closed_gate_records
     default_ok, strict_ok, refused_by_flag = [], [], []
     for rid, rec in sorted(recs.items()):
         try:

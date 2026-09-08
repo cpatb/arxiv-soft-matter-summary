@@ -116,12 +116,19 @@ def test_a_non_commercial_record_is_stamped_before_the_answer(closed):
     assert page.index("NOT LICENSABLE") < page.index("## The answer")
 
 
-def test_every_registry_record_currently_triggers_the_licence_flag():
-    """A standing venture constraint, pinned so it fails the day it stops being true --
-    which is the day the venture can ship a paid study off its own registry."""
+def test_the_licence_flag_separates_the_two_halves_of_the_registry():
+    """**That day came on 2026-09-08.** This test used to say "every registry record
+    triggers the licence flag", pinned so it would fail when it stopped being true. Item 22
+    added eight CC BY 4.0 DMEM records, so it now has to assert BOTH halves: the 115
+    original records still stamp NOT LICENSABLE, and the new ones do not. A one-sided
+    version would pass while quietly stamping a licensable record."""
     for rid in (CLOSED, "carbopol_etd2020_0p5wt_40uL"):
         d = build(load_record(RECORDS / f"{rid}.yaml"), SPEC)
         assert "non_commercial" in d.flags, rid
+    for rid in ("dmem_sints2024_10pct_20C_b", "dmem_sints2024_10pct_37C_a"):
+        d = build(load_record(RECORDS / f"{rid}.yaml"), SPEC)
+        assert "non_commercial" not in d.flags, rid
+        assert "NOT LICENSABLE" not in render(d), rid
 
 
 def test_extrapolation_is_flagged_with_its_distance_in_decades(closed):

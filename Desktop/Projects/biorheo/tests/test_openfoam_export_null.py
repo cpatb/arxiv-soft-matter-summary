@@ -18,7 +18,6 @@ import pytest
 import biorheo.solver.openfoam as openfoam_module
 from biorheo.constitutive import get_model
 from biorheo.constitutive.structural import STRUCTURAL_STEADY, STRUCTURAL_STEADY_SEPARATE
-from biorheo.registry import load_all
 from biorheo.solver.openfoam import (
     SMALL, ThixotropyNotRepresentable, _envelope_eta_range, coefficients,
     export_report, export_transport_properties, nu_openfoam,
@@ -32,8 +31,13 @@ N_RATES = 20
 
 
 @pytest.fixture(scope="module")
-def records():
-    return load_all()
+def records(closed_gate_records):
+    # CLOSED item-11 gate: graded on the 115-record registry of 2026-09-07, not on
+    # whatever the registry holds today. Item 22 added eight `power_law` records and
+    # G11.5b's separations are computed over this sample, so an unfrozen fixture
+    # would have re-decided a closed gate on a different question. See
+    # tests/conftest.py and data/dmem_record_prereg.md §4.
+    return closed_gate_records
 
 
 def _null_records(records, family):

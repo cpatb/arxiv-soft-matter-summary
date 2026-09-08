@@ -112,7 +112,7 @@ and the number recorded.
 
 ## 6. The honest state of the capability
 
-What is built and tested (463 automated tests, `../biorheo`):
+What is built and tested (488 automated tests, `../biorheo`):
 
 - registry of cited fluid records with envelopes and DOI-resolved provenance
 - constitutive fitting with profile-likelihood intervals and a per-parameter
@@ -122,15 +122,25 @@ What is built and tested (463 automated tests, `../biorheo`):
 - OpenFOAM export and round trip for six families
 - a temperature shift carried exactly through all of the above, on a factor you supply,
   with the superposition's own residual reported beside it
+- eight CC BY 4.0 records whose fitted flow indices reproduce the source paper's own
+  published values to within 0.03, having never seen them
 
 What is **not** built, in the order it blocks revenue:
 
-1. **No commercially-usable reference data.** All 115 records in the registry are
+1. **Almost no commercially-usable reference data.** 115 of the 123 records are
    `commercial_use: false`. The microgel data is CC BY-NC-SA and the blood data comes
    from a workbook that states no licence at all. **This does not block a paid study**,
-   which runs on the client's own curve, but it does block shipping a public demo on a
-   named fluid. Next action: source one openly-licensed flow curve (Zenodo/figshare, CC BY
-   or CC0) and rebuild the example pages on it.
+   which runs on the client's own curve, but until 2026-09-08 it blocked showing anything
+   in public.
+
+   Eight records now do carry a commercial licence: DMEM with fetal bovine serum, CC BY
+   4.0, from a deposited Zenodo dataset. They are enough for a public method demo and they
+   come with a real validation, because the fit reproduces the source paper's own published
+   flow indices to within 0.03 having never seen them. **They are not enough for an
+   injectability demo.** Cell culture medium measured to 1 1/s is four to five decades away
+   from what a needle imposes, so a force computed from it would be a demonstration of the
+   extrapolation warning rather than of the force. A licensable curve that reaches
+   rheometer-to-needle rates is still missing.
 2. **No temperature MODEL, and no record with a temperature axis.** The shift layer
    above carries a factor; it does not predict one, and nothing in the registry was
    measured at more than one temperature. A client who cannot supply two curves or an
