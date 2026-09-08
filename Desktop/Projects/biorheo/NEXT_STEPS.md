@@ -9,8 +9,8 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 314 passed, 7 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be dbf793c or later
+python -m pytest -q -m "not slow"      # must print: 392 passed, 10 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be 33b282c or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -710,6 +710,98 @@ on **five of the six**. Item 15's conclusion survives and its reason does not: `
 is `2.0`, so its `exposure` is **1.09** while `k`'s is **11 770**. The ratio explains the
 three orders of magnitude that the boolean could only assert.
 
+### 18. DONE 2026-09-07 (all seven gates PASS; G18.6' added beside a bar that was close to unfalsifiable): the needle-bore exponent
+
+`scripts/needle_bore.py` -> `data/needle_bore.md` / `.json`. Gate pre-registered in
+`data/needle_bore_prereg.md`, committed at `8f4fe9c` before any code. Library code in
+`src/biorheo/apps/design_space.py`. Pinned in `tests/test_design_space.py`.
+
+**The quantity is `b = d ln F / d ln R` at fixed flow rate** — the exponent a device group
+implicitly assumes is `-4` when it sizes a needle from a Newtonian calculation. Two closed
+forms anchor it without touching the force solver: `newtonian` gives `-4` exactly and
+`power_law` gives `-(3n+1)` exactly, and the registry has both null families on the same
+20 donor curves as the fitted ones (item 11's records earning their keep).
+
+| gate | result |
+|---|---|
+| G18.1 `b = -4` on the 20 `newtonian` records | PASS 20/20, worst 4.66e-10 |
+| G18.2 `b = -(3n+1)` on the 20 `power_law` records | PASS 20/20, worst 2.66e-10 |
+| G18.3 the discriminating half — not `-4` for everything | PASS, 36 records past 0.1, worst 1.867 |
+| G18.4 no record steeper than Newtonian | PASS 115/115 |
+| G18.5 SPLIT prediction on the Newtonian rule's error | PASS, both halves as pre-registered |
+| G18.6 derating factor below 1 | PASS 91/91 — **and nearly unfalsifiable, see below** |
+| G18.6' zero-width intervals give exactly 1, real ones less | PASS |
+| G18.7 three error terms ranked | reported |
+
+**G18.5 was pre-registered as a SPLIT and came out that way.** A Newtonian `R^-4` sizing
+rule over-predicts the force at a 30 % finer bore by **under 1.24 % on 20/20 blood donors**
+and by **47.9–93.9 % on 15/15 Carbopol records**. Whether `R^-4` is safe is a property of
+the fluid AND the operating point: blood at that wall rate sits on its infinite-shear
+plateau, so it is Newtonian there however shear-thinning it is at rheometer rates. The
+blood half's FAILURE was predicted from item 14's `|d ln F / d ln eta_c| = 0.995`.
+
+**G18.6 as pre-registered can essentially only be failed by a fit that locally maximises
+the force**, because the upper envelope is a max over profile ends and the nominal force is
+not one of them. A routine returning a constant 0.5 would have passed it. The bar and its
+number stand; **G18.6' is the stricter test beside it** and pins both ends the bar cannot.
+
+**The identifiability split is a TAIL, not a shift, and the first draft of that section
+said the opposite.** Medians 0.796 (all-measurable) vs 0.866 (has a non-measurable
+verdict); worst 0.123 vs 7.169e-05. An identifiability verdict does not predict how wide a
+typical error bar is — it predicts whether the error bar can be catastrophic. The first
+version restricted to closed intervals, which empties the very group being compared, and
+had prose written around the empty result.
+
+**A venture constraint surfaced here and it is not an item detail: ALL 115 records are
+`commercial_use: false`** — 15 Carbopol under CC BY-NC-SA, 100 blood from a workbook that
+states no licence at all. Not one curve in the registry can back a paid study. This does
+not block a paid study on a CLIENT's curve; it blocks shipping a public demo on a named
+fluid. `tests/test_report.py` pins it so it fails the day it stops being true.
+
+### 19. DONE 2026-09-07: the deliverable — the page a client receives
+
+`src/biorheo/apps/report.py` (`DeviceSpec`, `build`, `render`) plus four worked pages in
+`case_studies/deliverable_example/`. Tests: `tests/test_report.py` (20 fast, 1 slow),
+`tests/test_deliverable_example.py` (9 fast, 1 slow), `tests/test_offer_claims.py` (13).
+
+It computes **nothing new**. Every number comes from a function anchored elsewhere. Its job
+is ordering and **refusing**, and each refusal changes the HEADLINE rather than being
+appended — a caveat in a footer is a caveat nobody reads:
+
+| flag | how the headline changes |
+|---|---|
+| `no_sidecar` | "a POINT ESTIMATE with **no uncertainty**" |
+| `open_interval` | "a **BOUND, not a limit**", naming the parameters |
+| `hull_unbounded_above` | the quoted interval is a **LOWER BOUND** on the uncertainty |
+| `non_commercial` | stamped **above** the answer |
+| `extrapolated` | the distance in decades, above the fold |
+
+**Two defects in already-shipped code, both found by the new tests.**
+
+1. **`sensitivities()` stepped OUTSIDE the model box and raised** for a parameter sitting
+   on its bound — `carreau_yasuda`'s `a` is fitted at 10 on several donors and a 1e-4
+   relative step put it at 10.001. It now clips both offsets into the box and divides by
+   **the span actually spent**, degrading to a one-sided difference at a bound. The 40
+   shipped sensitivity values move by at most **1.061e-12** (`p_up - p_dn` is not exactly
+   `2h` in floating point) and no verdict moves. That was checked by recomputing against
+   `uq.json` with the comparison COUNT asserted — the first attempt compared an empty set
+   because the key is `sensitivities`, not `sensitivity`, and printed a clean 0.0.
+2. **An interval end can be a fluid nothing can deliver.** Donor B's `carreau_yasuda`
+   `eta_inf` sits on its 1e6 Pa s bound, where 1 mL/min needs more than 1e12 Pa. Dropping
+   that end would NARROW the interval — the direction that flatters the answer — so the
+   hull end is reported open.
+
+**The clamp branch has never fired on this registry** and there is a test that says so
+rather than a test that pretends to exercise it.
+
+`test_the_four_pages_demonstrate_four_different_things` first asserted four distinct FLAG
+sets and failed at three. The criterion was wrong, not the pages: `01_clean` and
+`04_thinning` differ on the Newtonian-rule verdict, not on flags. Corrected to
+(flags, bore verdict); not weakened to three.
+
+`../biofluids_venture/OFFER.md` is the sales document built on this, and
+`tests/test_offer_claims.py` recomputes **every number in it** from the artifacts.
+
 ### 17. NEXT ITEM, not started: `dst_fit` still ships the defect, and the decision about that has never been made
 
 Written for zero context.
@@ -754,7 +846,39 @@ that biorheo cannot quietly reshape it, and the wrapper already gives biorheo co
 intervals. Patching upstream buys correctness for OTHER callers of `dst_fit` — of which
 there is currently one, `dst_fit` itself. Write that down too.
 
+### 20. NEXT DATA ACTION, not started: source ONE openly-licensed flow curve
+
+**This is the cheapest thing that changes what the venture can ship, and it is not a code
+task.** All 115 records are `commercial_use: false` (item 18), so the four worked
+deliverable pages are all stamped NOT LICENSABLE. A paid study on a client's own curve is
+unaffected; a public demo, a webinar, a short course and a conference figure are all
+blocked.
+
+What is needed: one flow curve — shear rate and viscosity as numbers, with a resolvable
+DOI and a licence that permits commercial use (CC BY or CC0) — ideally a protein or
+high-concentration formulation, but ANY licensable curve unblocks the demo.
+
+Tried on 2026-09-07 and blocked by infrastructure, not by absence: `zenodo.org/api` returned
+HTTP 504 to both `curl` and WebFetch on every query. Retry that first. Candidates that were
+not reachable in that session: Zenodo and figshare dataset search; Edinburgh DataShare
+(the Poon group deposits the numbers behind their figures — see the user memory note);
+supplementary CSVs attached to open-access rheology papers.
+
+Do NOT digitise a figure to get around this, and do not add a record from a paper's table
+without its raw curve. Both are standing rules.
+
 ## What NOT to do
+
+- Do not quote `b = d ln F / d ln R` as a material constant. It is a property of the
+  fluid AND the operating point: blood returns -3.98 in a fine needle because it sits on
+  its infinite-shear plateau THERE, not because it is nearly Newtonian.
+- Do not read item 18's derating factor being below 1 as a result. That bar is close to
+  unfalsifiable (the upper envelope is a max over profile ends); the SIZE is the result
+  and G18.6' is what discriminates.
+- Do not delete the clamp in `apps/report.py` because its test says the branch never
+  fires. The test records untested code; it does not license removing it.
+- Do not edit a number in `../biofluids_venture/OFFER.md` without rerunning
+  `tests/test_offer_claims.py`. Every figure in that document is pinned to an artifact.
 
 - Do not fit any model to the post-peak decay of the step sheet (syneresis, per the thesis).
 - Do not reopen item 7 by asking again whether the LAOS sheets are densely enough sampled.
