@@ -93,14 +93,32 @@ def test_there_are_exactly_eight_and_they_are_all_power_law(recs):
     assert all(r.model.name == "power_law" for r in recs.values())
 
 
-def test_they_are_the_first_and_only_licensable_records():
-    """The venture constraint, restated as it now stands. Item 18 found all 115 records
-    non-commercial; these eight are the first that are not."""
+# Item 24 added two more CC BY 4.0 records. This constant exists so that the licensable set
+# is asserted EXACTLY rather than as a subset -- a subset assertion would let a future record
+# become licensable without anyone noticing, and "which records may be shown in public" is
+# the one property of this registry a licence mistake makes expensive.
+OTHER_LICENSABLE = ("carbopol_pg_vinutha2024_10C", "carbopol_pg_vinutha2024_50C")
+
+
+def test_they_are_the_first_licensable_records_and_the_set_is_exact():
+    """The venture constraint, restated as it now stands.
+
+    Item 18 found all 115 records non-commercial; the eight DMEM records were the first
+    that were not, and item 24 added two more. This test asserted `ok == set(IDS)` -- "the
+    first AND ONLY" -- and item 24 broke it loudly, which is the intended behaviour: it is a
+    sixth consumer of the registry's contents, and item 24's own pre-registration missed it
+    because the grep looked for record COUNTS and for `load_all`, while this one selects on
+    `commercial_ok`.
+    """
     all_recs = load_all()
     ok = {k for k, v in all_recs.items() if v.commercial_ok}
-    assert ok == set(IDS)
-    assert len(all_recs) == 123
-    assert all(load_record(RECORDS / f"{i}.yaml").licence.name == "CC BY 4.0" for i in IDS)
+    assert ok == set(IDS) | set(OTHER_LICENSABLE)
+    # 115 frozen + 8 DMEM (item 22) + 2 Carbopol-in-propylene-glycol (item 24)
+    assert len(all_recs) == 125
+    assert all(load_record(RECORDS / f"{i}.yaml").licence.name == "CC BY 4.0"
+               for i in (*IDS, *OTHER_LICENSABLE))
+    # and nothing may quietly relicense an existing record
+    assert len(all_recs) - len(ok) == 115
 
 
 def test_the_temperature_is_the_papers_number_not_a_guess(recs):

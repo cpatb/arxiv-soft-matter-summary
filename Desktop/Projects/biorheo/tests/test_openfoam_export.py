@@ -33,9 +33,12 @@ RHO = 1060.0  # kg/m^3; a round test value, not a material property (records car
 
 
 @pytest.fixture(scope="module")
-def records():
-    recs = load_all()
-    out = {k: r for k, r in recs.items() if r.model.name in ("herschel_bulkley", "casson")}
+def records(closed_gate_records):
+    # A CLOSED item-3 gate. It read `load_all()` until item 24 added two more
+    # `herschel_bulkley` records, which would have grown a decided gate's sample from 35 to
+    # 37 -- the item-11 failure mode. Frozen to the 115 records of 2026-09-07.
+    out = {k: r for k, r in closed_gate_records.items()
+           if r.model.name in ("herschel_bulkley", "casson")}
     assert len(out) == 35, len(out)  # 15 Carbopol HB + 20 blood Casson
     return out
 

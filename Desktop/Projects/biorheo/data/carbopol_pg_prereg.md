@@ -251,3 +251,76 @@ gets the frozen list from `tests/conftest.py`.
 - No record from the 20 deg C block, and no digitisation of anything.
 - No three-component model. Adding one is a separate item with its own pre-registration.
 - No change to `dst_fit`, and no change to any existing record.
+
+---
+
+## Addendum A, 2026-09-08 — the run, and two refuted predictions
+
+Not edited above. The gates ran as written; two of the predictions in §2 were wrong.
+
+### A.1 What passed
+
+| gate | verdict | number |
+|---|---|---|
+| G24.1 fitted shift vs published viscosity ratio | **PASS** | `a_fit` = 0.13984 against `a_pred` = 0.11765, ratio **1.1887**, bar 1.30 |
+| G24.2 the collapse test is informative | PASS | high-rate residual rises **16.6x** when `a` is doubled, bar 3.0 |
+| G24.5 flow index invariant | PASS | 0.5389 [0.5339, 0.5438] and 0.5325 [0.5277, 0.5373] overlap |
+| G24.6 `k` moves as `a^n` | PASS | `k` ratio 0.3461 against `a_pred^n` = 0.3237 |
+| G24.7 the 20 C block is refused | PASS after a fix; see A.3 | 3/67 on grid, 2 rate reversals, 62/67 at 3 sig figs |
+| G24.8 replicate vs parameter uncertainty | PASS (a measurement) | replicate 2.93 %, parameter interval 4.37 % |
+
+**G24.1 is the result of this item.** `collapse_shift` fits the shift factor from the two
+flow curves alone and never sees a viscosity; the deposit publishes the medium viscosities;
+they agree to 19 % against a bar of 30 % set before the number was known. Item 21's shift
+layer had never been tested against anything external, and its only previous real-data
+exercise was a collapse pre-registered to FAIL.
+
+### A.2 G24.3 and G24.4 were predicted to PASS and FAILED. Neither bar was moved.
+
+**G24.3** (predicted PASS): the low-rate residual moved **69 %** when `a` was doubled,
+against a 10 % bar. The §1.1 algebra is correct and the SPLIT was wrong — G24.3 divided at
+the geometric mean of the overlap, 0.4472 1/s, where this material is far above yield, so
+its "low-rate half" was the power-law region and never the plateau.
+
+**G24.3ʺ** is added beside it, and it is a measurement rather than a rewritten bar. Taking
+the plateau as `sigma < 1.2 tau_y`, it holds at **4 points up to 0.00398 1/s**, while
+`collapse_shift` crops the bottom of the range by its own shift factor so the shiftable
+window starts at **0.0143 1/s**. **The plateau lies entirely outside the shiftable window.**
+The trap pre-registered in §1.1 is real algebra and **inoperative on this dataset** — which
+is also why G24.2's separation is so large. Worth carrying: *a nuisance you pre-empt may not
+be able to act, and whether it can is a property of the data's range, not of the algebra.*
+
+A second defect in the same pair, found while diagnosing: the three probe values were
+evaluated on **different point sets** (n = 38, 45, 30), because each `a` crops a different
+part of the range, so the ratio was partly a change of sample. Both gates are now reported
+on the intersection as well; both verdicts are unchanged.
+
+**G24.4** (predicted PASS): `tau_y` is **not** invariant. 8.855 [8.682, 9.027] Pa at 10 C
+against 9.176 [9.049, 9.303] Pa at 50 C — the profile intervals miss each other by
+**0.022 Pa**, and the point estimates differ by 3.56 %. Item 21's derivation says the yield
+stress is invariant under the shift, and the authors state the same thing from their own
+data, so this refutes a prediction rather than adjusting a bar.
+
+**The scale is reported beside it and it is what makes this a narrow failure.** A profile
+interval is a statistical interval on one curve and carries no protocol-to-protocol term.
+G24.8 measures that term from the independent replicate: **2.93 %**, comparable to the
+3.56 % being called significant. So `tau_y` is invariant to within everything this dataset
+resolves *except* its own profile interval, which is too narrow to be the right yardstick.
+The honest statement is that the two are consistent as a *material* claim and inconsistent
+as a *statistical* one, and the shipped page says both.
+
+### A.3 Two defects of mine, both caught by gates rather than by me
+
+1. **G24.7's significant-figure counter was broken by numpy 2.** `repr(np.float64(1330.0))`
+   is `"np.float64(1330.0)"`, so counting digits off a numpy scalar's repr counts the
+   wrapper: the signal returned 0/67 instead of 62/67 and the gate FAILED. It failed for the
+   right reason — the gate requires each signal to **reproduce** rather than asserting it,
+   which is exactly what it was written for.
+2. **§4's consumer enumeration was itself incomplete.** It found five consumers and missed a
+   sixth: `test_dmem_records.py::test_they_are_the_first_and_only_licensable_records`
+   asserts the licensable set **equals** the DMEM ids. The grep looked for record counts and
+   for `load_all`; that test selects on `commercial_ok`. It broke loudly, which is the
+   behaviour the frozen-list discipline is for, and the assertion is now exact over both
+   families rather than a subset check — a subset check would let a future record become
+   licensable unnoticed, and "which records may be shown in public" is the property a
+   licence mistake makes expensive.

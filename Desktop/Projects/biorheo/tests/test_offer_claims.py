@@ -98,8 +98,11 @@ def test_the_record_count_and_licence_claim_are_true(offer):
     recs = load_all()
     n_nc = sum(1 for r in recs.values() if not r.commercial_ok)
     n_ok = len(recs) - n_nc
-    assert (n_nc, len(recs)) == (115, 123), (n_nc, len(recs))
-    assert n_ok == 8
+    # item 24 added two CC BY 4.0 Carbopol-in-propylene-glycol records, so the licensable
+    # count moved 8 -> 10 and the total 123 -> 125. The non-commercial count is unchanged
+    # and must stay so: nothing may quietly relicense an existing record.
+    assert (n_nc, len(recs)) == (115, 125), (n_nc, len(recs))
+    assert n_ok == 10
     assert f"{n_nc} of the {len(recs)} records" in offer
     assert "commercial_use: false" in offer
 

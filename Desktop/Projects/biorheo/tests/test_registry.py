@@ -394,8 +394,14 @@ def test_every_record_can_be_evaluated_where_it_was_measured():
     import records_from_carbopol as C
 
     recs = load_all(allow_network=False)
-    carbopol = {k: v for k, v in recs.items() if v.model.name == "herschel_bulkley"}
+    # Select by ID, not by family. This read `model.name == "herschel_bulkley"` until item
+    # 24, which was the same set only while ETD2020 was the only Herschel-Bulkley dataset --
+    # exactly the defect item 22 found from the other side, where blood was selected as
+    # "every record that is not herschel_bulkley". Item 24 adds two Carbopol-in-propylene-
+    # glycol records to this family.
+    carbopol = {k: v for k, v in recs.items() if k.startswith("carbopol_etd2020_")}
     assert len(carbopol) == 15, len(carbopol)
+    assert all(v.model.name == "herschel_bulkley" for v in carbopol.values())
     for rid, rec in sorted(carbopol.items()):
         m = re.fullmatch(r"carbopol_etd2020_(\d)p(\d)wt_(\d+)uL", rid)
         assert m, rid

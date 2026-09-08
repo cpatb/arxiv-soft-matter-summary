@@ -127,7 +127,7 @@ What is built and tested (488 automated tests, `../biorheo`):
 
 What is **not** built, in the order it blocks revenue:
 
-1. **Almost no commercially-usable reference data.** 115 of the 123 records are
+1. **Almost no commercially-usable reference data.** 115 of the 125 records are
    `commercial_use: false`. The microgel data is CC BY-NC-SA and the blood data comes
    from a workbook that states no licence at all. **This does not block a paid study**,
    which runs on the client's own curve, but until 2026-09-08 it blocked showing anything

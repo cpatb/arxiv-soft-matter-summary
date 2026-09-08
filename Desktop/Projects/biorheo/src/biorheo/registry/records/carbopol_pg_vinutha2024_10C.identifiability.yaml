@@ -1,0 +1,64 @@
+# written by biorheo.identify; do not edit by hand
+written_by: biorheo.identify
+written_on: '2026-09-08'
+record_id: carbopol_pg_vinutha2024_10C
+model: herschel_bulkley
+level: 0.95
+fit:
+  n_points: 48
+  rmse_log_eta: 0.017950146720607314
+  gammadot_min: 0.002
+  gammadot_max: 99.999992
+residual_structure:
+  n: 48
+  n_runs: 4
+  expected_runs: 24.958333333333332
+  z: -6.126426001959414
+  structured: true
+  signs: '------++++++++++++++++++-------------------+++++'
+parameters:
+  tau_y:
+    value: 8.85504175604794
+    lo: 8.682403334226212
+    hi: 9.02733446161741
+    verdict: measurable
+    decades: 0.016919576534004242
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+    wald_stderr: 0.08450921330796414
+    exposure_hi: 946.5585210820633
+    exposure_lo: 0.08382557507692187
+  k:
+    value: 35.48396794091906
+    lo: 34.99069174357999
+    hi: 35.980154940153206
+    verdict: measurable
+    decades: 0.01211050090983509
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+    wald_stderr: 0.24253959502175523
+    exposure_hi: 3298.3134681736883
+    exposure_lo: 0.11704139915871875
+  n:
+    value: 0.5388672006838048
+    lo: 0.5339241525277197
+    hi: 0.5438368391239377
+    verdict: measurable
+    decades: 0.007989056055464622
+    partner: null
+    lo_at_bound: false
+    hi_at_bound: false
+    wald_stderr: 0.002431624601798498
+    exposure_hi: 0.4807099905916399
+    exposure_lo: 0.16083640552813122
+exposure_note: 'exposure_hi / exposure_lo = (span/5000) / (wald_stderr/4) with span
+  = |bound - value| for that end''s box bound. It is how far dst_fit.profiling''s
+  step floor overshot the Wald-scaled step on the walk that produced this interval:
+  > 1 means the box floor set the first step, and the magnitude is by how much. Written
+  from 2026-09-06 so a reader can ask whether an interval came from the defective
+  walk without refitting the curve (NEXT_STEPS items 13 and 16). Note the two ends
+  differ, often by decades.'
+data_note: Herschel-Bulkley fit to the 48-point 10 C block of the deposited Fig 1(a)
+  flow curves, rates 0.002-100 1/s; log-viscosity residuals. No point was dropped.

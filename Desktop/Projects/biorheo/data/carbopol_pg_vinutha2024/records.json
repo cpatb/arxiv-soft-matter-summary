@@ -1,0 +1,316 @@
+{
+ "git_head": "b36c0fa",
+ "records": [
+  "carbopol_pg_vinutha2024_10C",
+  "carbopol_pg_vinutha2024_50C"
+ ],
+ "rows": [
+  {
+   "temperature_C": 10.0,
+   "n_points": 48,
+   "rate_min": 0.002,
+   "rate_max": 99.999992,
+   "medium_viscosity_Pa_s": 0.102,
+   "rmse_log": 0.017950146720607314,
+   "tau_y_value": 8.85504175604794,
+   "tau_y_lo": 8.682403334226212,
+   "tau_y_hi": 9.02733446161741,
+   "k_value": 35.48396794091906,
+   "k_lo": 34.99069174357999,
+   "k_hi": 35.980154940153206,
+   "n_value": 0.5388672006838048,
+   "n_lo": 0.5339241525277197,
+   "n_hi": 0.5438368391239377,
+   "tau_y_verdict": "measurable",
+   "k_verdict": "measurable",
+   "n_verdict": "measurable"
+  },
+  {
+   "temperature_C": 50.0,
+   "n_points": 60,
+   "rate_min": 0.00126,
+   "rate_max": 1000.0,
+   "medium_viscosity_Pa_s": 0.012,
+   "rmse_log": 0.021660840923099747,
+   "tau_y_value": 9.17604778736719,
+   "tau_y_lo": 9.049330636557176,
+   "tau_y_hi": 9.30309407962559,
+   "k_value": 12.276516141939267,
+   "k_lo": 12.009915779448509,
+   "k_hi": 12.546428074852093,
+   "n_value": 0.5325017970791314,
+   "n_lo": 0.5277278786576663,
+   "n_hi": 0.5373068443984003,
+   "tau_y_verdict": "measurable",
+   "k_verdict": "measurable",
+   "n_verdict": "measurable"
+  }
+ ],
+ "gates": {
+  "G24_1_fitted_shift_reproduces_the_published_viscosity_ratio": {
+   "bar": "|ln(a_fit/a_pred)| < ln(1.3)",
+   "a_pred": 0.11764705882352942,
+   "a_fit": 0.13984277700624934,
+   "ratio": 1.1886636045531191,
+   "ln_ratio": 0.17282965467848255,
+   "ln_bar": 0.26236426446749106,
+   "rms_log_residual": 0.033847276463695626,
+   "n_used": 98,
+   "n_total": 120,
+   "pass": true,
+   "note": "a_pred is the ratio of the medium viscosities the DEPOSIT publishes. collapse_shift fits a_fit from the two flow curves alone and never sees them."
+  },
+  "G24_2_the_collapse_test_is_informative": {
+   "bar": "on the high-rate half, the residual at 2*a_fit exceeds that at a_fit by a factor of at least 3.0",
+   "split_rate": 0.4472135776114138,
+   "residuals": {
+    "a_fit": {
+     "residual": 0.020268728519621897,
+     "n_used": 38
+    },
+    "2a_fit": {
+     "residual": 0.33556822403389436,
+     "n_used": 45
+    },
+    "a_fit/2": {
+     "residual": 0.29820198278556564,
+     "n_used": 30
+    }
+   },
+   "separation_factor": 16.555958293537508,
+   "residuals_on_the_common_point_set": {
+    "a_fit": {
+     "residual": 0.02230079199026496,
+     "n_used": 30
+    },
+    "2a_fit": {
+     "residual": 0.3593693104849294,
+     "n_used": 30
+    },
+    "a_fit/2": {
+     "residual": 0.29820198278556564,
+     "n_used": 30
+    }
+   },
+   "separation_factor_common_point_set": 16.114643401086656,
+   "pass": true,
+   "note": "below this, G24.1 is UNINFORMATIVE and its agreement is not quoted."
+  },
+  "G24_3_the_plateau_is_blind_to_the_shift_factor": {
+   "bar": "on the low-rate half, the residual moves by less than 10% between a_fit and 2*a_fit",
+   "residuals": {
+    "a_fit": {
+     "residual": 0.04945293432330861,
+     "n_used": 38
+    },
+    "2a_fit": {
+     "residual": 0.08376323339081933,
+     "n_used": 45
+    },
+    "a_fit/2": {
+     "residual": 0.15760550884174004,
+     "n_used": 30
+    }
+   },
+   "relative_move": 0.6937970322084461,
+   "residuals_on_the_common_point_set": {
+    "a_fit": {
+     "residual": 0.04435591623662118,
+     "n_used": 30
+    },
+    "2a_fit": {
+     "residual": 0.10194027872216127,
+     "n_used": 30
+    },
+    "a_fit/2": {
+     "residual": 0.15760550884174004,
+     "n_used": 30
+    }
+   },
+   "relative_move_common_point_set": 1.2982340885114492,
+   "pass": false,
+   "predicted_failure": false,
+   "note": "the positive control for the prereg's section 1.1: below yield both curves tend to tau_y, so eta -> tau_y/gd and a*eta_ref(a*gd) = tau_y/gd for ANY a. If this half DID move, that algebra is wrong.",
+   "recorded_refutation": "predicted PASS. The low-rate HALF of the curve is not the plateau for this material -- see G24.3''."
+  },
+  "G24_3pp_is_the_plateau_even_inside_the_shiftable_window": {
+   "bar": "measure whether the genuine plateau is inside the shiftable window at all, instead of assuming the low-rate HALF of the curve is the plateau",
+   "plateau_definition": "sigma < 1.2 * tau_y(10 C)",
+   "tau_y_ref": 8.85504175604794,
+   "n_points_on_plateau": 4,
+   "plateau_upper_rate": 0.00398,
+   "shiftable_window_lower_rate": 0.014301775485412617,
+   "plateau_entirely_outside_the_shiftable_window": true,
+   "g243_split_rate": 0.4472135776114138,
+   "pass": true,
+   "note": "G24.3 split at the geometric mean of the overlap, where this material is far ABOVE yield, so its 'low-rate half' was the power-law region and never the plateau. The trap pre-registered in section 1.1 is real algebra and INOPERATIVE on this dataset, because the plateau is narrower than the range the shift itself crops off. That is why G24.3 failed, and it is a fact about the data rather than about the shift layer."
+  },
+  "G24_4_yield_stress_invariant": {
+   "bar": "the two tau_y profile intervals overlap",
+   "tau_y": {
+    "10.0": [
+     8.682403334226212,
+     8.85504175604794,
+     9.02733446161741
+    ],
+    "50.0": [
+     9.049330636557176,
+     9.17604778736719,
+     9.30309407962559
+    ]
+   },
+   "difference_over_mean_interval_width": 1.0723532403937346,
+   "absolute_difference_Pa": 0.32100603131925,
+   "relative_difference": 0.03560583852088737,
+   "interval_gap_Pa": 0.021996174939765467,
+   "pass": false,
+   "note": "item 21 DERIVED this invariance before the dataset was found, and the authors state it from their own data. An overlap of two WIDE intervals is a weak pass, which is why the separation is reported beside it.",
+   "recorded_refutation": "predicted PASS. The two tau_y profile intervals do not overlap."
+  },
+  "G24_5_flow_index_invariant": {
+   "bar": "the two n profile intervals overlap",
+   "n": {
+    "10.0": [
+     0.5339241525277197,
+     0.5388672006838048,
+     0.5438368391239377
+    ],
+    "50.0": [
+     0.5277278786576663,
+     0.5325017970791314,
+     0.5373068443984003
+    ]
+   },
+   "difference_over_mean_interval_width": 0.6531415084401058,
+   "pass": true,
+   "note": "item 22's collapse failed precisely because its two curves differed in n. If n differed here, no shift factor would be meaningful and G24.1's number must not be quoted whatever it says."
+  },
+  "G24_6_consistency_index_moves_as_a_to_the_n": {
+   "bar": "|ln((k_50/k_10)/a_pred^n)| < ln(1.4)",
+   "k_ratio": 0.34597360031380126,
+   "a_pred_to_the_n": 0.3177786301030196,
+   "n_mean": 0.5356844988814681,
+   "ln_ratio": 0.08500746385921026,
+   "ln_bar": 0.3364722366212129,
+   "pass": true,
+   "note": "a second route to G24.1 through the fitted parameters rather than the curve, so it can disagree with G24.1 and that would be informative."
+  },
+  "G24_7_the_20C_block_is_refused": {
+   "bar": "the 20 C block is refused and all four signals reproduce; no record is written from it",
+   "signals": {
+    "10.0": {
+     "n_points": 48,
+     "rates_on_the_programmed_log_grid": 37,
+     "grid_fraction": 0.7708333333333334,
+     "rate_reversals": [],
+     "n_rate_reversals": 0,
+     "log_step_mean": 0.09997808445941403,
+     "log_step_sd": 0.00020547414775890326,
+     "stress_sigfigs_median": 8.0,
+     "n_stress_at_3_sigfigs": 0
+    },
+    "20.0": {
+     "n_points": 67,
+     "rates_on_the_programmed_log_grid": 3,
+     "grid_fraction": 0.04477611940298507,
+     "rate_reversals": [
+      [
+       32.4,
+       33.6
+      ],
+      [
+       24.4,
+       26.4
+      ]
+     ],
+     "n_rate_reversals": 2,
+     "log_step_mean": 0.10049460725718153,
+     "log_step_sd": 0.03779816803315085,
+     "stress_sigfigs_median": 3.0,
+     "n_stress_at_3_sigfigs": 67
+    },
+    "50.0": {
+     "n_points": 60,
+     "rates_on_the_programmed_log_grid": 50,
+     "grid_fraction": 0.8333333333333334,
+     "rate_reversals": [],
+     "n_rate_reversals": 0,
+     "log_step_mean": 0.0999937195742786,
+     "log_step_sd": 0.00023221893210429947,
+     "stress_sigfigs_median": 5.0,
+     "n_stress_at_3_sigfigs": 0
+    }
+   },
+   "admitted_temperatures": [
+    10.0,
+    50.0
+   ],
+   "reproduces": {
+    "off_grid": true,
+    "rate_reversals": true,
+    "rounded_to_3_sigfigs": true
+   },
+   "pass": true
+  },
+  "G24_8_replicate_scatter_against_parameter_uncertainty": {
+   "bar": "no bar; this is a measurement. Which is larger: the independent replicate's scatter, or the fitted parameters' interval width?",
+   "replicate": {
+    "10.0": {
+     "n_matched": 5,
+     "median_ratio": 1.0245618075340297,
+     "min_ratio": 1.0078151834862386,
+     "max_ratio": 1.0659183383756108,
+     "median_abs_pct": 2.45618075340297
+    },
+    "50.0": {
+     "n_matched": 5,
+     "median_ratio": 1.0293498452012384,
+     "min_ratio": 0.9747872816838334,
+     "max_ratio": 1.1157178896566853,
+     "median_abs_pct": 2.93498452012384
+    }
+   },
+   "relative_parameter_interval_widths": {
+    "10.0": {
+     "tau_y": 0.03895307745506823,
+     "k": 0.027884795697614168,
+     "n": 0.018395416502691272
+    },
+    "50.0": {
+     "tau_y": 0.02765498272772439,
+     "k": 0.04370232476384248,
+     "n": 0.01798860734982731
+    }
+   },
+   "worst_relative_parameter_width": 0.04370232476384248,
+   "worst_replicate_median_scatter": 0.0293498452012384,
+   "larger_term": "parameter interval",
+   "pass": true,
+   "note": "the only independent replicate this project has for any record. G15.4 had to approximate this comparison with a model misfit because none existed."
+  },
+  "G24_9_the_published_yield_stress_is_not_graded": {
+   "bar": "no gate compares a Herschel-Bulkley tau_y against the published 8.9 Pa",
+   "published_yield_stress_Pa": 8.9,
+   "published_model": "three-component model, sigma = sigma_y + k1 gd^0.5 + eta_bg gd (not implemented in this package)",
+   "our_model": "herschel_bulkley, sigma = tau_y + k gd^n",
+   "hb_tau_y": {
+    "10.0": 8.85504175604794,
+    "50.0": 9.17604778736719
+   },
+   "reported_as": "a MODEL-FORM comparison, not a disagreement. biorheo cannot reproduce the authors' number because it does not implement their model, and a yield stress is a fit-objective convention before it is a material constant.",
+   "graded": false,
+   "pass": true
+  }
+ },
+ "refuted_predictions": {
+  "G24_3_the_plateau_is_blind_to_the_shift_factor": "predicted PASS. The low-rate HALF of the curve is not the plateau for this material -- see G24.3''.",
+  "G24_4_yield_stress_invariant": "predicted PASS. The two tau_y profile intervals do not overlap."
+ },
+ "a_pred": 0.11764705882352942,
+ "medium_viscosity_Pa_s": {
+  "10.0": 0.102,
+  "20.0": 0.055,
+  "50.0": 0.012
+ },
+ "prereg": "data/carbopol_pg_prereg.md"
+}
