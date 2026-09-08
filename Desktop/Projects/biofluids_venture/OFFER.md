@@ -122,8 +122,9 @@ What is built and tested (488 automated tests, `../biorheo`):
 - OpenFOAM export and round trip for six families
 - a temperature shift carried exactly through all of the above, on a factor you supply,
   with the superposition's own residual reported beside it
-- eight CC BY 4.0 records whose fitted flow indices reproduce the source paper's own
-  published values to within 0.03, having never seen them
+- ten CC BY 4.0 records, of which eight reproduce the source paper's own published
+  parameters -- as a viscosity curve over the measured range, to a median 1-7 % and a worst
+  19 %, inside the 20 % repeatability those authors state for their own measurements
 
 What is **not** built, in the order it blocks revenue:
 
@@ -133,22 +134,48 @@ What is **not** built, in the order it blocks revenue:
    which runs on the client's own curve, but until 2026-09-08 it blocked showing anything
    in public.
 
-   Eight records now do carry a commercial licence: DMEM with fetal bovine serum, CC BY
-   4.0, from a deposited Zenodo dataset. They are enough for a public method demo and they
-   come with a real validation, because the fit reproduces the source paper's own published
-   flow indices to within 0.03 having never seen them. **They are not enough for an
-   injectability demo.** Cell culture medium measured to 1 1/s is four to five decades away
-   from what a needle imposes, so a force computed from it would be a demonstration of the
-   extrapolation warning rather than of the force. A licensable curve that reaches
-   rheometer-to-needle rates is still missing.
+   Ten records now do carry a commercial licence: eight of DMEM with fetal bovine serum
+   and two of a Carbopol microgel at two temperatures, all CC BY 4.0 from deposited Zenodo
+   datasets. They are enough for a public method demo and the first eight come with a real
+   external validation -- the fit reproduces the source paper's own published parameters,
+   as a viscosity curve over the measured range, to inside the 20 % repeatability those
+   authors state for their own measurements. (An earlier and stronger-sounding version of
+   that claim, "reproduces the published flow indices on 4/4 conditions, worst 0.03", was
+   **corrected on 2026-09-08**: it had been graded against the paper's figure-caption
+   values rather than its fit-results table, and against the latter the same bar fails.)
+
+   **They are still not enough for an injectability demo.** Cell culture medium measured to
+   1 1/s is four to five decades away from what a needle imposes, and the microgel reaches
+   1e3 1/s. A licensable *flow curve* that reaches rheometer-to-needle rates is still
+   missing -- though the wedge fluid itself is now covered from single-viscosity data; see
+   item 3.
 2. **No temperature MODEL, and no record with a temperature axis.** The shift layer
    above carries a factor; it does not predict one. One fluid in the registry is measured
    at two temperatures (DMEM + 10 % FBS at 20 and 37 C), and a one-parameter shift does
    NOT collapse that pair -- the two curves differ in the flow index, which no shift can
    move. A client who cannot supply two curves or an
    activation energy still cannot get a cold-chain answer. §3.
-3. **No protein or high-concentration formulation curve**, so nothing here has been
-   demonstrated on the wedge's own fluid. The examples are human blood and a microgel.
+3. **A high-concentration protein FLOW CURVE** -- narrowed on 2026-09-08, not closed.
+   The wedge fluid is now covered: `case_studies/mab_injectability/` runs the whole chain on
+   **58 real formulations of a monoclonal antibody at 159-212 mg/mL**, CC BY 4.0, on the same
+   needle and syringe as the blood study. Two things came out of it that a formulation
+   scientist can use, and both are measurements rather than claims:
+
+   * at **matched** mAb concentration the best and worst excipient differ by 7.3x in
+     viscosity, which through the concentration law is worth about **63 mg/mL of extra mAb
+     at the same viscosity**. The raw spread across the table says 3.5x and 39 mg/mL, and
+     it is the wrong number, because these formulations are not at one concentration and
+     viscosity is exponential in it;
+   * the needle extrapolates only **0.74 decades** past what that source measured, against
+     1.42 for blood and four to five for the cell-culture medium -- the least-extrapolated
+     fluid in this project.
+
+   **What is still missing is the word "curve".** That source verified Newtonian behaviour
+   over 960-3329 1/s and then reported **one viscosity per formulation**, so there is no
+   flow curve to fit, no confidence interval, and no registry record -- a one-parameter
+   model on one point has zero degrees of freedom, which the study demonstrates rather than
+   asserts. That is also what most arriving client data looks like, and the study is built
+   on that path deliberately.
 4. **No bench.** By design until an invoice exists.
 
 ## 7. How a call ends
