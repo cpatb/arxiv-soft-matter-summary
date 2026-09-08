@@ -939,7 +939,58 @@ curves differing only in SHAPE give one that means nothing (rms log residual 0.9
 1.4e-05 for a real shift). No default activation energy is shipped for any fluid and a test
 asserts `arrhenius_shift`'s `E_a` has no default.
 
-### 20. HALF DONE 2026-09-08: a licensable candidate is downloaded and scanned; no record yet
+### 22. DONE 2026-09-08 (G22.1' PASS and it is the strongest EXTERNAL anchor here; G22.1 FAILED on a mis-specified bar): the registry's first licensable records
+
+`scripts/records_from_dmem.py` -> eight records + sidecars, `data/dmem_sints2024/records.md`
+/ `.json`. Gate pre-registered in `data/dmem_record_prereg.md`, committed at `5825e58`
+BEFORE the generator. Pinned in `tests/test_dmem_records.py` (16 tests).
+
+**Eight `power_law` records, CC BY 4.0, `commercial_use: true`** -- the first in this
+registry that may appear in a public demo, a webinar figure or a paid deliverable. The
+other 115 remain `commercial_use: false`. Registry is now **123 records**.
+
+**G22.1' is the strongest external anchor this repo has.** The source paper's authors fit
+the same Ostwald-de Waele power law and published their flow indices in 2024. Fitting the
+raw deposited files through `biorheo.identify` reproduces them on 4/4 conditions:
+
+| condition | pooled `n` | paper `n` | dev |
+|---|---|---|---|
+| 10 % FBS, 20 C | 0.3195 | 0.32 | **0.0005** |
+| 5 % FBS, 20 C | 0.3310 | 0.31 | 0.0210 |
+| 1 % FBS, 20 C | 0.5699 | 0.54 | 0.0299 |
+| 10 % FBS, 37 C | 0.5120 | 0.50 | 0.0120 |
+
+Every other anchor in this repo compares biorheo against biorheo, a closed form, or a
+solver. **This one compares it against a number somebody else published before this code
+existed.**
+
+**G22.1 FAILED at 0.065 against a 0.05 bar and the bar was NOT moved.** It compared each
+INTERVAL's index against a value the paper publishes once per CONDITION; the per-interval
+spread WITHIN a condition reaches 0.076, larger than the bar itself, so no fit could have
+met it. G22.1' removes the interval-choice excuse instead of widening the tolerance. A
+defect in the grader is recorded rather than quietly fixed: the first pooled run keyed on
+the published index as well as the condition, splitting the 37 C condition and pooling only
+its 5-point half.
+
+**G22.6 was pre-registered as a PREDICTED FAILURE of a collapse, and it failed as
+predicted.** A one-parameter shift maps `k -> a^n k` with `n` FIXED (item 21), and the
+paper's indices are 0.32 at 20 C against 0.5 at 37 C for the same medium -- the two curves
+differ in a parameter the shift cannot touch. A SMALL residual would have meant item 21's
+shift or these fits were wrong. A positive control sits beside it.
+
+**Item 11's failure was pre-empted, not repeated.** The pre-registration enumerated by grep,
+BEFORE any record was written, every consumer depending on the registry's contents. Five
+broke; four were on the list. **The fifth was not**: `test_registry` selected blood records
+as "every record that is not `herschel_bulkley`", which was the same set only while blood
+was the only non-HB family. `tests/conftest.py` now supplies a frozen 115-record registry
+for gates CLOSED against it, and no existing gate changed its value.
+
+**These records cannot carry an injectability claim** -- rates stop at 1 1/s against
+1e4-1e5 in a needle -- and they say so in their own `notes`. `OFFER.md` says it too, so
+they cannot be oversold as an injectability demo. What is still missing is a licensable
+curve that reaches rheometer-to-needle rates.
+
+### 20. DONE 2026-09-08 (superseded by item 22): find a licensable curve
 
 **Why this matters more than it looks.** All 115 records are `commercial_use: false`
 (item 18), so all four worked deliverable pages are stamped NOT LICENSABLE. A paid study on
@@ -996,6 +1047,15 @@ table without its raw curve. Both are standing rules.
 
 ## What NOT to do
 
+- Do not use the DMEM records for an injectability number. Their rates stop at 1 1/s
+  against 1e4-1e5 in a needle: four to five decades. They exist because they are
+  LICENSABLE, not because they suit the wedge.
+- Do not grade a per-interval fit against a per-condition published value. That is G22.1's
+  recorded failure; the spread WITHIN a condition is larger than the bar.
+- Do not point a CLOSED gate at `load_all()`. Use `closed_gate_records` from
+  `tests/conftest.py`, which is frozen at the 115 records of 2026-09-07. Item 11's failure
+  was a shared list growing under a decided gate; item 22 pre-empted it and still found a
+  fifth consumer nobody listed, because it selected blood as "not herschel_bulkley".
 - Do not quote `b = d ln F / d ln R` as a material constant. It is a property of the
   fluid AND the operating point: blood returns -3.98 in a fine needle because it sits on
   its infinite-shear plateau THERE, not because it is nearly Newtonian.
