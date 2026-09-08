@@ -211,3 +211,62 @@ None of this makes the anchor worthless -- it is still the only comparison in th
 against a number computed by someone else, on data this repo did not process. It makes it
 an anchor on the **parse and the units**, at the resolution of the source's own
 repeatability, which is what it will be called from now on.
+
+---
+
+## Addendum A, 2026-09-08 — two of §1's predictions were wrong, and the cause was mine
+
+Not edited above. Recorded here with the numbers.
+
+### A.1 G23.1 and G23.4 were predicted against a different pooling than G23.1 specifies
+
+§1 predicted G23.1 would fail on **one** condition at **0.0599**, and G23.4 would come out
+at a worst of **19.03 %**, inside the authors' 20 %. Both numbers were computed while
+pooling **every** interval of each condition. G23.1's own text then specified pooling
+**only the intervals in the paper's 0.01-1 1/s range**. Those are different runs, and under
+the restricted one the gate fails on **two** conditions at a worst of **0.1051**, with
+G23.4 at **62.43 %**.
+
+**This is the same defect the item exists to correct**: two arms of a comparison taken at
+different settings of a knob, written by me, in the file correcting somebody else's version
+of it one screen above.
+
+The restriction was resolved rather than patched over, by reading what Table 2 says it
+fitted: *"the entire ensemble of data points"*. The 0.01-1 1/s restriction was **item 22's
+own invention**, taken from the context of the figure captions, and it is not the paper's.
+So the primary grading pools everything, which is what the reference did, and the
+restriction is reported beside it as **G23.1b** because at 37 C it moves the answer more
+than the disagreement being graded:
+
+| 37 C, data used | N | `n` | dev from the published 0.54 |
+|---|---|---|---|
+| in-range only (0.01-1 1/s) | 5 | 0.4349 | 0.1051 |
+| the 20-point interval alone (0.01-10 1/s) | 20 | **0.5393** | **0.0007** |
+| both, as Table 2 says it fitted | 25 | 0.5120 | 0.0280 |
+
+### A.2 A gate was added after the first run, and it is stricter than the one it sits beside
+
+**G23.9**: does the paper's Table 2 `n` fall inside biorheo's **own profile interval** on
+`n`? A fixed 0.05 bar treats a 5-point fit and a 30-point fit alike; a profile interval does
+not, and a fit too weak to resolve a difference is then reported *undetermined* rather than
+passing by being vague. It was written before being run, with the prediction "inside on 3 of
+4, the exception being 1 % FBS".
+
+Result, as predicted: inside on 3 of 4. The exception is **1 % FBS**, [0.5380, 0.6017]
+against a published 0.51 — the only **resolved** disagreement in the dataset. At 37 C the
+published 0.54 lies inside the interval under all three data choices in A.1, so the 0.1051
+there was never a disagreement at all.
+
+### A.3 Final verdicts
+
+| gate | verdict | number |
+|---|---|---|
+| G23.1 corrected anchor at the unchanged 0.05 bar | **FAILED**, as predicted | worst 0.0599, on 1 % FBS |
+| G23.1b the size of the data-selection choice | reported | 37 C moves 0.4349 / 0.5393 / 0.5120 |
+| G23.2 neither single correction rescues the old pass | PASS | 0.0651 and 0.0599, both fail 0.05 |
+| G23.3 the flagship 0.0005 is a pooling coincidence | PASS | pooled 0.3195 outside [0.2945, 0.3134] |
+| G23.4 curves inside the authors' declared repeatability | PASS | worst 19.03 % against 20 % |
+| G23.5 no record moves | PASS | 0 of 8 |
+| G23.6 the correction reaches no shipped number | PASS | 0 files |
+| G23.8 `K` is identifiable | PASS | 4 closed intervals, none on a bound |
+| G23.9 published `n` inside our own profile interval | **FAILED on 1 of 4**, as predicted | 1 % FBS only |

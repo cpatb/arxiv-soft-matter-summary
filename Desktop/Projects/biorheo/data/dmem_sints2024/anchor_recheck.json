@@ -1,0 +1,372 @@
+{
+ "git_head": "d539ceb",
+ "rows": [
+  {
+   "stem": "DMEM_and_10pct_FBS",
+   "label": "DMEM + 10 % FBS",
+   "temperature_C": 20.0,
+   "n_points_pooled": 29,
+   "n_points_read": 30,
+   "intervals_pooled": [
+    0,
+    1
+   ],
+   "rate_min": 0.01,
+   "rate_max": 1.0,
+   "k_fit": 0.028034995100307034,
+   "n_fit": 0.3194983090283232,
+   "K_paper_table2": 0.028,
+   "n_paper_table2": 0.31,
+   "n_paper_figure_caption": 0.32,
+   "abs_dev_n_vs_table2": 0.009498309028323215,
+   "abs_dev_n_vs_figure_caption": 0.0005016909716767937,
+   "rel_dev_K_vs_table2": 0.0012498250109654638,
+   "K_rounds_to_published": true,
+   "K_published_decimals": 3,
+   "per_interval_n": [
+    0.29454761318667233,
+    0.31344947710536547
+   ],
+   "pooled_inside_per_interval_span": false,
+   "per_interval_spread": 0.01890186391869314,
+   "eta_curve_median_rel": 0.020410447124602327,
+   "eta_curve_max_rel": 0.04160214039591248,
+   "rmse_log_ours": 0.04216321327858567,
+   "rmse_log_paper_params": 0.04623878096818844,
+   "k_verdict": "measurable",
+   "k_lo": 0.02732422169556861,
+   "k_hi": 0.028764257552972423,
+   "k_lo_at_bound": false,
+   "k_hi_at_bound": false,
+   "n_verdict": "measurable",
+   "n_lo": 0.3072503930817759,
+   "n_hi": 0.331746224974871,
+   "n_paper_inside_profile": true,
+   "n_profile_width": 0.02449583189309512
+  },
+  {
+   "stem": "DMEM_and_5pct_FBS",
+   "label": "DMEM + 5 % FBS",
+   "temperature_C": 20.0,
+   "n_points_pooled": 30,
+   "n_points_read": 30,
+   "intervals_pooled": [
+    0,
+    1
+   ],
+   "rate_min": 0.01,
+   "rate_max": 1.0,
+   "k_fit": 0.03671959711063119,
+   "n_fit": 0.3310267636233863,
+   "K_paper_table2": 0.037,
+   "n_paper_table2": 0.33,
+   "n_paper_figure_caption": 0.31,
+   "abs_dev_n_vs_table2": 0.0010267636233862731,
+   "abs_dev_n_vs_figure_caption": 0.02102676362338629,
+   "rel_dev_K_vs_table2": 0.007578456469427211,
+   "K_rounds_to_published": true,
+   "K_published_decimals": 3,
+   "per_interval_n": [
+    0.36867922914473467,
+    0.2933742980065731
+   ],
+   "pooled_inside_per_interval_span": true,
+   "per_interval_spread": 0.07530493113816156,
+   "eta_curve_median_rel": 0.009921978616489247,
+   "eta_curve_max_rel": 0.012259966762729335,
+   "rmse_log_ours": 0.10088653597230245,
+   "rmse_log_paper_params": 0.10138862627780268,
+   "k_verdict": "measurable",
+   "k_lo": 0.034088350562800344,
+   "k_hi": 0.03955394701865649,
+   "k_lo_at_bound": false,
+   "k_hi_at_bound": false,
+   "n_verdict": "measurable",
+   "n_lo": 0.30354761032217004,
+   "n_hi": 0.3585059169229627,
+   "n_paper_inside_profile": true,
+   "n_profile_width": 0.05495830660079265
+  },
+  {
+   "stem": "DMEM_and_1pct_FBS",
+   "label": "DMEM + 1 % FBS",
+   "temperature_C": 20.0,
+   "n_points_pooled": 30,
+   "n_points_read": 30,
+   "intervals_pooled": [
+    0,
+    1
+   ],
+   "rate_min": 0.01,
+   "rate_max": 1.0,
+   "k_fit": 0.017068052821196066,
+   "n_fit": 0.5698586686230914,
+   "K_paper_table2": 0.016,
+   "n_paper_table2": 0.51,
+   "n_paper_figure_caption": 0.54,
+   "abs_dev_n_vs_table2": 0.059858668623091416,
+   "abs_dev_n_vs_figure_caption": 0.02985866862309139,
+   "rel_dev_K_vs_table2": 0.06675330132475411,
+   "K_rounds_to_published": false,
+   "K_published_decimals": 3,
+   "per_interval_n": [
+    0.5394308154747307,
+    0.6002865224078361
+   ],
+   "pooled_inside_per_interval_span": true,
+   "per_interval_spread": 0.06085570693310538,
+   "eta_curve_median_rel": 0.070594254646827,
+   "eta_curve_max_rel": 0.1902580143426923,
+   "rmse_log_ours": 0.11680841064584017,
+   "rmse_log_paper_params": 0.16199131685580873,
+   "k_verdict": "measurable",
+   "k_lo": 0.015660144307141695,
+   "k_hi": 0.018602537845871393,
+   "k_lo_at_bound": false,
+   "k_hi_at_bound": false,
+   "n_verdict": "measurable",
+   "n_lo": 0.5380427658172512,
+   "n_hi": 0.6016745714289318,
+   "n_paper_inside_profile": false,
+   "n_profile_width": 0.06363180561168058
+  },
+  {
+   "stem": "DMEM_and_10pct_FBS_37C",
+   "label": "DMEM + 10 % FBS (37 C)",
+   "temperature_C": 37.0,
+   "n_points_pooled": 25,
+   "n_points_read": 25,
+   "intervals_pooled": [
+    0,
+    1
+   ],
+   "rate_min": 0.01,
+   "rate_max": 10.0,
+   "k_fit": 0.004703748428001021,
+   "n_fit": 0.5119785939142992,
+   "K_paper_table2": 0.005,
+   "n_paper_table2": 0.54,
+   "n_paper_figure_caption": 0.5,
+   "abs_dev_n_vs_table2": 0.028021406085700806,
+   "abs_dev_n_vs_figure_caption": 0.01197859391429923,
+   "rel_dev_K_vs_table2": 0.05925031439979588,
+   "K_rounds_to_published": false,
+   "K_published_decimals": 4,
+   "per_interval_n": [
+    0.43488557617273654,
+    0.5393003039619206
+   ],
+   "pooled_inside_per_interval_span": true,
+   "per_interval_spread": 0.10441472778918409,
+   "eta_curve_median_rel": 0.04846395293108602,
+   "eta_curve_max_rel": 0.11803230942507403,
+   "rmse_log_ours": 0.1962148407436745,
+   "rmse_log_paper_params": 0.20577594842476943,
+   "k_verdict": "measurable",
+   "k_lo": 0.004248234063605347,
+   "k_hi": 0.005208105046476281,
+   "k_lo_at_bound": false,
+   "k_hi_at_bound": false,
+   "n_verdict": "measurable",
+   "n_lo": 0.47096261897520236,
+   "n_hi": 0.5529945683003483,
+   "n_paper_inside_profile": true,
+   "n_profile_width": 0.08203194932514596
+  }
+ ],
+ "gates": {
+  "G23_1_corrected_anchor_at_the_original_bar": {
+   "bar": "|n_fit - n_Table2| < 0.05 on all 4 conditions, pooling every interval of each condition -- which is what Table 2 says it fitted, \"the entire ensemble of data points\"",
+   "worst_abs_dev": 0.059858668623091416,
+   "n_conditions": 4,
+   "conditions_failing": [
+    "DMEM + 1 % FBS"
+   ],
+   "pass": false,
+   "predicted": "FAIL on exactly one condition (1 % FBS 20 C) at 0.0599",
+   "prediction_history": "the pre-registration ALSO predicted this while specifying a pooling restricted to the paper's 0.01-1 1/s range. Those two are inconsistent and the restricted run gives 0.1051 on two conditions; see G23.1b and addendum A of the pre-registration.",
+   "predicted_failure": true,
+   "note": "the bar is NOT moved. Item 22 reported worst 0.0299 against the figure captions; against the paper's own fit table it is larger and one condition misses. The failure is the result."
+  },
+  "G23_2_neither_single_correction_rescues_the_old_pass": {
+   "bar": "each single correction, applied alone to item 22's G22.1', must be reported",
+   "worst_dropping_out_of_range_interval_only": 0.06511442382726346,
+   "worst_regrading_against_table2_only": 0.059858668623091416,
+   "item22_reported_worst": 0.0299,
+   "both_fail": true,
+   "pass": true,
+   "predicted": "0.0651 and 0.0599, both FAIL the 0.05 bar",
+   "note": "a claim that survives neither of two independent corrections was not resting on the data. Item 22's 0.0299 is kept here rather than deleted."
+  },
+  "G23_3_the_flagship_agreement_is_a_pooling_coincidence": {
+   "bar": "a pooled estimate quoted as a precision must lie inside the span of the per-interval fits it pools",
+   "flagship_condition": "DMEM + 10 % FBS",
+   "pooled_n": 0.3194983090283232,
+   "per_interval_n": [
+    0.29454761318667233,
+    0.31344947710536547
+   ],
+   "inside_span": false,
+   "item22_quoted_agreement": 0.0005,
+   "conditions_inside_span": {
+    "DMEM + 10 % FBS": false,
+    "DMEM + 5 % FBS": true,
+    "DMEM + 1 % FBS": true,
+    "DMEM + 10 % FBS (37 C)": true
+   },
+   "pass": true,
+   "predicted": "False for the flagship condition, i.e. the 0.0005 is a coincidence of combining two mutually inconsistent intervals",
+   "note": "0.0005 must stop being quoted as a four-figure agreement anywhere."
+  },
+  "G23_4_what_survives_against_the_authors_own_repeatability": {
+   "bar": "the two parameter sets, compared AS VISCOSITY CURVES over each condition's own measured range, agree to inside the 20% repeatability the authors state for their own measurements (S2 Fig)",
+   "paper_declared_repeatability": 0.2,
+   "worst_max_rel": 0.1902580143426923,
+   "median_rel_by_condition": {
+    "DMEM + 10 % FBS": 0.020410447124602327,
+    "DMEM + 5 % FBS": 0.009921978616489247,
+    "DMEM + 1 % FBS": 0.070594254646827,
+    "DMEM + 10 % FBS (37 C)": 0.04846395293108602
+   },
+   "max_rel_by_condition": {
+    "DMEM + 10 % FBS": 0.04160214039591248,
+    "DMEM + 5 % FBS": 0.012259966762729335,
+    "DMEM + 1 % FBS": 0.1902580143426923,
+    "DMEM + 10 % FBS (37 C)": 0.11803230942507403
+   },
+   "worst_rel_dev_K": 0.06675330132475411,
+   "K_rounds_to_published_count": 2,
+   "n_conditions": 4,
+   "pass": true,
+   "predicted": "median 2.04 / 0.99 / 7.06 / 4.86 %, worst 19.03 %, inside 20 %",
+   "note": "this is the comparison item 22 never made. It is immune to the K-n tradeoff, it uses a scale the SOURCE declares rather than one this repo invented, and it is the quantity a client actually uses."
+  },
+  "G23_5_no_record_moves": {
+   "bar": "no record's parameters move; the defect is in the grading, not the fits",
+   "records_checked": 8,
+   "records_moved": [],
+   "pass": true,
+   "predicted": "no record moves",
+   "note": "read on the parameter VALUES, which are continuous, not on a verdict."
+  },
+  "G23_6_the_correction_reaches_no_shipped_number": {
+   "bar": "no DMEM record enters a force, needle or design-space calculation, so the correction reaches no shipped number",
+   "files_referencing_dmem_under_case_studies_or_apps": [],
+   "pass": true,
+   "predicted": "none",
+   "note": "settled by grep, not by argument. A correction reaches a downstream number only through the parameters that number uses."
+  },
+  "G23_1b_how_much_is_a_data_selection_choice": {
+   "bar": "report the same grading under item 22's own 0.01-1 1/s restriction, so the size of the data-selection choice is visible beside the disagreement",
+   "worst_abs_dev_restricted": 0.10511442382726349,
+   "worst_abs_dev_pooling_everything": 0.059858668623091416,
+   "per_condition": [
+    {
+     "label": "DMEM + 10 % FBS",
+     "n_points": 29,
+     "n_fit": 0.3194983090283232,
+     "abs_dev_n_vs_table2": 0.009498309028323215
+    },
+    {
+     "label": "DMEM + 5 % FBS",
+     "n_points": 30,
+     "n_fit": 0.3310267636233863,
+     "abs_dev_n_vs_table2": 0.0010267636233862731
+    },
+    {
+     "label": "DMEM + 1 % FBS",
+     "n_points": 30,
+     "n_fit": 0.5698586686230914,
+     "abs_dev_n_vs_table2": 0.059858668623091416
+    },
+    {
+     "label": "DMEM + 10 % FBS (37 C)",
+     "n_points": 5,
+     "n_fit": 0.43488557617273654,
+     "abs_dev_n_vs_table2": 0.10511442382726349
+    }
+   ],
+   "the_discarded_37C_interval_alone": {
+    "n_points": 20,
+    "n_fit": 0.5393003039619206,
+    "abs_dev_n_vs_table2": 0.0006996960380794004
+   },
+   "pass": true,
+   "note": "at 37 C the three data choices give n = 0.4349 (5 points), 0.5393 (the 20-point interval alone) and 0.5120 (both). The published value is 0.54. The restriction, not the fit, is what disagrees."
+  },
+  "G23_8_K_is_identifiable": {
+   "bar": "every condition's k carries a closed profile interval and is not on a bound; a comparison against a published K means nothing if K is unidentified",
+   "k_verdicts": {
+    "DMEM + 10 % FBS": "measurable",
+    "DMEM + 5 % FBS": "measurable",
+    "DMEM + 1 % FBS": "measurable",
+    "DMEM + 10 % FBS (37 C)": "measurable"
+   },
+   "k_intervals": {
+    "DMEM + 10 % FBS": [
+     0.02732422169556861,
+     0.028764257552972423
+    ],
+    "DMEM + 5 % FBS": [
+     0.034088350562800344,
+     0.03955394701865649
+    ],
+    "DMEM + 1 % FBS": [
+     0.015660144307141695,
+     0.018602537845871393
+    ],
+    "DMEM + 10 % FBS (37 C)": [
+     0.004248234063605347,
+     0.005208105046476281
+    ]
+   },
+   "unidentified": [],
+   "pass": true,
+   "predicted": "all four identified with closed intervals"
+  },
+  "G23_9_the_published_n_against_our_own_profile_interval": {
+   "bar": "the paper's Table 2 n falls inside biorheo's own profile interval on n",
+   "inside": {
+    "DMEM + 10 % FBS": true,
+    "DMEM + 5 % FBS": true,
+    "DMEM + 1 % FBS": false,
+    "DMEM + 10 % FBS (37 C)": true
+   },
+   "intervals": {
+    "DMEM + 10 % FBS": [
+     0.3072503930817759,
+     0.331746224974871
+    ],
+    "DMEM + 5 % FBS": [
+     0.30354761032217004,
+     0.3585059169229627
+    ],
+    "DMEM + 1 % FBS": [
+     0.5380427658172512,
+     0.6016745714289318
+    ],
+    "DMEM + 10 % FBS (37 C)": [
+     0.47096261897520236,
+     0.5529945683003483
+    ]
+   },
+   "widths": {
+    "DMEM + 10 % FBS": 0.02449583189309512,
+    "DMEM + 5 % FBS": 0.05495830660079265,
+    "DMEM + 1 % FBS": 0.06363180561168058,
+    "DMEM + 10 % FBS (37 C)": 0.08203194932514596
+   },
+   "conditions_outside": [
+    "DMEM + 1 % FBS"
+   ],
+   "pass": false,
+   "added_after_the_first_run": true,
+   "predicted_failure": true,
+   "predicted": "inside on 3 of 4; the 1 % FBS condition is the one whose deviation (0.0599) is large against a well-determined 30-point fit",
+   "note": "a deviation is only a disagreement if the fit resolves it. This is the scaled version of G23.1 and it is reported BESIDE the failed bar, never instead of it."
+  }
+ },
+ "G221_TOL_unchanged": 0.05,
+ "paper": "Sints et al. 2024, arXiv:2409.13650, Table 2",
+ "prereg": "data/dmem_anchor_correction_prereg.md"
+}
