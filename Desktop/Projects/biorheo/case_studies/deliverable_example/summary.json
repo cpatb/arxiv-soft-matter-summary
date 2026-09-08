@@ -1,0 +1,80 @@
+{
+ "01_clean": {
+  "record": "blood_horner2020_donor_A",
+  "why": "every parameter measurable, both interval ends closed",
+  "flags": [
+   "non_commercial",
+   "extrapolated"
+  ],
+  "force_N": 0.28728169584068497,
+  "hull_relative_width": 0.3340116638501326,
+  "insensitive_to": [
+   "tau_y"
+  ],
+  "bore_exponent": -3.9810496880656743,
+  "newtonian_rule_safe_within_10pct": true,
+  "decades_past_envelope": 1.4187825773707923,
+  "derating_factor": 0.8476040202002025,
+  "commercial_use": false
+ },
+ "02_open": {
+  "record": "blood_horner2020_donor_A_carreau_yasuda",
+  "why": "three of five parameter intervals run into a box bound",
+  "flags": [
+   "non_commercial",
+   "open_interval",
+   "extrapolated"
+  ],
+  "force_N": 0.19240987325129608,
+  "hull_relative_width": 149.9989226040071,
+  "insensitive_to": [
+   "lam",
+   "a"
+  ],
+  "bore_exponent": -3.8938992298538366,
+  "newtonian_rule_safe_within_10pct": true,
+  "decades_past_envelope": 1.4220554976422142,
+  "derating_factor": 0.005524461642127943,
+  "commercial_use": false
+ },
+ "03_unbounded": {
+  "record": "blood_horner2020_donor_B_carreau_yasuda",
+  "why": "one interval end cannot be delivered at any attainable pressure",
+  "flags": [
+   "non_commercial",
+   "open_interval",
+   "hull_unbounded_above",
+   "extrapolated"
+  ],
+  "force_N": 0.24898197893198495,
+  "hull_relative_width": 6323.0924072741245,
+  "insensitive_to": [
+   "eta_0",
+   "lam",
+   "a"
+  ],
+  "bore_exponent": -3.9779767467935656,
+  "newtonian_rule_safe_within_10pct": true,
+  "decades_past_envelope": 1.4188951318093463,
+  "derating_factor": 0.00015635290424250418,
+  "commercial_use": false
+ },
+ "04_thinning": {
+  "record": "carbopol_etd2020_0p5wt_40uL",
+  "why": "a strongly shear-thinning gel, where the Newtonian R^-4 rule is not safe",
+  "flags": [
+   "non_commercial",
+   "extrapolated"
+  ],
+  "force_N": 3.5475743698492157,
+  "hull_relative_width": 0.02680268396262365,
+  "insensitive_to": [
+   "tau_y"
+  ],
+  "bore_exponent": -2.312675292379218,
+  "newtonian_rule_safe_within_10pct": false,
+  "decades_past_envelope": 2.0832490793886556,
+  "derating_factor": 0.9577658826450711,
+  "commercial_use": false
+ }
+}

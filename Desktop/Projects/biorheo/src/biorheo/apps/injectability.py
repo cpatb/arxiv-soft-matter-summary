@@ -328,21 +328,47 @@ def sensitivities(Q: float, needle: Needle, syringe: Syringe, model: RateModel, 
                   *, friction: float = 0.0) -> dict[str, float]:
     """``d ln F / d ln p_j`` at ``params`` by central differences (relative step 1e-4).
     A value near 0 says the force does not care about that parameter at this
-    operating point; the report states these explicitly."""
+    operating point; the report states these explicitly.
+
+    **A parameter sitting ON its own box bound cannot take a central step**, and stepping
+    over the bound raises inside the model rather than returning a number. Both offsets
+    are therefore clipped into the box and the difference is divided by the span actually
+    used, so the estimate degrades to a ONE-SIDED difference at a bound instead of
+    failing. Found 2026-09-07 building `apps.report`: `carreau_yasuda`'s `a` is fitted at
+    its bound of 10 on several blood donors, and a 1e-4 relative step put it at 10.001.
+    No shipped number moved -- the two case studies fit families whose parameters are all
+    interior -- but every call on such a record used to raise.
+
+    If the box is degenerate at that parameter (``lo == hi``) the sensitivity is reported
+    as ``0.0``, which is what a parameter that cannot move means, not an error.
+
+    **The shipped numbers moved, by 1e-12, and that is not a rounding claim.** The
+    denominator is now the span actually spent (``p_up - p_dn``) rather than ``2h``, and
+    for an interior parameter those differ in the last bits because ``(p+h) - (p-h)`` is
+    not exactly ``2h`` in floating point. The span is the correct denominator for a
+    difference taken between two specific points. Checked on the 40 sensitivity values in
+    ``case_studies/blood_injectability/uq.json``: worst change 1.061e-12, no verdict moved.
+    """
     params = np.asarray(params, dtype=float)
+    lo_b, hi_b = (np.asarray(b, dtype=float) for b in model.bounds)
     out = {}
+    f_0 = injection_force(Q, needle, syringe, model, params, friction=friction).force
     for j, name in enumerate(model.param_names):
         if params[j] == 0.0:
             out[name] = 0.0  # a parameter at exactly 0 has no log-sensitivity; report inert
             continue
         h = _SENS_REL_STEP * abs(params[j])
+        p_up = float(np.clip(params[j] + h, lo_b[j], hi_b[j]))
+        p_dn = float(np.clip(params[j] - h, lo_b[j], hi_b[j]))
+        span = p_up - p_dn
+        if span <= 0.0:
+            out[name] = 0.0     # the box pins this parameter; it cannot move the force
+            continue
         up, dn = params.copy(), params.copy()
-        up[j] += h
-        dn[j] -= h
+        up[j], dn[j] = p_up, p_dn
         f_up = injection_force(Q, needle, syringe, model, up, friction=friction).force
         f_dn = injection_force(Q, needle, syringe, model, dn, friction=friction).force
-        f_0 = injection_force(Q, needle, syringe, model, params, friction=friction).force
-        out[name] = float((f_up - f_dn) / (2 * h) * params[j] / f_0)
+        out[name] = float((f_up - f_dn) / span * params[j] / f_0)
     return out
 
 
