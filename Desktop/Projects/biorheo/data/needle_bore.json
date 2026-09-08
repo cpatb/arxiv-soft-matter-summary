@@ -1,0 +1,4182 @@
+{
+ "generated_by": "scripts/needle_bore.py",
+ "prereg": "data/needle_bore_prereg.md",
+ "biorheo_version": "0.0.1",
+ "geometry": {
+  "R_ref_m": 0.000105,
+  "needle_length_m": 0.0127,
+  "barrel_radius_m": 0.0023,
+  "bore_ratio": 0.7,
+  "note": "R_ref is a DECLARED radius carrying the blood study's [UNVERIFIED] flag; the bore axis is a ratio and no gauge is named"
+ },
+ "operating_points": {
+  "Q1_mL_per_min": 1.0,
+  "Q2_mL_per_min": 6.0
+ },
+ "force_budget_N": 25.0,
+ "force_budget_note": "a rule of thumb from the JHU thesis, NOT a standard; every derating factor is a ratio and is meaningful as one, while the absolute Q_max is not",
+ "n_records": 115,
+ "rows": [
+  {
+   "id": "blood_horner2020_donor_A",
+   "model": "casson",
+   "family": "blood",
+   "donor": "A",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9810496880656743,
+   "b_Q2": -3.992233930674993,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.005255321229169274,
+   "F_ref_N": 0.28728169584068497,
+   "F_fine_N": 1.190253357050463,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.3340116638501326,
+   "derating": {
+    "q_nominal_mL_min": 88.0132516359228,
+    "q_upper_mL_min": 74.60038591750022,
+    "factor": 0.8476040202002025,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1990524844032837,
+    "parameter_uncertainty": 0.3340116638501326,
+    "family_choice": 0.3017920308979444
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_A_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "A",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "m": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.92006390776789,
+   "b_Q2": -3.9638625008863864,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.02302199516832304,
+   "F_ref_N": 0.2005823694131191,
+   "F_fine_N": 0.8166117524909574,
+   "open_parameters": [
+    "lam"
+   ],
+   "hull_rel_Q1": 1.9335234053807095,
+   "derating": {
+    "q_nominal_mL_min": 131.42476823897906,
+    "q_upper_mL_min": 107.88245205330979,
+    "factor": 0.8208684976118003,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1960031953883945,
+    "parameter_uncertainty": 1.9335234053807095,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_A_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "A",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "a": "degenerate",
+    "n": "bounded_only"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.8938992298538366,
+   "b_Q2": -3.9470643437579804,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.0315450070928438,
+   "F_ref_N": 0.19240987325129608,
+   "F_fine_N": 0.7768676053028295,
+   "open_parameters": [
+    "lam",
+    "a",
+    "n"
+   ],
+   "hull_rel_Q1": 149.9989226040071,
+   "derating": {
+    "q_nominal_mL_min": 140.3807670556492,
+    "q_upper_mL_min": 0.775528162891432,
+    "factor": 0.005524461642127943,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19469496149269183,
+    "parameter_uncertainty": 149.9989226040071,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_A_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "A",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9999999999995595,
+   "b_Q2": -3.999999999996895,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.1013412404281553e-13,
+   "newtonian_rule_over_prediction": 2.0268231537556858e-12,
+   "F_ref_N": 0.601535046564602,
+   "F_fine_N": 2.505352130626335,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.8062847084178504,
+   "derating": {
+    "q_nominal_mL_min": 41.56033824267162,
+    "q_upper_mL_min": 28.055796016619787,
+    "factor": 0.67506178252933,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19999999999997797,
+    "parameter_uncertainty": 0.8062847084178504,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_A_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "A",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.207675999999715,
+   "b_Q2": -3.207675999998827,
+   "b_closed_form": -3.207676,
+   "b_closed_form_rel_err": 8.892886427247504e-14,
+   "newtonian_rule_over_prediction": 0.32657723596754007,
+   "F_ref_N": 0.08402947122079879,
+   "F_fine_N": 0.2638195225469223,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.45067718025887665,
+   "derating": {
+    "q_nominal_mL_min": 2297.408925842692,
+    "q_upper_mL_min": 1349.725827154269,
+    "factor": 0.5874991656782165,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.16038379999998575,
+    "parameter_uncertainty": 0.45067718025887665,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_B",
+   "model": "casson",
+   "family": "blood",
+   "donor": "B",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.970877492297409,
+   "b_Q2": -3.988040644965246,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.008093511263853381,
+   "F_ref_N": 0.2621394508870999,
+   "F_fine_N": 1.0830273046741574,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.15134191195615682,
+   "derating": {
+    "q_nominal_mL_min": 97.05490835008592,
+    "q_upper_mL_min": 89.9638025137834,
+    "factor": 0.9269371744628901,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19854387461487044,
+    "parameter_uncertainty": 0.15134191195615682,
+    "family_choice": 0.0500646613284651
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_B_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "B",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "m": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.978008247418785,
+   "b_Q2": -3.9926565129748126,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.005775875526590424,
+   "F_ref_N": 0.24901552805760743,
+   "F_fine_N": 1.0311766139048224,
+   "open_parameters": [
+    "lam"
+   ],
+   "hull_rel_Q1": 3.5780619235016355,
+   "derating": {
+    "q_nominal_mL_min": 101.53249635281374,
+    "q_upper_mL_min": 81.86432921210256,
+    "factor": 0.8062869736565271,
+    "binding_parameter": "lam",
+    "binding_end": "lo"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19890041237093925,
+    "parameter_uncertainty": 3.5780619235016355,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_B_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "B",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "degenerate",
+    "eta_inf": "bounded_only",
+    "lam": "degenerate",
+    "a": "not_identifiable",
+    "n": "bounded_only"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.9779767467935656,
+   "b_Q2": -3.992643348322472,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.005784733530430186,
+   "F_ref_N": 0.24898197893198495,
+   "F_fine_N": 1.031028606121329,
+   "open_parameters": [
+    "eta_0",
+    "eta_inf",
+    "lam",
+    "a",
+    "n"
+   ],
+   "hull_rel_Q1": 6323.0924072741245,
+   "derating": {
+    "q_nominal_mL_min": 101.54813023031043,
+    "q_upper_mL_min": 0.01587734508190507,
+    "factor": 0.00015635290424250418,
+    "binding_parameter": "lam",
+    "binding_end": "lo"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19889883733967828,
+    "parameter_uncertainty": 6323.0924072741245,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_B_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "B",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.999999999999587,
+   "b_Q2": -3.999999999892201,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.0325074129013956e-13,
+   "newtonian_rule_over_prediction": -3.352873534367973e-14,
+   "F_ref_N": 0.7112506868969026,
+   "F_fine_N": 2.9623102328068582,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.038533276099746,
+   "derating": {
+    "q_nominal_mL_min": 35.14935093998606,
+    "q_upper_mL_min": 21.353768427515618,
+    "factor": 0.6075152984752124,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19999999999997936,
+    "parameter_uncertainty": 1.038533276099746,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_B_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "B",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.02072800001274,
+   "b_Q2": -3.0207279996856684,
+   "b_closed_form": -3.020728,
+   "b_closed_form_rel_err": 4.217515225946045e-12,
+   "newtonian_rule_over_prediction": 0.4180487199037244,
+   "F_ref_N": 0.06237492652290858,
+   "F_fine_N": 0.18320053382608123,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.0454904610468223,
+   "derating": {
+    "q_nominal_mL_min": 7317.199098466012,
+    "q_upper_mL_min": 1932.8573533713807,
+    "factor": 0.26415262552806407,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.151036400000637,
+    "parameter_uncertainty": 1.0454904610468223,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_C",
+   "model": "casson",
+   "family": "blood",
+   "donor": "C",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.958721214344152,
+   "b_Q2": -3.983006730408883,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.011501195459952651,
+   "F_ref_N": 0.2249968957337873,
+   "F_fine_N": 0.9264414247291747,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.14193227860445126,
+   "derating": {
+    "q_nominal_mL_min": 113.93700488742876,
+    "q_upper_mL_min": 106.08066477982887,
+    "factor": 0.9310466330463745,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1979360607172076,
+    "parameter_uncertainty": 0.14193227860445126,
+    "family_choice": 0.027197337383299214
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_C_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "C",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "m": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.983126034249551,
+   "b_Q2": -3.9951392747737122,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.004258359309188275,
+   "F_ref_N": 0.23111621221725412,
+   "F_fine_N": 0.9585014974883325,
+   "open_parameters": [
+    "lam"
+   ],
+   "hull_rel_Q1": 1.5628399363383516,
+   "derating": {
+    "q_nominal_mL_min": 109.01610531046211,
+    "q_upper_mL_min": 101.00618492448265,
+    "factor": 0.926525348129358,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19915630171247756,
+    "parameter_uncertainty": 1.5628399363383516,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_C_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "C",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "a": "degenerate",
+    "n": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.9846001964028988,
+   "b_Q2": -3.9956393411868794,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.0038679750959527137,
+   "F_ref_N": 0.23370398168076725,
+   "F_fine_N": 0.9696105936146391,
+   "open_parameters": [
+    "lam",
+    "a"
+   ],
+   "hull_rel_Q1": 20.764661588052626,
+   "derating": {
+    "q_nominal_mL_min": 107.72638852739748,
+    "q_upper_mL_min": 43.00598290541582,
+    "factor": 0.3992149323234607,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19923000982014494,
+    "parameter_uncertainty": 20.764661588052626,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_C_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "C",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9999999999995732,
+   "b_Q2": -4.000000000001336,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.0669243266647754e-13,
+   "newtonian_rule_over_prediction": -3.186340080674199e-14,
+   "F_ref_N": 0.7870899826306742,
+   "F_fine_N": 3.2781756877580155,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.260482904071119,
+   "derating": {
+    "q_nominal_mL_min": 31.762569149323603,
+    "q_upper_mL_min": 17.526356710724198,
+    "factor": 0.5517927919598855,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19999999999997867,
+    "parameter_uncertainty": 1.260482904071119,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_C_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "C",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.830086999985326,
+   "b_Q2": -2.8300870000010914,
+   "b_closed_form": -2.8300870000000002,
+   "b_closed_form_rel_err": 5.184963569604406e-12,
+   "newtonian_rule_over_prediction": 0.5178254016589059,
+   "F_ref_N": 0.04290909389751434,
+   "F_fine_N": 0.11774307315997741,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.245607895639304,
+   "derating": {
+    "q_nominal_mL_min": 34135.93526355562,
+    "q_upper_mL_min": 5485.789360855033,
+    "factor": 0.16070423495066208,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1415043499992663,
+    "parameter_uncertainty": 1.245607895639304,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_D",
+   "model": "casson",
+   "family": "blood",
+   "donor": "D",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9555553139134503,
+   "b_Q2": -3.9816916474509076,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.01239152658005338,
+   "F_ref_N": 0.2312575132163842,
+   "F_fine_N": 0.9513825678368619,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.18607241469642696,
+   "derating": {
+    "q_nominal_mL_min": 111.06357376225306,
+    "q_upper_mL_min": 101.14595875491128,
+    "factor": 0.9107032605616329,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1977777656956725,
+    "parameter_uncertainty": 0.18607241469642696,
+    "family_choice": 0.14190538949467313
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_D_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "D",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "m": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.9935219838486136,
+   "b_Q2": -3.998515845466122,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.0015381413639139474,
+   "F_ref_N": 0.2640742007029247,
+   "F_fine_N": 1.0981617703446223,
+   "open_parameters": [
+    "lam"
+   ],
+   "hull_rel_Q1": 4.83062540541676,
+   "derating": {
+    "q_nominal_mL_min": 94.91336971264266,
+    "q_upper_mL_min": 84.04238782419439,
+    "factor": 0.8854641667305567,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19967609919243068,
+    "parameter_uncertainty": 4.83062540541676,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_D_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "D",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "bounded_only",
+    "n": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.9911573164292946,
+   "b_Q2": -3.9977952184670484,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.0021465105269549145,
+   "F_ref_N": 0.25976890173833034,
+   "F_fine_N": 1.079602246479357,
+   "open_parameters": [
+    "a"
+   ],
+   "hull_rel_Q1": 0.14673801878081968,
+   "derating": {
+    "q_nominal_mL_min": 96.59539833084419,
+    "q_upper_mL_min": 89.89419338428306,
+    "factor": 0.930626043658838,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19955786582146473,
+    "parameter_uncertainty": 0.14673801878081968,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_D_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "D",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000503,
+   "b_Q2": -4.000000000000559,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.2567724638756772e-13,
+   "newtonian_rule_over_prediction": -5.329070518200751e-15,
+   "F_ref_N": 0.858213503714995,
+   "F_fine_N": 3.574400265368596,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.3163902993479955,
+   "derating": {
+    "q_nominal_mL_min": 29.130280392700588,
+    "q_upper_mL_min": 15.70052870791603,
+    "factor": 0.5389762301035125,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.20000000000002516,
+    "parameter_uncertainty": 1.3163902993479955,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_D_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "D",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.7915429999920693,
+   "b_Q2": -2.7915429999989527,
+   "b_closed_form": -2.791543,
+   "b_closed_form_rel_err": 2.840949697713313e-12,
+   "newtonian_rule_over_prediction": 0.5388360711742244,
+   "F_ref_N": 0.04249509025755624,
+   "F_fine_N": 0.11501493493521601,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.4204948332503369,
+   "derating": {
+    "q_nominal_mL_min": 43430.21511180306,
+    "q_upper_mL_min": 5343.5680692263995,
+    "factor": 0.12303802906502699,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.13957714999960347,
+    "parameter_uncertainty": 1.4204948332503369,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_F",
+   "model": "casson",
+   "family": "blood",
+   "donor": "F",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9771778433682625,
+   "b_Q2": -3.9906398744137817,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.0063341974491928354,
+   "F_ref_N": 0.22312815921704846,
+   "F_fine_N": 0.9234640458633617,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.25315505105321756,
+   "derating": {
+    "q_nominal_mL_min": 113.60424021799878,
+    "q_upper_mL_min": 100.15379848389213,
+    "factor": 0.8816026434550668,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19885889216841313,
+    "parameter_uncertainty": 0.25315505105321756,
+    "family_choice": 0.15276653039218302
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_F_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "F",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "m": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.966664518955554,
+   "b_Q2": -3.9876638846392183,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.009017357827770578,
+   "F_ref_N": 0.18904164450066538,
+   "F_fine_N": 0.7803091314902874,
+   "open_parameters": [
+    "lam"
+   ],
+   "hull_rel_Q1": 2.213815544007027,
+   "derating": {
+    "q_nominal_mL_min": 134.7410964091649,
+    "q_upper_mL_min": 117.30978548624675,
+    "factor": 0.8706310740563894,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1983332259477777,
+    "parameter_uncertainty": 2.213815544007027,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_F_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "F",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "a": "not_identifiable",
+    "n": "bounded_only"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.961931228322335,
+   "b_Q2": -3.9852547863432686,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.010433449004882966,
+   "F_ref_N": 0.18705177091921377,
+   "F_fine_N": 0.771013441996151,
+   "open_parameters": [
+    "lam",
+    "a",
+    "n"
+   ],
+   "hull_rel_Q1": 206.39670087567984,
+   "derating": {
+    "q_nominal_mL_min": 136.64907093935514,
+    "q_upper_mL_min": 0.38861665907059945,
+    "factor": 0.0028439026800487176,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19809656141611676,
+    "parameter_uncertainty": 206.39670087567984,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_F_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "F",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9999999999995595,
+   "b_Q2": -4.000000000000448,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.1013412404281553e-13,
+   "newtonian_rule_over_prediction": -3.2085445411667024e-14,
+   "F_ref_N": 0.5189636674705023,
+   "F_fine_N": 2.1614480111225283,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.8974168994067101,
+   "derating": {
+    "q_nominal_mL_min": 48.17292917999497,
+    "q_upper_mL_min": 31.18464270480796,
+    "factor": 0.6473478618725591,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19999999999997797,
+    "parameter_uncertainty": 0.8974168994067101,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_F_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "F",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.1346740001776396,
+   "b_Q2": -3.1346739994795314,
+   "b_closed_form": -3.134674,
+   "b_closed_form_rel_err": 5.666933589054679e-11,
+   "newtonian_rule_over_prediction": 0.3615722559154029,
+   "F_ref_N": 0.06044874312313826,
+   "F_fine_N": 0.18490745525539504,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.7327882273574047,
+   "derating": {
+    "q_nominal_mL_min": 4755.721135921048,
+    "q_upper_mL_min": 1930.7091687121178,
+    "factor": 0.40597611035874887,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.15673370000888198,
+    "parameter_uncertainty": 0.7327882273574047,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_G",
+   "model": "casson",
+   "family": "blood",
+   "donor": "G",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9861674484846787,
+   "b_Q2": -3.9943371104147474,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.003831953826828549,
+   "F_ref_N": 0.2937922414358167,
+   "F_fine_N": 1.2189535221620218,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.4604553637910604,
+   "derating": {
+    "q_nominal_mL_min": 85.79851485844894,
+    "q_upper_mL_min": 68.44327872440536,
+    "factor": 0.7977210192661681,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19930837242423394,
+    "parameter_uncertainty": 0.4604553637910604,
+    "family_choice": 0.2192709057916209
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_G_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "G",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "m": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.987426372600633,
+   "b_Q2": -3.9967142309329793,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.0030919138198954865,
+   "F_ref_N": 0.22937215054163462,
+   "F_fine_N": 0.9523745841000822,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.3228641386917378,
+   "derating": {
+    "q_nominal_mL_min": 109.58657712116512,
+    "q_upper_mL_min": 96.3096861112875,
+    "factor": 0.8788456455283029,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19937131863003166,
+    "parameter_uncertainty": 0.3228641386917378,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_G_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "G",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "bounded_only",
+    "n": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.924084777909731,
+   "b_Q2": -3.9643242671107277,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.022081599489525816,
+   "F_ref_N": 0.19750498627965468,
+   "F_fine_N": 0.8048229177133558,
+   "open_parameters": [
+    "a"
+   ],
+   "hull_rel_Q1": 0.2819413257454109,
+   "derating": {
+    "q_nominal_mL_min": 133.3662726963113,
+    "q_upper_mL_min": 116.86127957498933,
+    "factor": 0.8762431251347517,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19620423889548655,
+    "parameter_uncertainty": 0.2819413257454109,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_G_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "G",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000448,
+   "b_Q2": -4.000000000000448,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.1191048088221578e-13,
+   "newtonian_rule_over_prediction": -2.808864252301646e-14,
+   "F_ref_N": 0.5269581546399426,
+   "F_fine_N": 2.19474450079116,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.6843565214682947,
+   "derating": {
+    "q_nominal_mL_min": 47.44209721382764,
+    "q_upper_mL_min": 33.90898791904121,
+    "factor": 0.7147447079796881,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.20000000000002238,
+    "parameter_uncertainty": 0.6843565214682947,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_G_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "G",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.3261249999938514,
+   "b_Q2": -3.326124999999125,
+   "b_closed_form": -3.326125,
+   "b_closed_form_rel_err": 1.848632358303348e-12,
+   "newtonian_rule_over_prediction": 0.27169966910644283,
+   "F_ref_N": 0.09883917169672687,
+   "F_fine_N": 0.323707214647005,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.456714261668735,
+   "derating": {
+    "q_nominal_mL_min": 1256.4917667817376,
+    "q_upper_mL_min": 766.4466355132723,
+    "factor": 0.6099893813680756,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.16630624999969257,
+    "parameter_uncertainty": 0.456714261668735,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_H",
+   "model": "casson",
+   "family": "blood",
+   "donor": "H",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.971530737458484,
+   "b_Q2": -3.988310451421617,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.007910882879425651,
+   "F_ref_N": 0.3010273928234139,
+   "F_fine_N": 1.243917915157422,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.43139925689275943,
+   "derating": {
+    "q_nominal_mL_min": 84.47179949304477,
+    "q_upper_mL_min": 68.27762194820617,
+    "factor": 0.8082889480036235,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1985765368729242,
+    "parameter_uncertainty": 0.43139925689275943,
+    "family_choice": 0.09234321630003284
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_H_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "H",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "m": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.99023102832885,
+   "b_Q2": -3.997654741140444,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.002348831028841092,
+   "F_ref_N": 0.2732295551756864,
+   "F_fine_N": 1.1353156559582005,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.16542479401622645,
+   "derating": {
+    "q_nominal_mL_min": 91.86281991702829,
+    "q_upper_mL_min": 85.0941030125771,
+    "factor": 0.9263171225250347,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1995115514164425,
+    "parameter_uncertainty": 0.16542479401622645,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_H_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "H",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9766950905901766,
+   "b_Q2": -3.9927164920392775,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.006015358843702412,
+   "F_ref_N": 0.2582438087542022,
+   "F_fine_N": 1.0691364770316913,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.16940311539911798,
+   "derating": {
+    "q_nominal_mL_min": 97.91315699405185,
+    "q_upper_mL_min": 90.2565665382128,
+    "factor": 0.9218022307634899,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19883475452950883,
+    "parameter_uncertainty": 0.16940311539911798,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_H_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "H",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000517,
+   "b_Q2": -4.000000000000448,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.2922996006636822e-13,
+   "newtonian_rule_over_prediction": -3.019806626980426e-14,
+   "F_ref_N": 0.8044968582706251,
+   "F_fine_N": 3.350674128574134,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.0208042464227538,
+   "derating": {
+    "q_nominal_mL_min": 31.075323344537814,
+    "q_upper_mL_min": 19.02814968213586,
+    "factor": 0.6123234655088629,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.20000000000002585,
+    "parameter_uncertainty": 1.0208042464227538,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_H_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "H",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.0196239993474094,
+   "b_Q2": -3.019623999998333,
+   "b_closed_form": -3.0196240000000003,
+   "b_closed_form_rel_err": 2.1611656908504528e-10,
+   "newtonian_rule_over_prediction": 0.41860721367706266,
+   "F_ref_N": 0.07035820622489516,
+   "F_fine_N": 0.20656675857095183,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.751905998134292,
+   "derating": {
+    "q_nominal_mL_min": 6148.405990565397,
+    "q_upper_mL_min": 2293.413440901354,
+    "factor": 0.3730094343835703,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.15098119996737047,
+    "parameter_uncertainty": 0.751905998134292,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_I",
+   "model": "casson",
+   "family": "blood",
+   "donor": "I",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9721607086241617,
+   "b_Q2": -3.9885705777278346,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.007734808565106777,
+   "F_ref_N": 0.28550407138989103,
+   "F_fine_N": 1.1799779336810112,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.3901289320067684,
+   "derating": {
+    "q_nominal_mL_min": 89.03576088828888,
+    "q_upper_mL_min": 73.412863216978,
+    "factor": 0.8245323281853842,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19860803543120809,
+    "parameter_uncertainty": 0.3901289320067684,
+    "family_choice": 0.07806060248487456
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_I_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "I",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "m": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.989762642395256,
+   "b_Q2": -3.9974350401283942,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.0024888556350719515,
+   "F_ref_N": 0.2632174515653115,
+   "F_fine_N": 1.0935608819433515,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.19955255197080088,
+   "derating": {
+    "q_nominal_mL_min": 95.38654441918767,
+    "q_upper_mL_min": 87.12611850169823,
+    "factor": 0.9134005119088076,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1994881321197628,
+    "parameter_uncertainty": 0.19955255197080088,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_I_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "I",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "bounded_only",
+    "n": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.973807770253579,
+   "b_Q2": -3.991343048153545,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.006865115543083,
+   "F_ref_N": 0.2468105786342581,
+   "F_fine_N": 1.0209402262358638,
+   "open_parameters": [
+    "a"
+   ],
+   "hull_rel_Q1": 0.11917158887320814,
+   "derating": {
+    "q_nominal_mL_min": 102.65015369326147,
+    "q_upper_mL_min": 96.86456266205458,
+    "factor": 0.9436377752682635,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19869038851267895,
+    "parameter_uncertainty": 0.11917158887320814,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_I_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "I",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000392,
+   "b_Q2": -3.999999999757975,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 9.792167077193881e-14,
+   "newtonian_rule_over_prediction": -3.5638159090467525e-14,
+   "F_ref_N": 0.7518193192890968,
+   "F_fine_N": 3.1312757987885207,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.007740350509858,
+   "derating": {
+    "q_nominal_mL_min": 33.252670367244846,
+    "q_upper_mL_min": 20.48028481641252,
+    "factor": 0.615898951579732,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.2000000000000196,
+    "parameter_uncertainty": 1.007740350509858,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_I_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "I",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.0334810000003376,
+   "b_Q2": -3.033481000001892,
+   "b_closed_form": -3.033481,
+   "b_closed_form_rel_err": 1.1124434706744069e-13,
+   "newtonian_rule_over_prediction": 0.4116131241604877,
+   "F_ref_N": 0.06806179022013452,
+   "F_fine_N": 0.20081470915499158,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.7837518149519308,
+   "derating": {
+    "q_nominal_mL_min": 6084.227842867474,
+    "q_upper_mL_min": 2201.2800667757288,
+    "factor": 0.361801057361171,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.15167405000001688,
+    "parameter_uncertainty": 0.7837518149519308,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_J",
+   "model": "casson",
+   "family": "blood",
+   "donor": "J",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.97180251222895,
+   "b_Q2": -3.988422680695436,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.007834917264377239,
+   "F_ref_N": 0.33475565405128743,
+   "F_fine_N": 1.383395504932698,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.2877272192514966,
+   "derating": {
+    "q_nominal_mL_min": 75.93991737560594,
+    "q_upper_mL_min": 65.80977789582649,
+    "factor": 0.8666032327942255,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1985901256114475,
+    "parameter_uncertainty": 0.2877272192514966,
+    "family_choice": 0.012920274033103807
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_J_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "J",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "m": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9942796101389844,
+   "b_Q2": -3.9986674536606204,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.0013638976653860269,
+   "F_ref_N": 0.3390807888357609,
+   "F_fine_N": 1.4103246449152822,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.18749239009820967,
+   "derating": {
+    "q_nominal_mL_min": 73.89660489260115,
+    "q_upper_mL_min": 67.85889676634537,
+    "factor": 0.9182951891358097,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19971398050694922,
+    "parameter_uncertainty": 0.18749239009820967,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_J_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "J",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "measurable",
+    "n": "bounded_only"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.9893818102109124,
+   "b_Q2": -3.9970456940912613,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.0026526825695909473,
+   "F_ref_N": 0.32941712234146103,
+   "F_fine_N": 1.368369825771943,
+   "open_parameters": [
+    "n"
+   ],
+   "hull_rel_Q1": 0.20812582847401107,
+   "derating": {
+    "q_nominal_mL_min": 76.25163343226451,
+    "q_upper_mL_min": 69.14049044263194,
+    "factor": 0.9067411061305395,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19946909051054562,
+    "parameter_uncertainty": 0.20812582847401107,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_J_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "J",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.0000000000003855,
+   "b_Q2": -4.000000000000448,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 9.636735853746359e-14,
+   "newtonian_rule_over_prediction": 3.708144902248023e-14,
+   "F_ref_N": 0.8889666332854917,
+   "F_fine_N": 3.702484936632482,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.017000342817011,
+   "derating": {
+    "q_nominal_mL_min": 28.122540333408462,
+    "q_upper_mL_min": 17.24925102914611,
+    "factor": 0.6133603445722392,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.20000000000001927,
+    "parameter_uncertainty": 1.017000342817011,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_J_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "J",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.0362319999983622,
+   "b_Q2": -3.036232000001249,
+   "b_closed_form": -3.036232,
+   "b_closed_form_rel_err": 5.394573676653636e-13,
+   "newtonian_rule_over_prediction": 0.410228710648723,
+   "F_ref_N": 0.08103092788819125,
+   "F_fine_N": 0.23931454773956995,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.9738253374410438,
+   "derating": {
+    "q_nominal_mL_min": 4650.43397679854,
+    "q_upper_mL_min": 1382.9684110111384,
+    "factor": 0.2973848070762643,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1518115999999181,
+    "parameter_uncertainty": 0.9738253374410438,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_K",
+   "model": "casson",
+   "family": "blood",
+   "donor": "K",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9743680253874203,
+   "b_Q2": -3.9894814946688784,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.007118239232430046,
+   "F_ref_N": 0.2751939385755543,
+   "F_fine_N": 1.1380628389148488,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.3157955447391845,
+   "derating": {
+    "q_nominal_mL_min": 92.25200552660598,
+    "q_upper_mL_min": 78.86818627240415,
+    "factor": 0.8549211024974208,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19871840126937101,
+    "parameter_uncertainty": 0.3157955447391845,
+    "family_choice": 0.25841342590060323
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_K_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "K",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "m": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.931087618963436,
+   "b_Q2": -3.9711993288733676,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.019384251862728297,
+   "F_ref_N": 0.20408013012116513,
+   "F_fine_N": 0.8338168023845215,
+   "open_parameters": [
+    "lam"
+   ],
+   "hull_rel_Q1": 1.6495635005973832,
+   "derating": {
+    "q_nominal_mL_min": 127.83544760264175,
+    "q_upper_mL_min": 110.84586297773535,
+    "factor": 0.8670980158984064,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1965543809481718,
+    "parameter_uncertainty": 1.6495635005973832,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_K_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "K",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "bounded_only",
+    "a": "degenerate",
+    "n": "degenerate"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.9438526136015284,
+   "b_Q2": -3.979085499177748,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.015300638144135403,
+   "F_ref_N": 0.20810989372110686,
+   "F_fine_N": 0.8537012321163999,
+   "open_parameters": [
+    "lam",
+    "a",
+    "n"
+   ],
+   "hull_rel_Q1": 14.348414238604093,
+   "derating": {
+    "q_nominal_mL_min": 123.96614733996118,
+    "q_upper_mL_min": 32.96112301962084,
+    "factor": 0.265888097088548,
+    "binding_parameter": "lam",
+    "binding_end": "lo"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19719263068007642,
+    "parameter_uncertainty": 14.348414238604093,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_K_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "K",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.00000000000042,
+   "b_Q2": -3.9999999999400515,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.0502709812953981e-13,
+   "newtonian_rule_over_prediction": -3.3639757646142243e-14,
+   "F_ref_N": 0.687175106021308,
+   "F_fine_N": 2.862037092966811,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.9605348834010935,
+   "derating": {
+    "q_nominal_mL_min": 36.38082896332777,
+    "q_upper_mL_min": 22.886531120717425,
+    "factor": 0.6290821779731097,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.20000000000002102,
+    "parameter_uncertainty": 0.9605348834010935,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_K_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "K",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.0696190000005785,
+   "b_Q2": -3.069618999998913,
+   "b_closed_form": -3.069619,
+   "b_closed_form_rel_err": 1.8851586958135158e-13,
+   "newtonian_rule_over_prediction": 0.393534870094018,
+   "F_ref_N": 0.06806968004427469,
+   "F_fine_N": 0.20344344847565554,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.6288600884934288,
+   "derating": {
+    "q_nominal_mL_min": 5224.632964499052,
+    "q_upper_mL_min": 2322.361299774289,
+    "factor": 0.44450228667823005,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.15348095000002893,
+    "parameter_uncertainty": 0.6288600884934288,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_L",
+   "model": "casson",
+   "family": "blood",
+   "donor": "L",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9586973502343525,
+   "b_Q2": -3.9829968238507263,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.01150790222629161,
+   "F_ref_N": 0.29622898558864624,
+   "F_fine_N": 1.219736756381888,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.2580335202577699,
+   "derating": {
+    "q_nominal_mL_min": 86.50726759803642,
+    "q_upper_mL_min": 76.0340629661452,
+    "factor": 0.8789326616977906,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19793486751171763,
+    "parameter_uncertainty": 0.2580335202577699,
+    "family_choice": 0.13112685207931307
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_L_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "L",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "m": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.9579218113033887,
+   "b_Q2": -3.985694880585172,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.011141676962199032,
+   "F_ref_N": 0.25738541121375885,
+   "F_fine_N": 1.0601803627053041,
+   "open_parameters": [
+    "lam"
+   ],
+   "hull_rel_Q1": 7.270096630998563,
+   "derating": {
+    "q_nominal_mL_min": 99.27290017808521,
+    "q_upper_mL_min": 61.83030193173636,
+    "factor": 0.622831626967876,
+    "binding_parameter": "lam",
+    "binding_end": "lo"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19789609056516944,
+    "parameter_uncertainty": 7.270096630998563,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_L_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "L",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "degenerate",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "a": "not_identifiable",
+    "n": "bounded_only"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.9578664698183275,
+   "b_Q2": -3.9856711296062106,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.011157461292498061,
+   "F_ref_N": 0.25733782446832265,
+   "F_fine_N": 1.0599678045531225,
+   "open_parameters": [
+    "eta_0",
+    "lam",
+    "a",
+    "n"
+   ],
+   "hull_rel_Q1": 665.8168103612403,
+   "derating": {
+    "q_nominal_mL_min": 99.29468613964893,
+    "q_upper_mL_min": 0.00711855884516543,
+    "factor": 7.169123668061981e-05,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19789332349091637,
+    "parameter_uncertainty": 665.8168103612403,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_L_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "L",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9999999995341815,
+   "b_Q2": -4.000000000001225,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.1645462372200654e-10,
+   "newtonian_rule_over_prediction": -6.501466032204917e-13,
+   "F_ref_N": 1.0367482070373732,
+   "F_fine_N": 4.3179850355603815,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.2492770720390902,
+   "derating": {
+    "q_nominal_mL_min": 24.113858919923743,
+    "q_upper_mL_min": 13.369157013420017,
+    "factor": 0.5544179825309477,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1999999999767091,
+    "parameter_uncertainty": 1.2492770720390902,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_L_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "L",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.8233549999834295,
+   "b_Q2": -2.823354998791605,
+   "b_closed_form": -2.8233550000000003,
+   "b_closed_form_rel_err": 5.86919401968089e-12,
+   "newtonian_rule_over_prediction": 0.5214742854308105,
+   "F_ref_N": 0.0555778035093719,
+   "F_fine_N": 0.15214041699588007,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.9586475432192627,
+   "derating": {
+    "q_nominal_mL_min": 23178.96049747089,
+    "q_upper_mL_min": 5476.246950732135,
+    "factor": 0.23625938494220486,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.14116774999917148,
+    "parameter_uncertainty": 0.9586475432192627,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_M",
+   "model": "casson",
+   "family": "blood",
+   "donor": "M",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9573520405022933,
+   "b_Q2": -3.9824381971627076,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.011886096479072794,
+   "F_ref_N": 0.2720883307413757,
+   "F_fine_N": 1.1199177488446486,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.4345004159082797,
+   "derating": {
+    "q_nominal_mL_min": 94.2711762991796,
+    "q_upper_mL_min": 76.02819418504392,
+    "factor": 0.8064839876799709,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19786760202511466,
+    "parameter_uncertainty": 0.4345004159082797,
+    "family_choice": 0.00340214319551424
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_M_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "M",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "m": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9904853730065026,
+   "b_Q2": -3.997834764787017,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.002256396711193709,
+   "F_ref_N": 0.27301401420438626,
+   "F_fine_N": 1.1345246695321487,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.33786355128889684,
+   "derating": {
+    "q_nominal_mL_min": 91.91418656315872,
+    "q_upper_mL_min": 79.15807849433381,
+    "factor": 0.8612172011111737,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19952426865032513,
+    "parameter_uncertainty": 0.33786355128889684,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_M_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "M",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "bounded_only",
+    "n": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.9757845080403698,
+   "b_Q2": -3.992863347657527,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.006155238147274256,
+   "F_ref_N": 0.25328686167763464,
+   "F_fine_N": 1.0484687975294198,
+   "open_parameters": [
+    "a"
+   ],
+   "hull_rel_Q1": 0.19089610127910575,
+   "derating": {
+    "q_nominal_mL_min": 99.82622792988099,
+    "q_upper_mL_min": 91.10286860460394,
+    "factor": 0.9126145552509063,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1987892254020185,
+    "parameter_uncertainty": 0.19089610127910575,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_M_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "M",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000433,
+   "b_Q2": -4.000000000001225,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.0835776720341528e-13,
+   "newtonian_rule_over_prediction": 5.542233338928781e-13,
+   "F_ref_N": 0.9767527055221937,
+   "F_fine_N": 4.0681078947174205,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.2700095303144203,
+   "derating": {
+    "q_nominal_mL_min": 25.59501484736568,
+    "q_upper_mL_min": 14.06638229956019,
+    "factor": 0.5495750787192041,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.2000000000000217,
+    "parameter_uncertainty": 1.2700095303144203,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_M_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "M",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.8091980000031214,
+   "b_Q2": -2.8091980000084504,
+   "b_closed_form": -2.809198,
+   "b_closed_form_rel_err": 1.1111112030448567e-12,
+   "newtonian_rule_over_prediction": 0.5291763186129412,
+   "F_ref_N": 0.05054398179552509,
+   "F_fine_N": 0.1376637920457942,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.0360798136110463,
+   "derating": {
+    "q_nominal_mL_min": 29350.897265140433,
+    "q_upper_mL_min": 6093.490035068039,
+    "factor": 0.2076083051234408,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.14045990000015607,
+    "parameter_uncertainty": 1.0360798136110463,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_N",
+   "model": "casson",
+   "family": "blood",
+   "donor": "N",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.964324254247309,
+   "b_Q2": -3.985330034566803,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.009928375984368687,
+   "F_ref_N": 0.5085512098114549,
+   "F_fine_N": 2.0972584699052206,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.3868567554426027,
+   "derating": {
+    "q_nominal_mL_min": 50.17910588587528,
+    "q_upper_mL_min": 41.42655042659919,
+    "factor": 0.8255737063314272,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19821621271236545,
+    "parameter_uncertainty": 0.3868567554426027,
+    "family_choice": 0.2527367201496691
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_N_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "N",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "m": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.93783286935534,
+   "b_Q2": -3.9773826068900675,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.01682093412931618,
+   "F_ref_N": 0.3800216450155615,
+   "F_fine_N": 1.5565808912446435,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.11330878364369232,
+   "derating": {
+    "q_nominal_mL_min": 68.01314223643699,
+    "q_upper_mL_min": 64.34705712252675,
+    "factor": 0.9460974012762756,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.196891643467767,
+    "parameter_uncertainty": 0.11330878364369232,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_N_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "N",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.926642503562172,
+   "b_Q2": -3.971786011379541,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.020186930735207165,
+   "F_ref_N": 0.3712833107805709,
+   "F_fine_N": 1.5157707158533649,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.15503777663917798,
+   "derating": {
+    "q_nominal_mL_min": 70.15547579071819,
+    "q_upper_mL_min": 66.06211392388,
+    "factor": 0.9416529954261996,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1963321251781086,
+    "parameter_uncertainty": 0.15503777663917798,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_N_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "N",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000008552,
+   "b_Q2": -4.000000000000448,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 2.1380675008231265e-12,
+   "newtonian_rule_over_prediction": -4.451994328746878e-14,
+   "F_ref_N": 1.5918226664815032,
+   "F_fine_N": 6.6298320136675315,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.150946604689225,
+   "derating": {
+    "q_nominal_mL_min": 15.705267003959145,
+    "q_upper_mL_min": 9.082203012223369,
+    "factor": 0.5782902646566808,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.2000000000004276,
+    "parameter_uncertainty": 1.150946604689225,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_N_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "N",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.896275999998643,
+   "b_Q2": -2.8962759999595633,
+   "b_closed_form": -2.896276,
+   "b_closed_form_rel_err": 4.684030940893535e-13,
+   "newtonian_rule_over_prediction": 0.4824123037262358,
+   "F_ref_N": 0.10236196764912504,
+   "F_fine_N": 0.2875924327750893,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.6485954657844476,
+   "derating": {
+    "q_nominal_mL_min": 5992.621378403437,
+    "q_upper_mL_min": 2404.523703510821,
+    "factor": 0.4012473926980245,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.14481379999993216,
+    "parameter_uncertainty": 0.6485954657844476,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_O",
+   "model": "casson",
+   "family": "blood",
+   "donor": "O",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9732097156751633,
+   "b_Q2": -3.9890035824221846,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.007441718518561791,
+   "F_ref_N": 0.2574785989698779,
+   "F_fine_N": 1.0644592642097555,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.28804714290992134,
+   "derating": {
+    "q_nominal_mL_min": 98.67414107328109,
+    "q_upper_mL_min": 85.5042409934884,
+    "factor": 0.8665313937720323,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19866048578375817,
+    "parameter_uncertainty": 0.28804714290992134,
+    "family_choice": 0.12556307940968392
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_O_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "O",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "m": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.97538928800234,
+   "b_Q2": -3.992002912414444,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.006420108550825532,
+   "F_ref_N": 0.22514879320112896,
+   "F_fine_N": 0.9317473321358044,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.14488417716586338,
+   "derating": {
+    "q_nominal_mL_min": 112.42256501976745,
+    "q_upper_mL_min": 105.11832118820178,
+    "factor": 0.935028667685341,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.198769464400117,
+    "parameter_uncertainty": 0.14488417716586338,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_O_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "O",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "measurable",
+    "n": "bounded_only"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.972351534881291,
+   "b_Q2": -3.9906500464227666,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.0072930426696997674,
+   "F_ref_N": 0.223262257106103,
+   "F_fine_N": 0.9231394624697374,
+   "open_parameters": [
+    "n"
+   ],
+   "hull_rel_Q1": 2.5675022711150146,
+   "derating": {
+    "q_nominal_mL_min": 113.59485661224439,
+    "q_upper_mL_min": 98.34175710389924,
+    "factor": 0.8657236783139615,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19861757674406455,
+    "parameter_uncertainty": 2.5675022711150146,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_O_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "O",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000503,
+   "b_Q2": -3.9999999999703606,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.2567724638756772e-13,
+   "newtonian_rule_over_prediction": -3.375077994860476e-14,
+   "F_ref_N": 0.6612984072767872,
+   "F_fine_N": 2.7542624209779665,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.9843897987835938,
+   "derating": {
+    "q_nominal_mL_min": 37.80441586518353,
+    "q_upper_mL_min": 23.528346678602365,
+    "factor": 0.6223703273847196,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.20000000000002516,
+    "parameter_uncertainty": 0.9843897987835938,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_O_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "O",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.0547390000075225,
+   "b_Q2": -3.054739000000417,
+   "b_closed_form": -3.054739,
+   "b_closed_form_rel_err": 2.4624746686185972e-12,
+   "newtonian_rule_over_prediction": 0.40095047108093196,
+   "F_ref_N": 0.06312296080829319,
+   "F_fine_N": 0.1876603058405015,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.7735714754145671,
+   "derating": {
+    "q_nominal_mL_min": 6206.136837345403,
+    "q_upper_mL_min": 2292.1654458870166,
+    "factor": 0.36933852829249925,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.15273695000037613,
+    "parameter_uncertainty": 0.7735714754145671,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_P",
+   "model": "casson",
+   "family": "blood",
+   "donor": "P",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.971529780646965,
+   "b_Q2": -3.9883100562869145,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.007911150339452888,
+   "F_ref_N": 0.2934860854379956,
+   "F_fine_N": 1.2127550892485484,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.25001556587664814,
+   "derating": {
+    "q_nominal_mL_min": 86.64468208744475,
+    "q_upper_mL_min": 76.4899674475162,
+    "factor": 0.8828004859007956,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19857648903234826,
+    "parameter_uncertainty": 0.25001556587664814,
+    "family_choice": 0.1541110614208684
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_P_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "P",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "m": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.960641008894261,
+   "b_Q2": -3.9855240403073866,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.01063957549874206,
+   "F_ref_N": 0.24825663329889042,
+   "F_fine_N": 1.0230866099268272,
+   "open_parameters": [
+    "lam"
+   ],
+   "hull_rel_Q1": 1.6353206164060985,
+   "derating": {
+    "q_nominal_mL_min": 102.912777006637,
+    "q_upper_mL_min": 91.5379909420081,
+    "factor": 0.88947158559432,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19803205044471306,
+    "parameter_uncertainty": 1.6353206164060985,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_P_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "P",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "a": "degenerate",
+    "n": "bounded_only"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.9594470206010257,
+   "b_Q2": -3.984926933046695,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.010995610175363435,
+   "F_ref_N": 0.24759734377056297,
+   "F_fine_N": 1.0200102860959175,
+   "open_parameters": [
+    "lam",
+    "a",
+    "n"
+   ],
+   "hull_rel_Q1": 148.2489990332011,
+   "derating": {
+    "q_nominal_mL_min": 103.27441276841415,
+    "q_upper_mL_min": 0.4135122686373947,
+    "factor": 0.0040040147172239835,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19797235103005129,
+    "parameter_uncertainty": 148.2489990332011,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_P_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "P",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000489,
+   "b_Q2": -4.000000000000559,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.2234657731369225e-13,
+   "newtonian_rule_over_prediction": -3.375077994860476e-14,
+   "F_ref_N": 0.7843558798100038,
+   "F_fine_N": 3.2667883374012097,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.0200352009844398,
+   "derating": {
+    "q_nominal_mL_min": 31.873286914226313,
+    "q_upper_mL_min": 19.523404421364415,
+    "factor": 0.612531882071138,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.2000000000000245,
+    "parameter_uncertainty": 1.0200352009844398,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_P_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "P",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.0242410000855813,
+   "b_Q2": -3.024241000000316,
+   "b_closed_form": -3.024241,
+   "b_closed_form_rel_err": 2.8298474674670615e-11,
+   "newtonian_rule_over_prediction": 0.4162730188706103,
+   "F_ref_N": 0.069390859590384,
+   "F_fine_N": 0.204062463740042,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.8235987072816322,
+   "derating": {
+    "q_nominal_mL_min": 6152.2171174629475,
+    "q_upper_mL_min": 2114.191030114292,
+    "factor": 0.3436470120849933,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.15121205000427906,
+    "parameter_uncertainty": 0.8235987072816322,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_Q",
+   "model": "casson",
+   "family": "blood",
+   "donor": "Q",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.969056366876167,
+   "b_Q2": -3.9872880968188085,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.008602909099600264,
+   "F_ref_N": 0.2715283403699404,
+   "F_fine_N": 1.1212508586276948,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.3457676326129656,
+   "derating": {
+    "q_nominal_mL_min": 93.79875302060397,
+    "q_upper_mL_min": 79.01044107452488,
+    "factor": 0.8423399941912803,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19845281834380835,
+    "parameter_uncertainty": 0.3457676326129656,
+    "family_choice": 0.123570974694581
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_Q_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "Q",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "m": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9777528322365585,
+   "b_Q2": -3.993352617507134,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.005673901440913065,
+   "F_ref_N": 0.2379753186932249,
+   "F_fine_N": 0.985558884394016,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.12522642060038527,
+   "derating": {
+    "q_nominal_mL_min": 106.16424517737255,
+    "q_upper_mL_min": 100.0520910989439,
+    "factor": 0.9424273768610435,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19888764161182793,
+    "parameter_uncertainty": 0.12522642060038527,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_Q_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "Q",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.963701531648378,
+   "b_Q2": -3.9874007984259663,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.009655557442916463,
+   "F_ref_N": 0.22788480608232634,
+   "F_fine_N": 0.940047870564377,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.14592516250576823,
+   "derating": {
+    "q_nominal_mL_min": 111.83237295809337,
+    "q_upper_mL_min": 103.50013907553166,
+    "factor": 0.9254935430397778,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1981850765824189,
+    "parameter_uncertainty": 0.14592516250576823,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_Q_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "Q",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000503,
+   "b_Q2": -3.9999999996805924,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.2567724638756772e-13,
+   "newtonian_rule_over_prediction": -3.375077994860476e-14,
+   "F_ref_N": 0.7677891327995852,
+   "F_fine_N": 3.1977889745923003,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.0665826448140525,
+   "derating": {
+    "q_nominal_mL_min": 32.56102350508583,
+    "q_upper_mL_min": 19.53737852678431,
+    "factor": 0.6000234766493963,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.20000000000002516,
+    "parameter_uncertainty": 1.0665826448140525,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_Q_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "Q",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.978860000067529,
+   "b_Q2": -2.9788599999899246,
+   "b_closed_form": -2.97886,
+   "b_closed_form_rel_err": 2.2669421895216146e-11,
+   "newtonian_rule_over_prediction": 0.4393837235895861,
+   "F_ref_N": 0.060661252998142665,
+   "F_fine_N": 0.17552647419342887,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.7807473846908524,
+   "derating": {
+    "q_nominal_mL_min": 9213.977647941467,
+    "q_upper_mL_min": 3182.838974175434,
+    "factor": 0.34543593394613076,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.14894300000337646,
+    "parameter_uncertainty": 0.7807473846908524,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_R",
+   "model": "casson",
+   "family": "blood",
+   "donor": "R",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.965975383786957,
+   "b_Q2": -3.9860136689755796,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.00946559510287548,
+   "F_ref_N": 0.27406976635292646,
+   "F_fine_N": 1.1307782533141804,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.31526550659718466,
+   "derating": {
+    "q_nominal_mL_min": 93.10118273274992,
+    "q_upper_mL_min": 79.5856949852433,
+    "factor": 0.8548301176118966,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19829876918934786,
+    "parameter_uncertainty": 0.31526550659718466,
+    "family_choice": 0.05056593092786499
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_R_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "R",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "m": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.985836298594836,
+   "b_Q2": -3.9961919891719764,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.0035091000667755168,
+   "F_ref_N": 0.2602111734781083,
+   "F_fine_N": 1.0799719259116738,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.12983096363324462,
+   "derating": {
+    "q_nominal_mL_min": 96.67468673742795,
+    "q_upper_mL_min": 90.9158963292161,
+    "factor": 0.9404312483178461,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1992918149297418,
+    "parameter_uncertainty": 0.12983096363324462,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_R_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "R",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.978468466267704,
+   "b_Q2": -3.9934309878271455,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.005520704241237739,
+   "F_ref_N": 0.2527353151043643,
+   "F_fine_N": 1.0468458925347237,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.13786647523004147,
+   "derating": {
+    "q_nominal_mL_min": 99.943584329158,
+    "q_upper_mL_min": 93.34390756458173,
+    "factor": 0.9339659788182036,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1989234233133852,
+    "parameter_uncertainty": 0.13786647523004147,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_R_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "R",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000406,
+   "b_Q2": -4.000000000001336,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.0147438445073931e-13,
+   "newtonian_rule_over_prediction": -2.298161660974074e-14,
+   "F_ref_N": 0.8287058279900316,
+   "F_fine_N": 3.4515028237819694,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.1248943242271596,
+   "derating": {
+    "q_nominal_mL_min": 30.16752043445877,
+    "q_upper_mL_min": 17.644198891021954,
+    "factor": 0.5848740180471682,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.2000000000000203,
+    "parameter_uncertainty": 1.1248943242271596,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_R_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "R",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.9332000005499737,
+   "b_Q2": -2.9332000000009684,
+   "b_closed_form": -2.9332,
+   "b_closed_form_rel_err": 1.874995714246097e-10,
+   "newtonian_rule_over_prediction": 0.46301712913475446,
+   "F_ref_N": 0.05843012736119678,
+   "F_fine_N": 0.16633945031466282,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.9231696026386372,
+   "derating": {
+    "q_nominal_mL_min": 12115.41406603651,
+    "q_upper_mL_min": 3371.6415714642617,
+    "factor": 0.2782935484570917,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.14666000002749868,
+    "parameter_uncertainty": 0.9231696026386372,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_S",
+   "model": "casson",
+   "family": "blood",
+   "donor": "S",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9656716606176756,
+   "b_Q2": -3.9858879496729727,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.009550699005802743,
+   "F_ref_N": 0.29072930526193785,
+   "F_fine_N": 1.1994123507550456,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.2930661260572632,
+   "derating": {
+    "q_nominal_mL_min": 87.77605538320078,
+    "q_upper_mL_min": 75.85187457126445,
+    "factor": 0.864152236508244,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19828358303088378,
+    "parameter_uncertainty": 0.2930661260572632,
+    "family_choice": 0.05503699780652127
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_S_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "S",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "m": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.9838039836022077,
+   "b_Q2": -3.995477248068285,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.004053834485446384,
+   "F_ref_N": 0.27472843712594514,
+   "F_fine_N": 1.1396052896929025,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.10864914939846736,
+   "derating": {
+    "q_nominal_mL_min": 91.66369526937751,
+    "q_upper_mL_min": 87.02511332258202,
+    "factor": 0.9493956475007491,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19919019918011038,
+    "parameter_uncertainty": 0.10864914939846736,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_S_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "S",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.977806109185522,
+   "b_Q2": -3.993175319287362,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.005703017523146725,
+   "F_ref_N": 0.26864250285358227,
+   "F_fine_N": 1.1125327690285378,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.12409999536994838,
+   "derating": {
+    "q_nominal_mL_min": 94.0590357854,
+    "q_upper_mL_min": 88.32258125408475,
+    "factor": 0.9390121907649231,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1988903054592761,
+    "parameter_uncertainty": 0.12409999536994838,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_S_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "S",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000503,
+   "b_Q2": -4.000000000000337,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.2567724638756772e-13,
+   "newtonian_rule_over_prediction": 2.864375403532904e-14,
+   "F_ref_N": 0.8847512510390686,
+   "F_fine_N": 3.684928159262989,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.1306394879108987,
+   "derating": {
+    "q_nominal_mL_min": 28.256529697340135,
+    "q_upper_mL_min": 16.485230184561726,
+    "factor": 0.5834131211842877,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.20000000000002516,
+    "parameter_uncertainty": 1.1306394879108987,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_S_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "S",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.9288380000114245,
+   "b_Q2": -2.9288379999954373,
+   "b_closed_form": -2.928838,
+   "b_closed_form_rel_err": 3.900657574718025e-12,
+   "newtonian_rule_over_prediction": 0.4652950863260463,
+   "F_ref_N": 0.06170664501323567,
+   "F_fine_N": 0.17539397921518549,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.9386775171244293,
+   "derating": {
+    "q_nominal_mL_min": 11368.904962919785,
+    "q_upper_mL_min": 3110.1678389792005,
+    "factor": 0.27356793368606375,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.14644190000057122,
+    "parameter_uncertainty": 0.9386775171244293,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_T",
+   "model": "casson",
+   "family": "blood",
+   "donor": "T",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.968573410088605,
+   "b_Q2": -3.9870884302936616,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.008738065054855415,
+   "F_ref_N": 0.26512667868372364,
+   "F_fine_N": 1.0946691069798309,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.26674018486957973,
+   "derating": {
+    "q_nominal_mL_min": 96.09411553579602,
+    "q_upper_mL_min": 84.12849688943632,
+    "factor": 0.8754802145829378,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19842867050443025,
+    "parameter_uncertainty": 0.26674018486957973,
+    "family_choice": 0.10027136422871685
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_T_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "T",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "m": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.97519038453098,
+   "b_Q2": -3.992097079630774,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.006437964584224964,
+   "F_ref_N": 0.238542064918678,
+   "F_fine_N": 0.9871560318773904,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.1456784452408959,
+   "derating": {
+    "q_nominal_mL_min": 106.09918685080211,
+    "q_upper_mL_min": 99.10704612770542,
+    "factor": 0.9340980743525479,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.198759519226549,
+    "parameter_uncertainty": 0.1456784452408959,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "blood_horner2020_donor_T_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "T",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "measurable",
+    "a": "bounded_only",
+    "n": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.967111822000824,
+   "b_Q2": -3.9886034961531256,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.008739515994040659,
+   "F_ref_N": 0.2326144226129201,
+   "F_fine_N": 0.9604293965297975,
+   "open_parameters": [
+    "a"
+   ],
+   "hull_rel_Q1": 0.20538907586004293,
+   "derating": {
+    "q_nominal_mL_min": 109.35705199924163,
+    "q_upper_mL_min": 101.78837269030151,
+    "factor": 0.9307892891169688,
+    "binding_parameter": "eta_inf",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1983555911000412,
+    "parameter_uncertainty": 0.20538907586004293,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_T_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "T",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000475,
+   "b_Q2": -3.9999999997304414,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 1.1879386363489175e-13,
+   "newtonian_rule_over_prediction": -3.3861802251067274e-14,
+   "F_ref_N": 0.7577739151896399,
+   "F_fine_N": 3.156076281506313,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.0775936840307494,
+   "derating": {
+    "q_nominal_mL_min": 32.99137051116847,
+    "q_upper_mL_min": 19.699701504519137,
+    "factor": 0.597116797492552,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.20000000000002377,
+    "parameter_uncertainty": 1.0775936840307494,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_T_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "T",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.974279000307334,
+   "b_Q2": -2.974279000000135,
+   "b_closed_form": -2.974279,
+   "b_closed_form_rel_err": 1.0333045530330764e-10,
+   "newtonian_rule_over_prediction": 0.44173749526161377,
+   "F_ref_N": 0.05919079617906505,
+   "F_fine_N": 0.17099201430472497,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.8828209732492247,
+   "derating": {
+    "q_nominal_mL_min": 9768.774368834687,
+    "q_upper_mL_min": 2964.9663849797626,
+    "factor": 0.3035146757446761,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1487139500153667,
+    "parameter_uncertainty": 0.8828209732492247,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_U",
+   "model": "casson",
+   "family": "blood",
+   "donor": "U",
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "eta_c": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -3.969213499225077,
+   "b_Q2": -3.987353050887543,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.008558941348318028,
+   "F_ref_N": 0.303093198195463,
+   "F_fine_N": 1.251649546448765,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.2642113865865584,
+   "derating": {
+    "q_nominal_mL_min": 84.0121757350147,
+    "q_upper_mL_min": 73.64476896569748,
+    "factor": 0.8765963781009866,
+    "binding_parameter": "eta_c",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19846067496125386,
+    "parameter_uncertainty": 0.2642113865865584,
+    "family_choice": 0.1814530214786354
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_U_cross",
+   "model": "cross",
+   "family": "blood",
+   "donor": "U",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "m": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.9514191493070783,
+   "b_Q2": -3.981690516125541,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.013239852697950694,
+   "F_ref_N": 0.24809602159327335,
+   "F_fine_N": 1.0198008671758065,
+   "open_parameters": [
+    "lam"
+   ],
+   "hull_rel_Q1": 0.7310703727145917,
+   "derating": {
+    "q_nominal_mL_min": 103.55905314947766,
+    "q_upper_mL_min": 98.08118485362766,
+    "factor": 0.9471039167580722,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1975709574653539,
+    "parameter_uncertainty": 0.7310703727145917,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_U_carreau_yasuda",
+   "model": "carreau_yasuda",
+   "family": "blood",
+   "donor": "U",
+   "commercial_ok": false,
+   "verdicts": {
+    "eta_0": "measurable",
+    "eta_inf": "measurable",
+    "lam": "degenerate",
+    "a": "degenerate",
+    "n": "measurable"
+   },
+   "all_measurable": false,
+   "b_Q1": -3.950639658337529,
+   "b_Q2": -3.9812819931510646,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.01347638880961921,
+   "F_ref_N": 0.2477870928880934,
+   "F_fine_N": 1.0182932972158745,
+   "open_parameters": [
+    "lam",
+    "a"
+   ],
+   "hull_rel_Q1": 363.49927813480684,
+   "derating": {
+    "q_nominal_mL_min": 103.74801500159322,
+    "q_upper_mL_min": 0.05717024878675859,
+    "factor": 0.000551049085477738,
+    "binding_parameter": "eta_0",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.19753198291687646,
+    "parameter_uncertainty": 363.49927813480684,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_U_newtonian",
+   "model": "newtonian",
+   "family": "blood",
+   "donor": "U",
+   "commercial_ok": false,
+   "verdicts": {
+    "mu": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -4.000000000000392,
+   "b_Q2": -4.000000000000448,
+   "b_closed_form": -4.0,
+   "b_closed_form_rel_err": 9.792167077193881e-14,
+   "newtonian_rule_over_prediction": -8.992806499463768e-15,
+   "F_ref_N": 0.8540349692154809,
+   "F_fine_N": 3.5569969563327315,
+   "open_parameters": [],
+   "hull_rel_Q1": 1.0650637481012284,
+   "derating": {
+    "q_nominal_mL_min": 29.272806033919576,
+    "q_upper_mL_min": 17.576109213788918,
+    "factor": 0.6004244756523436,
+    "binding_parameter": "mu",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.2000000000000196,
+    "parameter_uncertainty": 1.0650637481012284,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "blood_horner2020_donor_U_power_law",
+   "model": "power_law",
+   "family": "blood",
+   "donor": "U",
+   "commercial_ok": false,
+   "verdicts": {
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.9813950007921974,
+   "b_Q2": -2.9813950000007194,
+   "b_closed_form": -2.981395,
+   "b_closed_form_rel_err": 2.6571367328642737e-10,
+   "newtonian_rule_over_prediction": 0.4380828627813176,
+   "F_ref_N": 0.06790329613116891,
+   "F_fine_N": 0.19665943409691536,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.8024130924586548,
+   "derating": {
+    "q_nominal_mL_min": 7677.431499281073,
+    "q_upper_mL_min": 2613.7474040107995,
+    "factor": 0.34044555190828535,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.14906975003960987,
+    "parameter_uncertainty": 0.8024130924586548,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "carbopol_etd2020_0p1wt_30uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.73340907340458,
+   "b_Q2": -2.7357257031717097,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.5705653392516297,
+   "F_ref_N": 6.416871586115904,
+   "F_fine_N": 17.016693614750256,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.7565560867446679,
+   "derating": {
+    "q_nominal_mL_min": 10.500681824687028,
+    "q_upper_mL_min": 4.466299021029178,
+    "factor": 0.4253341921596882,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.136670453670229,
+    "parameter_uncertainty": 0.7565560867446679,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "carbopol_etd2020_0p1wt_40uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.9032721897515046,
+   "b_Q2": -2.903834433832131,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.4785980946992112,
+   "F_ref_N": 9.596686814282727,
+   "F_fine_N": 27.032052338868066,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.6807089775514289,
+   "derating": {
+    "q_nominal_mL_min": 4.521946673210996,
+    "q_upper_mL_min": 2.272661596715749,
+    "factor": 0.502584785039482,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.14516360948757523,
+    "parameter_uncertainty": 0.6807089775514289,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "carbopol_etd2020_0p1wt_50uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.7756824610758457,
+   "b_Q2": -2.776282343281977,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.5474347519368541,
+   "F_ref_N": 7.935213387333463,
+   "F_fine_N": 21.35768141317294,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.427099362625542,
+   "derating": {
+    "q_nominal_mL_min": 6.947599500692675,
+    "q_upper_mL_min": 4.303068425117875,
+    "factor": 0.6193604603559633,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.13878412305379229,
+    "parameter_uncertainty": 0.427099362625542,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "carbopol_etd2020_0p3wt_30uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.22301036713185,
+   "b_Q2": -2.2482500734238853,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.8786045204360371,
+   "F_ref_N": 2.495290802166964,
+   "F_fine_N": 5.532146121324382,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.12968330974041545,
+   "derating": {
+    "q_nominal_mL_min": 249.71741996734968,
+    "q_upper_mL_min": 193.7314239794864,
+    "factor": 0.7758026012154724,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.11115051835659251,
+    "parameter_uncertainty": 0.12968330974041545,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "carbopol_etd2020_0p3wt_40uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.1751417757097657,
+   "b_Q2": -2.204391499780134,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.9100194498295264,
+   "F_ref_N": 3.3860553635479067,
+   "F_fine_N": 7.383531040003528,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.09722430194302244,
+   "derating": {
+    "q_nominal_mL_min": 143.5301012560685,
+    "q_upper_mL_min": 118.69310196535093,
+    "factor": 0.8269561640843096,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.10875708878548829,
+    "parameter_uncertainty": 0.09722430194302244,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "carbopol_etd2020_0p3wt_50uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.1326551874549793,
+   "b_Q2": -2.1624591362776613,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.939097381751673,
+   "F_ref_N": 3.7907577685809666,
+   "F_fine_N": 8.142059160445621,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.11328748193177583,
+   "derating": {
+    "q_nominal_mL_min": 128.41471812481637,
+    "q_upper_mL_min": 102.20022060159532,
+    "factor": 0.7958606466141901,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.10663275937274896,
+    "parameter_uncertainty": 0.11328748193177583,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "carbopol_etd2020_0p5wt_30uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.491229267760242,
+   "b_Q2": -2.5054632821488454,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.7095177460477897,
+   "F_ref_N": 2.5085307600390387,
+   "F_fine_N": 6.111582199164723,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.018688604870299164,
+   "derating": {
+    "q_nominal_mL_min": 97.56171234631094,
+    "q_upper_mL_min": 94.8108650407052,
+    "factor": 0.9718040280408244,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.1245614633880121,
+    "parameter_uncertainty": 0.018688604870299164,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "carbopol_etd2020_0p5wt_40uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.312675292379218,
+   "b_Q2": -2.3373392577710206,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.8195280456934366,
+   "F_ref_N": 3.5475743698492157,
+   "F_fine_N": 8.120459308795065,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.02680268396262365,
+   "derating": {
+    "q_nominal_mL_min": 79.71937635495135,
+    "q_upper_mL_min": 76.35249885851461,
+    "factor": 0.9577658826450711,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.11563376461896091,
+    "parameter_uncertainty": 0.02680268396262365,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "carbopol_etd2020_0p5wt_50uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.2251921549799603,
+   "b_Q2": -2.256260895607598,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.8757273024893495,
+   "F_ref_N": 4.382126793808756,
+   "F_fine_N": 9.730229402883804,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.0429568675309832,
+   "derating": {
+    "q_nominal_mL_min": 63.9669722233752,
+    "q_upper_mL_min": 59.24171584769041,
+    "factor": 0.9261297477206829,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.11125960774899801,
+    "parameter_uncertainty": 0.0429568675309832,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "carbopol_etd2020_0p7wt_30uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.5294096482655903,
+   "b_Q2": -2.542192348918948,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.686710109086188,
+   "F_ref_N": 2.4399275064054673,
+   "F_fine_N": 6.024823313908346,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.0548344727588733,
+   "derating": {
+    "q_nominal_mL_min": 92.3716441489374,
+    "q_upper_mL_min": 85.1698051723806,
+    "factor": 0.9220340934394894,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.12647048241327952,
+    "parameter_uncertainty": 0.0548344727588733,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "carbopol_etd2020_0p7wt_40uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.4202634634571396,
+   "b_Q2": -2.440040254086284,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.7520769049930196,
+   "F_ref_N": 3.494565080955997,
+   "F_fine_N": 8.307068810403296,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.045174825402550745,
+   "derating": {
+    "q_nominal_mL_min": 60.36950318595283,
+    "q_upper_mL_min": 56.38517209149075,
+    "factor": 0.9340009295390529,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.12101317317285698,
+    "parameter_uncertainty": 0.045174825402550745,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "carbopol_etd2020_0p7wt_50uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.3616635951739795,
+   "b_Q2": -2.386535820297908,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.7879183590898189,
+   "F_ref_N": 4.473051088326926,
+   "F_fine_N": 10.41991111841608,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.04573390548208818,
+   "derating": {
+    "q_nominal_mL_min": 41.59222724401068,
+    "q_upper_mL_min": 38.83925652163981,
+    "factor": 0.9338104519813302,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.11808317975869898,
+    "parameter_uncertainty": 0.04573390548208818,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "carbopol_etd2020_0p9wt_30uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.570637984199209,
+   "b_Q2": -2.585936677469536,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.6614981746679607,
+   "F_ref_N": 2.8408306097034917,
+   "F_fine_N": 7.121202083787552,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.16735919965540044,
+   "derating": {
+    "q_nominal_mL_min": 61.259291399556346,
+    "q_upper_mL_min": 48.62449078055878,
+    "factor": 0.7937488284578971,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.12853189920996044,
+    "parameter_uncertainty": 0.16735919965540044,
+    "family_choice": null
+   },
+   "dominant_error_term": "parameter_uncertainty"
+  },
+  {
+   "id": "carbopol_etd2020_0p9wt_40uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.4219192714936,
+   "b_Q2": -2.4424866304935122,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.7508562237866236,
+   "F_ref_N": 3.4226797368006543,
+   "F_fine_N": 8.141859793442858,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.08003798918097305,
+   "derating": {
+    "q_nominal_mL_min": 62.587138744479994,
+    "q_upper_mL_min": 55.24287278890645,
+    "factor": 0.8826553489598327,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.12109596357468,
+    "parameter_uncertainty": 0.08003798918097305,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  },
+  {
+   "id": "carbopol_etd2020_0p9wt_50uL",
+   "model": "herschel_bulkley",
+   "family": "carbopol",
+   "donor": null,
+   "commercial_ok": false,
+   "verdicts": {
+    "tau_y": "measurable",
+    "k": "measurable",
+    "n": "measurable"
+   },
+   "all_measurable": true,
+   "b_Q1": -2.384785891774155,
+   "b_Q2": -2.4087217806698646,
+   "b_closed_form": null,
+   "b_closed_form_rel_err": null,
+   "newtonian_rule_over_prediction": 0.7734334290999045,
+   "F_ref_N": 4.457429203744798,
+   "F_fine_N": 10.468329968492487,
+   "open_parameters": [],
+   "hull_rel_Q1": 0.03009836990289958,
+   "derating": {
+    "q_nominal_mL_min": 39.52557393521846,
+    "q_upper_mL_min": 37.7405109580768,
+    "factor": 0.954837772120214,
+    "binding_parameter": "n",
+    "binding_end": "hi"
+   },
+   "error_terms": {
+    "bore_tolerance": 0.11923929458870774,
+    "parameter_uncertainty": 0.03009836990289958,
+    "family_choice": null
+   },
+   "dominant_error_term": "bore_tolerance"
+  }
+ ],
+ "gates": {
+  "G18_1_newtonian_control": {
+   "bar": "|b + 4| < 0.001 on 20/20 newtonian records",
+   "n": 20,
+   "n_pass": 20,
+   "worst": 4.658184948880262e-10,
+   "failures": [],
+   "pass": true
+  },
+  "G18_2_power_law_closed_form": {
+   "bar": "|b/(-(3n+1)) - 1| < 0.001 on 20/20 power_law records",
+   "n": 20,
+   "n_pass": 20,
+   "worst": 2.6571367328642737e-10,
+   "failures": [],
+   "pass": true
+  },
+  "G18_3_discriminating_half": {
+   "bar": "at least one record with |b + 4| > 0.1",
+   "worst": 1.8673448125450207,
+   "worst_record": "carbopol_etd2020_0p3wt_50uL",
+   "n_above": 36,
+   "pass": true,
+   "note": "without this the anchors are all passed by a routine that returns -4 for everything"
+  },
+  "G18_4_never_steeper_than_newtonian": {
+   "bar": "b >= -4 - 1e-06 on every record graded",
+   "n": 115,
+   "n_pass": 115,
+   "steepest": -4.000000000008552,
+   "failures": [],
+   "pass": true
+  },
+  "G18_5_newtonian_rule_error_split": {
+   "bar": "SPLIT: FAIL on blood (< 10 % on >= 15/20 Casson donors) and PASS on Carbopol (> 10 % on 2/2 named gels)",
+   "threshold": 0.1,
+   "blood_n_below": 20,
+   "blood_n": 20,
+   "blood_worst": 0.01239152658005338,
+   "blood_half_as_predicted": true,
+   "carbopol_named_above": 2,
+   "carbopol_named_n": 2,
+   "carbopol_all_above": 15,
+   "carbopol_all_n": 15,
+   "carbopol_worst": 0.939097381751673,
+   "carbopol_least": 0.4785980946992112,
+   "carbopol_half_as_predicted": true,
+   "pass": true,
+   "uninformative": false
+  },
+  "G18_6_derating": {
+   "bar": "derating factor < 1 on every record with a closed interval",
+   "vacuity_note": "see G18.6-prime: this bar can essentially only be failed by a fit that locally maximises the force, so the SIZE of the factor is the result and the sign is not",
+   "median_factor_all_measurable": 0.7958606466141901,
+   "n_all_measurable": 91,
+   "median_factor_not_all_measurable": 0.866410847106184,
+   "n_not_all_measurable": 24,
+   "worst_factor_all_measurable": 0.12303802906502699,
+   "worst_factor_not_all_measurable": 7.169123668061981e-05,
+   "split_note": "taken over every record with a numeric factor, not the closed-interval subset: a non-measurable verdict and an interval running to a bound are the same records, so restricting to closed intervals empties the group the comparison is about",
+   "n": 91,
+   "n_pass": 91,
+   "worst_factor": 0.9718040280408244,
+   "strongest_derating": 0.12303802906502699,
+   "failures": [],
+   "pass": true
+  },
+  "G18_6p_derating_negative_control": {
+   "bar": "zero-width intervals give factor == 1 exactly; the real intervals give < 1",
+   "record": "blood_horner2020_donor_A",
+   "factor_zero_width": 1.0,
+   "factor_real": 0.8476040202002025,
+   "pass": true,
+   "note": "G18.6 as pre-registered is nearly unfalsifiable: the upper envelope is a max over profile ends, so the factor is <= 1 unless the fit locally maximises the force in every direction. The bar is kept and reported with its number; this is the stricter test beside it, not instead of it."
+  },
+  "G18_7_error_term_ranking": {
+   "bar": "reported, not barred: a winner is named per record",
+   "winners_all_records": {
+    "parameter_uncertainty": 87,
+    "bore_tolerance": 28
+   },
+   "n_records": 115,
+   "three_way_n": 20,
+   "three_way_winners": {
+    "parameter_uncertainty": 17,
+    "bore_tolerance": 3
+   },
+   "bore_tolerance_pct": 5.0,
+   "note": "the bore term is |b| x a DECLARED 5 % bore error, not a standard's tolerance; it scales linearly with whatever error the caller declares"
+  }
+ }
+}
