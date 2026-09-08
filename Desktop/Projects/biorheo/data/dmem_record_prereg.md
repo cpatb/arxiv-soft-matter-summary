@@ -109,3 +109,28 @@ the records. A gate that silently re-decides is the failure this table exists to
 - No change to `dst_fit`, and no change to any existing record.
 - **No claim that this fluid is representative of anything.** It is cell-culture medium,
   chosen because it is licensable and biological, not because a buyer asked about it.
+
+---
+
+## Addendum A, 2026-09-08 — this pre-registration named the wrong published numbers
+
+**Not edited above, per the repo's standing rule.** Three reviewer passes on the shipped
+item found that §3's reference indices `0.32, 0.31, 0.54, 0.50` are **figure-caption
+values used as COMSOL inputs**, rounded and shared across conditions, and that the paper
+also carries **Table 2, "Fit results for `K` and `n` ... for the experimental rheometry
+data shown in Fig. 1"**, which resolves the four deposited conditions one row each and
+disagrees with three of the four values graded against here. Table 2 also publishes `K`,
+which this pre-registration never asked anyone to compare.
+
+Three further defects in the grading built on §3, all confirmed by rerun:
+
+- G22.1's pass expression tests `len(graded) == 6` while 7 intervals are graded, so it
+  could not have passed whatever the fits returned;
+- G22.1' pools the 37 C interval that §3 itself excludes as out of the paper's rate range,
+  and that interval supplies 20 of the 25 pooled points;
+- the "per-interval spread reaches 0.076" argument is printed as 0.1044, a max taken over a
+  condition with only one graded interval.
+
+The correction, its gates and the restated headline are in
+**`data/dmem_anchor_correction_prereg.md`** (item 23). `G221_TOL` is not moved; the
+corrected anchor FAILS it on one of four conditions and the failure is reported.
