@@ -1,0 +1,421 @@
+{
+ "generated_by": "scripts/temperature_shift.py",
+ "prereg": "data/temperature_shift_prereg.md",
+ "biorheo_version": "0.0.1",
+ "factors": [
+  0.25,
+  0.5,
+  2.0,
+  4.0
+ ],
+ "n_rates": 200,
+ "probe_parameters": {
+  "newtonian": [
+   0.0035
+  ],
+  "power_law": [
+   2.0,
+   0.45
+  ],
+  "herschel_bulkley": [
+   23.75,
+   8.9,
+   0.4526
+  ],
+  "casson": [
+   0.00218,
+   0.00385
+  ],
+  "cross": [
+   0.03,
+   0.0024,
+   8.0,
+   0.7
+  ],
+  "carreau_yasuda": [
+   0.03,
+   0.0024,
+   8.0,
+   2.0,
+   0.586
+  ]
+ },
+ "arrhenius_example": {
+  "note": "an ILLUSTRATION of the helper's arithmetic with a caller-supplied activation energy. It is not a property of any fluid in this registry and no default E_a is shipped anywhere in this package.",
+  "E_a_J_per_mol": 20000.0,
+  "T_K": 278.15,
+  "T_ref_K": 298.15,
+  "a": 1.7862386669334855
+ },
+ "gates": {
+  "G21_1_map_reproduces_shifted_curve": {
+   "bar": "max |a*eta(a*gd)/eta_shift(gd) - 1| < 1e-12 on all six families",
+   "worst": 6.661338147750939e-16,
+   "n": 24,
+   "rows": [
+    {
+     "family": "newtonian",
+     "a": 0.25,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "newtonian",
+     "a": 0.5,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "newtonian",
+     "a": 2.0,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "newtonian",
+     "a": 4.0,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "power_law",
+     "a": 0.25,
+     "max_rel_err": 2.220446049250313e-16
+    },
+    {
+     "family": "power_law",
+     "a": 0.5,
+     "max_rel_err": 2.220446049250313e-16
+    },
+    {
+     "family": "power_law",
+     "a": 2.0,
+     "max_rel_err": 2.220446049250313e-16
+    },
+    {
+     "family": "power_law",
+     "a": 4.0,
+     "max_rel_err": 2.220446049250313e-16
+    },
+    {
+     "family": "herschel_bulkley",
+     "a": 0.25,
+     "max_rel_err": 2.220446049250313e-16
+    },
+    {
+     "family": "herschel_bulkley",
+     "a": 0.5,
+     "max_rel_err": 2.220446049250313e-16
+    },
+    {
+     "family": "herschel_bulkley",
+     "a": 2.0,
+     "max_rel_err": 2.220446049250313e-16
+    },
+    {
+     "family": "herschel_bulkley",
+     "a": 4.0,
+     "max_rel_err": 2.220446049250313e-16
+    },
+    {
+     "family": "casson",
+     "a": 0.25,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "casson",
+     "a": 0.5,
+     "max_rel_err": 6.661338147750939e-16
+    },
+    {
+     "family": "casson",
+     "a": 2.0,
+     "max_rel_err": 6.661338147750939e-16
+    },
+    {
+     "family": "casson",
+     "a": 4.0,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "cross",
+     "a": 0.25,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "cross",
+     "a": 0.5,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "cross",
+     "a": 2.0,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "cross",
+     "a": 4.0,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "carreau_yasuda",
+     "a": 0.25,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "carreau_yasuda",
+     "a": 0.5,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "carreau_yasuda",
+     "a": 2.0,
+     "max_rel_err": 0.0
+    },
+    {
+     "family": "carreau_yasuda",
+     "a": 4.0,
+     "max_rel_err": 0.0
+    }
+   ],
+   "pass": true
+  },
+  "G21_2_identity_at_a_equals_one": {
+   "bar": "every transformed parameter BIT-IDENTICAL at a = 1",
+   "failures": [],
+   "n": 6,
+   "pass": true
+  },
+  "G21_3_composition": {
+   "bar": "shift(shift(p,a),b) == shift(p,a*b) to 1e-12",
+   "worst": 2.220446049250313e-16,
+   "pass": true
+  },
+  "G21_4_discriminating_half": {
+   "bar": "at a = 2 the viscosity at the envelope midpoint moves by > 0.1",
+   "moves": {
+    "newtonian": 1.0,
+    "power_law": 0.36604025675439544,
+    "herschel_bulkley": 0.14256606911115455,
+    "casson": 0.6668187241044157,
+    "cross": 0.6239900227526283,
+    "carreau_yasuda": 0.6255326227834246
+   },
+   "smallest": 0.14256606911115455,
+   "pass": true,
+   "note": "a map that returned its input unchanged would pass G21.1, G21.2 and G21.3"
+  },
+  "G21_5_envelope_moves": {
+   "bar": "shifted envelope is exactly [gd_min/a, gd_max/a], refuses outside it, and the identifiability sidecar is dropped",
+   "rows": [
+    {
+     "a": 0.25,
+     "lo_ok": true,
+     "hi_ok": true,
+     "refuses_outside": true,
+     "sidecar_dropped": true,
+     "gd_min": 0.4,
+     "gd_max": 2800.0
+    },
+    {
+     "a": 0.5,
+     "lo_ok": true,
+     "hi_ok": true,
+     "refuses_outside": true,
+     "sidecar_dropped": true,
+     "gd_min": 0.2,
+     "gd_max": 1400.0
+    },
+    {
+     "a": 2.0,
+     "lo_ok": true,
+     "hi_ok": true,
+     "refuses_outside": true,
+     "sidecar_dropped": true,
+     "gd_min": 0.05,
+     "gd_max": 350.0
+    },
+    {
+     "a": 4.0,
+     "lo_ok": true,
+     "hi_ok": true,
+     "refuses_outside": true,
+     "sidecar_dropped": true,
+     "gd_min": 0.025,
+     "gd_max": 175.0
+    }
+   ],
+   "record": "blood_horner2020_donor_A",
+   "pass": true
+  },
+  "G21_6_yield_stress_invariant": {
+   "bar": "tau_y BIT-IDENTICAL for casson and herschel_bulkley at every a; and, as the discriminating half, the viscous parameter is NOT",
+   "rows": [
+    {
+     "family": "casson",
+     "a": 0.25,
+     "tau_y_invariant": true,
+     "viscous_parameter": "eta_c",
+     "viscous_moved": true,
+     "viscous_ratio": 0.25
+    },
+    {
+     "family": "casson",
+     "a": 0.5,
+     "tau_y_invariant": true,
+     "viscous_parameter": "eta_c",
+     "viscous_moved": true,
+     "viscous_ratio": 0.5
+    },
+    {
+     "family": "casson",
+     "a": 2.0,
+     "tau_y_invariant": true,
+     "viscous_parameter": "eta_c",
+     "viscous_moved": true,
+     "viscous_ratio": 2.0
+    },
+    {
+     "family": "casson",
+     "a": 4.0,
+     "tau_y_invariant": true,
+     "viscous_parameter": "eta_c",
+     "viscous_moved": true,
+     "viscous_ratio": 4.0
+    },
+    {
+     "family": "herschel_bulkley",
+     "a": 0.25,
+     "tau_y_invariant": true,
+     "viscous_parameter": "k",
+     "viscous_moved": true,
+     "viscous_ratio": 0.5339586765026169
+    },
+    {
+     "family": "herschel_bulkley",
+     "a": 0.5,
+     "tau_y_invariant": true,
+     "viscous_parameter": "k",
+     "viscous_moved": true,
+     "viscous_ratio": 0.7307247611122925
+    },
+    {
+     "family": "herschel_bulkley",
+     "a": 2.0,
+     "tau_y_invariant": true,
+     "viscous_parameter": "k",
+     "viscous_moved": true,
+     "viscous_ratio": 1.3685043305195008
+    },
+    {
+     "family": "herschel_bulkley",
+     "a": 4.0,
+     "tau_y_invariant": true,
+     "viscous_parameter": "k",
+     "viscous_moved": true,
+     "viscous_ratio": 1.872804102650627
+    }
+   ],
+   "pass": true,
+   "note": "this was DERIVED in the pre-registration before the code existed, not imposed: Casson's sqrt(a) cancels the sqrt(1/a) inside"
+  },
+  "G21_7_force_scales_as_a_for_a_newtonian_fluid": {
+   "bar": "F(a) = a F(1) exactly for a Newtonian fluid, to 1e-10",
+   "worst": 1.8403056856186595e-12,
+   "rows": [
+    {
+     "a": 0.25,
+     "force_N": 0.06448355709126521,
+     "expected_N": 0.06448355709126523,
+     "rel_err": 2.220446049250313e-16
+    },
+    {
+     "a": 0.5,
+     "force_N": 0.12896711418253043,
+     "expected_N": 0.12896711418253046,
+     "rel_err": 2.220446049250313e-16
+    },
+    {
+     "a": 2.0,
+     "force_N": 0.5158684567301218,
+     "expected_N": 0.5158684567301218,
+     "rel_err": 0.0
+    },
+    {
+     "a": 4.0,
+     "force_N": 1.031736913458345,
+     "expected_N": 1.0317369134602437,
+     "rel_err": 1.8403056856186595e-12
+    }
+   ],
+   "F_at_a_1_N": 0.2579342283650609,
+   "pass": true,
+   "note": "dp = 8 mu L Q/(pi R^4) is linear in mu and the shift multiplies mu by a; this is a closed form the force solver does not use"
+  },
+  "G21_8_structural_refused": {
+   "bar": "raises ThermalShiftNotRepresentable and the message names the STRUCTURE EQUATION, not 'no counterpart exists'",
+   "raised": true,
+   "message": "structural_steady: a temperature shift is not representable for this family. The one-parameter superposition eta -> a*eta(a*gd) rescales a FLOW CURVE; this family carries a STRUCTURE EQUATION with its own relaxation time, and that time does not follow from the curve's shift factor. Fit the family at each temperature, or use its steady-curve counterpart and state that the transient is not covered.",
+   "names_structure_equation": true,
+   "does_not_claim_no_counterpart": true,
+   "pass": true
+  },
+  "G21_9_collapse_residual": {
+   "bar": "residual < 1e-10 on a synthetic pair generated BY the shift, and NOT small on a pair that differs in shape",
+   "a_true": 2.5,
+   "clean": {
+    "a": 2.499989590046868,
+    "rms_log_residual": 1.4416662954043867e-05,
+    "n_used": 184,
+    "n_total": 200,
+    "converged": true,
+    "note": "rms residual in log(eta). A large value means the two curves do not collapse under any single factor, i.e. the fluid is not thermorheologically simple over this range, and the returned `a` is meaningless rather than approximate."
+   },
+   "shape_mismatch": {
+    "a": 0.47137530835468816,
+    "rms_log_residual": 0.9429706172743095,
+    "n_used": 186,
+    "n_total": 200,
+    "converged": true,
+    "note": "rms residual in log(eta). A large value means the two curves do not collapse under any single factor, i.e. the fluid is not thermorheologically simple over this range, and the returned `a` is meaningless rather than approximate."
+   },
+   "recovered_a_rel_err": 4.1639812528027065e-06,
+   "pass": false,
+   "discriminating_half_passed": true,
+   "why_it_failed": "the bar assumed exact recovery. `collapse_shift` compares the shifted curve against a LINEAR INTERPOLATION of the reference in (log gd, log eta), so the residual is bounded below by the interpolation error of the grid it is given, which no correct implementation can beat. The bar is not moved; G21.9' is the stricter test beside it."
+  },
+  "G21_9p_residual_converges_at_the_interpolation_order": {
+   "bar": "the clean residual falls under grid refinement at the order of LINEAR interpolation, observed order in [1.7, 2.3] over a 8x refinement; and the shape-mismatch residual does NOT fall",
+   "ladder": [
+    {
+     "n": 200,
+     "h_decades": 0.02512562814070352,
+     "rms_log_residual": 1.4416662954043867e-05,
+     "a": 2.499989590046868,
+     "a_rel_err": 4.1639812528027065e-06
+    },
+    {
+     "n": 400,
+     "h_decades": 0.012531328320802004,
+     "rms_log_residual": 4.872871992263907e-06,
+     "a": 2.4999964190738457,
+     "a_rel_err": 1.4323704616847621e-06
+    },
+    {
+     "n": 800,
+     "h_decades": 0.006257822277847309,
+     "rms_log_residual": 1.5899369137225633e-06,
+     "a": 2.49999882602007,
+     "a_rel_err": 4.695919720854036e-07
+    },
+    {
+     "n": 1600,
+     "h_decades": 0.0031269543464665416,
+     "rms_log_residual": 3.168062491157868e-07,
+     "a": 2.499999766389564,
+     "a_rel_err": 9.344417439827168e-08
+    }
+   ],
+   "observed_order": 1.8321319962804774,
+   "mismatch_residual_at_coarse": 0.9429706172743095,
+   "pass": true,
+   "note": "an implementation with a wrong parameter map, a broken objective or a real shape mismatch leaves a residual that does not fall with h at all, so this cannot be passed by being merely small"
+  }
+ }
+}

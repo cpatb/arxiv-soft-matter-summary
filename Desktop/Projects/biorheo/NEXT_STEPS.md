@@ -9,8 +9,8 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 392 passed, 10 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be 33b282c or later
+python -m pytest -q -m "not slow"      # must print: 463 passed, 10 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be 6059c80 or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -846,6 +846,66 @@ that biorheo cannot quietly reshape it, and the wrapper already gives biorheo co
 intervals. Patching upstream buys correctness for OTHER callers of `dst_fit` — of which
 there is currently one, `dst_fit` itself. Write that down too.
 
+### 21. DONE 2026-09-07 (nine gates PASS, G21.9 FAILED on a mis-specified bar): a temperature axis, without inventing one
+
+`src/biorheo/constitutive/shift.py` + `scripts/temperature_shift.py` ->
+`data/temperature_shift.md` / `.json`. Gate pre-registered in
+`data/temperature_shift_prereg.md`, committed at `6059c80` BEFORE the module existed.
+Pinned in `tests/test_shift.py` (70 tests).
+
+`../biofluids_venture/OFFER.md` named "no temperature dependence" as the single largest
+missing capability for the first product. This closes it **narrowly**, and the narrowness
+is the point: the layer carries a shift the CALLER supplies and refuses to guess one.
+
+```
+eta(gd; T)  =  a * eta_ref(a * gd)        a > 1 is the colder, more viscous fluid
+```
+
+**The pre-registration derives the parameter map for all six families by hand, before any
+code**, and records the consequence nobody chose: **the yield stress comes out INVARIANT in
+both yield-stress families.** Casson's `sqrt(a)` outside cancels the `sqrt(1/a)` inside;
+Herschel-Bulkley's `a` cancels the `1/a` in `tau_y/(a gd)`. That is the physically right
+answer -- a yield stress is a stress scale set by structure, not a viscosity -- but it is a
+*consequence* here rather than an imposition, and the opposite would have been a reason to
+distrust the construction. G21.6 checks it with its discriminating half beside it (the
+viscous parameter must move, or invariance is being reported by doing nothing).
+
+| gate | result |
+|---|---|
+| G21.1 map reproduces `a*eta(a*gd)`, six families | PASS, 24 cases, worst 6.66e-16 |
+| G21.2 `a = 1` is bitwise identity | PASS 6/6 |
+| G21.3 the shift composes | PASS, worst 2.22e-16 |
+| G21.4 discriminating half -- the map is not the identity | PASS, smallest move 14.3 % |
+| G21.5 the envelope moves and the sidecar is dropped | PASS |
+| G21.6 `tau_y` invariant, viscous parameter not | PASS |
+| G21.7 Newtonian force scales exactly as `a` | PASS, worst 1.84e-12 |
+| G21.8 `structural_steady` refused for the RIGHT reason | PASS |
+| **G21.9 collapse residual < 1e-10 on a synthetic pair** | **FAILED at 1.442e-05** |
+| **G21.9' that residual CONVERGES at the interpolation order** | PASS, order 1.832 |
+
+**G21.9's bar was MIS-SPECIFIED, not failed, and it has not been moved.** It demanded exact
+recovery from a routine that compares against a LINEAR INTERPOLATION of the reference curve
+in `(log gd, log eta)`, so the residual is bounded below by the interpolation error of
+whatever grid it is handed -- **no correct implementation can beat it.** The number stays on
+the page. G21.9' is stricter in kind rather than looser in size: refine the grid 8x and the
+residual must fall at the interpolation order (1.4e-05 -> 3.2e-07, observed order **1.832**
+against 2). A wrong parameter map, a broken objective or a genuine shape mismatch all leave
+a residual that does not fall with `h` at all, so it cannot be passed by being merely small.
+
+**Two things a caller must not miss, both enforced rather than documented.**
+- **The envelope moves to `[gd_min/a, gd_max/a]`.** The shifted curve needs `a*gd` inside
+  the reference envelope. A shift that left the envelope alone would silently widen the
+  record's claim -- the same failure item 3 records for the OpenFOAM export.
+- **The identifiability sidecar is DROPPED, not mapped.** A profile interval belongs to a
+  fit against measured data and there is no data at the shifted temperature. A shifted
+  record therefore reports as a POINT ESTIMATE in `apps/report.py`, which is checked.
+
+`collapse_shift` returns the best `a` **and its residual and `n_used`**, because
+time-temperature superposition is an assumption: a best-fitting `a` always exists, and two
+curves differing only in SHAPE give one that means nothing (rms log residual 0.943 against
+1.4e-05 for a real shift). No default activation energy is shipped for any fluid and a test
+asserts `arrhenius_shift`'s `E_a` has no default.
+
 ### 20. NEXT DATA ACTION, not started: source ONE openly-licensed flow curve
 
 **This is the cheapest thing that changes what the venture can ship, and it is not a code
@@ -879,6 +939,15 @@ without its raw curve. Both are standing rules.
   fires. The test records untested code; it does not license removing it.
 - Do not edit a number in `../biofluids_venture/OFFER.md` without rerunning
   `tests/test_offer_claims.py`. Every figure in that document is pinned to an artifact.
+- Do not describe item 21 as "biorheo does temperature". It carries a shift factor the
+  CALLER supplies. There is no temperature model, no activation energy for any fluid, and
+  no record measured at more than one temperature.
+- Do not carry an identifiability sidecar through a temperature shift. There is no fit at
+  the shifted temperature, so there is no interval; a shifted record is a point estimate
+  and `apps/report.py` says so.
+- Do not "fix" G21.9 by widening its bar. It is recorded FAILED with its number because the
+  bar demanded something no correct implementation can deliver; G21.9' is the replacement
+  and it is stricter, not looser.
 
 - Do not fit any model to the post-peak decay of the step sheet (syneresis, per the thesis).
 - Do not reopen item 7 by asking again whether the LAOS sheets are densely enough sampled.

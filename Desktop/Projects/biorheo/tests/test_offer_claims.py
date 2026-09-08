@@ -124,9 +124,25 @@ def test_the_offer_points_at_files_that_exist(offer):
 def test_the_offer_names_the_capabilities_that_do_not_exist(offer):
     """The section that makes the document usable. If a future edit deletes a gap because
     it reads badly, this fails -- the gaps are the reason the claims are believable."""
-    for gap in ("No temperature axis", "No wall slip", "No bench",
+    for gap in ("No temperature MODEL", "No wall slip", "No bench",
                 "No commercially-usable reference data", "No regulatory authoring"):
         assert gap in offer, gap
+
+
+def test_the_temperature_claim_is_the_narrow_one(offer):
+    """The shift layer landed 2026-09-07 and it would be easy to write it up as "we do
+    temperature". It carries a factor the CALLER supplies; it does not predict one, and no
+    record was measured at more than one temperature. Both halves must be on the page."""
+    assert "No temperature model" in offer
+    assert "`a` comes from you" in offer
+    assert "no activation energy for any fluid" in offer.lower().replace(
+        "there is no activation energy for any fluid", "no activation energy for any fluid")
+    assert "loses its error bar" in offer
+    import inspect
+
+    from biorheo.constitutive import shift
+    e_a = inspect.signature(shift.arrhenius_shift).parameters["E_a"]
+    assert e_a.default is inspect.Parameter.empty
 
 
 def test_the_offer_refuses_hourly_billing_and_free_pilots(offer):

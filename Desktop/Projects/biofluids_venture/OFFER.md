@@ -50,9 +50,19 @@ Say all of this on the call, not in a schedule at the back.
   true force. It is a boundary condition, not a constitutive extrapolation, so the
   extrapolation flag does not cover it — and detecting it needs two needle radii at the
   same wall stress, which is a measurement, not an analysis.
-- **No temperature dependence.** There is no temperature axis in the model layer. A
-  cold-chain question ("what does this cost me at 5 °C?") cannot be answered today. It is
-  the single largest missing capability for this wedge.
+- **No temperature model.** A cold-chain question can be answered *only if you supply the
+  shift*. `biorheo.constitutive.shift` carries a time–temperature superposition
+  `eta(gd; T) = a·eta_ref(a·gd)` exactly — the whole force calculation, the envelope and
+  the report follow it through — but **`a` comes from you**, either as the ratio of two
+  viscosities you measured at the same shear rate, or from your own activation energy.
+  There is no activation energy for any fluid anywhere in the package and there will not
+  be one: that is a measurement, not a constant to be looked up.
+
+  Two things come with it. **The superposition is an assumption and the study reports its
+  residual**, so if your two curves do not collapse under a single factor you are told
+  rather than handed a confident number. And a shifted curve **loses its error bar** — a
+  confidence interval belongs to a fit against measured data, and there is no data at the
+  shifted temperature, so the shifted result is reported as a point estimate.
 - **Not included in the force**: the barrel's own pressure drop, entrance and exit losses,
   the kinetic term, the transient at plunger start, and syringe friction (a property of
   your device, supplied by you if you want it added). **These do not all point the same
@@ -102,7 +112,7 @@ recorded.
 
 ## 6. The honest state of the capability
 
-What is built and tested (379 automated tests, `../biorheo`):
+What is built and tested (463 automated tests, `../biorheo`):
 
 - registry of cited fluid records with envelopes and DOI-resolved provenance
 - constitutive fitting with profile-likelihood intervals and a per-parameter
@@ -110,6 +120,8 @@ What is built and tested (379 automated tests, `../biorheo`):
 - needle flow for seven constitutive families, closed-form where one exists
 - the deliverable page, with its refusals
 - OpenFOAM export and round trip for six families
+- a temperature shift carried exactly through all of the above, on a factor you supply,
+  with the superposition's own residual reported beside it
 
 What is **not** built, in the order it blocks revenue:
 
@@ -119,7 +131,10 @@ What is **not** built, in the order it blocks revenue:
    which runs on the client's own curve, but it does block shipping a public demo on a
    named fluid. Next action: source one openly-licensed flow curve (Zenodo/figshare, CC BY
    or CC0) and rebuild the example pages on it.
-2. **No temperature axis.** §3.
+2. **No temperature MODEL, and no record with a temperature axis.** The shift layer
+   above carries a factor; it does not predict one, and nothing in the registry was
+   measured at more than one temperature. A client who cannot supply two curves or an
+   activation energy still cannot get a cold-chain answer. §3.
 3. **No protein or high-concentration formulation curve**, so nothing here has been
    demonstrated on the wedge's own fluid. The examples are human blood and a microgel.
 4. **No bench.** By design until an invoice exists.
