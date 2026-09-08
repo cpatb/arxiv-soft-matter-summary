@@ -9,8 +9,8 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 463 passed, 10 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be 6059c80 or later
+python -m pytest -q -m "not slow"      # must print: 471 passed, 10 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be 31307d9 or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -802,7 +802,40 @@ sets and failed at three. The criterion was wrong, not the pages: `01_clean` and
 `../biofluids_venture/OFFER.md` is the sales document built on this, and
 `tests/test_offer_claims.py` recomputes **every number in it** from the artifacts.
 
-### 17. NEXT ITEM, not started: `dst_fit` still ships the defect, and the decision about that has never been made
+### 17. THE CASE IS WRITTEN 2026-09-08; THE DECISION IS THE FOUNDER'S (D5) AND IS STILL OPEN
+
+`scripts/dstfit_upstream_proposal.py` -> `data/dstfit_upstream_proposal.md`, pinned by
+`tests/test_dstfit_proposal.py` (8 tests). **`dst_fit` is untouched** — a pathspec-scoped
+`git status` on it is empty and `test_gate_0_1_dstfit_unchanged.py` still passes.
+
+**The number four items had deferred: the blast radius on `dst_fit`'s OWN results is
+ZERO, and that is measured, not argued.** Item 16's exposure ratio says the box floor wins
+exactly when `wald < span/1250`, which depends only on a parameter's declared box and the
+precision the fit reports — no run needed.
+
+- **No shipped `dst_fit` script passes `profile=` to `assess()`** (0 of them). The only
+  shipped consumer of the profile walk is `scripts/gate_n7.py`, and it profiles **`phi_m`
+  only**. `sigma_star` is profiled in a *test*, and a test is not a published number.
+- **`phi_m`'s box is `[0.3, 0.639]`** and `gate_n7.py` quotes `phi_m = 0.5876 ± 0.0013`.
+  Exposure is **0.177** at the lower end and **0.0316** at the upper — below 1 by factors
+  of 6 and 32, so the box floor never sets the first step.
+- **`sigma_star`'s box is `[1e-4, 1e5]`**, so `span/5000` is 20 Pa on a parameter of order
+  44 Pa — a first step of ~45 % of the parameter itself. Nothing ships that today. **That
+  is the risk the fix buys against: not a wrong number now, but a silently wrong one the
+  first time anyone profiles a wide-boxed parameter.**
+
+Recommendation on the page: **fix it, but not because anything is currently wrong** — the
+argument is entirely about the next caller and the failure mode is a wrong answer with no
+error. If it proceeds: pre-register "unchanged" per parameter via the exposure ratio (the
+table IS that pre-registration and predicts no movement),
+`test_gate_0_1_dstfit_unchanged.py` moves in the same commit, and **biorheo's wrapper is
+not deleted** — it carries the endpoint verification, the second nuisance start and the
+`step_rule`/`exposure` reporting, none of which is in the one-line fix.
+
+**Rejecting it is a defensible position and should be recorded on that page** so item 17
+stops being reopened. What is not defensible is leaving it undecided for a sixth item.
+
+### 17b. The original framing, kept for the record: `dst_fit` still ships the defect
 
 Written for zero context.
 
