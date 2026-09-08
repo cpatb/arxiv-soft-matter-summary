@@ -125,6 +125,22 @@ What is built and tested (573 automated tests, `../biorheo`):
 - ten CC BY 4.0 records, of which eight reproduce the source paper's own published
   parameters -- as a viscosity curve over the measured range, to a median 1-7 % and a worst
   19 %, inside the 20 % repeatability those authors state for their own measurements
+- **an EXTERNAL anchor for the chain itself, added 2026-09-08.** Until then every tube
+  anchor here was analytic -- Buckingham-Reiner, the Casson closed form, Poiseuille, an
+  OpenFOAM Couette run against an analytic profile -- so the claim this offer is built on,
+  *a model identified from one measurement predicts a different geometry*, had never been
+  compared against a measured pressure-driven flow. On a CC BY 4.0 pipe rheometer
+  (Koponen et al., *Chem. Eng. Sci.* 2023; 660 rows, three pipe diameters), identifying on
+  the 19 mm pipe and predicting the 8.15 mm one -- a factor of **2.33 in radius** --
+  reproduces the measured pressure gradient to a **median 18.7 %**, with the same-pipe
+  control at **2.4 %**, so the error is extrapolation and not misfit.
+  Three things must be said with it, and they are on `biorheo/data/foam_koponen2023/`:
+  **it is a foam**, so no number from it transfers to blood or a protein formulation; it is
+  **pipe-to-pipe**, not rheometer-to-pipe, because that deposit's rheometer file is the
+  base solution rather than the flowing fluid; and its own pre-registered discriminator
+  **refuses to let the pass count as evidence about wall slip**, because deleting the slip
+  term makes the prediction better. Five of that item's seven registered predictions were
+  refuted, and the report says which.
 
 What is **not** built, in the order it blocks revenue:
 

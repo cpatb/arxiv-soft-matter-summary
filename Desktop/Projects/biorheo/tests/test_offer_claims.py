@@ -179,3 +179,39 @@ def test_the_offer_does_not_name_a_needle_gauge(offer):
     not in hand. A gauge number in a sales document is exactly where it would do damage."""
     for banned in ("27G", "30G", "27 G", "30 G", "ISO 9626"):
         assert banned not in offer, banned
+
+
+# --- item 27's external chain anchor, added 2026-09-08 ---------------------------------
+
+def test_the_external_chain_anchor_is_pinned_to_its_artifact(offer):
+    """Every figure in the OFFER is recomputed from an artifact. This one is the strongest
+    capability claim in the document -- the first evidence that the chain the offer sells
+    predicts a geometry it was not fitted in -- so it may not drift from `foam_pipe_anchor`."""
+    import json
+    from pathlib import Path
+    art = json.loads(
+        (Path(__file__).resolve().parent.parent / "data" / "foam_koponen2023"
+         / "foam_pipe_anchor.json").read_text(encoding="utf-8"))
+    flat = " ".join(offer.split())
+    assert f"median {art['G27.2']['median'] * 100:.1f} %" in flat
+    assert f"control at **{art['G27.4']['median'] * 100:.1f} %" in flat
+    assert art["n_rows_set2"] == 660 and "660 rows" in flat
+    ratio = art["radii_mm"][2] / art["radii_mm"][0]
+    assert f"{ratio:.2f} in radius" in flat
+
+
+def test_the_offer_carries_the_anchor_s_THREE_limits_not_just_its_number(offer):
+    """A pass whose own discriminator refuses it must not be sold as an unqualified one."""
+    flat = " ".join(offer.split())
+    assert "it is a foam" in flat
+    assert "pipe-to-pipe" in flat and "not rheometer-to-pipe" in flat
+    assert "refuses to let the pass count as evidence about wall slip" in flat
+    assert "Five of that item's seven registered predictions were refuted" in flat
+
+
+def test_the_offer_does_not_transfer_the_foam_result_to_a_biofluid(offer):
+    """Standing do-not rule from item 27. The sentence naming blood must be the one that
+    says the number does NOT transfer to it."""
+    flat = " ".join(offer.split())
+    i = flat.index("no number from it transfers")
+    assert "blood or a protein formulation" in flat[i:i + 120]
