@@ -9,8 +9,8 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 488 passed, 10 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be 5825e58 or later
+python -m pytest -q -m "not slow"      # must print: 503 passed, 10 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be 4711dba or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -939,7 +939,12 @@ curves differing only in SHAPE give one that means nothing (rms log residual 0.9
 1.4e-05 for a real shift). No default activation energy is shipped for any fluid and a test
 asserts `arrhenius_shift`'s `E_a` has no default.
 
-### 22. DONE 2026-09-08 (G22.1' PASS and it is the strongest EXTERNAL anchor here; G22.1 FAILED on a mis-specified bar): the registry's first licensable records
+### 22. DONE 2026-09-08, **THEN CORRECTED THE SAME DAY BY ITEM 23**: the registry's first licensable records
+
+> **Read item 23 first.** This item's headline -- "G22.1' PASS, the strongest EXTERNAL
+> anchor here, worst 0.0299" -- was graded against the paper's FIGURE CAPTION indices
+> (its COMSOL inputs), not its Table 2 fit results. Against Table 2 the same bar FAILS
+> at 0.0599. The records themselves did not move. Everything below is left as written.
 
 `scripts/records_from_dmem.py` -> eight records + sidecars, `data/dmem_sints2024/records.md`
 / `.json`. Gate pre-registered in `data/dmem_record_prereg.md`, committed at `5825e58`
@@ -989,6 +994,81 @@ for gates CLOSED against it, and no existing gate changed its value.
 1e4-1e5 in a needle -- and they say so in their own `notes`. `OFFER.md` says it too, so
 they cannot be oversold as an injectability demo. What is still missing is a licensable
 curve that reaches rheometer-to-needle rates.
+
+### 23. DONE 2026-09-08 (G23.1 and G23.9 FAILED as predicted; no bar moved): the item-22 anchor was graded against the wrong published numbers
+
+`scripts/dmem_anchor_recheck.py` -> `data/dmem_sints2024/anchor_recheck.md` / `.json`.
+Pre-registered in `data/dmem_anchor_correction_prereg.md` at `d539ceb`, before the code, with
+**every gate labelled `RESTATEMENT` or `BLIND`** because a review had already measured most
+of them -- a restatement is not evidence the way a blind gate is, and the file says which is
+which. Pinned in `tests/test_dmem_anchor_recheck.py` (15 tests).
+
+**Found by four independent reviewer passes** (code review, physics referee, units audit,
+numerics re-run). Two found the mis-anchoring without seeing each other; the numerics pass
+then re-derived the corrected number from a from-scratch numpy log-log fit that never touches
+`biorheo.identify`, matching to six decimals.
+
+**The defect.** `SPEC` graded against `0.32, 0.31, 0.54, 0.50`, which are the paper's
+**figure-caption** indices -- the values it fed to COMSOL, rounded and shared across
+conditions. The paper also carries **Table 2, "Fit results for `K` and `n` values in (4) for
+the experimental rheometry data shown in Fig. 1"**, one row per sample for exactly the four
+deposited conditions, and it publishes `K` too, which item 22 never compared:
+
+| condition | `SPEC` used | Table 2 says |
+|---|---|---|
+| 10 % FBS 20 C | 0.32 | 0.31 |
+| 5 % FBS 20 C | 0.31 | **0.33** |
+| 1 % FBS 20 C | 0.54 | **0.51** |
+| 10 % FBS 37 C | 0.50 | **0.54** |
+
+**All four disagree.** This is `lessons.md`'s 2026-09-01 entry -- *read the sample table
+before comparing to it* -- for the second time.
+
+**G23.1 FAILED at the unchanged 0.05**, worst 0.0599 on 1 % FBS. **G23.2**: neither single
+correction rescues the old pass -- dropping the out-of-range 37 C interval alone gives 0.0651,
+regrading against Table 2 alone gives 0.0599. **G23.3**: the flagship 0.0005 was a pooling
+coincidence, that pooled index (0.3195) lying OUTSIDE the span of its own two interval fits
+[0.2945, 0.3134], so the two intervals are mutually inconsistent under one power law.
+
+**What survives is better anchored than what it replaces.** `K` and `n` trade off along the
+data, so a deviation in `n` alone is uninterpretable. **G23.4 PASS**: the two parameter sets
+compared **as viscosity curves** over each condition's measured range agree to a median
+1.0-7.1 %, worst **19.03 %** -- inside the **20 %** repeatability the authors state for their
+own measurements in S2 Fig. That is a scale the SOURCE declares, not one this repo invented.
+`K` agrees to 6.7 % or better on all four and 3 of 4 round to the published value at its
+printed precision.
+
+**G23.9, added after the first run and labelled so, is stricter in kind than the bar beside
+it**: does the published `n` fall inside biorheo's OWN profile interval on `n`? A fixed 0.05
+bar treats a 5-point fit and a 30-point fit alike. Inside on 3 of 4; the exception is 1 % FBS,
+[0.5380, 0.6017] against 0.51 -- **the only RESOLVED disagreement in the dataset**.
+
+**Two of my own predictions were REFUTED and are in addendum A.** I predicted G23.1 and G23.4
+while pooling every interval, then specified a pooling restricted to 0.01-1 1/s -- the same
+knob mismatch the item exists to correct, committed in the file correcting it. Resolved by
+reading what Table 2 says it fitted, *"the entire ensemble of data points"*, so the
+restriction was item 22's invention and not the paper's. **G23.1b** reports its size: at 37 C
+the three data choices give `n` = 0.4349 (5 points), **0.5393** (the 20-point interval alone,
+0.0007 from the published 0.54) and 0.5120 (both). The restriction, not the fit, is what
+disagreed there.
+
+**And a test written to be able to fail caught a third error of mine**: "three of the four
+values disagree" was in six files and it is FOUR of four. Two of them are the right number
+against the WRONG ROW, which is how a total mismatch reads as a partial one. Addendum A.4.
+
+**Five more defects fixed**, each with its original number kept: G22.1's `len(graded) == 6`
+against 7 (could not pass whatever the fits returned; verdict unmoved, reason now true); the
+spread argument's 0.1044 taken over a condition with one graded interval (0.0753 on fully
+graded ones, both over the bar); verdicts read from the sidecar BEFORE it was written (blank
+on a clean run, stale on a re-run); three `max()` calls a NaN can poison; and
+`scripts/item11_gate_report.py` calling `load_all()`, so item 22's records would have entered
+a CLOSED item-11 gate -- **G23.7: frozen, it reproduces the committed artifact BIT-FOR-BIT**,
+so the artifact was right and the next run would have drifted silently.
+
+`needle_bore.md`, `OFFER.md` and `arrhenius_shift` also corrected; see commit `4711dba`.
+
+**G23.5**: no record moved, 0 of 8. **G23.6**: no file under `case_studies/` or `apps/`
+references a DMEM record, so the correction reaches no shipped number.
 
 ### 20. DONE 2026-09-08 (superseded by item 22): find a licensable curve
 
@@ -1045,7 +1125,93 @@ User-Agent and works with an explicit one. Use `size=20` with backoff; `size=50`
 Do NOT digitise a figure to get around any of this, and do not add a record from a paper's
 table without its raw curve. Both are standing rules.
 
+### 24. OPEN: the licensable YIELD-STRESS curve, at three temperatures
+
+Data staged and documented 2026-09-08; **no record built, no gate pre-registered yet.**
+`data/carbopol_pg_vinutha2024/` -- read its `SOURCE.md` first, it carries four traps and the
+reason this dataset was taken ahead of the other three item-20 candidates.
+
+**Zenodo 11389467, CC BY 4.0**, 2 wt% Carbopol 974p in propylene glycol, Anton Paar MCR 300,
+1 deg cone, **both surfaces roughened**, Peltier hood, flow curves at **10 / 20 / 50 deg C**.
+Paper arXiv:2312.00251. All five experimental files committed with md5s.
+
+**Why it is worth more than the DMEM records.** It is a yield-stress microgel -- the same
+family as the 15 CC BY-NC-SA Carbopol records the injectability case study ships, so it is
+the licensable counterpart to the family this project actually demonstrates on -- and it
+reaches **1e3 1/s**, one to two decades from a needle wall rate against the DMEM records'
+four to five.
+
+**And it is the first real test bed for `constitutive/shift.py`.** The authors chose
+propylene glycol because its viscosity moves about tenfold over 10-50 deg C, so the material
+is the same at all three temperatures and only the suspending medium changes. Two numbers
+follow, both published in the deposit's own named columns and corroborated by the paper's
+Methods:
+
+| | 10 deg C | 20 deg C | 50 deg C |
+|---|---|---|---|
+| medium viscosity, Pa s | 0.102 | 0.055 | 0.012 |
+| yield stress, Pa | 8.9 | 8.9 | 8.9 |
+
+So **the shift factor is PREDICTED, not fitted**: if temperature acts only through the medium
+viscosity then `a = eta_s(T)/eta_s(T_ref)`, which is `shift.shift_from_two_viscosities`, while
+`shift.collapse_shift` fits `a` from the flow curves alone and never sees `eta_s`. Comparing
+the two is a check of a FITTED quantity against a number from outside this repo. Item 21's
+derivation and the authors' own sentence -- *"The yield stress is independent of the solvent
+viscosity"* -- are the same statement reached independently, and G22.6 tested only the
+NEGATIVE case. This is the positive one.
+
+**Before writing any generator, four things.**
+
+1. **Do not build a record from the 20 deg C block.** `SOURCE.md` trap 2: it is the only one
+   whose rates are off the programmed logarithmic grid (3 of 67 against 37 of 48 and 50 of
+   60), the only one whose **rate goes backwards** inside a decreasing ramp (32.4 -> 33.6 and
+   24.4 -> 26.4 1/s), the only one rounded to 3 significant figures (62 of 67 points), and the
+   only one whose independent replicate is offset one-sidedly. Four signals, no one of which
+   would be enough alone. The shift test runs 10 -> 50 deg C, which is the larger viscosity
+   contrast anyway.
+2. **Use the second flow curve nobody has noticed.** Trap 3: both cessation files carry a
+   `preshear-stress` column at 16 rates at each temperature -- a steady flow curve of the
+   same material on the same instrument under a different protocol. It agrees with
+   `Fig 1(a)` to a median 2.5 % at 10 deg C and 2.9 % at 50 deg C. **That is the only
+   independent replicate this project has for any record**, and it is the scale a fitted
+   parameter's confidence interval should be compared against -- the thing G15.4 had to
+   approximate with a model misfit.
+3. **Do not grade a Herschel-Bulkley `tau_y` against the published 8.9 Pa.** That is a fit to
+   the *three-component model* (`sigma = sigma_y + k1 gd^0.5 + eta_bg gd`), which this repo
+   does not implement. A yield stress is a fit-objective convention before it is a material
+   constant -- Horner's Casson `tau_y`, and now item 23's flow index, both say so.
+4. **Pre-register the collapse test's DISCRIMINATING subset.** Below yield both curves tend
+   to `sigma_y`, so `eta -> sigma_y/gd` and `a*eta_ref(a*gd) = sigma_y/gd` for **any** `a`:
+   the low-rate half of the curve contributes zero residual whatever the shift factor is. A
+   residual over the whole curve is therefore dominated by points that cannot discriminate.
+   Report the residual on the high-rate half as well, and report how much it moves when `a`
+   is wrong by a factor of two, or the test will pass for a reason that is not the physics.
+
+Rate ranges, in case a later session needs them without re-reading: 10 deg C, 48 points,
+2.0e-3 to 1.0e2 1/s; 50 deg C, 60 points, 1.26e-3 to 1.0e3 1/s.
+
 ## What NOT to do
+
+- **Do not quote item 22's anchor numbers.** "Reproduces the published flow indices on 4/4
+  conditions, worst 0.0299, 0.0005 on the flagship" is CORRECTED (item 23). Against the
+  paper's Table 2 the same bar fails at 0.0599, and the 0.0005 was a pooling coincidence --
+  that pooled index lies outside the span of the two interval fits it pools. What may be
+  quoted is `data/dmem_sints2024/anchor_recheck.md`: agreement as a VISCOSITY CURVE to a
+  median 1.0-7.1 %, worst 19.03 %, inside the 20 % repeatability the authors declare.
+- **Do not grade against a number from a figure caption when the paper has a fit table.**
+  A caption states what the authors FED a simulation; a fit table states what they measured.
+  They differed on all four conditions here, and twice two of them were the right number
+  against the wrong row, which is how a total mismatch reads as a partial one.
+- **Do not compare a fitted `n` alone against a published `n`.** `K` and `n` trade off along
+  the data, so a deviation in one is uninterpretable without the other. Compare the parameter
+  sets as viscosity curves over the measured range, and scale the answer against a
+  repeatability the SOURCE declares rather than a tolerance invented here.
+- **Do not let a generator that writes a CLOSED gate's artifact call `load_all()`.** Item 22
+  froze the TESTS and missed `scripts/item11_gate_report.py`; eight new records would have
+  entered a gate whose page says 115. Use `CLOSED_GATE_FAMILIES` from `tests/conftest.py`.
+- **Do not call `arrhenius_shift` with celsius.** It now refuses below 100 K. The only
+  per-record temperature in the schema is `envelope.temperature_C`, so the wrong call is the
+  natural one.
 
 - Do not use the DMEM records for an injectability number. Their rates stop at 1 1/s
   against 1e4-1e5 in a needle: four to five decades. They exist because they are
