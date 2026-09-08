@@ -1,0 +1,1305 @@
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+1 Pipe rheology of wet aqueous application foams
+2 Antti I. Koponen1*, Janika Viitala1, Atsushi Tanaka2,
+3 Baranivignesh Prakash1, Olli-Ville Laukkanen1, and Ari Jäsberg1,
+4 1VTT Technical Research Centre of Finland Ltd, Koivurannantie 1, 40400 Jyväskylä, Finland
+5 2VTT Technical Research Centre of Finland Ltd, Biologinkuja 7, 02044 Espoo, Finland
+6
+7 * Corresponding author: Antti.Koponen@vtt.fi
+8
+9 Abstract
+10 Foam application of chemicals to the wet web is currently being developed for the paper and board
+11 industry. An important part of this work is to understand the rheology of the used application foams.
+12 Polyvinyl alcohol (PVOH) is widely used as a strength additive in paper and board, and it was the
+13 main surfactant in this study. The PVOH foam density varied between 100 kg/m3 and 300 kg/m3 and
+14 the dosage of PVOH varied between 0.5% to 6%. The foam viscosity and slip flow were determined
+15 with a pipe rheometer using three pipe diameters. The slip velocity was quantified by recording the
+16 foam motion in the vicinity of the wall of an acrylic pipe with a high-speed video camera. A
+17 measurement setup was also built for measuring the slip flow indirectly in opaque pipes. General
+18 formulas for the foam viscosity and slip flow, based on several physical quantities describing both
+19 the foam and the base liquid, were obtained using dimensional analysis. Specifically, dimensionless
+20 shear stress and dimensionless wall shear stress were found to be proportional to certain powers of
+21 the capillary number and slip capillary number, respectively. The contribution of the slip flow to the
+22 total flow rate was significant, especially with lower flow rates when most of the volumetric flow
+23 was due to the slip. In the literature, many papers have suggested that there is no slip flow in steel
+24 pipes. Our results suggest that this is due to the high pipe roughness used in those works. In our
+25 measurements, the slip velocity of a smooth-walled steel pipe was equal to the slip in an acrylic pipe.
+26 The obtained viscosity and slip models form a solid basis for developing and running various
+27 industrial processes including foam application processes. For new foam recipes, quite a small
+28 number of rheological measurements are needed to determine the model parameters.
+29 1. Introduction
+30 Liquid foams are two-phase systems composed of gas bubbles surrounded by a continuous liquid-
+31 surfactant solution, where the role of the surfactant is to stabilize the foam by lowering the surface
+32 tension between the gas and liquid phases (Weaire and Hutzler, 1999). When the (volumetric) gas
+33 content  is below the jamming transition point  the gas bubbles are spherical and relatively free
+J
+34 to move. In this case, the foam is called bubbly liquid. For monodisperse bubbles  = 0.64 (Saint-
+J
+35 Jalmes and Durian, 1999), but in practice, the foams are usually polydisperse and the jamming
+36 transition point is higher - slightly below 0.7 (Farr and Groot, 2009)(Lexis and Willenbacher, 2014).
+37 The distinction between wet and dry foams is not uniquely defined but foams with  < 0.95 are
+38 usually considered wet foams (Furuta et al., 2016). Above the jamming transition point, in wet foams,
+39 the bubbles are still approximately spherical whereas in dry foams they are polyhedral.
+40 Foams have several unique and useful properties (Schramm, 2005). The density of the foam can be
+41 controlled by the air content - with high air content foams can be made very lightweight. Above the
+42 jamming transition point, foams have yield stress, which immobilizes the foam under low-stress
+[[PAGE 1]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+43 forces. Foams have also a high liquid-gas surface area, which can be utilized in transport processes.
+44 The foams can also be stabilized by using polymers or small particles.
+45 Foams have applications in many industrial systems. In many cases, the foam itself is the final
+46 industrial product, such as a fire-fighting foam, a food foam, or a pharmacy/personal care product.
+47 However, foams are also used as a temporary medium in many industrial processes – e.g., as a carrier
+48 medium of chemicals and solids. In flotation processes, bubbly liquids are used for separating solids
+49 from the fluid phase (Nguyen and Schulze, 2003). In the oil and gas industry, drilling foams are used
+50 to remove and clean the drill cuttings from the downhole (Lyons et al., 2020). In the nonwoven and
+51 paper and board industry the traditional carrier fluid, water, can be replaced with aqueous foams as
+52 the carrier medium of fibers (Hjelt et al., 2021). This leads to improved sheet uniformity and decreases
+53 the energy needed in the drying of the sheet due to the decreased usage of water. In the textile
+54 industry, the foam-assisted application is used for spreading chemical solutions or particle dispersions
+55 on fabric surfaces (Sen, 2007)(Kentta et al., 2022).
+56 Foams possess not only significant practical relevance but are also academically interesting as a
+57 subject of study. A highly relevant area of research for the process industry is the study of the rheology
+58 and flow behaviour of foams (Barigou and Deshpande, 2000) (Herzhaft, 1999) (Gardiner et al., 1999)
+59 (Heller and Kuntamukkula, 1987)(Dollet and Raufaste, 2014)(Cohen-Addad and Höhler, 2014).
+60 Foams have complex rheological behaviour that can change significantly with foam structure and
+61 processing conditions. On the other hand, different foams can also exhibit universal properties. Foams
+62 are e.g., generally shear-thinning fluids, and their viscous behaviour can be described with good
+63 accuracy with the Herschel–Bulkley model (Princen and Kiss 1986)(Höhler and Cohen-Addad, 2005)
+64  Kn (1)
+y
+65 Above, is the shear stress, is the yield stress,is the shear rate, K is the consistency index, and
+y
+66 n is the flow index. In many cases, the used shear stress is clearly higher than the yield stress, and
+67 the viscous behaviour is described well by the simple power law
+68  Kn1 (2)
+69 Notice that in Eqs. (1) and (2), parameters K and n can be functions of many quantities including air
+70 content, surfactant solution viscosity and surface tension, as well as bubble size.
+71 The no-slip boundary condition, which holds for most one-phase continuum fluids, does not always
+72 hold for foam flow (Denkov et al., 2005) (Briceño and Joseph, 2003)(Marze et al., 2008). This is due
+73 to a narrow lubricating pure-liquid layer that develops at the solid walls. A possible explanation for
+74 the development of the slip layer is the shear forces dragging out liquid to the wall from the regions
+75 between the bubbles (Thondavadi and Lemlich, 1985)(Gardiner et al., 1999). The ensuing slip flow
+76 needs to be taken into account when measuring the shear rheology of foams. Slip flow has also
+77 practical relevance, as it can increase the flow rate e.g. in pipes significantly. The magnitude of the
+78 slip flow depends on the wall shear stress and the foam properties. The slip flow depends also on the
+79 roughness of the solid walls (Marze et al., 2008). Strong slip flow has been reported both for glass
+80 and acrylic pipes (Jäsberg, Selenius, and Koponen 2015a)(Thondavadi and Lemlich 1985). On the
+81 other hand, several papers have reported that slip flow was not seen for steel pipes (Thondavadi and
+82 Lemlich, 1985)(Harris and Reidenbach, 1987) (Larmignat et al., 2008). Finally, notice that wall slip
+83 depends also on the surface chemistry. Wall slip is higher on hydrophilic surfaces and lower on
+84 hydrophobic surfaces (Omirbekov et al., 2022).
+[[PAGE 2]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+85 In the paper and board industry, chemicals are conventionally dosed to the fiber stock before forming.
+86 However, foam application of chemicals to the wet web would offer several advantages (Kinnunen-
+87 Raudaskoski et al., 2014) (Kenttä et al., 2014)(Kinnunen-Raudaskoski et al., 2017) (Bliss et al., 2021).
+88 Strength-additive induced fiber flocculation would be eliminated, and the retention of chemicals on
+89 the fiber surfaces would be close to 100% with high dosages and low adsorbing tendencies. Foam
+90 application also allows dealing with high-viscosity solutions, and the penetration depth of the applied
+91 material to the porous substance can be controlled. Notice that a problem with a close relative of
+92 foam-assisted application, spray application, are the creation of mist, limited dosage levels of
+93 chemicals due to the difficulty of dealing with highly viscous fluid, the high clogging tendency of the
+94 spray nozzles, and problems in obtaining uniform coverage of the base with the sprayed chemical.
+95 The current work was part of a public multi-company project where foam application was developed
+96 for the paper and board industry (Hjelt et al., 2023)(Oksanen et al., 2023). An important part of this
+97 project was the study of the shear rheology, slip flow and pumping of application foams in laboratory
+98 and pilot environments. The rheological studies focused on wet foams and the foam density varied
+99 between 100 kg/m3 and 300 kg/m3. Polyvinyl alcohol (PVOH) was used as the main surfactant, as it
+100 is widely used by the paper and board industry as a strength additive (Gottberg et al., 2019). The
+101 dosage of PVOH varied between 0.5% to 6%. Due to the ageing of foam and slip flow, rheological
+102 analysis of the application foams was not feasible with traditional rheometer geometries, and a pipe
+103 rheometer was used for this purpose (Larmignat et al., 2008) (Enzendorfer et al., 1995) (Ari Jäsberg
+104 et al., 2015a). Notice that preliminary results for the PVOH foams, based on a subset of data that
+105 constituted one-third of the total dataset, were published in (Jäsberg et al., 2023).
+106 The manuscript has been organized in the following way: First, we will introduce the reader to the
+107 pipe rheometer, used surfactants and a setup for studying slip flow in opaque pipes. Then we present
+108 examples of pressure loss, slip flow and viscosity data in different process conditions and look at the
+109 entire dataset. Next, we will perform dimensional analysis for foam viscosity and slip flow to obtain
+110 generic formulas that are then used in the analysis of the measurement data. The obtained rheological
+111 models are then tested with an experimental surfactant developed for foam application. Then we will
+112 present the results of the slip behavior of foam in a smooth steel pipe. Next, we will test the obtained
+113 rheological models using a 30 m long pipe with a foam made of a mixture of an experimental
+114 surfactant and a widely used dry strength additive. Finally, we will discuss our results, and finish the
+115 manuscript in our concludingremarks.
+116 2. Experimental
+117 Due to their high interfacial free energy, foams are thermodynamically unstable, and the gas and
+118 liquid phases tend to gradually separate (Weaire and Hutzler, 1999). This ageing process of the foam
+119 is slowed down by the surfactant, but for many foams, it is too rapid for the use of traditional
+120 rheometer geometries. Moreover, even with a stable foam, slip flow can be high at the solid walls of
+121 the flow geometry and the interpretation of the rheometer results may be challenging (Kroezen et al.,
+122 1988) (Marze et al., 2008). For these reasons, foam rheology was studied in this work by using pipe
+123 flow. In this case, the foam behaviour can be studied shortly after the foam generation, and the slip
+124 flow can be reliably measured. In the literature, several pipe diameters have often been used, and the
+125 slip velocity has been estimated by using either the Mooney or Oldrey and Jastrzebski analysis
+126 (Enzendorfer et al., 1995)(Gardiner et al., 1998). However, if the pipes are transparent, slip velocity
+127 can also be measured explicitly by high-speed imaging (Ari Jäsberg et al., 2015a). In this study, we
+128 employed this method. The problem with this approach is that it can be applied directly only to
+[[PAGE 3]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+129 transparent pipes. For this reason, we developed also a setup for measuring the slip flow indirectly in
+130 opaque pipes. Notice that the measurement of yield stress is in principle possible with a pipe
+131 rheometer (Ari Jäsberg et al., 2015a), but it was left out of the scope of this study. To test the obtained
+132 rheological models we performed pressure loss measurements in a 30 m-long pipe.
+133 Pipe rheometer
+134 The laboratory-scale pipe flow test environment (pipe rheometer) is shown in Figure 1. The foam was
+135 generated and pumped to the test pipes with a foam mixer manufactured by Hansa Industrie-Mixer
+136 GmbH & Co. KG (see Supplementary material). The mixer consists of a pumping unit that enforces
+137 a constant volumetric flow rateQ of the liquid-surfactant solution and a foaming unit. In the foaming
+L
+138 unit, a well-controlled amount of compressed air is first added to the liquid and then a rotor-stator
+139 mixer (see Supplementary material) disperses the air into bubbles, thus generating the foam. The
+140 bubble size can be adjusted by controlling the rotation speed of the rotor in the rotor-stator element.
+141 The user sets the mass flow rate and the foam density. Based on these values and the absolute pressure
+142 measured at the point of air addition, the device adjusts the airflow so that the density of foam
+143 discharging at the end of the flow line to 1 atm pressure stays constant.
+144 The volumetric flow rateQ , absolute back pressureP , and bubble size distribution of the foam were
+F F
+145 measured at the outlet of the foam generator with a magnetic flow meter Siemens SITRANS FM
+146 MAG 1100 DN6, differential pressure transmitter Endress+Hauser Deltabar PMD235, and Pixact
+147 online foam monitoring device (Koponen et al., 2019), respectively. Next, the foam flowed into one
+148 of the three acrylic horizontal pipes chosen by operating manual valves at the pipe inlets. The length
+149 of the pipes was 1.5 m and their inner radii wereR = 4.0, 6.0, and 9.5 mm. The viscous pressure drop
+150 was measured over a fixed span of pipe, after which the flow discharged to ambient room air pressure.
+151 The span was 0.3 m for the smallest R = 4.0 mm pipe, and 1.0 m for the other two pipes.
+152 The entrance length of laminar non-Newtonian flow is obtained from the formula (Poole and Ridley
+153 2007)(Lambride et al. 2023)
+154 L 2R [(0.246n2 0.675n1.03)1.6 (0.0567Re)1.6]1/1.6 (3)
+e
+155 where Re is the Metzner-Reed Reynolds number (Metzner and Reed, 1955)(Barigou and Deshpande,
+156 2000)
+8v(2n)Rn
+157 Re (4)
+K31/nn
+158
+159 Above R is the pipe radius, and K and n are the consistency index and flow index, respectively (see
+160 Eq. (2)). The highest Re was 500 (see Figure 19 and Figure 20), and the entrance length was smaller
+161 than 50 cm. Thus, the flow was always laminar and fully developed in the measurement pipe.
+162 The slip velocity was quantified by recording, through the transparent acrylic pipe, the motion of
+163 foam bubbles in the vicinity of the pipe's inner wall with a high-speed video camera (Ari Jäsberg et
+164 al., 2015a). The slip velocity was calculated as the average speed of the bubbles in the mean flow
+165 direction. No-slip condition is indicated by the bubbles being stationary. Based on the variation in the
+166 calculated slip velocity during each trial point, the error in the slip velocity was estimated to be less
+167 than 3%. The flow rate varied in the pipes between 0.4 l/min and 11 l/min. The Weissenberg-
+[[PAGE 4]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+168 Rabinowitsch correction was applied to the measured flow rate–pressure loss data for calculating the
+169 real viscosity vs. shear rate behaviour of the foam (see below).
+170
+171 Figure 1 Schematic drawing of the components in the experimental setup. The foam generator is
+172 shown inside the dashed polygon. The components outside the polygon are the flow line and the
+173 measurements used for quantifying the flow rheology of foam. The setup contains the measurements
+174 for the volumetric flow rate 𝑄 of the liquid surfactant, absolute back pressure 𝑃 at the foam
+𝐿 𝐹
+175 generator outlet, the volumetric flow rate 𝑄 of the foam, the bubble size distribution (BS) of the
+𝐹
+176 foam, and the pressure drop ∆𝑃 in the foam flow over a fixed span of the test pipe section (0.3 m
+𝐹
+177 span for the 𝑅 = 4.0mm pipe, and 1.0 m span for the other two pipes). Figure from (Jäsberg et al.,
+178 2023).
+179
+ycneuqerF
+a)
+b)
+[[PAGE 5]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+c)
+d)
+0.2
+0.15
+0.1
+0.05
+0
+0 50 100 150 200 250 300 350
+180 Bubble size [ m]
+181 Figure 2 Images of PVOH foam, taken with the Pixact online foam monitoring device at an elevated
+182 pressure, and the corresponding bubble size distributions. PVOH concentration is 3%, the pipe radius
+183 is 6 mm and the mass flow rate in the pipe is 100 kg/h. a) and b) Bubble size (Sauter mean diameter)
+184 is 104 µm. At atmospheric pressure, foam density is 300 kg/m3. c) and d) Bubble size is 165 µm. At
+185 atmospheric pressure, foam density is 100 kg/m3. Image dimensions are 7.5 mm × 6.7 mm and pixel
+186 resolution is 3.5 µm.
+187 We used as the mean bubble diameter the surface area-weighted average, i.e. Sauter mean diameter,
+188 which is inversely related to the total interfacial area per unit volume (Kowalczuk and Drzymala,
+189 2016):
+n
+nd3
+i i
+190 D  i1 (5)
+n
+nd2
+i i
+i1
+191 Analogous to emulsions, Sauter mean diameter should be used for wet foams (Herzhaft et al., 2005).
+192 For bubbly liquids, the volume-weighted average is preferred. Figure 2 shows two images of PVOH
+193 foams, taken with the Pixact online foam monitoring device, and the corresponding surface area
+194 weighted bubble size distributions.
+195 As we use dimensional analysis for developing models for the foam viscosity and slip flow, we use
+196 below the air content instead of the foam density. As the air density is much smaller than the density
+197 of the liquid surfactant solution, air content is obtained with good accuracy from the formula
+198 (Larmignat et al., 2008)
+
+199  l f (6)
+
+l
+200 Hereis the liquid solution density and  the foam density.
+l f
+201 Weissenberg-Rabinowitsch correction
+202 The Weissenberg-Rabinowitsch correction was applied to the measured flow rate–pressure loss data
+203 for calculating the real viscosity vs. shear rate behaviour of the foam.
+[[PAGE 6]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+204 For stationary flow in a circular pipe, the wall shear stress is independent of the detailed flow profile
+205 and can be calculated from the measured pressure gradient as follows
+R
+206   P (7)
+w 2
+207 AboveR is the inner radius of the pipe. Usually, the slip layer is very thin (a few microns) as compared
+208 with the mean bubble diameter or the pipe diameter. Thus, in the analysis, one can consider the foam
+209 filling the pipe fully, and the slip velocity is considered as a non-zero velocity boundary condition at
+210 the pipe wall. To extract material parameters one has to examine the foam flow in the frame of
+211 reference moving at the speed of the slip velocity. The measured slip velocity v is thus subtracted
+s
+212 from the measured mean flow velocity v :
+avg
+213 v v v (8)
+bulk avg s
+214 The apparent shear rate of the foam  at the immediate vicinity of the pure fluid slip layer is
+a
+4v
+215   bulk (9)
+a R
+216 The real shear rate  at the pipe wall can be obtained by applying the Weissenberg-Rabinowitsch
+217 correction that takes into account the non-Newtonian features of the velocity profile (Mooney,
+218 1931)(Morrison, 2001)
+1 dln 
+219    3 a  (10)
+a 4 dln
+ 
+w
+220 Viscosity at a given shear rate is now obtained as the ratio of the wall shear stress to the real wall
+221 shear rate:
+222   (11)
+w
+223 Materials
+224
+225 The main surfactant in this study was polyvinyl alcohol (PVOH) Kuraray Poval™ 6-88 (Gottberg et
+226 al., 2019). This PVOH grade has a low molecular weight and a degree of hydrolysis in the range of
+227 86.7–88.7. The aqueous component was normal tap water, with salinity between 0.2–0.5 mmol/l. The
+228 PVOH solutions were prepared by cooking PVOH with tap water at a 10% concentration and diluting
+229 the cooled solution to concentrations of 0.5%, 1.0%, 3.0%, or 6.0% by weight. Before measurements,
+230 the concentration of each diluted batch was verified in the laboratory. The cooking was started by
+231 heating 100 liters of water to the temperature of 50 ºC and adding solid PVOH resin gradually into
+232 the water. Next, the temperature was raised to 85 ºC and cooking was continued until the turbidity of
+233 the solution disappeared (a few hours). All PVOH solutions were prepared from the same delivered
+234 batch of solid resin, and they were stored at room temperature for no more than a few days before
+235 being used in the experiment. The pipe rheometer measurements were carried out with an initial
+236 PVOH solution in thermal equilibrium with a room temperature of ca. 22°C, and foam density was
+237 varied between 100 g/l and 300 g/l with 50 g/l increments. The number of PVOH trial points was
+238 966.
+[[PAGE 7]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+239 An experimental non-ionic polymeric surfactant (ES) by Solenis developed for foam application
+240 processes was used test to the rheological models obtained for viscosity and slip flow with the PVOH
+241 foams. ES foam was also used to measure the slip flow in a steel pipe. The ES foams were prepared
+242 similarly to the PVOH foams. These measurements were performed with the R = 6 mm pipe. ES
+243 dosages were 0.3%, 0.4%, 0.5% and 0.6% by weight. The density of the ES foams was either 200 or
+244 100 kg/m3. The number of ES trial points was 149. The measurements in a long hose were performed
+245 with a mixture of 0.4% ES and 3.0% Solenis HercoBond™ 7700-EU (HB), which is a commonly
+246 used dry strength additive.
+247 Base solution viscosity measurements
+248 The viscosities of the surfactant solutions were mainly measured using a stress-controlled DHR-2
+249 rheometer (TA Instruments) equipped with a concentric cylinder geometry (cup radius = 15 mm, bob
+250 radius = 14 mm). The temperature of the sample was controlled by a Peltier concentric cylinder jacket
+251 that was connected to a circulating water bath (Julabo AWC100). Steady-state viscosities were
+252 measured over a shear rate range of 1-100 1/s at the temperature of 22°C. For the final analysis,
+253 viscosities measured at the shear rate of 56 1/s were used to minimize experimental artefacts due to
+254 the low-torque limit of the instrument at low shear rates and instrument inertia effects at high shear
+255 rates (Ewoldt et al. 2015). Table 1 shows the viscosity of PVOH and ES solutions as a function of
+256 solution concentration (w/w). The viscosity of the ES-HB mixture was measured with Brookfield
+257 DV-II+ Pro viscometer at the shear rate of 55 1/s at the temperature of 22°C. The relative error of the
+258 viscosity measurement was estimated to be not more than 2 % based on the variation of the viscosity
+259 measured at different shear rates.
+260 Dynamic surface tension and dilatational complex modulus measurements
+261 We used in this work dynamic surface tension instead of static surface tension as we are dealing with
+262 a dynamic process, where the foam is experiencing continuous shearing. The dynamic surface tension
+263 of the surfactant solutions was measured by the rising bubble method using a DSA100 drop-shape
+264 analyzer (KRÜSS Scientific). A small air bubble (10 μl) was created at the tip of a J-shaped capillary
+265 needle inside a temperature-controlled SC30 glass cuvette (KRÜSS Scientific) that was filled with
+266 the sample solution. The shape of the air bubble was recorded every 0.1 seconds for 10 minutes, and
+267 the surface tension was calculated based on the Young-Laplace equation using the ADVANCE
+268 software (v1.12, KRÜSS Scientific). The surface tension measurements were performed at the
+269 temperature of 22°C. For the final analysis, surface tension measured att = 0.5 s was used. The choice
+270 of the reference time was not critical - the surface tension at e.g. t = 0.1 s and at t = 1.0 s were less
+271 than 2% higher and 1% smaller, respectively, than at t = 0.5 s. According to the instrument
+272 manufacturer, the accuracy of the surface tension measurement is 0.3 mN/m.
+273 Table 1 shows the surface tension of PVOH, ES and ES-HB solutions as a function of solution
+274 concentration.
+275
+276 Following the surface tension measurements, the dilatational complex moduli of the air/solution
+277 interfaces were measured by sinusoidally oscillating the volume of the air bubble with a computer-
+278 controlled oscillating drop module (DS3270, KRÜSS Scientific). The area oscillation amplitude was
+279 set to 4-5 % to ensure a linear viscoelastic response, and the oscillation frequency was set to 0.125
+280 Hz following the work of (Denkov et al., 2005). The oscillating bubble experiments were conducted
+281 at the temperature of 22°C, and the dilatational moduli were computed with the ADVANCE software
+282 (v1.12, KRÜSS Scientific). Table 1 shows the dilatational complex modulus of PVOH, ES and ES-
+283 HB solutions as a function of solution concentration. The accuracy of the dilatational modulus
+[[PAGE 8]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+284 measurement has been reported to be 0.02 mN/m for a similar measurement setup (Atanase et al.
+285 2015).
+Dilatational
+Surface complex
+Surfactant Concentration Viscosity tension modulus
+% (w/w) mPas mN/m mN/m
+PVOH 0.5 1.32 52.7 6.16
+1.0 1.59 50.5 4.07
+3.0 3.45 47.8 2.34
+6.0 9.70 46.2 2.35
+ES 0.3 1.45 59.3 7.56
+0.4 1.66 58.7 9.20
+0.5 1.79 58.3 8.84
+0.6 1.98 57.8 6.85
+ES+HB 0.4 + 3.0 2.70 57.2 6.76
+286
+287 Table 1 PVOH, ES and ES+HB solution viscosity, dynamic surface tension and dilatational complex
+288 modulus at different concentrations. The temperature is 22oC.
+289 Measurement of slip flow in an opaque pipe
+290 In this study, we measured the slip velocity in acrylic pipes with a high-speed video camera. For
+291 opaque pipes, such as steel pipes, this is not possible, and the slip velocity must be measured
+292 indirectly. Figure 3 shows the experimental setup used for this purpose. There were two pipes with
+293 the same length of 2.0 m and an inner radius of 6 mm. The transparent pipe was acrylic, and the
+294 opaque pipe was a steel pipe. Flow was divided equally to the two pipes with a 3D-printed flow
+295 splitter (see Figure 4). The symmetry of the foam splitter was tested by repeating a selected set of
+296 measurements after flipping the splitter around. On average, there was no shift between the results
+297 measured before and after the flipping, thus the flow splitter can be considered close to symmetric.
+298 The flow discharged from the pipes into atmospheric pressure. The pressure loss in the pipes was the
+299 same, but if there were a difference in the slip flow, the mass flow rates in the pipes would be different.
+300 The pipe mass flow rates were measured by collecting the foam discharging from the pipes
+301 simultaneously into separate 2-litre buckets. The maximum error in the measured flow rate was
+302 estimated to be 5%. The foam samples were also used to measure the foam density. The slip velocity
+303 in the transparent pipe was measured with a high-speed video camera (Ari Jäsberg et al., 2015a). The
+304 slip velocity in the steel pipe was obtained from the formula
+Q Q
+305 v v  2 1 (12)
+slip,2 slip,1 R2
+306 where Q and Q are the volumetric flow rates in the acrylic pipe and steel pipe, respectively, and
+1 2
+307 v is the slip velocity in the acrylic pipe. The difference in the sampled foam densities and flow
+slip,1
+308 rates between the two opposite orientations of the splitter was minimal.
+309 The measurements were performed for a DIN EN10216-5 (16X2,0 D4/T3 EN1.4404) stainless steel
+310 pipe. The surface roughness of the pipes was measured with the Mitutoyo SJ-210 traversing tester.
+311 The roughness of the steel and acrylic pipe was 1.5±0.1 μm and 0.27±0.03 μm, respectively.
+[[PAGE 9]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+312 Foam density was 100 kg/m3 and it was made from the experimental non-ionic polymeric surfactant
+313 (ES) with a dosage of 0.4%.
+314
+315 Figure 3 The principle of measuring slip flow in opaque pipes.
+a)
+b)
+316
+317 Figure 4 a) Schematic of a flow splitter. b) 3D printed flow splitter.
+318 Pressure loss measurements in a long pipe
+319 The setup for testing the obtained rheological models is shown in Figure 5. Here a 30-meter-long
+320 flow line was made ofR = 8 mm reinforced transparent PVC hose, which was twisted into a coil with
+321 a diameter of ca. 1 m. At the outlet from the foam generator, volumetric flow rate, absolute pressure,
+322 and bubble size distribution were measured. Bubble size distribution at the end of the test line was
+323 measured with a second Pixact foam analyzer unit. Due to the pressure drop over the latter foam
+324 analyzer, the pressure level at the end of the test hose was elevated, and this value was measured. The
+325 flow was discharged from the test line into ambient pressure through a manual ball valve.
+326 The measurements were done with ES foam (surfactant concentration 0.4 %) with 3%-wt of dry-
+327 strength additive HercoBond™ 7700-EU. Foam density was 100 g/l and the temperature of the
+328 surfactant solution was 22 ºC. The mass flow rate values 100, 125, and 150 kg/h were used in this
+329 test. First, the measurement was done for the full-length PVC hose with the discharge valve fully
+330 open. Then, six meters of the hose were cut off, and the measurements were repeated for the remaining
+331 24 meters of the hose by adjusting the discharge valve so that the back pressure at the beginning of
+[[PAGE 10]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+332 the hose remained unchanged. Again, six meters of the hose were removed and the measurements
+333 were repeated. At this point, the hose was 18 meters long, and the outflow pressure sensor started to
+334 hit its high limit (in Figure 21, data points at a distance of 18 meters are a bit low from the trend set
+335 by the remaining data points) and no further measurements with a shorter line were possible.
+336
+337
+338 Figure 5 A schematic drawing of the setup used for foam transport tests in a long PVC hose.
+339 A 1D model was used to simulate stationary flow through the hose. The model assumes power-law
+340 viscosity behaviour (Eq. (2)) and it takes into account slippage at the hose wall and the compressibility
+341 of foam. Due to viscose losses, the pressure level varies considerably along the long hose (while in
+342 the short pipes used for measuring the rheology, the pressure level was close to the atmospheric one).
+343 Here, the largest absolute pressure measured at the inlet to the hose was ca. 430 kPa (see Figure 21).
+344 In the model, local foam density is calculated from the local pressure by considering the
+345 compressibility of air inside foam bubbles. In a stationary case, any flow variable is constant in time.
+346 In addition, the mass flow rate through any cross-section of the hose is independent of the position in
+347 the flow direction. The mass flow rate Q can be calculated from the condition measured at the exit
+m
+348 from the foam generator: 𝑄 = 𝜌 𝑄. The foam density 𝜌 at the generator outlet can be calculated
+𝑚 2 2
+349 from the measured pressure level𝑃 and from the nominal foam density𝜌 = 100 g/l.
+abs,1 0
+350 For a power-law fluid, the local pressure gradient𝑑𝑃 /𝑑𝐿 in an unidirectional flow in a straight can
+abs
+351 be calculated from the local volumetric flow rateQ:
+𝑛
+𝑑𝑃 2𝐾 3+1/𝑛
+352 abs = (cid:4674) 𝑄(cid:4675) (13)
+𝑑𝐿 𝑅 𝜋𝑅3
+353 where 𝐾 and 𝑛 are the power-law parameters in Eq. (2). These were obtained from the viscosity
+354 model, Eq. (19), developed in this work. The effect of the curvature of the hose on the viscous losses
+355 (pressure drop) was estimated with the result derived by Dean (Zhou and Shah, 2004):
+2 4 −1
+356
+𝑓CL
+= (cid:3428)1−0.03058(cid:4672)
+𝐾De(cid:4673)
++0.01195(cid:4672)
+𝐾De(cid:4673)
+(cid:3432) (14)
+𝑓SL 576 576
+357
+358 Here 𝑓 and𝑓 are the friction factor for the hose in a coiled and a straight shape, respectively, and
+CL SL
+359 the Dean number 𝐾 can be calculated from the formula
+De
+360 𝐾 = 2Re2 𝑅 (15)
+De
+𝑅𝑐
+361 Here, Re is the Metzner-Reed Reynolds number (see Eq. (4)) and𝑅 is the radius of curvature of the
+𝑐
+362 coiled shape. In the current case, the maximum value of the Dean number is ca. 500, and inserting it
+[[PAGE 11]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+363 into Eq. (14) gives less than 2% correction in the viscous losses. Thus we can neglect the curvature
+364 effect in our study and consider the flow unidirectional.
+365 The equation (13) was solved by integrating numerically upstream starting from measurement point
+366 2 at the end of the hose. At each step, the local absolute pressure 𝑃 was used to calculate the local
+abs
+367 foam density 𝜌 by scaling the known nominal density. The local flow rate was calculated from the
+368 constant mass flow rate:𝑄 = 𝑄 /𝜌. The contribution of the slip was obtained from the slip model,
+𝑚
+369 Eq. (24), developed in this work.
+370 3. Results and discussion
+371 Examples of the measured PVOH foam process data
+372 We look at some examples of the measured process data in the R = 6.0 mm pipe with a 0.5% PVOH
+373 concentration. Foam density varied between 100 kg/m3 and 300 kg/m3. Figure 6 presents loss curves,
+374 i.e., pressure drop per unit length of the pipe vs. volumetric flow rate of foam. We see that the viscous
+375 pressure loss increases with decreasing foam density (increasing air content). The shape of the loss
+376 curves is typical for a shear-thinning fluid: the slope of the curves decreases with an increasing flow
+377 rate.
+378 Figure 7a shows the slip velocity as a function of wall shear stress. We see that slip increases with
+379 increasing wall shear stress. The slip velocity is higher with higher foam density, as it is then easier
+380 to drag liquid from the foam to the wall. However, the slope of the curves is similar for the different
+381 foam densities. Figure 7b shows that the contribution of the slip flow to the total flow rate can be
+382 significant. The contribution is highest at low flow rates and decreases with increasing flow rates.
+383 With the smallest flow rates, as much as 70% of the measured flow rate is caused by slip velocity.
+384 By applying the Weissenberg-Rabinowitsch correction to the measurement data shown in Figure 6
+385 and Figure 7 we got the viscosity-shear rate curves shown in Figure 8. The plotted values are real
+386 material parameters without any reference to the used measurements setup (e.g., pipe size or slip
+387 flow). We see from Figure 8 that the foam viscosity strongly increases with decreasing foam density.
+388 We also see that the relation between the foam viscosity and shear rate is with all the foam densities
+389 with a high accuracy a power law, Eq. (2). Moreover, the shear thinning behaviour increases (flow
+390 index n decreases) with decreasing foam density.
+[[PAGE 12]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+391
+392 Figure 6 Pressure loss curves for different foam densities in R = 6.0 mm pipe at 0.5% PVOH
+393 concentration. Data adapted from (Jäsberg et al., 2023).
+394
+395
+a) b)
+396
+397
+398 Figure 7. Slip velocity data for different foam densities in 𝑅 = 6.0mm pipe at 0.5% PVOH
+399 concentration. a) Slip velocity vs. wall shear stress. b) Relative slip velocity vs. mean flow velocity.
+400 Data adapted from (Jäsberg et al., 2023).
+[[PAGE 13]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+401
+402 Figure 8. Analyzed viscosity for different foam densities in 𝑅 = 6.0mm pipe at 0.5% PVOH
+403 concentration. Straight lines are fits of the power law Eq. (2). The fitting parameters K and n are
+404 shown in the legend. Data adapted from (Jäsberg et al., 2023).
+405 Inspection of the full PVOH dataset
+406 Figure 9 shows the bubble size as the function of air content for all the trial points. We see that bubble
+407 size tends to decrease both with increasing PVOH solution concentration and with decreasing air
+408 content. With higher surfactant dosage the foam is more stable and the higher solution viscosity leads
+409 to higher shear forces in the foam generation unit and the bubble size becomes smaller. With higher
+410 air content longer processing times and/or higher mixing speed are probably needed for obtaining as
+411 small bubbles as with the lower air contents. This is supported by the fact that bubble size generally
+412 increased with the increasing flow rate of the foam.
+413
+]m
+[
+ezis
+elbbuB
+[[PAGE 14]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+414 Figure 9 Bubble size as a function of air content. PVOH solution concentration is shown with
+415 different marker colours. There is some variation in the air contents, but the average air contents were
+416 0.70, 0.75, 0.80, 0.85 and 0.90.
+417 Foam viscosity is shown as a function of the shear rate for all data points in Figure 10. Air content is
+418 shown in this figure with colour coding. We see from Figure 10 that viscosity generally increased
+419 with an increasing air content and follows the power law Eq. (2). With a 6% PVOH concentration the
+420 highest air content was 0.85 (see Figure 9). For this reason, the highest viscosities were not obtained
+421 with the highest air content of 0.9.
+422
+423 Figure 10 Viscosity as a function of shear rate for all data points. Air content is shown with colour
+424 coding.
+425
+]s/m[
+yticolev
+pilS
+[[PAGE 15]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+426 Figure 11 Slip velocity as a function of wall shear stress for all data points. PVOH concentration is
+427 shown with different marker colours.
+428 Figure 11 shows slip velocity as a function of wall shear stress for all data points. PVOH concentration
+429 is shown in this figure with different marker colours. We see from Figure 11 that the PVOH
+430 concentration has a strong effect on the slip velocity. We also see that slip velocity increases with
+431 increasing wall shear stress and the relation between the two quantities is nonlinear.
+432 Models for foam viscosity and slip velocity
+433 Dimensional analysis is a widely used tool in fluid dynamics for simplifying complex problems and
+434 making predictions about fluid behaviour based on the underlying dimensionless parameters (White,
+435 1998). In this work, we used dimensional analysis to obtain models for the foam viscosity and slip
+436 velocity. The parameters of these models were then obtained from the measurement data by
+437 regression analysis on the PVOH data.
+438 The foam viscosity 𝜇 depends at least on the following quantities: liquid viscosity,𝜇 , liquid surface
+𝑙
+439 tension,𝜎, liquid density, 𝜚 , air density, 𝜚 , air content, 𝜑, average bubble size, D, and shear rate
+𝑙 𝑙 𝑎
+440 𝛾̇. When choosing𝜇 ,𝜎 and𝜚 as the scaling parameters, the dimensional analysis gives the following
+𝑙 𝑙 𝑙
+441 dimensionless Π-parameters:
+442 Π =
+𝜇
+,Π = 𝜑,Π =
+𝜚
+𝑙
+𝜎
+𝑙
+𝐷
+,Π =
+𝜇
+𝑙
+3𝛾̇
+, Π =
+𝜚𝑎
+(16)
+1 𝜇 2 3 𝜇2 4 𝜚 𝜎2 5 𝜚
+𝑙 𝑙 𝑙 𝑙 𝑙
+443 Π is the relative viscosity of the foam and Π is the Laplace number, which is used to characterize
+1 3
+444 free surface fluid dynamics.Π has no established name. Generally, Π is a function of the other Π-
+4 1
+445 parameters, i.e.,
+446 Π = 𝑓(Π ,Π ,Π ,Π ) (17)
+1 2 3 4 5
+447
+448 In our setup, the pressure level is close to the atmospheric pressure in the measurement pipe and the
+449 air density should have a negligible effect on the foam viscosity. We thus dropped Π from the
+5
+450 subsequent analysis.
+451 An important step of dimensional analysis is the selection of the function f in Eq. (17). We chose a
+452 power law type model, which is often a natural choice:
+𝑎(𝜑) 𝑏(𝜑)
+𝜇 𝜚𝜎 𝐷 𝜇3𝛾̇
+453 = 𝐴(𝜑)(cid:3436) 𝑙 𝑙 (cid:3440) (cid:3436) 𝑙 (cid:3440) (18)
+𝜇 𝜇2 𝜚𝜎2
+𝑙 𝑙 𝑙 𝑙
+454 We performed a regression analysis for Eq. (18) for each air content 𝜑 separately. The values of the
+455 fitting functions 𝐴(𝜑), 𝑎(𝜑) and 𝑏(𝜑) are shown in Supplementary material. As 𝑎(𝜑) and 𝑏(𝜑)
+456 were close to each other with all the air contents (the average difference was below 4%), Eq. (18)
+457 can be simplified into the form
+𝑚(𝜑)
+𝜇 𝛾̇𝐷𝜇
+458 = 𝐵(𝜑)(cid:4672) 𝑙(cid:4673) (19)
+𝜇 𝜎
+𝑙 𝑙
+459 Above
+𝛾̇𝐷𝜇
+460 Ca= 𝑙 (20)
+𝜎
+𝑙
+[[PAGE 16]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+461 is the capillary number of the shear flow. In this work, Ca varied between 5×10-5 and 0.2 and the
+462 average was 0.02. Capillary forces thus dominated the viscous forces in the whole dataset, and the
+463 deformation of bubbles due to shear forces was in most cases rather small (Rust and Manga, 2002).
+464
+465 Table 2 The fitted values of functionsB(𝜑) and m(𝜑) of Eq. (19) for each air content𝜑.
+𝜑 B(𝜑) m(𝜑) R2
+0.70 0.466 ± 0.039 -0.639 ± 0.014 0.94
+0.75 0.636 ± 0.023 -0.637 ± 0.006 0.98
+0.80 0.659 ± 0.016 -0.691 ± 0.004 0.99
+0.85 0.718 ± 0.021 -0.735 ± 0.005 0.99
+0.90 0.883 ± 0.022 -0.762 ± 0.006 0.99
+466
+467 Table 2 shows the values of functions B(𝜑) and m(𝜑) given by a regression analysis that was
+468 performed for Eq. (19) at each air content separately. We see from Figure 12 that Eq. (19) gives the
+469 viscous behaviour of the PVOH foam with very good accuracy. There are only a few outliers with
+470 lower air contents. This may be due to these foams being more unstable; this was in some cases seen
+471 in partial phase separation (some liquid had drained to the bottom of the pipe). Notice that by
+472 comparing Eqs. (2) and (19) we see that n = 1+m where n is the flow index. Flow index n thus
+473 generally slightly decreases with increasing air content; an example of this was shown already in
+474 Figure 8.
+475
+476
+𝜇
+477 Figure 12 Dimensionless viscosity , of PVOH foam, as a function of B()Cam()(see Eq. (19)
+𝜇
+𝑙
+478 and Table 2). The coefficient of determination of the whole dataset is 0.99.
+479 The slip velocity 𝑣 depends at least on the following quantities: liquid viscosity, 𝜇 , liquid surface
+𝑠 𝑙
+480 tension,𝜎, liquid density, 𝜚 , air content, 𝜑, average bubble size, D, and wall shear stress 𝜏 . The
+𝑙 𝑙 𝑤
+481 dimensional analysis gives the Π-parameters:
+/
+l
+[[PAGE 17]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+482 Π =
+𝜇
+𝑙
+𝑣𝑠,Π
+= 𝜑,Π =
+𝜚
+𝑙
+𝜎
+𝑙
+𝐷
+,Π =
+𝜇
+𝑙
+2𝜏𝑤,
+Π =
+𝜚𝑎
+(21)
+1 𝜎 2 3 𝜇2 4 𝜚 𝜎2 5 𝜚
+𝑙 𝑙 𝑙 𝑙 𝑙
+483 where
+484 Π = 𝑓(Π ,Π ,Π ,Π ). (22)
+1 2 3 4 5
+485 We dropped Π from the analysis as the density of air is expected to have a marginal effect on the
+5
+486 slip flow. We once again chose a power law–type model, without fixing the formula for the air
+487 content:
+𝑎′(𝜑) 𝑏′(𝜑)
+488
+𝜇
+𝑙
+𝑣𝑠
+= 𝐴′(𝜑)(cid:3436)
+𝜚
+𝑙
+𝜎
+𝑙
+𝐷
+(cid:3440) (cid:3436)
+𝜇
+𝑙
+2𝜏𝑤(cid:3440)
+. (23)
+𝜎 𝜇2 𝜚 𝜎2
+𝑙 𝑙 𝑙 𝑙
+489 We performed a regression analysis for Eq. (23) for each air content separately. The average
+490 difference between 𝑎′(𝜑) and 𝑏′(𝜑) was 3% (see Supplementary material). This suggests that Eq.
+491 (23) can be simplified into the form
+𝑤(𝜑)
+492
+𝜇
+𝑙
+𝑣𝑠
+= 𝐺(𝜑)(cid:4672)
+𝐷𝜏𝑤(cid:4673)
+. (24)
+𝜎 𝜎
+𝑙 𝑙
+493 Above
+494 Ca∗ = 𝜇 𝑙 𝑣𝑠 (25)
+𝜎
+𝑙
+495 is the slip capillary number, which varied between 0.002 and 0.07, and
+D
+496 *  w (26)
+w 
+l
+497 is the dimensionless wall shear stress of the slip flow. Notice that* can be interpreted as the ratio
+w
+498 of the wall shear stress and the bubble capillary pressure. The physical interpretation of this is that
+499 wall shear stress is higher when capillary pressure is higher, as then the slip film thickness remains
+500 thinner. (The capillary pressure resists expanding the slip film by the dynamic pressure.) A detailed
+501 explanation can be found in (Denkov et al. 2005).
+502 Table 3 shows the values of functions G(𝜑) and w(𝜑) given by a regression analysis that was
+503 performed for Eq. (24) at each air content separately. We see from Figure 13 that Eq. (24) works
+504 generally well. There are, however, some outliers obtained mainly with the pipe radius of 9.5 mm
+505 (see Supplementary material). The flow rates in the R = 9.5 mm pipe were usually lower than in the
+506 other two pipes, and occasionally phase separation took place already during the pipe flow (some
+507 liquid was collected on the pipe bottom). The deviations from the slip model, however, did not
+508 correlate with the average velocity of the flow, nor with any other measured quantity. It is unlikely
+509 that the outliers are due to measurement errors in the measured slip velocities, as this would lead to
+510 outliers also in the obtained foam viscosities. The measurements took several months, and it is
+511 possible that the variations in the quality of the tap water, such as salinity, explain this discrepancy.
+512 Table 3 The fitted values of functions G(𝜑) and w(𝜑) of Eq. (24) for each air content𝜑.
+𝜑 G(𝜑) w(𝜑) R2
+0.7 0.610 ± 0.086 1.60 ± 0.05 0.88
+0.75 0.434 ± 0.043 1.62 ± 0.04 0.90
+[[PAGE 18]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+0.8 0.351 ± 0.017 1.74 ± 0.02 0.97
+0.85 0.244 ± 0.016 1.82 ± 0.04 0.92
+0.9 0.168 ± 0.009 2.01 ± 0.04 0.93
+513
+514 Figure 13 Dimensionless slip, Ca*, of PVOH foam as a function of G()(*)w()(See Eq. (24) and
+515 Table 3). The coefficient of determination is 0.97.
+516 For practical purposes, when the air content can be anything between 0.7 and 0.9, we fitted the 2nd-
+517 order polynomial
+518 f()a aa2 (27)
+0 1 2
+519 to the values of functions B(𝜑),m(𝜑), G(𝜑)and w(𝜑) shown in Table 2 and Table 3. The obtained
+520 fitting parametersa ,a anda are shown in Table 4. (The fits are shown in Supplementary material.)
+0 1 2
+521 Table 4 The fitting parameters a , a and a of the 2nd order polynomial Eq. (27) for functions
+0 1 2
+522 B(𝜑),m(𝜑), G(𝜑)and w(𝜑).
+a a a R2
+0 1 2
+B(𝜑) -0.3124 0.6171 0.7614 0.93
+m(𝜑) -1.024 1.534 -1.389 0.96
+G(𝜑) 5.275 -10.19 5.024 0.99
+w(𝜑) 6.020 -12.82 9.294 0.99
+523
+524 Testing the rheological models with ES foams
+525 Figure 14 shows the bubble size as the function of air content for all the trial points of ES foams. ES
+526 foam viscosity is shown as a function of the shear rate for all data points in Figure 15. Figure 16
+527 shows the ES foam slip velocity as a function of wall shear stress for all data points.
+*aC
+[[PAGE 19]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+350
+0.3%
+0.4%
+0.5%
+0.6%
+300
+250
+200
+150
+0.8 0.82 0.84 0.86 0.88 0.9
+528 Air content
+529 Figure 14 Bubble size as a function of air content for the ES foam. The ES solution concentration is
+530 shown with different marker colours.
+531
+532 Figure 15 Viscosity as a function of shear rate for the ES foam. The ES solution concentration is
+533 shown with different marker colours. Air content is 0.8 for filled markers and 0.9 for open markers.
+]saP[
+ytisocsiV
+[[PAGE 20]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+1
+0.3%
+0.9
+0.4%
+0.5%
+0.8
+0.6%
+0.7
+0.6
+0.5
+0.4
+0.3
+0.2
+0.1
+0
+10 20 30 40 50 60 70 80 90
+534 Wall shear stress [Pa]
+535 Figure 16 Slip velocity as a function of wall shear stress for the ES foam. The ES solution
+536 concentration is shown with different marker colours. Air content is 0.8 for filled markers and 0.9 for
+537 open markers.
+538 The models for viscosity and slip, with the parameters of Table 4, were tested with ES foams. Figure
+𝜇
+539 17 shows the dimensionless viscosity , of ES foam, as a function of B()Cam()(see Eq. (19)).
+𝜇
+𝑙
+540 We see that the viscosity model predicted the viscosity of the ES foam with very good accuracy. The
+541 coefficient of determination was 0.99 and the modelled viscosity was on average 1.9% smaller than
+542 the measured viscosity. Figure 18 shows the dimensionless slip, Ca*, of ES foam, as a function of
+543 G()(*)w()(See Eq. (24)). The prediction based on the PVOH foam is also here quite good
+544 although the slip is very sensitive to process conditions. The coefficient of determination was 0.96
+545 and the modelled slip was on average 5.8% bigger than the measured slip. Notice that the viscosity
+546 and slip models and their parameters were used directly without fitting the models to the ES foam
+547 data. This suggests that the rheological models derived from PVOH data are more general and will
+548 be useful in developing application foams and processes.
+[[PAGE 21]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+549
+𝜇
+550 Figure 17 Dimensionless viscosity , of ES foam, as a function of B()Cam()(see Eq. (19) and
+𝜇
+𝑙
+551 Table 4). The coefficient of determination is 0.99. The modelled viscosity was on average 1.9%
+552 smaller than the measured viscosity. The red line shows the curve y = x.
+553
+554 Figure 18 Dimensionless slip, Ca*, of ES foam, as a function of G()(*)w()(See Eq. (24) and
+555 Table 4). The coefficient of determination is 0.96. The modelled slip was on average 5.8% bigger
+556 than the measured slip. The variation around the (red)y =x curve is similar to the PVOH foams (see
+557 Figure 13).
+558 Fanning friction factor
+559 The Fanning friction factor f is widely used for both Newtonian and non-Newtonian flows for
+560 calculating the pressure drop in pipes. It is defined as
+[[PAGE 22]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+
+561 f  w (28)
+1v2
+2
+562 where  is the wall shear stress, is the fluid (foam) density andv is the average flow velocity. For
+w
+563 Newtonian and power-law fluids (Barigou and Deshpande, 2000)
+16
+564 f  (29)
+Re
+565 where Re is the Metzner-Reed Reynolds number (see Eq. (4)). Figure 19 shows the Fanning friction
+566 factor as a function of the Reynolds number for PVOH foams. We see that the data lie very well on
+567 a unique line and follow the expression (R2=0.993)
+568
+13.7
+569 f  (30)
+Re0.98
+570 (If the power of Re is fixed to 1, one gets f = 14.4/Re.) The friction factor f is for PVOH foams
+571 slightly smaller than for ideal power-law fluids. The reason is the slip flow that increases the flow
+572 rate with a given wall shear stress thus effectively decreasing the friction factor. Notice that if the
+573 friction factor and the Reynolds number are calculated with the slip-corrected flow velocity (see
+574 Figure 20), the relation between them is (R2=0.994)
+16.7
+575 f  (31)
+Re1.01
+576 (If the power of Re is fixed to 1, one getsf = 16.2/Re.) This formula is very close to the theoretical
+577 expression Eq. (29).
+578
+f
+,rotcaf
+noitcirf
+gninnaF
+[[PAGE 23]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+579 Figure 19 The Fanning friction factor as a function of the Metzner-Reed Reynolds number for PVOH
+580 foams. The coefficient of determination is 0.993.
+581
+582 Figure 20 The Fanning friction factor as a function of the Metzner-Reed Reynolds number for PVOH
+583 foams. The slip-corrected flow velocity has been used in the calculation of f and Re. The coefficient
+584 of determination is 0.994.
+585 Slip flow in a steel pipe
+586 Table 5 summarizes the slip flow measurements in the EN 1.4404 steel pipe with the setup shown in
+587 Figure 3. Both acrylic-acrylic and acrylic-steel pipe pairs were used in the measurements. The foam
+588 density was 100 kg/m3 and the mass flow rate varied between 20 kg/h and 140 kg/h. In this flow
+589 range, the relative slip in the acrylic pipe was always significant. The relative flow speed difference
+590 between the two pipes varied slightly between the trial points, but there was no systematic difference
+591 between the acrylic and steel pipes. The calculated flow speed difference between the acrylic and
+592 steel pipes was always very low compared to the measured slip velocity in the acrylic pipe. These
+593 results suggest that slip flow (in steel pipes) depends strongly on the wall roughness. With smooth
+594 walls, slip behaves similarly for the materials that are used in real-life processes.
+595 Table 5 Slip flow measurements with the setup shown in Figure 3. From left to right: The material of
+596 pipe 1 and pipe 2, the total mass flow rate Q in the two pipes, the volumetric flow rates Q and Q
+m 1 2
+597 in the pipes, the flow speedsv andv in the pipes, the relative difference of the flow speeds (v -v )/v
+1 2 2 1 1
+598 in the pipes, slip velocityv in the pipe 1, and relative slip in the pipe 1.
+s,1
+Pipe 1 Pipe 2 Q Q Q v v (v -v )/v v v /v
+m 1 2 1 2 2 1 1 s,1 s,1 1
+material material kg/h l/min l/min m/s m/s % m/s %
+acrylic acrylic 20 1.518 1.495 0.224 0.220 1.5 0.174 78
+acrylic acrylic 40 3.210 3.031 0.473 0.447 5.6 0.287 61
+acrylic acrylic 60 4.862 4.753 0.716 0.700 2.2 0.388 54
+acrylic acrylic 100 7.962 7.809 1.173 1.151 1.9 0.513 44
+f
+rotcaf
+noitcirf
+gninnaF
+[[PAGE 24]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+acrylic acrylic 140 10.80 11.14 1.591 1.642 -3.2 0.586 37
+acrylic steel 20 1.633 1.477 0.241 0.218 9.5 0.172 72
+acrylic steel 40 3.125 3.083 0.460 0.454 1.3 0.269 58
+acrylic steel 60 4.805 4.815 0.708 0.710 -0.2 0.377 53
+acrylic steel 100 7.812 8.193 1.151 1.207 -4.9 0.539 47
+acrylic steel 140 10.98 11.52 1.617 1.697 -4.9 0.643 40
+599
+600 Pressure loss in a long pipe
+601 Figure 21 shows the measured pressure profiles along the flow line. Solid lines are the numerical
+602 solutions of Eq. (11). Considering the simplifications that were made in the simulation (there is no
+603 validated method to take into account the effect of foam compressibility, i.e. the varying density of
+604 the gas, in rheology), the agreement is surprisingly good. Table 6 lists the main experimental
+605 quantities at different locations of the PVC hose.
+606
+607 Figure 21 Measured pressure profiles and the values calculated based on the measured foam rheology
+608 for different mass flow rates. (For the 18-meter-long hose, the outflow pressure sensor was close to
+609 its high limit. For this reason, the data points at a distance of 18 meters are a bit low from the trend
+610 set by the remaining data points.)
+611
+612 Table 6 Flow quantities at the inlet, exit and standard pressure 1 atm for the PVC hose at varying
+613 lengths L: mass flow rate, Q
+m
+, foam density at the inlet, 
+1
+,flow speed at the inlet, v
+1
+, foam density
+614 at the exit, , flow speed at the exit, v , flow speed at 1 atm, v , and the bubble diameter at 1 atm,
+2 2 atm
+615 D .
+atm
+L Q ρ (inlet) v (inlet) ρ (exit) v (exit) v D
+m 1 1 2 2 atm atm
+m kg/h g/l m/s g/l m/s m/s μm
+30 100 283 0.49 146 0.94 1.38 435
+30 125 292 0.59 152 1.14 1.73 407
+30 150 302 0.69 157 1.32 2.07 330
+[[PAGE 25]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+24 100 282 0.49 188 0.73 1.38 444
+24 125 295 0.59 200 0.86 1.73 450
+24 150 298 0.69 193 1.07 2.07 389
+18 100 283 0.49 220 0.63 1.38 457
+18 125 291 0.59 222 0.78 1.73 421
+18 150 295 0.70 218 0.95 2.07 365
+616
+617 4. Discussion
+618 In the literature, foam rheology has often been measured by using several pipe diameters, and the slip
+619 velocity has been estimated by using either the Mooney or Oldroyd -Jastrzebski analysis (Enzendorfer
+620 et al., 1995)(Gardiner et al., 1998). In the Mooney analysis, it is assumed that v  where
+s c w
+621 coefficient depends on the wall shear stress . On the other hand, in many papers, the Mooney
+c w
+622 analysis has failed and the Oldroyd-Jastrzebski analysis has been used. Here the assumption is
+623 v  R, whereRis the pipe radius. The assumed effect of pipe radius on the slip velocity is thus
+s c w
+624 quite strong. We did not find any evidence of such a dependence of slip velocity on the pipe radius;
+625 adding the pipe radius to the dimensional analysis did not improve the accuracy of the obtained
+626 formula for slip velocity. Indeed, (Martin and Wilson, 2005) argue that the Oldrey-Jastrzebski
+627 analysis has no physical justification and its attraction has been only that when the Mooney analysis
+628 has failed, it has yielded seemingly reasonable results. They suggest that one should avoid the Oldrey-
+629 Jastrzebski analysis and use instead a modified Mooney analysis described in their paper. An obvious
+630 advantage of the slip measurement setups used in this work is that slip is measured directly, and no a
+631 priori assumptions of the slip behaviour are needed.
+632 If we define the bubble Reynolds number as
+D2
+633 Re  l (32)
+D 
+l
+634 we can write the Π-parameters 3 and 4 of the viscosity analysis (see Eq. (16)) with the capillary
+635 number Ca (see Eq. (20)) and the Reynolds number Re as follows:
+D
+Re
+636   D
+3 Ca
+637 and
+Ca2
+638  
+4 Re
+D
+639 Therefore, an alternative choice for the dimensionless groups 3 and 4 would be Ca and Re . As we
+D
+640 see in Eq. (19), of the two, the dimensionless viscosity is here dependent only on the capillary number.
+641 This reveals that the dropped dimensionless group is Re , and the inertial force does not play a role
+D
+642 in the foam viscosity. Notice that a corresponding analysis with a similar result can be performed also
+643 for the slip flow.
+644 By substituting  to Eq. (19) one gets an alternate formula for the foam rheology:
+[[PAGE 26]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+645
+m()1
+D D
+646 =B() l  (33)
+ 
+ 
+l l
+647
+648 where
+649
+D
+650 *  (34)
+
+l
+651
+652 is the dimensionless shear stress. The dimensionless shear stress is thus proportional to the capillary
+653 number:
+654
+655 *Can (35)
+656
+657 In (Denkov et al., 2005) and (Denkov et al., 2009) Eq. (35) was obtained for the air content of 0.9
+658 experimentally. Eq. (24) for slip flow can be written in the form
+659
+660 *  H()  Ca*k() (36)
+w
+661 where H()G()1w() and k()1 w(). The dimensionless wall shear stress is thus
+662 proportional to the slip capillary number:
+663
+664 * Ca*k (37)
+w
+665 (Denkov et al., 2005) derived Eq. (37) theoretically with k depending only on the bubble surface
+666 mobility. (Denkov et al., 2005) suggested that for the air content of 0.9, in Eq. (35) n = 0.4 if the
+667 bubble surface was tangentially mobile (surface dilatational modulus < 100 mN/m) and n = 0.25 if
+668 the surface was immobile (surface dilatational modulus > 100 mN/m). (Denkov et al., 2005) found
+669 one exception, where n was 0.25 for a mobile surface. For Eq. (37) (Denkov et al., 2005) obtained
+670 theoreticallyk =2/3 for a tangentially mobile surface andk =1/2 for an immobile surface. Although
+671 the dilatational moduli of the air / PVOH solution interfaces are small and the surface is thus mobile
+672 (see Table 1), we gotn =0.25 andk= 0.5 for the 0.9 air content. Our dilatation moduli measurement
+673 is similar to (Denkov et al., 2005), so we might have found new exceptions for the above-mentioned
+674 classification of surfactants developed by (Denkov et al., 2005).
+675 In the literature, it has often been stated that steel pipes have no slip flow. In our measurements, the
+676 slip flow of a smooth-walled steel pipe did not differ from the slip of an acrylic pipe. In the earlier
+677 studies (Thondavadi and Lemlich, 1985)(Harris and Reidenbach, 1987) (Larmignat et al., 2008) the
+678 absence of wall slip in steel pipes was likely caused by the steel pipes having a high surface roughness.
+679 In (Thondavadi and Lemlich, 1985), e.g., galvanized steel pipes were used which typically have a
+680 roughness of a few hundred micrometres. Notice that for modelling and dimensioning practical
+681 processes and for process control the slip flow presents a challenge, as it can be very sensitive to
+682 small changes in the process parameters. This problem could be eliminated by using pipes with a high
+683 wall roughness at the cost of increasing the pressure loss and potential fouling of the pipe surfaces.
+684 In foam application, the applied chemical can be used as the surfactant, as is the case with PVOH.
+685 However, usually, the application foam is used as the carrier for applying other chemicals and
+[[PAGE 27]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+686 materials, such as starch or microfibrillated cellulose. We presented one example in our long-pipe
+687 experiment where the foam was used to carry a commercial strength additive. In this case, the
+688 rheological model worked rather well, but the rheological behaviour of these mixtures can also differ
+689 from the carrier foam and should be measured before using them in real-life applications. In (Ari
+690 Jäsberg et al., 2015a)(A. Jäsberg et al., 2015b)(Prakash et al., 2021) the addition of cellulosic fibrous
+691 materials of various types and sizes up to 5 wt % changed the foam consistency index significantly,
+692 but the flow index remained practically unchanged. On the other hand, in (Thondavadi and Lemlich,
+693 1985) the addition of small coal and sand particles up to 35 wt % did not change the foam rheology.
+694
+695 These measurements were performed at atmospheric pressure. In the future, the effect of elevated
+696 pressure level on the application foam rheology should be studied to find out when the elevated
+697 density of air starts to affect the foam rheology. Another future topic is the effect of temperature on
+698 application foam rheology. However, most temperature effects should already be implicitly included
+699 in Eqs. (19) and (24) in the solution viscosity, solution surface tension and the foam bubble size.
+700 5. Conclusions
+701 Foam application of chemicals to the wet web is currently being developed for the paper and board
+702 industry. An important part of this work is to understand the rheology of the used application foams.
+703 PVOH is widely used as a strength additive in paper and board, and it was chosen as the main
+704 surfactant for the foams of this study. The PVOH foam density varied between 100 kg/m3 and 300
+705 kg/m3 and the dosage of PVOH varied between 0.5% to 6%.
+706 The foam viscosity and slip flow were determined with a pipe rheometer using three pipe diameters.
+707 The slip velocity was quantified by recording the foam motion in the vicinity of the wall of an acrylic
+708 pipe with a high-speed video camera. A measurement setup was also built for measuring the slip flow
+709 directly in opaque pipes.
+710 Dimensional analysis was used to obtain general formulas for the foam viscosity and slip flow that
+711 were based on several physical quantities describing both the foam and the base liquid. Here the
+712 dimensionless shear stress and dimensionless wall shear stress were proportional to certain powers of
+713 the capillary number and slip capillary number, respectively. Similar formulas had earlier been
+714 obtained by (Denkov et al., 2005) for the air content of 0.9. Our study widens the scope of the models
+715 to a much wider air-content region. The obtained rheological models were applied successfully for
+716 another surfactant for flow in a short pipe and flow in a long PVC hose using an industrially relevant
+717 mixture of carrier foam and a dry strength additive.
+718 The contribution of the slip flow to the total flow rate was significant, especially with lower flow
+719 rates when most of the volumetric flow was due to the slip. In the literature, many papers have
+720 suggested that there is no slip flow in steel pipes. Our results suggest that this is due to the high pipe
+721 roughness used in these works. In our measurements, the slip velocity of a smooth-walled steel pipe
+722 was identical to an acrylic pipe. This should be taken into account when real-life processes are
+723 developed.
+724 The obtained viscosity and slip models form a solid basis for developing and running various
+725 industrial processes including foam application processes. For new foam recipes, quite a small
+726 number of rheological measurements are needed for determining the model parameters for a fixed air
+727 content.
+728 Acknowledgement
+[[PAGE 28]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+729 This research was done in the ChemFunc project funded mainly by Business Finland. The authors
+730 want to thank ChemFunc project parties Anpap, Metsä Board, Pixact, Solenis, Sulzer and Valmet for
+731 valuable discussion on this work and its results. We acknowledge Prof. Nikolai Denkov for valuable
+732 discussions with him. His expertise in foam rheology was particularly helpful in understanding the
+733 link between the surface dilatational modulus and the model exponents. Our gratitude also to Titta
+734 Kiiskinen and Joona Hast for their contribution to the measurement of foam rheology.
+735 Open data
+736 The rheological measurements of the PVOH foams can be downloaded from Zenodo. DOI:
+737 10.5281/zenodo.8334762.
+738 References
+739 Atanase, L., Bistaca, S., Riessa, G., 2015, Effect of poly(vinyl alcohol-co-vinyl acetate) copolymer
+740 blockiness on the dynamic interfacial tension and dilational viscoelasticity of polymer–anionic
+741 surfactant complex at the water–1-chlorobutane interface. Soft Matter 11, 2665-2672.
+742 https://doi.org/10.1039/C4SM02766C
+743 Barigou, M., Deshpande, N.S., 2000. The flow of gas-liquid foams in vertical pipes, Chemical
+744 Engineering Science 55(19), 4297–4309. https://doi.org/10.1016/S0009-2509(00)00057-9
+745 Bliss, T., Luo, M., Nicholas, M., 2021. Application of foamed additives to the surface of wet
+746 handsheets, Tappi Journal 20, 9–19. https://doi.org/10.32964/tj20.1.9
+747 Briceño, M.I., Joseph, D.D., 2003. Self-lubricated transport of aqueous foams in horizontal conduits,
+748 International Journal of Multiphase Flow 29(12), 1817–1831.
+749 https://doi.org/10.1016/j.ijmultiphaseflow.2003.10.001
+750 Cohen-Addad, S., Höhler, R., 2014. Rheology of foams and highly concentrated emulsions, Current
+751 Opinion in Colloid & Interface Science 19(6), 536–548. https://doi.org/10.1016/j.cocis.2014.11.003
+752 Denkov, N.D., Subramanian, V., Gurovich, D., Lips, A., 2005. Wall slip and viscous dissipation in
+753 sheared foams: Effect of surface mobility, Colloids and Surfaces A: Physicochemical and
+754 Engineering Aspects 263, 129–145. https://doi.org/10.1016/j.colsurfa.2005.02.038
+755 Denkov, N.D., Tcholakova, S., Golemanov, K., Ananthpadmanabhan, K.P., Lips, A., 2009. The role
+756 of surfactant type and bubble surface mobility in foam rheology, Soft Matter 5, 3389-3408.
+757 https://doi.org/10.1039/b903586a
+758 Dollet, B., Raufaste, C., 2014. Rheology of aqueous foams, Physical Reports 15, 731-747.
+759 https://doi.org/10.1016/j.crhy.2014.09.008
+760 Enzendorfer, C., Harris, R.A., Valkó, P., Economides, M.J., Fokker, P.A., Davies, D.D., 1995. Pipe
+761 viscometry of foams, Journal of Rheology 39, 345–358. https://doi.org/10.1122/1.550701
+762 Ewoldt, R.H., Johnston, M.T., Caretta, L.M., 2015. Experimental challenges of shear rheology: How
+763 to avoid bad data. In: Spagnolie, S. (Ed.), Complex Fluids in Biological Systems. Biological and
+764 Medical Physics, Biomedical Engineering. Springer, New York, NY. https://doi.org/10.1007/978-1-
+765 4939-2065-5_6
+766
+[[PAGE 29]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+767 Farr, R.S., Groot, R.D., 2009. Close packing density of polydisperse hard spheres, Journal of
+768 Chemical Physics 131, 244104. https://doi.org/10.1063/1.3276799
+769 Furuta, Y., Oikawa, N., Kurita, R., 2016. Close relationship between a dry-wet transition and a bubble
+770 rearrangement in two-dimensional foam, Scientific Reports 6, 37506.
+771 https://doi.org/10.1038/srep37506
+772 Gardiner, B.S., Dlugogorski, B.Z., Jameson, G.J., 1999. Prediction of pressure losses in pipe flow of
+773 aqueous foams, Industrial & Engineering Chemistry Research 38(3), 1099–1106.
+774 https://doi.org/10.1021/ie980385i
+775 Gardiner, B.S., Dlugogorski, B.Z., Jameson, G.J., 1998. Rheology of fire-fighting foams, Fire Safety
+776 Journal 31(1), 61-755. https://doi.org/10.1016/S0379-7112(97)00049-0
+777 Gottberg, J.-M., Lappalainen, T., Salminen, K., 2019. Polyvinyl alcohol as foaming agent in foam
+778 formed paper. Tappi Journal 18(8), 475-485.
+779 Harris, P.C., Reidenbach, V.G., 1987. High-temperature rheological study of foam fracturing fluids,
+780 Journal of Petroleum Technology 39, 613–619. https://doi.org/10.2118/13177-PA
+781 Heller, J.P., Kuntamukkula, M.S., 1987. Critical review of the foam rheology literature, Industrial &
+782 Engineering Chemistry Research 26, 318–325. https://doi.org/10.1021/ie00062a023
+783 Herzhaft, B., 1999. Rheology of aqueous foams: a literature review of some experimental works, Oil
+784 and Gas Science and Technology 54(5), 587–596. https://doi.org/10.2516/ogst:1999050
+785 Herzhaft, B., Kakadjian, S., Moan, M., 2005. Measurement and modeling of the flow behavior of
+786 aqueous foams using a recirculating pipe rheometer, Colloids and Surfaces A: Physicochemical and
+787 Engineering Aspects 263, 153–164. https://doi.org/10.1016/j.colsurfa.2005.01.012
+788 Hjelt, T., Henriksson, E., Jaiswal, A., Oksanen, A., 2023. Chemical addition to wet webs using foam
+789 application, Tappi Journal 22(1), 33–39.
+790 Hjelt, T., Ketoja, J., Kiiskinen, H., Koponen, A., Pääkkönen, E., 2021. Foam forming of fiber
+791 products: a review, Journal of dispersion science and technology 43(10), 1462-1497.
+792 https://doi.org/10.1080/01932691.2020.1869035
+793 Höhler, R., Cohen-Addad, S., 2005. Rheology of liquid foam, Journal of physics: condensed matter
+794 17, R1041 https://doi.org/10.1088/0953-8984/17/41/R01
+795 Jäsberg, Ari, Selenius, P., Koponen, A., 2015a. Experimental results on the flow rheology of fiber-
+796 laden aqueous foams, Colloids and Surfaces A: Physicochemical and Engineering Aspects 473, 147–
+797 155. https://doi.org/10.1016/j.colsurfa.2014.11.041
+798 Jäsberg, A., Selenius, P., Koponen, A., 2015b. Flow rheology of fiber-laden aqueous foams,
+799 proceedings of PaperCon 2015, TAPPI Press, Vol. 2 (2015), 872-889.
+800 Jäsberg, A., Viitala, J., Tanaka, A., Prakash, B., Koponen, A., 2023. Flow rheology of light foams
+801 generated from aqueous solutions of polyvinyl alcohol, Tappi Journal 22(1), 51–60.
+802 Kenttä, E., Kinnunen-Raudaskoski, K., Hjelt, T., 2014. Characterization of thin pigment coating
+803 layers produced by foam coating, Tappi Journal 13(7), 21–27.
+[[PAGE 30]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+804 Kentta, E., Kumar, V., Andersson, P., Forsstrom, U., 2022. A novel foam coating approach to produce
+805 abrasive structures on textiles, Autex Research Journal 22(3), 335–342. https://doi.org/10.2478/aut-
+806 2021-0031
+807 Kinnunen-Raudaskoski, K., Hjelt, T., Forsström, U., Sadocco, P., Paltakari, J., 2017. Novel thin
+808 functional coatings for paper by foam coating. Tappi Journal 16(4), 179–186.
+809 https://doi.org/10.32964/tj16.4.179
+810 Kinnunen-Raudaskoski, K., Hjelt, T., Kentta, E., Forsstrom, U., 2014. Thin coatings for paper by
+811 foam coating. Tappi Journal 13(7), 9–19.
+812 Koponen, A., Eloranta, H., Jäsberg, A., Honkanen, M., Kiiskinen, H., 2019. Real-time monitoring of
+813 bubble size distribution in a foam forming process. Tappi Journal 18(8), 487–494.
+814 Kowalczuk, P.B., Drzymala, J., 2016. Physical meaning of the Sauter mean diameter of spherical
+815 particulate matter, Particulate Science and Technology 34(6), 645–647.
+816 https://doi.org/10.1080/02726351.2015.1099582
+817 Kroezen, A.., Groot Wassink, J., Schipper, C., 1988. The flow properties of foam, Journal of the
+818 Society of Dyers and Colourists 104, 393–400. https://doi.org/10.1111/j.1478-4408.1988.tb01138.x
+819 Lambride, C., Syrakos, A., Georgiou, G., 2023. Entrance length estimates for flows of power-law
+820 fluids in pipes and channels, Journal of Non-Newtonian Fluid Mechanics 317,105056.
+821 https://doi.org/10.1016/j.jnnfm.2023.105056
+822 Larmignat, S., Vanderpool, D., Lai, H.K., Pilon, L., 2008. Rheology of colloidal gas aphrons
+823 (microfoams), Colloids and Surfaces A: Physicochemical and Engineering Aspects 322, 199–210.
+824 https://doi.org/10.1016/j.colsurfa.2008.03.010
+825 Lexis, M., Willenbacher, N., 2014. Yield stress and elasticity of aqueous foams from protein and
+826 surfactant solutions – The role of continuous phase viscosity and interfacial properties Colloids and
+827 Surfaces A: Physicochemical and Engineering Aspects 459, 177–185.
+828 https://doi.org/10.1016/j.colsurfa.2014.06.030
+829 Lyons, W.C., Stanley, J.H., Sinisterra, F.J., Weller, T., 2020. Air and Gas Drilling Manual. Elsevier,
+830 Oxford.
+831 Martin, P.J., Wilson, D.I., 2005. A critical assessment of the Jastrzebski interface condition for the
+832 capillary flow of pastes, foams and polymers. Chem Eng Sci 60(2), 493–502.
+833 https://doi.org/10.1016/j.ces.2004.08.011
+834 Marze, S., Langevin, D., Saint-Jalmes, A., 2008. Aqueous foam slip and shear regimes determined
+835 by rheometry and multiple light scattering. Journal of Rheology 52, 1091–1111.
+836 https://doi.org/10.1122/1.2952510
+837 Metzner, A., Reed, J., 1955. Flow of non-Newtonian fluids - correlation of the laminar, transition and
+838 turbulent-flow regions. AIChE Journal 1, 434–440.
+839 Mooney, M., 1931. Explicit formulas for slip and fluidity. Journal of Rheology 2, 210-222.
+840 https://doi.org/10.1122/1.3642116
+841 Morrison, F.A., 2001. Understanding rheology. Oxford University Press, New York.
+842 Nguyen, A.V., Schulze, H.J., 2003. Colloidal Science of Flotation. Marcel Dekker, New York.
+[[PAGE 31]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+843 Oksanen, A., Hjelt, T., Lehmonen, J., Rantanen, T., Asikainen, J., 2023. New opportunities in the
+844 paper and nonwovens industries with foam-assisted web forming and chemical application. Tappi
+845 Journal 22(1), 61–66.
+846 Omirbekov, S., Davarzani, H., Sabyrbay, B., Colombano, S., Ahmadi-Senichault, A., 2022.
+847 Experimental study of rheological behavior of foam flow in capillary tubes. Journal of Non-
+848 Newtonian Fluid Mechanics 302, 104774. https://doi.org/10.1016/j.jnnfm.2022.104774
+849 Poole, R., Ridley B., 2007. Journal of Fluids Engineering 129(10), 1281-1287,
+850 https://doi.org/10.1115/1.2776969
+851 Prakash, B., Jäsberg, A., Koponen, A., 2021. Experimental investigation on the effect of fibre
+852 consistency on rheology of aqueous foams in pipe flow. Annual Transactions of the Nordic Society
+853 of Rheology 29, 27–34.
+854 Princen, H.M., Kiss, A.D., 1986. Rheology of foams and highly concentrated emulsions: III.. Static
+855 shear modulus, Journal of Colloid and Interface Science 112(2), 427–437.
+856 https://doi.org/10.1016/0021-9797(86)90111-6
+857 Rust, A.C., Manga, M., 2002. Bubble shapes and orientations in low Re simple shear flow, Journal
+858 of Colloid and Interface Science 249(2), 476–480. https://doi.org/10.1006/jcis.2002.8292
+859 Saint-Jalmes, A., Durian, D.J., 1999. Vanishing elasticity for wet foams: Equivalence with emulsions
+860 and role of polydispersity, Journal of Rheology 43, 1411–1422. https://doi.org/10.1122/1.551052
+861 Schramm, L.L., 2005. Emulsions, Foams, and Suspensions: Fundamentals and Applications.
+862 WILEY-VCH Verlag, Weinheim.
+863 Sen, A.K., 2007. Coated Textiles - Principles and Applications, second edition. CRC Press, Boca
+864 Raton.
+865 Thondavadi, N., Lemlich, R., 1985. Flow properties of foam with and without solid particles,
+866 Industrial and Engineering Chemistry Process Design and Development 24(3), 748–753.
+867 https://doi.org/10.1021/i200030a038
+868 Weaire, D., Hutzler, S., 1999. The Physics of Foams. Oxford University Press, Oxford.
+869 White, F.M., 1998. Fluid Mechanics, fourth edition. McGraw-Hill College.
+870 Zhou, Y., Shah, S., 2004. Fluid flow in coiled tubing: A literature review and experimental
+871 investigation. Journal of Canadian Petroleum Technology 43, 52-61. https://doi.org/10.2118/04-06-
+872 03
+[[PAGE 32]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+873 Supplementary material
+874 Foam generation
+a) b)
+875
+876 Figure 22 a) The foam generator (Hansa Industrie-Mixer GmbH & Co. KG). b) The mixing head unit
+877 (rotor-stator) opened. Figures from (Jäsberg et al., 2023).
+878 Deriving the viscosity and slip models
+879 Table 7 Viscosity analysis. The values of functions 𝐴(𝜑), 𝑎(𝜑) and 𝑏(𝜑) of Eq. (18) with different
+880 air contents are given by a regression analysis. Functions 𝑎(𝜑) and𝑏(𝜑) are close to each other.
+𝜑 A(𝜑) a(𝜑) b(𝜑) R2
+0.70 0.492 ± 0.050 -0.656 ± 0.022 -0.644 ± 0.015 0.94
+0.75 0.671 ± 0.033 -0.652 ± 0.011 -0.641 ± 0.006 0.98
+0.80 0.607 ± 0.021 -0.670 ± 0.007 -0.685 ± 0.004 0.99
+0.85 0.581 ± 0.019 -0.691 ± 0.006 -0.725 ± 0.005 0.99
+0.90 0.598 ± 0.032 -0.698 ± 0.009 -0.752 ± 0.005 0.99
+881
+882 Table 8 Slip analysis. The values of functions 𝐴′(𝜑), 𝑎′(𝜑) and 𝑏′(𝜑) of Eq. (23) with different air
+883 contents are given by a regression analysis. Functions𝑎′(𝜑) and𝑏′(𝜑) are close to each other.
+𝜑 A’(𝜑) a’(𝜑) b’(𝜑) R2
+0.7 0.482 ± 0.072 1.73 ± 0.06 1.67 ± 0.05 0.89
+0.75 0.327 ± 0.039 1.74 ± 0.05 1.68 ± 0.04 0.91
+0.8 0.3198 ± 0.020 1.77 ± 0.03 1.75 ± 0.02 0.97
+0.85 0.353 ± 0.028 1.76 ± 0.04 1.81 ± 0.03 0.93
+0.9 0.346 ± 0.037 1.89 ± 0.04 1.99 ± 0.04 0.95
+884
+[[PAGE 33]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+885
+886 Figure 23 Dimensionless slip, Ca*, of PVOH foam, as a function of G()(*)w()(See Eq. (24) and
+887 Table 3). The marker colours show the pipe radii. Outliers are mainly seen with the R = 9.5 mm pipe.
+888
+B
+*
+aC
+m
+a) b)
+[[PAGE 34]]
+Chemical Engineering Science, autumn 2023, https://doi.org/10.1016/j.ces.2023.119282
+889
+890 Figure 24 Fits of second-order polynomials to the values of functions B(𝜑),m(𝜑), G(𝜑)and w(𝜑)
+891 shown in Table 2 and Table 3.
+892
+G w
+c) d)
+[[PAGE 35]]

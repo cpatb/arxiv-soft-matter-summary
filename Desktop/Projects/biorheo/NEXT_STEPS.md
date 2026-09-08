@@ -9,8 +9,8 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 538 passed, 10 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be f7d8b73 or later
+python -m pytest -q -m "not slow"      # must print: 561 passed, 11 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be the item-27 commit or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -1347,7 +1347,107 @@ the smallest in the set and the whole reason that dataset was chosen — so the 
 as "every page is an extrapolation" plus an assertion of the screen page's **rank**, rather
 than kept or dropped.
 
+### 27. DONE 2026-09-08 (G27.2 and G27.4 PASS; G27.1 and G27.6 FAILED, no bar moved; FIVE of seven registered predictions REFUTED): the repo's first EXTERNAL tube-flow anchor
+
+`scripts/foam_pipe_anchor.py` -> `data/foam_koponen2023/foam_pipe_anchor.md` + `.json`.
+Pre-registration `data/foam_koponen2023/PREREG_item27.md` (written before the generator,
+with addendum A). Source and traps `data/foam_koponen2023/SOURCE.md`. 24 tests in
+`tests/test_item27_foam_pipe_anchor.py`, one of them slow.
+
+**Why this and not another record.** `apps/injectability.py` names its own uncovered gap in
+its module docstring -- *"ALSO NOT included, and not inertial: wall slip"* -- and that
+sentence had never carried a number, because **every tube anchor in this repo was
+analytic** (Buckingham-Reiner, the Casson closed form, Poiseuille, a Couette OpenFOAM run
+against an analytic profile). Nothing had ever been compared against a measured
+pressure-driven flow. The claim `OFFER.md` sells is that a model identified from one
+measurement predicts a different geometry, and that claim had no experiment behind it.
+
+**The data.** Zenodo `10.5281/zenodo.8334762`, **CC BY 4.0**, Koponen et al.,
+*Chem. Eng. Sci.* (2023) `10.1016/j.ces.2023.119282`. `Set_2` is a full factorial: 3 pipe
+radii (4.075 / 5.95 / 9.50 mm) x 3 PVOH concentrations x 5 foam densities x ~15 flow rates
+= 660 rows, and every one of the 15 cells exists at all three radii. Each row carries the
+pressure gradient AND **a slip velocity measured independently by high-speed imaging**,
+which is what makes the item possible. It is a FOAM: PREREG section 4 lists what may not be
+claimed from it, and a test greps the page for unqualified mentions of blood or a mAb.
+
+**A correction the deposit forces, found before any gate was graded.** The flow-rate column
+is measured at the **absolute pressure of column 8** (115-408 kPa, at the generator outlet)
+while the pressure gradient and the sample density are at **~1 atm** in the measurement
+span. Foam is compressible, so `Q_local = Q / [(1-phi) + phi P_atm/P_abs]` -- a factor of
+**1.091-3.120, median 1.574**. It was not settled by argument but by a check that can fail:
+**a flow with a plug cannot slip faster than its own mean velocity**, which the raw column
+violates on **11 of 660 rows** (worst 1.403) and the corrected one on **0** (worst 0.916).
+
+**Results.**
+- **G27.1 FAILED, 2 of 5.** Against the paper's **Table 2** (its fit table, not a caption --
+  item 23's lesson applied in advance), the pooled flow index agrees at phi = 0.70 and 0.85
+  and misses by 3.1-5.7 of the paper's OWN sigma at the other three. Bar not moved.
+  **G27.1'** compares the same thing as VISCOSITY CURVES using both published parameters
+  (`B` and `m` trade off exactly as `k` and `n` do): median **8.1 %** over 660 points.
+- **G27.1 grades the REDUCTION, not `identify`.** After Weissenberg-Rabinowitsch,
+  `eta = tau_w/gd_w` with `gd_w = gd_a (3N+1)/(4N)` and `N` the log-log slope of the same
+  points, so a power law fitted to `(gd_w, eta)` returns `n = N` to printed precision. Said
+  on the page, because an anchor that shares an identity with its target cannot check it.
+- **G27.2 PASS at 18.74 %** (bar 20 %), 210 rows: identify on the 19 mm pipe, predict the
+  8.15 mm pipe through `pressure_for_flow_rate`. **G27.4** (same pipe) is 2.40 %, so the
+  fit describes its own data and G27.2's error is extrapolation rather than misfit.
+- **G27.3 REFUTED its own registered prediction and it is the consequential result.**
+  Deleting the slip term made the prediction BETTER (10.58 % vs 18.74 %), separation
+  **0.56x** against a 1.6 bar, so **G27.2's pass is recorded NOT INFORMATIVE about slip**.
+- **G27.3' measures why, and it is arithmetic.** `4 v_s/R = c gd_a` with `c = v_s/v_avg`, so
+  the slip correction MULTIPLIES the apparent rate by `1-c`, and a power law rescaled by a
+  constant in `gd` has the same exponent. Measured at matched `tau_w`, `c` is
+  **0.361 / 0.267 / 0.331** across the three pipes -- **not even monotone** -- and the part
+  that survives, `(1-c)_big/(1-c)_small`, is **1.068**: 6.8 % against an 18.7 % prediction
+  error. **Slip is sub-dominant for cross-diameter transfer HERE, by about 3x**, which is a
+  property of this data and not a general licence.
+- **G27.6 FAILED at 140 %** (bar 50 %) and **G27.6'** says how: the Mooney three-diameter
+  slip construction runs **2.20x HIGH** and returns a **negative slip velocity on 25 of 144
+  points** -- inadmissible, not merely wrong -- because the three points are not monotone in
+  `1/R`. The paper reached the same conclusion by a different route and imaged the slip
+  instead. **The number this adds is how far apart the two standard methods are on one
+  dataset**, which matters because nobody images slip inside a needle.
+- **G27.7**: `Set_1` and `Set_2` differ by a median **6.4 %** at 19 shared conditions, so
+  they look like repeats. Registered as un-graded, and no gate was re-graded on it.
+- **15 of 225 rows could not be predicted and 1 cell was lost**, counted on the page. Three
+  cells reduce to `n` at or near its 0.05 bound, and `sigma = k gd^0.06` reaches the needed
+  stress only past `gd = 1e12`. They are the 0.5 % PVOH foams at the lowest densities --
+  the corner the paper itself flags for partial phase separation.
+
+**Route note.** `NEXT_STEPS` item 20 recorded the Zenodo REST API as the search route. It
+now returns **HTTP 504 to an explicit User-Agent as well**, from two independent clients.
+**DataCite answers** and indexes the same records with the same licence metadata, plus
+figshare, Dryad, 4TU and Mendeley Data. `scripts/datacite_candidate_search.py` is the
+replacement; it found **138 unique dataset DOIs, 107 of them under a licence this repo may
+build a public demo on**, written to `data/candidate_search_2026-09-08.md`. Zenodo's
+landing pages and file downloads still work; only `/api/` is down.
+
 ## What NOT to do
+
+- **Do not quote item 27's G27.2 pass as evidence that biorheo handles wall slip.** Its own
+  pre-registered discriminator refused it: deleting the slip term makes the SAME prediction
+  better (10.58 % vs 18.74 %, separation 0.56x against a 1.6 bar). G27.3' measures why --
+  the slip fraction at matched wall stress is 0.361/0.267/0.331 across the three pipes, not
+  even monotone, and the surviving part is 6.8 % against an 18.7 % error.
+- **Do not read that as "slip does not matter".** It is `(1-c)` cancelling between
+  identification and prediction because `c` happens not to depend on diameter here. The
+  moment it does, the same arithmetic makes slip the leading term.
+- **Do not use the Mooney multi-diameter slip construction without checking monotonicity in
+  `1/R` first.** G27.6': 2.20x high on the median and 25 of 144 points NEGATIVE. The
+  deposit's authors imaged the slip instead and said why in their section 2.
+- **Do not reduce the Koponen deposit without the compressibility factor.** The flow rate is
+  measured at 115-408 kPa and the pressure gradient at ~1 atm; the factor is a median 1.574
+  and omitting it makes the imaged slip velocity exceed the mean velocity on 11 rows.
+- **Do not add a foam record to the registry from item 27.** The reduced curve is DERIVED
+  (slip subtraction + Weissenberg-Rabinowitsch), and the registry has never held a derived
+  curve. A test asserts no `*foam*` record exists.
+- **Do not describe item 27 as a rheometer-to-needle anchor.** The deposit's rheometer file
+  is the PVOH SOLUTION, not the foam, so there is no rheometer curve of the flowing fluid
+  anywhere in it. It is pipe-to-pipe: the same extrapolation in kind, a smaller one in
+  degree.
+- **Do not search Zenodo through its REST API.** It returns 504 to an explicit User-Agent
+  as of 2026-09-08. Use `scripts/datacite_candidate_search.py`; Zenodo's landing pages and
+  file downloads are fine.
 
 - **Do not compare a screen page's interval with a fitted page's.** One is the measurement's
   repeatability, the other is a parameter hull. `build_from_screen` names both and they are

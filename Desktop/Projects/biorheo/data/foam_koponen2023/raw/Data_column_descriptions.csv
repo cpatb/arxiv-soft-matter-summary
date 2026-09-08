@@ -1,0 +1,10 @@
+1;D nominal;The nominal pipe diameter given by the manufactures
+2;D hydrodynamic;The real pipe diameter determined by hydrodynamic testing
+3;PVOH concentration;The amount of PVOH resin by weight in the foaming solution
+4;Foam density setpoint;The foam density setting of the foam generator
+5;Sample density;The density of foam sample at 1 atm taken from the flow discharging at the end of the test line
+6;Flow rate;Volumetric flow rate of foam measured at absolute pressure given by column 8
+7;Pressure gradient;The pressure gradient in foam flow  in the test pipe measured at pressure close to 1 atm
+8;Absolute pressure;The absolute pressure where the volumetric flow rate and the bubble size distribution are measured
+9;Slip velocity;The slip velocity measured with video imaging
+10;Sauter mean diameter;The Sauter mean diameter of foam bubbles measured at absolute pressure given by column 8

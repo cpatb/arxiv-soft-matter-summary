@@ -112,7 +112,7 @@ and the number recorded.
 
 ## 6. The honest state of the capability
 
-What is built and tested (488 automated tests, `../biorheo`):
+What is built and tested (573 automated tests, `../biorheo`):
 
 - registry of cited fluid records with envelopes and DOI-resolved provenance
 - constitutive fitting with profile-likelihood intervals and a per-parameter
