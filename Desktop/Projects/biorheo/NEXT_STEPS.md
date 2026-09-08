@@ -9,7 +9,7 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 564 passed, 11 deselected, 1 xfailed
+python -m pytest -q -m "not slow"      # must print: 573 passed, 11 deselected, 1 xfailed
 git -C C:\Users\compl log --oneline -3  # top should be the item-27 commit or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
@@ -1422,7 +1422,88 @@ replacement; it found **138 unique dataset DOIs, 107 of them under a licence thi
 build a public demo on**, written to `data/candidate_search_2026-09-08.md`. Zenodo's
 landing pages and file downloads still work; only `/api/` is down.
 
+### 28. DONE 2026-09-08 (P1, P2, P5 PASS; P3 and P4 REFUTED, no bar moved): the term that defaults to zero
+
+`injection_force` takes `friction: float = 0.0` and **no case study in this repo supplies
+it**, so every force ever published here -- including the 1.87 N headline on the
+CLIENT-FACING `05_screen.md` -- is the hydrodynamic term alone. That is labelled correctly
+on every page and it is not the finding. The finding is which shipped CONCLUSIONS are
+properties of the assumption that the friction is zero.
+
+`case_studies/device_friction/` (`prereg.md`, `run.py`, `results.md`, `results.json`,
+`tests/test_device_friction.py`, 8 tests). It reads only the shipped artifacts and refits
+nothing, so it cannot disturb what it audits.
+
+**The algebra decides which questions are live, and it is stated in the prereg before any
+gate.** With `F = h + f` and `f` constant: ordering, force DIFFERENCES and
+deterministic-interval separability are invariant BY CONSTRUCTION. They are checked as
+arithmetic and are deliberately NOT gates. Two things are not invariant.
+
+- **Q1 -- a RATIO is.** G25.3's *"the median formulation needs 7.1x the plunger force of
+  the median blood donor"* is **7.05x at f = 0, 2.33x at f = 1 N, 1.52x at f = 3 N**, and
+  first falls below 2.0 at **f = 1.44 N**. The statement that survives any friction is the
+  DIFFERENCE, **1.70 N more than blood**, not the multiple. P1 and P2 PASS.
+- **Q2 -- separability is destroyed by friction VARIABILITY, which a constant cannot
+  touch, and no page mentions it.** G25.6's 92.3 % of formulation pairs separable at 2 SD
+  falls below 50 % at a syringe-to-syringe friction SD of **s\* = 0.1397 N** and below
+  10 % at 0.3254 N. The blood cohort's 36/190 reaches **0 %** at s = 0.1 N (P5 PASS).
+  **The deliverable is the THRESHOLD, not a verdict at an assumed friction** -- a threshold
+  needs no external number to be correct, and a datasheet only says where on the curve a
+  device sits. No friction magnitude is quoted anywhere in the study, and a test greps the
+  page for that.
+
+**P3 REFUTED**: predicted `s* < 0.05 N`, measured 0.1397 N -- right in direction, 2.8x the
+bar. **P4 REFUTED, and the defect was in my own pre-registration**: it required
+`mab_growth > 3` (holds, 4.56x) and `blood_growth < 1.3` (fails, 3.33x), and it specified
+the two arms under two DIFFERENT operations -- quadrature on the mAb side, a linear `2s`
+on each hull side for blood. Same shape as item 6's G7 and item 23's pooling. The graded
+verdict stands; a matched-operation recomputation is reported beside it, labelled POST-HOC:
+blood 2.54x against mAb 4.56x, so the mAb cohort is the more exposed by **1.80x**, about
+half the separation the bar implied.
+
+**Why the mAb screen is the exposed one**: its interval is a pure measurement repeatability,
+a median **0.42 %** of the force (7.8 mN), while the blood interval already carries a
+median **33.4 %** parameter hull. *The tighter the fluid measurement, the more of the
+answer the device owns.*
+
+**C1 is the reason any of it is believable**: at f = 0, s = 0 the study reproduces all
+three shipped numbers exactly -- 7.052465, 1525/1653 and 36/190. **C4, the null that would
+have made the item pointless (`s* > 1 N`, i.e. friction is irrelevant here), did not fire**
+and is recorded either way.
+
+**Where a real device sits, from a DOI-resolved source and nowhere else.** A literature
+survey run the same day (`data/injection_force_terms_lit_2026-09-08.md`) resolved
+**breakloose ~3 N silicone-free to ~9 N siliconised** for a 1 mL glass prefilled syringe
+with a staked needle (Funke et al., *J. Pharm. Sci.* 2016, doi:10.1002/jps.23945) and a
+**1.3-1.5 N glide** bracket from a trade article with **no DOI**, carried as UNVERIFIED.
+Glide is the comparable term, because the case studies compute a steady flow and
+breakloose is the start transient the module docstring already excludes. **At 1.3-1.5 N
+the shipped 7.05x ratio is 2.07-1.95x.** That syringe is not the one either case study
+specifies -- their 2.3 mm barrel is a CHOICE -- so it places a device on the curve and
+does not correct any number.
+
+**And the Q2 side has no comparator at all, which is a result.** The survey resolved
+friction MEANS and **no friction SD or syringe-to-syringe repeatability for any device**.
+The quantity that decides whether a formulation screen is decidable is unpublished, so
+`s* = 0.1397 N` stands as a threshold with nothing to compare it against. It is also the
+cheapest bench measurement in this whole programme: N empty-barrel injections on one
+syringe lot.
+
+**Open, and a measurement rather than a calculation**: friction is treated as additive and
+FLUID-INDEPENDENT. That assumption is what makes the ordering claims survive. If plunger
+friction depends on the fluid through the lubricant film, even the ordering is exposed and
+nothing here can tell.
+
 ## What NOT to do
+
+- **Do not quote a shipped injection force as the force a user feels.** Every one of them
+  is the hydrodynamic term; `friction` defaults to 0 and no case study supplies it. Item 28
+  measures what that costs: the G25.3 ratio is 7.05x at zero friction and 2.33x at 1 N.
+- **Do not quote the 7.1x (or any force RATIO) without the friction caveat.** Quote the
+  DIFFERENCE instead -- 1.70 N -- which is invariant under any constant friction.
+- **Do not read item 28 as a claim about any syringe.** It quotes a threshold (s* = 0.1397 N)
+  and no friction magnitude at all; a test greps the page to keep it that way.
+
 
 - **Do not quote item 27's G27.2 pass as evidence that biorheo handles wall slip.** Its own
   pre-registered discriminator refused it: deleting the slip term makes the SAME prediction
