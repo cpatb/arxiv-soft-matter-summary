@@ -9,8 +9,8 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 515 passed, 10 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be 4028a38 or later
+python -m pytest -q -m "not slow"      # must print: 527 passed, 10 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be 118aee4 or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -1248,7 +1248,86 @@ NEGATIVE case. This is the positive one.
 Rate ranges, in case a later session needs them without re-reading: 10 deg C, 48 points,
 2.0e-3 to 1.0e2 1/s; 50 deg C, 60 points, 1.26e-3 to 1.0e3 1/s.
 
+### 25. DONE 2026-09-08 (six gates PASS, G25.1 FAILED as predicted): THE WEDGE FLUID
+
+`case_studies/mab_injectability/run.py` -> `results.md` / `.json`. Pre-registered in
+`data/mab_injectability_prereg.md`; provenance and the source's own words in
+`data/mab_prasnikar2025/SOURCE.md`. Pinned in `tests/test_mab_injectability.py` (12 tests).
+
+**The first result in this project computed on the fluid the venture is actually about.**
+Everything else here is human blood, a Carbopol microgel, or cell-culture medium.
+
+Source: **Zenodo 14409284, CC BY 4.0**, supporting Table S1 of Prašnikar et al.,
+*Int. J. Pharm.* **674** (2025) 125451 (open access). **58 formulations of one model
+monoclonal antibody at 159.3–212.2 mg/mL**, viscosity 13.57–47.07 mPa·s each with an SD,
+measured on a RheoSense m-VROC at 25 °C.
+
+**THE HEADLINE.** At **matched** mAb concentration the best and worst excipient differ by
+**7.33x** in viscosity, which through the concentration law is worth **62.6 mg/mL of extra
+mAb at the same viscosity**. The raw spread across the table is 3.47x and 39.1 mg/mL and it
+is the **wrong number** — these formulations span 159–212 mg/mL and viscosity is exponential
+in concentration, so the raw spread mixes the excipient lever with the concentration lever.
+The confound was pre-registered and controlled, and controlling it moved the answer 1.6x in
+the direction that matters: **the naive spreadsheet number understates what the excipient
+buys.** Viscosity doubles every **21.8 mg/mL**.
+
+**G25.4: the needle extrapolates only 0.74 DECADES** past what the source measured — the
+least of any fluid here, against blood's 1.42 and the DMEM records' four to five. The source
+ran a rate sweep at **960–3329 1/s and categorized the formulations as Newtonian**, so the
+one-parameter model is *its* verdict rather than our convenience, and an m-VROC measures near
+needle rates by construction. That is why this dataset was worth chasing.
+
+**G25.3: the median formulation needs 7.1x the plunger force of the median blood donor**
+(1.98 N against 0.28 N) on the **same** needle, syringe and flow rate — the blood study's
+device, read from its module rather than retyped, so the wedge fluid and the demonstration
+fluid finally sit on one axis. **No injectable-force limit is quoted from any standard.**
+
+**G25.6: 1525 of 1653 pairs (92.3 %) separate at 2 SD**, against item 14's 36 of 190 (18.9 %)
+for the blood donors. A formulation decision made on these numbers is supported by them in a
+way a patient-ranking decision on the blood data was not.
+
+**G25.1 FAILED as predicted, and that is the point.** The source's own
+`viscosity reduction [%]` column does not reproduce: back-solving its Mooney baseline and
+fitting one exponential gives **R² = 0.4575** on the 49 rows of the main series, where a
+single calibration curve would collapse to numerical precision. So the study uses the
+**measured viscosities** and never that column. What survives is the **slope** (0.03131 and
+0.03233 mL/mg on the two series, agreeing to 3.2 %), and it is what makes the mg/mL
+conversion possible. There are **two series** and only the labels say so — nine rows carry a
+`200 mAb` suffix; pooling them is what takes the back-solve from R² = 0.945 to 0.458.
+
+**G25.7 demonstrates a SCHEMA BOUNDARY rather than asserting one.** These cannot become
+registry records: a one-parameter Newtonian model on a single viscosity has zero residual
+degrees of freedom and `fit_rate_curve` raises `ValueError: 1 points cannot determine 1
+parameters`. The registry is untouched at 125 records and a test asserts it. **State that
+boundary plainly rather than hide it — a table of formulation viscosities is what most
+arriving client data looks like**, and the study reads the deposited table directly on
+purpose, which is the path a paid study would actually take.
+
+**A defect a type checker caught before it ran**: `import run` from one case study imports
+**itself**, because both case studies are called `run.py` and the first on `sys.path` wins.
+Every device constant would have resolved to this module's own unset names. Loaded by path.
+
+**`OFFER.md` also still carried item 22's corrected anchor claim in two places** and now
+states the corrected result. Its gap 3 is rewritten as what actually remains — the word
+**curve** — rather than deleted.
+
 ## What NOT to do
+
+- **Do not quote item 25's raw excipient spread (3.47x, 39 mg/mL).** It is confounded: the
+  58 formulations span 159-212 mg/mL and viscosity is exponential in concentration. The
+  answer is the concentration-normalised 7.33x / 62.6 mg/mL, and the raw number is printed
+  beside it only to show the size of the confound.
+- **Do not use the source's `viscosity reduction [%]` column.** G25.1: it does not reproduce
+  from a single Mooney curve (R2 = 0.4575), so nothing may be built on it. The SLOPE does
+  survive and is what the mg/mL conversion uses.
+- **Do not try to make the mAb formulations into registry records.** One viscosity cannot
+  determine a one-parameter model; G25.7 shows the exception. This is a schema boundary and
+  also a description of most client data.
+- **Do not quote an injectable-force limit** in the mAb study or anywhere else. The scale is
+  this repo's own blood study on the same device. The retracted ISO 9626 comparison is the
+  precedent.
+- **Do not `import run` from inside a case study.** Both `case_studies/*/run.py` share a
+  name, so a bare import silently imports the importing file. Load by path.
 
 - **Do not use the Carbopol-in-propylene-glycol records for an injectability number.** They
   stop at 1e3 1/s against 1e4-1e5 at a needle wall, the medium is propylene glycol, and the
