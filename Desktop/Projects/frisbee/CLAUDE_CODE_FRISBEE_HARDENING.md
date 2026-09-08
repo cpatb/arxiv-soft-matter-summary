@@ -791,7 +791,17 @@ for the author.
    (C2). Replace with the scaling the memo doesn't do: shear enters through the velocity
    difference **across the disc diameter**, `ΔU = (∂U/∂z)·d = 0.06 × 0.269 = 0.016 m/s`,
    i.e. `ΔU/V_d = 1.3e-3` against `σ_u/V_d = 3e-2`. **The gust-induced rolling moment is
-   ~20× the shear-induced one.** Note the honest caveat: this holds in the *sheltered*
+   ~20× the shear-induced one.**
+   > ⚠ **CORRECTED 2026-09-04 — see `FRISBEE_GENERALIZATION.md` §7, not this line.** The
+   > `~20×` here divides a span difference by a **point RMS**, which is not a moment ratio,
+   > and it uses `σ_u = 0.36` — that 0.36 is the turbulence *intensity* at 210°, not `σ_u`
+   > (0.56 m/s). It lands near the right answer for two wrong reasons at once. The
+   > moment-consistent inertial-subrange estimate is **19 to 59×**
+   > (`√C₂·σ_u·(d/L)^(1/3)`, `d/η` = 315–468 so the disc is firmly inertial-range), and an
+   > intermediate smooth-limit correction of 1.7–4.9× is also retracted. Regenerate with
+   > `python shear_vs_gust_moment.py`.
+
+   Note the honest caveat: this holds in the *sheltered*
    case; in open fetch the two are comparable. And there is a second shear channel — the
    change in mean wind over the trajectory's height excursion, ~0.18 m/s against
    σ_u = 0.5 m/s — comparable, but **deterministic and therefore learnable**, exactly

@@ -54,6 +54,8 @@ where it stands now.
 | `bloodstain_bpa/` | Bloodstain pattern analysis estimators. |
 | `beach_sand_dilatancy/` | Dilatancy experiment design. |
 | `rheo_products/` | Product spec for the computational-rheology line. |
+| `biofluids_venture/` | Design set for the post-PhD company: bodily-fluid simulation + bench consulting. Supersedes `rheo_products/` as the business plan. **Code is `biorheo/`** (561 fast tests). |
+| `biorheo/` | The Phase-0 product code for `biofluids_venture/`: fluid registry, identifiability, OpenFOAM export, needle injectability, client-facing report app. |
 
 ### Earlier-stage and reference
 

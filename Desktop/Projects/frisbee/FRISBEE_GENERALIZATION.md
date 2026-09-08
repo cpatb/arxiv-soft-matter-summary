@@ -288,57 +288,77 @@ one more site — the cheapest real generalisation test available.
 difference each imposes **across the disc diameter** `d = 0.269 m`
 (`P1_AnalyticalModel/coefficients.py:516`, Potts & Crowther Table 3-1):
 
-- shear: `ΔU_shear = |∂U/∂z|·d`
-- gust: `ΔU_gust ≈ σ_u·(d / L_int)`
+- shear: `ΔU_shear = |∂U/∂z|·d` — a **mean** gradient, smooth by construction, linear in `d`
+- gust: `ΔU_gust` — a **turbulent** velocity increment, whose scaling depends on the regime
 
-The gust expression is the standard eddy-gradient estimate — an eddy of integral scale
-`L_int` carries a velocity contrast of order `σ_u` across its own width, so across a body
-of size `d ≪ L_int` the contrast it presents scales as `σ_u·d/L_int`. It is a **scaling
-with an unmeasured order-one prefactor**, not an identity, which is what limits the
-precision of the verdict below. All inputs are disc-band quantities from
-`vertical_generated.tex`; regenerate with `python shear_vs_gust_moment.py`.
+> ⚠ **A SECOND RETRACTION, 2026-09-04, and it goes back the other way.** The version of
+> this section written on 2026-09-03 used the smooth-flow increment `σ_u·(d/L_int)` and
+> defended it here as *"the standard eddy-gradient estimate"* with *"an unmeasured
+> order-one prefactor"*. **The unmeasured thing was the exponent, not the prefactor.**
+> That form holds only for a body smaller than the Kolmogorov scale. It gave
+> ~~**1.7 to 4.9×**~~ and every number in the retired table below.
+>
+> | θ_wind | `ΔU_gust` (m/s), smooth | ratio, smooth |
+> |---|---|---|
+> | 90° | ~~0.014752~~ | ~~2.3×~~ |
+> | 210° | ~~0.026428~~ | ~~1.7×~~ |
+> | 270° | ~~0.023688~~ | ~~4.9×~~ |
+>
+> **The regime is decided by a computed number, not by assertion.** With
+> `ε ~ σ_u³/L_int` the Kolmogorov scale is `η = (ν³/ε)^(1/4) = 0.58–0.85 mm` against
+> `d = 269 mm`, so **`d/η` = 315 to 468**. The disc is firmly in the **inertial subrange**
+> and the applicable estimate is the second-order longitudinal structure function,
+> `ΔU_gust = √C₂·σ_u·(d/L_int)^(1/3)` with `C₂ ≈ 2.0` (Sreenivasan 1995; Pope, *Turbulent
+> Flows*, ch. 6). The smooth limit understates it by `(L/d)^(2/3)` ≈ **10.8 to 12.1×**.
+>
+> Note the direction. The **original** 37–122× — derived wrongly, by dividing a couple by
+> a point RMS — was *nearer the truth* than the 2026-09-03 "correction". Being closer to
+> the answer is not the same as being right, and it is not a defence of the first table
+> either. Both retractions stand.
 
-| θ_wind | `∂U/∂z` (s⁻¹) | `L_int` (m) | `ΔU_shear` (m/s) | `σ_u` (m/s) | `ΔU_gust` (m/s) | ratio |
-|---|---|---|---|---|---|---|
-| 90° | +0.024 | 6.2 | 0.006456 | 0.34 | 0.014752 | **2.3×** |
-| 210° | +0.057 | 5.7 | 0.015333 | 0.56 | 0.026428 | **1.7×** |
-| 270° | −0.018 | 6.7 | 0.004842 | 0.59 | 0.023688 | **4.9×** |
+`shear_vs_gust_moment.py` now prints `d/η` beside the answer so the regime choice can be
+checked rather than trusted, and prints all three ratios so the size of each retraction is
+visible. All inputs are disc-band quantities from `vertical_generated.tex`; regenerate
+with `python shear_vs_gust_moment.py`.
 
-**The gust-induced rolling moment exceeds the shear-induced one by 1.7 to 4.9×**, not by
-37 to 122×. The retired table was too large by exactly the factor it omitted,
-`L_int/d ≈ 21–25`.
+| θ_wind | `∂U/∂z` (s⁻¹) | `σ_u` (m/s) | `L_int` (m) | `η` (mm) | `d/η` | `ΔU_shear` (m/s) | `ΔU_gust` (m/s) | ratio |
+|---|---|---|---|---|---|---|---|---|
+| 90° | +0.024 | 0.34 | 6.2 | 0.854 | 315 | 0.006456 | 0.168959 | **26×** |
+| 210° | +0.057 | 0.56 | 5.7 | 0.575 | 468 | 0.015333 | 0.286195 | **19×** |
+| 270° | −0.018 | 0.59 | 6.7 | 0.576 | 467 | 0.004842 | 0.285710 | **59×** |
 
-**What that does to the null.** It survives *in direction* — gust beats shear at every
-computed heading — but it is now a single-figure margin, and at the weakest heading
-(210°, 1.7×) it is **not resolved against the order-one prefactor** in the gust estimate.
-So the honest statement is *"shear is the smaller of the two and not the place to look
-first"*, **not** a hundred-fold null. It is no longer a headline result.
+**The gust-induced rolling moment exceeds the shear-induced one by 19 to 59×.**
 
-⚠ **Three caveats, and the first is now much sharper than it was.**
+**What that does to the null.** It **survives with room to spare**: more than 10× at every
+heading, so the order-one prefactor in the structure-function estimate cannot reverse it.
+"Shear is not the span-wise hazard at this site" is again a defensible statement — but see
+caveat 2, which was the real finding of the 2026-09-03 pass and is untouched by either
+retraction.
 
-1. **This holds in the *sheltered* case, and the margin will not survive leaving it.**
-   Shelter is what flattens the profile; in open fetch `∂U/∂z` at 2 m is an order of
-   magnitude larger. Against the retired 37–122× that merely made the terms "comparable".
-   Against the correct 1.7–4.9×, one order of magnitude in shear puts **shear ahead of
-   gust** in open fetch. The null is about this site, and specifically about its shelter.
-2. **There is a second shear channel and it is not in the table — and it now dominates.**
-   The mean wind changes over the trajectory's own height excursion, which is *metres*
-   rather than the 0.27 m of the disc, so that channel is larger than the tabulated one by
-   roughly the ratio of those lengths. It is **deterministic and therefore learnable**,
-   exactly like mean wind, so it remains a bias a thrower can aim off rather than a
-   variance they cannot — but with the span-wise term cut to 1.7–4.9× it is no longer
-   safe to treat the table above as *the* shear budget. It is the smallest piece of it.
+⚠ **Three caveats.**
+
+1. **This is the *sheltered* case.** In open fetch `∂U/∂z` at 2 m is an order of magnitude
+   larger, which leaves gust ahead by only **1.9 to 5.9×** there — a single-figure margin
+   the order-one prefactor *can* reach at the weakest heading. The null is comfortable at
+   this site and marginal away from it.
+2. **There is a second shear channel and it is not in the table.** The mean wind changes
+   over the trajectory's own height excursion, which is *metres* rather than the 0.27 m of
+   the disc; in the inertial-subrange scaling that channel beats the span-wise one by
+   roughly `(Δz/d)`, not `(Δz/d)^(1/3)`, because it is a **mean** gradient and stays
+   linear. It is **deterministic and therefore learnable**, exactly like mean wind, so it
+   remains a bias a thrower can aim off rather than a variance they cannot. **This is the
+   part of the 2026-09-03 pass that was right and that neither retraction touches.**
 3. ⚠ The hardening brief states this ratio as "~20×", using `σ_u = 0.36`. That 0.36 is the
-   **turbulence intensity** at 210°, not `σ_u`; the actual `σ_u` there is 0.56 m/s. Note
-   the brief's ~20× is *also* not moment-consistent, so correcting only its `σ_u` would
-   not rescue it. Use the table above.
+   **turbulence intensity** at 210°, not `σ_u`; the actual `σ_u` there is 0.56 m/s. The
+   brief's ~20× is *also* not moment-consistent, so it lands near the right answer for two
+   wrong reasons at once. Use the table above, not the brief.
 
-**What to report.** Not "shear is not the hazard" — that overstates a 1.7× margin at the
-weakest heading. The defensible version is that **at this sheltered site the span-wise
-shear across a disc is the smallest of the three terms** (span-wise gust, trajectory-scale
-mean shear, span-wise shear), and that the ordering is expected to *reverse* in open
-fetch. That is still worth reporting, because it says where not to look first, but it is a
-scoped observation rather than a null result.
+**What to report.** That **at this sheltered site the span-wise gust exceeds the span-wise
+mean shear by an order of magnitude and more**, that the ordering narrows to single figures
+in open fetch, and that the **trajectory-scale** mean shear — absent from every version of
+this table — is the larger deterministic term and the one worth modelling. The history of
+this section is itself worth a line in the paper's methods: two retractions, in opposite
+directions, on a quantity that was never measured but only estimated.
 
 ## 5. What would make the current paper materially stronger
 
