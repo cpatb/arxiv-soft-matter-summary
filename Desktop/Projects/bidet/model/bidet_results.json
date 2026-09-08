@@ -13,7 +13,7 @@
     "note": "CFD tau_w(r_max) ~ tau_c => commercial nozzle near-optimal"
   },
   "pressure_exp": {
-    "laminar": -3.9095139109657776e-16,
+    "laminar": -5.601864983086328e-16,
     "cfd_turbulent": -0.5696712543678223
   },
   "standoff_lever": {

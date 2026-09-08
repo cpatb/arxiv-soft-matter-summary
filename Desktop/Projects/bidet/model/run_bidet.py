@@ -14,7 +14,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from bidet_model import (LAMINAR, optimum, calibrate_turbulent, cfd_closure,
-                         kappa_sinusoid, V0_from_dP, NU, RHO, Closure)
+                         kappa_sinusoid, V0_from_dP, NU)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CFD = json.load(open(os.path.join(HERE, "..", "cfd_openfoam", "cfd_fit_summary.json")))
@@ -37,11 +37,18 @@ def tau_w_at(closure, r, V0, d): return closure.tau_w(r, V0, d)
 
 print("=" * 74)
 print("BIDET OPTIMUM -- laminar Watson II vs CFD-fitted turbulent closure")
-print(f"nominal: r_max=15mm, tau_c=5Pa, dP=0.07MPa")
+print("nominal: r_max=15mm, tau_c=5Pa, dP=0.07MPa")
 print(f"CFD closure (Re_d=1e4,H/d=6): n_t={NT_CFD:.3f}, C_P={CP_CFD:.3f}, r2={CFD['nominal']['r2']:.3f}")
-print(f"  grid-independence: n_t {CFD['grid_independence']['rel_change']['n_t']*100:.1f}%, "
-      f"tau_w(r_max) {CFD['grid_independence']['rel_change']['tau15']*100:.1f}%, "
-      f"C_P {CFD['grid_independence']['rel_change']['C_P']*100:.0f}%")
+_GI = CFD["grid_independence"]
+print(f"  x2 grid SENSITIVITY (converged solves): n_t {_GI['rel_change']['n_t']*100:+.1f}%, "
+      f"tau_w(r_max) {_GI['rel_change']['tau15']*100:+.1f}%, "
+      f"C_P {_GI['rel_change']['C_P']*100:+.1f}%")
+# NOT an error estimate, and the word "grid-independence" was removed from this line on
+# 2026-09-08 for that reason. C_P DIVERGES under refinement (|eps21/eps32| = 4.589); n_t
+# and tau_w(15 mm) are non-monotone. GRID_STUDY_2026-09-03.md has the whole account, and
+# the summary JSON carries the same warning beside the numbers.
+print(f"  x4: C_P {_GI['rel_change_x4']['C_P']*100:+.1f}% -- the steps GROW, so this is a "
+      "DIVERGENCE, not a convergence: quote as sensitivity, never as an error bar")
 print("=" * 74)
 
 # ---------------------------------------------------------------------------

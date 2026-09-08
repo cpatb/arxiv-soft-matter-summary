@@ -508,9 +508,18 @@ Three checks support the closure. (a)~\emph{Free-jet decay:} the computed
 centreline decay $V_c/V_0 = B\,d/x$ gives $B = 6.3$ at $H/d = 20$, within the
 accepted range $5$--$6$~\citep{HusseinCappGeorge1994}; the $H/d = 60$ case
 over-predicts ($B \approx 10.6$) owing to domain confinement, consistent with
-its poor wall-shear fit. (b)~\emph{Grid independence:} on a $\times 2$
-refinement $n_t$ changes by $0.5\%$, $\tau_w(r_\mathrm{max})$ by $6.5\%$, and
-$C_P$ by $12\%$. (c)~\emph{Magnitude:} the peak wall shear is
+its poor wall-shear fit. (b)~\emph{Grid sensitivity, and it is not
+independence:} on a converged $\times 2$ refinement $n_t$ changes by $-0.5\%$,
+$\tau_w(r_\mathrm{max})$ by $+6.4\%$ and $C_P$ by $+3.0\%$; at $\times 4$,
+$C_P$ has moved $+17.0\%$. \emph{The steps grow}, so $C_P$ diverges under
+refinement in the sense of \citet{Celik2008}
+($|\varepsilon_{21}/\varepsilon_{32}| = 4.59$), while $n_t$ and
+$\tau_w(r_\mathrm{max})$ are non-monotone; no observed order of convergence is
+established for any of them, and these percentages are reported as
+sensitivities rather than as error estimates. An earlier version of this
+sentence quoted $12\%$ for $C_P$; that came from a solve stopped at its
+iteration cap ($3\times10^{-3}$ of the residual target), and restarting it to
+convergence moves $C_P$ from $1.518$ to $1.393$. (c)~\emph{Magnitude:} the peak wall shear is
 $\tau_w = \SI{390}{Pa}$ at $r \approx \SI{1}{mm}$ (stagnation), a peak
 skin-friction coefficient $C_f \approx 0.01$.
 
@@ -1404,6 +1413,13 @@ On the superiority of hydrodynamic perianal cleansing: a quantitative
 framework in fluid mechanics, tribology, and environmental economics
 for bidet adoption policy in the United States.
 Companion manuscript (\texttt{bidet\_paper\_1.tex}).
+
+\bibitem[Celik et~al.(2008)]{Celik2008}
+Celik, I.~B. et~al.\ (2008).
+Procedure for estimation and reporting of uncertainty due to discretization
+in CFD applications.
+\textit{Journal of Fluids Engineering}, 130(7), 078001.
+\href{https://doi.org/10.1115/1.2960953}{doi:10.1115/1.2960953}.
 
 \bibitem[Hussein, Capp \& George(1994)]{HusseinCappGeorge1994}
 Hussein, H.~J., Capp, S.~P., and George, W.~K.\ (1994).

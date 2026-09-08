@@ -184,6 +184,50 @@ standing on the thinnest ice.
 `r/d` = 15, in-band. The discipline exists in the codebase; it is the `optimum()` call that
 escapes it.
 
+### 4b. 🆕 ADDRESSED 2026-09-08 — the extrapolation is removed, and `Q*` moves 14.3 %
+
+`DOMAIN_REFIT_2026-09-08.md` (pre-registered in `PREREG_domain_refit_2026-09-08.md`, gates
+graded by `cfd_openfoam/domain_refit.py`, pinned by `model/test_domain_refit.py`).
+
+`case_Re10000_H6_R50` — `Rdom` = 50 mm, converged in 2689 iterations — had been run and
+never fitted. Refitting on it puts the design point inside both the band and the domain:
+
+| | `C_P` | `n_t` | `r²` | fit band | `d*` [mm] | `r_max/d*` | in band? | `Q*` [L/min] |
+|---|---|---|---|---|---|---|---|---|
+| narrow, `Rdom` = 25 | 1.3518 | 1.9023 | 0.99678 | [2, 20] | 0.6534 | 22.96 | **NO** | 0.1432 |
+| **extended, `Rdom` = 50** | **1.5184** | **1.9707** | **0.99756** | **[2, 40]** | **0.6985** | **21.47** | **yes** | **0.1636** |
+
+- **GB1, the positive control, PASSES first.** On the *matched* band [2, 20] the wide case
+  reproduces the narrow one to **0.10 % in `C_P` and 0.21 % in `n_t`** (bar 5 %), so the
+  outflow boundary was not reaching into the interior and the rest of the block means
+  something. The agreement is not exactly zero, which it would be if the same numbers had
+  been read twice.
+- **GB2 PASSES**: one power law still describes the wall jet out to `r/d` = 40 at
+  `r²` = **0.99756**, *higher* than the narrow band's 0.99678. Widening cost no fit quality.
+- **GB3.1, the registered reason, holds.** The narrow fit extrapolates to 0.628 Pa at
+  `r/d` = 50 where the wide case computes **0.455 Pa** — high by **38 %** — so the far field
+  decays faster than the [2, 20] power law and `n_t` **rises**, as predicted.
+- **GB3.3: §4's defect was real and not an artefact of the row choice.** Under the refit
+  `r_max/d*` is **21.47**, still above 20 — the narrow band would have been extrapolating
+  whichever `C_P` row was used. Under the extended band that same point is now **inside**.
+- **GB3.4: `Q*` moves +14.28 %** (0.1432 → 0.1636 L/min). **Note the SIGN.** §4's
+  23.6 % is a FALL, driven by `C_P` rising with mesh refinement; this is a RISE, driven by
+  the wider band raising `n_t` as well as `C_P`. They are different axes and must not be
+  added or netted. The magnitude is smaller than the 23.6 % §4 refuses to quote, as
+  §4 refuses to quote, as predicted. **So the design point is no longer an extrapolation
+  and `Q*` is a number rather than a direction** — a number at one mesh and one `Re_d`.
+
+⚠ **A coincidence, named so nobody trades on it.** The extended-band `C_P` (1.5184) is
+within 0.1 % of the *unconverged* `refine = 2` value 1.5178 that §1 retracts. They are
+unrelated: one is a wider fit band at `refine = 1`, the other an iteratively unconverged
+solve at `refine = 2`. Neither corroborates the other.
+
+⚠ **This changes nothing about §1-§3.** Domain extent and mesh refinement are different
+axes; the wide case is at `refine = 1` only. **`C_P` still diverges under refinement**
+(`|R|` = 4.59), no observed order exists for any quantity, and the JFE numerical-accuracy
+policy is still unsatisfied. §4a also stands: `τ_w`(15 mm) is still the non-monotone
+quantity, and it is still where the design criterion is evaluated.
+
 ### 4a. And `τ_w`(15 mm) is exactly the quantity that does not converge
 
 `r_max` = 15 mm is literally the `tau_at_15mm_Pa` row of §2 — the one flagged non-monotone.
