@@ -1,6 +1,6 @@
 # Injectability assessment — Carbopol ETD2020 0.5 wt%, 40 uL triethanolamine per 100 g, in water
 
-Device: **1 mL syringe, 0.210 mm bore x 12.7 mm needle, 1 mL/min manual push**. Fluid record `carbopol_etd2020_0p5wt_40uL`, model `herschel_bulkley`. Generated 2026-09-07 by `biorheo.apps.report`.
+Device: **1 mL syringe, 0.210 mm bore x 12.7 mm needle, 1 mL/min manual push**. Fluid record `carbopol_etd2020_0p5wt_40uL`, model `herschel_bulkley`. Generated 2026-09-08 by `biorheo.apps.report`.
 
 > **NOT LICENSABLE AS A DELIVERABLE.** The source data for this record is licensed *CC BY-NC-SA 4.0* and does not permit commercial use. This page is a demonstration of the method. A paid study must run on the client's own curve or on a curve whose licence permits it.
 

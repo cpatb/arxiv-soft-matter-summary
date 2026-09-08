@@ -58,7 +58,8 @@ from datetime import date
 
 import numpy as np
 
-from ..registry.schema import FluidRecord
+from ..constitutive import get_model
+from ..registry.schema import Envelope, FluidRecord, Parameter
 from .design_space import bore_exponent, derating, newtonian_rule_error
 from .injectability import (
     INSENSITIVE, Needle, Syringe, injection_force, sensitivities,
@@ -269,11 +270,109 @@ def build(record: FluidRecord, spec: DeviceSpec) -> ReportData:
                       envelope=envelope, bore=bore, derating=der, provenance=provenance)
 
 
+SCREEN_FLAG = "screen_single_viscosity"
+
+
+def build_from_screen(*, label: str, fluid: str, eta_Pa_s: float, spec: DeviceSpec,
+                      measured_range: tuple[float, float], temperature_C: float,
+                      geometry: str, sources, licence, eta_sd_Pa_s: float | None = None,
+                      sd_multiple: float = 2.0, notes: str = "") -> ReportData:
+    """A deliverable page for SCREEN data: one measured viscosity, no flow curve.
+
+    **This is the arriving-data path**, and it exists because it is what most client data
+    actually looks like -- a plate-based or microfluidic screen giving one viscosity per
+    formulation, sometimes with a replicate SD, rather than a fitted flow curve. Item 25
+    found the registry cannot hold such data at all: a one-parameter model on a single point
+    has zero residual degrees of freedom, so `fit_rate_curve` refuses it and no
+    identifiability sidecar exists. Refusing to produce a page for it as well would refuse
+    the majority of real inbound work.
+
+    What the page must NOT do is quietly look like the fitted one. Two differences are
+    carried explicitly:
+
+    * the interval is a **measurement** interval, propagated from the replicate SD, and NOT
+      a parameter interval. For a Newtonian fluid the force is exactly proportional to the
+      viscosity, so the relative error passes through unchanged and no propagation
+      approximation is involved. If no SD is supplied there is **no interval at all**.
+    * ``measured_range`` is the range over which the CALLER states Newtonian behaviour was
+      verified. It is not a fitted envelope and this function does not check it; it is used
+      only to report how far the device extrapolates past it, which is usually the largest
+      term on the page.
+
+    The caller supplies the licence, because whether a client's own data may appear in a
+    public artifact is the client's answer and never this package's.
+    """
+    if not eta_Pa_s > 0:
+        raise ValueError(f"viscosity must be positive, got {eta_Pa_s}")
+    if eta_sd_Pa_s is not None and not eta_sd_Pa_s >= 0:
+        raise ValueError(f"the SD must be non-negative, got {eta_sd_Pa_s}")
+    lo, hi = (float(x) for x in measured_range)
+    if not 0 < lo < hi:
+        raise ValueError(f"measured_range must be an increasing positive pair, got "
+                         f"{measured_range}")
+
+    model = get_model("newtonian")
+    (pname,) = model.param_names
+    record = FluidRecord(
+        id=label, fluid=fluid, model=model,
+        parameters={pname: Parameter(name=pname, value=eta_Pa_s, unit="Pa*s",
+                                     si=eta_Pa_s)},
+        envelope=Envelope(gammadot_min=lo, gammadot_max=hi,
+                          temperature_C=temperature_C, geometry=geometry),
+        sources=tuple(sources), licence=licence, notes=notes,
+        identifiability=None,          # there is nothing to fit; item 25 G25.7
+    )
+    d = build(record, spec)
+
+    # `build` flags a missing sidecar as `no_sidecar`, which is true of a record somebody
+    # forgot to fit. Screen data is a different thing -- there is nothing to fit -- and
+    # saying so is the whole point, so the flag is REPLACED rather than added to.
+    flags = [f for f in d.flags if f != "no_sidecar"] + [SCREEN_FLAG]
+
+    F = d.nominal["force_N"]
+    if eta_sd_Pa_s:
+        rel = eta_sd_Pa_s / eta_Pa_s
+        half = sd_multiple * rel * F
+        d.hull = {
+            "lo": F - half, "hi": F + half,
+            "relative_width": float(2 * sd_multiple * rel),
+            "per_parameter": {}, "clamped": (), "unreachable": (),
+            "kind": f"MEASUREMENT interval, +/-{sd_multiple:g} replicate SD of the measured "
+                    "viscosity",
+            "wider_than": "nothing -- it is not a parameter interval and must not be "
+                          "compared with one. It carries the repeatability of the "
+                          "measurement and says nothing about model form or identifiability",
+            "measurement_relative_sd": float(rel), "sd_multiple": float(sd_multiple),
+        }
+    else:
+        flags.append("no_replicate_sd")
+        d.hull = {"lo": F, "hi": F, "relative_width": 0.0, "per_parameter": {},
+                  "clamped": (), "unreachable": (),
+                  "kind": "none -- a single viscosity with no replicate SD carries no "
+                          "uncertainty of any kind",
+                  "wider_than": "nothing"}
+    d.flags = tuple(flags)
+    return d
+
+
 def _headline(d: ReportData) -> str:
     """The one sentence, worded by the flags rather than followed by them."""
     F = d.nominal["force_N"]
     ml_min = d.spec.flow_rate * 6e7
-    if "no_sidecar" in d.flags:
+    if SCREEN_FLAG in d.flags:
+        if "no_replicate_sd" in d.flags:
+            core = (f"**{F:.3g} N** at {ml_min:.3g} mL/min — a POINT ESTIMATE from a single "
+                    "measured viscosity with **no uncertainty of any kind**, because the "
+                    "screen carried no replicate")
+        else:
+            core = (f"**{F:.3g} N** at {ml_min:.3g} mL/min, "
+                    f"[{d.hull['lo']:.3g}, {d.hull['hi']:.3g}] N — an interval from the "
+                    f"**measurement's own repeatability** "
+                    f"({d.hull['measurement_relative_sd'] * 100:.2g} % SD), **not** a "
+                    "parameter interval. This is screen data: one viscosity, no flow curve, "
+                    "so there is no fit, no identifiability and nothing to say about model "
+                    "form")
+    elif "no_sidecar" in d.flags:
         core = (f"**{F:.3g} N** at {ml_min:.3g} mL/min — a POINT ESTIMATE with **no "
                 "uncertainty**, because this record carries no identifiability block")
     elif "open_interval" in d.flags:
@@ -294,7 +393,9 @@ def _headline(d: ReportData) -> str:
                  "lower bound on the uncertainty and not the uncertainty")
     if "extrapolated" in d.flags:
         core += (f". **The device runs {d.envelope['decades_past']:.2f} decades outside the "
-                 "measured range**, so this is an extrapolation of the fitted law")
+                 "measured range**, so this is an extrapolation of "
+                 + ("the Newtonian behaviour the source verified over that range"
+                    if SCREEN_FLAG in d.flags else "the fitted law"))
     return core
 
 
@@ -302,7 +403,10 @@ def render(d: ReportData) -> str:
     """The client-facing page. Every number in it is in :class:`ReportData`."""
     s = d.spec
     L = [f"# Injectability assessment — {d.fluid}", "",
-         f"Device: **{s.label}**. Fluid record `{d.record_id}`, model `{d.model}`. "
+         f"Device: **{s.label}**. "
+         + (f"Screen sample `{d.record_id}` (NOT a registry record), "
+            if SCREEN_FLAG in d.flags else f"Fluid record `{d.record_id}`, ")
+         + f"model `{d.model}`. "
          f"Generated {d.provenance['generated_on']} by `{d.provenance['generated_by']}`.", ""]
 
     if "non_commercial" in d.flags:
@@ -326,15 +430,22 @@ def render(d: ReportData) -> str:
                  f"{d.nominal['friction_N']:.4g} N |")
 
     L += ["", "## Where your data stops and the device starts", "",
-          f"The fitted envelope runs **{d.envelope['gammadot_min']:.4g} to "
+          f"The {'range Newtonian behaviour was verified over' if SCREEN_FLAG in d.flags else 'fitted envelope'} runs **{d.envelope['gammadot_min']:.4g} to "
           f"{d.envelope['gammadot_max']:.4g} 1/s**. This device imposes a wall shear rate of "
           f"**{d.envelope['wall_shear_rate']:.4g} 1/s**."]
     if d.envelope["outside"]:
+        if SCREEN_FLAG in d.flags:
+            why = ("a one-parameter Newtonian law evaluated where nothing was measured. "
+                   "Newtonian behaviour was verified over the range above and NOT here; "
+                   "nothing in a single viscosity constrains what the fluid does at the "
+                   "device's rate.")
+        else:
+            why = ("the fitted law evaluated where nothing was measured. The law was chosen "
+                   "to fit the data you have; nothing in that data constrains its shape "
+                   "here.")
         L += ["", f"That is **{d.envelope['decades_past']:.2f} decades outside the measured "
-              "range.** Every number above is the fitted law evaluated where nothing was "
-              "measured. The law was chosen to fit the data you have; nothing in that data "
-              "constrains its shape here. Measuring one point at the device's own rate is "
-              "the cheapest thing that would change this page."]
+              f"range.** Every number above is {why} Measuring one point at the device's own "
+              "rate is the cheapest thing that would change this page."]
     else:
         L += ["", "The device operates **inside** the measured range. No extrapolation is "
               "involved in the force above."]

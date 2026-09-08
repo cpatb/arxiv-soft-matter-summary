@@ -1,6 +1,6 @@
 # Injectability assessment — human whole blood, donor A (Horner 2020), hematocrit 42.6 %, fibrinogen 186 mg/dL
 
-Device: **1 mL syringe, 0.210 mm bore x 12.7 mm needle, 1 mL/min manual push**. Fluid record `blood_horner2020_donor_A_carreau_yasuda`, model `carreau_yasuda`. Generated 2026-09-07 by `biorheo.apps.report`.
+Device: **1 mL syringe, 0.210 mm bore x 12.7 mm needle, 1 mL/min manual push**. Fluid record `blood_horner2020_donor_A_carreau_yasuda`, model `carreau_yasuda`. Generated 2026-09-08 by `biorheo.apps.report`.
 
 > **NOT LICENSABLE AS A DELIVERABLE.** The source data for this record is licensed *not stated (author-posted workbook; Horner 2020 dissertation citation requested)* and does not permit commercial use. This page is a demonstration of the method. A paid study must run on the client's own curve or on a curve whose licence permits it.
 

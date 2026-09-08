@@ -14,6 +14,7 @@ They differ only in the fluid, and they are chosen to show the report changing i
 | [`02_open.md`](02_open.md) | `blood_horner2020_donor_A_carreau_yasuda` | three of five parameter intervals run into a box bound | non_commercial, open_interval, extrapolated |
 | [`03_unbounded.md`](03_unbounded.md) | `blood_horner2020_donor_B_carreau_yasuda` | one interval end cannot be delivered at any attainable pressure | non_commercial, open_interval, hull_unbounded_above, extrapolated |
 | [`04_thinning.md`](04_thinning.md) | `carbopol_etd2020_0p5wt_40uL` | a strongly shear-thinning gel, where the Newtonian R^-4 rule is not safe | non_commercial, extrapolated |
+| [`05_screen.md`](05_screen.md) | *(screen data, no record)* | screen data on the wedge fluid: one viscosity, no flow curve, no fit | extrapolated, screen_single_viscosity |
 
 ## What is on every page, and what nobody else ships
 
@@ -23,10 +24,10 @@ They differ only in the fluid, and they are chosen to show the report changing i
 2. **Which parameters the answer does not depend on**, by finite difference on the
    force itself. Effort spent pinning those down will not move the answer.
 3. **Where the client's data stops and the device starts**, in decades. Every page
-   here is an extrapolation — 1.42 to 2.08 decades — and says
+   here is an extrapolation — 0.74 to 2.08 decades — and says
    so above the fold.
 4. **`d ln F / d ln R`** — whether a Newtonian `R^-4` needle-sizing rule is safe for
-   this fluid at this operating point. It is on 3 of 4 pages and is not on the gel, whose exponent is -2.313 against the Newtonian -4.
+   this fluid at this operating point. It is on 4 of 5 pages and is not on the gel, whose exponent is -2.313 against the Newtonian -4.
 5. **A derating factor** against a force budget: the flow rate the budget allows at
    the fit, against the flow rate it allows at the top of the parameter interval.
 6. **Provenance**: DOI, licence, and whether the data may be used commercially.

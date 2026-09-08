@@ -76,5 +76,22 @@
   "decades_past_envelope": 2.0832490793886556,
   "derating_factor": 0.9577658826450711,
   "commercial_use": false
+ },
+ "05_screen": {
+  "record": "(none -- screen data, not a registry record)",
+  "why": "screen data on the wedge fluid: one viscosity, no flow curve, no fit",
+  "flags": [
+   "extrapolated",
+   "screen_single_viscosity"
+  ],
+  "force_N": 1.867664899844677,
+  "hull_relative_width": 0.016801201721146193,
+  "hull_kind": "MEASUREMENT interval, +/-2 replicate SD of the measured viscosity",
+  "insensitive_to": [],
+  "bore_exponent": -4.000000000033365,
+  "newtonian_rule_safe_within_10pct": true,
+  "decades_past_envelope": 0.740877175883734,
+  "derating_factor": null,
+  "commercial_use": true
  }
 }

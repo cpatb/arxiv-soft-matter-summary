@@ -19,11 +19,22 @@ The four are chosen to show the report changing its WORDING, not appending cavea
                   needle-sizing rule is NOT safe -- the opposite verdict from the blood
                   pages, on the same page layout.
 
-**Every one is stamped NOT LICENSABLE.** Every record in the registry is
-`commercial_use: false` -- 15 Carbopol records under CC BY-NC-SA and 100 blood records
-from a workbook that states no licence at all. These are demonstrations of a method that
-IS licensable, on data that is not, and the banner sits above the answer on every page so
+``05_screen``     **the arriving-data path, and the only licensable page here.** One
+                  measured viscosity of a real monoclonal antibody formulation at
+                  164.9 mg/mL with a replicate SD, and no flow curve -- which is what most
+                  inbound client data looks like. It CANNOT be a registry record (a
+                  one-parameter model on a single point has zero degrees of freedom), so
+                  the page is built straight from the measurement, and its headline says
+                  the interval is the measurement's own repeatability and NOT a parameter
+                  interval.
+
+**Pages 01-04 are stamped NOT LICENSABLE**: 15 Carbopol records under CC BY-NC-SA and 100
+blood records from a workbook that states no licence at all. They are demonstrations of a
+method that IS licensable, on data that is not, and the banner sits above the answer so
 that cannot be missed. A paid study runs on the client's own curve.
+
+``05_screen`` is CC BY 4.0 and may be shown publicly -- and it is the one on the fluid the
+venture is actually about.
 
 Run:  python case_studies/deliverable_example/run.py
 Writes the four `.md` files beside this one. Pinned in `tests/test_report.py` only
@@ -35,8 +46,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from biorheo.apps.report import DeviceSpec, build, render
-from biorheo.registry import load_record
+from biorheo.apps.report import DeviceSpec, build, build_from_screen, render
+from biorheo.registry import load_record, resolve_doi
+from biorheo.registry.schema import Licence, Source
 
 HERE = Path(__file__).resolve().parent
 RECORDS = HERE.parent.parent / "src" / "biorheo" / "registry" / "records"
@@ -62,6 +74,26 @@ CASES = (
      "a strongly shear-thinning gel, where the Newtonian R^-4 rule is not safe"),
 )
 
+# The fifth page is not built from a registry record, because it CANNOT be: it is screen
+# data, one measured viscosity per formulation with a replicate SD and no flow curve, and a
+# one-parameter model on a single point has zero residual degrees of freedom (item 25's
+# G25.7 shows `fit_rate_curve` refusing it). It is here because it is the page most inbound
+# work would actually produce, and because it is the only one of the five that is
+# LICENSABLE and on the fluid the venture is about.
+SCREEN_CASE = {
+    "slug": "05_screen",
+    "why": "screen data on the wedge fluid: one viscosity, no flow curve, no fit",
+    "fluid": "model monoclonal antibody at 164.9 mg/mL with 25 mM L-arginine "
+             "(formulation Arg_25)",
+    "label": "mab_prasnikar2025_Arg_25",
+    "eta_Pa_s": 25.343e-3,
+    "eta_sd_Pa_s": 0.106448213804752e-3,
+    "measured_range": (960.0, 3329.0),
+    "temperature_C": 25.0,
+    "geometry": "RheoSense VROC / m-VROC (Initium One Plus), microfluidic MEMS",
+    "doi": "10.5281/zenodo.14409284",
+}
+
 
 def main() -> int:
     index, summary = [], {}
@@ -83,6 +115,37 @@ def main() -> int:
             f"| [`{slug}.md`]({slug}.md) | `{rid}` | {why} | "
             f"{', '.join(d.flags) or 'none'} |")
         print(f"{slug:14s} {rid:42s} flags: {', '.join(d.flags) or 'none'}")
+
+    # --- the fifth page: screen data, not a record ------------------------------------
+    sc = SCREEN_CASE
+    d = build_from_screen(
+        label=sc["label"], fluid=sc["fluid"], eta_Pa_s=sc["eta_Pa_s"],
+        eta_sd_Pa_s=sc["eta_sd_Pa_s"], spec=DEVICE,
+        measured_range=sc["measured_range"], temperature_C=sc["temperature_C"],
+        geometry=sc["geometry"],
+        sources=(Source(doi=sc["doi"], role="dataset",
+                        resolved_on=resolve_doi(sc["doi"]).resolved_on,
+                        label=resolve_doi(sc["doi"]).label),),
+        licence=Licence(name="CC BY 4.0", commercial_use=True),
+        notes="Screen data: one measured viscosity with a replicate SD, no flow curve.",
+    )
+    (HERE / f"{sc['slug']}.md").write_text(render(d), encoding="utf-8")
+    summary[sc["slug"]] = {
+        "record": "(none -- screen data, not a registry record)", "why": sc["why"],
+        "flags": list(d.flags), "force_N": d.nominal["force_N"],
+        "hull_relative_width": d.hull["relative_width"],
+        "hull_kind": d.hull["kind"],
+        "insensitive_to": list(d.sensitivity["insensitive_to"]),
+        "bore_exponent": d.bore["exponent"],
+        "newtonian_rule_safe_within_10pct": d.bore["newtonian_rule_safe_within_10pct"],
+        "decades_past_envelope": d.envelope["decades_past"],
+        "derating_factor": (d.derating or {}).get("factor"),
+        "commercial_use": d.provenance["commercial_use"],
+    }
+    index.append(
+        f"| [`{sc['slug']}.md`]({sc['slug']}.md) | *(screen data, no record)* | "
+        f"{sc['why']} | {', '.join(d.flags) or 'none'} |")
+    print(f"{sc['slug']:14s} {'(screen data)':42s} flags: {', '.join(d.flags) or 'none'}")
 
     (HERE / "summary.json").write_text(json.dumps(summary, indent=1) + "\n",
                                        encoding="utf-8")
@@ -129,7 +192,7 @@ def main() -> int:
         "the banner does not appear.",
         "",
     ]) + "\n", encoding="utf-8")
-    print(f"wrote {len(CASES)} pages, README.md and summary.json in {HERE.name}/")
+    print(f"wrote {len(summary)} pages, README.md and summary.json in {HERE.name}/")
     return 0
 
 
