@@ -9,8 +9,8 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 527 passed, 10 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be 118aee4 or later
+python -m pytest -q -m "not slow"      # must print: 538 passed, 10 deselected, 1 xfailed
+git -C C:\Users\compl log --oneline -3  # top should be f7d8b73 or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -1311,7 +1311,52 @@ Every device constant would have resolved to this module's own unset names. Load
 states the corrected result. Its gap 3 is rewritten as what actually remains — the word
 **curve** — rather than deleted.
 
+### 26. DONE 2026-09-08: the deliverable page for SCREEN data, and the first LICENSABLE worked example
+
+`biorheo.apps.report.build_from_screen()`; worked example
+`case_studies/deliverable_example/05_screen.md`. Pinned in `tests/test_report_screen.py`
+(11 tests) and `tests/test_deliverable_example.py`.
+
+**Why.** Item 25 found the registry cannot hold the shape most client data arrives in — one
+measured viscosity per formulation, no flow curve — so the report app could not produce a
+page for the majority of realistic inbound work, and all four shipped worked examples were
+on non-commercial data. Both are now fixed.
+
+The page differs from the fitted one in the three places where it would otherwise lie:
+
+1. the interval is a **MEASUREMENT** interval from the replicate SD, named as such and
+   explicitly **not** a parameter interval. A Newtonian force is exactly proportional to
+   viscosity, so the relative error passes through unchanged and no propagation
+   approximation is involved. **With no SD there is no interval at all** and the headline
+   says so rather than showing a zero-width one.
+2. the flag **replaces** `no_sidecar` instead of joining it. `no_sidecar` means somebody
+   forgot to fit; screen data has nothing to fit, and the two call for different responses.
+3. the prose stops saying **"fitted"**. The page had said "the fitted law", "the fitted
+   envelope" and "Fluid record X" — all false here, and it would have shipped in the
+   **client-facing** document.
+
+The licence comes from the **caller**: whether a client's own data may appear in a public
+artifact is the client's answer, never this package's. A test asserts both directions.
+
+**Two of the deliverable-set tests broke loudly and both were true when written.**
+`test_every_page_is_stamped_non_commercial` carried the note *"this fails the day a
+licensable record is added, which is the day the demo set should be rebuilt on it"* — today
+was that day; it is now a licence **split** test. And `test_every_page_is_an_extrapolation`
+required more than a decade on every page, while the screen fluid extrapolates **0.74** —
+the smallest in the set and the whole reason that dataset was chosen — so the bar is restated
+as "every page is an extrapolation" plus an assertion of the screen page's **rank**, rather
+than kept or dropped.
+
 ## What NOT to do
+
+- **Do not compare a screen page's interval with a fitted page's.** One is the measurement's
+  repeatability, the other is a parameter hull. `build_from_screen` names both and they are
+  not interchangeable.
+- **Do not let the report call anything "fitted" on the screen path.** Nothing was. A test
+  greps the rendered page for `fitted law`, `fitted envelope`, `identifiability verdict` and
+  `profile push-through`.
+- **Do not default a licence in `build_from_screen`.** The caller supplies it, because
+  whether a client's data may appear in public is the client's answer.
 
 - **Do not quote item 25's raw excipient spread (3.47x, 39 mg/mL).** It is confounded: the
   58 formulations span 159-212 mg/mL and viscosity is exponential in concentration. The

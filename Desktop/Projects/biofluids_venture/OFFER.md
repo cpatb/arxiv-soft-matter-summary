@@ -118,7 +118,7 @@ What is built and tested (488 automated tests, `../biorheo`):
 - constitutive fitting with profile-likelihood intervals and a per-parameter
   identifiability verdict
 - needle flow for seven constitutive families, closed-form where one exists
-- the deliverable page, with its refusals
+- the deliverable page, with its refusals -- from a fitted record OR from screen data (one viscosity, no curve), which is the shape most client data arrives in
 - OpenFOAM export and round trip for six families
 - a temperature shift carried exactly through all of the above, on a factor you supply,
   with the superposition's own residual reported beside it
@@ -174,8 +174,14 @@ What is **not** built, in the order it blocks revenue:
    over 960-3329 1/s and then reported **one viscosity per formulation**, so there is no
    flow curve to fit, no confidence interval, and no registry record -- a one-parameter
    model on one point has zero degrees of freedom, which the study demonstrates rather than
-   asserts. That is also what most arriving client data looks like, and the study is built
-   on that path deliberately.
+   asserts.
+
+   **That shape is now a supported input rather than a limitation.** `build_from_screen`
+   produces the deliverable page straight from a measured viscosity and its replicate SD,
+   and the page says what it is: the interval is the **measurement's own repeatability**,
+   named as such and explicitly not a parameter interval, and the page never calls anything
+   fitted. `case_studies/deliverable_example/05_screen.md` is the worked example -- **the
+   first licensable page in that set and the only one on the wedge fluid.**
 4. **No bench.** By design until an invoice exists.
 
 ## 7. How a call ends
