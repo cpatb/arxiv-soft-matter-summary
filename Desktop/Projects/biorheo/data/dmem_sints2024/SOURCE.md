@@ -53,16 +53,59 @@ viscosity of 8710 Pa s** and a torque of 0.0641 µN·m. That is the instrument's
 zero-rate point, not a measurement of anything. `scripts/dmem_candidate_scan.py` excludes
 it by a stated rule (rate below 1e-3 1/s) and prints the count.
 
-## Two things that are NOT in this dataset, and both bind
+## What the PAPER says, read 2026-09-08 (arXiv:2409.13650v1, HTML)
 
-1. **"Room temperature" is not a number.** Three of the four samples are labelled only
-   "room temperature". The envelope schema wants `temperature_C`, and guessing 20 or 25
-   would be inventing a measurement. The RT/37 °C pair can still give an *empirical* shift
-   factor (`collapse_shift` needs no temperature at all), but it cannot give an activation
-   energy.
-2. **The rates stop at 1 1/s**, 10 1/s on one interval. A fine needle imposes 1e4–1e5 1/s,
-   so anything injectability-shaped built on this would be four to five decades outside the
-   measured range, against 1.42 decades for the blood records.
+Reading it resolved three of the four cautions this file originally carried. Verbatim
+quotes, from the sections named.
+
+**1. "Room temperature" IS a number: 20 °C.** Results §*Medium & its viscosity*: *"The
+viscosity of the medium was measured with a cone-plate rheometer, at room temperature
+(T = 20 °C) and at T = 37 °C."* Methods §*Viscosity measurements* repeats it. **The
+envelope's `temperature_C` can be filled from the source and does not have to be guessed.**
+
+**2. The authors fit a POWER LAW, which is a family this registry already has.** Discussion,
+Eq. (4): *"The non-Newtonian behavior of a biological fluid containing many long protein
+chains can be described using the Ostwald–de Waele power law: `mu = K gd^(n-1)` where `K`
+and `n` are the flow consistency and the flow index"*. Their fitted indices, quoted in the
+figure captions: **n = 0.32** (10 % FBS, 20 °C), **n = 0.31** (10 % and 5 % FBS at 20 °C),
+**n = 0.5–0.54** (10 % FBS at 37 °C, and 1 % FBS at 20 °C).
+
+**`scripts/dmem_candidate_scan.py` reproduces those indices from the deposited files
+without having seen them**: 0.301/0.302 for 10 % at 20 °C, 0.507 for 1 % at 20 °C, 0.492
+for the 0.01–1 1/s interval at 37 °C. That agreement is the best evidence available that
+the parse, the interval splitting and the zero-rate exclusion are all right.
+
+They considered and **deliberately rejected** a richer form: *"There exist more
+sophisticated models ... e.g., the Carreau viscosity model, which works better for a larger
+strain rate range and does not have an infinite viscosity at zero strain rate. However,
+this and other more advanced models contain more parameters, which could result in
+overfitting the noisy experimental data."*
+
+**3. The startup transient is handled by a declared protocol, so this is NOT the Horner
+trap.** Methods: *"The mixtures of DMEM and all concentrations of FBS used here were found
+to exhibit a significant startup viscosity, with up to 2000 s of probe rotation needed for
+the viscosity to become stationary ... An initialization procedure with 2000 s of rotation
+at 1 s shear rate was performed prior to viscosity measurements. We assume this replicates
+the conditions in the substance flow within the tubing leading to the OOC device, and that
+it is therefore the stable plateau viscosity, rather than the transient startup value, that
+is relevant."* Each point is a **160 s** measurement after that pre-shear.
+
+**This is a protocol choice with a stated rationale, and it must be recorded on any record
+built here**, exactly as the Horner pre-shear is. A record inherits it: these are
+*post-pre-shear plateau* viscosities, not as-loaded ones.
+
+**4. The magnitude is the paper's own headline, not an anomaly.** Results: *"while the
+measured values do converge to the literature value as the shear rate increases, the
+viscosity at lower shear rates is much grater [sic] than the literature value"*, against a
+literature baseline of **mu = 9.3e-4 Pa s**. So the "14–32x water" note in
+`candidate_scan.md` is restating the paper's central claim rather than casting doubt on it.
+
+## What still binds
+
+**The rates stop at 1 1/s**, 10 1/s on one interval. A fine needle imposes 1e4–1e5 1/s, so
+anything injectability-shaped built on this would be four to five decades outside the
+measured range, against 1.42 decades for the blood records. **This dataset cannot carry an
+injectability claim** and a record built from it must not be used for one.
 
 ## Due diligence already done — and a hypothesis of mine that it refuted
 
@@ -91,15 +134,25 @@ so the authors are aware of it. **Read the paper before building a record.**
 Nothing here is a record and none of the numbers in `candidate_scan.md` may be quoted as
 one. In order:
 
-1. Read arXiv:2409.13650 — what do the authors attribute the magnitude to, what temperature
-   is "room temperature", and do they fit a constitutive form?
-2. Resolve the DOI into `doi_cache.json`.
-3. Fit the registry's own families through `biorheo.identify`, with profile intervals and
-   an identifiability verdict, rather than the three hand fits in the scan.
-4. Pre-register the gate BEFORE writing the generator, as every other record has been.
-5. Only then decide whether this becomes the registry's first `commercial_use: true`
-   record — and note that even then it cannot carry an injectability claim, for the
-   four-to-five-decade reason above. Its value is that it is **licensable**, that it is a
-   **biofluid**, and that it is the only data in the project with the **same fluid at two
-   temperatures**, which is the one thing `constitutive.shift.collapse_shift` (item 21) has
-   never been run on outside a synthetic pair.
+1. ~~Read arXiv:2409.13650~~ **DONE 2026-09-08**, above. Room temperature is 20 °C, the
+   authors fit a power law, the pre-shear protocol is declared, and the high low-rate
+   viscosity is their headline rather than a defect.
+2. Resolve `10.5281/zenodo.13828992` into `doi_cache.json`.
+3. Fit through `biorheo.identify` with profile intervals and an identifiability verdict,
+   rather than the three hand fits in the scan. **The family is `power_law`, because that
+   is what the authors fit** — and the registry already has `power_law` as a NULL model, so
+   a record here is the first time that family is used as a fluid's actual description.
+4. **Pre-register the gate BEFORE writing the generator**, as every other record has been.
+   The obvious gate is that the fitted `n` reproduces the paper's own published indices
+   (0.31, 0.32, 0.5, 0.54) within a stated tolerance — a comparison against a number this
+   repo did not compute, which is the strongest kind available here.
+5. Then it becomes the registry's first `commercial_use: true` record.
+
+**Even then it cannot carry an injectability claim**, for the four-to-five-decade reason
+above. Its value is that it is **licensable**, that it is a **biofluid**, and that it is
+the only data in the project with the **same fluid at two temperatures** — the one thing
+`constitutive.shift.collapse_shift` (item 21) has never been run on outside a synthetic
+pair. Note before running that: the 20 °C and 37 °C curves differ in *both* `K` and `n`
+(0.31 against 0.5), and a one-parameter shift **cannot** change `n`. So `collapse_shift`
+should report a LARGE residual here, and that is a prediction worth writing down before it
+is run rather than after.

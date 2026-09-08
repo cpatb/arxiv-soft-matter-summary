@@ -33,11 +33,16 @@ shear-thinning reading is the one the data supports and mine was not; this docst
 the refuted hypothesis rather than deleting it, because the scan is only worth reading if
 what it was looking for is visible.
 
-**What this scan cannot settle**, and it must not be read as settling it: whether `tau_0`
-is a real yield stress of the serum, a free-surface or evaporation effect at the cone edge,
-or an instrument offset. Distinguishing those needs the paper's own text, a second
-geometry, or a solvent blank -- none of which is in this file. The scan reports the numbers
-and stops.
+Since `tau_0` belongs to the losing model it is not a yield stress and must not be quoted
+as one. The question of what it would have been -- real serum structure, a free-surface
+effect at the cone edge, or an instrument offset -- does not arise, and the scan reports
+the numbers and stops.
+
+The paper was read on 2026-09-08 and `../data/dmem_sints2024/SOURCE.md` records what it
+settles: room temperature is 20 degrees C, the authors fit this same power law and publish
+their own indices (which this scan reproduces without having seen them), the startup
+transient is handled by a declared 2000 s pre-shear, and the high low-rate viscosity is
+the paper's headline result rather than a defect.
 
 Run:  python scripts/dmem_candidate_scan.py
 Writes `data/dmem_sints2024/candidate_scan.md`. No record is created.
@@ -223,19 +228,30 @@ def main() -> int:
         "but since the Bingham form is the WORSE description here, `tau_0` is a fitted "
         "parameter of a rejected model and should not be quoted as a yield stress at all.",
         "",
-        "**The remaining oddity is the magnitude, not the shape.** Whichever form is used, "
-        "the room-temperature intervals sit 14–32x water while the 37 °C ones sit 2–5x. "
-        "Cell culture medium is ~99 % water. The paper says its *\"observed shear stress "
-        "values significantly exceed literature reports\"*, so the authors are aware of this "
-        "and a later session should read what they attribute it to before building on it.",
+        "**The magnitude is the PAPER'S OWN HEADLINE, not an oddity this scan found.** "
+        "The room-temperature intervals sit 14–32x water and the 37 °C ones 2–5x, for a "
+        "fluid that is ~99 % water. Reading the source (2026-09-08) settles it: the paper "
+        "reports that *\"while the measured values do converge to the literature value as the "
+        "shear rate increases, the viscosity at lower shear rates is much grater [sic] than "
+        "the literature value\"*, against a baseline of 9.3e-4 Pa s. That gap is the result "
+        "the paper exists to report.",
         "",
-        "**What a later session should do:** read the paper, then decide the form by fitting "
-        "the registry's own families through `biorheo.identify` with intervals and an "
-        "identifiability verdict, rather than by the three hand fits here. The candidate is "
-        "licensable and the data is real; what is not yet established is which law, and "
-        "whether the two temperatures collapse under a single shift factor "
-        "(`constitutive.shift.collapse_shift`, item 21) — which this dataset is the only one "
-        "in the project able to test.",
+        "**The scan's fitted indices reproduce the paper's own, without having seen them.** "
+        "The authors fit the Ostwald-de Waele power law and quote n = 0.32 (10 % FBS at "
+        "20 °C), 0.31 (10 % and 5 % at 20 °C) and 0.5–0.54 (10 % at 37 °C, and 1 % at "
+        "20 °C). This scan gets 0.301/0.302 for 10 % at 20 °C, 0.345/0.310 for 5 % at "
+        "20 °C, and 0.492 and 0.507 for the two the paper groups at 0.5–0.54. That "
+        "agreement is the best available evidence that the parse, the interval splitting and "
+        "the zero-rate exclusion are all correct. **The one that agrees least is named "
+        "rather than omitted**: the 37 °C 20-point interval gives 0.700, and it is the only "
+        "interval running to 10 1/s rather than 1 1/s, so it is fitted over a decade the "
+        "others do not cover and a single power law is not expected to hold across both.",
+        "",
+        "**What a later session should do:** the form is settled (`power_law`, the family the "
+        "authors themselves fit). Fit it through `biorheo.identify` for intervals and an "
+        "identifiability verdict, pre-register a gate against the paper's published indices, "
+        "and write the record. See `SOURCE.md` for the ordered list and for the pre-shear "
+        "protocol any record must inherit.",
         "",
         "## The other reason this dataset cannot carry an injectability claim",
         "",
