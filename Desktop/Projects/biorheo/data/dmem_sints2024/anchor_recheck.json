@@ -1,5 +1,5 @@
 {
- "git_head": "d539ceb",
+ "git_head": "3049801",
  "rows": [
   {
    "stem": "DMEM_and_10pct_FBS",
@@ -150,8 +150,8 @@
    "abs_dev_n_vs_table2": 0.028021406085700806,
    "abs_dev_n_vs_figure_caption": 0.01197859391429923,
    "rel_dev_K_vs_table2": 0.05925031439979588,
-   "K_rounds_to_published": false,
-   "K_published_decimals": 4,
+   "K_rounds_to_published": true,
+   "K_published_decimals": 3,
    "per_interval_n": [
     0.43488557617273654,
     0.5393003039619206
@@ -235,7 +235,7 @@
     "DMEM + 10 % FBS (37 C)": 0.11803230942507403
    },
    "worst_rel_dev_K": 0.06675330132475411,
-   "K_rounds_to_published_count": 2,
+   "K_rounds_to_published_count": 3,
    "n_conditions": 4,
    "pass": true,
    "predicted": "median 2.04 / 0.99 / 7.06 / 4.86 %, worst 19.03 %, inside 20 %",

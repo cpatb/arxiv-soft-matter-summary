@@ -120,6 +120,7 @@ values used as COMSOL inputs**, rounded and shared across conditions, and that t
 also carries **Table 2, "Fit results for `K` and `n` ... for the experimental rheometry
 data shown in Fig. 1"**, which resolves the four deposited conditions one row each and
 disagrees with three of the four values graded against here. Table 2 also publishes `K`,
+<!-- CORRECTED: it is FOUR of four; see dmem_anchor_correction_prereg.md addendum A.4. -->
 which this pre-registration never asked anyone to compare.
 
 Three further defects in the grading built on §3, all confirmed by rerun:

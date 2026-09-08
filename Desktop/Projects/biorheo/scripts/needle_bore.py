@@ -534,15 +534,20 @@ def write_md(p: dict) -> None:
           "- Nothing about a monoclonal antibody or any protein formulation. **The registry "
           "contains none.** The wedge fluid for the venture's first product is not in this data, "
           "and this page demonstrates the method on human blood and a microgel.",
-          "- Nothing about temperature; no record carries a temperature axis.",
+          "- Nothing about temperature. No record ON THIS PAGE carries a temperature axis, "
+          "and the registry has since gained a pair measured at two temperatures "
+          "(`dmem_sints2024`, item 22); neither is used here.",
           f"- **EVERY record on this page is `commercial_use: false` — all "
           f"{sum(1 for r in rows if not r['commercial_ok'])} of {len(rows)} rows cannot appear "
           "in a commercial deliverable.** The 15 Carbopol records are CC BY-NC-SA; the 100 "
           "blood records come from an author-posted workbook that states no licence at all, "
-          "which is not permission. **This is a standing constraint on the venture, not a "
-          "detail of this item**: the method demonstrated here is licensable, and not one "
-          "curve currently in the registry is. A paid study needs either the client's own "
-          "data or a curve whose licence permits commercial use.",
+          "which is not permission. **This was a standing constraint on the venture, not a "
+          "detail of this item**: the method demonstrated here is licensable and none of "
+          "THESE rows is. It was lifted for the registry as a whole on 2026-09-08 -- item "
+          "22 added eight CC BY 4.0 `power_law` records -- but not for this page, whose "
+          "rows are frozen at the 2026-09-07 set and none of which is licensable. Those "
+          "eight cannot carry an injectability claim either, so a paid study still needs "
+          "the client's own data or another curve whose licence permits commercial use.",
           "- No record was added, no curve was fitted, and `dst_fit` was not touched.",
           ""]
     OUT_MD.write_text("\n".join(L), encoding="utf-8")

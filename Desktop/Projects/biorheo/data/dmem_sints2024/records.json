@@ -198,8 +198,11 @@
    "worst_abs_dev": 0.06511442382726346,
    "n_ungraded": 1,
    "pass": false,
+   "n_graded_expected": 7,
+   "worst_spread_all_conditions": 0.10441472778918409,
+   "superseded_by": "item 23: these reference values are the paper's FIGURE CAPTION numbers (its COMSOL inputs), not its Table 2 fit results. See data/dmem_sints2024/anchor_recheck.md.",
    "note": "the paper's indices were published before this repo existed and are not computed by any code here, which is what makes this an anchor rather than a self-check",
-   "why_it_failed": "the bar compares each INTERVAL's index against a value the paper publishes once per CONDITION. The per-interval spread within a condition reaches 0.1044, larger than the 0.05 bar itself, so no fit could have met it on both intervals of that condition. Mis-specified, not failed. The bar and this number stand; G22.1' is beside it.",
+   "why_it_failed": "the bar compares each INTERVAL's index against a value the paper publishes once per CONDITION. The per-interval spread within a condition reaches 0.0753, larger than the 0.05 bar itself, so no fit could have met it on both intervals of that condition. Mis-specified, not failed. The bar and this number stand; G22.1' is beside it.",
    "per_condition_spread": [
     {
      "fbs_pct": 10,

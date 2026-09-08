@@ -24,6 +24,8 @@ sys.path.insert(0, str(HERE.parent / "tests"))
 
 from biorheo.constitutive import get_model                              # noqa: E402
 from biorheo.registry import load_all                                   # noqa: E402
+from conftest import (CLOSED_GATE_FAMILIES,                             # noqa: E402
+                      N_CLOSED_GATE_RECORDS)
 from biorheo.solver.openfoam import (_envelope_eta_range, coefficients,  # noqa: E402
                                      export_report, nu_openfoam)
 from test_openfoam_export_null import (BAR_G111, BAR_G115, BAR_G116,    # noqa: E402
@@ -45,7 +47,18 @@ def _clamps(rec) -> tuple[float, float]:
 
 
 def main() -> int:
-    recs = load_all()
+    # A CLOSED gate must keep being graded on the sample it was decided on. Item 22 added
+    # eight `power_law` records on 2026-09-08; read through `load_all()` they would have
+    # entered G11.1's worst error, G11.5b's separations and the `n_inert` count, and the
+    # committed artifact says "115 records, of which 20 `newtonian` and 20 `power_law`".
+    # Same defect as the two `RECORD_IDS` consumers item 11 itself found, in a generator
+    # rather than a test, which is why the prereg's grep over TESTS did not catch it.
+    recs = {k: v for k, v in load_all().items()
+            if k.startswith(CLOSED_GATE_FAMILIES)}
+    if len(recs) != N_CLOSED_GATE_RECORDS:
+        print(f"FAIL: the frozen sample for this CLOSED gate has {len(recs)} records, "
+              f"not {N_CLOSED_GATE_RECORDS}")
+        return 1
     fam = {f: {rid: r for rid, r in recs.items() if r.model.name == f}
            for f in ("newtonian", "power_law")}
     for f, d in fam.items():

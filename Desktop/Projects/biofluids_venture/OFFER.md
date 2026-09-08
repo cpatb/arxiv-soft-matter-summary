@@ -142,8 +142,10 @@ What is **not** built, in the order it blocks revenue:
    extrapolation warning rather than of the force. A licensable curve that reaches
    rheometer-to-needle rates is still missing.
 2. **No temperature MODEL, and no record with a temperature axis.** The shift layer
-   above carries a factor; it does not predict one, and nothing in the registry was
-   measured at more than one temperature. A client who cannot supply two curves or an
+   above carries a factor; it does not predict one. One fluid in the registry is measured
+   at two temperatures (DMEM + 10 % FBS at 20 and 37 C), and a one-parameter shift does
+   NOT collapse that pair -- the two curves differ in the flow index, which no shift can
+   move. A client who cannot supply two curves or an
    activation energy still cannot get a cold-chain answer. §3.
 3. **No protein or high-concentration formulation curve**, so nothing here has been
    demonstrated on the wedge's own fluid. The examples are human blood and a microgel.

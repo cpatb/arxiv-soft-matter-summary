@@ -8,8 +8,10 @@ and the 1 % FBS one).
 
 The paper also carries **Table 2, "Fit results for K and n values in (4) for the
 experimental rheometry data shown in Fig. 1"**, which resolves the four deposited conditions
-one row each, for exactly the equation this repo fits, and which also publishes `K`. Three
-of the four values item 22 graded against disagree with it.
+one row each, for exactly the equation this repo fits, and which also publishes `K`. **All
+four** of the values item 22 graded against disagree with it -- and two of them are the
+right number against the wrong row (`SPEC` gives 5 % FBS the 0.31 that belongs to 10 %, and
+gives 1 % FBS the 0.54 that belongs to 37 C), which is why the mismatch was easy to miss.
 
 This script does not edit item 22's gates. It re-grades beside them at the SAME bar, prints
 both readings, and reports what survives. Pre-registration:
@@ -74,6 +76,9 @@ ALL_INTERVALS = {stem: (0, 1) for stem in TABLE2}
 # The authors' own declared repeatability, S2 Fig: "A 20 % deviation from the fit line is
 # included as a measure of repeatability of results." A declared scale, not one we chose.
 PAPER_REPEATABILITY = 0.20
+
+# Table 2 prints K as 0.028, 0.037, 0.016, 0.005 -- three decimals throughout.
+PUBLISHED_K_DECIMALS = 3
 
 G221_TOL = gen.G221_TOL          # 0.05, not moved
 RECORD_STEMS = {"DMEM_and_10pct_FBS": "10pct_20C", "DMEM_and_5pct_FBS": "5pct_20C",
@@ -159,7 +164,10 @@ def main() -> int:
         kp = ip.params["k"]
         np_ = ip.params["n"]
         # does the fitted K round to the published one at the precision the paper prints it?
-        dec = max(0, -int(math.floor(math.log10(abs(ref["K"])))) + 1)
+        # the paper prints every K to three decimals (0.028, 0.037, 0.016, 0.005), so that
+        # is the precision the comparison can resolve. Deriving it from the magnitude gave
+        # four decimals for 0.005 and asked the fit for a digit the paper never printed.
+        dec = PUBLISHED_K_DECIMALS
         rounds_to_published = bool(round(k, dec) == round(ref["K"], dec))
 
         rows.append({
@@ -433,7 +441,9 @@ def write_md(p) -> None:
     A("simulations -- rounded, and shared across conditions. The paper also carries **Table 2,")
     A('"Fit results for `K` and `n` values in (4) for the experimental rheometry data shown')
     A('in Fig. 1"**, one row per sample, for exactly the equation this repo fits, and it')
-    A("publishes `K` as well. Three of the four values item 22 used disagree with it.")
+    A(f"publishes `K` as well. **All {len(rows)} of the {len(rows)}** values item 22 used disagree")
+    A("with it -- two of them are the right number against the wrong row, which is why the")
+    A("mismatch was easy to miss.")
     A("")
     A("## The two reference tables, side by side")
     A("")

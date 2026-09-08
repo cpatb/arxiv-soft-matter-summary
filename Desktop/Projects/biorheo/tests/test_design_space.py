@@ -240,7 +240,7 @@ def test_the_page_says_the_registry_has_no_mab():
 
 
 def test_every_record_in_the_registry_is_non_commercial(art):
-    """**All 115 records are `commercial_use: false`** -- the 15 Carbopol ones under
+    """**All 115 records IN THIS ARTIFACT'S FROZEN LIST are `commercial_use: false`** -- the 15 Carbopol ones under
     CC BY-NC-SA, the 100 blood ones because the source workbook states no licence at all.
 
     This is not a detail of this item; it is a standing constraint on the venture, because

@@ -1,5 +1,7 @@
 # DMEM + FBS: the registry's first commercially licensable records
 
+> **CORRECTED 2026-09-08 (item 23). The reference values graded against on this page are the paper's FIGURE CAPTION numbers -- the flow indices it fed to COMSOL, rounded and shared across conditions -- not its Table 2, "Fit results for `K` and `n` values in (4) for the experimental rheometry data shown in Fig. 1", which resolves these four conditions one row each and disagrees with ALL FOUR of them (two are the right number against the wrong row). Re-graded against Table 2 the anchor FAILS the same 0.05 bar at 0.0599. The page below is left as it was written, with its numbers, and `data/dmem_sints2024/anchor_recheck.md` carries the correction and what survives it.**
+
 Written by `scripts/records_from_dmem.py` from `data/dmem_record_prereg.md`. Source, licence and traps: `data/dmem_sints2024/SOURCE.md`. Every number here is printed by that script.
 
 **Eight `power_law` records, CC BY 4.0, `commercial_use: true`.** They are the first records in this registry that may be used in a public demo, a webinar figure, a short course or a paid deliverable. Every other record is `commercial_use: false`.
@@ -12,7 +14,7 @@ The authors fit the same Ostwald-de Waele power law and publish their indices in
 
 **FAILED**, 7 intervals graded, worst |n - paper n| = 0.06511 against a 0.05 bar. 1 interval is reported without a bar: it is the only one running to 10 1/s, and the paper's indices are quoted for the 0.01-1 1/s range.
 
-**G22.1's bar was MIS-SPECIFIED and has not been moved.** It compares each INTERVAL's index against a value the paper publishes once per CONDITION. Those are different objects, and this run's own numbers prove no fit could have satisfied it: the per-interval spread WITHIN a condition reaches 0.1044, larger than the 0.05 bar itself. Its number stays on this page.
+**G22.1's bar was MIS-SPECIFIED and has not been moved.** It compares each INTERVAL's index against a value the paper publishes once per CONDITION. Those are different objects, and this run's own numbers prove no fit could have satisfied it: the per-interval spread within a FULLY GRADED condition reaches 0.0753, larger than the 0.05 bar itself. Its number stays on this page. (Over every condition including the one with a single graded interval it is 0.1044, which is the number this page printed before 2026-09-08; a condition with one graded interval cannot illustrate a claim about BOTH of its intervals.)
 
 ## G22.1' — the same anchor, with the interval-choice excuse removed
 

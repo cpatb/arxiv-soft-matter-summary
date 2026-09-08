@@ -48,6 +48,7 @@ four conditions the deposit contains, for exactly the equation biorheo fits:
 | DMEM + 10 % FBS (37 C) | 0.005 | 0.54 |
 
 Three of the four values `SPEC` uses disagree with this table. This is the same failure
+<!-- CORRECTED in addendum A.4: it is FOUR of four, not three. -->
 already in `lessons.md` from 2026-09-01 -- *"Read the sample table before comparing to
 it"*, written after a contradiction with Singh et al. was built entirely out of comparing
 against an abstract instead of the paper's Table 2. It has now happened twice.
@@ -270,3 +271,28 @@ there was never a disagreement at all.
 | G23.6 the correction reaches no shipped number | PASS | 0 files |
 | G23.8 `K` is identifiable | PASS | 4 closed intervals, none on a bound |
 | G23.9 published `n` inside our own profile interval | **FAILED on 1 of 4**, as predicted | 1 % FBS only |
+
+### A.4 "Three of the four" was itself wrong: it is FOUR of four
+
+§0.1 above, and the first version of every page written for this item, said three of the
+four reference values disagree with Table 2. **All four do**, and the assertion that caught
+it is one written specifically to be able to fail:
+
+| condition | `SPEC` (figure captions) | Table 2 |
+|---|---|---|
+| DMEM + 10 % FBS, 20 C | 0.32 | 0.31 |
+| DMEM + 5 % FBS, 20 C | 0.31 | 0.33 |
+| DMEM + 1 % FBS, 20 C | 0.54 | 0.51 |
+| DMEM + 10 % FBS, 37 C | 0.50 | 0.54 |
+
+The reason it read as three is worth recording, because it is why the original error
+survived a reviewer and two rereads: **two of the four are the right number against the
+wrong row.** `SPEC` gives 5 % FBS the 0.31 that belongs to 10 % FBS, and gives 1 % FBS the
+0.54 that belongs to the 37 C sample. Scanning the two columns for values that appear in
+both makes a four-of-four mismatch look like a partial one.
+
+A second, unrelated slip in the same pass: the `K` rounding comparison derived its number of
+decimal places from each value's magnitude, giving four for 0.005 — asking the fit to match
+a digit the paper never printed. Table 2 prints every `K` to three decimals. Corrected, the
+count of fitted `K` values that round to the published one is **3 of 4**, unchanged, and the
+one that does not is the 37 C row at 0.0047 against 0.005.

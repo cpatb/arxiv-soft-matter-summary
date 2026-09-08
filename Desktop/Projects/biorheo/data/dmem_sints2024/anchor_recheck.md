@@ -8,7 +8,9 @@ paper's **figure captions**, which state the index used as the input to its COMS
 simulations -- rounded, and shared across conditions. The paper also carries **Table 2,
 "Fit results for `K` and `n` values in (4) for the experimental rheometry data shown
 in Fig. 1"**, one row per sample, for exactly the equation this repo fits, and it
-publishes `K` as well. Three of the four values item 22 used disagree with it.
+publishes `K` as well. **All 4 of the 4** values item 22 used disagree
+with it -- two of them are the right number against the wrong row, which is why the
+mismatch was easy to miss.
 
 ## The two reference tables, side by side
 
@@ -82,7 +84,7 @@ of repeatability of results."*). That is a scale the SOURCE declares, not a tole
 this repo invented. Verdict: **PASS**.
 
 `K` alone agrees to **6.7 %** or better on all four,
-and **2 of 4** fitted values
+and **3 of 4** fitted values
 round to the published value at the precision the paper prints it:
 
 | condition | `k` fitted | `K` published | rounds to it? |
@@ -90,7 +92,7 @@ round to the published value at the precision the paper prints it:
 | DMEM + 10 % FBS | 0.028035 | 0.028 | yes |
 | DMEM + 5 % FBS | 0.03672 | 0.037 | yes |
 | DMEM + 1 % FBS | 0.017068 | 0.016 | no |
-| DMEM + 10 % FBS (37 C) | 0.0047037 | 0.005 | no |
+| DMEM + 10 % FBS (37 C) | 0.0047037 | 0.005 | yes |
 
 ## G23.5 — no record moves
 

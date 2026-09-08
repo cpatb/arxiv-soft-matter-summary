@@ -88,6 +88,12 @@ _MAP: dict[str, dict[str, float]] = {
 SHIFTABLE = tuple(_MAP)
 
 
+# Below this, an argument said to be in kelvin is a celsius value that was not converted.
+# 100 K is far under any temperature this package's fluids are measured at and far over any
+# celsius value one would pass, so it separates the two cases without excluding real data.
+MIN_PLAUSIBLE_KELVIN = 100.0
+
+
 def arrhenius_shift(E_a: float, T: float, T_ref: float) -> float:
     """``exp(E_a/R (1/T - 1/T_ref))``, temperatures in KELVIN.
 
@@ -97,6 +103,18 @@ def arrhenius_shift(E_a: float, T: float, T_ref: float) -> float:
     """
     if not (T > 0 and T_ref > 0):
         raise ValueError(f"temperatures must be in kelvin and positive, got {T}, {T_ref}")
+    # `T > 0` does not distinguish kelvin from celsius, and the only per-record temperature
+    # field in the schema is `envelope.temperature_C` -- so the obvious wrong call,
+    # `arrhenius_shift(E_a, rec.envelope.temperature_C, ref.envelope.temperature_C)`, would
+    # have passed silently and returned a shift factor wrong by many orders of magnitude.
+    # No fluid this package is for is studied below 100 K, so a value under that is a unit
+    # error rather than a cryogenic measurement.
+    if T < MIN_PLAUSIBLE_KELVIN or T_ref < MIN_PLAUSIBLE_KELVIN:
+        raise ValueError(
+            f"temperatures must be in KELVIN; got {T} and {T_ref}, at least one below "
+            f"{MIN_PLAUSIBLE_KELVIN} K. If these are celsius, add 273.15. No fluid this "
+            "package is intended for is measured below that, so this is read as a unit "
+            "error rather than a cryogenic measurement.")
     return float(np.exp(E_a / GAS_CONSTANT * (1.0 / T - 1.0 / T_ref)))
 
 

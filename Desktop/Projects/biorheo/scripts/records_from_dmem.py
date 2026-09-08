@@ -28,6 +28,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import math
 import sys
 import zipfile
 from pathlib import Path
@@ -130,6 +131,20 @@ def _load_scan():
     return mod
 
 
+def _finite_max(values, what):
+    """`max` over floats with the NaNs removed first, and a raise if any were.
+
+    Builtin `max` over a list containing NaN is ORDER-DEPENDENT and silently returns the
+    wrong answer, because every comparison against NaN is False. See lessons.md 2026-09-06.
+    """
+    vals = list(values)
+    good = [v for v in vals if v is not None and math.isfinite(v)]
+    if len(good) != len(vals):
+        raise ValueError(f"{what}: {len(vals) - len(good)} of {len(vals)} values are not "
+                         "finite; refusing to take a maximum over them")
+    return max(good) if good else float("nan")
+
+
 def main() -> int:
     scan = _load_scan()
     z = zipfile.ZipFile(ZIP)
@@ -190,6 +205,15 @@ def main() -> int:
                        f"{gd.size} points after dropping {n_dropped} below "
                        f"{MIN_RATE:g} 1/s; log-viscosity residuals"))
 
+        # `rec` was loaded BEFORE write_identifiability, and FluidRecord.verdicts reads the
+        # sidecar off disk at load time -- so on a clean run (no sidecar yet) every verdict
+        # in the shipped table was blank, and on a re-run it was the PREVIOUS run's. Take
+        # them from the fit that was just written instead.
+        verdicts = dict(ident.verdicts)
+        if rec.verdicts is not None and dict(rec.verdicts) != verdicts:
+            print(f"  note: {rec_id} sidecar verdicts changed {dict(rec.verdicts)} "
+                  f"-> {verdicts}")
+
         dev = None if paper_n is None else abs(n - paper_n)
         rows.append({"id": rec_id, "fbs_pct": fbs, "temperature_C": temp,
                      "interval": idx + 1, "n_points": int(gd.size),
@@ -197,14 +221,14 @@ def main() -> int:
                      "gd_min": raw_min, "gd_max": raw_max,
                      "envelope": [gmin, gmax], "k": k, "n": n,
                      "paper_n": paper_n, "abs_dev_from_paper_n": dev,
-                     "verdicts": rec.verdicts,
+                     "verdicts": verdicts,
                      "commercial_ok": bool(rec.commercial_ok)})
         print(f"wrote {rec_id}  n = {n:.4g}"
               + ("" if paper_n is None else f" against the paper's {paper_n:g} "
                                            f"(|dev| {dev:.4g})"))
 
     graded = [r for r in rows if r["paper_n"] is not None]
-    worst = max((r["abs_dev_from_paper_n"] for r in graded), default=float("nan"))
+    worst = _finite_max((r["abs_dev_from_paper_n"] for r in graded), "G22.1 deviations")
 
     # --- G22.1' -------------------------------------------------------------------------
     # G22.1 compares each INTERVAL's index against a value the paper publishes once per
@@ -247,15 +271,35 @@ def main() -> int:
         pooled.append({"fbs_pct": fbs, "temperature_C": temp, "n_points": int(gd_p.size),
                        "n_pooled": n_p, "paper_n": paper_n,
                        "abs_dev": abs(n_p - paper_n)})
-    worst_pooled = max((r["abs_dev"] for r in pooled), default=float("nan"))
-    worst_spread = max((s["spread"] for s in spreads), default=float("nan"))
+    worst_pooled = _finite_max((r["abs_dev"] for r in pooled), "G22.1' deviations")
+    # Only a condition whose intervals are ALL graded can illustrate "no fit could have met
+    # the bar on BOTH intervals of that condition". The 37 C condition has one graded
+    # interval, and including it made this a max over the wrong sample: it printed 0.1044
+    # while the argument it supports needs the largest spread among fully graded
+    # conditions. Both exceed the 0.05 bar, so the argument stands on the honest number.
+    fully_graded = {(f, t) for (f, t) in by_cond
+                    if all(SPEC[m][3] is not None for m in by_cond[(f, t)])}
+    spreads_fully_graded = [s for s in spreads
+                            if (s["fbs_pct"], s["temperature_C"]) in fully_graded]
+    worst_spread = _finite_max((s["spread"] for s in spreads_fully_graded),
+                               "G22.1 per-condition spreads")
+    worst_spread_all_conditions = _finite_max((s["spread"] for s in spreads),
+                                              "spreads over every condition")
 
     gates = {
         "G22_1_reproduces_the_papers_flow_index": {
             "bar": f"|n - paper n| < {G221_TOL} on the {len(graded)} intervals the paper names",
             "n_graded": len(graded), "worst_abs_dev": worst,
             "n_ungraded": len(rows) - len(graded),
-            "pass": bool(len(graded) == 6 and worst < G221_TOL),
+            # was `len(graded) == 6` against 7 graded intervals, so this could not be true
+        # whatever the fits returned. The VERDICT does not move -- worst exceeds the bar --
+        # but the reason it reads FAILED is now the tolerance and not a stale count.
+        "pass": bool(len(graded) == 7 and worst < G221_TOL),
+        "n_graded_expected": 7,
+        "worst_spread_all_conditions": worst_spread_all_conditions,
+        "superseded_by": "item 23: these reference values are the paper's FIGURE CAPTION "
+                         "numbers (its COMSOL inputs), not its Table 2 fit results. See "
+                         "data/dmem_sints2024/anchor_recheck.md.",
             "note": "the paper's indices were published before this repo existed and are "
                     "not computed by any code here, which is what makes this an anchor "
                     "rather than a self-check",
@@ -303,6 +347,17 @@ def write_md(p: dict) -> None:
     L = [
         "# DMEM + FBS: the registry's first commercially licensable records",
         "",
+        "> **CORRECTED 2026-09-08 (item 23). The reference values graded against on this "
+        "page are the paper's FIGURE CAPTION numbers -- the flow indices it fed to COMSOL, "
+        "rounded and shared across conditions -- not its Table 2, \"Fit results for `K` and "
+        "`n` values in (4) for the experimental rheometry data shown in Fig. 1\", which "
+        "resolves these four conditions one row each and disagrees with ALL FOUR of them "
+        "(two are the right number against the wrong row). "
+        "Re-graded against Table 2 the anchor FAILS the same 0.05 bar at 0.0599. The page "
+        "below is left as it was written, with its numbers, and "
+        "`data/dmem_sints2024/anchor_recheck.md` carries the correction and what survives "
+        "it.**",
+        "",
         f"Written by `{p['generated_by']}` from `{p['prereg']}`. Source, licence and traps: "
         f"`{p['source']}`. Every number here is printed by that script.",
         "",
@@ -334,9 +389,13 @@ def write_md(p: dict) -> None:
         "**G22.1's bar was MIS-SPECIFIED and has not been moved.** It compares each "
         "INTERVAL's index against a value the paper publishes once per CONDITION. Those are "
         "different objects, and this run's own numbers prove no fit could have satisfied it: "
-        f"the per-interval spread WITHIN a condition reaches "
-        f"{max(x['spread'] for x in g['G22_1_reproduces_the_papers_flow_index']['per_condition_spread']):.4g}, "
-        f"larger than the {G221_TOL:g} bar itself. Its number stays on this page.",
+        f"the per-interval spread within a FULLY GRADED condition reaches "
+        f"{g['G22_1_reproduces_the_papers_flow_index']['why_it_failed'].split('reaches ')[1].split(',')[0]}, "
+        f"larger than the {G221_TOL:g} bar itself. Its number stays on this page. "
+        "(Over every condition including the one with a single graded interval it is "
+        f"{g['G22_1_reproduces_the_papers_flow_index']['worst_spread_all_conditions']:.4g}, "
+        "which is the number this page printed before 2026-09-08; a condition with one "
+        "graded interval cannot illustrate a claim about BOTH of its intervals.)",
         "",
         "## G22.1' — the same anchor, with the interval-choice excuse removed",
         "",
