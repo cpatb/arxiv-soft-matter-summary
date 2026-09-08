@@ -906,26 +906,60 @@ curves differing only in SHAPE give one that means nothing (rms log residual 0.9
 1.4e-05 for a real shift). No default activation energy is shipped for any fluid and a test
 asserts `arrhenius_shift`'s `E_a` has no default.
 
-### 20. NEXT DATA ACTION, not started: source ONE openly-licensed flow curve
+### 20. HALF DONE 2026-09-08: a licensable candidate is downloaded and scanned; no record yet
 
-**This is the cheapest thing that changes what the venture can ship, and it is not a code
-task.** All 115 records are `commercial_use: false` (item 18), so the four worked
-deliverable pages are all stamped NOT LICENSABLE. A paid study on a client's own curve is
-unaffected; a public demo, a webinar, a short course and a conference figure are all
-blocked.
+**Why this matters more than it looks.** All 115 records are `commercial_use: false`
+(item 18), so all four worked deliverable pages are stamped NOT LICENSABLE. A paid study on
+a client's own curve is unaffected; a public demo, a webinar figure, a short course and a
+conference slide are all blocked.
 
-What is needed: one flow curve — shear rate and viscosity as numbers, with a resolvable
-DOI and a licence that permits commercial use (CC BY or CC0) — ideally a protein or
-high-concentration formulation, but ANY licensable curve unblocks the demo.
+**Found: `data/dmem_sints2024/` — DMEM + FBS rheology, Zenodo 13828992,
+`10.5281/zenodo.13828992`, CC BY 4.0.** Anton Paar MCR 502, cone-plate CP50-2, four
+samples (1 %, 5 %, 10 % FBS at room temperature; 10 % at 37 °C), eight intervals, shear
+rate / shear stress / viscosity / torque columns. Source paper arXiv:2409.13650. The 5 KB
+zip is COMMITTED with per-file md5s in `SOURCE.md`.
 
-Tried on 2026-09-07 and blocked by infrastructure, not by absence: `zenodo.org/api` returned
-HTTP 504 to both `curl` and WebFetch on every query. Retry that first. Candidates that were
-not reachable in that session: Zenodo and figshare dataset search; Edinburgh DataShare
-(the Poon group deposits the numbers behind their figures — see the user memory note);
-supplementary CSVs attached to open-access rheology papers.
+**Read `data/dmem_sints2024/SOURCE.md` before touching it.** Three traps are recorded
+there: each `.txt` holds MORE THAN ONE interval (an importer reading the first table
+discards half the data — the same shape as item 7's concatenated ramps); one file opens at
+2.24e-7 1/s with an apparent viscosity of 8710 Pa s, which is the instrument's zero-rate
+point and not a measurement; and **"room temperature" is not a number**, so the envelope's
+`temperature_C` cannot be filled without inventing one.
 
-Do NOT digitise a figure to get around this, and do not add a record from a paper's table
-without its raw curve. Both are standing rules.
+**A hypothesis of mine was REFUTED by the scan and is recorded rather than deleted.**
+`scripts/dmem_candidate_scan.py` -> `candidate_scan.md` asked whether the affine-looking
+stress column was a Bingham intercept masquerading as shear thinning. It is not: the
+two-parameter power law fits better on **7 of 8 intervals**, same parameter count, same
+error measure, `n` between 0.30 and 0.70. The paper's shear-thinning reading is the one the
+data supports. What remains odd is the MAGNITUDE — the room-temperature intervals sit
+14–32x water for a fluid that is ~99 % water — and the paper's own abstract says its
+observed stresses "significantly exceed literature reports".
+
+**What is left, in order.** (1) Read arXiv:2409.13650. (2) Resolve the DOI into
+`doi_cache.json`. (3) Fit through `biorheo.identify` with intervals and verdicts, not the
+scan's three hand fits. (4) Pre-register the gate BEFORE the generator, as every other
+record has been. (5) Then decide whether this becomes the registry's first
+`commercial_use: true` record.
+
+**Even if it does, it cannot carry an injectability claim**: the rates stop at 1 1/s
+(10 1/s on one interval) against 1e4–1e5 in a fine needle, i.e. four to five decades of
+extrapolation against 1.42 for blood. Its value is that it is licensable, that it is a
+biofluid, and that it is **the only data in the project with the same fluid at two
+temperatures** — the one thing `constitutive.shift.collapse_shift` (item 21) has never been
+run on outside a synthetic pair.
+
+Other candidates found in the same search, all CC BY 4.0 and unexamined:
+Zenodo 11389467 (2 wt% Carbopol 974p in propylene glycol — flow curve, stress relaxation;
+a licensable counterpart to the NC Carbopol records), 8334762 (pipe rheology of aqueous
+foams, with CSVs — pipe flow, so directly comparable to needle flow), 21868871 (620
+water-based drilling-fluid formulations at six temperatures), 18961871 (detergent foams,
+solution flow curves).
+
+**How to search Zenodo:** its API returns HTTP 504 to a default `python-urllib`
+User-Agent and works with an explicit one. Use `size=20` with backoff; `size=50` errored.
+
+Do NOT digitise a figure to get around any of this, and do not add a record from a paper's
+table without its raw curve. Both are standing rules.
 
 ## What NOT to do
 
