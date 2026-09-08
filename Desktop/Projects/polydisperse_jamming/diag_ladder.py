@@ -11,6 +11,11 @@ import json
 
 import numpy as np
 
+# System size is fixed here on purpose. out/ holds N = 1500 and N = 3000 cells; this
+# diagnostic prints the phi(p_hat) LADDER at one size, and pooling two would make a
+# system-size difference read as ladder scatter. See N_GROUPING_2026-09-08.md.
+from analyse_phase2 import PRIMARY_N
+
 LADDER = (1e-3, 3e-4, 1e-4, 3e-5)
 
 
@@ -23,7 +28,8 @@ def main() -> None:
                     r = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                if r.get("key") and not r.get("failed"):
+                if (r.get("key") and not r.get("failed")
+                        and r.get("n_requested") == PRIMARY_N):
                     recs[r["key"]] = r
 
     g = collections.defaultdict(list)

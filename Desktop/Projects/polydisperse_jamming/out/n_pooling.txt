@@ -1,0 +1,79 @@
+==============================================================================
+IS THE PHASE-2 ANALYSIS POOLING TWO SYSTEM SIZES INTO ONE LADDER?
+==============================================================================
+
+376 converged cells, sizes present [1500, 3000].
+
+analyse_phase2.py de-duplicates on a key that encodes N -- its docstring says
+so -- but the two keys it GROUPS by do not:
+    ladder fit   groups[(family, cv, mu_p, seed)]
+    seed scatter scat[(family, cv, mu_p, p_hat_target)]
+
+  ladder groups that mix N : 18 of 95
+  scatter cells that mix N : 20 of 114
+
+------------------------------------------------------------------------------
+1. THE DENOMINATOR: median seed scatter in phi
+------------------------------------------------------------------------------
+  pooled over N : 0.001811  (106 cells)
+  split by N    : 0.001776  (124 cells)
+  -> moves by 1.9 %.
+  This is the denominator of the gate that decides which ladders are
+  informative, so a small move here is worth reporting even though it is small.
+
+------------------------------------------------------------------------------
+2. THE LADDERS THAT ACTUALLY MIX N
+------------------------------------------------------------------------------
+  ladder                             n_pool n_1500  phiJ_pool  phiJ_1500    delta  b_pool  b_1500
+  ('bidisperse', 0.5, 0.3, 1)             8      4    0.58599    0.58588 +0.00010   0.820   1.649
+  ('bidisperse', 0.5, 0.3, 2)             8      4    0.58828    0.58841 -0.00014   0.603   0.952
+  ('bidisperse', 0.5, 0.3, 3)             8      4    0.58905    0.59278 -0.00373   0.139   0.000
+  ('lognormal', 0.0, 0.3, 1)              8      4    0.57488    0.57509 -0.00021   0.572   0.746
+  ('lognormal', 0.0, 0.3, 2)              8      4    0.57616    0.57382 +0.00234   0.333   0.664
+  ('lognormal', 0.0, 0.3, 3)              8      4    0.57538    0.57469 +0.00070   0.577   0.715
+  ('lognormal', 0.3, 0.3, 1)              7      4    0.60584    0.60598 -0.00015   0.425   0.375
+  ('lognormal', 0.3, 0.3, 2)              8      4    0.60379    0.60516 -0.00137   0.896   1.232
+  ('lognormal', 0.3, 0.3, 3)              7      4    0.60211    0.60082 +0.00129   0.605   0.639
+  ('lognormal', 0.5, 0.3, 1)              6      3    0.63496    0.63603 -0.00108   0.210     n/a
+  ('lognormal', 0.5, 0.3, 2)              5      3    0.64213    0.64196 +0.00017   0.586     n/a
+  ('lognormal', 0.5, 0.3, 3)              6      3    0.63293    0.63256 +0.00036   0.377     n/a
+  ('uniform', 0.4, 0.3, 1)                5      3    0.59602    0.59340 +0.00262   0.419     n/a
+  ('uniform', 0.4, 0.3, 2)                6      4    0.59902    0.59798 +0.00104   0.540   0.773
+  ('uniform', 0.4, 0.3, 3)                7      4    0.59776    0.59673 +0.00103   0.325   0.352
+  ('uniform', 0.5, 0.3, 1)                4      2    0.60332    0.60144 +0.00188   0.004     n/a
+  ('uniform', 0.5, 0.3, 2)                4      2    0.59688    0.59166 +0.00521   1.127     n/a
+  ('uniform', 0.5, 0.3, 3)                4      2    0.60152    0.60065 +0.00087     nan     n/a
+
+  |delta phi_J|: median 0.00104, max 0.00521
+  in units of the pooled seed scatter: max 2.88
+
+  NOTE the direction of the cost: splitting N takes ladders from 8 points to 4
+  or from 6 to 3, and fit_phi_J returns b as NaN below 4 points. So separating
+  N does not simply change b -- it DISQUALIFIES ladders. That is the honest
+  trade and it is why this is a diagnosis, not a patch.
+
+------------------------------------------------------------------------------
+3. THE PRE-REGISTERED EXPONENT ANCHOR (bar: median b_free in [0.6, 1.6], set by this project BEFORE today)
+------------------------------------------------------------------------------
+  POOLED (the behaviour BEFORE 2026-09-08)
+    ladders 90, informative 22 (excluded: 31 no free fit, 37 non-monotone, 0 flat)
+    median b = 0.518  mean 0.467  IQR [0.297, 0.664]  -> FAIL
+  SPLIT BY N (what ships now)
+    ladders 108, informative 29 (excluded: 48 no free fit, 31 non-monotone, 0 flat)
+    median b = 0.452  mean 0.463  IQR [0.321, 0.664]  -> FAIL
+
+  The verdict is UNCHANGED under the split.
+
+  So the pooling was a real defect in the grouping and it does NOT rescue
+  the anchor: the harmonic prediction b = 1 fails either way. That is the
+  useful outcome -- a defect that could have explained the failure, ruled
+  out by measurement rather than by argument.
+
+------------------------------------------------------------------------------
+WHAT THIS DOES NOT SAY
+------------------------------------------------------------------------------
+  Not that N = 3000 is wrong, or that phi_J is wrong. The N ladder itself was
+  measured separately (analyse_finite_size.py) and the extrapolated phi_J moved
+  0.0033 when N doubled. What is measured HERE is only that two system sizes
+  land in one fit and in one scatter estimate without anyone choosing that.
+

@@ -27,6 +27,7 @@ import sys
 import numpy as np
 
 from psd import lognormal_skewness, make_psd
+from analyse_phase2 import PRIMARY_N
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "out")
@@ -64,6 +65,14 @@ def main() -> int:
         return 1
     with open(fp, encoding="utf-8") as fh:
         rows = list(csv.DictReader(fh))
+    # C3 compares FAMILIES at fixed CV. phase2_summary.csv gained an n_requested column
+    # on 2026-09-08, so without this the same (family, cv, mu_p) appears twice at two
+    # system sizes and the family comparison silently spans both. The N = 3000 coverage
+    # does not span the CV range this comparison needs, so the size is fixed explicitly.
+    n_before = len(rows)
+    rows = [r for r in rows if int(float(r.get("n_requested", PRIMARY_N))) == PRIMARY_N]
+    print(f"N RESTRICTION (C3 family comparison at fixed CV): keeping N = {PRIMARY_N}; "
+          f"{len(rows)} of {n_before} summary rows, {n_before - len(rows)} dropped.")
     for r in rows:
         for k in ("cv_nom", "cv_real", "mu_p", "phi_J", "phi_J_sd", "d32"):
             try:

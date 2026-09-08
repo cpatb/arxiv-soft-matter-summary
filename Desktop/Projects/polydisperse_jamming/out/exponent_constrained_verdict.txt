@@ -6,30 +6,30 @@ Same ladders, same [0.6, 1.6] bar. The only change is that phi_J is PINNED to
 the independent linear-extrapolation estimate instead of being fitted
 alongside b -- one fewer free parameter, so a stricter test, not a looser one.
 
-  ladders admitted: 45; with >= 3 points above phi_J_lin: 39
+  ladders admitted: 59; with >= 3 points above phi_J_lin: 46
 
   PAIRED -- same ladders, both estimators:
   estimator         n    median      mean       IQR
-  free phi_J       22     0.595     0.512  [0.362, 0.667]
-  pinned phi_J     22     0.971     1.073  [0.858, 1.256]
-  per-ladder difference (pinned - free): median +0.582, 21 of 22 positive
+  free phi_J       27     0.488     0.491  [0.356, 0.664]
+  pinned phi_J     27     0.918     1.022  [0.785, 1.246]
+  per-ladder difference (pinned - free): median +0.482, 25 of 27 positive
 
-  CONSTRAINED-ONLY set (ladders the free fit could not fit): n = 17, median 1.179
-  ALL constrained: n = 39, median 1.124
+  CONSTRAINED-ONLY set (ladders the free fit could not fit): n = 19, median 1.168
+  ALL constrained: n = 46, median 1.069
 
-    bidisperse  n= 6  median b_constrained = 1.000
-    lognormal   n=17  median b_constrained = 1.168
+    bidisperse  n= 8  median b_constrained = 0.831
+    lognormal   n=22  median b_constrained = 1.078
     uniform     n=16  median b_constrained = 1.144
 
 
 CONDITIONING -- how hard does this ladder actually pin b?
-  |db/dphi_J| median = 221.8 per unit phi  (n = 22; 11 one-sided, 0 unusable)
-    two-sided median 194.5 over 11; one-sided median 290.8 over 11 -- the one-sided ladders are the MORE ill-conditioned ones, so dropping them would bias this LOW
-  => a phi_J error of ONE seed scatter (0.00179) moves b by 0.397
-  => the bar is 1.0 wide; one seed scatter of phi_J moves b across 40% of it
+  |db/dphi_J| median = 210.1 per unit phi  (n = 27; 12 one-sided, 0 unusable)
+    two-sided median 120.8 over 15; one-sided median 297.5 over 12 -- the one-sided ladders are the MORE ill-conditioned ones, so dropping them would bias this LOW
+  => a phi_J error of ONE seed scatter (0.00179) moves b by 0.376
+  => the bar is 1.0 wide; one seed scatter of phi_J moves b across 38% of it
 PRE-REGISTERED READING
-  PAIRED constrained median b = 0.971 against bar [0.6, 1.6] -> PASS
-  (free fit on the SAME ladders: 0.595)
+  PAIRED constrained median b = 0.918 against bar [0.6, 1.6] -> PASS
+  (free fit on the SAME ladders: 0.488)
 
 
   !! CIRCULARITY WARNING, and it governs the verdict. phi_J_lin is the

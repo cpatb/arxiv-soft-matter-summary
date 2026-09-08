@@ -57,6 +57,34 @@ EXPONENT_MIN_RANGE_IN_SD = 2.0
 PHI_OF_INTEREST = (0.40, 0.44, 0.48, 0.50, 0.52, 0.55, 0.58, 0.60)
 
 
+# --- system size ---------------------------------------------------------------------
+PRIMARY_N = 1500
+"""The system size every claim in this project is quoted at.
+
+`out/` also holds N = 3000 cells. Before 2026-09-08 nothing downstream distinguished them
+and several analyses were silently mixing two sizes; see `N_GROUPING_2026-09-08.md`.
+`analyse_phase2.py` now KEYS on N and grades per size. The consumers that cannot -- because
+the N = 3000 coverage does not span the CV range their comparison needs -- restrict to this
+size explicitly through `restrict_to_primary_N` rather than by accident.
+"""
+
+
+def restrict_to_primary_N(recs, why: str, n: int = PRIMARY_N):
+    """Keep only cells at system size ``n``, and PRINT what that dropped.
+
+    Never drop silently: the count and the sizes present are printed every run, so a
+    later N sweep cannot quietly stop being included.
+    """
+    import collections as _c
+    sizes = _c.Counter(r.get("n_requested") for r in recs)
+    kept = [r for r in recs if r.get("n_requested") == n]
+    dropped = len(recs) - len(kept)
+    print(f"N RESTRICTION ({why}): keeping N = {n}; "
+          f"{len(kept)} of {len(recs)} cells, {dropped} dropped. "
+          f"sizes present: {dict(sorted(sizes.items(), key=lambda kv: (kv[0] is None, kv[0])))}")
+    return kept
+
+
 def load_all() -> list[dict]:
     """Load every shard, DEDUPLICATED by cell key.
 
@@ -117,7 +145,7 @@ def main() -> int:
     cellmap: dict[tuple, list[dict]] = {}
     for r in recs:
         cellmap.setdefault((r.get("family", "lognormal"), r["cv"], r["mu_p"],
-                            r["p_hat_target"]), []).append(r)
+                            r["p_hat_target"], r["n_requested"]), []).append(r)
     for k, g in cellmap.items():
         c = [x for x in g if x.get("converged")]
         if c and len(c) < len(g):
@@ -137,13 +165,20 @@ def main() -> int:
               f"(d_max/L > 0.25); they are KEPT but listed in the csv")
 
     # ---- group and fit -------------------------------------------------------
+    # N IS PART OF THE LADDER KEY. It was not until 2026-09-08, and out/ holds cells
+    # at two system sizes, so 9 of 95 ladders were fitting N = 1500 and N = 3000 points
+    # together at the same p_hat -- a system-size difference entering as ladder scatter.
+    # diag_n_pooling.py measures what that cost: phi_J moved up to 1.30 seed scatters,
+    # and the pre-registered exponent anchor FAILS either way (median b 0.567 pooled,
+    # 0.488 split), so the pooling never explained the anchor's failure.
     groups: dict[tuple, list[dict]] = {}
     for r in recs:
         fam = r.get("family", "lognormal")
-        groups.setdefault((fam, r["cv"], r["mu_p"], r["seed"]), []).append(r)
+        groups.setdefault((fam, r["cv"], r["mu_p"], r["seed"], r["n_requested"]),
+                          []).append(r)
 
     rows = []
-    for (fam, cv, mu, seed), g in sorted(groups.items()):
+    for (fam, cv, mu, seed, n_req), g in sorted(groups.items()):
         g_fit = [r for r in g if r["p_hat"] <= P_HAT_FIT_MAX]
         dropped = len(g) - len(g_fit)
         if len(g_fit) < 2:
@@ -154,7 +189,7 @@ def main() -> int:
         cvr = float(np.mean([r["cv_realised"] for r in g_fit]))
         d32 = float(np.mean([r["d32_realised"] for r in g_fit]))
         rows.append({"family": fam, "cv_nom": cv, "cv_real": cvr,
-                     "d32": d32, "mu_p": mu,
+                     "d32": d32, "mu_p": mu, "n_requested": n_req,
                      "seed": seed, "n_ladder": len(g_fit), "n_dropped_highp": dropped,
                      "phi_range": float(f.max() - f.min()),
                      "phi_monotone": bool(np.all(np.diff(f[np.argsort(p)]) >= 0)
@@ -191,7 +226,7 @@ def main() -> int:
     scat: dict[tuple, list[float]] = {}
     for r in recs:
         scat.setdefault((r.get("family", "lognormal"), r["cv"], r["mu_p"],
-                         r["p_hat_target"]), []).append(r["phi"])
+                         r["p_hat_target"], r["n_requested"]), []).append(r["phi"])
     sds = [float(np.std(v, ddof=1)) for v in scat.values() if len(v) > 1]
     seed_sd = float(np.median(sds)) if sds else float("nan")
     lines.append(f"  median seed scatter in phi = {seed_sd:.5f} "
@@ -238,18 +273,21 @@ def main() -> int:
     lines.append("")
 
     # ---- aggregate over seeds ------------------------------------------------
+    # Also keyed on N: averaging phi_J over seeds must not average over system sizes,
+    # and n_seeds would have counted the same seed twice at two N.
     agg: dict[tuple, list[dict]] = {}
     for r in rows:
-        agg.setdefault((r["family"], r["cv_nom"], r["mu_p"]), []).append(r)
+        agg.setdefault((r["family"], r["cv_nom"], r["mu_p"], r["n_requested"]),
+                       []).append(r)
 
     srows = []
-    for (fam, cv, mu), g in sorted(agg.items()):
+    for (fam, cv, mu, n_req), g in sorted(agg.items()):
         pj = np.array([x["phi_J_lin"] for x in g], float)
         pj = pj[np.isfinite(pj)]
         if pj.size == 0:
             continue
         srows.append({
-            "family": fam, "cv_nom": cv, "mu_p": mu,
+            "family": fam, "cv_nom": cv, "mu_p": mu, "n_requested": n_req,
             "cv_real": float(np.mean([x["cv_real"] for x in g])),
             "d32": float(np.mean([x["d32"] for x in g])),
             "n_seeds": int(pj.size),
@@ -284,27 +322,58 @@ def main() -> int:
         lines.append("ANCHOR A1: cv=0, mu=0 cell not present yet")
 
     # ---- ANCHOR A4: phi_J falls with friction --------------------------------
-    mono = sorted([r for r in srows if r["cv_nom"] == 0.0
-                   and r["family"] == "lognormal"],
-                  key=lambda x: x["mu_p"])
-    if len(mono) >= 2:
+    # A4 IS GRADED PER SYSTEM SIZE. Before 2026-09-08 srows had one row per
+    # (family, cv, mu_p); it now has one per N as well, and iterating it unfiltered put
+    # two mu_p = 0.3 entries in a sequence that is supposed to be monotone IN mu_p --
+    # which reported FAIL on a different question than the one A4 asks.
+    for n_req in sorted({r["n_requested"] for r in srows}):
+        mono = sorted([r for r in srows if r["cv_nom"] == 0.0
+                       and r["family"] == "lognormal"
+                       and r["n_requested"] == n_req],
+                      key=lambda x: x["mu_p"])
+        if len(mono) < 2:
+            lines.append(f"ANCHOR A4 (N = {n_req}): only {len(mono)} mu_p value(s); "
+                         f"not gradeable at this size")
+            continue
         seq = [(r["mu_p"], r["phi_J"]) for r in mono]
         falling = all(seq[i + 1][1] <= seq[i][1] + 1e-9 for i in range(len(seq) - 1))
-        lines.append(f"ANCHOR A4 (phi_J falls monotonically with mu_p): "
+        lines.append(f"ANCHOR A4 (phi_J falls monotonically with mu_p), N = {n_req}: "
                      f"{[f'{m:.1f}:{p:.4f}' for m, p in seq]} -> "
                      f"{'PASS' if falling else 'FAIL'}")
     lines.append("")
 
     # ---- ANCHOR A5 + the M2 test --------------------------------------------
-    for fam, mu in sorted({(r["family"], r["mu_p"]) for r in srows}):
+    # A5 sorts by cv_real and takes the FIRST and LAST row, so without N in the key it
+    # could weld the low-CV row of one system size to the high-CV row of another. N is
+    # part of the loop key for that reason, and every block below names its N.
+    for fam, mu, n_req in sorted({(r["family"], r["mu_p"], r["n_requested"])
+                                  for r in srows}):
         g = sorted([r for r in srows if r["mu_p"] == mu
-                    and r["family"] == fam], key=lambda x: x["cv_real"])
+                    and r["family"] == fam
+                    and r["n_requested"] == n_req], key=lambda x: x["cv_real"])
         if len(g) < 2:
             continue
         lo, hi = g[0], g[-1]
         d_phiJ = hi["phi_J"] - lo["phi_J"]
         scatter = np.nanmax([lo.get("phi_J_sd", np.nan), hi.get("phi_J_sd", np.nan)])
-        lines.append(f"--- family = {fam}, mu_p = {mu:.2f} ---")
+        lines.append(f"--- family = {fam}, mu_p = {mu:.2f}, N = {n_req} ---")
+        # Do NOT read two N blocks as a finite-size comparison unless they span the same
+        # CV range. They need not: at 2026-09-08 the uniform family has N = 3000 cells
+        # only at cv 0.4 and 0.5, while N = 1500 starts at 0.0, so the "same" anchor is
+        # measuring a different interval at each size.
+        _spans = {nn: (min(x["cv_nom"] for x in srows
+                           if x["family"] == fam and x["mu_p"] == mu
+                           and x["n_requested"] == nn),
+                       max(x["cv_nom"] for x in srows
+                           if x["family"] == fam and x["mu_p"] == mu
+                           and x["n_requested"] == nn))
+                  for nn in sorted({x["n_requested"] for x in srows
+                                    if x["family"] == fam and x["mu_p"] == mu})}
+        if len(_spans) > 1 and len(set(_spans.values())) > 1:
+            lines.append("    !! CV SPAN DIFFERS BETWEEN SYSTEM SIZES: "
+                         + ", ".join(f"N={nn}: cv {a:.2f}-{b:.2f}"
+                                     for nn, (a, b) in sorted(_spans.items())))
+            lines.append("    !! These blocks are NOT a matched finite-size comparison.")
         lines.append(f"ANCHOR A5 (phi_J RISES with polydispersity): "
                      f"cv {lo['cv_real']:.3f} -> {hi['cv_real']:.3f} gives phi_J "
                      f"{lo['phi_J']:.4f} -> {hi['phi_J']:.4f}, "

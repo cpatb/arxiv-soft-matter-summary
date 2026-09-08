@@ -30,7 +30,7 @@ import sys
 
 import numpy as np
 
-from analyse_phase2 import load_all
+from analyse_phase2 import load_all, restrict_to_primary_N
 from analyse_phase3 import OBSERVABLES, flatten
 from psd import lognormal_skewness
 
@@ -50,6 +50,9 @@ from analyse_families import welch  # noqa: E402
 def main() -> int:
     recs = [flatten(r) for r in load_all()]
     recs = [r for r in recs if not r.get("failed") and r.get("converged")]
+    # C4 is a between-FAMILY comparison at fixed CV, and the N = 3000 coverage does not
+    # span the CV range it needs, so the size is fixed explicitly rather than by accident.
+    recs = restrict_to_primary_N(recs, "C4 skewness, between-family at fixed CV")
     fams = {r.get("family", "lognormal") for r in recs}
     if "uniform" not in fams:
         print("no uniform-family cells yet -- nothing to compare")

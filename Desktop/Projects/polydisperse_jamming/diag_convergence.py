@@ -14,6 +14,12 @@ import json
 import numpy as np
 
 
+# System size is fixed here on purpose. out/ holds N = 1500 and N = 3000 cells; this
+# diagnostic asks about the CONVERGENCE / LADDER structure at one size, and pooling two
+# would make a system-size difference read as ladder scatter. See N_GROUPING_2026-09-08.md.
+from analyse_phase2 import PRIMARY_N  # noqa: E402
+
+
 def load():
     by_key = {}
     for f in glob.glob("out/phase2*.jsonl"):
@@ -23,7 +29,8 @@ def load():
                     r = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                if r.get("key") and not r.get("failed"):
+                if (r.get("key") and not r.get("failed")
+                        and r.get("n_requested") == PRIMARY_N):
                     by_key[r["key"]] = r
     return list(by_key.values())
 
