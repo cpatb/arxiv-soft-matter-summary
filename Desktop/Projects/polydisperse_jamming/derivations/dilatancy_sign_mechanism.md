@@ -357,6 +357,50 @@ are cleanly separable:
 > **A size ladder at fixed CV, φ and U₀ separates them by 10²** over one decade of `a`:
 > macroscopic drainage predicts `ID ∝ a²`, grain-scale drainage predicts `ID ∝ a⁰`.
 
+### 6b. A cheaper and sharper test of the same thing: change the NOZZLE
+
+`drop_size_test.py` (added 2026-09-08; `out/drop_size_test.txt`). The size ladder needs
+new particles. **The drop diameter tests the same length and needs only a different
+nozzle** — and it is sharper, because the readings differ in *sign*, not just in size.
+
+Writing the Darcy balance with the rate `γ̇` and the pressure length `L_p` kept separate,
+`ID ~ ρU₀²/[(μ_w/κ) γ̇ Δφ L_p²]`, there are three self-consistent readings:
+
+| | `γ̇` | `L_p` | `ID` | boundary velocity |
+|---|---|---|---|---|
+| **(M)** macroscopic | `U₀/D₀` | `D₀` | `∝ 1/D₀` | **`U₀* ∝ D₀`** |
+| **(B)** band drainage | `U₀/D₀` | `ξ` fixed | `∝ D₀` | **`U₀* ∝ 1/D₀`** |
+| **(L)** fully localised | `U₀/ξ` | `ξ` | `∝ D₀⁰` | **`U₀*` independent of `D₀`** |
+
+⚠ (M) is [M26] Eq. 6 verbatim. **(B) is what §6 above actually wrote down** — it fixed
+`γ̇ = U₀/D₀` and let `ℓ` vary, giving `Π ∝ ℓ²/D₀` — and (L) was not distinguished from it
+there. They are different, and `drop_size_test.py` keeps them apart.
+
+Pinning all three to the *same* observation ([M26]'s transition at `U₀` = 7.2 m/s,
+`D₀` = 4.0 mm) so they agree there by construction, and asking only how they move:
+
+| `D₀` [mm] | `U₀*` (M) | `U₀*` (B) | `U₀*` (L) |
+|---|---|---|---|
+| 2.0 | 3.6 | 14.4 | 7.2 |
+| 4.0 | 7.2 | 7.2 | 7.2 |
+| 6.0 | 10.8 | 4.8 | 7.2 |
+
+> **Halving the drop diameter halves the boundary velocity under (M), doubles it under
+> (B), and leaves it unchanged under (L).** The SIGN decides it, so the test does not
+> depend on the band thickness, on the `ID` prefactor, or on where the boundary sits.
+
+⚠ It must be run on **cornstarch**, not on the lab's silica: silica's boundary is at
+`U₀*` ≈ 278 m/s and is unreachable. That is a feature — it tests [M26]'s construction on
+[M26]'s own material. ⚠ And the observable has to be the **regime**, not the spread
+factor, because `We` and `Re` both move with `D₀` on their own; the control is a
+Newtonian liquid of matched viscosity and density over the same ladder.
+
+🔴 **A calibration error in the first version of that script, recorded because it is the
+easy mistake here**: it applied (M)'s boundary value to (B) and (L), which made both look
+as though cornstarch were always inertial. Each reading is a different force ratio and
+carries its own boundary value; the ratio columns above are calibration-free and the
+absolute ones are not.
+
 Nothing in this derivation chooses between them, and the numbers in §1's table
 (`Π` = 1.39e4 vs 0.142, a factor 9.77e4 = (D₀/ℓ)²) show the choice spans the entire
 boundary: on the grain-scale reading `ID` = 7.0 and this drop sits on the INERTIAL side.

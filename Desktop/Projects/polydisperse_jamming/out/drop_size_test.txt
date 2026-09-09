@@ -1,0 +1,46 @@
+=== THE DROP-SIZE TEST OF THE DRAINAGE LENGTH ===
+  🔴 CALIBRATION, and the first version of this script got it wrong. Each reading
+  is a DIFFERENT force ratio, so each has its OWN boundary value; applying (M)'s
+  number to (B) and (L) made both look as though cornstarch were always inertial,
+  which was an artefact of the mis-calibration and not a refutation of anything.
+  Every reading is now pinned to the SAME observation -- [M26] see the transition
+  at the top of their range, U0 = 7.2 m/s at D0 = 4.0 mm -- so all
+  three agree there BY CONSTRUCTION and the test is entirely about how they MOVE.
+
+  boundary value per reading: (M) 6.6748e-03   (B) 1.0680e+01   (L) 2.6699e-01
+
+   D0 [mm]    U0* (M)    U0* (B)    U0* (L)    (M)/ref  (B)/ref  (L)/ref
+      1.00       1.80      28.80       7.20      0.250    4.000    1.000
+      2.00       3.60      14.40       7.20      0.500    2.000    1.000
+      4.00       7.20       7.20       7.20      1.000    1.000    1.000
+      6.00      10.80       4.80       7.20      1.500    0.667    1.000
+      8.00      14.40       3.60       7.20      2.000    0.500    1.000
+
+  🔑 THE THREE READINGS MOVE IN THREE DIRECTIONS. Halving the drop diameter from
+  4 to 2 mm HALVES the boundary velocity under (M), DOUBLES it under (B), and
+  leaves it unchanged under (L) -- a 4x separation between the extremes over one
+  nozzle change. The SIGN alone decides it, so the test does not depend on the
+  O(1) band thickness, on the ID prefactor, or on where the boundary sits.
+
+  ⚠ (M) and (B) both predict the transition LEAVES the accessible range at one
+  end of the ladder -- (M) at small D0, (B) at large -- so the ladder should be
+  centred on 4 mm and kept inside about 2-6 mm for the transition to stay
+  observable under every reading.
+
+  A competing mechanism built on the suspension VISCOSITY (phi_m rising with CV,
+  eta ~ (phi_m - phi)^-2) predicts NO boundary in (U0, D0) at all, so a null
+  result is informative rather than a failed experiment.
+
+=== IS IT RUNNABLE ON THE LAB'S OWN SILICA? NO -- and that is worth knowing ===
+  silica, D0 = 2.5 mm: U0* = 278 m/s under reading (M) -- unreachable on any bench tower.
+  So the drop-size test belongs on CORNSTARCH (or on a larger particle), where
+  the boundary is already inside the accessible velocity range. That is a
+  feature: it tests [M26]'s construction on [M26]'s own material, and it is the
+  cheapest available attack on the drainage length.
+
+  ⚠ WHAT WOULD MAKE THIS INVALID: if changing D0 also changes the impact regime
+  in some other way that moves the observed transition -- Weber and Reynolds both
+  scale with D0, so the SPREADING behaviour changes even with no rheology change.
+  The observable must therefore be the REGIME (solid-like vs re-entrant liquid),
+  not the spread factor, and the control is a Newtonian liquid of matched
+  viscosity and density run over the same D0 ladder.
