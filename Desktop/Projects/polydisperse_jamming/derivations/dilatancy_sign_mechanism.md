@@ -20,9 +20,11 @@
 > Π  =  α μ_w |φ − φ_c| ℓ² / (ρ κ U₀ D₀) ,      κ = (1−φ)³ d₃₂² / (180 φ²)
 > ```
 >
-> With the drainage length ℓ = D₀ this is **exactly 1/ID of [M26] Eq. 6** — derived
-> here from Reynolds + Darcy rather than quoted (check C1.3). Π ≫ 1 is undrained,
-> Π ≪ 1 is drained.
+> With the drainage length ℓ = D₀ this is **exactly 1/ID of [M26] Eq. 6** — its
+> *functional form* derived here from Reynolds + Darcy rather than quoted (check C1.3).
+> ⚠ The **coefficient is imported, not derived**: `α` occupies the same slot as [M26]'s
+> `A`, which is their fitted granular-friction closure (their Eq. 5) and carries no
+> Reynolds–Darcy content. Π ≫ 1 is undrained, Π ≪ 1 is drained.
 >
 > **Axis 2 — sign (set by the WIDTH).** Which way the pore pressure goes:
 >
@@ -285,6 +287,37 @@ can fail.
 **What would falsify the mechanism outright:** `φ_c` flat or falling in CV (P1), or a
 high-CV spreading drop showing pore *suction* (P7).
 
+### 5a. ⚠ A rival that P1–P6 cannot separate, added after the referee pass
+
+The referee named a mechanism this derivation had not, and it is degenerate with the one
+here on almost every axis.
+
+> **M2a, plain suspension rheology.** Raising CV raises the frictional jamming fraction
+> `φ_m` (≈ `φ_c` for frictional spheres). At fixed `φ` that moves the suspension
+> *further from jamming*, so `η ∝ (φ_m − φ)^-2` falls and the drop spreads. **No pore
+> fluid, no Terzaghi, no dilatancy sign — and it uses the same measured `dφ_c/dCV` that
+> the mechanism here needs.**
+
+M2a therefore predicts the *same direction*, driven by the *same number*, and — because
+`φ_m ≈ φ_c` — with the crossing in *roughly the same place*. P1 and P2 are measurements
+of `φ_c(CV)` and are consumed identically by both. **P1–P6 passing would not establish
+the poroelastic mechanism over M2a**, and the first version of this document did not say
+so.
+
+What separates them:
+
+| | this mechanism (M2′) | M2a, rheology |
+|---|---|---|
+| pore-pressure sign (**P7**) | overpressure on the spreading branch, suction on the arrested one | **no coherent pore-pressure signature at all** |
+| shape of the crossing | a **threshold** in `φ − φ_c`: the *sign* of a term flips | a smooth divergence/weakening; `η` is continuous through `φ_m` from below |
+| transient | a **strain clock**: the source shuts off as `φ → φ_c`, so the effect lasts a strain of order `1/α` (`poro_impact.py`) | none; the viscosity is a state function |
+| salt | strength `∝ a/6λ_D` (Eq. 17), so it **strengthens with screening** | `φ_m` is geometric; salt enters only through `σ*` |
+
+**P7 is therefore load-bearing rather than confirmatory**, and the transient and salt
+rows are two further separations that cost nothing extra to look for. The honest position
+until P7 is run: the CV observation is explained by *a* packing-geometry channel, and
+which of the two it is remains open.
+
 ---
 
 ## 6. The open question this derivation creates, and it is the sharp one
@@ -314,28 +347,75 @@ boundary: on the grain-scale reading `ID` = 7.0 and this drop sits on the INERTI
 
 ---
 
-## 7. Two ceilings that bound the dilatant branch
+## 7. The ceiling that bounds the dilatant branch — and it is not cavitation
 
-Equation (4) is unbounded as `κ → 0`, and for silica it goes past what the material can
-sustain. At the lab's numbers (`α`=1, `Δφ`=0.02, `ℓ`=`D₀`=2.5 mm, `d₃₂`=800 nm,
-`γ̇`=`U₀`/`D₀`) check C3.3 gives
+⚠ **This section was rebuilt on 2026-09-08 after a referee pass.** Its first version
+capped equation (4) at cavitation of the pore water (≈1 atm) and reported a 459×
+overshoot. That cap is the one `impact_stress/inertial_dilatant.py`'s own `ID_capped`
+docstring calls **"largely withdrawn after review"**, and which `PORE_PHYSICS.md` §4.4
+(2026-08-10, a month before this derivation) replaces. Building on a withdrawn cap is
+the failure mode this repo already has a lesson about; the section below uses the
+replacement.
+
+Equation (4) is unbounded as `κ → 0`, and for silica it goes far past what the material
+can do. At the lab's numbers (`α`=1, `Δφ`=0.02, `ℓ`=`D₀`=2.5 mm, `d₃₂`=800 nm,
+`γ̇`=`U₀`/`D₀`) it gives **4.65 × 10⁷ Pa**.
+
+The binding limit is not what the *fluid* can survive but what the *packing has left to
+give*. A pack at `φ` can only dilate until it reaches `φ_c`, a volumetric strain of
+`Δφ/φ`, so with `K_p` the drained network modulus (`PORE_PHYSICS.md` Eq. 4.5):
 
 ```
-   |Δp_f| = 4.7e4 kPa = 47 MPa
+(16)   p_dil^max = K_p Δφ / φ
 ```
 
-against two ceilings already implemented in `impact_stress.inertial_dilatant`:
+| quantity, 800 nm silica at φ = 0.44, Δφ = 0.02 | value |
+|---|---|
+| uncapped Darcy, Eq. (4), ℓ = D₀ | 4.65e7 Pa |
+| **network-modulus ceiling, Eq. (16)** | **26.8 Pa** (bracket 8.9 → 268 Pa over λ_D 30 → 1 nm) |
+| overshoot of the uncapped expression | **1.7 × 10⁶**, i.e. six decades |
+| impact stress `ρU₀²` | 1.30e4 Pa |
+| withdrawn cavitation cap | 1.01e5 Pa — **not used** |
 
-- **cavitation** of the pore water at ≈ 1 atm of suction (101 kPa)
-- **capillary entry** of air through a pore throat, `2γ/r_throat` = 2.3 MPa for 800 nm
+**Three consequences, and the first two are good for the argument.**
 
-So the dilatant branch **saturates at cavitation, by a factor of ~460**, and `ID` as an
-uncapped ratio overstates the dilatant force there. `ID_capped` exists in that module for
-exactly this reason. Consequence for this derivation: **R1's strength is set by the
-cavitation ceiling, not by (4)** — which also means R1 is only weakly dependent on `κ`,
-i.e. only weakly dependent on the mean size, once saturated. The *contractive* branch R2
-has no such ceiling (an overpressure is bounded only by the total stress), so the R1↔R2
-asymmetry is real and is another thing to look for at the bench.
+1. **Where the ceiling binds, permeability leaves the problem entirely.** Equation (16)
+   contains no `κ`. For this system it binds by six decades, so **M1 is not merely
+   sub-dominant there, it is absent** — a stronger statement than the order-counting of
+   Step 8, and one that does not depend on `dφ_c/dCV` at all. What survives as a PSD
+   channel is `Δφ(CV)` and whatever moment of the distribution `K_p` reads; for a
+   double-layer contact `K_p ∝ a`, so that is a *first* moment, not `d₃₂`, and it is
+   unmeasured.
+2. **The sign structure and the pole are untouched.** Equation (16) is `∝ Δφ` exactly as
+   equation (4) is, so it vanishes and changes sign at the same place. Capping changes
+   the *magnitude* of the dilatant branch, not *which side of it you are on*.
+3. **The magnitude is small, and that is a real constraint.** 26.8 Pa against a 1.3e4 Pa
+   impact stress. The meaningful comparison is not against the impact stress but against
+   the **particle pressure** that already presses the contacts together, and there
+   `P_conf` cancels (`PORE_PHYSICS.md` §9.4):
+
+   ```
+   (17)   p_dil^max / P_conf = (a / 6λ_D) · (Δφ/φ)
+   ```
+
+   | added salt | λ_D | ratio at φ = 0.44, Δφ = 0.02 | frustrated dilation available as strengthening? |
+   |---|---|---|---|
+   | nominal 0 | 30 nm | 0.20 | no |
+   | 1 mM | 10 nm | 0.61 | no |
+   | 100 mM | 1 nm | 6.06 | **yes** |
+
+   ⚠ So on this accounting the dilatant branch is **marginal at the lab's low-salt
+   condition** and becomes available only with screening. That is a genuine limitation
+   of the mechanism's magnitude and it is not hidden: it says the pore-pressure route
+   should be *strongest at high salt*, which is a prediction on an axis the lab already
+   sweeps. Equation (17) also survives the withdrawal of `si_fit`'s `σ*`, because
+   `P_conf` cancels out of it — only the absolute Pa figures in the table above depend
+   on that withdrawn number.
+
+**And one thing the first version got backwards.** With the correct ceiling at ~27 Pa,
+the suction never approaches one atmosphere, so **there is no cavitation and the
+"look for cavitation bubbles" discriminator is dead.** It is withdrawn from
+`MECHANISM_2026-09-08.md` §6 E-3; the pressure-transducer version survives.
 
 ---
 
@@ -343,7 +423,7 @@ asymmetry is real and is another thing to look for at the bench.
 
 ```
 $ python derivations/dilatancy_sign_mechanism_check.py
-ALL CHECKS PASSED          (17 checks)
+ALL CHECKS PASSED          (21 checks)
 ```
 
 - **C1 SymPy** (4): (4), (6), the identification with [M26] Eq. 6, and the `ℓ²` scaling.
@@ -353,25 +433,65 @@ ALL CHECKS PASSED          (17 checks)
   5 points spanning the range, plus a discriminating negative case (halving `Δφ` must
   move `ID` by > 1.5×; it moves it 2.03×).
 - **C5 channels** (4): the two logarithmic derivatives and their `CV → 0` limits.
+- **C6 the `A` channel** (1), added after the referee pass: Step 7 *asserted* that the
+  third term of (11) is small and nothing checked it. Differentiating `[M26]`'s own `A`
+  numerically gives `|d ln A/dCV|` = 0.213 against a critical-state term of 6.2–95, i.e.
+  **0.2 %–3.4 %** of it. Assertion confirmed, and now it is a check rather than a claim.
+- **C7 external anchor** (2), added after the referee pass: the same
+  Reynolds–Darcy–network-modulus chain applied to **Jérôme, Vandenberghe & Forterre's
+  170 µm glass beads, the one system in this comparison where the pore suction was
+  MEASURED** (−10 to −100 kPa). Equation (16) predicts 4.24e5 Pa — within a decade and
+  above, which is the expected direction for an affine upper bound. Its negative case:
+  the same formula on 800 nm silica gives 26.8 Pa, a factor 373 outside the bead range,
+  so C7 is sensitive to its inputs.
 
 ⚠ **What C4 does and does not establish.** It agrees to *exactly* zero, because it is the
 same algebra typed twice — it anchors the **transcription** of Eq. 6 and says nothing
-about the physics. The check that carries physical weight is **C1.3**, which *derives*
-Eq. 6 from G1 + G3 rather than restating it, and in doing so identifies their `A` with
-the dilatancy coefficient `α` and their implicit length with `D₀`.
+about the physics. C1.3 *derives* Eq. 6 from G1 + G3 rather than restating it, which is
+worth more, but it is still internal consistency with G1–G4 rather than evidence that
+G1–G4 describe reality. **C7 is the only check here that compares against data**, and it
+was absent from the first version.
+
+⚠ **C2's seven limits are weaker than their number suggests.** `Π` is a monomial with
+`μ_w`, `Δφ`, `ℓ²` in the numerator and `κ`, `U₀`, `D₀` in the denominator, so *every*
+limit in the list is guaranteed by that structure alone and none of them can catch a
+wrong exponent. They confirm the slots, not the powers; C1's exact symbolic identity
+already did that.
 
 **Unchecked.** (i) `φ_c(CV)` itself — that is a measurement, in flight. (ii) The
 one-length approximation A2; no check here can validate it, and §6 says why it matters.
 (iii) Whether a *drop* under impact reaches the critical state at all within the impact
 time — the critical state is a large-strain concept and the impact delivers `γ ~ O(1)`;
-the DEM runs to `γ = 2` and the steadiness gate reports whether that is enough.
+the DEM runs to `γ = 2` and the steadiness gate reports whether that is enough. (iv) The
+coefficient `α`/`A` itself: G1–G4 fix the functional form of (4) and (6), but `A` is
+[M26]'s **fitted** friction closure (Eq. 5, exponential in `tan β` with `β₀` = 44° taken
+from cornstarch's repose angle) and has no Reynolds–Darcy content. It is **imported, not
+derived**, and the Result Box says so.
 
 ---
 
-## 9. Referee
+## 9. Referee — findings and what changed
 
-`physics-referee` pass: see §9 of `MECHANISM_2026-09-08.md` for the findings and what
-was changed in response.
+`physics-referee` pass, 2026-09-08, adversarial, seeing only this document, its checks,
+`inertial_dilatant.py` and `PORE_PHYSICS.md`. It ran the check script and re-derived the
+claims independently.
+
+| grade | finding | response |
+|---|---|---|
+| **FATAL** | §7 capped the suction at **cavitation**, which `inertial_dilatant.py`'s own `ID_capped` docstring calls "largely withdrawn after review" and `PORE_PHYSICS.md` §4.4 replaces with the network-modulus ceiling. The overshoot is 1.7e6×, not 459×, and the withdrawn cap removes all particle-size dependence — the very defect it was withdrawn for. | **§7 rebuilt** on Eq. (4.5). Confirmed the referee's arithmetic: 26.8 Pa, not 101 kPa. The correction turned out to *strengthen* the argument (permeability leaves the problem entirely where the ceiling binds) and to *weaken* the magnitude (the branch is marginal at low salt, Eq. 17). The cavitation-bubble discriminator is **withdrawn**. |
+| **MATERIAL** | No check compares against **data**. C4 agrees to exactly zero by construction; C1.3 is internal consistency. `PORE_PHYSICS.md` §9.3 already validates this machinery against Jérôme *et al.*'s measured suctions and the derivation never invoked it. | **C7 added**, with a discriminating negative case. 21 checks now. |
+| **MATERIAL** | An alternative mechanism — plain suspension rheology through `φ_m(CV)` — is never named, uses the *same* measured quantity, predicts the *same* direction, and would not be excluded by P1–P6. | **§5a added.** P7 is re-labelled load-bearing; two further separations (the transient and the salt scaling) are named. |
+| MINOR | The Result Box overstates "derived rather than quoted": `A`/`α` is imported. | Result Box amended; §8 "Unchecked" item (iv). |
+| MINOR | Step 7's "the `A` term is small" was asserted and unchecked. | **C6 added.** Confirmed: 0.2 %–3.4 %. |
+| MINOR | C2's seven limits are guaranteed by the monomial structure and cannot catch a wrong exponent. | Said so in §8 rather than counting them as seven independent checks. |
+
+**Survived the attack unqualified:** Eq. (4) and its assumptions (A); the Terzaghi sign
+algebra (C); the order-counting in Eq. (11), which the referee re-derived numerically
+(D); the pole's physical status as distinct from its provisional location (E); the
+drainage-length cancellation (F), which the referee found independently corroborated by
+`PORE_PHYSICS.md` §3 Eq. 3.1, derived a month earlier; and the `φ_c` incommensurability
+caveat, which was already disclosed. No sign errors and no prose/artifact number
+mismatches were found.
 
 ---
 

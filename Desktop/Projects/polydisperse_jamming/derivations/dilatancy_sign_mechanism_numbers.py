@@ -101,17 +101,39 @@ def main() -> int:
               f"{r32:8.4f}   CONTRACTIVE: Eq. 6 does not apply")
     p()
 
-    p("=== SECTION 7: the two ceilings on the dilatant pore suction ===")
-    # |dp| = alpha * gdot * dphi * mu_w * ell^2 / kappa, with alpha = 1, ell = D0
-    dp = 1.0 * (U0 / D0) * (PHI - PHI_C0) * MU_W * D0**2 / sysm.kappa
-    p(f"  |dp_f| from Eq. (4), alpha=1, ell=D0 = {dp / 1e3:.4g} kPa "
-      f"= {dp / 1e6:.4g} MPa")
-    p(f"  cavitation ceiling  (1 atm)          = {P_ATM / 1e3:.4g} kPa")
-    p(f"  capillary entry 2 gamma / r_throat   = {sysm.p_capillary / 1e3:.4g} kPa "
-      f"(r_throat = {sysm.r_throat * 1e9:.1f} nm)")
-    binding = min(P_ATM, sysm.p_capillary)
-    p(f"  binding ceiling                      = {binding / 1e3:.4g} kPa, "
-      f"exceeded by a factor {dp / binding:.4g}")
+    p("=== SECTION 7: the ceiling on the dilatant pore pressure ===")
+    p("  The binding ceiling is the NETWORK-MODULUS one of PORE_PHYSICS.md Eq. (4.5),")
+    p("  p_dil_max = K_p dphi / phi -- a statement about how much dilation strain the")
+    p("  packing HAS, not about what the fluid can survive. The cavitation cap that an")
+    p("  earlier brief proposed was WITHDRAWN there (PORE_PHYSICS 4.4) for four reasons,")
+    p("  the strongest being that it removes all particle-size dependence.")
+    import pore_relaxation as PR
+    ps = PR.silica_poro(phi=PHI, phi_c=PHI_C0)
+    dp = PR.dilatant_pressure_darcy(ps.sys, L_d=D0, gammadot=U0 / D0)
+    ceil = PR.dilatant_pressure_ceiling(ps.sys, ps.K_p)
+    clo = PR.dilatant_pressure_ceiling(ps.sys, ps.K_p_low)
+    chi = PR.dilatant_pressure_ceiling(ps.sys, ps.K_p_high)
+    p(f"  uncapped Darcy, Eq. (4), ell = D0    = {dp:.4g} Pa")
+    p(f"  network-modulus ceiling (4.5)        = {ceil:.4g} Pa "
+      f"[bracket {clo:.4g} to {chi:.4g} Pa over lambda_D 30 nm -> 1 nm]")
+    p(f"  overshoot of the uncapped expression = {dp / ceil:.4g}x  "
+      f"(SIX decades, not the ~460x a cavitation cap would give)")
+    p(f"  withdrawn cavitation cap (1 atm)     = {P_ATM:.4g} Pa  <-- NOT USED")
+    p(f"  impact stress rho U0^2               = {rho * U0**2:.4g} Pa")
+    p(f"  ceiling / impact stress              = {ceil / (rho * U0**2):.4g}")
+    p("  ANCHOR-FREE RATIO (PORE_PHYSICS 9.4): p_dil_max/P_conf = (a/6 lambda_D)(dphi/phi)")
+    p("  -- P_conf cancels, so this survives the withdrawal of si_fit's sigma*, which is")
+    p("  the ONLY thing the absolute Pa figures above depend on.")
+    for lam_nm, salt in ((30.0, "nominal 0 mM"), (10.0, "1 mM"), (1.0, "100 mM")):
+        ratio = (D10 / (6 * lam_nm * 1e-9)) * ((PHI - PHI_C0) / PHI)
+        p(f"    lambda_D = {lam_nm:4.0f} nm ({salt:11s}): "
+          f"p_dil_max/P_conf = {ratio:8.3f}  "
+          f"{'AVAILABLE as strengthening' if ratio > 1 else 'NOT available'}")
+    p("  KEY STRUCTURAL POINT: the ceiling contains NO permeability. Where it binds --")
+    p("  and for this system it binds by six decades -- the M1 channel is not merely")
+    p("  sub-dominant, it is ABSENT, and the only PSD dependence left is dphi(CV) and")
+    p("  whatever moment of the size distribution K_p reads (unmeasured; K_p ~ a for the")
+    p("  double-layer contact, so it is a FIRST moment, not d32).")
     p()
 
     p("=== SECTION 6: the drainage-length ambiguity, as a size ladder ===")

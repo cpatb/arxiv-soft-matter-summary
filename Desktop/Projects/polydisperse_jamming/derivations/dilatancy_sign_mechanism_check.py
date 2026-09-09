@@ -27,6 +27,7 @@ from __future__ import annotations
 import os
 import sys
 
+import numpy as np
 import sympy as sp
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -257,12 +258,99 @@ def c5_channels() -> None:
                   f"not a ratio of two same-signed channels")
 
 
+# =====================================================================================
+# C6  The third term of Eq. (11): d ln A/dCV, which the prose asserts is small
+# =====================================================================================
+def c6_A_channel() -> None:
+    """[M26]'s A depends on CV through tan(beta) = tan(beta0) + alpha*dphi.
+
+    Step 7 of the derivation asserts this term is smaller than the critical-state one by
+    a factor of order dphi. That was ASSERTED and not checked until a referee computed
+    it; it is checked here.
+    """
+    print("")
+    print("=== C6  the A channel of Eq. (11) ===")
+    if IMPACT_STRESS not in sys.path:
+        sys.path.insert(0, IMPACT_STRESS)
+    from inertial_dilatant import DilatantSystem
+
+    phi, phic0, s_slope = 0.44, 0.42, 0.1246
+    worst = 0.0
+    for cv in (0.0, 0.05, 0.10, 0.15):
+        dphi = phi - (phic0 + s_slope * cv)
+        h = 1e-6
+        def lnA(c):
+            d = phi - (phic0 + s_slope * c)
+            return float(np.log(DilatantSystem(name="x", phi=phi, phi_c=phi - d,
+                                               a=800e-9, rho=1440.0).A))
+        dlnA = (lnA(cv + h) - lnA(cv - h)) / (2 * h)
+        crit = s_slope / dphi
+        ratio = abs(dlnA) / crit
+        worst = max(worst, ratio)
+        print(f"     CV={cv:.2f}  |dlnA/dCV|={abs(dlnA):.4f}  crit_term={crit:8.3f}  "
+              f"ratio={ratio:.4f}")
+    check("C6 the A channel is under 5 % of the critical-state channel everywhere",
+          worst < 0.05, f"worst ratio {worst:.4f}")
+
+
+# =====================================================================================
+# C7  EXTERNAL ANCHOR: the same machinery against a MEASURED pore suction
+# =====================================================================================
+def c7_external_anchor() -> None:
+    """Jerome, Vandenberghe & Forterre measured -1e4 to -1e5 Pa in 170 um glass beads.
+
+    This is the only check here that compares against DATA rather than against algebra.
+    It exercises the Reynolds + Darcy + network-modulus chain that Eq. (4) and section 7
+    rest on, through the repo's own `pore_relaxation` implementation, on a system the
+    derivation has no freedom to tune.
+    """
+    print("")
+    print("=== C7  external anchor: JVF's measured glass-bead suction ===")
+    if IMPACT_STRESS not in sys.path:
+        sys.path.insert(0, IMPACT_STRESS)
+    try:
+        import pore_relaxation as PR
+    except Exception as exc:                          # noqa: BLE001
+        check("C7 import pore_relaxation", False, repr(exc))
+        return
+    g = PR.glass_beads_JVF()
+    ceil = PR.dilatant_pressure_ceiling(g.sys, g.K_p)
+    lo, hi = 1.0e4, 1.0e5           # [JVF16]'s reported range, Pa
+    print(f"     predicted ceiling K_p dphi/phi = {ceil:.3e} Pa "
+          f"(K_p = {g.K_p:.3e} Pa, dphi = {g.sys.dphi:.4f})")
+    print(f"     measured range                 = {lo:.0e} to {hi:.0e} Pa")
+    check("C7 the prediction is within one decade of the measured range, and ABOVE it "
+          "(the affine modulus is an upper bound)",
+          hi <= ceil <= 10 * hi, f"ratio to the top of the measured range "
+                                 f"{ceil / hi:.3f}")
+    # A DISCRIMINATING negative case has to be one the anchor could fail. Predicting
+    # the SILICA ceiling with the glass-bead modulus must NOT land in the glass-bead
+    # range, or C7 would pass for a routine that ignores its inputs.
+    si = PR.silica_poro(phi=0.44, phi_c=0.42)
+    ceil_si = PR.dilatant_pressure_ceiling(si.sys, si.K_p)
+    check("C7-neg the same formula on 800 nm silica lands far OUTSIDE the glass-bead "
+          "range, so C7 is sensitive to its inputs",
+          ceil_si < lo / 100.0,
+          f"silica ceiling {ceil_si:.3e} Pa against a measured bead range starting at "
+          f"{lo:.0e} Pa -- a factor {lo / ceil_si:.3g}")
+    # NOT a check: the withdrawn 1-atm cavitation cap happens to sit AT the top of the
+    # measured bead range, so this dataset cannot tell the two ceilings apart. It is
+    # recorded because a reader would otherwise assume C7 also refutes the cap.
+    from inertial_dilatant import P_ATM
+    print(f"     note: the withdrawn cavitation cap is {P_ATM:.3e} Pa, which is inside "
+          f"the measured range -- this anchor does NOT discriminate the two ceilings;")
+    print("           what does is that a fluid constant carries no particle size, so "
+          "it gives the SAME number for 170 um beads and 800 nm silica.")
+
+
 if __name__ == "__main__":
     c1_symbolic()
     c2_limits()
     c3_dimensions()
     c4_numeric()
     c5_channels()
+    c6_A_channel()
+    c7_external_anchor()
     print("\n" + ("ALL CHECKS PASSED" if not FAILURES
                   else f"{len(FAILURES)} FAILED: {FAILURES}"))
     raise SystemExit(1 if FAILURES else 0)
