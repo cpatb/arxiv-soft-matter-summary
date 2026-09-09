@@ -1,0 +1,77 @@
+phase8: 90 records from phase8_downlad*.jsonl,phase8_prod2*.jsonl; 90 usable, 0 errored
+duplicate-state check: 0 offending pairs
+
+family        cv    mu seed cells stdy  qs phi_c_E2*   b_E2  phi_c_E3  phi_c_E4 phiDenseE1   mu_s  p_hat_max       gdot
+   (* E2 is PRIMARY; phiDenseE1 is the retracted E1, relabelled -- see docstring)
+   (this table is UNGATED; `stdy`/`qs` are how many of `cells` pass each gate)
+lognormal   0.00  0.30    1    10    9   6       nan   8.00       nan    0.5778     0.6652  0.352  2.781e-02  3.000e-05
+lognormal   0.00  0.30    2    10    8   6       nan   8.00       nan    0.5758     0.6676  0.341  2.827e-02  3.000e-05
+lognormal   0.00  0.30    3    10    7   6       nan   8.00       nan    0.5754     0.6821  0.349  2.801e-02  3.000e-05
+lognormal   0.20  0.30    1    10    9   6       nan   8.00       nan    0.5876     0.6962  0.346  2.984e-02  6.178e-05
+lognormal   0.20  0.30    2    10    8   6       nan   8.00       nan    0.5881     0.6985  0.347  2.941e-02  5.634e-05
+lognormal   0.20  0.30    3    10    6   6       nan   8.00       nan    0.5860     0.6967  0.345  2.998e-02  5.919e-05
+lognormal   0.50  0.30    1    10    9   7       nan   7.91    0.5767    0.6252     0.7240  0.366  3.644e-02  1.437e-04
+lognormal   0.50  0.30    2    10    9   6       nan   8.00    0.5767    0.6320     0.7598  0.349  3.532e-02  1.439e-04
+lognormal   0.50  0.30    3    10    8   7       nan   7.76    0.5767    0.6233     0.7249  0.364  3.649e-02  1.422e-04
+
+=== CV contrasts (mean over seeds, +/- sd) -- ALL FOUR GATE SETS ===
+-- lognormal, mu_p = 0.3
+   realised gdot: cv0.00=3.000e-05  cv0.20=5.910e-05  cv0.50=1.433e-04
+   🔴 SHEAR RATE VARIES 4.78x ACROSS THIS CONTRAST (bar 1.20x). gdot = gamma_max/(shear_steps*dt) and dt is set by the SMALLEST particle, so widening the size distribution raises the rate. Every dphi_c below is confounded with a rate contrast of this size; the rate-matched control is --pattern "phase8_ratem*.jsonl".
+   E2:
+      ungated      too few resolved CV levels (0) -- no contrast
+      quasistatic  d(cv 0.00->0.50) = +0.0446 (+6.0 sd) slope +0.0892/CV   cv0.00=0.5923+-0.0023(n3) cv0.20=0.6031+-0.0011(n3) cv0.50=0.6369+-0.0074(n3)
+      steady       d(cv 0.00->0.50) = +0.0479 (+2.3 sd) slope +0.0957/CV   cv0.00=0.4996+-nan(n1) cv0.20=0.5256+-nan(n1) cv0.50=0.5475+-0.0210(n2)
+      both         d(cv 0.00->0.50) = +0.0479 (+6.8 sd) slope +0.0957/CV   cv0.00=0.5895+-0.0043(n3) cv0.20=0.5994+-0.0034(n3) cv0.50=0.6374+-0.0071(n3)
+   E3:
+      ungated      too few resolved CV levels (1) -- no contrast
+      quasistatic  d(cv 0.00->0.50) = +0.0477 (+5.7 sd) slope +0.0955/CV   cv0.00=0.5927+-0.0015(n3) cv0.20=0.6042+-0.0002(n3) cv0.50=0.6405+-0.0084(n3)
+      steady       too few resolved CV levels (1) -- no contrast
+      both         d(cv 0.00->0.50) = +0.0468 (+5.6 sd) slope +0.0936/CV   cv0.00=0.5937+-0.0007(n3) cv0.20=0.6065+-0.0016(n3) cv0.50=0.6405+-0.0084(n3)
+   E4:
+      ungated      d(cv 0.00->0.50) = +0.0505 (+11.0 sd) slope +0.1010/CV   cv0.00=0.5763+-0.0013(n3) cv0.20=0.5872+-0.0011(n3) cv0.50=0.6268+-0.0046(n3)
+      quasistatic  too few resolved CV levels (0) -- no contrast
+      steady       d(cv 0.00->0.50) = +0.0499 (+11.1 sd) slope +0.0998/CV   cv0.00=0.5753+-0.0022(n3) cv0.20=0.5840+-0.0068(n3) cv0.50=0.6252+-0.0045(n3)
+      both         too few resolved CV levels (0) -- no contrast
+   E4m:
+      ungated      d(cv 0.00->0.50) = +0.0410 (+8.2 sd) slope +0.0819/CV   cv0.00=0.5948+-0.0014(n3) cv0.20=0.5971+-0.0004(n3) cv0.50=0.6358+-0.0050(n3)
+      quasistatic  too few resolved CV levels (1) -- no contrast
+      steady       d(cv 0.00->0.50) = +0.0443 (+8.6 sd) slope +0.0886/CV   cv0.00=0.5912+-0.0044(n3) cv0.20=0.5975+-0.0048(n3) cv0.50=0.6355+-0.0052(n3)
+      both         too few resolved CV levels (1) -- no contrast
+   dense_E1:
+      ungated      d(cv 0.00->0.50) = +0.0646 (+3.2 sd) slope +0.1292/CV   cv0.00=0.6716+-0.0091(n3) cv0.20=0.6971+-0.0012(n3) cv0.50=0.7362+-0.0205(n3)
+      quasistatic  d(cv 0.00->0.50) = +0.0646 (+3.2 sd) slope +0.1292/CV   cv0.00=0.6716+-0.0091(n3) cv0.20=0.6971+-0.0012(n3) cv0.50=0.7362+-0.0205(n3)
+      steady       d(cv 0.00->0.50) = +0.0192 (+0.4 sd) slope +0.0384/CV   cv0.00=0.7189+-0.0444(n3) cv0.20=0.7605+-0.0043(n3) cv0.50=0.7381+-0.0191(n3)
+      both         d(cv 0.00->0.50) = +0.0192 (+0.4 sd) slope +0.0384/CV   cv0.00=0.7189+-0.0444(n3) cv0.20=0.7605+-0.0043(n3) cv0.50=0.7381+-0.0191(n3)
+
+=== P3: the CV contrast at MATCHED phi (no fit, no estimator) ===
+   7 overlapping pairs within 0.005 in phi; ALL are reported
+   phi 0.57453(cv0.00, n3) vs 0.57687(cv0.50, n3), mismatch 0.00234
+      p_ss 3.7395e-06 -> 4.1457e-06  ratio    0.9x  (1 sd)   Z_nr 3.94 -> 2.68   rattlers 0.126 -> 0.844
+      (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 0.8x against 0.9x -- a 10 % change
+   phi 0.59454(cv0.00, n3) vs 0.59686(cv0.50, n3), mismatch 0.00232
+      p_ss 4.7254e-04 -> 9.9401e-06  ratio   47.5x  (1 sd)   Z_nr 4.58 -> 3.20   rattlers 0.066 -> 0.694
+      (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 15.8x against 47.5x -- a 67 % change
+   phi 0.61453(cv0.00, n3) vs 0.61687(cv0.50, n3), mismatch 0.00233
+      p_ss 5.8222e-03 -> 2.6041e-05  ratio  223.6x  (20 sd)   Z_nr 5.73 -> 3.59   rattlers 0.014 -> 0.607
+      (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 221.7x against 223.6x -- a 1 % change
+   phi 0.63453(cv0.00, n3) vs 0.63687(cv0.50, n3), mismatch 0.00234
+      p_ss 1.0824e-02 -> 2.5062e-04  ratio   43.2x  (63 sd)   Z_nr 6.12 -> 4.43   rattlers 0.004 -> 0.448
+      (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 41.0x against 43.2x -- a 5 % change
+   phi 0.65453(cv0.00, n3) vs 0.65686(cv0.50, n3), mismatch 0.00232
+      p_ss 1.6357e-02 -> 3.0541e-03  ratio    5.4x  (15 sd)   Z_nr 6.49 -> 5.15   rattlers 0.002 -> 0.337
+      (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 5.6x against 5.4x -- a 4 % change
+   phi 0.67453(cv0.00, n3) vs 0.67686(cv0.50, n3), mismatch 0.00232
+      p_ss 2.1848e-02 -> 8.5202e-03  ratio    2.6x  (13 sd)   Z_nr 6.78 -> 5.61   rattlers 0.000 -> 0.277
+      (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 2.7x against 2.6x -- a 4 % change
+   phi 0.69453(cv0.00, n3) vs 0.69686(cv0.50, n3), mismatch 0.00233
+      p_ss 2.8030e-02 -> 1.4557e-02  ratio    1.9x  (9 sd)   Z_nr 7.06 -> 5.94   rattlers 0.000 -> 0.226
+      (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 1.9x against 1.9x -- a 0 % change
+   spread across pairs: 0.9x to 223.6x -- a factor 247.9 between pairs that differ only in which rung they sit on. Quote the RANGE.

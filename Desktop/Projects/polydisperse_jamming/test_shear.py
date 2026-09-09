@@ -422,6 +422,38 @@ def test_the_prod2_shear_rate_is_NOT_matched_across_the_CV_ladder():
         assert max(v) / min(v) < 1.10, (cv, v)
 
 
+def test_load_deduplicates_on_key_and_reports_a_disagreement(tmp_path, capsys):
+    """Two patterns can legitimately name the same cell: the down-shifted ladder and the
+    production one share their top two rungs at cv = 0 by construction. Without a dedup
+    the duplicate-state guard fires on a sound selection; with a SILENT dedup a genuine
+    reproducibility failure would be swallowed. Both halves are asserted."""
+    import json
+
+    rec = {"key": "cell_A", "phi": 0.60, "p_ss_hat": 1e-3, "z_nr_ss": 5.0,
+           "i_ss": 1e-3, "mu_macro": 0.36, "steady": True, "quasistatic": True,
+           "cv": 0.0, "mu_p": 0.3, "seed": 1, "n_requested": 1500}
+    other = dict(rec, key="cell_B", phi=0.62)
+    bad = dict(rec, p_ss_hat=2e-3)                 # same key, DIFFERENT result
+
+    old = A.OUT_DIR
+    try:
+        A.OUT_DIR = str(tmp_path)
+        (tmp_path / "t_one.jsonl").write_text(
+            json.dumps(rec) + "\n" + json.dumps(other) + "\n", encoding="utf-8")
+        (tmp_path / "t_two.jsonl").write_text(json.dumps(rec) + "\n", encoding="utf-8")
+        got = A.load("t_*.jsonl")
+        assert len(got) == 2, [r["key"] for r in got]
+        assert sorted(r["key"] for r in got) == ["cell_A", "cell_B"]
+        assert "REPRODUCIBILITY" not in capsys.readouterr().out
+
+        (tmp_path / "t_two.jsonl").write_text(json.dumps(bad) + "\n", encoding="utf-8")
+        got = A.load("t_*.jsonl")
+        assert len(got) == 2
+        assert "REPRODUCIBILITY" in capsys.readouterr().out
+    finally:
+        A.OUT_DIR = old
+
+
 def test_analyse_group_counts_the_gates_it_was_given():
     phi = np.linspace(0.56, 0.62, 7)
     p = 0.5 * np.maximum(phi - 0.58, 0) + 1e-12

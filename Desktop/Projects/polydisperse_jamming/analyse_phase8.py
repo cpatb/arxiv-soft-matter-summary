@@ -215,8 +215,17 @@ def load(pattern: str) -> list[dict]:
     single glob cannot name them. Every record still carries its own `protocol`,
     `gamma_max`, `shear_steps` and realised `gdot`, all of which `group_key` and the
     contrast block report, so pooling two patterns cannot hide a knob.
+
+    ⚠ Records are DEDUPLICATED on their `key`, which encodes every swept knob including
+    the realised-target `phi`. Two patterns can legitimately name the same cell -- the
+    down-shifted ladder and the production one share their top two rungs at cv = 0 by
+    construction -- and without this the duplicate-state guard fires 18 times on a
+    perfectly sound selection. Every dropped duplicate is CHECKED against the record it
+    duplicates on `p_ss_hat` and `z_nr_ss`; a disagreement is a REPRODUCIBILITY failure
+    and is printed rather than swallowed.
     """
-    recs = []
+    recs: list[dict] = []
+    seen: dict[str, dict] = {}
     paths: list[str] = []
     for pat in (p.strip() for p in pattern.split(",") if p.strip()):
         paths.extend(glob.glob(os.path.join(OUT_DIR, pat)))
@@ -227,9 +236,22 @@ def load(pattern: str) -> list[dict]:
                 if not line:
                     continue
                 try:
-                    recs.append(json.loads(line))
+                    r = json.loads(line)
                 except json.JSONDecodeError:
                     continue
+                k = r.get("key")
+                if isinstance(k, str) and k in seen:
+                    prev = seen[k]
+                    for fld in ("p_ss_hat", "z_nr_ss"):
+                        a, b = prev.get(fld), r.get(fld)
+                        if (isinstance(a, float) and isinstance(b, float)
+                                and not np.isclose(a, b, rtol=1e-9, atol=0.0)):
+                            print(f"🔴 REPRODUCIBILITY: {k} appears twice with "
+                                  f"{fld} = {a!r} and {b!r}")
+                    continue
+                if isinstance(k, str):
+                    seen[k] = r
+                recs.append(r)
     return recs
 
 

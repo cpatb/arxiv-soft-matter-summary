@@ -176,10 +176,10 @@ declared small pressure, or use the `z_nr` crossing. Whatever is chosen, grade i
 **window test in `grade_root_pinning.py`** — move the window and require the answer not
 to move — which is now the repo's standard for a `φ_c` estimator.
 
-**(c) The E4 repair ladder is ALREADY RUNNING** — see §5. `downlad2`, 30 cells, cv = 0.2
-and 0.5 with offsets −0.06 … +0.02, which brackets `z_nr` = 4 at every CV so E4 and E4m
-can report the full contrast for the first time. Analyse with
-`--pattern "phase8_downlad*.jsonl"` and read the `E4` and `E4m` rows together.
+**(c) The E4 repair ladder is DONE — start from its answer, not from E2's.** See §5:
+Δ`φ_c` = **+0.0410 (E4m) to +0.0505 (E4)**, n = 3 seeds at every CV, from an estimator
+that does not inherit the ladder centring. Any replacement for E2 has to reproduce that
+range or explain why not.
 
 ### 2. E-6, the nozzle test — still the cheapest bench experiment, and now relatively more valuable
 
@@ -287,12 +287,39 @@ if anything else is running:
 
 ---
 
-## 5. In flight when this was written
+## 5. The repair ladder LANDED — and it gives the first estimator-clean contrast
 
-- **`downlad2`, 30 cells, RUNNING.** cv = 0.2 and 0.5 with offsets −0.06 … +0.02, so
-  `z_nr` = 4 is bracketed at every CV and E4/E4m can report the full CV contrast. Sync
-  with `cp ~/pj/out/phase8_downlad2*.jsonl <repo>/out/` and analyse with
-  `python analyse_phase8.py --pattern "phase8_downlad*.jsonl" --out downlad_verdict.txt`.
-  **Read the `E4` and `E4m` rows together** — they differ by the isostatic-count
-  correction, and neither is "the" answer.
-- Nothing else is running.
+`downlad2`, 30 cells, 0 failures, all synced and committed. Offsets −0.06 … +0.02 at
+cv = 0.2 and 0.5 (cv = 0 was already `downlad`), which brackets `z_nr` = 4 at **every**
+CV. On the centred production ladder E4 was NaN on 5 of 9 groups and on **every** cv = 0.5
+one, so no E4 contrast existed at all. It does now, n = 3 seeds at every level:
+
+```
+python analyse_phase8.py --pattern "phase8_downlad*.jsonl,phase8_prod2*.jsonl" \
+       --out full_ladder_verdict.txt
+```
+
+| estimator | Δ`φ_c` (CV 0 → 0.5) | slope | sd |
+|---|---|---|---|
+| **E4**, isostatic crossing, theory target `Z` = 4 | **+0.0505** | 0.1010 | 11.0 |
+| **E4m**, same crossing, measured `z_iso` per CV | **+0.0410** | 0.0819 | 8.2 |
+| E2, window-dependent — do not quote | +0.045 … +0.061 | — | — |
+| `φ_J`, isotropic, no shear at all | **+0.0623** | 0.1246 | — |
+
+**Read `E4` and `E4m` together; neither alone is the answer.** They differ only by the
+isostatic-count correction, which is the `Z_ISO` defect above, and the honest statement
+is Δ`φ_c` = **+0.041 to +0.051**.
+
+🔑 **And that is the session's one genuinely new physical number.** It comes from an
+estimator that does *not* inherit the ladder centring, and it sits **20–34 % below** the
+isotropic +0.0623 — the first evidence that `φ_c` and `φ_J` are *not* the same number, in
+the opposite direction from the coincidence the window test withdrew. ⚠ It is not clean:
+`E4m`'s target is read off the isotropic ladder, so the residual dependence discussed in
+§0 is still there, and both numbers still come from ladders *placed* relative to `φ_J`.
+**§2 item 1(a), the common absolute ladder, is what settles it.**
+
+`analyse_phase8.load` now deduplicates on the record `key` (the two ladders share their
+top two rungs at cv = 0 by construction) and prints a `🔴 REPRODUCIBILITY` line if two
+records with the same key disagree. On this data none do — a free determinism check.
+
+**Nothing is running.**
