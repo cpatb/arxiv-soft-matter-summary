@@ -113,50 +113,87 @@ def test_zero_dphi_gives_no_pore_pressure_at_all():
 # =====================================================================================
 # THE STRAIN CLOCK — checked against an independent scalar integration
 # =====================================================================================
-def test_phi_relaxes_to_phi_c_on_the_strain_the_scalar_ODE_predicts():
-    """dphi/dt = -phi alpha (phi - phi_c) has nothing to do with the PDE; solving it
-    separately is an independent check of the source's shut-off clock."""
-    from scipy.integrate import solve_ivp
+def test_undrained_locking_is_exact_and_the_pressure_grows_linearly():
+    """The anchor the FIRST version of this module did not have.
 
-    phi0, dphi0, alpha = 0.44, 0.02, 1.0
-    phi_c = phi0 - dphi0
-    sol = solve_ivp(lambda t, y: -y * alpha * (y - phi_c), (0, 6), [phi0],
-                    rtol=1e-11, atol=1e-14, dense_output=True)
-    d = lambda t: float(sol.sol(t)[0]) - phi_c          # noqa: E731
-    lo, hi = 0.0, 6.0
-    for _ in range(200):                                # bisect the half-crossing
-        mid = 0.5 * (lo + hi)
-        if d(mid) > 0.5 * dphi0:
-            lo = mid
-        else:
-            hi = mid
-    t_half_ref = 0.5 * (lo + hi)
+    In the undrained limit (Lambda -> 0) with alpha = 1 and no external loading, the
+    corrected eq. (iv) has a CLOSED-FORM solution that owes nothing to the solver:
 
-    r = PI.solve(lam=2.0, s_dil=1.0, dphi0=dphi0, phi0=phi0, t_end=6.0,
-                 n_nodes=101, rtol=1e-10, atol=1e-14)
-    assert r.ok
-    # solve_ivp's output grid limits the resolution of the crossing; require the
-    # crossing to be inside one output step of the reference.
-    step = float(np.max(np.diff(r.t)))
-    assert abs(r.strain_to_half_dphi - t_half_ref) <= step, (
-        f"strain to half dphi {r.strain_to_half_dphi:.4f} vs reference "
-        f"{t_half_ref:.4f}, output step {step:.4f}"
-    )
-    assert 1.0 < t_half_ref < 2.5, f"unexpected reference clock {t_half_ref}"
+        dp/dt   = -S (phi - phi_c)
+        dphi/dt = (phi/S)(0 - dp/dt) - phi (phi - phi_c)
+                = phi (phi - phi_c) - phi (phi - phi_c) = 0        exactly
 
+    so phi - phi_c LOCKS and p(t) = -S alpha dphi0 * t is LINEAR. Both are checked.
 
-def test_free_phi_never_reaches_the_frozen_steady_state():
-    """The source shuts itself off, so the transient must UNDERSHOOT the closed form.
-
-    This is the quantitative content of assumption A5, and it is the reason the
-    derivation's Eq. (6) is an upper bound rather than a prediction.
+    The test this replaces integrated the SAME incomplete equation in a separate scalar
+    solver and called it independent. Two anchors sharing one identity cannot check that
+    identity, which is how the missing elastic term survived until a referee derived
+    eq. (iv) by hand.
     """
-    lam, s_dil, dphi0 = 2.0, 1.0, 0.02
-    free = PI.solve(lam=lam, s_dil=s_dil, dphi0=dphi0, t_end=2.0, n_nodes=201)
-    frozen = PI.solve(lam=lam, s_dil=s_dil, dphi0=dphi0, t_end=2.0, freeze_phi=True,
-                      n_nodes=201)
-    assert abs(free.p_peak_hat) < abs(frozen.p_peak_hat)
-    assert 0.0 < abs(free.steady_ratio) < 1.0
+    s_dil, dphi0 = 1.0, 0.02
+    r = PI.solve(lam=1e-9, s_dil=s_dil, dphi0=dphi0, t_end=3.0, n_nodes=101,
+                 rtol=1e-11, atol=1e-14)
+    assert r.ok
+    d = np.asarray(r.dphi)
+    assert float(np.max(np.abs(d - dphi0))) < 1e-9, (
+        f"phi - phi_c drifted by {float(np.max(np.abs(d - dphi0))):.3e}; it must LOCK"
+    )
+    t = np.asarray(r.t)
+    want = -s_dil * PI.ALPHA_DIL * dphi0 * t
+    got = np.asarray(r.p_base)
+    err = float(np.max(np.abs(got - want)) / max(float(np.max(np.abs(want))), 1e-30))
+    assert err < 1e-6, f"p_base is not the closed-form ramp; rel err {err:.3e}"
+    assert np.isnan(r.strain_to_half_dphi), "a locked pack has no half-crossing"
+
+
+def test_the_incomplete_law_and_the_correct_one_DISAGREE():
+    """Discriminating negative case: the two laws must not give the same answer.
+
+    Without it the correction is untestable and could be reverted silently.
+    """
+    kw = dict(lam=1e-9, s_dil=1.0, dphi0=0.02, t_end=3.0, n_nodes=101,
+              rtol=1e-11, atol=1e-14)
+    right = PI.solve(elastic_feedback=True, **kw)
+    wrong = PI.solve(elastic_feedback=False, **kw)
+    assert abs(right.dphi_final - 0.02) < 1e-9
+    assert wrong.dphi_final < 0.5 * 0.02, (
+        f"the incomplete law must show phi - phi_c DECAYING; got {wrong.dphi_final:.4g}"
+    )
+    assert abs(right.p_base_final) > 1.3 * abs(wrong.p_base_final)
+
+
+def test_the_strain_clock_exists_ONLY_in_the_drained_limit():
+    """Locking is a property of the UNDRAINED limit, and the clock of the drained one.
+
+    Undrained (Lambda -> 0): dp/dt = -S dphi exactly, the elastic compression cancels
+    the Reynolds dilation, phi - phi_c locks, and the free case is identical to a
+    deliberately frozen one.
+
+    Drained (Lambda >> 1): the fluid carries pressure away, |dp/dt| < S dphi, the
+    cancellation is incomplete, the pack really does dilate toward phi_c, and the free
+    case falls well below the frozen one.
+
+    The test this replaces asserted the UNDERSHOOT unconditionally, which was a
+    consequence of the incomplete eq. (iv) rather than of physics, and it was the basis
+    of the now-withdrawn "strain clock" claim. The clock is real -- but only where the
+    pack can drain, and the lab's silica is at Lambda ~ 1e-7.
+    """
+    s_dil, dphi0 = 1.0, 0.02
+    kw = dict(s_dil=s_dil, dphi0=dphi0, t_end=6.0, n_nodes=201, rtol=1e-10,
+              atol=1e-14)
+
+    und_free = PI.solve(lam=1e-6, **kw)
+    und_frozen = PI.solve(lam=1e-6, freeze_phi=True, **kw)
+    assert abs(und_free.p_base_final) == pytest.approx(
+        abs(und_frozen.p_base_final), rel=1e-4), "undrained: the pack must LOCK"
+    assert abs(und_free.dphi_final - dphi0) < 1e-9
+
+    dr_free = PI.solve(lam=2.0, **kw)
+    dr_frozen = PI.solve(lam=2.0, freeze_phi=True, **kw)
+    assert abs(dr_free.p_base_final) < 0.5 * abs(dr_frozen.p_base_final), (
+        "drained: the pack must dilate toward phi_c and undershoot the frozen case"
+    )
+    assert dr_free.dphi_final < 0.5 * dphi0
 
 
 # =====================================================================================

@@ -1,0 +1,21 @@
+==============================================================================
+DOES THE rmax ESTIMATOR INFLATE DURING THE IMPACT?
+==============================================================================
+
+inflation = (rmax / r_p95)^2, the force-relevant quantity, logged through the
+probe loop. 7h measured only the launch value.
+
+     CV   n   at launch        max at contact      COR
+   0.00   2      1.0736     1.1035     1.0984  +0.0004
+   0.50   2      1.1149    83.0869     1.1736  +0.0482
+
+PRE-REGISTERED: G_dyn <= 1.5 -> 7h extends; >= 3.0 -> 7h withdrawn
+  G_dyn (max over loop)      = 75.293
+  G_dyn (at peak wall contact) = 1.068
+
+  => 7h MUST BE WITHDRAWN. The estimator inflates differentially
+     during the pancake, so it can raise the work at CV = 0.5
+     without showing up in the static screen. Re-run the
+     confinement with a percentile radius.
+
+  RMAX_DYNAMIC_WITHDRAWN

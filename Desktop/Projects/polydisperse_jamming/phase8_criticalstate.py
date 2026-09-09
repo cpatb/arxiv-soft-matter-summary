@@ -66,18 +66,24 @@ PHI_J_ISO = {
     ("uniform", 0.5, 0.3): 0.5979189641708998,
 }
 
-# Offsets from the ladder centre. Seven rungs at 0.015 spacing, +/- 0.045 in phi.
+# Offsets from the ladder centre. Five rungs at 0.020 spacing, 0 to +0.080.
 #
-# WIDENED from five rungs to seven after the 2026-09-08 locating run, which is a change
-# of RESOLUTION and RANGE made before any phi_c was fitted, not a change made to move a
-# number. Two things it fixes. (i) `p_ss(phi)` turned out to span 3e-6 to 1e-2 across
-# five rungs, so a two-parameter fit was being asked to find a root from points that are
-# four decades apart in the fitted quantity; more rungs near the root is the only cure.
-# (ii) At cv = 0 the bottom rung (phi_J_iso - 0.030) was already unjammed (p = 2.9e-6,
-# Z = 2.20, 37 % rattlers) and at cv = 0.5 so was its counterpart, so five rungs left
-# only a handful above the root. 0.015 spacing is ~3x the largest seed scatter in
-# PHI_J_ISO (0.0048), which is the resolution below which rungs stop being distinct.
-PHI_OFFSETS = (-0.045, -0.030, -0.015, 0.0, +0.015, +0.030, +0.045)
+# ⚠ MOVED UPWARD 2026-09-08 after the first production run. The ladder was originally
+# centred on the isotropic phi_J, on the assumption that the critical state sits near
+# it. It does not: at cv = 0 the phi(I -> 0) extrapolation returned phi_c = 0.614-0.616
+# against phi_J_iso = 0.5745, i.e. the critical state is ~0.04 ABOVE the isotropic
+# jamming point, so five of the seven rungs were unjammed and only two carried signal.
+# That is a real result (steady shear densifies a frictional pack past the state
+# isotropic compression reaches) and it is also a badly placed sample.
+#
+# This is a change of SAMPLING, not of hypothesis: the predictions P1-P5 in
+# derivations/dilatancy_sign_mechanism.md section 5 are untouched, `analyse_phase8.py`
+# still REFUSES a root outside the ladder it was fitted on, and the previous ladder's
+# records are kept (they are what located the root). Bracketing a root by moving the
+# bracket toward it is a search, not a tuned parameter.
+#
+# 0.020 spacing is ~4x the largest seed scatter in PHI_J_ISO (0.0048).
+PHI_OFFSETS = (0.0, +0.020, +0.040, +0.060, +0.080)
 
 CV_LADDER = (0.0, 0.2, 0.5)
 MU_LADDER = (0.3,)
@@ -87,11 +93,13 @@ SEEDS = (1, 2, 3)
 N_PROD = 1500
 N_SMOKE = 600
 
-# gamma_max = 2.0 so the averaging window (the last STEADY_FRAC of the strain) is
-# gamma in [1, 2], i.e. a full unit of strain AFTER the preparation has been erased.
-# At gamma_max = 1.0 the steadiness gate failed on 4 of 10 locating cells.
-GAMMA_MAX = 2.0
-SHEAR_STEPS = 300_000
+# gamma_max = 1.5 so the averaging window (the last STEADY_FRAC of the strain) is
+# gamma in [0.75, 1.5], i.e. most of a unit of strain AFTER the preparation is erased.
+# At gamma_max = 1.0 the steadiness gate failed on 4 of 10 locating cells. Reduced from
+# 2.0 with the step count cut in proportion once the ladder moved onto the jammed side,
+# where the pressure is higher and the inertial number correspondingly smaller.
+GAMMA_MAX = 1.5
+SHEAR_STEPS = 200_000
 
 
 def ladder_centre(family: str, cv: float, mu: float) -> float:

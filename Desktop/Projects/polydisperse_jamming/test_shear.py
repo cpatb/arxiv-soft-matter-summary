@@ -49,17 +49,22 @@ def test_ladder_centres_match_phase2_summary():
 
 
 def test_ladder_rungs_are_distinct_and_wide_enough():
-    """Seven distinct rungs, and the spacing must exceed the seed scatter it resolves.
+    """Distinct rungs, uniform spacing, and wide enough to resolve the seed scatter.
 
     The largest seed scatter in the published phi_J table is 0.00475 (lognormal,
     cv 0.5, mu 0.3). A ladder spacing below that cannot resolve rungs at all.
     """
     grid = P8.build_grid("lognormal", (0.0,), (0.3,), (1,), 1500)
     phis = sorted(g[4] for g in grid)
-    assert len(phis) == len(P8.PHI_OFFSETS) == 7
+    assert len(phis) == len(P8.PHI_OFFSETS)
     gaps = np.diff(phis)
-    assert np.allclose(gaps, 0.015, atol=1e-9)
+    # one uniform spacing, whatever it is, and it must exceed the largest seed scatter
+    # in the published phi_J table (0.00475) or the rungs cannot be told apart
+    assert np.allclose(gaps, gaps[0], atol=1e-9)
     assert gaps.min() > 0.00475
+    # the ladder must cover at least +/- one spacing around its centre, or a root
+    # cannot be bracketed at all
+    assert max(P8.PHI_OFFSETS) - min(P8.PHI_OFFSETS) >= 2 * gaps[0]
 
 
 def test_ladder_centre_refuses_an_unknown_cell():

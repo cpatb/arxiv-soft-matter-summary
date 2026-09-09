@@ -62,7 +62,7 @@ def fig_M1() -> None:
 
     dphis = np.linspace(-0.05, 0.05, 401)
     rows = []
-    fig, axes = plt.subplots(1, 2, figsize=(6.4, 2.7))
+    fig, axes = plt.subplots(1, 2, figsize=(6.8, 2.7), constrained_layout=True)
 
     # --- (a) signed pore pressure: the two Darcy branches and the one ceiling --------
     # The capped answer is the inner envelope, and it turns out to be the CEILING under
@@ -123,20 +123,36 @@ def fig_M1() -> None:
 
 
 def fig_M2() -> None:
-    """The transient and its sign, from the 1D consolidation solver."""
+    """(a) the sign, in the UNDRAINED limit; (b) why the pack locks there and not else.
+
+    ⚠ REBUILT 2026-09-08 after a referee found that the phi-evolution law was missing
+    its elastic term. The first version of this figure showed the pore pressure peaking
+    near gamma = 0.55 and decaying, and that decay was an artefact of the incomplete
+    equation. Corrected, an undrained pack LOCKS -- the elastic compression cancels the
+    Reynolds dilation exactly -- and the suction grows linearly instead.
+    """
     rows = []
-    fig, axes = plt.subplots(1, 2, figsize=(6.4, 2.6))
-    lam, s_dil = 2.0, 1.0
+    fig, axes = plt.subplots(1, 2, figsize=(6.8, 2.6), constrained_layout=True)
+    s_dil = 1.0
+    lam_und, lam_dr = 1e-6, 2.0
 
     for dphi0, lab, c in ((+0.02, r"$\phi>\phi_c$", COL[1]),
                           (0.0, r"$\phi=\phi_c$", COL[0]),
                           (-0.02, r"$\phi<\phi_c$", COL[2])):
-        r = PI.solve(lam=lam, s_dil=s_dil, dphi0=dphi0, t_end=4.0, n_nodes=201)
+        r = PI.solve(lam=lam_und, s_dil=s_dil, dphi0=dphi0, t_end=4.0, n_nodes=201)
         axes[0].plot(r.t, r.p_base, color=c, lw=1.4, label=lab)
-        axes[1].plot(r.t, r.dphi, color=c, lw=1.4)
         for t, p, d in zip(r.t, r.p_base, r.dphi):
-            rows.append({"figure": "M2", "dphi0": dphi0, "t": t, "p_base": p,
-                         "dphi": d})
+            rows.append({"figure": "M2a", "lam": lam_und, "dphi0": dphi0, "t": t,
+                         "p_base": p, "dphi": d})
+
+    for lam, lab, c, ls in ((lam_und, r"undrained, $\Lambda=10^{-6}$", COL[1], "-"),
+                            (lam_dr, r"drained, $\Lambda=2$", COL[3], "--")):
+        r = PI.solve(lam=lam, s_dil=s_dil, dphi0=+0.02, t_end=4.0, n_nodes=201)
+        axes[1].plot(r.t, r.dphi, color=c, lw=1.4, ls=ls, label=lab)
+        if lam != lam_und:
+            for t, p, d in zip(r.t, r.p_base, r.dphi):
+                rows.append({"figure": "M2b", "lam": lam, "dphi0": 0.02, "t": t,
+                             "p_base": p, "dphi": d})
 
     axes[0].axhline(0.0, color=COL[0], lw=0.6, ls=":")
     axes[1].axhline(0.0, color=COL[0], lw=0.6, ls=":")
@@ -146,13 +162,16 @@ def fig_M2() -> None:
     axes[1].set_ylabel(r"$\phi-\phi_c$")
     for a in axes:
         a.set_xlim(0.0, 4.0)
-    axes[0].legend(frameon=False, fontsize=7, loc="lower right",
-                   bbox_to_anchor=(1.0, 0.02))
+    axes[0].legend(frameon=False, fontsize=7, loc="upper left")
+    axes[1].legend(frameon=False, fontsize=7, loc="center right")
     save(fig, "M2_transient", rows,
-         "poro_impact.solve, Lambda=2, S=1, 201 nodes. Left: pore pressure at the "
-         "impermeable substrate, gauge, positive = overpressure. Right: the source "
-         "shutting itself off. Both axes linear and both include zero, which is the "
-         "quantity of interest here.")
+         "poro_impact.solve, S=1, 201 nodes, with the CORRECTED phi-evolution law. "
+         "(a) Lambda=1e-6, the lab's regime: pore pressure at the impermeable "
+         "substrate, gauge, positive = OVERpressure. It grows linearly and without "
+         "bound -- dilatancy hardening -- because an undrained pack cannot change "
+         "volume. (b) phi - phi_c against strain: LOCKED when undrained, relaxing "
+         "toward the critical state only when the pack can drain. All axes linear and "
+         "all include zero.")
 
 
 def fig_M3() -> None:

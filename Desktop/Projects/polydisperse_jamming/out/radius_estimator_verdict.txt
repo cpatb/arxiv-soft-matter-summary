@@ -1,0 +1,30 @@
+==============================================================================
+IS THE CONFINEMENT'S CV WORK GAP AN rmax ARTEFACT?
+==============================================================================
+
+Confining force goes as radius^2, so the quantity that matters is the SQUARE
+of the ratio between the extremal radius and a robust one.
+
+     CV   n     rmax    r_p95  r_shell  infl_p99  infl_p95  infl_p90
+   0.00   4    4.392    4.246    4.050    1.0211    1.0696    1.1113
+   0.50   3    5.308    5.081    4.843    1.0249    1.0911    1.1430
+
+PRE-REGISTERED DISCRIMINATOR (set before the numbers were seen)
+  G = inflation(CV=0.5) / inflation(CV=0); observed work gap is 10.06x.
+  G >= 3.0 -> estimator carries the gap, replace it and re-run Phase 7
+  G <= 1.5 -> estimator is dead; the gap is the PACKING, no fix needed
+
+    inflation_p99      CV0  1.0211  CV0.5  1.0249   G =  1.004  -> PACKING
+    inflation_p95      CV0  1.0696  CV0.5  1.0911   G =  1.020  -> PACKING
+    inflation_p90      CV0  1.1113  CV0.5  1.1430   G =  1.029  -> PACKING
+
+  => VERDICT: PACKING. The extremal radius is not meaningfully more
+     inflated at CV = 0.5 than at CV = 0, so it cannot manufacture a
+     10x work gap. Reading (P) stands: the polydisperse aggregate is
+     looser, so the same confining pressure does more work on it.
+     That is a consequence of the packing result, not an artefact of
+     the boundary condition, and no code change is warranted.
+     The dynamic CV contrast stays ORDINAL for the separate reason
+     given in 7g: the boundary is energetically dominant either way.
+
+  RADIUS_ESTIMATOR_PACKING

@@ -146,7 +146,7 @@ class ShearState:
     z_series: list[float] = field(default_factory=list)
     force: dict = field(default_factory=dict)
     wall_s: float = float("nan")
-    protocol: str = "cv-shear-v1"
+    protocol: str = "cv-shear-v2"
     notes: list[str] = field(default_factory=list)
 
     def to_json(self) -> str:
@@ -295,6 +295,23 @@ def shear_at_constant_volume(cv: float, mu_p: float, phi_target: float, n: int,
     # trace(velGrad) = 0 exactly, so the volume is conserved to machine precision.
     gdot = gamma_max / (shear_steps * O.dt)
     st.gdot = float(gdot)
+
+    # 🔴 Let Yade flip the periodic cell. A cell sheared to gamma ~ 1 becomes skewed
+    # enough that the shortest distance between periodic images falls below twice the
+    # largest grain, and `InsertionSortCollider` then aborts the run with
+    #   "Body larger than half of the cell size encountered."
+    # Measured 2026-09-08: EVERY rung of cv = 0.2 seed 1 died this way -- five cells,
+    # deterministically, because that seed's largest grain is near the truncation limit
+    # -- while cv = 0 (where d_max = d10) ran fine. Left unfixed it would have taken out
+    # the cv = 0.5 arm, i.e. the arm the whole measurement exists to compare against.
+    #
+    # Flipping replaces the cell by an equivalent, more compact one. It is a relabelling
+    # of the periodic lattice: the volume, the stress and the contact network are
+    # unchanged, so it is not a physical knob. It DOES perturb the trajectory at
+    # floating-point level, so it must be on for every cell in a comparison or none --
+    # which is why the protocol string is bumped to v2 and cv-shear-v1 records are not
+    # pooled with these.
+    O.cell.flipFlippable = True
     O.cell.velGrad = Matrix3(0, gdot, 0,
                              0, 0, 0,
                              0, 0, 0)

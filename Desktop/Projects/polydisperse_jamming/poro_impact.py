@@ -38,13 +38,36 @@ which is Terzaghi consolidation with a dilatancy source and an undrained-loading
 SIGN: phi > phi_c makes the source term NEGATIVE, so `p` falls -- suction -- which is
 what the derivation claims. phi < phi_c makes it positive: overpressure.
 
-The packing fraction evolves as the skeleton dilates, which SHUTS THE SOURCE OFF:
+The packing fraction evolves with the skeleton's TOTAL volumetric strain, which by (ii)
+has an elastic part as well as the Reynolds part:
 
-    dphi/dt = -phi * alpha gammadot (phi - phi_c)                                (iv)
+    Dphi/Dt = -phi eps_v = (phi/K') dsigma'/dt - phi alpha gammadot (phi - phi_c)  (iv)
 
-so `phi - phi_c` decays on a strain of order 1/alpha. This is the model's own account of
-why the author's bench observation is *"inertial-dominated for some time"* rather than
-permanently: the effect has a strain clock built into it.
+🔴 **CORRECTED 2026-09-08, and the correction reverses a conclusion.** The first version
+of this module wrote (iv) with only the second term. That is not a small omission: under
+UNDRAINED conditions the elastic term is exactly what makes the pack lock. As the
+skeleton dilates plastically the pore pressure falls, so sigma' = sigma - p RISES, so the
+skeleton compresses elastically by the amount it just dilated, and the net volume change
+is zero -- which is what "constant volume" means. With alpha = 1 the cancellation is
+exact, `phi - phi_c` does NOT decay, and the suction grows LINEARLY WITHOUT BOUND
+(measured to strain 24 at 10.6x the ceiling and still climbing).
+
+That is a real and named phenomenon -- **dilatancy hardening / undrained locking of a
+dense dilatant pack** -- and the incomplete equation was hiding it behind a spurious
+self-limiting decay.
+
+⚠ **WITHDRAWN with it: the "strain clock".** This module previously claimed the effect
+shuts itself off after a strain of order 1/alpha, and that claim was used as one of three
+separations from the rival mechanism M2a. It is wrong. What actually stops the growth is
+a closure this model does NOT carry: the critical state is a LINE, not a point, and
+`phi_c` falls as the effective stress rises, so undrained shear ends when
+`phi_c(sigma')` comes down to meet the fixed `phi`. With `phi_c` held constant there is
+no shut-off at all, and the network-modulus ceiling (`PORE_PHYSICS.md` Eq. 4.5) is the
+stand-in for the missing pressure dependence. Adding `phi_c(sigma')` needs a
+compression index that nothing here measures.
+
+`elastic_feedback=False` restores the old, incomplete law. It exists so the tests can
+show the two differ, and must not be used for a result.
 
 NONDIMENSIONAL FORM (what the code actually integrates)
 -------------------------------------------------------
@@ -68,9 +91,11 @@ free surface: drained, p~ = 0 (gauge). `L` is the DRAINAGE LENGTH, and section 6
 derivation says nobody has measured it -- so it is an explicit input here and every
 result is reported against it.
 
-CAVITATION. The pore fluid cannot sustain more than about one atmosphere of suction.
-With `p_cav_hat` set, `p~` is prevented from falling below -p_cav_hat and the binding is
-REPORTED, because the derivation's own estimate exceeds that ceiling by ~459x.
+CAVITATION. `p_cav_hat` prevents `p~` from falling below a floor, and the binding is
+REPORTED. ⚠ It is kept as a general facility, NOT as the physical ceiling for this
+system: the binding ceiling here is the network-modulus one (`PORE_PHYSICS.md` Eq. 4.5,
+26.8 Pa for 800 nm silica at phi = 0.44), four decades BELOW one atmosphere, so nothing
+cavitates and a cavitation cap would never be reached.
 """
 
 from __future__ import annotations
@@ -102,6 +127,7 @@ class PoroResult:
     p_cav_hat: float = float("inf")
     n_nodes: int = N_NODES
     loading: bool = False         # include the undrained-loading term dsigma~/dt~
+    elastic_feedback: bool = True  # the elastic half of eq. (iv); False = the WRONG law
     # outputs
     p_peak_hat: float = float("nan")     # signed extremum of p~ over space and time
     t_at_peak: float = float("nan")
@@ -137,6 +163,7 @@ def solve(lam: float, s_dil: float, dphi0: float, phi0: float = 0.44,
           p_cav_hat: float = float("inf"), n_nodes: int = N_NODES,
           loading: bool = False, dsigma_dt: float = 1.0,
           p_init: float = 0.0, freeze_phi: bool = False,
+          elastic_feedback: bool = True,
           rtol: float = 1e-8, atol: float = 1e-12) -> PoroResult:
     """Integrate (iii)+(iv) on 0 <= x~ <= 1, impermeable at 0, drained at 1.
 
@@ -148,7 +175,7 @@ def solve(lam: float, s_dil: float, dphi0: float, phi0: float = 0.44,
     """
     res = PoroResult(lam=lam, s_dil=s_dil, dphi0=dphi0, phi0=phi0, t_end=t_end,
                      alpha=alpha, p_cav_hat=p_cav_hat, n_nodes=n_nodes,
-                     loading=loading)
+                     loading=loading, elastic_feedback=elastic_feedback)
     res.notes.append(f"p_init={p_init:g} freeze_phi={freeze_phi}")
     n = n_nodes
     dx = 1.0 / (n - 1)
@@ -173,8 +200,21 @@ def solve(lam: float, s_dil: float, dphi0: float, phi0: float = 0.44,
         if np.isfinite(p_cav_hat):
             at_floor = (p <= -p_cav_hat) & (dp < 0)
             dp = np.where(at_floor, 0.0, dp)
-        dphi_dt = (np.zeros_like(phi) if freeze_phi
-                   else -phi * alpha * (phi - phi_c) * g)
+        if freeze_phi:
+            dphi_dt = np.zeros_like(phi)
+        elif elastic_feedback and s_dil > 0:
+            # 🔴 THE ELASTIC TERM. Mass conservation is Dphi/Dt = -phi * eps_v, and
+            # eps_v (eq. ii) has TWO parts, not one: the Reynolds dilation AND the
+            # elastic response to the changing effective stress. Dropping the second is
+            # the defect a referee found on 2026-09-08; see the module docstring.
+            #
+            #   Dphi/Dt = (phi/K') dsigma'/dt - phi alpha gammadot (phi - phi_c)
+            #   sigma' = sigma - p , and rho U0^2 / K' = alpha / S in these units
+            dsig = dsigma_dt if loading else 0.0
+            dphi_dt = (phi * alpha / s_dil) * (dsig - dp) \
+                - phi * alpha * (phi - phi_c) * g
+        else:
+            dphi_dt = -phi * alpha * (phi - phi_c) * g
         return np.concatenate([dp, dphi_dt])
 
     y0 = np.concatenate([np.full(n, p_init), np.full(n, phi0)])
@@ -212,10 +252,11 @@ def solve(lam: float, s_dil: float, dphi0: float, phi0: float = 0.44,
     res.dphi_final = float(PHI[0, -1] - phi_c)
     res.p_final_field = [float(v) for v in P[:, -1]]
 
-    # strain at which |phi - phi_c| has halved. gammadot = 1 in these units, so t~ IS
-    # the strain; NOT read off an assumed monotone decay -- (iv) is monotone in sign by
-    # construction (dphi and its derivative have opposite signs), and the crossing is
-    # taken as the FIRST one with the rule named here.
+    # Strain at which |phi - phi_c| has halved, if it ever does. gammadot = 1 in these
+    # units, so t~ IS the strain. ⚠ Under the CORRECT law (elastic_feedback=True) this
+    # is normally NaN, because the pack locks and phi - phi_c does not decay at all --
+    # that is the finding, not a failure. The crossing rule is FIRST crossing, named
+    # here rather than assumed, and monotonicity is not assumed either.
     d = np.abs(np.asarray(res.dphi))
     if d[0] > 0:
         below = np.flatnonzero(d <= 0.5 * d[0])

@@ -306,11 +306,16 @@ so.
 
 What separates them:
 
+⚠ **The "cannot separate" claim is itself contingent on `φ_m ≈ φ_c`.** If a measurement
+were to show `dφ_m/dCV` and `dφ_c/dCV` diverging, P1–P6 could partially discriminate the
+two without E-3. As things stand they are taken to be the same shift.
+
 | | this mechanism (M2′) | M2a, rheology |
 |---|---|---|
-| pore-pressure sign (**P7**) | overpressure on the spreading branch, suction on the arrested one | **no coherent pore-pressure signature at all** |
+| pore-pressure sign (**P7**) | overpressure on the spreading branch, suction on the arrested one | **makes no prediction** — a scalar viscosity divergence has no signed-pressure coupling. (Not "predicts zero": it is silent, which is still a separation, but a weaker kind.) |
 | shape of the crossing | a **threshold** in `φ − φ_c`: the *sign* of a term flips | a smooth divergence/weakening; `η` is continuous through `φ_m` from below |
-| transient | a **strain clock**: the source shuts off as `φ → φ_c`, so the effect lasts a strain of order `1/α` (`poro_impact.py`) | none; the viscosity is a state function |
+| transient | ⚠ **restated 2026-09-08** — the strain-clock version of this row was wrong (§9, round 2). The undrained pack **locks** and the suction grows *with strain*, so the mechanism predicts a body that **stiffens as it spreads** | none; a viscosity is a state function and has no strain history |
+| drainage number | the effect switches off as `Λ` rises: locking is an undrained phenomenon, and the drained limit really does relax to `φ_c` | `Λ` does not appear at all |
 | salt | strength `∝ a/6λ_D` (Eq. 17), so it **strengthens with screening** | `φ_m` is geometric; salt enters only through `σ*` |
 
 **P7 is therefore load-bearing rather than confirmatory**, and the transient and salt
@@ -361,6 +366,17 @@ Equation (4) is unbounded as `κ → 0`, and for silica it goes far past what th
 can do. At the lab's numbers (`α`=1, `Δφ`=0.02, `ℓ`=`D₀`=2.5 mm, `d₃₂`=800 nm,
 `γ̇`=`U₀`/`D₀`) it gives **4.65 × 10⁷ Pa**.
 
+⚠ **That number is a steady state the impact never reaches, and saying "Darcy builds up
+to it and then gets clipped" is the wrong causal story.** Corrected after the referee's
+second pass: the drainage number here is `Λ` ≈ 2.5 × 10⁻⁷, so reaching Eq. (4)'s value
+would take a strain of order `1/Λ` ≈ 4 × 10⁶. Integrating the transient
+(`poro_impact.py`) at the lab's own `κ`, `K_p` and `ℓ` shows the pressure never gets
+within six decades of it. **The response is undrained from the first instant; Darcy
+plays no part during the impact at all**, and the pressure is set by the local
+dilatancy–elasticity coupling and bounded by the ceiling below. The conclusions of this
+section are unaffected — the magnitude and the `κ`-independence are what they are — but
+the mechanism is "there is no time to drain", not "it drains and overshoots".
+
 The binding limit is not what the *fluid* can survive but what the *packing has left to
 give*. A pack at `φ` can only dilate until it reaches `φ_c`, a volumetric strain of
 `Δφ/φ`, so with `K_p` the drained network modulus (`PORE_PHYSICS.md` Eq. 4.5):
@@ -404,13 +420,20 @@ give*. A pack at `φ` can only dilate until it reaches `φ_c`, a volumetric stra
    | 1 mM | 10 nm | 0.61 | no |
    | 100 mM | 1 nm | 6.06 | **yes** |
 
-   ⚠ So on this accounting the dilatant branch is **marginal at the lab's low-salt
-   condition** and becomes available only with screening. That is a genuine limitation
-   of the mechanism's magnitude and it is not hidden: it says the pore-pressure route
-   should be *strongest at high salt*, which is a prediction on an axis the lab already
-   sweeps. Equation (17) also survives the withdrawal of `si_fit`'s `σ*`, because
-   `P_conf` cancels out of it — only the absolute Pa figures in the table above depend
-   on that withdrawn number.
+   ⚠ **State this at full strength, because "marginal" undersells it** (referee, round
+   2). At nominal salt the frustrated-dilation channel supplies a **20 % boost to a
+   confining pressure that is already there**. Nothing in this document shows that is
+   enough to hold a drop **arrested and rebounding** for a whole contact time — that
+   would need the frictional network essentially fully mobilised, which is a stricter
+   condition than "some extra confining stress", and the Wyart–Cates activation curve
+   that would decide it is not computed anywhere here (and its natural calibration,
+   `si_fit`'s `σ*`, is withdrawn). **So the honest position is that at low salt the
+   poroelastic channel is not shown to be sufficient on its own, and M2a and M3 may be
+   doing real work there too.** What the section does establish is the *direction*: the
+   route should be **strongest at high salt**, which is a prediction on an axis Paper 1
+   already sweeps. Equation (17) also survives the withdrawal of `si_fit`'s `σ*`,
+   because `P_conf` cancels out of it — only the absolute Pa figures in the table above
+   depend on that withdrawn number.
 
 **And one thing the first version got backwards.** With the correct ceiling at ~27 Pa,
 the suction never approaches one atmosphere, so **there is no cavitation and the
@@ -484,6 +507,18 @@ claims independently.
 | MINOR | The Result Box overstates "derived rather than quoted": `A`/`α` is imported. | Result Box amended; §8 "Unchecked" item (iv). |
 | MINOR | Step 7's "the `A` term is small" was asserted and unchecked. | **C6 added.** Confirmed: 0.2 %–3.4 %. |
 | MINOR | C2's seven limits are guaranteed by the monomial structure and cannot catch a wrong exponent. | Said so in §8 rather than counting them as seven independent checks. |
+
+### Round 2, after the above were acted on
+
+| grade | finding | response |
+|---|---|---|
+| **FATAL** | `poro_impact.py` eq. (iv) omitted the **elastic** half of the volumetric strain its own eq. (ii) requires. Restored, `φ − φ_c` does not decay at all: the pack **locks** and the suction grows linearly without bound (checked to strain 24 at 10.6× the ceiling). The referee derived (iv) by hand and re-integrated. **The "strain clock" — one of only three separations from M2a — was backwards.** | **Corrected**, with the flag `elastic_feedback` defaulting to the right law. The strain-clock claim is **withdrawn** from the module, §5a, `MECHANISM_2026-09-08.md` and figure M2. Replaced by the correct statement: **undrained locking / dilatancy hardening**, which is a *stronger* separation from M2a (a viscosity has no strain history), plus a new `Λ` row. What bounds the growth is a closure this model does not carry — `φ_c(σ')`, the critical-state *line* — and that is now said. |
+| — | **None of the 14 tests caught it**: the one that exercised (iv) re-integrated the *same* incomplete equation in a separate scalar solver. Two anchors sharing one identity. | Replaced by a **closed-form** anchor: in the undrained limit with `α` = 1, `φ − φ_c` must be constant to machine precision and `p(t) = −SαΔφ₀ t` exactly. Both now asserted, plus a discriminating negative case that the two laws disagree, plus a test that the clock exists **only** at large `Λ`. 15 tests. |
+| MATERIAL | §7's causal story ("Darcy builds up to 46.5 MPa then gets clipped") is not what the transient shows: at `Λ` ≈ 2.5e-7 there is no time for diffusion at all, and nothing approaches 46.5 MPa. | §7 amended. The conclusions (magnitude, `κ`-independence) are unaffected; the referee's own `κ` sweep over ten decades found `p_peak/ceiling` flat to four significant figures across the whole experimentally reachable range, i.e. **"M1 absent" holds with about three decades more headroom than the static argument alone gives.** |
+| MATERIAL | Eq. (17)'s 0.20–0.61 is not shown sufficient for **arrest and rebound** specifically; "marginal" undersells the gap. | §7 restated at full strength. |
+| MATERIAL | `MECHANISM_2026-09-08.md` §2's "M2 was graded against the wrong observable" overclaims and contradicts its own §7a two sections later — the pattern where a table row gets quoted into a Status card on its own. | §2's row now carries a forward pointer to §7a. |
+| MINOR | "M2a predicts no coherent signature" is more accurately "M2a makes no prediction"; and the claim that P1–P6 cannot separate the two is itself **contingent on `φ_m ≈ φ_c`**. | Both said in §5a. |
+| survives | the sign and pole structure of Eqs. (16)/(17); the `Π/2` prefactor, re-derived by hand; the Terzaghi anchor. | — |
 
 **Survived the attack unqualified:** Eq. (4) and its assumptions (A); the Terzaghi sign
 algebra (C); the order-counting in Eq. (11), which the referee re-derived numerically

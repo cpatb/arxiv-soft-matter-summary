@@ -55,35 +55,49 @@ more than a decade.
 
 ---
 
-## M2 — the transient, and the strain clock
+## M2 — the sign, and undrained locking
 
 `figures/M2_transient.{pdf,png,csv}`
 
-From `poro_impact.py` at `Λ` = 2, `S` = 1, 201 nodes. Both panels are linear and both
-include zero, because zero is the quantity of interest in each.
+⚠ **REBUILT 2026-09-08.** The first version of this figure showed the pore pressure
+peaking near `γ ≈ 0.55` and decaying, and a caption calling that a *strain clock*. That
+decay was an **artefact of a missing term** in the `φ`-evolution law (`poro_impact.py`
+eq. iv), found by a referee. The claim is withdrawn and the corrected behaviour is the
+opposite. Both panels are linear and include zero.
 
-**(left) Pore pressure at the impermeable substrate against strain.** The three curves
-are `φ > φ_c`, `φ = φ_c` and `φ < φ_c`. The dilatant and contractive branches are exact
-mirror images at this level of the model — the mechanism is a sign flip, not an
-asymmetry — and the `φ = φ_c` case is identically zero, which is the null the sign
-claim needs.
+**(left) Pore pressure at the impermeable substrate, in the undrained limit
+(`Λ` = 10⁻⁶, which is where the lab's silica sits: `Λ` ≈ 10⁻⁷).** The three curves are
+`φ > φ_c`, `φ = φ_c` and `φ < φ_c`. Three things to read off it:
 
-The shape matters as much as the sign: the pressure **peaks near `γ ≈ 0.55` and then
-decays**. It is not a steady state.
+- the **sign flips** across `φ_c` — suction above, overpressure below;
+- the dilatant and contractive branches are **exact mirror images** at this level of the
+  model, so the mechanism is a sign flip and not an asymmetry;
+- the `φ = φ_c` curve is **identically zero**, which is the null the sign claim needs;
+- and the pressure **grows linearly and without bound**. It does not peak and it does
+  not decay.
 
-**(right) Why.** `φ − φ_c` relaxes toward zero as the pack dilates (or contracts), so
-the source shuts itself off. Two consequences:
+**(right) Why — and why only when undrained.** `φ − φ_c` against strain, at the same
+two `Λ`.
 
-1. **The closed form is an upper bound, not a prediction.** The transient always
-   undershoots `Π/2`; `test_poro.py` pins that it must.
-2. **The effect has a lifetime of a strain of order `1/α`.** This is the model's own
-   account of the author's bench phrase *"inertial-dominated for some time"* — a strain
-   clock rather than a permanent state, and it is a shape a rival mechanism built on the
-   suspension viscosity does not predict, because a viscosity is a state function.
+- **Undrained (solid):** the pack **locks**. As it dilates plastically the pore pressure
+  falls, so the effective stress rises, so the skeleton compresses elastically by
+  exactly what it just dilated. Net volume change zero — which is what "constant volume"
+  *means*. With `α` = 1 the cancellation is exact and `φ − φ_c` is pinned at its initial
+  value to machine precision. This is **dilatancy hardening**, the standard reason a
+  dense saturated sand is strong under fast loading.
+- **Drained (dashed, `Λ` = 2):** the fluid carries pressure away, the cancellation is
+  incomplete, and the pack really does relax toward `φ_c`. **The strain clock exists —
+  but only on the drained side, which is not where this system is.**
+
+What actually bounds the undrained growth is *not* in this model: the critical state is
+a **line**, not a point, so `φ_c` falls as the effective stress rises and undrained shear
+ends when `φ_c(σ')` comes down to meet the fixed `φ`. With `φ_c` constant there is no
+shut-off at all, and the network-modulus ceiling of M1(a) is the stand-in. Closing that
+needs a compression index nothing here measures.
 
 ---
 
-## M3 — `φ_c(CV)`, and where it crosses `φ`
+## M3 — `φ_c(CV)`
 
 `figures/M3_phi_c_vs_CV.{pdf,png,csv}` — **built only when `out/phase8_summary.csv`
 exists.** The script prints a reason and skips otherwise rather than drawing an empty

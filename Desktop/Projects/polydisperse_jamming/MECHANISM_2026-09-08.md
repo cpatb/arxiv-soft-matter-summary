@@ -33,7 +33,7 @@ two of them and it is worth being precise about how.
 | | as it stood | after this derivation |
 |---|---|---|
 | **M1** permeability | *"DEAD over most of the range"* — `ID` moves 2.44× over CV 0→0.5 against a boundary 3–4 decades away | **The exclusion swept one of the two CV-dependent factors in `ID` and held the other fixed.** `Δφ = φ − φ_c` was pinned at 0.02 while only `κ` moved. `d ln ID/dCV` has two terms (derivation Eq. 11); the permeability one is `O(CV)` and **vanishes at CV → 0**, the critical-state one is `O(1)` and **has a pole**. M1 remains the weaker channel — that part of the old verdict stands — but the *reason* it is weak is new, and the thing that is strong was never computed. |
-| **M2** distance to jamming | *"real and insufficient"* — `φ_J` rises +0.062 but at `φ` = 0.44 that buys only 0.65–0.77× in viscosity | **Graded against the wrong observable.** `η ∝ (φ_J − φ)⁻²` is a smooth factor and 0.7× is indeed nothing. But the same packing shift enters the pore-pressure problem as a **sign**, through `φ − φ_c`. A shift of +0.062 against a margin of 0.02 does not multiply the answer by 0.7, it changes the answer's sign. **M2 is revived as M2′ = the dilatancy-sign mechanism**, and the number that was called insufficient is the number that does the work. |
+| **M2** distance to jamming | *"real and insufficient"* — `φ_J` rises +0.062 but at `φ` = 0.44 that buys only 0.65–0.77× in viscosity | **Graded against the wrong observable.** `η ∝ (φ_J − φ)⁻²` is a smooth factor and 0.7× is indeed nothing. But the same packing shift enters the pore-pressure problem as a **sign**, through `φ − φ_c`. A shift of +0.062 against a margin of 0.02 does not multiply the answer by 0.7, it changes the answer's sign. **M2 is revived as M2′ = the dilatancy-sign mechanism**, and the number that was called insufficient is the number that does the work. ⚠ **Read §7a before quoting this row.** For *its own* hypothesis the old evaluation used the right observable; what happened is that a **second** mechanism was found that consumes the same input number, and §7a says plainly that this row revives **both** and that which one acts is open. |
 | **M3** force-network structure | *"survives; polydispersity REMOVES grains, it does not restructure"* (rattlers 0.040 → 0.234) | **Untouched, and now has a role rather than being the residual.** Rattlers are why `φ_c` moves: grains that carry no force do not resist the volume change, so a broader pack reaches its critical state at a higher `φ`. M3 is the microscopic account of M2′'s macroscopic parameter. The constant-volume runs measure both on the same cells. |
 
 **The methodological point, and it is one this repo has made before.** A candidate was
@@ -249,22 +249,40 @@ because the closed form cannot say two things the bench observation needs.
 1. **The O(1) prefactor.** [M26]'s Eq. 6 is written with "~". Solving the boundary-value
    problem gives it: for an impermeable substrate and a drained free surface,
    `p̂_peak = Π/2` exactly. Pinned by `test_poro.py`.
-2. **Whether the balance is reached at all, and for how long.** As the pack dilates, `φ`
-   moves toward `φ_c` and **the source shuts itself off**. The transient therefore always
-   *undershoots* the closed form — Eq. (6) is an upper bound, not a prediction — and the
-   effect has a lifetime of a strain of order `1/α`. **That is the model's own account of
-   the author's words, "inertial-dominated for some time"**: a strain clock rather than a
-   permanent state.
+2. **Whether the balance is reached at all.** It is not, and by six decades. At the lab's
+   `Λ` ≈ 2.5 × 10⁻⁷ the diffusive steady state of Eq. (6) would need a strain of order
+   `1/Λ` ≈ 4 × 10⁶. **Darcy plays no part during the impact**; the response is undrained
+   from the first instant.
+3. **What the undrained pack then does — and this reversed a conclusion.** As it dilates
+   plastically the pore pressure falls, so the effective stress rises, so the skeleton
+   compresses elastically by exactly what it dilated. Net volume change zero, `φ − φ_c`
+   **locked**, and the suction **grows linearly with strain without bound**. This is
+   **dilatancy hardening**, the standard reason a dense saturated sand is strong under
+   fast loading, and it predicts a body that **stiffens as it spreads**.
 
-14 tests. The anchors are outside the code under test: the published Terzaghi
-consolidation series (max error 2.4e-7 against the numeric solution, with an observed
-grid order > 1.7), the hand-derived `Π/2` with a negative case that rejects a prefactor
-of 1, and an independent scalar ODE integration of the strain clock.
+🔴 **A referee found the first version of this module missing the elastic half of its own
+`φ`-evolution law**, which produced a spurious self-limiting decay. On that decay this
+page previously claimed a **"strain clock"** and offered it as one of three separations
+from the rival M2a. **That claim is withdrawn.** The clock is real only in the *drained*
+limit, which is not where this system is. What bounds the undrained growth is a closure
+the model does not carry — the critical state is a *line*, so `φ_c` falls as `σ'` rises —
+and the network-modulus ceiling stands in for it.
 
-🔴 **The Terzaghi anchor caught a real defect on its first run**: the analytic series had
-been written with the coordinate measured from the *sealed* face while the solver drains
-at the other end, i.e. the mirror image, and it disagreed by 0.61 in a field of order 1.
-An anchor that reproduces the code's own convention would not have found it.
+**Why no test caught it:** the one test that exercised the evolution law re-integrated
+the *same incomplete equation* in a separate scalar solver. Two anchors sharing one
+identity cannot check that identity. Replaced by a closed form — in the undrained limit
+`φ − φ_c` must be constant to machine precision and `p(t) = −SαΔφ₀ t` exactly — plus a
+negative case that the two laws disagree, and a test that the clock appears **only** at
+large `Λ`. **15 tests.**
+
+The other anchors are outside the code under test: the published Terzaghi consolidation
+series (max error 2.4e-7, observed grid order > 1.7) and the hand-derived `Π/2` with a
+negative case that rejects a prefactor of 1.
+
+🔴 **The Terzaghi anchor also caught a real defect on its first run**: the analytic series
+had been written with the coordinate measured from the *sealed* face while the solver
+drains at the other end, i.e. the mirror image, and it disagreed by 0.61 in a field of
+order 1. An anchor that reproduced the code's own convention would not have found it.
 
 ---
 
@@ -297,9 +315,16 @@ Three separations, in order of cost:
 
 | separation | M2′ (this mechanism) | M2a | where |
 |---|---|---|---|
-| **pore-pressure sign** | overpressure when spreading, suction when arrested | nothing coherent | E-3 |
-| **transient** | a strain clock; the effect decays as `φ → φ_c` over strain `~1/α` | none, `η` is a state function | `poro_impact.py` + high-speed footage |
+| **pore-pressure sign** | overpressure when spreading, suction when arrested | **makes no prediction** (a scalar viscosity has no signed-pressure coupling) | E-3 |
+| **strain history** ⚠ *restated* | undrained **locking**: the suction grows with strain, so the body **stiffens as it spreads** | none — a viscosity is a state function with no strain history | `poro_impact.py` + high-speed footage |
+| **drainage number** | the effect weakens as `Λ` rises; locking is an undrained phenomenon | `Λ` does not appear | E-4's size ladder moves `Λ` by 10² |
 | **salt** | strengthens with screening, `∝ a/6λ_D` | `φ_m` is geometric; salt enters only via `σ*` | Paper 1's existing salt series |
+
+⚠ The **strain-history** row previously read "a strain clock; the effect decays as
+`φ → φ_c`". That was wrong — see §6a — and the corrected version is a *better*
+separation, not a weaker one. ⚠ And the "cannot separate" claim is itself contingent on
+`φ_m ≈ φ_c`; if those two shifts were measured to diverge, P1–P6 would partially
+discriminate without E-3.
 
 Note that §2's revival of M2 as "M2′" was, strictly, a revival of *both*. The honest
 statement until E-3 is run: **the width acts through the packing, and whether it acts
