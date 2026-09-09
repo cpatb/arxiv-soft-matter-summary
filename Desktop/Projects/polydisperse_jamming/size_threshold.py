@@ -65,6 +65,13 @@ ID_BOUNDARY = (1.0, 6.6e-3)
 # The lab's two materials, for "which side is each on".
 MATERIALS = (("silica (lab)", 0.8e-6), ("cornstarch [M26]", 10.0e-6))
 
+# How fast phi_c rises with CV. ⚠⚠ PLACEHOLDER: this is the ISOTROPIC phi_J slope
+# (+0.0623 over CV 0 -> 0.5, out/phase2_summary.csv, lognormal, mu_p = 0.3, N = 1500)
+# standing in for the CRITICAL-STATE slope, which is a different quantity and is what
+# phase8_criticalstate.py is measuring. Every number computed from it is labelled
+# PROVISIONAL at the point of use; the SIGNS do not depend on it.
+S_PHI_C_PLACEHOLDER = 0.0623 / 0.5
+
 
 def rho_susp(phi: float = PHI) -> float:
     return RHO_P * phi + 1000.0 * (1 - phi)
@@ -317,6 +324,69 @@ def main() -> int:
     p("  (c) Adding salt lowers the bottom edge past 800 nm, so the SAME silica should")
     p("      enter the window inside the salt series Paper 1 already runs -- no new")
     p("      particles, no new apparatus.")
+
+    # --- CV closes the window from BOTH ends ----------------------------------------
+    p()
+    p("=== WHAT CV DOES TO THE WINDOW: it closes from BOTH ends ===")
+    p("  Both edges are functions of dphi = phi - phi_c, and CV moves phi_c UP, so CV")
+    p("  shrinks dphi. The two edges then move TOWARD each other, because:")
+    p("     lower edge T3 = 6 lambda_D phi / dphi        ~ dphi^-1   RISES as dphi falls")
+    p("     upper edge T1                                ~ dphi^+1/2 FALLS as dphi falls")
+    p("  so there is a CV at which the window CLOSES and no particle size can be held")
+    p("  solid by frustrated dilation at all.")
+    p()
+    p(f"  {'CV':>6s} {'dphi':>8s} {'T3 [um]':>9s} {'T1 [um]':>9s} {'T1/T3':>7s} "
+      f"{'window':>10s}")
+    cv_closed = None
+    for cv in (0.0, 0.02, 0.04, 0.06, 0.08, 0.10, 0.16):
+        dphi = (PHI - PHI_C) - S_PHI_C_PLACEHOLDER * cv
+        if dphi <= 0:
+            p(f"  {cv:6.2f} {dphi:8.4f} {'--':>9s} {'--':>9s} {'--':>7s} "
+              f"{'PAST phi_c':>10s}")
+            continue
+        t3 = a_dilatant_strength(phi_c=PHI - dphi)
+        t1 = a_drainage_macroscopic(6.6e-3, phi_c=PHI - dphi)
+        open_ = t1 > t3
+        if cv_closed is None and not open_:
+            cv_closed = cv
+        p(f"  {cv:6.2f} {dphi:8.4f} {t3 * 1e6:9.3f} {t1 * 1e6:9.3f} "
+          f"{t1 / t3:7.3f} {('open' if open_ else 'CLOSED'):>10s}")
+    # closure condition solved rather than read off the ladder
+    c3 = a_dilatant_strength() * (PHI - PHI_C)                     # T3 = c3/dphi
+    c1 = a_drainage_macroscopic(6.6e-3) / math.sqrt(PHI - PHI_C)   # T1 = c1*sqrt(dphi)
+    dphi_close = (c3 / c1) ** (2.0 / 3.0)
+    cv_close = ((PHI - PHI_C) - dphi_close) / S_PHI_C_PLACEHOLDER
+    p()
+    p(f"  solved: the window closes at dphi = {dphi_close:.5f}, i.e. phi_c risen to "
+      f"{PHI - dphi_close:.5f}")
+    p(f"  which at the PLACEHOLDER slope dphi_c/dCV = {S_PHI_C_PLACEHOLDER:.4f} is "
+      f"CV = {cv_close:.3f}")
+    p("  ⚠⚠ PROVISIONAL AND VERY SENSITIVE. Both phi_c0 = 0.42 and the slope are")
+    p("  PLACEHOLDERS -- the slope is the ISOTROPIC phi_J slope standing in for the")
+    p("  CRITICAL-STATE one, which phase8_criticalstate.py is measuring. The closure CV")
+    p("  goes as 1/slope and dphi_close depends on phi_c0, so this number will move.")
+    p("  What is NOT provisional is the SIGN of each edge's response, which is algebra.")
+    p()
+    a_star_um = a_drainage_macroscopic(6.6e-3) * 1e6
+    cv_via_d32 = math.sqrt(math.sqrt(a_star_um / 0.8) - 1.0)
+    p("  🔑 AND THE TWO CV ROUTES ARE NOT COMPARABLE IN STRENGTH.")
+    p("     Within this same size-threshold framework CV can act two ways, and they")
+    p("     are separated by more than an order of magnitude:")
+    p(f"        through d32   (moving the SAMPLE across a fixed edge): CV = "
+      f"{cv_via_d32:.2f}")
+    p(f"        through phi_c (moving the EDGES onto each other)     : CV = "
+      f"{cv_close:.3f}")
+    p(f"     a ratio of {cv_via_d32 / cv_close:.0f}x. So even inside the author's own")
+    p("     framing, the dominant CV channel is the PACKING one, not the permeability")
+    p("     one -- the same ordering the dilatancy-sign derivation reaches from the")
+    p("     two terms of d ln(ID)/dCV, and reached here by a different route.")
+    p()
+    p("  🔑 CONSISTENCY with the sibling mechanism: there, CV raises phi_c until")
+    p("     phi - phi_c changes SIGN and the pack turns contractive. Here, CV shrinks")
+    p("     phi - phi_c until the size window closes. Two framings of one shrinking")
+    p("     gap, both ending the solid-like branch at a critical WIDTH -- so the size")
+    p("     hypothesis and the phi_c mechanism are not rivals, they are the same")
+    p("     statement read on two different axes.")
 
     # What the hypothesis, if true, says about the ID boundary calibration.
     p()

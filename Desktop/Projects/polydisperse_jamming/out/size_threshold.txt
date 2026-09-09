@@ -64,6 +64,48 @@
       enter the window inside the salt series Paper 1 already runs -- no new
       particles, no new apparatus.
 
+=== WHAT CV DOES TO THE WINDOW: it closes from BOTH ends ===
+  Both edges are functions of dphi = phi - phi_c, and CV moves phi_c UP, so CV
+  shrinks dphi. The two edges then move TOWARD each other, because:
+     lower edge T3 = 6 lambda_D phi / dphi        ~ dphi^-1   RISES as dphi falls
+     upper edge T1                                ~ dphi^+1/2 FALLS as dphi falls
+  so there is a CV at which the window CLOSES and no particle size can be held
+  solid by frustrated dilation at all.
+
+      CV     dphi   T3 [um]   T1 [um]   T1/T3     window
+    0.00   0.0200     3.960     7.663   1.935       open
+    0.02   0.0175     4.524     7.154   1.581       open
+    0.04   0.0150     5.274     6.611   1.253       open
+    0.06   0.0125     6.324     6.025   0.953     CLOSED
+    0.08   0.0100     7.895     5.381   0.682     CLOSED
+    0.10   0.0075    10.504     4.655   0.443     CLOSED
+    0.16   0.0001  1237.500     0.426   0.000     CLOSED
+
+  solved: the window closes at dphi = 0.01288, i.e. phi_c risen to 0.42712
+  which at the PLACEHOLDER slope dphi_c/dCV = 0.1246 is CV = 0.057
+  ⚠⚠ PROVISIONAL AND VERY SENSITIVE. Both phi_c0 = 0.42 and the slope are
+  PLACEHOLDERS -- the slope is the ISOTROPIC phi_J slope standing in for the
+  CRITICAL-STATE one, which phase8_criticalstate.py is measuring. The closure CV
+  goes as 1/slope and dphi_close depends on phi_c0, so this number will move.
+  What is NOT provisional is the SIGN of each edge's response, which is algebra.
+
+  🔑 AND THE TWO CV ROUTES ARE NOT COMPARABLE IN STRENGTH.
+     Within this same size-threshold framework CV can act two ways, and they
+     are separated by more than an order of magnitude:
+        through d32   (moving the SAMPLE across a fixed edge): CV = 1.45
+        through phi_c (moving the EDGES onto each other)     : CV = 0.057
+     a ratio of 25x. So even inside the author's own
+     framing, the dominant CV channel is the PACKING one, not the permeability
+     one -- the same ordering the dilatancy-sign derivation reaches from the
+     two terms of d ln(ID)/dCV, and reached here by a different route.
+
+  🔑 CONSISTENCY with the sibling mechanism: there, CV raises phi_c until
+     phi - phi_c changes SIGN and the pack turns contractive. Here, CV shrinks
+     phi - phi_c until the size window closes. Two framings of one shrinking
+     gap, both ending the solid-like branch at a critical WIDTH -- so the size
+     hypothesis and the phi_c mechanism are not rivals, they are the same
+     statement read on two different axes.
+
 === WHAT THE HYPOTHESIS IMPLIES ABOUT THE ID BOUNDARY (the card's landmine) ===
   a* goes as sqrt(ID_boundary), and a*(ID_b = 1) = 94.32 um.
   For the threshold to sit BETWEEN 800 nm silica and 10 um cornstarch,

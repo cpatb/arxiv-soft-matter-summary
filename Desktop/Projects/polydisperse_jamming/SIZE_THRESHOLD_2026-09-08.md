@@ -190,9 +190,55 @@ CV 0.2–0.5 this project has simulated, and broader than most Stöber batches.
 > If they are broader than that, it can.**
 
 Which makes the **raw size distributions of the two bench samples** — already Q1 on the
-Status card, still open — the measurement that decides between the author's hypothesis
-and the mechanism in `MECHANISM_2026-09-08.md`. Not a new experiment: a measurement of
-samples that already exist.
+Status card, still open — the measurement that decides it. Not a new experiment: a
+measurement of samples that already exist.
+
+### 6a. But CV has a second, much stronger route — inside this same framework
+
+Both window edges are functions of `Δφ = φ − φ_c`, and CV raises `φ_c`, so CV **shrinks
+`Δφ`** — and the two edges then move *toward each other*:
+
+```
+   lower edge  T3 ∝ Δφ^(-1)     RISES as Δφ falls
+   upper edge  T1 ∝ Δφ^(+1/2)   FALLS as Δφ falls
+```
+
+so there is a CV at which the window **closes** and no particle size at all can be held
+solid by frustrated dilation. Solving `T3 = T1`:
+
+| CV | `Δφ` | T3 [µm] | T1 [µm] | window |
+|---|---|---|---|---|
+| 0.00 | 0.0200 | 3.96 | 7.66 | open |
+| 0.04 | 0.0150 | 5.27 | 6.61 | open |
+| **0.057** | **0.0129** | **6.13** | **6.13** | **closes** |
+| 0.08 | 0.0100 | 7.90 | 5.38 | closed |
+
+⚠⚠ **Provisional and very sensitive**: both `φ_c` = 0.42 and the slope `dφ_c/dCV` are
+placeholders (the slope is the *isotropic* `φ_J` slope standing in for the
+*critical-state* one, which is exactly what the phase-8 sweep is measuring). The closure
+CV goes as 1/slope. **What is not provisional is the sign of each edge's response**,
+which is algebra.
+
+**🔑 The two CV routes differ by 25×.**
+
+| route | what CV does | CV needed |
+|---|---|---|
+| through `d₃₂` (permeability) | moves the *sample* across a fixed edge | **1.45** |
+| through `φ_c` (packing) | moves the *edges* onto each other | **0.057** |
+
+So **even inside the author's own size-threshold framing, the dominant CV channel is the
+packing one, not the permeability one** — which is the same ordering
+`derivations/dilatancy_sign_mechanism.md` Step 8 reaches from the two terms of
+`d ln ID/dCV`, arrived at here by a completely different route.
+
+### 6b. The two framings are not rivals
+
+The dilatancy-sign mechanism says CV raises `φ_c` until `φ − φ_c` changes **sign** and the
+pack turns contractive. This page says CV shrinks `φ − φ_c` until the size **window**
+closes. They are two readings of one shrinking gap, and both end the solid-like branch at
+a critical **width**. The author's size hypothesis and the `φ_c` mechanism are the same
+statement on two different axes — which is why the phase-8 measurement of `φ_c(CV)`
+serves both.
 
 ## 7. What would kill this
 
