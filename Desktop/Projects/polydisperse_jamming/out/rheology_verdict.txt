@@ -1,0 +1,54 @@
+analyse_rheology: 45 cells from phase8_prod2*.jsonl
+protocol cv-shear-v2
+
+=== R1  the friction law mu(I) = mu_s + b I, per CV  [SURVIVES] ===
+  fitted over the quasi-static cells (I <= 1e-02).
+     cv   n     mu_s     b_mu     r2                I range            p_hat range
+   0.00  12   0.3521     7.98  0.443   2.34e-04-2.05e-03   2.15e-04-1.65e-02
+   0.20  12   0.3544    16.59  0.523   4.18e-04-1.90e-03   1.00e-03-1.73e-02
+   0.50  14   0.3709     7.59  0.751   8.53e-04-7.38e-03   2.97e-04-2.23e-02
+
+  mu_s = 0.359 averaged over CV, at mu_p = 0.3.
+  ⚠ Only the FORM of the law is taken from the cited work; da Cruz et al. is 2D
+  DISKS and its numerical coefficients must not be quoted against 3D spheres.
+  ⚠ I moves here through p, not through the shear rate (gdot is fixed on a
+  ladder), so 'small I' is the DENSE end. For hard grains mu is a function of I
+  alone and the reading is still the quasi-static friction; for soft grains it
+  need not be, and this ladder IS soft at the top (see the p_hat range above).
+
+  🔑 A FREE ANCHOR IS COMING: mu_s must FALL toward ~0 as mu_p -> 0. The P4
+  frictionless run (mu_p = 0) tests that at no extra cost, and a mu_s at mu_p = 0
+  anywhere near 0.35 would say this fit is not measuring friction at all.
+
+  Does the friction law itself move with CV, or only phi_c?
+     mu_s over CV 0 -> 0.5: 0.3521 -> 0.3709  (1.053x)  -- a 5 % move against a phi_c move of 11 %
+
+=== R2  the phi(I) dilatancy coefficient  🔴 RETRACTED ===
+  Fitting phi against I gave a slope of 10-36 against a literature scale of ~0.2.
+  Two orders out is a construction error, not a material difference: gdot is
+  FIXED along a ladder, so 'phi(I)' is phi against PRESSURE in disguise -- a
+  compression curve, not a rate-dependent dilatancy law -- and the top rungs are
+  soft enough that the reported phi double-counts contact overlaps.
+  The same error had made analyse_phase8's E1 the PRIMARY phi_c estimator. Both
+  are retracted; E2, the vanishing-pressure root, is primary now.
+
+=== R3  the early transient  🔴 RETRACTED as an elastic ramp; reported as a relaxation ===
+  Intended reading: dp/dgamma = K' alpha (phi - phi_c), which would have tested
+  the derivation's assumption that alpha does not move with CV. Measured,
+  dp/dgamma is NEGATIVE on every cell -- including cells well above phi_c -- and
+  the three-window gate FAILS on most. The model was wrong for this protocol:
+  shear starts from an ISOTROPICALLY COMPRESSED state, not from the critical
+  state, so the early transient is that preparation decaying away.
+  ⚠ The alpha assumption therefore REMAINS UNTESTED. It needs constant-PRESSURE
+  shear, which this protocol does not do.
+
+  What the transient CAN say -- the strain to erase the preparation, which is a
+  protocol diagnostic and is what the steadiness gate depends on:
+     cv   n  median gamma_relax      max  window [0.75,1.5]?
+   0.00  10               0.184    1.492                 yes
+   0.20  10               0.165    1.492                 yes
+   0.50  11               0.863    1.432                🔴 NO
+
+  The averaging window is gamma in [0.75, 1.5]. If the median relaxation strain
+  is below 0.75 the window is measuring the steady state, which is what the
+  steadiness gate assumes; if it is not, the gate is measuring the transient.

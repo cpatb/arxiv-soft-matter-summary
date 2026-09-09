@@ -7,20 +7,35 @@ At constant volume every cell reaches a steady state that lies on the granular
 sampling of one curve, parameterised by the inertial number `I = gammadot d50
 sqrt(rho/p)`. The critical-state fraction is the quasi-static limit of that curve.
 
-  E1  phi(I) EXTRAPOLATION  [PRIMARY]   phi_c = lim_{I->0} phi(I), from a linear fit of
-      phi against I over the rungs with I <= I_FIT_MAX. This is the standard granular
-      dilatancy law (da Cruz, Emam, Prochnow, Roux & Chevoir, PRE 72, 021309 (2005);
-      Forterre & Pouliquen, Annu. Rev. Fluid Mech. 40, 1 (2008)), the fit is over a
-      SHORT lever arm because production I is 1e-4..1e-2, and the fitted quantity does
-      not span decades.
-  E2  PRESSURE ROOT, free exponent      p_ss = c (phi - phi_c)^b, fitted in log space.
-      A check on E1 and on the contact law: `b` should return near 1 for Yade's linear
-      Cundall-Strack contacts. Reported, never used to redefine phi_c.
-  E3  PRESSURE ROOT, b pinned to 1      the harmonic-contact convention. Declared, not
-      circular: it is used as a CHECK on E1, and no claim here is made about `b`.
+  E2  PRESSURE ROOT, free exponent  [PRIMARY]   p_ss = c (phi - phi_c)^b, fitted in log
+      space. The critical state is where the constant-volume grain pressure VANISHES, so
+      extrapolating p -> 0 targets it directly. `b` is reported as a diagnostic of the
+      contact law, never used to redefine phi_c.
+  E3  PRESSURE ROOT, b pinned to 1      the harmonic-contact convention, as a check.
   E4  COORDINATION CROSSING             the phi at which z_nr crosses Z_ISO_FRICTIONAL.
       Independent of the stress entirely, which is its whole value: a defect in the
       stress read-out cannot move it.
+
+  E1  phi(I) EXTRAPOLATION   🔴 **RETRACTED 2026-09-08 AS A phi_c ESTIMATOR**, having
+      been the PRIMARY one. It fits phi against the inertial number and extrapolates to
+      I = 0, which is the standard construction WHEN the pressure is imposed and the
+      shear rate is varied. This protocol does the opposite: `gdot` is IDENTICAL on every
+      rung of a ladder (measured: 3.000e-05 across all five at cv = 0, varying by
+      1.0000x), so I = gdot d sqrt(rho/p) moves ONLY through p. Therefore
+
+          I -> 0  is the HIGH-PRESSURE, DENSEST end of the ladder,
+                  NOT the critical state.
+
+      The extrapolation ran away from phi_c, not toward it. That is why E1 sat 0.074
+      ABOVE E2 -- it was reporting the dense end while E2 reported the vanishing-pressure
+      end, and the "systematic between estimators" was two different quantities. E1 is
+      still computed and printed, relabelled `phi_dense_E1`, because the dense-end value
+      is a real number and its CV contrast happens to agree with E2's; it is no longer
+      offered as phi_c.
+
+      ⚠ The CV CONTRAST is barely affected (+0.0578 from E1 vs +0.0623 from E2), because
+      both ends of the ladder shift together with CV. P1 and P2 therefore survive the
+      retraction; what does not survive is any ABSOLUTE phi_c quoted from E1.
 
 The four are reported side by side for every cell group. A CV contrast is quoted only
 if it has the same sign under all four; the SPREAD between them is the systematic and
@@ -96,9 +111,14 @@ def group_key(r: dict) -> tuple:
 
 
 def e1_phi_of_I(phi: np.ndarray, ivals: np.ndarray) -> dict:
-    """phi_c = lim_{I->0} phi(I), linear fit over the quasi-static rungs."""
+    """phi at the DENSE end, lim_{I->0} phi(I), over the quasi-static rungs.
+
+    🔴 NOT phi_c. See the module docstring: on this protocol gdot is fixed, so I moves
+    only through p and I -> 0 is the densest rung. Kept and reported because the value
+    is real and its CV contrast is informative; renamed so it cannot be read as phi_c.
+    """
     ok = np.isfinite(phi) & np.isfinite(ivals) & (ivals <= I_FIT_MAX) & (ivals > 0)
-    out = {"phi_c_E1": np.nan, "slope_E1": np.nan, "n_E1": int(ok.sum()),
+    out = {"phi_dense_E1": np.nan, "slope_E1": np.nan, "n_E1": int(ok.sum()),
            "r2_E1": np.nan, "I_min": np.nan, "I_max": np.nan}
     if ok.sum() < 3:
         return out
@@ -107,7 +127,7 @@ def e1_phi_of_I(phi: np.ndarray, ivals: np.ndarray) -> dict:
     coef, *_ = np.linalg.lstsq(A, y, rcond=None)
     pred = A @ coef
     ss_tot = float(np.sum((y - y.mean()) ** 2))
-    out.update(phi_c_E1=float(coef[0]), slope_E1=float(coef[1]),
+    out.update(phi_dense_E1=float(coef[0]), slope_E1=float(coef[1]),
                r2_E1=float(1 - np.sum((y - pred) ** 2) / ss_tot) if ss_tot > 0 else np.nan,
                I_min=float(x.min()), I_max=float(x.max()))
     return out
@@ -189,6 +209,7 @@ def analyse_group(recs: list[dict]) -> dict:
     res = {"n_cells": len(recs), "phi_lo": float(phi.min()), "phi_hi": float(phi.max()),
            "n_steady": int(sum(bool(r["steady"]) for r in recs)),
            "n_quasistatic": int(sum(bool(r["quasistatic"]) for r in recs))}
+    res["p_hat_max"] = float(np.nanmax(p))
     res.update(e1_phi_of_I(phi, ivals))
     res.update(_pressure_root(phi, p, None))
     res.update(_pressure_root(phi, p, 1.0))
@@ -204,7 +225,7 @@ def analyse_group(recs: list[dict]) -> dict:
         res["mu_s"] = np.nan
 
     # REFUSE a root outside the ladder it was fitted on.
-    for tag in ("E1", "E2", "E3", "E4"):
+    for tag in ("E2", "E3", "E4"):
         v = res.get(f"phi_c_{tag}", np.nan)
         if np.isfinite(v) and not (res["phi_lo"] - 0.05 <= v <= res["phi_hi"]):
             res[f"phi_c_{tag}_refused"] = float(v)
@@ -260,8 +281,10 @@ def main() -> int:
 
     rows = []
     p(f"{'family':10s} {'cv':>5s} {'mu':>5s} {'seed':>4s} {'cells':>5s} "
-      f"{'stdy':>4s} {'qs':>3s} {'phi_c_E1':>9s} {'phi_c_E2':>9s} {'b_E2':>6s} "
-      f"{'phi_c_E3':>9s} {'phi_c_E4':>9s} {'mu_s':>6s}")
+      f"{'stdy':>4s} {'qs':>3s} {'phi_c_E2*':>9s} {'b_E2':>6s} "
+      f"{'phi_c_E3':>9s} {'phi_c_E4':>9s} {'phiDenseE1':>10s} {'mu_s':>6s} "
+      f"{'p_hat_max':>10s}")
+    p("   (* E2 is PRIMARY; phiDenseE1 is the retracted E1, relabelled -- see docstring)")
     for k in sorted(by_g):
         r = analyse_group(by_g[k])
         fam, cv, mu, seed, n, proto, gmax, steps = k
@@ -270,8 +293,9 @@ def main() -> int:
                      "shear_steps": steps, **r})
         p(f"{fam:10s} {cv:5.2f} {mu:5.2f} {seed:4d} {r['n_cells']:5d} "
           f"{r['n_steady']:4d} {r['n_quasistatic']:3d} "
-          f"{r['phi_c_E1']:9.4f} {r['phi_c_E2']:9.4f} {r.get('b_E2', np.nan):6.2f} "
-          f"{r['phi_c_E3']:9.4f} {r['phi_c_E4']:9.4f} {r['mu_s']:6.3f}")
+          f"{r['phi_c_E2']:9.4f} {r.get('b_E2', np.nan):6.2f} "
+          f"{r['phi_c_E3']:9.4f} {r['phi_c_E4']:9.4f} "
+          f"{r['phi_dense_E1']:10.4f} {r['mu_s']:6.3f} {r['p_hat_max']:10.3e}")
 
     # --- CV contrasts, per family/mu, averaged over seeds ---------------------------
     p()
@@ -290,11 +314,13 @@ def main() -> int:
             if len(cvs) < 2:
                 continue
             p(f"-- {fam}, mu_p = {mu}")
-            for tag in ("E1", "E2", "E3", "E4"):
+            for tag in ("E2", "E3", "E4", "dense_E1"):
                 vals = {}
                 for cv in cvs:
-                    v = [r[f"phi_c_{tag}"] for r in sub if r["cv"] == cv
-                         and np.isfinite(r[f"phi_c_{tag}"])]
+                    col = ("phi_dense_E1" if tag == "dense_E1"
+                           else f"phi_c_{tag}")
+                    v = [r[col] for r in sub if r["cv"] == cv
+                         and np.isfinite(r[col])]
                     if v:
                         vals[cv] = (float(np.mean(v)), float(np.std(v, ddof=1))
                                     if len(v) > 1 else float("nan"), len(v))
@@ -377,6 +403,23 @@ def main() -> int:
                 if p2 > p1:
                     p("      (the higher-CV cell is the DENSER of the two, which works "
                       "AGAINST the effect: conservative)")
+                # ROBUSTNESS: analyse_rheology flags the cv = 0.5 cells as not having
+                # settled to +/-10 % within gamma_max. Recompute the ratio from a LATE
+                # window (the last 15 % of the strain) and print both, rather than
+                # asserting that the flag does not matter.
+                def _late(rs):
+                    v = []
+                    for rr in rs:
+                        g = np.asarray(rr.get("gamma", []), float)
+                        pp = np.asarray(rr.get("p_hat_series", []), float)
+                        if g.size and g.size == pp.size:
+                            v.append(float(np.mean(pp[g >= 0.85 * g.max()])))
+                    return float(np.mean(v)) if v else float("nan")
+                la, lb = _late(A_), _late(B_)
+                if np.isfinite(la) and np.isfinite(lb) and lb != 0:
+                    p(f"      robustness: on a LATE window (last 15 % of strain) the "
+                      f"ratio is {la / lb:.1f}x against {ratio:.1f}x -- "
+                      f"a {abs(la / lb / ratio - 1) * 100:.0f} % change")
             if len(ratios) > 1:
                 p(f"   spread across pairs: {min(ratios):.1f}x to {max(ratios):.1f}x "
                   f"-- a factor {max(ratios) / min(ratios):.1f} between pairs that "

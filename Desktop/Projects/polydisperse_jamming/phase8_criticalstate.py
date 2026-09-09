@@ -135,14 +135,15 @@ def load_done(path: str) -> set[str]:
     return done
 
 
-def build_grid(family: str, cvs, mus, seeds, n: int):
+def build_grid(family: str, cvs, mus, seeds, n: int, offsets=None):
     """(family, cv, mu, seed, phi) tuples, ladder centres resolved."""
+    offsets = PHI_OFFSETS if offsets is None else offsets
     grid = []
     for cv in cvs:
         for mu in mus:
             centre = ladder_centre(family, cv, mu)
             for seed in seeds:
-                for off in PHI_OFFSETS:
+                for off in offsets:
                     grid.append((family, cv, mu, seed, round(centre + off, 6), n))
     return grid
 
@@ -160,6 +161,11 @@ def main() -> int:
     ap.add_argument("--cvs", default="")
     ap.add_argument("--mus", default="")
     ap.add_argument("--seeds", default="")
+    ap.add_argument("--offsets", default="",
+                    help="comma-separated ladder offsets, overriding PHI_OFFSETS. Used "
+                         "by the P4 frictionless anchor, whose predicted phi_c sits AT "
+                         "the ladder centre rather than above it, so it needs rungs on "
+                         "BOTH sides. The offsets used are recorded in every record.")
     ap.add_argument("--gamma-max", type=float, default=GAMMA_MAX)
     ap.add_argument("--shear-steps", type=int, default=SHEAR_STEPS)
     args = ap.parse_args()
@@ -176,7 +182,17 @@ def main() -> int:
     if args.seeds:
         seeds = tuple(int(x) for x in args.seeds.split(","))
 
-    grid = build_grid(args.family, cvs, mus, seeds, n)
+    offsets = PHI_OFFSETS
+    if args.offsets:
+        offsets = tuple(float(x) for x in args.offsets.split(","))
+        gaps = [round(b - a, 9) for a, b in zip(sorted(offsets), sorted(offsets)[1:])]
+        if len(set(gaps)) != 1:
+            raise SystemExit(f"--offsets must be uniformly spaced; got gaps {gaps}")
+        if min(gaps) <= 0.00475:
+            raise SystemExit(
+                f"--offsets spacing {min(gaps)} is at or below the largest seed scatter "
+                f"in PHI_J_ISO (0.00475); the rungs would not be resolvable")
+    grid = build_grid(args.family, cvs, mus, seeds, n, offsets)
     if args.smoke:
         # one rung above the centre: a cell that MUST be jammed, so a null result is
         # a protocol failure rather than physics.
@@ -213,6 +229,7 @@ def main() -> int:
             rec = json.loads(st.to_json())
             rec["key"] = key
             rec["phi_J_iso_centre"] = ladder_centre(family, cv, mu)
+            rec["ladder_offsets"] = list(offsets)
         except Exception as exc:                       # noqa: BLE001 - record, do not hide
             rec = {"key": key, "family": family, "cv": cv, "mu_p": mu, "seed": seed,
                    "phi_target": phi, "n_requested": ncell, "error": repr(exc)}

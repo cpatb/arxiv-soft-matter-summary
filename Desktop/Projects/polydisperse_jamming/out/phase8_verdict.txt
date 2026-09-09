@@ -1,33 +1,36 @@
 phase8: 45 records from phase8_prod2*.jsonl; 45 usable, 0 errored
 duplicate-state check: 0 offending pairs
 
-family        cv    mu seed cells stdy  qs  phi_c_E1  phi_c_E2   b_E2  phi_c_E3  phi_c_E4   mu_s
-lognormal   0.00  0.30    1     5    4   4    0.6425    0.5670   3.64       nan    0.5778  0.353
-lognormal   0.00  0.30    2     5    4   4    0.6443    0.5687   3.25       nan    0.5758  0.345
-lognormal   0.00  0.30    3     5    3   4       nan    0.5729   2.19       nan    0.5754  0.360
-lognormal   0.20  0.30    1     5    4   4       nan    0.5851   2.22       nan       nan  0.353
-lognormal   0.20  0.30    2     5    4   4       nan    0.5857   2.12       nan    0.5881  0.357
-lognormal   0.20  0.30    3     5    3   4       nan    0.5853   2.16       nan       nan  0.353
-lognormal   0.50  0.30    1     5    5   5    0.7008    0.6324   1.48    0.6355       nan  0.375
-lognormal   0.50  0.30    2     5    5   4       nan    0.6314   1.87    0.6361       nan  0.363
-lognormal   0.50  0.30    3     5    4   5    0.7016    0.6318   1.51    0.6354       nan  0.371
+family        cv    mu seed cells stdy  qs phi_c_E2*   b_E2  phi_c_E3  phi_c_E4 phiDenseE1   mu_s  p_hat_max
+   (* E2 is PRIMARY; phiDenseE1 is the retracted E1, relabelled -- see docstring)
+lognormal   0.00  0.30    1     5    4   4    0.5670   3.64       nan    0.5778     0.6425  0.353  1.646e-02
+lognormal   0.00  0.30    2     5    4   4    0.5687   3.25       nan    0.5758     0.6443  0.345  1.650e-02
+lognormal   0.00  0.30    3     5    3   4    0.5729   2.19       nan    0.5754     0.6555  0.360  1.611e-02
+lognormal   0.20  0.30    1     5    4   4    0.5851   2.22       nan       nan     0.6694  0.353  1.734e-02
+lognormal   0.20  0.30    2     5    4   4    0.5857   2.12       nan    0.5881     0.6715  0.357  1.709e-02
+lognormal   0.20  0.30    3     5    3   4    0.5853   2.16       nan       nan     0.6696  0.353  1.727e-02
+lognormal   0.50  0.30    1     5    5   5    0.6324   1.48    0.6355       nan     0.7008  0.375  2.221e-02
+lognormal   0.50  0.30    2     5    5   4    0.6314   1.87    0.6361       nan     0.7305  0.363  2.029e-02
+lognormal   0.50  0.30    3     5    4   5    0.6318   1.51    0.6354       nan     0.7016  0.371  2.234e-02
 
 === CV contrasts (mean over seeds, +/- sd) ===
 -- lognormal, mu_p = 0.3
-   E1: cv0.00=0.6434+-0.0013(n2)  cv0.50=0.7012+-0.0005(n2)
-       delta(cv 0.00->0.50) = +0.0578  (+46.2 sd)   slope s = +0.1157 per unit CV
    E2: cv0.00=0.5695+-0.0030(n3)  cv0.20=0.5853+-0.0003(n3)  cv0.50=0.6318+-0.0005(n3)
        delta(cv 0.00->0.50) = +0.0623  (+20.6 sd)   slope s = +0.1247 per unit CV
    E3: too few resolved points (1)
    E4: cv0.00=0.5763+-0.0013(n3)  cv0.20=0.5881+-nan(n1)
        delta(cv 0.00->0.20) = +0.0118  (+8.9 sd)   slope s = +0.0590 per unit CV
+   dense_E1: cv0.00=0.6474+-0.0071(n3)  cv0.20=0.6701+-0.0012(n3)  cv0.50=0.7110+-0.0169(n3)
+       delta(cv 0.00->0.50) = +0.0635  (+3.8 sd)   slope s = +0.1271 per unit CV
 
 === P3: the CV contrast at MATCHED phi (no fit, no estimator) ===
    2 overlapping pairs within 0.005 in phi; ALL are reported
    phi 0.63453(cv0.00, n3) vs 0.63687(cv0.50, n3), mismatch 0.00234
       p_ss 1.0824e-02 -> 2.5062e-04  ratio   43.2x  (63 sd)   Z_nr 6.12 -> 4.43   rattlers 0.004 -> 0.448
       (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 41.0x against 43.2x -- a 5 % change
    phi 0.65453(cv0.00, n3) vs 0.65686(cv0.50, n3), mismatch 0.00232
       p_ss 1.6357e-02 -> 3.0541e-03  ratio    5.4x  (15 sd)   Z_nr 6.49 -> 5.15   rattlers 0.002 -> 0.337
       (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 5.6x against 5.4x -- a 4 % change
    spread across pairs: 5.4x to 43.2x -- a factor 8.1 between pairs that differ only in which rung they sit on. Quote the RANGE.
