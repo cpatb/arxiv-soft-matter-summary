@@ -350,6 +350,45 @@ Nothing in this derivation chooses between them, and the numbers in §1's table
 (`Π` = 1.39e4 vs 0.142, a factor 9.77e4 = (D₀/ℓ)²) show the choice spans the entire
 boundary: on the grain-scale reading `ID` = 7.0 and this drop sits on the INERTIAL side.
 
+### 6a. A THIRD candidate exponent, and it is the one this analysis actually predicts
+
+`diag_kappa_sweep.py` (added 2026-09-08; `out/kappa_sweep.txt`) integrates the transient
+at the lab's own physical numbers and sweeps `κ` over ten decades:
+
+| `κ/κ₀` | `Λ` | `p(γ=1)`/ceiling |
+|---|---|---|
+| 1 → 10⁵ | 2.5e-7 → 2.5e-2 | **0.4400** — flat to 1.000002× |
+| 10⁶ | 0.25 | 0.377 |
+| 10⁸ | 25 | 0.0057 |
+
+So M1's absence is not just an algebraic property of Eq. (16): **the dynamics are flat
+over five decades of permeability**, and they only stop being flat once `Λ` ≳ 0.25, which
+is six decades away from where this system is. That is about three decades more headroom
+than the static argument alone establishes.
+
+But the same run shows the pressure is **not** size-independent, because `K_p` is:
+
+| `a` [µm] | `κ` [m²] | `p(γ=1)` [Pa] | ratio |
+|---|---|---|---|
+| 0.8 | 3.23e-15 | 11.8 | 1.000 |
+| 2.5 | 3.15e-14 | 36.9 | 3.125 |
+| 8.0 | 3.23e-13 | 118 | 10.000 |
+
+**`p ∝ a¹`, exactly** — because in the undrained limit `p` follows `K_p`, and for a
+double-layer contact `K_p = P a/(6λ_D)` is linear in the particle size. So the size
+ladder E-4 proposes now separates **three** hypotheses, not two:
+
+| reading | scaling | over one decade of `a` |
+|---|---|---|
+| macroscopic Darcy drainage (`ℓ = D₀`) | `∝ a²` | 100× |
+| grain-scale drainage (`ℓ ∝ a`) | `∝ a⁰` | 1× |
+| **undrained, network-modulus limited (this analysis)** | **`∝ a¹`** | **10×** |
+
+⚠ The `a¹` is specific to a **charge-stabilised** contact. For a Hertzian contact
+`K_p ∝ E^(2/3)P^(1/3)` carries no particle size at all and the exponent would be 0, so
+this prediction is a statement about colloidal silica and **must not** be carried across
+to cornstarch or glass beads.
+
 ---
 
 ## 7. The ceiling that bounds the dilatant branch — and it is not cavitation

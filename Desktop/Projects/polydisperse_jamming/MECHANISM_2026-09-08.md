@@ -224,12 +224,24 @@ is the mechanism's most exposed flank.
 
 ### E-4 — the size ladder, which settles the drainage length
 
-Three particle sizes at fixed CV, `φ`, `U₀` (0.8 / 2.5 / 8 µm). `ID ∝ a²` predicts a
-**100×** change across that decade; grain-scale drainage predicts **none**. The Paper 1
-card already wants exactly this ladder for the relaxation-clock question ("one material,
-three particle sizes, same chemistry, same `φ/φ_M`" — *"a null result is publishable on
-its own"*). **The same samples answer both questions**, which is the cheapest thing on
-this page.
+Three particle sizes at fixed CV, `φ`, `U₀` (0.8 / 2.5 / 8 µm). **Three hypotheses, three
+different exponents, one decade of `a`:**
+
+| reading | prediction | over the decade |
+|---|---|---|
+| macroscopic Darcy drainage, `ℓ = D₀` (this is what `ID ∝ a²` assumes) | `∝ a²` | **100×** |
+| grain-scale drainage, `ℓ ∝ a` | `∝ a⁰` | **1×** |
+| **undrained, network-modulus limited — what this analysis predicts** | **`∝ a¹`** | **10×** |
+
+The third row is new (derivation §6a, from `diag_kappa_sweep.py`): in the undrained limit
+the pressure follows `K_p`, not `κ`, and `K_p = P a/(6λ_D)` for a charge-stabilised
+contact is linear in the particle size. ⚠ That exponent is specific to colloidal silica —
+a Hertzian contact carries no size at all — so it must not be carried to cornstarch.
+
+The Paper 1 card already wants exactly this ladder for the relaxation-clock question
+("one material, three particle sizes, same chemistry, same `φ/φ_M`" — *"a null result is
+publishable on its own"*). **The same samples answer both questions**, which is the
+cheapest thing on this page.
 
 ### E-5 (cheap, from data already recorded) — the arrest boundary in φ
 
