@@ -1,6 +1,9 @@
 # Polydispersity, particle size and the impact regime — where this stands
 
-**2026-09-08.** One page, for a co-author or a fresh session. Everything below is either
+**2026-09-08, revised 2026-09-09.** One page, for a co-author or a fresh session.
+🔴 **Sections 2(b) and 2(e) were revised and 2(e) withdrawn on 2026-09-09** — read
+`NEXT_STEPS_2026-09-10.md` §0 and `PREREG_ROOT_PINNING_2026-09-09.md` §6–7 first.
+Everything below is either
 measured in this repo or derived and checked in it; the numbers are quoted from the
 artifacts named beside them and are not typed from memory.
 
@@ -31,12 +34,31 @@ critical-state channel is `1/(φ − φ_c(CV))`, whose log-derivative does not a
 a **pole**. The 2026-08-31 exclusion of the permeability mechanism held `φ_c` fixed and
 swept only `κ` — it measured the weaker channel. *(21 checks, `ALL CHECKS PASSED`.)*
 
-**(b) `φ_c` rises with CV, measured.** 45 constant-volume shear cells, 0 failed:
+**(b) `φ_c` rises with CV — but as a ladder-relative root, not a measured constant.**
+🔴 **REVISED 2026-09-09**; read `PREREG_ROOT_PINNING_2026-09-09.md` §6–7. 63 cells:
 
-| | value | significance |
-|---|---|---|
-| Δ`φ_c` (CV 0 → 0.5) | **+0.0623** | 20.6 seed sd |
-| slope `dφ_c/dCV` | **+0.1247** | vs the isotropic `φ_J` slope 0.1246 |
+| gate | Δ`φ_c` (CV 0 → 0.5) | slope | sd |
+|---|---|---|---|
+| ungated | **+0.0607** | 0.1214 | 42.6 |
+| quasi-static | **+0.0446** | 0.0892 | 6.0 |
+| steady | **+0.0471** | 0.0941 | 4.6 |
+| both | **+0.0479** | 0.0957 | 6.8 |
+
+The gates were **counted and never applied** until 2026-09-09; all four are now printed
+side by side and none alone. **Quote +0.045 to +0.061 with the gate named.**
+
+🔴 **And the "vs the isotropic slope 0.1246" comparison is WITHDRAWN as corroboration.**
+The estimator's root follows the bottom of its own fitting window (response 1.15 when the
+bottom moves, 0.06 when the top moves; on a ladder that brackets the root it refuses on
+3/3 seeds with its exponent at the bound), and every ladder is CENTRED on those very
+`φ_J` values — so the two agreeing to 2.6 % is one measurement read twice. What survives
+is the sign and rough size, and a fit-free bracket: at CV = 0 the critical state lies
+**between 0.5545 and 0.5945** (`p_ss` 7.65e-07 → 4.73e-04, `z_nr` 3.30 → 4.58).
+
+⚠ A separate confound, found and controlled the same day: the realised shear rate is
+not constant along the CV ladder (4.78×, because `dt` is set by the smallest particle). A
+rate-matched control moves Δ`φ_c` by at most +0.0107, and in the **conservative**
+direction. `grade_rate_matched.py`.
 
 **(c) The headline needs no fit at all.** Where the CV = 0 and CV = 0.5 ladders overlap
 in `φ`, at *matched packing fraction*:
@@ -56,8 +78,10 @@ and 5.6×, a 4–5 % change.
 **0.6347 ± 0.0010** against `φ_J(μ_p=0)` = **0.6332**, measured months earlier by an
 isotropic pressure ladder. Off by **0.0015**, seven times inside the pre-registered bar.
 
-**(e) `φ_c` and `φ_J` coincide** to within 0.005 at both friction values — the shear
-critical state and the isotropic jamming point are the same number for these packings.
+**(e)** 🔴 **WITHDRAWN 2026-09-09.** "`φ_c` and `φ_J` coincide to within 0.005 at
+`μ_p` = 0.3" is forced by the ladder placement, not measured — see (b). It stands only at
+`μ_p` = 0, where the estimator is E4 against the exact `Z` = 2d = 6 target and the
+crossing is a bracketed interpolation, i.e. exactly the arm (d) tests.
 
 **(f) `μ_s` = 0.359 ± 0.010 at `μ_p` = 0.3 and 0.105 ± 0.003 at `μ_p` = 0**, a factor
 3.42: removing particle friction cuts macroscopic friction by that much and does not take
@@ -91,7 +115,11 @@ boundary.
 **(iv) The dilatancy coefficient `α` is assumed constant in CV and is untested.** Testing
 it needs constant-*pressure* shear, which this protocol does not do.
 
-**(v) P5 is running** — the zero-skew family at matched CV, which separates a CV effect
+**(v) P5 RAN, and it does not discriminate.** 🔴 2026-09-09, `p5_degeneracy.py`: the
+zero-skew family gives 2.823× less Δ`φ_c` than the lognormal one at matched `d₃₂` — but
+the same shape effect is present in `φ_J`, measured with **no shear at all** (2.735×,
+3.2 % apart). The effect is a property of the packing geometry, which both accounts read.
+Original note: the zero-skew family at matched CV, which separates a CV effect
 from a `d₃₂` effect.
 
 ## 4. The experiments, cheapest first
@@ -100,7 +128,7 @@ from a `d₃₂` effect.
 |---|---|---|---|
 | **E-0** | raw size distributions of the two bench samples | decides whether a pure size threshold can work at all (it needs CV ≈ 1.0–1.5); and whether "800 nm" is a number mean — if it is a volume mean, `d₃₂` *falls* with CV and the sign reverses | samples already exist |
 | **E-6** | **drop-size ladder on cornstarch**, 2–6 mm | the three drainage readings move `U₀*` in three *directions* (∝D₀, ∝1/D₀, flat): 3.6 / 14.4 / 7.2 m/s at 2 mm. Decided by the **sign** | a different nozzle |
-| **E-2** | raise `φ` at high CV until the solid branch returns | the increment should equal the measured Δ`φ_c` = **0.0623 ± 0.003** — **no free parameter** | needs `φ` steps ≲0.03 and drift <0.015 — **not** blocked by evaporation (see below) |
+| **E-2** | raise `φ` at high CV until the solid branch returns | the increment should equal the measured Δ`φ_c` = **0.045 to 0.061** (the range is the four gate sets) — **no free parameter** | needs `φ` steps ≲0.03 and drift <0.015 — **not** blocked by evaporation (see below) |
 | **E-3** | pore-pressure **sign** (flush transducer, >1 kHz) | the only *clean* separator from the rival | hardware |
 | **E-4** | particle-size ladder 0.8/2.5/8 µm | three exponents: `a²` (100×), `a¹` (10×), `a⁰` (1×) over a decade | new particles |
 
@@ -133,7 +161,7 @@ first.
 
 ## 5. What would kill it
 
-`φ_c` flat in CV (it is not: 20.6 sd); the high-CV spreading state showing pore *suction*;
+`φ_c` flat in CV (it is not: 4.6–42.6 sd depending on the gate); the high-CV spreading state showing pore *suction*;
 raising `φ` failing to restore the solid branch; a matched-`d₃₂` ladder still switching
 regime; or no threshold anywhere over a decade of particle size.
 

@@ -265,12 +265,25 @@ jamming slope standing in for the critical-state one — a different quantity, a
 assumption rather than a measurement. `phase8_criticalstate.py` has now measured the
 critical-state slope directly, by constant-volume shear, over 45 cells:
 
-| estimator | Δ`φ_c` (CV 0 → 0.5) | slope `s` per unit CV | vs the isotropic 0.1246 |
-|---|---|---|---|
-| E1, `φ(I → 0)` | +0.0578 (46 sd) | **0.1157** | 0.93× |
-| E2, free-exponent pressure root | +0.0623 (21 sd) | **0.1247** | 1.0006× |
+| gate on E2, the free-exponent pressure root | Δ`φ_c` (CV 0 → 0.5) | slope `s` per unit CV |
+|---|---|---|
+| ungated | +0.0607 (42.6 sd) | **0.1214** |
+| quasi-static | +0.0446 (6.0 sd) | **0.0892** |
+| steady | +0.0471 (4.6 sd) | **0.0941** |
+| both | +0.0479 (6.8 sd) | **0.0957** |
 
-So the table above now stands on a measured slope and **P2 passes**. ⚠ A third estimator
+🔴 **REVISED 2026-09-09, and P2 IS WITHDRAWN.** Two things changed. The quality gates
+were counted and never applied, so the single +0.0623 above was one of four numbers and
+the others are 25 % smaller; all four are now printed side by side. And the comparison
+"vs the isotropic 0.1246" is not a comparison: the ladders are CENTRED on the published
+isotropic `φ_J`, and E2's root follows the bottom of its own fitting window (response
+1.15 when the bottom moves against 0.06 when the top moves, and on a ladder that brackets
+the root it refuses on 3/3 seeds with its exponent at the bound). So `s` ≈ 0.1246 is one
+measurement read twice. See `PREREG_ROOT_PINNING_2026-09-09.md` §6–7.
+
+**The table above therefore still stands on a placeholder slope**, and honestly so: the
+placeholder was the isotropic `φ_J` slope, and the isotropic `φ_J` slope is what the
+constant-volume run returned. ⚠ A third estimator
 appeared to agree to 0.1 % with a seed sd of *zero* and was disqualified — it was sitting
 on its own fit bound (`MECHANISM_2026-09-08.md` §8). ⚠ `CV*` ≈ 0.16 still carries its
 *other* placeholder, `φ_c(0)` = 0.42, which is unmeasured; the slope is no longer one.
@@ -287,11 +300,11 @@ can fail.
 
 | # | prediction | bar | status |
 |---|---|---|---|
-| **P1** | `φ_c` rises with CV for the lognormal family at `μ_p` = 0.3 | Δ`φ_c`(CV 0→0.5) > 0 and > 3× seed scatter | ✅ **PASS** +0.0578 (46 sd) / +0.0623 (21 sd) |
-| **P2** | the critical-state slope `s` agrees with the isotropic `φ_J` slope | within a factor of 2 of +0.1246 per unit CV | ✅ **PASS** — 0.1157 and 0.1247, within 8 % |
+| **P1** | `φ_c` rises with CV for the lognormal family at `μ_p` = 0.3 | Δ`φ_c`(CV 0→0.5) > 0 and > 3× seed scatter | ✅ **PASS on sign and size**, +0.045 to +0.061 over the four gate sets (4.6–42.6 sd). 🔴 ⚠ As a **ladder-relative root**, not a material constant — see §4 |
+| **P2** | the critical-state slope `s` agrees with the isotropic `φ_J` slope | within a factor of 2 of +0.1246 per unit CV | 🔴 **WITHDRAWN 2026-09-09.** The bar is met arithmetically (0.1214) but the test is vacuous: the ladders are centred on those `φ_J` values and the root tracks the ladder. A prediction that cannot fail is not a prediction |
 | **P3** | there exists a `φ` between `φ_c(CV=0)` and `φ_c(CV=0.5)` where raising CV alone takes the pack from dilatant to contractive | `p_ss` at fixed φ falls with CV and crosses the unjammed bar | ✅ **PASS on the fall** (5.4–43× at matched φ, 15–63 sd); ⚠ partial on the crossing |
 | **P4** | frictionless control: `φ_c(μ_p=0, CV=0)` coincides with the isotropic `φ_J`(μ_p=0) = 0.6332, because frictionless shear jamming and isotropic jamming coincide | agree within 0.01 | ✅ **PASS** — 0.6347 ± 0.0010 on the isostatic crossing, off by 0.0015, 7× inside the bar. See `MECHANISM_2026-09-08.md` §8 for why that estimator and not the pressure roots |
-| **P5** | the CV effect is **not** explained by `d₃₂`: a uniform (zero-skew) PSD and a lognormal at matched CV have `d₃₂` within 9 % but must give different `s` | `s_lognormal/s_uniform > 1.5` | ✅ **PASS** — uniform +0.0215 vs lognormal +0.0623, ratio **2.90×**. The two families match `d₃₂` to ~9 %, so a permeability account cannot produce this |
+| **P5** | the CV effect is **not** explained by `d₃₂`: a uniform (zero-skew) PSD and a lognormal at matched CV have `d₃₂` within 9 % but must give different `s` | `s_lognormal/s_uniform > 1.5` | ✅ **PASS** — uniform +0.0215 vs lognormal +0.0607, ratio **2.82×** (2.90× on the 5-rung ladder). 🔴 ⚠ It does NOT discriminate against the rheological rival: the same shape effect is present in `φ_J`, measured with no shear at all (2.735×). `p5_degeneracy.py` |
 | **P6** | **experiment**: at fixed φ and fixed `d₁₀`, the impact regime switches at a critical CV\*, and raising φ moves CV\* **up** | a monotone CV\*(φ) with the predicted sign | *for the bench* |
 | **P7** | **experiment, the discriminator**: in the high-CV spreading state the pore pressure is **positive** (overpressure), where [M26]'s R3 has none and R1 has suction | sign of a pore-pressure measurement, or the absence of cavitation bubbles | *for the bench* |
 

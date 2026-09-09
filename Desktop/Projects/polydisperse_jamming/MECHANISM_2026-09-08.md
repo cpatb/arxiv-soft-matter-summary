@@ -197,7 +197,8 @@ weakening — but note it also predicts a return on raising `φ`, so E-2 tests t
 than I first wrote.**
 
 ```
-   predicted increment = Δφ_c(CV 0 → 0.5) = 0.0623 ± 0.003   (measured, 20.6 sd)
+   predicted increment = Δφ_c(CV 0 → 0.5) = 0.045 to 0.061   (measured; the range is
+                                                     the four gate sets, see §8)
 ```
 
 The experiment must resolve the **difference of two thresholds** against that 0.062. If
@@ -463,13 +464,16 @@ through the pore fluid or through the viscosity is open.**
 ~1e-3). Source: `out/phase8_verdict.txt`, `out/phase8_summary.csv`. Bars unchanged from
 `derivations/dilatancy_sign_mechanism.md` §5.
 
+🔴 **This table is the 2026-09-08 grading and it is superseded in two rows. See "Three
+defects found on 2026-09-09" below before quoting P1 or P2.**
+
 | # | prediction | bar | result | verdict |
 |---|---|---|---|---|
-| **P1** | `φ_c` rises with CV | Δ > 0 and > 3× seed scatter | **+0.0578 (E1, 46 sd)**, **+0.0623 (E2, 21 sd)**; all resolved estimators agree in sign | ✅ **PASS**, by >6× the bar |
-| **P2** | critical-state slope ≈ isotropic `φ_J` slope | within 2× of +0.1246/CV | **E1 0.1157, E2 0.1247** — within **8 %**, and E2 within 0.1 % | ✅ **PASS** |
+| **P1** | `φ_c` rises with CV | Δ > 0 and > 3× seed scatter | **+0.045 … +0.061** depending on the gate (was +0.0623 ungated on the 5-rung ladder), 4.6–42.6 sd; every resolved estimator agrees in sign | ✅ **PASS on sign and size**, ⚠ *as a ladder-relative root, not a measured material constant* — see defect (3) |
+| **P2** | critical-state slope ≈ isotropic `φ_J` slope | within 2× of +0.1246/CV | E2 0.1214 against 0.1246 | 🔴 **WITHDRAWN as corroboration.** The ladders are *centred* on those `φ_J` values and the root tracks the ladder, so this is one number read twice, not two agreeing measurements |
 | **P3** | at fixed `φ`, raising CV drives the pack toward/past critical | `p_ss` falls and crosses the unjammed bar | at matched `φ`, `p_ss` falls **5.4×–43×** (15–63 sd); `Z_nr` 6.1 → 4.4, rattlers **0.004 → 0.448** | ✅ **PASS** on the fall; ⚠ *partial* on "crosses" — see below |
 | **P4** | frictionless control `φ_c(μ_p=0)` ≈ `φ_J`(μ_p=0) = 0.6332 | within 0.01 | **0.6347 ± 0.0010** (E4, the isostatic crossing at Z = 6) — off by **0.0015** | ✅ **PASS**, 7× inside the bar |
-| **P5** | uniform vs lognormal at matched CV give different slopes | ratio > 1.5 | uniform **+0.0215 ± 0.003**, lognormal **+0.0623** → ratio **2.90×** | ✅ **PASS**, ~2× the bar |
+| **P5** | uniform vs lognormal at matched CV give different slopes | ratio > 1.5 | uniform **+0.0215 ± 0.003**, lognormal **+0.0607** → ratio **2.82×** (2.90× on the 5-rung ladder) | ✅ **PASS**, ~2× the bar — but it does not **discriminate**, see below |
 | P6, P7 | bench | — | for the author | — |
 
 ### The headline measurement, and it needs no fit at all
@@ -551,18 +555,20 @@ this protocol, so it is an internal consistency check, not an anchor.
 
 | family | Δ`φ_c` (CV 0 → 0.5) | slope |
 |---|---|---|
-| lognormal (skewed) | **+0.0623** (20.6 sd) | 0.1247 |
+| lognormal (skewed) | **+0.0607** (42.6 sd) | 0.1214 |
 | **uniform (zero skew)** | **+0.0215** (5.7 sd) | 0.0429 |
-| **ratio** | **2.90×** | *(bar was 1.5)* |
+| **ratio** | **2.82×** | *(bar was 1.5)* |
+
+*(ungated E2 on the symmetric 7-rung ladder; the 5-rung numbers were +0.0623 and 2.90×)*
 
 🔑 **The CV effect is a distribution-SHAPE effect, not a moment effect.** The two families
 have `d₃₂` within ~9 % at matched CV, so **a permeability account — which reads only the
-Sauter mean — cannot produce a 2.90× difference between them.** This is the cleanest
+Sauter mean — cannot produce a 2.82× difference between them.** This is the cleanest
 separation of the packing channel from the permeability channel in the whole project, and
 it is a *simulation* result rather than a bench one.
 
 The isotropic analogue measured months ago was 2.73×; the constant-volume shear
-measurement gives **2.90×**, by a different protocol on a different quantity.
+measurement gives **2.82×**. ⚠ Those are not two independent numbers: the shear ladders are centred on the isotropic `φ_J` values, so see defect (3) below.
 
 🔴 **CHECKED 2026-09-09, and the answer is NO: P5 does not separate the two.**
 `p5_degeneracy.py`, `out/p5_degeneracy.txt`. The rival runs on `φ_m`, the divergence
@@ -572,8 +578,8 @@ all**, on an imposed-pressure ladder (`out/phase2_summary.csv`):
 
 | | Δ(CV 0 → 0.5), lognormal | uniform | ratio |
 |---|---|---|---|
-| the rival's parameter `φ_J` | +0.062321 | +0.022783 | **2.735×** |
-| the mechanism's parameter `φ_c` | +0.0623 | +0.0215 | **2.898×** |
+| `φ_J`, measured with no shear at all | +0.062321 | +0.022783 | **2.735×** |
+| `φ_c`, constant-volume shear | +0.0607 | +0.0215 | **2.823×** |
 
 **The shape effect is therefore not specific to the critical state — it is a property of
 the packing geometry**, and it shows up identically in a measurement with no shear in it.
@@ -592,13 +598,51 @@ and a boundary in **(U₀, D₀)**.
 with the degeneracy, it is partly *forced* by it, because the `φ_c` ladders are centred
 on those very `φ_J` values.
 
-### 🔴 A gate defect found after this section was written
+### 🔴 Three defects found on 2026-09-09, after this section was written
 
-`analyse_phase8.py` **counted** its quasi-static and steady gates and never applied them
-to the primary estimator. Applying them moves Δ`φ_c` from +0.0623 to **+0.044–0.049**, a
-**30 % fall**, and the exclusions are CV-asymmetric. Sign and conclusion survive; the
-number does not. **Every +0.0623 on this page needs rescaling** once the low-CV rungs are
-re-run with enough gated cells to support it — `NEXT_STEPS_2026-09-09.md` §0.
+**Read `PREREG_ROOT_PINNING_2026-09-09.md` §6–7 before quoting any `φ_c` on this page.**
+The third defect is the one that matters.
+
+**(1) The gates were counted and never applied — FIXED.** `analyse_phase8.py` now runs
+every contrast under all four gate sets and prints them side by side, never one alone.
+The ladder was extended by two rungs at +0.10 and +0.12 at *all three* CV levels (18 new
+cells, 0 failures), so every gate set resolves n = 3 seeds at every level:
+
+| gate | Δ`φ_c` (CV 0 → 0.5) | slope |
+|---|---|---|
+| ungated | **+0.0607** (42.6 sd) | 0.1214 |
+| quasi-static only | **+0.0446** (6.0 sd) | 0.0892 |
+| steady only | **+0.0471** (4.6 sd) | 0.0941 |
+| both | **+0.0479** (6.8 sd) | 0.0957 |
+
+**Quote the range +0.045 to +0.061 with the gate named.** Every `+0.0623` elsewhere on
+this page is the old ungated 5-rung number.
+
+**(2) The shear rate is not constant along the CV ladder — CONTROLLED.** `gdot =
+γ_max/(steps·dt)` and `dt` is set by the *smallest* particle, so widening the PSD raises
+the rate: 3.000e-05 at CV = 0 against 1.437e-04 at CV = 0.5, a factor **4.78**. 30 cells
+were re-run with `steps` chosen per cell so every arm sits at `gdot` = 1.430e-04 (match
+checked from the realised rate: 1.000×/1.000×/1.002×). Removing the confound moves
+Δ`φ_c` by **+0.0002 / +0.0038 / +0.0107** across the gate sets — every one *positive*, so
+the confound was making the published number **conservative**. `grade_rate_matched.py`.
+
+**(3) 🔴 The estimator does not measure `φ_c`.** E2's root follows the bottom of its own
+fitting window: +1.15 of a window move at the bottom against +0.06 at the top, and on a
+ladder that actually *brackets* the root its exponent saturates at the bound and it
+refuses on all three seeds. Since every ladder is centred on the project's own published
+isotropic `φ_J`, **Δ`φ_c` is not an independent measurement of Δ`φ_J`** — the two agree
+to 2.6 % because one is built on the other. The critical state *is* physically bracketed
+(0.5545–0.5945 at CV = 0, from a fit-free readout), and the CV effect survives in sign
+and rough size, but two claims are **withdrawn**: that the slope 0.1247 "matches the
+independently measured" 0.1246, and that `φ_c` ≈ `φ_J` at `μ_p` = 0.3. P3 and P4 are
+untouched.
+
+**(3b) And E4, the candidate replacement, has a mis-set constant.** `Z_ISO_FRICTIONAL`
+= 4.0 is the `μ_p → ∞` limit; at the production `μ_p` = 0.3 the measured isostatic count
+is **4.535 ± 0.072** over 18 isotropic ladders, and it *drifts with CV* (4.609 → 4.377),
+which biases E4's own contrast by ≈ +0.0045. `measure_z_iso.py`; the corrected estimator
+is reported as `E4m` beside `E4`, never instead of it. E4 at `μ_p` = 0 is unaffected,
+because 2d = 6 is exact there — so P4 stands.
 
 ### One estimator was disqualified mid-analysis
 
