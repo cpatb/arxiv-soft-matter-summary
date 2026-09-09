@@ -1,0 +1,134 @@
+=== CANDIDATE SIZE THRESHOLDS at the lab's operating point ===
+  phi = 0.44, phi_c = 0.42 (PLACEHOLDER), U0 = 3.0 m/s, D0 = 2.5 mm, T = 293.15 K
+  threshold                                         a* [um]         silica (lab)    cornstarch [M26]
+  T1 drainage (ell = D0), ID_b = 1                   94.321        below (0.01x)       below (0.11x)
+  T1 drainage (ell = D0), ID_b = 0.0066               7.663        below (0.10x)       ABOVE (1.31x)
+  T2 drainage (ell ~ a)                                  --         no threshold        no threshold
+  T3 dilatant strength, 0 mM (lambda_D 30 nm)         3.960        below (0.20x)       ABOVE (2.53x)
+  T3 dilatant strength, 1 mM (lambda_D 10 nm)         1.320        below (0.61x)       ABOVE (7.58x)
+  T3 dilatant strength, 100 mM (lambda_D 1 nm)        0.132        ABOVE (6.06x)      ABOVE (75.76x)
+  T4 Brownian (Pe = 1)                                0.113        ABOVE (7.10x)      ABOVE (88.73x)
+  T6 Stokes (St = 1)                                 61.237        below (0.01x)       below (0.16x)
+  T8 capillary / granulation                        143.369        below (0.01x)       below (0.07x)
+  T7 grain inertia (I = 1)                         2121.320        below (0.00x)       below (0.00x)
+
+=== WHICH CANDIDATES SURVIVE: polarity AND separation ===
+  A candidate must do TWO things: put silica below and cornstarch above (so it
+  separates the observation), AND have the right POLARITY (a > a* must be the
+  INERTIAL side, not the solid-like one).
+
+  threshold                         a*[um]  separates?  polarity    VERDICT
+  T1 drainage (ell = D0)         94.32/7.6         YES       big   SURVIVES
+  T2 drainage (ell ~ a)                 --          no      none   EXCLUDED
+      (ID carries no particle size)
+  T3 dilatant strength           3.96/1.32         YES     small   EXCLUDED
+      (above a* frustrated dilation CAN strengthen, so big grains are MORE solid-like -- the reverse)
+  T4 Brownian (Pe = 1)                0.11          no       big   EXCLUDED
+      (does not separate: both materials on the same side)
+  T6 Stokes (St = 1)                 61.24          no       big   EXCLUDED
+      (does not separate: both materials on the same side)
+  T8 capillary / granulation        143.37          no       big   EXCLUDED
+      (does not separate: both materials on the same side)
+  T7 grain inertia (I = 1)         2121.32          no       big   EXCLUDED
+      (does not separate: both materials on the same side)
+
+  🔑 1 of 7 candidates survive both filters:
+     - T1 drainage (ell = D0), ID_b = 0.0066  ->  a* = 7.663 um
+
+=== THE HYPOTHESIS SHARPENED: a WINDOW in size, not a threshold ===
+  T1 and T3 both grow with particle size and they are NOT redundant, because
+  they grow at different rates and point opposite ways:
+     T3  strengthening capacity   ~ a^1   below it dilatancy CANNOT strengthen
+     T1  drainage                 ~ a^2   above it the pore fluid keeps up
+  so frustrated dilation can hold a drop solid only in the band between them:
+
+      salt  U0[m/s]  lower edge T3  upper edge T1                 window
+      0 mM     0.50          3.960         18.770       cornstarch [M26]
+      0 mM     3.00          3.960          7.663     (neither material)
+      1 mM     0.50          1.320         18.770       cornstarch [M26]
+      1 mM     3.00          1.320          7.663     (neither material)
+    100 mM     0.50          0.132         18.770 silica (lab), cornstarch [M26]
+    100 mM     3.00          0.132          7.663           silica (lab)
+
+  🔑 THREE things fall out, and each is checkable on an axis already in use.
+  (a) CORNSTARCH sits INSIDE the window at 0.5 m/s and EXITS THE TOP by 3 m/s.
+      That IS [M26]'s re-entrant transition, recovered as a window edge moving
+      down past a fixed particle size as U0 rises.
+  (b) 800 nm SILICA sits BELOW the window at 0 and 1 mM -- too small for
+      frustrated dilation to raise the particle pressure above what already
+      drives it. So silica's solid-like branch, which is OBSERVED, is NOT
+      frustrated dilation; it has to be frictional/repulsive jamming. ⚠ That
+      is a substantive claim about the lab's own material and it says silica
+      and cornstarch are solid for DIFFERENT REASONS.
+  (c) Adding salt lowers the bottom edge past 800 nm, so the SAME silica should
+      enter the window inside the salt series Paper 1 already runs -- no new
+      particles, no new apparatus.
+
+=== WHAT THE HYPOTHESIS IMPLIES ABOUT THE ID BOUNDARY (the card's landmine) ===
+  a* goes as sqrt(ID_boundary), and a*(ID_b = 1) = 94.32 um.
+  For the threshold to sit BETWEEN 800 nm silica and 10 um cornstarch,
+      ID_boundary must lie in [7.19e-05, 0.0112]
+  which BRACKETS the 6.6e-3 that [M26]'s own Eq. 6 returns at their own
+  Regime-2/3 transition, and EXCLUDES ID_boundary = 1 by 89x.
+  ⚠ This is an inference FROM the hypothesis, not independent support for it:
+  it says the hypothesis is only self-consistent on the smaller calibration.
+
+=== CAN A PURE SIZE THRESHOLD EXPLAIN THE CV OBSERVATION? ===
+  On a pure size threshold, CV acts ONLY by moving the moment the threshold
+  uses. T1 uses Carman-Kozeny, whose length is the SAUTER mean, and for a
+  lognormal at fixed number mean d32/d10 = (1 + CV^2)^2. So crossing a* from a
+  starting d10 needs a specific CV -- which is a testable number, not a story.
+   d10 [um]   a* [um]  d32/d10 needed  CV needed
+       0.80      7.66            9.58       1.45   (T1, ID_b=6.6e-3)
+       1.50      7.66            5.11       1.12   (T1, ID_b=6.6e-3)
+       3.00      7.66            2.55       0.77   (T1, ID_b=6.6e-3)
+
+  🔑 At the lab's 800 nm number-mean a pure size threshold needs CV ~ 1.5 to
+     reach a*, and CV ~ 1.1 even at a 1.5 um mean. Those are far broader than
+     the CV 0.2-0.5 this project has simulated. SO: if the author's two samples
+     have CV below ~1, a pure size threshold acting through d32 CANNOT carry
+     them across T1, and something else must be moving as well. If they are
+     broader than that, it can -- which makes the raw size distributions the
+     measurement that decides it (Q1 on the Status card, still open).
+
+=== HOW EACH THRESHOLD MOVES -- this is what discriminates them ===
+  threshold                              U0           salt         dphi         D0
+  T1 drainage (ell = D0)            U0^-1/2              —    dphi^+1/2    D0^+1/2
+  T2 drainage (ell ~ a)                   —              —            —          —
+  T3 dilatant strength                 NONE     ~ lambda_D      dphi^-1       NONE
+  T4 Brownian (Pe = 1)              U0^-1/3              —            —    D0^+1/3
+  T6 Stokes (St = 1)                U0^-1/2              —            —    D0^+1/2
+  T8 capillary / granulation          U0^-2              —            —       NONE
+  T7 grain inertia (I = 1)             NONE              —            —       ~ D0
+
+  🔑 T3 is the ONLY candidate that moves with SALT and the ONLY one that does
+     NOT move with U0. Every other finite threshold falls with U0 and is
+     salt-blind. So a size ladder crossed with a VELOCITY ladder and a SALT
+     ladder identifies which threshold is operating, with no new apparatus.
+
+=== the sweeps, explicitly ===
+    U0 [m/s]   T1(ID_b=1)   T1(6.6e-3)   T3 (0 mM)   T4 Brown  T6 Stokes     T8 cap
+        0.50      231.039       18.770       3.960      0.205    150.000   5161.290
+        1.00      163.369       13.272       3.960      0.163    106.066   1290.323
+        2.00      115.520        9.385       3.960      0.129     75.000    322.581
+        3.00       94.321        7.663       3.960      0.113     61.237    143.369
+        5.00       73.061        5.936       3.960      0.095     47.434     51.613
+
+  lambda_D[nm]       salt    T3 [um]   is 800 nm silica above it?
+          30.0       0 mM      3.960   no
+          10.0       1 mM      1.320   no
+           3.0      10 mM      0.396   YES -- dilatant strengthening AVAILABLE
+           1.0     100 mM      0.132   YES -- dilatant strengthening AVAILABLE
+
+  🔑 T3 crosses the lab's own particle size INSIDE its own salt series.
+     At nominal zero salt the 800 nm silica is BELOW the threshold and
+     frustrated dilation is not available; by 10 mM it is ABOVE it. So the
+     salt axis Paper 1 already sweeps should switch the solid-like branch
+     on and off AT FIXED PARTICLE SIZE -- which is a size-threshold
+     prediction testable without making a single new particle.
+
+     phi     dphi    T3 [um]  T1(6.6e-3) [um]
+    0.44    0.020      3.960            7.663
+    0.46    0.040      2.070           12.089
+    0.48    0.060      1.440           16.523
+    0.50    0.080      1.125           21.308
