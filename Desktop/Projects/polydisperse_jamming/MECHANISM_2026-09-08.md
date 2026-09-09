@@ -385,7 +385,7 @@ through the pore fluid or through the viscosity is open.**
 | **P1** | `φ_c` rises with CV | Δ > 0 and > 3× seed scatter | **+0.0578 (E1, 46 sd)**, **+0.0623 (E2, 21 sd)**; all resolved estimators agree in sign | ✅ **PASS**, by >6× the bar |
 | **P2** | critical-state slope ≈ isotropic `φ_J` slope | within 2× of +0.1246/CV | **E1 0.1157, E2 0.1247** — within **8 %**, and E2 within 0.1 % | ✅ **PASS** |
 | **P3** | at fixed `φ`, raising CV drives the pack toward/past critical | `p_ss` falls and crosses the unjammed bar | at matched `φ`, `p_ss` falls **5.4×–43×** (15–63 sd); `Z_nr` 6.1 → 4.4, rattlers **0.004 → 0.448** | ✅ **PASS** on the fall; ⚠ *partial* on "crosses" — see below |
-| **P4** | frictionless control `φ_c(μ_p=0)` ≈ `φ_J`(μ_p=0) = 0.6332 | within 0.01 | **NOT RUN** | ⬜ **not tested** |
+| **P4** | frictionless control `φ_c(μ_p=0)` ≈ `φ_J`(μ_p=0) = 0.6332 | within 0.01 | **0.6347 ± 0.0010** (E4, the isostatic crossing at Z = 6) — off by **0.0015** | ✅ **PASS**, 7× inside the bar |
 | **P5** | uniform vs lognormal at matched CV give different slopes | ratio > 1.5 | **NOT RUN** | ⬜ **not tested** |
 | P6, P7 | bench | — | for the author | — |
 
@@ -420,14 +420,53 @@ and is why the **range** is quoted. And in both pairs the higher-CV cell sits at
 is *at* the frictional isostatic value, i.e. marginal, not clearly unjammed. The fall is
 decisive; the crossing is not demonstrated by these cells.
 
-### What was not tested, and why it matters
+### ✅ P4 ran, and the protocol now has an external anchor
 
-**P4 and P5 were not run.** Machine time went to the CV arm and to two re-launches after
-defects (the quantized compression, then the periodic-collider abort). P4 is the
-protocol's only external anchor — frictionless shear jamming should coincide with the
-isotropic `φ_J` = 0.6332 the project already has — so **until it runs, the constant-volume
-protocol is unanchored against anything outside itself.** P5 is the discriminator that
-would separate a CV effect from a `d₃₂` effect. Both are the first thing to run next.
+15 cells at `μ_p` = 0, ladder centred on the published `φ_J`(μ_p=0) with rungs on both
+sides. `grade_p4_anchor.py` → `out/p4_anchor_verdict.txt`.
+
+| estimator | mean | \|diff\| from 0.6332 | verdict |
+|---|---|---|---|
+| **E4** — where `Z_nr` crosses the **isostatic** count (6, frictionless) | **0.6347 ± 0.0010** | **0.0015** | ✅ **PASS** |
+| E2 — free-exponent pressure root | 0.5839 (1 of 3 seeds; 2 refused) | 0.0492 | FAIL |
+| E3 — same, `b` pinned to 1 | 0.6128 | 0.0203 | FAIL |
+
+This matters more than the other predictions because `φ_J`(μ_p=0) was measured months
+earlier by a completely different route (an isotropic pressure ladder), and the physics
+that makes the two coincide — frictionless packings have no shear-jamming branch below
+the isotropic point — is not something this protocol can arrange for itself.
+
+⚠ **The estimators disagree and the pre-registration did not name one.** That is a real
+weakness in how P4 was written, so the choice is argued on **definitions**, not on which
+one passes: for a *frictionless* pack, jamming **is** the isostatic point, so E4 measures
+exactly the anchored quantity with no fitted form at all. E2's exponent ran to its
+**bound** on 2 of 3 seeds (`b` = 8.00, 7.33, 8.00) — a fit on a bound is not a
+measurement, and `b ≥ 7` says the transition is far sharper than any low-order power law,
+which is *correct* for frictionless jamming and is the fit reporting its own inadequacy.
+E3 pins `b` = 1 while the data says `b ≥ 7`.
+
+⚠ **On the frictional production arm the ordering reverses** — there `b_E2` = 1.5–3.6,
+nowhere near the bound, and E4 mostly finds no crossing, which is why E2 is primary
+there. **The right estimator depends on the friction**, and one rule would have been
+silently wrong in one of the two arms.
+
+🔴 **A bug found on the way in.** The isostatic count was hardcoded at 4. It is `2d` = 6
+for frictionless spheres and `d+1` = 4 for frictional ones — right for the `μ_p` = 0.3
+arm and silently wrong for this one, where E4 would have hunted for a crossing at 4 that
+happens far below jamming. Now chosen per cell from `μ_p`, with a test pinning both.
+
+**A free internal check:** `μ_s` = **0.105 ± 0.003** at `μ_p` = 0 against
+**0.359 ± 0.010** at `μ_p` = 0.3, a factor **3.42**. Removing particle friction cuts the
+macroscopic friction by that factor and does *not* take it to zero — a frictionless pack
+still resists shear geometrically. Both the direction and the non-zero floor are what the
+`μ(I)` reading must show if it is measuring friction at all. ⚠ Both numbers come from
+this protocol, so it is an internal consistency check, not an anchor.
+
+### What is still not tested
+
+**P5 is running at the time of writing** — the uniform, zero-skew PSD at matched CV,
+which is the discriminator that separates a CV effect from a `d₃₂` effect. The isotropic
+analogue is already 2.7×.
 
 ### One estimator was disqualified mid-analysis
 
