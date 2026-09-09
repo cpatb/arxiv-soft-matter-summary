@@ -40,8 +40,36 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 D10 = 800e-9              # lab silica number mean
-# measured slope of phi_c against CV (out/phase8_verdict.txt, estimator E2)
-DPHI_C_DCV = 0.1247
+
+
+def _dphi_c_dcv() -> tuple[float, str]:
+    """The measured slope of phi_c against CV, READ from out/phase8_verdict.txt.
+
+    🔴 Hardcoded as 0.1247 until 2026-09-09, which is how a number goes stale: the
+    verdict file now prints the slope under FOUR gate sets and they span 0.088-0.125.
+    The UNGATED one is returned, because that is the one the rest of this module's
+    prose is written against, and the gate is named in the output so the reader can
+    see which of the four it is. See analyse_phase8's docstring for why no single
+    gate set is the right answer -- and PREREG_ROOT_PINNING_2026-09-09.md for the
+    larger question of whether the pressure-root slope measures the material at all.
+    """
+    path = os.path.join(HERE, "out", "phase8_verdict.txt")
+    if not os.path.exists(path):
+        raise SystemExit(f"missing {path}; run analyse_phase8.py first")
+    in_e2 = False
+    for line in open(path, encoding="utf-8"):
+        t = line.strip()
+        if t.startswith("E2:"):
+            in_e2 = True
+            continue
+        if in_e2 and (t.startswith("E3:") or t.startswith("E4:")):
+            break
+        if in_e2 and t.startswith("ungated") and "slope" in t:
+            return float(t.split("slope")[1].split("/CV")[0]), "ungated E2"
+    raise SystemExit(f"could not read an ungated E2 slope from {path}")
+
+
+DPHI_C_DCV, DPHI_C_SOURCE = _dphi_c_dcv()
 SALT_LADDER = ((30.0, "0 mM"), (10.0, "1 mM"), (3.0, "10 mM"), (1.0, "100 mM"))
 STRESS_RATIOS = (1e-2, 1e-1)     # sigma/sigma*
 
@@ -78,7 +106,8 @@ def main() -> int:
     p(f"  i.e. the CV effect is up to {(1 - lo) * 100:.0f} % weaker at the low-salt end.")
     p()
     p("  In the quantity the mechanism actually uses, with the MEASURED slope")
-    p(f"  dphi_c/dCV = {DPHI_C_DCV:.4f}:")
+    p(f"  dphi_c/dCV = {DPHI_C_DCV:.4f} ({DPHI_C_SOURCE}, read from "
+      f"out/phase8_verdict.txt, not hardcoded):")
     p(f"  {'true CV':>9s} {'dphi_c at 100 mM':>18s} {'dphi_c at 0 mM':>16s} "
       f"{'difference':>12s}")
     for cv in (0.2, 0.35, 0.5):
@@ -105,8 +134,13 @@ def main() -> int:
     p()
     p("  ⚠⚠ PROVENANCE: all of this is a consequence of the effective-diameter ESTIMATE,")
     p("  which phi_axis_offset.py labels a reachability estimate and NOT a value of")
-    p("  phi_c. It is a prediction OF THAT MODEL. The measured quantities it uses --")
-    p(f"  dphi_c/dCV = {DPHI_C_DCV} and its 0.003 scatter -- are real.")
+    p("  phi_c. It is a prediction OF THAT MODEL. The one measured quantity it uses,")
+    p(f"  dphi_c/dCV = {DPHI_C_DCV:.4f} ({DPHI_C_SOURCE}), is real -- but see")
+    p("  PREREG_ROOT_PINNING_2026-09-09.md: the pressure-root estimator that produced")
+    p("  it follows the bottom of its own fitting window, so the slope may be a")
+    p("  restatement of the isotropic dphi_J/dCV rather than an independent number.")
+    p("  Nothing on this page depends on WHICH of the two it is -- both are the same")
+    p("  value -- but a reader should not cite it as two agreeing measurements.")
 
     out = os.path.join(HERE, "out", "salt_narrows_cv.txt")
     os.makedirs(os.path.dirname(out), exist_ok=True)

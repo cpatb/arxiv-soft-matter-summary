@@ -20,11 +20,11 @@
   i.e. the CV effect is up to 26 % weaker at the low-salt end.
 
   In the quantity the mechanism actually uses, with the MEASURED slope
-  dphi_c/dCV = 0.1247:
+  dphi_c/dCV = 0.1199 (ungated E2, read from out/phase8_verdict.txt, not hardcoded):
     true CV   dphi_c at 100 mM   dphi_c at 0 mM   difference
-       0.20             0.0248           0.0185       0.0063
-       0.35             0.0434           0.0324       0.0110
-       0.50             0.0620           0.0463       0.0156
+       0.20             0.0238           0.0178       0.0060
+       0.35             0.0417           0.0312       0.0105
+       0.50             0.0596           0.0446       0.0150
 
   ⚠ IS IT RESOLVABLE? The seed scatter on dphi_c is 0.003 (out/phase8_verdict.txt),
   so a difference of 0.008-0.02 is 3-7 seed scatters IN THE SIMULATION. Whether
@@ -45,5 +45,10 @@
 
   ⚠⚠ PROVENANCE: all of this is a consequence of the effective-diameter ESTIMATE,
   which phi_axis_offset.py labels a reachability estimate and NOT a value of
-  phi_c. It is a prediction OF THAT MODEL. The measured quantities it uses --
-  dphi_c/dCV = 0.1247 and its 0.003 scatter -- are real.
+  phi_c. It is a prediction OF THAT MODEL. The one measured quantity it uses,
+  dphi_c/dCV = 0.1199 (ungated E2), is real -- but see
+  PREREG_ROOT_PINNING_2026-09-09.md: the pressure-root estimator that produced
+  it follows the bottom of its own fitting window, so the slope may be a
+  restatement of the isotropic dphi_J/dCV rather than an independent number.
+  Nothing on this page depends on WHICH of the two it is -- both are the same
+  value -- but a reader should not cite it as two agreeing measurements.
