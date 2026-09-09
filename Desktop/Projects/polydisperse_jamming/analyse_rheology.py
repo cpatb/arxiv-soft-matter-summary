@@ -214,7 +214,6 @@ def main() -> int:
             if not np.isfinite(ss) or ss == 0:
                 continue
             within = np.abs(pp - ss) <= 0.10 * abs(ss)
-            idx = np.flatnonzero(within)
             # FIRST strain after which it never leaves the +/-10 % band again
             last_out = (int(np.flatnonzero(~within)[-1]) + 1
                         if (~within).any() else 0)

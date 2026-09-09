@@ -165,15 +165,40 @@ def test_E3_pinned_exponent_is_biased_when_the_truth_is_not_unity():
     assert abs(out["phi_c_E3"] - 0.5800) > 1e-3
 
 
-def test_E1_recovers_phi_c_from_the_phi_of_I_curve():
-    """phi(I) with a linear dilatancy law extrapolates to the right intercept."""
+def test_E1_returns_the_DENSE_end_intercept_not_phi_c():
+    """E1 is arithmetically a linear intercept at I = 0 -- and that is the DENSE end.
+
+    Renamed and re-scoped 2026-09-08 when E1 was retracted as a phi_c estimator. The
+    arithmetic is unchanged and still checked; what changed is the NAME of what it
+    returns, so that no caller can read it as phi_c again.
+    """
     ivals = np.linspace(1e-4, 8e-3, 7)
-    phi_c, a = 0.5800, 1.5
-    phi = phi_c - a * ivals
+    intercept, a = 0.5800, 1.5
+    phi = intercept - a * ivals
     out = A.e1_phi_of_I(phi, ivals)
-    assert out["phi_c_E1"] == pytest.approx(phi_c, abs=1e-9)
+    assert "phi_c_E1" not in out, "E1 must not expose a key that reads as phi_c"
+    assert out["phi_dense_E1"] == pytest.approx(intercept, abs=1e-9)
     assert out["slope_E1"] == pytest.approx(-a, rel=1e-9)
     assert out["n_E1"] == 7
+
+
+def test_on_a_FIXED_RATE_ladder_small_I_is_the_DENSE_end():
+    """The fact that retired E1, pinned so it cannot be silently reverted.
+
+    I = gdot * d50 * sqrt(rho/p). On this protocol gdot is set once per cell from
+    gamma_max and the step count, so it is IDENTICAL across a ladder and I varies only
+    through p. Since p RISES with phi, I FALLS with phi -- so extrapolating any quantity
+    to I = 0 targets the densest rung, not the critical state.
+    """
+    gdot, d50 = 3.0e-5, 1.0
+    phi = np.array([0.5745, 0.5945, 0.6145, 0.6345, 0.6545])
+    p = np.array([3.40e-6, 2.15e-4, 5.81e-3, 1.06e-2, 1.65e-2])   # measured, cv = 0
+    ivals = gdot * d50 / np.sqrt(p)
+    assert np.all(np.diff(ivals) < 0), "I must FALL as phi rises on a fixed-rate ladder"
+    assert ivals.argmin() == len(phi) - 1, "smallest I is the DENSEST rung"
+    # and the intercept is therefore ABOVE the top rung, not below the bottom one
+    out = A.e1_phi_of_I(phi, ivals)
+    assert out["phi_dense_E1"] > phi.max() - 0.02
 
 
 def test_E1_ignores_rungs_above_the_quasistatic_bar():
@@ -182,7 +207,7 @@ def test_E1_ignores_rungs_above_the_quasistatic_bar():
     phi[3:] += 0.05                       # corrupt only the non-quasi-static rungs
     out = A.e1_phi_of_I(phi, ivals)
     assert out["n_E1"] == 3
-    assert out["phi_c_E1"] == pytest.approx(0.58, abs=1e-9)
+    assert out["phi_dense_E1"] == pytest.approx(0.58, abs=1e-9)
 
 
 def test_E4_finds_the_isostatic_crossing_and_returns_nan_when_uncrossed():
