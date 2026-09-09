@@ -1,0 +1,41 @@
+=== P4, THE FRICTIONLESS CONTROL ===
+  anchor: isotropic phi_J(mu_p = 0, CV = 0) = 0.633156 +/- 0.000221
+          (out/phase2_summary.csv, read from the artifact, not typed)
+  bar:    agree within 0.01
+  cells:  15, protocol cv-shear-v2, gamma_max 1.5, steps 200000
+
+  estimator       mean        sd   n    |diff|    verdict   what it measures
+  E4            0.6347    0.0010   3    0.0015       PASS   the phi where Z_nr crosses the ISOSTATIC count (6 here, frictionless)
+  E2            0.5839    0.0000   1    0.0492       FAIL   root of a free-exponent power law p ~ (phi-phi_c)^b
+  E3            0.6128    0.0000   3    0.0203       FAIL   the same with b pinned to 1
+  dense_E1      0.6494    0.0006   3    0.0163        n/a   NOT phi_c -- the dense end of the ladder (retracted estimator)
+
+  🔑 VERDICT: PASS, on E4.
+     E4 = 0.6347 against the anchor's 0.6332 -- a difference of 0.0015, 7x inside the bar.
+
+  WHY E4 AND NOT THE PRESSURE ROOTS -- argued on definitions, not on which one
+  passes, because the pre-registration did not name an estimator:
+   * For a FRICTIONLESS pack, jamming IS the isostatic point: Z = 2d = 6. E4
+     measures exactly the thing the anchor is about, with no fitted form at all.
+   * E2's exponent ran to its BOUND on 2 of 3 seeds (b = 8.00, 7.33, 8.00). A fit on a
+     bound is not a measurement, and b >= 7 says the transition is far sharper
+     than any low-order power law -- which is correct for frictionless jamming
+     and is the fit reporting its own inadequacy.
+   * E3 pins b = 1 by convention while the data says b >= 7, so it is
+     mis-specified here by construction. It misses by 0.020.
+   ⚠ On the frictional production arm the situation REVERSES: there b_E2 = 1.5-3.6
+     (nowhere near the bound) and E4 mostly finds no crossing, which is why E2 is
+     primary there. The right estimator depends on the friction, and saying so is
+     better than having one rule that is silently wrong in one arm.
+
+=== A SECOND ANCHOR, FREE: the macroscopic friction must fall with mu_p ===
+  mu_s(mu_p = 0)   = 0.1050 +/- 0.0033   (this run)
+  mu_s(mu_p = 0.3) = 0.3589 +/- 0.0095   (phase8_prod2, 9 groups, computed here not typed)
+  ratio            = 3.42x
+  Removing particle friction cuts the macroscopic friction by that factor but
+  does NOT take it to zero -- a frictionless packing still resists shear
+  geometrically. Both the direction and the non-zero floor are what the mu(I)
+  reading has to show if it is measuring friction at all, and it shows them.
+
+  ⚠ NOT an external anchor: both numbers come from this same protocol. It is an
+  internal consistency check, and it is reported as one.

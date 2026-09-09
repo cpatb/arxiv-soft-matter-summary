@@ -66,11 +66,19 @@ OUT_DIR = os.path.join(HERE, "out")
 # --- named constants, with origin ---------------------------------------------------
 I_FIT_MAX = 1.0e-2      # quasi-static bar; same value as shear.I_MAX, kept in sync by
                         # test_shear.py::test_i_max_agrees
-Z_ISO_FRICTIONAL = 4.0  # isostatic contact number for frictional spheres in 3D
-                        # (Z_iso = d + 1 = 4 with all three friction constraints
-                        # mobilised); the project's A3 anchor measures 3.98-4.07 at
-                        # mu_p = 3. It is a CONVENTION here, and E4 is reported as such.
+# 🔴 The isostatic contact number is NOT one constant: it is 2d = 6 for FRICTIONLESS
+# spheres and d + 1 = 4 for fully frictional ones. Hardcoding 4 was right for the mu_p =
+# 0.3 production arm and WRONG for the mu_p = 0 anchor run, where the pack is isostatic
+# at 6 and E4 would have hunted for a crossing at 4 that happens far below jamming --
+# a constant that is correct for one arm and silently wrong for another, which is the
+# trap this project keeps meeting. Chosen per cell from mu_p.
+Z_ISO_FRICTIONLESS = 6.0
+Z_ISO_FRICTIONAL = 4.0  # the project's A2/A3 anchors measure 6.37-6.92 at mu_p = 0 and
+                        # 3.98-4.07 at mu_p = 3, which is what pins both values.
+Z_ISO_MU_BAR = 1.0e-9   # below this mu_p the pack is treated as frictionless
 P_FLOOR = 1.0e-9        # below this p_hat the cell carries no measurable stress
+B_MAX = 8.0             # upper bound on E2's free exponent. A fit landing ON it is
+                        # reported as bound-limited and its phi_c is refused.
 PHI_MATCH_TOL = 5.0e-3  # how close two rungs from different CV ladders must be to count
                         # as "matched phi". The ladder spacing is 0.020, so this admits
                         # only genuine near-coincidences and never two different rungs.
@@ -150,7 +158,7 @@ def _pressure_root(phi: np.ndarray, p: np.ndarray, pin_b: float | None) -> dict:
         def model(xx, phic, logc, b):
             return logc + b * np.log(np.maximum(xx - phic, 1e-12))
         p0 = [lo - 0.02, float(y.mean()), 1.0]
-        bounds = ([-np.inf, -np.inf, 0.1], [lo - 1e-6, np.inf, 8.0])
+        bounds = ([-np.inf, -np.inf, 0.1], [lo - 1e-6, np.inf, B_MAX])
     else:
         def model(xx, phic, logc):
             return logc + pin_b * np.log(np.maximum(xx - phic, 1e-12))
@@ -175,24 +183,43 @@ def _pressure_root(phi: np.ndarray, p: np.ndarray, pin_b: float | None) -> dict:
     if abs(popt[0] - (lo - 1e-6)) < 1e-4:
         out[f"phi_c_{tag}_at_bound"] = float(popt[0])
         out[f"phi_c_{tag}"] = np.nan
+
+    # 🔴 AND THE SAME RULE FOR THE EXPONENT. E2's `b` is bounded to [0.1, 8.0]; a fit
+    # that lands ON that bound has not found a power law, it has run out of room, and
+    # its phi_c is then whatever the bound forced. Measured on the 2026-09-08 P4
+    # frictionless anchor: b = 8.00, 7.33, 8.00 on the three seeds, and the phi_c it
+    # returned (0.580) missed the anchor by 0.052 while the isostatic crossing hit it to
+    # 0.0015. Frictionless jamming is genuinely much sharper than a low-order power law,
+    # so this is the fit reporting its own inadequacy -- which is worth keeping, not
+    # hiding.
+    if pin_b is None and popt[2] >= B_MAX - 1e-6:
+        out["b_E2_at_bound"] = float(popt[2])
+        out["phi_c_E2_at_bound"] = float(popt[0])
+        out["phi_c_E2"] = np.nan
     return out
 
 
-def e4_z_crossing(phi: np.ndarray, z: np.ndarray) -> dict:
-    """phi where z_nr crosses Z_ISO_FRICTIONAL, by linear interpolation."""
-    out = {"phi_c_E4": np.nan}
+def e4_z_crossing(phi: np.ndarray, z: np.ndarray, mu_p: float = 1.0) -> dict:
+    """phi where z_nr crosses the isostatic count, by linear interpolation.
+
+    The target depends on friction: 6 for frictionless spheres, 4 for frictional ones.
+    Passing `mu_p` is mandatory in spirit -- the default is the frictional case only so
+    that older callers keep their previous behaviour rather than silently changing it.
+    """
+    z_iso = (Z_ISO_FRICTIONLESS if mu_p <= Z_ISO_MU_BAR else Z_ISO_FRICTIONAL)
+    out = {"phi_c_E4": np.nan, "z_iso_used": z_iso}
     ok = np.isfinite(phi) & np.isfinite(z)
     if ok.sum() < 2:
         return out
     o = np.argsort(phi[ok])
     x, y = phi[ok][o], z[ok][o]
-    if y.min() > Z_ISO_FRICTIONAL or y.max() < Z_ISO_FRICTIONAL:
+    if y.min() > z_iso or y.max() < z_iso:
         return out
     for i in range(len(x) - 1):
-        if (y[i] - Z_ISO_FRICTIONAL) * (y[i + 1] - Z_ISO_FRICTIONAL) <= 0:
+        if (y[i] - z_iso) * (y[i + 1] - z_iso) <= 0:
             if y[i + 1] == y[i]:
                 continue
-            t = (Z_ISO_FRICTIONAL - y[i]) / (y[i + 1] - y[i])
+            t = (z_iso - y[i]) / (y[i + 1] - y[i])
             out["phi_c_E4"] = float(x[i] + t * (x[i + 1] - x[i]))
             break
     return out
@@ -213,7 +240,7 @@ def analyse_group(recs: list[dict]) -> dict:
     res.update(e1_phi_of_I(phi, ivals))
     res.update(_pressure_root(phi, p, None))
     res.update(_pressure_root(phi, p, 1.0))
-    res.update(e4_z_crossing(phi, z))
+    res.update(e4_z_crossing(phi, z, mu_p=float(recs[0].get('mu_p', 1.0))))
 
     # mu_s = mu_macro(I -> 0): an anchor on the rheology, independent of phi_c
     ok = np.isfinite(mu) & np.isfinite(ivals) & (ivals <= I_FIT_MAX) & (ivals > 0)

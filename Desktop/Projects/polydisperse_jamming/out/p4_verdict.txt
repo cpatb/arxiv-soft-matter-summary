@@ -1,0 +1,13 @@
+phase8: 15 records from phase8_p4anchor*.jsonl; 15 usable, 0 errored
+duplicate-state check: 0 offending pairs
+
+family        cv    mu seed cells stdy  qs phi_c_E2*   b_E2  phi_c_E3  phi_c_E4 phiDenseE1   mu_s  p_hat_max
+   (* E2 is PRIMARY; phiDenseE1 is the retracted E1, relabelled -- see docstring)
+lognormal   0.00  0.00    1     5    4   4       nan   8.00    0.6128    0.6337     0.6497  0.109  3.291e-03
+lognormal   0.00  0.00    2     5    3   4    0.5839   7.33    0.6129    0.6349     0.6499  0.104  3.334e-03
+lognormal   0.00  0.00    3     5    5   4       nan   8.00    0.6128    0.6355     0.6488  0.102  3.316e-03
+
+=== CV contrasts (mean over seeds, +/- sd) ===
+
+=== P3: the CV contrast at MATCHED phi (no fit, no estimator) ===
+   no cross-CV phi pair within 0.005

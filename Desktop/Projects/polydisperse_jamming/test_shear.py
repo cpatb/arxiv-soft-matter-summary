@@ -210,13 +210,36 @@ def test_E1_ignores_rungs_above_the_quasistatic_bar():
     assert out["phi_dense_E1"] == pytest.approx(0.58, abs=1e-9)
 
 
+def test_E4_isostatic_target_depends_on_FRICTION():
+    """6 for frictionless spheres, 4 for frictional ones -- not one constant.
+
+    Hardcoding 4 was correct for the mu_p = 0.3 production arm and silently wrong for the
+    mu_p = 0 anchor run, where the pack is isostatic at 6. A constant that is right for
+    one arm and wrong for another is the trap this project keeps meeting, so the choice
+    is pinned here.
+    """
+    phi = np.array([0.613, 0.623, 0.633, 0.643, 0.653])
+    z = np.array([4.4, 5.0, 5.8, 6.4, 6.8])
+    frictionless = A.e4_z_crossing(phi, z, mu_p=0.0)
+    frictional = A.e4_z_crossing(phi, z, mu_p=0.3)
+    assert frictionless["z_iso_used"] == 6.0
+    assert frictional["z_iso_used"] == 4.0
+    # on this ladder Z never falls to 4, so the frictional target must find NO crossing
+    assert np.isfinite(frictionless["phi_c_E4"])
+    assert np.isnan(frictional["phi_c_E4"])
+    # and the frictionless crossing must land where Z = 6, not somewhere else
+    assert frictionless["phi_c_E4"] == pytest.approx(0.6363, abs=1e-3)
+
+
 def test_E4_finds_the_isostatic_crossing_and_returns_nan_when_uncrossed():
     phi = np.array([0.55, 0.57, 0.59, 0.61])
     z = np.array([2.0, 3.0, 5.0, 6.0])
-    got = A.e4_z_crossing(phi, z)["phi_c_E4"]
+    got = A.e4_z_crossing(phi, z, mu_p=0.3)["phi_c_E4"]
     assert got == pytest.approx(0.58, abs=1e-9)
-    assert np.isnan(A.e4_z_crossing(phi, np.array([5.0, 5.5, 6.0, 6.5]))["phi_c_E4"])
-    assert np.isnan(A.e4_z_crossing(phi, np.array([1.0, 1.5, 2.0, 2.5]))["phi_c_E4"])
+    assert np.isnan(A.e4_z_crossing(phi, np.array([5.0, 5.5, 6.0, 6.5]),
+                                    mu_p=0.3)["phi_c_E4"])
+    assert np.isnan(A.e4_z_crossing(phi, np.array([1.0, 1.5, 2.0, 2.5]),
+                                    mu_p=0.3)["phi_c_E4"])
 
 
 # =====================================================================================

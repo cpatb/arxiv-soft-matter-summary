@@ -103,8 +103,18 @@ needs a compression index nothing here measures.
 exists.** The script prints a reason and skips otherwise rather than drawing an empty
 panel.
 
-Four estimators (`analyse_phase8.py`: the `φ(I → 0)` extrapolation, two pressure roots
-and the coordination crossing), mean ± seed sd.
+Estimators (`analyse_phase8.py`), mean ± seed sd. **E2, the vanishing-pressure root, is
+the primary one**: the critical state is where the constant-volume grain pressure goes to
+zero, so extrapolating `p → 0` targets it directly.
+
+🔴 **The `φ(I → 0)` extrapolation (E1) was the primary estimator this morning and is
+RETRACTED.** On this protocol `γ̇` is identical on every rung of a ladder (measured
+3.000e-05 across all five at CV = 0), so `I = γ̇d√(ρ/p)` moves only through `p` — and
+`I → 0` is therefore the **densest** rung, not the critical state. The extrapolation ran
+away from `φ_c`. It is still plotted, relabelled `dense_E1`, because the number is real
+and its CV contrast (+0.0635) agrees with E2's (+0.0623); it is not `φ_c`. The "0.074
+systematic between estimators" reported earlier was not a systematic at all — it was the
+two ends of the ladder.
 
 **No `φ` = 0.44 reference line is drawn**, deliberately.
 
