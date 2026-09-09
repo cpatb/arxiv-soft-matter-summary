@@ -178,26 +178,25 @@ def measure(O, utils, st: PackingState, young: float) -> PackingState:  # noqa: 
     return st
 
 
-def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
-                       truncate: tuple[float, float] | None = (0.2, 5.0),
-                       young: float = 1.0, verbose: bool = True,
-                       family: str = "lognormal") -> PackingState:
-    """Compress a packing isotropically to reduced pressure `p_hat` = p/E.
+def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
+                   young: float) -> tuple[float, int]:
+    """Insert one random loose packing into a fresh periodic Yade cell.
 
-    Dimensionless throughout: d10 = 1, rho = 1, E = `young` (default 1).
+    EXTRACTED 2026-09-08 from `build_and_compress` so the constant-volume shear
+    protocol (`shear.py`) can reuse the *identical* preparation. Nothing about the
+    random-number order changed in the extraction: `rng` is seeded, radii are drawn
+    first, then one uniform position per body, exactly as before. That is the whole
+    reproducibility surface, and `test_shear.py::test_insertion_rng_order_unchanged`
+    pins it.
+
+    Fills the realised-PSD fields of `st` in place and returns (cell edge L,
+    material id).
     """
-    import time
-
     from yade import O, utils
 
-    t0 = time.time()
-    O.reset()
-    st = PackingState(n_requested=n, cv=cv, mu_p=mu_p, p_hat_target=p_hat,
-                      seed=seed, family=family)
-
-    rng = np.random.default_rng(seed)
-    dist = make_psd(family, 1.0, cv)
-    radii = dist.radii_for_yade(n, rng, truncate=truncate)
+    rng = np.random.default_rng(st.seed)
+    dist = make_psd(st.family, 1.0, st.cv)
+    radii = dist.radii_for_yade(st.n_requested, rng, truncate=truncate)
     diam = 2.0 * radii
 
     m = dist.realised_moments(diam)
@@ -225,7 +224,7 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
         v_mean = vol_solid / len(radii)
         n_min = math.ceil(PHI_DENSE_BOUND * (COLLIDER_CLEARANCE * d_max) ** 3 / v_mean)
         raise ValueError(
-            f"cell too small for the periodic collider at cv={cv}, N={n}, "
+            f"cell too small for the periodic collider at cv={st.cv}, N={st.n_requested}, "
             f"truncate={truncate}: largest grain d_max={d_max:.3f} needs a final "
             f"cell edge >= {COLLIDER_CLEARANCE * d_max:.3f} but phi={PHI_DENSE_BOUND} "
             f"gives {L_final_min:.3f}. Use N >= {n_min}, or tighten `truncate`."
@@ -242,13 +241,33 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
 
     mat = O.materials.append(
         utils.FrictMat(young=young, poisson=POISSON, density=1.0,
-                       frictionAngle=math.atan(mu_p), label="grain")
+                       frictionAngle=math.atan(st.mu_p), label="grain")
     )
     O.periodic = True
     O.cell.hSize = np.diag([L, L, L])
     for r in radii:
         pos = rng.uniform(0, L, 3)
         O.bodies.append(utils.sphere(tuple(pos), float(r), material=mat))
+    return L, mat
+
+
+def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
+                       truncate: tuple[float, float] | None = (0.2, 5.0),
+                       young: float = 1.0, verbose: bool = True,
+                       family: str = "lognormal") -> PackingState:
+    """Compress a packing isotropically to reduced pressure `p_hat` = p/E.
+
+    Dimensionless throughout: d10 = 1, rho = 1, E = `young` (default 1).
+    """
+    import time
+
+    from yade import O, utils
+
+    t0 = time.time()
+    O.reset()
+    st = PackingState(n_requested=n, cv=cv, mu_p=mu_p, p_hat_target=p_hat,
+                      seed=seed, family=family)
+    insert_packing(st, truncate=truncate, young=young)
 
     # Yade sign convention for the triax goal: compressive stress is NEGATIVE.
     goal = -abs(p_hat) * young

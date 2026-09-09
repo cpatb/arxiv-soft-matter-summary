@@ -1,0 +1,36 @@
+=== SECTION 1: dimensionless groups at the lab's operating point ===
+  phi = 0.44, d10 = 800 nm, U0 = 3.0 m/s, D0 = 2.5 mm
+  rho_suspension            = 1440.0 kg/m^3
+  Re  = rho U0 D0 / mu_w    = 1.080e+04
+  We  = rho U0^2 D0 / gamma = 4.500e+02
+  St  = rho_p a^2 U0/(9 mu_w D0) = 1.707e-04
+  kappa (Carman-Kozeny)     = 3.225e-15 m^2
+  ID  (ell = D0)            = 7.194e-05
+  Pi  (ell = D0) = 1/ID     = 1.390e+04   -> UNDRAINED
+  Pi  (ell = 10 d32 = 8.0 um) = 1.423e-01   -> DRAINED
+  ratio of the two Pi       = 9.766e+04 = (D0/ell)^2 = 9.766e+04
+
+=== SECTION 4: the two CV channels, at the PLACEHOLDER critical-state slope ===
+  s = dphi_c/dCV = 0.1246  <-- PLACEHOLDER (isotropic phi_J slope)
+  CV* = (phi - phi_c0)/s = 0.1605   <-- PROVISIONAL, do not quote
+   CV     dphi        kappa-chan   phic-chan    ratio    d32/d10   ID/ID(CV=0)
+  0.00   +0.02000      0.0000      6.2300       inf    1.0000            1
+  0.05   +0.01377      0.3990      9.0487     22.68    1.0050        1.483
+  0.10   +0.00754      0.7921     16.5252     20.86    1.0201         2.82
+  0.15   +0.00131      1.1736     95.1145     81.05    1.0455        17.23
+  0.20   -0.00492      1.5385         --        --    1.0816   CONTRACTIVE: Eq. 6 does not apply
+  0.30   -0.01738      2.2018         --        --    1.1881   CONTRACTIVE: Eq. 6 does not apply
+  0.50   -0.04230      3.2000         --        --    1.5625   CONTRACTIVE: Eq. 6 does not apply
+
+=== SECTION 7: the two ceilings on the dilatant pore suction ===
+  |dp_f| from Eq. (4), alpha=1, ell=D0 = 4.651e+04 kPa = 46.51 MPa
+  cavitation ceiling  (1 atm)          = 101.3 kPa
+  capillary entry 2 gamma / r_throat   = 2323 kPa (r_throat = 62.0 nm)
+  binding ceiling                      = 101.3 kPa, exceeded by a factor 459.1
+
+=== SECTION 6: the drainage-length ambiguity, as a size ladder ===
+   a[um]   ID(ell=D0)    ID(ell=10 d32)   ratio to a=0.8um, each reading
+    0.8   7.1938e-05    7.0252e+00    macro     1.00x   local     1.00x
+    2.5   7.0252e-04    7.0252e+00    macro     9.77x   local     1.00x
+    8.0   7.1938e-03    7.0252e+00    macro   100.00x   local     1.00x
+  -> macroscopic drainage gives ID ~ a^2; grain-scale drainage gives ID ~ a^0.
