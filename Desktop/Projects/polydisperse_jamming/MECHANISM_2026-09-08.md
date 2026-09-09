@@ -469,7 +469,7 @@ through the pore fluid or through the viscosity is open.**
 | **P2** | critical-state slope ≈ isotropic `φ_J` slope | within 2× of +0.1246/CV | **E1 0.1157, E2 0.1247** — within **8 %**, and E2 within 0.1 % | ✅ **PASS** |
 | **P3** | at fixed `φ`, raising CV drives the pack toward/past critical | `p_ss` falls and crosses the unjammed bar | at matched `φ`, `p_ss` falls **5.4×–43×** (15–63 sd); `Z_nr` 6.1 → 4.4, rattlers **0.004 → 0.448** | ✅ **PASS** on the fall; ⚠ *partial* on "crosses" — see below |
 | **P4** | frictionless control `φ_c(μ_p=0)` ≈ `φ_J`(μ_p=0) = 0.6332 | within 0.01 | **0.6347 ± 0.0010** (E4, the isostatic crossing at Z = 6) — off by **0.0015** | ✅ **PASS**, 7× inside the bar |
-| **P5** | uniform vs lognormal at matched CV give different slopes | ratio > 1.5 | **NOT RUN** | ⬜ **not tested** |
+| **P5** | uniform vs lognormal at matched CV give different slopes | ratio > 1.5 | uniform **+0.0215 ± 0.003**, lognormal **+0.0623** → ratio **2.90×** | ✅ **PASS**, ~2× the bar |
 | P6, P7 | bench | — | for the author | — |
 
 ### The headline measurement, and it needs no fit at all
@@ -545,11 +545,39 @@ still resists shear geometrically. Both the direction and the non-zero floor are
 `μ(I)` reading must show if it is measuring friction at all. ⚠ Both numbers come from
 this protocol, so it is an internal consistency check, not an anchor.
 
-### What is still not tested
+### ✅ P5 ran, and it is the strongest discriminator in the set
 
-**P5 is running at the time of writing** — the uniform, zero-skew PSD at matched CV,
-which is the discriminator that separates a CV effect from a `d₃₂` effect. The isotropic
-analogue is already 2.7×.
+30 cells, uniform (zero-skew) PSD, `μ_p` = 0.3, CV ∈ {0, 0.5}, 3 seeds, 0 failed.
+
+| family | Δ`φ_c` (CV 0 → 0.5) | slope |
+|---|---|---|
+| lognormal (skewed) | **+0.0623** (20.6 sd) | 0.1247 |
+| **uniform (zero skew)** | **+0.0215** (5.7 sd) | 0.0429 |
+| **ratio** | **2.90×** | *(bar was 1.5)* |
+
+🔑 **The CV effect is a distribution-SHAPE effect, not a moment effect.** The two families
+have `d₃₂` within ~9 % at matched CV, so **a permeability account — which reads only the
+Sauter mean — cannot produce a 2.90× difference between them.** This is the cleanest
+separation of the packing channel from the permeability channel in the whole project, and
+it is a *simulation* result rather than a bench one.
+
+The isotropic analogue measured months ago was 2.73×; the constant-volume shear
+measurement gives **2.90×**, by a different protocol on a different quantity.
+
+⚠ **One thing to check before leaning on this against the rheological rival (§7a):** the
+rival runs on `φ_m`, which is also a packing-geometry quantity and may well respond to
+skewness the same way. If it does, P5 does not separate the two. If `φ_m` and `φ_c`
+respond *differently* to skewness, P5 becomes a simulation-only discriminator and §7a's
+"no simulation separates them" is wrong. **Not yet checked** — see
+`NEXT_STEPS_2026-09-09.md` §2 item 2.
+
+### 🔴 A gate defect found after this section was written
+
+`analyse_phase8.py` **counted** its quasi-static and steady gates and never applied them
+to the primary estimator. Applying them moves Δ`φ_c` from +0.0623 to **+0.044–0.049**, a
+**30 % fall**, and the exclusions are CV-asymmetric. Sign and conclusion survive; the
+number does not. **Every +0.0623 on this page needs rescaling** once the low-CV rungs are
+re-run with enough gated cells to support it — `NEXT_STEPS_2026-09-09.md` §0.
 
 ### One estimator was disqualified mid-analysis
 

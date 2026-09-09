@@ -44,8 +44,25 @@ it is printed.
 WHAT IS REFUSED
 ---------------
   * a root outside the ladder it was fitted on (extrapolation dressed as measurement)
-  * a group whose cells are not all steady, or not all quasi-static -- excluded cells
-    are PRINTED with their reason, never dropped silently
+  * 🔴 **NOT WHAT THIS LINE USED TO SAY.** It claimed "a group whose cells are not all
+    steady, or not all quasi-static -- excluded cells are PRINTED with their reason,
+    never dropped silently". That was FALSE for the primary estimator: `e1_phi_of_I`
+    does filter on `I <= I_FIT_MAX`, but `_pressure_root` (E2 and E3) and
+    `e4_z_crossing` filter on NOTHING except a pressure floor. The flags were COUNTED
+    into `n_steady`/`n_quasistatic` and printed, and never used to exclude.
+    Found by a numerics reviewer 2026-09-09. MEASURED IMPACT on the headline, prod2:
+
+        as shipped (no gate applied)    dphi_c = +0.0623
+        quasi-static cells only         dphi_c = +0.0444
+        steady cells only               dphi_c = +0.0485
+        both gates applied              dphi_c = +0.0438   (but n = 1 at cv = 0)
+
+    i.e. **the headline falls ~30 %**. The sign and the qualitative conclusion survive;
+    the number does not. The exclusions are also CV-ASYMMETRIC (3/3/1 non-quasi-static
+    at cv = 0/0.2/0.5), which is the direction that inflates the contrast.
+    ⚠ Applying both gates leaves ONE seed at cv = 0, so the fix is NOT simply to switch
+    the gates on -- the run needs more cells at the low-CV end. See NEXT_STEPS_2026-09-09.md
+    item 1. Until then, quote +0.044 to +0.062 and say why.
   * fitting against `phi_target`; every fit uses the REALISED `phi`, because stage B
     lands on the target only to a tolerance and the first version of it did not
 """

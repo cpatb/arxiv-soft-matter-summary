@@ -1,0 +1,40 @@
+phase8: 30 records from phase8_p5uniform*.jsonl; 30 usable, 0 errored
+duplicate-state check: 0 offending pairs
+
+family        cv    mu seed cells stdy  qs phi_c_E2*   b_E2  phi_c_E3  phi_c_E4 phiDenseE1   mu_s  p_hat_max
+   (* E2 is PRIMARY; phiDenseE1 is the retracted E1, relabelled -- see docstring)
+uniform     0.00  0.30    1     5    3   4    0.5665   3.73       nan       nan     0.6430  0.362  1.643e-02
+uniform     0.00  0.30    2     5    4   4    0.5733   2.22       nan       nan     0.6542  0.353  1.655e-02
+uniform     0.00  0.30    3     5    4   4    0.5672   3.61       nan       nan     0.6435  0.353  1.680e-02
+uniform     0.50  0.30    1     5    5   4    0.5925   1.84    0.5972    0.5987     0.6924  0.342  1.753e-02
+uniform     0.50  0.30    2     5    4   4    0.5911   1.95    0.5971       nan     0.6915  0.349  1.770e-02
+uniform     0.50  0.30    3     5    4   4    0.5878   2.24    0.5969    0.5982     0.6853  0.372  1.741e-02
+
+=== CV contrasts (mean over seeds, +/- sd) ===
+-- uniform, mu_p = 0.3
+   E2: cv0.00=0.5690+-0.0037(n3)  cv0.50=0.5905+-0.0024(n3)
+       delta(cv 0.00->0.50) = +0.0215  (+5.7 sd)   slope s = +0.0429 per unit CV
+   E3: too few resolved points (1)
+   E4: too few resolved points (1)
+   dense_E1: cv0.00=0.6469+-0.0063(n3)  cv0.50=0.6897+-0.0039(n3)
+       delta(cv 0.00->0.50) = +0.0428  (+6.8 sd)   slope s = +0.0857 per unit CV
+
+=== P3: the CV contrast at MATCHED phi (no fit, no estimator) ===
+   4 overlapping pairs within 0.005 in phi; ALL are reported
+   phi 0.59514(cv0.00, n3) vs 0.59792(cv0.50, n3), mismatch 0.00278
+      p_ss 4.3482e-04 -> 1.3358e-04  ratio    3.3x  (1 sd)   Z_nr 4.89 -> 4.00   rattlers 0.046 -> 0.457
+      (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 4.4x against 3.3x -- a 36 % change
+   phi 0.61514(cv0.00, n3) vs 0.61793(cv0.50, n3), mismatch 0.00279
+      p_ss 6.0839e-03 -> 1.7038e-03  ratio    3.6x  (11 sd)   Z_nr 5.77 -> 4.99   rattlers 0.008 -> 0.375
+      (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 3.7x against 3.6x -- a 5 % change
+   phi 0.63514(cv0.00, n3) vs 0.63793(cv0.50, n3), mismatch 0.00279
+      p_ss 1.0818e-02 -> 6.4394e-03  ratio    1.7x  (17 sd)   Z_nr 6.16 -> 5.57   rattlers 0.005 -> 0.318
+      (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 1.7x against 1.7x -- a 1 % change
+   phi 0.65513(cv0.00, n3) vs 0.65793(cv0.50, n3), mismatch 0.00280
+      p_ss 1.6593e-02 -> 1.1970e-02  ratio    1.4x  (18 sd)   Z_nr 6.49 -> 5.96   rattlers 0.001 -> 0.284
+      (the higher-CV cell is the DENSER of the two, which works AGAINST the effect: conservative)
+      robustness: on a LATE window (last 15 % of strain) the ratio is 1.4x against 1.4x -- a 0 % change
+   spread across pairs: 1.4x to 3.6x -- a factor 2.6 between pairs that differ only in which rung they sit on. Quote the RANGE.
