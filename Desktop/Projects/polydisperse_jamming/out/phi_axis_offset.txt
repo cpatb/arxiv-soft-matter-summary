@@ -23,6 +23,26 @@
   ⇒ 🔑 NO amount of interparticle friction can bring a hard-sphere critical state
     down to phi = 0.44. The gap that friction cannot close is 0.117 in phi.
 
+=== IS THAT SUBSTITUTION LICENSED? phi_c vs phi_J at the two friction values ===
+  ⚠ The floor above comes from the ISOTROPIC phi_J ladder, while the level comes
+  from the SHEAR phi_c. Those are different quantities, so the argument only
+  works if they track each other. Both are now measured, at two frictions -- but
+  by DIFFERENT estimators, which is exactly the trap this project keeps meeting,
+  so the comparison is stated with the estimator named on every row.
+
+    mu_p  phi_J (isotropic)  phi_c (shear)  estimator  phi_c - phi_J
+    0.00             0.6332         0.6347         E4        +0.0015
+    0.30             0.5745         0.5695         E2        -0.0050
+
+  |phi_c - phi_J| is at most 0.0050 across both friction values, i.e.
+  the two track each other to better than 0.005 -- against the 0.117 gap
+  the argument is about, a factor 23 smaller.
+  ⇒ Using the isotropic ladder for the FLOOR is licensed at the precision the
+    argument needs, and would not be licensed if the gap were ten times smaller.
+  ⚠ Still a weakness: the two rows use different estimators (E4 at mu = 0 because
+  E2's exponent hits its bound there, E2 at mu = 0.3 because E4 finds no
+  crossing). A single-estimator comparison across friction does not exist yet.
+
 === SO ONE OF THESE MUST BE TRUE, and they are testable against each other ===
   (1) THE LOCAL phi DURING IMPACT IS MUCH HIGHER THAN THE BULK 0.44.
       Reaching the measured phi_c needs a local densification of 1.294x,

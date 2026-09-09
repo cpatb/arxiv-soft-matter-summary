@@ -106,6 +106,42 @@ def main() -> int:
     p(f"    down to phi = {PHI_LAB}. The gap that friction cannot close is "
       f"{floor - PHI_LAB:.3f} in phi.")
     p()
+    # --- is the isotropic ladder a licensed proxy for the SHEAR critical state? -------
+    p("=== IS THAT SUBSTITUTION LICENSED? phi_c vs phi_J at the two friction values ===")
+    p("  ⚠ The floor above comes from the ISOTROPIC phi_J ladder, while the level comes")
+    p("  from the SHEAR phi_c. Those are different quantities, so the argument only")
+    p("  works if they track each other. Both are now measured, at two frictions -- but")
+    p("  by DIFFERENT estimators, which is exactly the trap this project keeps meeting,")
+    p("  so the comparison is stated with the estimator named on every row.")
+    p()
+    p(f"  {'mu_p':>6s} {'phi_J (isotropic)':>18s} {'phi_c (shear)':>14s} "
+      f"{'estimator':>10s} {'phi_c - phi_J':>14s}")
+    rows = []
+    p4 = [r for r in A.load("phase8_p4anchor*.jsonl") if "error" not in r]
+    if p4:
+        v4 = []
+        for seed in sorted({int(r["seed"]) for r in p4}):
+            g = A.analyse_group([r for r in p4 if int(r["seed"]) == seed])
+            if np.isfinite(g["phi_c_E4"]):
+                v4.append(g["phi_c_E4"])
+        pj0 = [pj for mu, pj, _ in lad if abs(mu) < 1e-9][0]
+        rows.append((0.0, pj0, float(np.mean(v4)), "E4"))
+    pj03 = [pj for mu, pj, _ in lad if abs(mu - 0.3) < 1e-9][0]
+    rows.append((0.3, pj03, phi_c, "E2"))
+    for mu, pj, pc, est in rows:
+        p(f"  {mu:6.2f} {pj:18.4f} {pc:14.4f} {est:>10s} {pc - pj:+14.4f}")
+    diffs = [abs(pc - pj) for _, pj, pc, _ in rows]
+    p()
+    p(f"  |phi_c - phi_J| is at most {max(diffs):.4f} across both friction values, i.e.")
+    p(f"  the two track each other to better than {max(diffs):.3f} -- against the "
+      f"{floor - PHI_LAB:.3f} gap")
+    p(f"  the argument is about, a factor {(floor - PHI_LAB) / max(diffs):.0f} smaller.")
+    p("  ⇒ Using the isotropic ladder for the FLOOR is licensed at the precision the")
+    p("    argument needs, and would not be licensed if the gap were ten times smaller.")
+    p("  ⚠ Still a weakness: the two rows use different estimators (E4 at mu = 0 because")
+    p("  E2's exponent hits its bound there, E2 at mu = 0.3 because E4 finds no")
+    p("  crossing). A single-estimator comparison across friction does not exist yet.")
+    p()
     p("=== SO ONE OF THESE MUST BE TRUE, and they are testable against each other ===")
     p("  (1) THE LOCAL phi DURING IMPACT IS MUCH HIGHER THAN THE BULK 0.44.")
     need = phi_c / PHI_LAB
