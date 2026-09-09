@@ -90,6 +90,26 @@ def test_cell_key_separates_every_swept_knob():
         assert P8.cell_key(**alt) != k0, f"key does not encode {knob}"
 
 
+def test_group_key_separates_protocols_and_run_parameters():
+    """Two records from DIFFERENT protocols must never land in the same group.
+
+    The default glob `phase8_prod*.jsonl` matches both the v1 and the v2 production
+    runs, which differ in the periodic-cell flip fix, the ladder, gamma_max and the step
+    count. This is the N-pooling defect of 2026-09-08 in a new place, and the key is
+    where it is stopped.
+    """
+    base = {"family": "lognormal", "cv": 0.2, "mu_p": 0.3, "seed": 1,
+            "n_requested": 1500, "protocol": "cv-shear-v2", "gamma_max": 1.5,
+            "shear_steps": 200000}
+    k0 = A.group_key(base)
+    for knob, other in [("protocol", "cv-shear-v1"), ("gamma_max", 2.0),
+                        ("shear_steps", 300000), ("cv", 0.5), ("seed", 2),
+                        ("n_requested", 3000), ("mu_p", 0.0), ("family", "uniform")]:
+        alt = dict(base)
+        alt[knob] = other
+        assert A.group_key(alt) != k0, f"group_key does not encode {knob}"
+
+
 # =====================================================================================
 # the gates stay in sync
 # =====================================================================================

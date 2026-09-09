@@ -74,8 +74,20 @@ def load(pattern: str) -> list[dict]:
 
 
 def group_key(r: dict) -> tuple:
+    """Everything a comparison must hold fixed, in the key.
+
+    🔴 `protocol`, `gamma_max` and `shear_steps` are in here deliberately. The default
+    glob `phase8_prod*.jsonl` matches BOTH `phase8_prod*` (protocol cv-shear-v1) and
+    `phase8_prod2*` (v2, after the periodic-cell flip fix and with a different ladder,
+    strain and step count). Pooling those would be the N-pooling defect of 2026-09-08
+    repeated in a new place: a key that does not encode a knob the analysis groups by.
+    `main` additionally REFUSES to report contrasts when more than one protocol is
+    present, rather than quietly averaging over it.
+    """
     return (r.get("family", "lognormal"), round(float(r["cv"]), 3),
-            round(float(r["mu_p"]), 3), int(r["seed"]), int(r["n_requested"]))
+            round(float(r["mu_p"]), 3), int(r["seed"]), int(r["n_requested"]),
+            r.get("protocol", "?"), round(float(r.get("gamma_max", float("nan"))), 3),
+            int(r.get("shear_steps", -1)))
 
 
 def e1_phi_of_I(phi: np.ndarray, ivals: np.ndarray) -> dict:
@@ -187,7 +199,9 @@ def analyse_group(recs: list[dict]) -> dict:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--pattern", default="phase8_prod*.jsonl")
+    ap.add_argument("--pattern", default="phase8_prod2*.jsonl",
+                    help="glob under out/. NOTE the default is prod2, not prod*: "
+                         "prod* would also match the protocol-v1 records")
     ap.add_argument("--out", default="phase8_verdict.txt")
     args = ap.parse_args()
 
@@ -223,15 +237,22 @@ def main() -> int:
     p(f"duplicate-state check: {n_dupe} offending pairs")
     p()
 
+    protos = sorted({k[5] for k in by_g})
+    if len(protos) > 1:
+        p(f"🔴 REFUSING to report contrasts: {len(protos)} protocols present in this "
+          f"selection -- {protos}. Re-run with a --pattern that picks one.")
+        p("   (per-cell rows are still printed below, keyed by protocol)")
+
     rows = []
     p(f"{'family':10s} {'cv':>5s} {'mu':>5s} {'seed':>4s} {'cells':>5s} "
       f"{'stdy':>4s} {'qs':>3s} {'phi_c_E1':>9s} {'phi_c_E2':>9s} {'b_E2':>6s} "
       f"{'phi_c_E3':>9s} {'phi_c_E4':>9s} {'mu_s':>6s}")
     for k in sorted(by_g):
         r = analyse_group(by_g[k])
-        fam, cv, mu, seed, n = k
+        fam, cv, mu, seed, n, proto, gmax, steps = k
         rows.append({"family": fam, "cv": cv, "mu_p": mu, "seed": seed,
-                     "n_requested": n, **r})
+                     "n_requested": n, "protocol": proto, "gamma_max": gmax,
+                     "shear_steps": steps, **r})
         p(f"{fam:10s} {cv:5.2f} {mu:5.2f} {seed:4d} {r['n_cells']:5d} "
           f"{r['n_steady']:4d} {r['n_quasistatic']:3d} "
           f"{r['phi_c_E1']:9.4f} {r['phi_c_E2']:9.4f} {r.get('b_E2', np.nan):6.2f} "
@@ -240,9 +261,16 @@ def main() -> int:
     # --- CV contrasts, per family/mu, averaged over seeds ---------------------------
     p()
     p("=== CV contrasts (mean over seeds, +/- sd) ===")
-    for fam in sorted({r["family"] for r in rows}):
-        for mu in sorted({r["mu_p"] for r in rows if r["family"] == fam}):
-            sub = [r for r in rows if r["family"] == fam and r["mu_p"] == mu]
+    if len(protos) > 1:
+        p("   SKIPPED -- see the protocol refusal above")
+        rows_for_contrast = []
+    else:
+        rows_for_contrast = rows
+    for fam in sorted({r["family"] for r in rows_for_contrast}):
+        for mu in sorted({r["mu_p"] for r in rows_for_contrast
+                          if r["family"] == fam}):
+            sub = [r for r in rows_for_contrast
+                   if r["family"] == fam and r["mu_p"] == mu]
             cvs = sorted({r["cv"] for r in sub})
             if len(cvs) < 2:
                 continue

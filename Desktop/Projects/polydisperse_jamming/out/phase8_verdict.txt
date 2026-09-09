@@ -1,0 +1,21 @@
+phase8: 25 records from phase8_prod*.jsonl; 20 usable, 5 errored
+  ERRORED lognormal_cv0.200_mu0.300_s1_phi0.5431_N1500_g2.00_st300000: RuntimeError('./pkg/common/InsertionSortCollider.cpp: Body larger than half of the cell size encountered.')
+  ERRORED lognormal_cv0.200_mu0.300_s1_phi0.5581_N1500_g2.00_st300000: RuntimeError('./pkg/common/InsertionSortCollider.cpp: Body larger than half of the cell size encountered.')
+  ERRORED lognormal_cv0.200_mu0.300_s1_phi0.5730_N1500_g2.00_st300000: RuntimeError('./pkg/common/InsertionSortCollider.cpp: Body larger than half of the cell size encountered.')
+  ERRORED lognormal_cv0.200_mu0.300_s1_phi0.5880_N1500_g2.00_st300000: RuntimeError('./pkg/common/InsertionSortCollider.cpp: Body larger than half of the cell size encountered.')
+  ERRORED lognormal_cv0.200_mu0.300_s1_phi0.6030_N1500_g2.00_st300000: RuntimeError('./pkg/common/InsertionSortCollider.cpp: Body larger than half of the cell size encountered.')
+duplicate-state check: 0 offending pairs
+
+family        cv    mu seed cells stdy  qs  phi_c_E1  phi_c_E2   b_E2  phi_c_E3  phi_c_E4   mu_s
+lognormal   0.00  0.30    1     7    7   3    0.6143    0.4933   8.00    0.5293    0.5797  0.355
+lognormal   0.00  0.30    2     7    4   3    0.6155    0.4947   8.00    0.5293    0.5751  0.362
+lognormal   0.00  0.30    3     4    3   0       nan       nan   8.00    0.5251       nan    nan
+lognormal   0.20  0.30    2     1    1   0       nan       nan    nan       nan       nan    nan
+lognormal   0.20  0.30    3     1    0   0       nan       nan    nan       nan       nan    nan
+
+=== CV contrasts (mean over seeds, +/- sd) ===
+-- lognormal, mu_p = 0.3
+   E1: too few resolved points (1)
+   E2: too few resolved points (1)
+   E3: too few resolved points (1)
+   E4: too few resolved points (1)
