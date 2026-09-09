@@ -13,3 +13,4 @@ dl2 worker 11 -> /home/cpb/pj/out/dl2_w11.log (pid 13884)
 dl2 worker 12 -> /home/cpb/pj/out/dl2_w12.log (pid 13886)
 dl2 worker 13 -> /home/cpb/pj/out/dl2_w13.log (pid 13888)
 dl2 worker 14 -> /home/cpb/pj/out/dl2_w14.log (pid 13890)
+=== downlad2 DONE, 0 nonzero exits ===
