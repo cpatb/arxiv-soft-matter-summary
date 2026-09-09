@@ -1,26 +1,30 @@
-=== the RIVAL's parameter: phi_J (= phi_m), imposed-pressure ladder, phase 2 ===
+=== a SHEAR-FREE packing fraction: phi_J, imposed-pressure ladder, phase 2 ===
    lognormal  cv0.00=0.574533+-0.000650  cv0.50=0.636854+-0.004753   dphi_J = +0.062321
    uniform    cv0.00=0.575136+-0.001399  cv0.50=0.597919+-0.005431   dphi_J = +0.022783
-   RIVAL's family separation  dphi_J(lognormal)/dphi_J(uniform) = 2.735x
+   its family separation  dphi_J(lognormal)/dphi_J(uniform) = 2.735x
 
-=== the MECHANISM's parameter: phi_c, constant-volume shear, phase 8 ===
-   lognormal  dphi_c = +0.0623
+=== the mechanism's parameter: phi_c, constant-volume shear, phase 8 ===
+   lognormal  dphi_c = +0.0607
    uniform    dphi_c = +0.0215
-   MECHANISM's family separation dphi_c(lognormal)/dphi_c(uniform) = 2.898x   (pre-registered bar 1.5x)
+   MECHANISM's family separation dphi_c(lognormal)/dphi_c(uniform) = 2.823x   (pre-registered bar 1.5x)
 
-=== do the two parameters respond DIFFERENTLY to skewness? ===
-   rival     2.735x
-   mechanism 2.898x
-   they differ by 5.9 % of the rival's value
-   lognormal : dphi_c = +0.0623 against dphi_J = +0.0623  -- 0.0 % apart
+=== do the two respond DIFFERENTLY to skewness? ===
+   phi_J, no shear   2.735x
+   phi_c, shear      2.823x
+   they differ by 3.2 % of the rival's value
+   lognormal : dphi_c = +0.0607 against dphi_J = +0.0623  -- 2.6 % apart
    uniform   : dphi_c = +0.0215 against dphi_J = +0.0228  -- 5.6 % apart
 
 === VERDICT ===
-   🔴 P5 DOES NOT BREAK THE DEGENERACY. The rival's own parameter, phi_J,
-   shows the SAME shape effect at the SAME size, measured independently on
-   an imposed-pressure ladder. A rheology that diverges at phi_m ~ phi_J
-   therefore predicts P5 exactly, so P5 is a measurement of the shared
-   packing quantity and not a discriminator between the two accounts.
+   🔴 P5 DOES NOT ESTABLISH A DISCRIMINATION. A packing fraction measured
+   with NO SHEAR AT ALL -- the isotropic phi_J, a different protocol and a
+   different code path -- shows the same shape effect to within the figure
+   above. So the shape effect is not specific to the critical state; it is a
+   property of the packing geometry. To use P5 against the rheological rival
+   one would have to show that the rival's phi_m responds to skewness
+   DIFFERENTLY from every packing-fraction measure this project has, which
+   nobody has shown. (And note phi_m = phi_J is itself an unverified
+   identification -- see the module docstring.)
    NEXT_STEPS_2026-09-09 section 2 item 2 is answered NO, and section 1's
    'no simulation separates them' is if anything strengthened: the shape
    effect lives in the packing geometry both accounts read.

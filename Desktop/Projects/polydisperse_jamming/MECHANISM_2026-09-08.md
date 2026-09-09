@@ -564,12 +564,33 @@ it is a *simulation* result rather than a bench one.
 The isotropic analogue measured months ago was 2.73×; the constant-volume shear
 measurement gives **2.90×**, by a different protocol on a different quantity.
 
-⚠ **One thing to check before leaning on this against the rheological rival (§7a):** the
-rival runs on `φ_m`, which is also a packing-geometry quantity and may well respond to
-skewness the same way. If it does, P5 does not separate the two. If `φ_m` and `φ_c`
-respond *differently* to skewness, P5 becomes a simulation-only discriminator and §7a's
-"no simulation separates them" is wrong. **Not yet checked** — see
-`NEXT_STEPS_2026-09-09.md` §2 item 2.
+🔴 **CHECKED 2026-09-09, and the answer is NO: P5 does not separate the two.**
+`p5_degeneracy.py`, `out/p5_degeneracy.txt`. The rival runs on `φ_m`, the divergence
+point of the viscosity — a packing fraction of these same packings. The project already
+measured one such fraction for **both** families months earlier, with **no shear at
+all**, on an imposed-pressure ladder (`out/phase2_summary.csv`):
+
+| | Δ(CV 0 → 0.5), lognormal | uniform | ratio |
+|---|---|---|---|
+| the rival's parameter `φ_J` | +0.062321 | +0.022783 | **2.735×** |
+| the mechanism's parameter `φ_c` | +0.0623 | +0.0215 | **2.898×** |
+
+**The shape effect is therefore not specific to the critical state — it is a property of
+the packing geometry**, and it shows up identically in a measurement with no shear in it.
+To turn P5 into a discriminator one would have to show that the rival's `φ_m` responds to
+skewness *differently* from every packing-fraction measure this project has; nobody has.
+⚠ Note `φ_m = φ_J` is itself an unverified identification — a referee points out that in
+Wyart–Cates-type treatments the divergence fraction is stress-dependent and closer in kind
+to a shear quantity [UNVERIFIED] — which is why the claim is the weaker "P5 does not
+**establish** a discrimination" rather than "the rival predicts P5". §7a's
+"no simulation separates them" is not weakened by P5 — it is strengthened, because the
+strongest simulation result in the set turns out to be consumed by both. The separators
+remain the three experimental ones: the pore-pressure **sign**, the **strain history**,
+and a boundary in **(U₀, D₀)**.
+
+⚠ And read the next section: the agreement in the table above is not just consistent
+with the degeneracy, it is partly *forced* by it, because the `φ_c` ladders are centred
+on those very `φ_J` values.
 
 ### 🔴 A gate defect found after this section was written
 

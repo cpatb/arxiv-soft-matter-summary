@@ -1,0 +1,28 @@
+=== the match, CHECKED from the realised gdot in every record ===
+      cv  shear_steps        gdot  vs target        arm
+    0.00        41958   1.430e-04     1.000x    matched
+    0.20        86411   1.430e-04     1.000x    matched
+    0.20        78795   1.430e-04     1.000x    matched
+    0.20        82782   1.430e-04     1.000x    matched
+    0.50       200000   1.433e-04     1.002x    matched
+    0.00       200000   3.000e-05     0.210x  unmatched
+    0.20       200000   5.910e-05     0.413x  unmatched
+   the UNMATCHED ladder spans 4.78x in gdot; the matched one is held to within 2 %
+
+=== dphi_c(cv 0 -> 0.5), matched against unmatched, every gate set ===
+   gate            matched   unmatched    change  n
+   ungated         +0.0626     +0.0623   +0.0002  (3,3,3)
+   quasistatic     +0.0482     +0.0444   +0.0038  (3,3,3)
+   steady          +0.0591     +0.0485   +0.0107  (2,3,2)
+   both         unresolved (n = 0, 3, 1)
+
+   cv = 0.2 for reference (matched vs unmatched phi_c):
+      ungated      matched 0.5836 (n3)   unmatched 0.5853 (n3)   diff -0.0017
+      quasistatic  matched 0.6009 (n3)   unmatched 0.6034 (n3)   diff -0.0024
+      steady       matched 0.5908 (n3)   unmatched 0.5874 (n2)   diff +0.0034
+
+=== VERDICT ===
+   removing a 4.78x rate contrast moves dphi_c by +0.0002 to +0.0107 across the gate sets.
+   Every change is POSITIVE: the unconfounded contrast is LARGER, so the shear-rate confound was making the published number CONSERVATIVE. That is the direction standard phi(I) rheology predicts -- a higher rate at high CV raises p there and pushes the fitted root down.
+   Size: at most 0.0107 against a contrast of order 0.05, i.e. 21 % of it. Real, recorded, and not material.
+   ⚠ This says nothing about whether E2's root measures the material at all -- see PREREG_ROOT_PINNING_2026-09-09.md, which says it does not.

@@ -70,13 +70,15 @@ def _hi(by: dict) -> float:
 
 
 def _roots(by: dict, gate: tuple[str, ...] = ()) -> dict:
-    """seed -> (phi_c_E2, phi_lo) for the cell under test."""
+    """seed -> (phi_c_E2, phi_lo, b_E2, b_at_bound, root_at_bound) for the test cell."""
     out = {}
     for k, rs in by.items():
         if (k[0], k[1], k[2]) != CELL:
             continue
         res = A.analyse_group(rs, gate)
-        out[k[3]] = (res["phi_c_E2"], res["phi_lo"], res.get("b_E2", np.nan))
+        out[k[3]] = (res["phi_c_E2"], res["phi_lo"], res.get("b_E2", np.nan),
+                     res.get("b_E2_at_bound", np.nan),
+                     res.get("phi_c_E2_at_bound", np.nan))
     return out
 
 
@@ -98,7 +100,7 @@ def main() -> int:
     up_vals = np.array([v[0] for v in up_roots.values() if np.isfinite(v[0])])
     p(f"\nUP-LADDER  (offsets {P8.PHI_OFFSETS}) n = {len(up_vals)} seeds")
     for s in sorted(up_roots):
-        rc, lo, b = up_roots[s]
+        rc, lo, b = up_roots[s][:3]
         p(f"   seed {s}: phi_lo = {lo:.4f}  phi_c_E2 = {rc:.4f}  "
           f"(lo - root = {lo - rc:+.4f})  b = {b:.2f}")
     if up_vals.size:
@@ -144,9 +146,21 @@ def main() -> int:
     dn_vals = np.array([v[0] for v in down_roots.values() if np.isfinite(v[0])])
     p(f"\nDOWN-LADDER  phi_c_E2, n = {len(dn_vals)} seeds resolved of {len(down_roots)}")
     for s in sorted(down_roots):
-        rc, lo, b = down_roots[s]
-        p(f"   seed {s}: phi_lo = {lo:.4f}  phi_c_E2 = {rc:.4f}  "
-          f"(lo - root = {lo - rc:+.4f})  b = {b:.2f}")
+        rc, lo, b, ab, abr = down_roots[s]
+        if np.isfinite(rc):
+            p(f"   seed {s}: phi_lo = {lo:.4f}  phi_c_E2 = {rc:.4f}  "
+              f"(lo - root = {lo - rc:+.4f})  b = {b:.2f}")
+        else:
+            p(f"   seed {s}: phi_lo = {lo:.4f}  phi_c_E2 REFUSED  b = {b:.2f}"
+              + (f" AT THE BOUND {A.B_MAX:.1f}" if np.isfinite(ab) else "")
+              + (f", root it would have returned = {abr:.4f}"
+                 if np.isfinite(abr) else ""))
+    if any(np.isfinite(v[3]) for v in down_roots.values()):
+        p("   -> E2's exponent SATURATES on a ladder that brackets the root. The power "
+          "law cannot represent a rung below the root, where p -> 0 and log p -> -inf, "
+          "so the fit runs `b` to its ceiling instead. This is a THIRD failure mode, "
+          "distinct from 'tracks the window': the roots it would have returned "
+          "(printed above) sit far below the ladder, not just under its bottom rung.")
     if not dn_vals.size:
         p("\n🔴 no down-ladder root resolved; H_pinned and H_real cannot be separated "
           "on the fitted channel. The fit-free readout above still stands.")
@@ -158,6 +172,37 @@ def main() -> int:
         p(f"\n   ladder bottom moved {min(per_phi) - centre:+.4f}; "
           f"the fitted root moved {shift:+.4f}  "
           f"(response {shift / (min(per_phi) - centre):.2f} of the ladder move)")
+
+    # ---- the offset census, RECOMPUTED, never quoted from the pre-registration -------
+    # 🔴 The pre-registration's motivating figure ("0.0003-0.0124 below the lowest rung
+    # across 46 resolved fits, and never more") was computed before the +0.10/+0.12
+    # rungs landed the same day. It no longer reproduces: a referee found 57 fits with
+    # 7 beyond that ceiling. The census is therefore COMPUTED here every run, so it
+    # cannot go stale again, and the ceiling is reported in units of the ladder spacing
+    # rather than as an absolute that depends on which cells exist.
+    p()
+    p("=== offset census: how far below its lowest rung does E2's root land? ===")
+    cens = []
+    for pat in ("phase8_prod2*.jsonl", "phase8_p5uniform*.jsonl"):
+        for k, rs in _groups(pat).items():
+            for gname, g in A.GATE_SETS:
+                res = A.analyse_group(rs, g)
+                if res["n_cells"] and np.isfinite(res["phi_c_E2"]):
+                    cens.append((res["phi_lo"] - res["phi_c_E2"], gname, k[0], k[1]))
+    if cens:
+        v = np.array([c[0] for c in cens])
+        p(f"   {len(cens)} resolved fits over prod2 + p5uniform x 4 gate sets")
+        p(f"   offset (lowest rung - root): min {v.min():.4f}  median "
+          f"{np.median(v):.4f}  max {v.max():.4f}")
+        p(f"   in ladder spacings (0.020): {v.min() / 0.020:.2f} to "
+          f"{v.max() / 0.020:.2f}; {int((v > 0.020).sum())} of {len(cens)} exceed one "
+          f"spacing, {int((v > 0.040).sum())} exceed two")
+        worst = max(cens)
+        p(f"   worst: {worst[2]} cv{worst[3]:.2f} under the {worst[1]} gate, "
+          f"{worst[0]:.4f}")
+        p("   The ceiling is not the argument -- the RESPONSE below is. A root that "
+          "always sits within two spacings below a moving window, and moves with it, "
+          "is a property of the window.")
 
     # ---- the replacement: is E4 window-robust where E2 is not? -----------------------
     # E4 is the phi at which the non-rattler contact number crosses the isostatic count.

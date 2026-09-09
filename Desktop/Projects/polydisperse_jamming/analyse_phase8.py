@@ -124,6 +124,48 @@ Z_ISO_FRICTIONLESS = 6.0
 Z_ISO_FRICTIONAL = 4.0  # the project's A2/A3 anchors measure 6.37-6.92 at mu_p = 0 and
                         # 3.98-4.07 at mu_p = 3, which is what pins both values.
 Z_ISO_MU_BAR = 1.0e-9   # below this mu_p the pack is treated as frictionless
+
+# 🔴 AND THE FRICTIONAL CONSTANT ABOVE IS THE WRONG NUMBER FOR THE PRODUCTION ARM.
+# d+1 = 4 is the mu_p -> INFINITY limit; at finite friction nothing fixes the count and
+# it has to be measured. `measure_z_iso.py` extrapolates z_nr to zero confining pressure
+# on the project's OWN isotropic ladders (phase2_*.jsonl, the same records and the same
+# construction phase2_phiJ.py uses for phi_J) and gets, at N = 1500:
+#
+#     mu_p = 0.00   5.859 +- 0.078 (11 cells)   against 6.0 used -- theory-exact, fine
+#     mu_p = 0.30   4.535 +- 0.072 (18 cells)   against 4.0 used -- 0.535 CONTACTS OUT
+#     mu_p = 3.00   3.961          ( 1 cell )   against 4.0 used -- fine
+#
+# At the shear ladders' own dz/dphi (28.1 / 23.0 / 21.9 per unit phi at cv 0 / 0.2 / 0.5)
+# that is 0.019-0.024 in phi_c, roughly half the CV contrast E4 is used to measure. And
+# z_iso DRIFTS with CV (lognormal 4.609 -> 4.377 over CV 0 -> 0.5), so one constant puts
+# a CV-dependent bias into E4's own contrast, worth about +0.0045 in the inflating
+# direction.
+#
+# ⚠ Using these values makes E4 depend on the ISOTROPIC measurement, which is also what
+# the shear ladders are centred on -- so a corrected E4 is a better estimator of phi_c
+# and is NOT an independent check of "phi_c = phi_J". Both readings are reported; the
+# default stays the theory constant so that no previously published number moves
+# silently. Source: out/z_iso_measured.txt.
+Z_ISO_MEASURED = {
+    ("lognormal", 0.0): 4.609, ("lognormal", 0.1): 4.553, ("lognormal", 0.2): 4.513,
+    ("lognormal", 0.3): 4.431, ("lognormal", 0.4): 4.446, ("lognormal", 0.5): 4.377,
+    ("uniform", 0.0): 4.609, ("uniform", 0.1): 4.612, ("uniform", 0.2): 4.563,
+    ("uniform", 0.3): 4.547, ("uniform", 0.4): 4.550, ("uniform", 0.5): 4.416,
+    ("bidisperse", 0.0): 4.609, ("bidisperse", 0.1): 4.595, ("bidisperse", 0.2): 4.535,
+    ("bidisperse", 0.3): 4.552, ("bidisperse", 0.4): 4.564, ("bidisperse", 0.5): 4.542,
+}
+Z_ISO_MEASURED_MU = 0.3         # the friction those numbers were measured at
+
+
+def z_iso_measured(family: str, cv: float, mu_p: float) -> float:
+    """The MEASURED isostatic count for this cell, or NaN if none was measured.
+
+    Only mu_p = 0.3 is tabulated, because that is the only friction at which the
+    theory constant is wrong and an isotropic ladder exists to replace it.
+    """
+    if abs(mu_p - Z_ISO_MEASURED_MU) > 1e-9:
+        return float("nan")
+    return Z_ISO_MEASURED.get((family, round(float(cv), 3)), float("nan"))
 P_FLOOR = 1.0e-9        # below this p_hat the cell carries no measurable stress
 B_MAX = 8.0             # upper bound on E2's free exponent. A fit landing ON it is
                         # reported as bound-limited and its phi_c is refused.
@@ -289,15 +331,24 @@ def _pressure_root(phi: np.ndarray, p: np.ndarray, pin_b: float | None) -> dict:
     return out
 
 
-def e4_z_crossing(phi: np.ndarray, z: np.ndarray, mu_p: float = 1.0) -> dict:
+def e4_z_crossing(phi: np.ndarray, z: np.ndarray, mu_p: float = 1.0,
+                  z_iso: float | None = None, tag: str = "E4") -> dict:
     """phi where z_nr crosses the isostatic count, by linear interpolation.
 
     The target depends on friction: 6 for frictionless spheres, 4 for frictional ones.
     Passing `mu_p` is mandatory in spirit -- the default is the frictional case only so
     that older callers keep their previous behaviour rather than silently changing it.
+
+    `z_iso` overrides the theory constant with a MEASURED count (see Z_ISO_MEASURED and
+    measure_z_iso.py). It is passed, not looked up here, so that a caller cannot get a
+    measured target by accident.
     """
-    z_iso = (Z_ISO_FRICTIONLESS if mu_p <= Z_ISO_MU_BAR else Z_ISO_FRICTIONAL)
-    out = {"phi_c_E4": np.nan, "z_iso_used": z_iso}
+    if z_iso is None:
+        z_iso = (Z_ISO_FRICTIONLESS if mu_p <= Z_ISO_MU_BAR else Z_ISO_FRICTIONAL)
+    out = {f"phi_c_{tag}": np.nan, f"z_iso_used_{tag}" if tag != "E4" else "z_iso_used":
+           z_iso}
+    if not np.isfinite(z_iso):
+        return out
     ok = np.isfinite(phi) & np.isfinite(z)
     if ok.sum() < 2:
         return out
@@ -310,7 +361,7 @@ def e4_z_crossing(phi: np.ndarray, z: np.ndarray, mu_p: float = 1.0) -> dict:
             if y[i + 1] == y[i]:
                 continue
             t = (z_iso - y[i]) / (y[i + 1] - y[i])
-            out["phi_c_E4"] = float(x[i] + t * (x[i + 1] - x[i]))
+            out[f"phi_c_{tag}"] = float(x[i] + t * (x[i + 1] - x[i]))
             break
     return out
 
@@ -326,11 +377,12 @@ def analyse_group(recs: list[dict], gate_names: tuple[str, ...] = ()) -> dict:
     recs = apply_gates(recs, gate_names)
     recs = sorted(recs, key=lambda r: r["phi"])
     if not recs:
-        return {"n_cells": 0, "n_dropped_by_gate": n_before, "gate": "+".join(gate_names) or "ungated",
+        return {"n_cells": 0, "n_dropped_by_gate": n_before,
+                "gate": "+".join(gate_names) or "ungated",
                 "phi_lo": np.nan, "phi_hi": np.nan, "n_steady": 0, "n_quasistatic": 0,
                 "p_hat_max": np.nan, "phi_c_E2": np.nan, "phi_c_E3": np.nan,
-                "phi_c_E4": np.nan, "phi_dense_E1": np.nan, "mu_s": np.nan,
-                "b_E2": np.nan, "gdot_mean": np.nan}
+                "phi_c_E4": np.nan, "phi_c_E4m": np.nan, "phi_dense_E1": np.nan,
+                "mu_s": np.nan, "b_E2": np.nan, "gdot_mean": np.nan}
     phi = np.array([r["phi"] for r in recs], float)
     p = np.array([r["p_ss_hat"] for r in recs], float)
     ivals = np.array([r["i_ss"] for r in recs], float)
@@ -348,7 +400,14 @@ def analyse_group(recs: list[dict], gate_names: tuple[str, ...] = ()) -> dict:
     res.update(e1_phi_of_I(phi, ivals))
     res.update(_pressure_root(phi, p, None))
     res.update(_pressure_root(phi, p, 1.0))
-    res.update(e4_z_crossing(phi, z, mu_p=float(recs[0].get('mu_p', 1.0))))
+    mu_cell = float(recs[0].get("mu_p", 1.0))
+    res.update(e4_z_crossing(phi, z, mu_p=mu_cell))
+    # the same crossing against the MEASURED isostatic count, reported beside it and
+    # never instead of it -- see Z_ISO_MEASURED for why neither alone is the answer
+    res.update(e4_z_crossing(
+        phi, z, mu_p=mu_cell, tag="E4m",
+        z_iso=z_iso_measured(str(recs[0].get("family", "lognormal")),
+                             float(recs[0].get("cv", np.nan)), mu_cell)))
 
     # mu_s = mu_macro(I -> 0): an anchor on the rheology, independent of phi_c
     ok = np.isfinite(mu) & np.isfinite(ivals) & (ivals <= I_FIT_MAX) & (ivals > 0)
@@ -360,7 +419,7 @@ def analyse_group(recs: list[dict], gate_names: tuple[str, ...] = ()) -> dict:
         res["mu_s"] = np.nan
 
     # REFUSE a root outside the ladder it was fitted on.
-    for tag in ("E2", "E3", "E4"):
+    for tag in ("E2", "E3", "E4", "E4m"):
         v = res.get(f"phi_c_{tag}", np.nan)
         if np.isfinite(v) and not (res["phi_lo"] - 0.05 <= v <= res["phi_hi"]):
             res[f"phi_c_{tag}_refused"] = float(v)
@@ -482,7 +541,7 @@ def main() -> int:
                     p(f"   shear rate matched to {span:.2f}x across this contrast "
                       f"(bar {GDOT_MATCH_TOL:.2f}x) -- not a rate confound")
 
-            for tag in ("E2", "E3", "E4", "dense_E1"):
+            for tag in ("E2", "E3", "E4", "E4m", "dense_E1"):
                 col = "phi_dense_E1" if tag == "dense_E1" else f"phi_c_{tag}"
                 p(f"   {tag}:")
                 for label, _gates in GATE_SETS:

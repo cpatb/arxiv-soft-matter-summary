@@ -20,12 +20,29 @@ simulation, because the rival's parameter has already been measured here.
 
 WHY IT NEEDS NO NEW RUN
 -----------------------
-`phi_m` in the rival is the divergence point of the viscosity, i.e. the jamming fraction
-of the same packing -- the project's own `phi_J`, measured by `phase2_phiJ.py` on an
-IMPOSED-PRESSURE ladder, in `out/phase2_summary.csv`, for BOTH families. So the rival's
-prediction for the P5 contrast is simply `dphi_J(uniform)` against `dphi_J(lognormal)`,
-which is already on disk. If that ratio is close to the `phi_c` ratio P5 measured, the
-rival predicts P5 and P5 discriminates nothing.
+`phi_m` in the rival is the divergence point of the viscosity, i.e. a jamming fraction of
+the same packings. The project has measured one such fraction for BOTH families already:
+`phi_J`, from `phase2_phiJ.py` on an IMPOSED-PRESSURE ladder, in
+`out/phase2_summary.csv`. So a candidate prediction for the P5 contrast is
+`dphi_J(uniform)` against `dphi_J(lognormal)`, which is on disk. If that ratio is close
+to the `phi_c` ratio P5 measured, the rival predicts P5 and P5 discriminates nothing.
+
+⚠ **THE IDENTIFICATION `phi_m = phi_J` IS AN ASSUMPTION, AND IT IS NOT VERIFIED HERE.**
+Raised by a referee 2026-09-09. In Wyart-Cates-type treatments the viscosity-divergence
+fraction is STRESS-DEPENDENT, sliding between a frictionless and a frictional limit, and
+is closer in kind to a shear-protocol quantity than to an isotropic jamming point.
+[UNVERIFIED -- not resolved to a source in this session.] So this script cannot show
+that the rival predicts P5; what it shows is weaker and still decisive for the
+programme:
+
+    the shape effect is present in a packing fraction measured WITHOUT any shear,
+    on a different protocol, by a different code path,
+
+so a discriminator built on P5 would have to argue that the rival's `phi_m` responds to
+skewness DIFFERENTLY from every packing-fraction measure this project has (isotropic
+`phi_J`, the dense-end E1, the pressure root E2, the isostatic crossing E4). Nothing
+supports that, and nobody has shown it. **P5 therefore does not ESTABLISH a
+discrimination**; the burden is on any claim that it does.
 
 ⚠ Read this beside PREREG_ROOT_PINNING_2026-09-09.md. If the `phi_c` estimator turns out
 to be pinned to a ladder centred on `phi_J`, then the two ratios agreeing is guaranteed
@@ -95,7 +112,7 @@ def main() -> int:
         print(m)
         lines.append(m)
 
-    p("=== the RIVAL's parameter: phi_J (= phi_m), imposed-pressure ladder, phase 2 ===")
+    p("=== a SHEAR-FREE packing fraction: phi_J, imposed-pressure ladder, phase 2 ===")
     d_phi_J = {}
     for fam in FAMILIES:
         lo, lo_sd = _phi_J(fam, CV_LO)
@@ -104,10 +121,10 @@ def main() -> int:
         p(f"   {fam:10s} cv{CV_LO:.2f}={lo:.6f}+-{lo_sd:.6f}  "
           f"cv{CV_HI:.2f}={hi:.6f}+-{hi_sd:.6f}   dphi_J = {hi - lo:+.6f}")
     ratio_J = d_phi_J["lognormal"] / d_phi_J["uniform"]
-    p(f"   RIVAL's family separation  dphi_J(lognormal)/dphi_J(uniform) = "
+    p(f"   its family separation  dphi_J(lognormal)/dphi_J(uniform) = "
       f"{ratio_J:.3f}x")
 
-    p("\n=== the MECHANISM's parameter: phi_c, constant-volume shear, phase 8 ===")
+    p("\n=== the mechanism's parameter: phi_c, constant-volume shear, phase 8 ===")
     d_phi_c = {"lognormal": _read_dphi_c("phase8_verdict.txt"),
                "uniform": _read_dphi_c("p5_verdict.txt")}
     for fam in FAMILIES:
@@ -116,9 +133,9 @@ def main() -> int:
     p(f"   MECHANISM's family separation dphi_c(lognormal)/dphi_c(uniform) = "
       f"{ratio_c:.3f}x   (pre-registered bar {P5_BAR}x)")
 
-    p("\n=== do the two parameters respond DIFFERENTLY to skewness? ===")
-    p(f"   rival     {ratio_J:.3f}x")
-    p(f"   mechanism {ratio_c:.3f}x")
+    p("\n=== do the two respond DIFFERENTLY to skewness? ===")
+    p(f"   phi_J, no shear   {ratio_J:.3f}x")
+    p(f"   phi_c, shear      {ratio_c:.3f}x")
     rel = abs(ratio_c - ratio_J) / ratio_J
     p(f"   they differ by {rel * 100:.1f} % of the rival's value")
     # the increments themselves, not just their ratio -- a ratio can agree while the
@@ -130,11 +147,15 @@ def main() -> int:
 
     p("\n=== VERDICT ===")
     if rel < 0.25:
-        p("   🔴 P5 DOES NOT BREAK THE DEGENERACY. The rival's own parameter, phi_J,")
-        p("   shows the SAME shape effect at the SAME size, measured independently on")
-        p("   an imposed-pressure ladder. A rheology that diverges at phi_m ~ phi_J")
-        p("   therefore predicts P5 exactly, so P5 is a measurement of the shared")
-        p("   packing quantity and not a discriminator between the two accounts.")
+        p("   🔴 P5 DOES NOT ESTABLISH A DISCRIMINATION. A packing fraction measured")
+        p("   with NO SHEAR AT ALL -- the isotropic phi_J, a different protocol and a")
+        p("   different code path -- shows the same shape effect to within the figure")
+        p("   above. So the shape effect is not specific to the critical state; it is a")
+        p("   property of the packing geometry. To use P5 against the rheological rival")
+        p("   one would have to show that the rival's phi_m responds to skewness")
+        p("   DIFFERENTLY from every packing-fraction measure this project has, which")
+        p("   nobody has shown. (And note phi_m = phi_J is itself an unverified")
+        p("   identification -- see the module docstring.)")
         p("   NEXT_STEPS_2026-09-09 section 2 item 2 is answered NO, and section 1's")
         p("   'no simulation separates them' is if anything strengthened: the shape")
         p("   effect lives in the packing geometry both accounts read.")

@@ -1,0 +1,9 @@
+downlad worker 0 -> /home/cpb/pj/out/downlad_w00.log (pid 2681)
+downlad worker 1 -> /home/cpb/pj/out/downlad_w01.log (pid 2683)
+downlad worker 2 -> /home/cpb/pj/out/downlad_w02.log (pid 2685)
+downlad worker 3 -> /home/cpb/pj/out/downlad_w03.log (pid 2687)
+downlad worker 4 -> /home/cpb/pj/out/downlad_w04.log (pid 2689)
+downlad worker 5 -> /home/cpb/pj/out/downlad_w05.log (pid 2691)
+downlad worker 6 -> /home/cpb/pj/out/downlad_w06.log (pid 2693)
+downlad worker 7 -> /home/cpb/pj/out/downlad_w07.log (pid 2695)
+=== downlad DONE, 0 nonzero exits ===

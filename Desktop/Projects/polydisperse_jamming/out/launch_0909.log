@@ -1,0 +1,58 @@
+=== A: ladder extension, cv 0.0 and 0.2, offsets +0.10 +0.12 ===
+worker 0 -> /home/cpb/pj/out/phase8_w00.log (pid 460)
+worker 1 -> /home/cpb/pj/out/phase8_w01.log (pid 462)
+worker 2 -> /home/cpb/pj/out/phase8_w02.log (pid 464)
+worker 3 -> /home/cpb/pj/out/phase8_w03.log (pid 466)
+worker 4 -> /home/cpb/pj/out/phase8_w04.log (pid 468)
+worker 5 -> /home/cpb/pj/out/phase8_w05.log (pid 470)
+worker 6 -> /home/cpb/pj/out/phase8_w06.log (pid 472)
+worker 7 -> /home/cpb/pj/out/phase8_w07.log (pid 474)
+worker 8 -> /home/cpb/pj/out/phase8_w08.log (pid 476)
+worker 9 -> /home/cpb/pj/out/phase8_w09.log (pid 478)
+worker 10 -> /home/cpb/pj/out/phase8_w10.log (pid 480)
+worker 11 -> /home/cpb/pj/out/phase8_w11.log (pid 482)
+launched 12 workers, OMP_NUM_THREADS=1; waiting...
+=== all workers finished, 0 nonzero exits ===
+=== B: rate-matched control, cv 0.0 (steps 41958) ===
+worker 0 -> /home/cpb/pj/out/phase8_w00.log (pid 4030)
+worker 1 -> /home/cpb/pj/out/phase8_w01.log (pid 4032)
+worker 2 -> /home/cpb/pj/out/phase8_w02.log (pid 4034)
+worker 3 -> /home/cpb/pj/out/phase8_w03.log (pid 4036)
+worker 4 -> /home/cpb/pj/out/phase8_w04.log (pid 4038)
+worker 5 -> /home/cpb/pj/out/phase8_w05.log (pid 4040)
+worker 6 -> /home/cpb/pj/out/phase8_w06.log (pid 4042)
+worker 7 -> /home/cpb/pj/out/phase8_w07.log (pid 4044)
+worker 8 -> /home/cpb/pj/out/phase8_w08.log (pid 4046)
+worker 9 -> /home/cpb/pj/out/phase8_w09.log (pid 4048)
+worker 10 -> /home/cpb/pj/out/phase8_w10.log (pid 4050)
+worker 11 -> /home/cpb/pj/out/phase8_w11.log (pid 4052)
+worker 12 -> /home/cpb/pj/out/phase8_w12.log (pid 4054)
+worker 13 -> /home/cpb/pj/out/phase8_w13.log (pid 4056)
+worker 14 -> /home/cpb/pj/out/phase8_w14.log (pid 4058)
+launched 15 workers, OMP_NUM_THREADS=1; waiting...
+=== all workers finished, 0 nonzero exits ===
+=== B: rate-matched control, cv 0.2 seed 1 (steps 86411) ===
+worker 0 -> /home/cpb/pj/out/phase8_w00.log (pid 8008)
+worker 1 -> /home/cpb/pj/out/phase8_w01.log (pid 8010)
+worker 2 -> /home/cpb/pj/out/phase8_w02.log (pid 8012)
+worker 3 -> /home/cpb/pj/out/phase8_w03.log (pid 8014)
+worker 4 -> /home/cpb/pj/out/phase8_w04.log (pid 8016)
+launched 5 workers, OMP_NUM_THREADS=1; waiting...
+=== all workers finished, 0 nonzero exits ===
+=== B: rate-matched control, cv 0.2 seed 2 (steps 78795) ===
+worker 0 -> /home/cpb/pj/out/phase8_w00.log (pid 10893)
+worker 1 -> /home/cpb/pj/out/phase8_w01.log (pid 10895)
+worker 2 -> /home/cpb/pj/out/phase8_w02.log (pid 10897)
+worker 3 -> /home/cpb/pj/out/phase8_w03.log (pid 10899)
+worker 4 -> /home/cpb/pj/out/phase8_w04.log (pid 10901)
+launched 5 workers, OMP_NUM_THREADS=1; waiting...
+=== all workers finished, 0 nonzero exits ===
+=== B: rate-matched control, cv 0.2 seed 3 (steps 82782) ===
+worker 0 -> /home/cpb/pj/out/phase8_w00.log (pid 13599)
+worker 1 -> /home/cpb/pj/out/phase8_w01.log (pid 13601)
+worker 2 -> /home/cpb/pj/out/phase8_w02.log (pid 13603)
+worker 3 -> /home/cpb/pj/out/phase8_w03.log (pid 13605)
+worker 4 -> /home/cpb/pj/out/phase8_w04.log (pid 13607)
+launched 5 workers, OMP_NUM_THREADS=1; waiting...
+=== all workers finished, 0 nonzero exits ===
+=== ALL DONE 0909 ===

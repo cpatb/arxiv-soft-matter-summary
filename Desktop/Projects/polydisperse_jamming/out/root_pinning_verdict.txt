@@ -1,0 +1,48 @@
+cell under test: ('lognormal', 0.0, 0.3), ladder centre (published isotropic phi_J) = 0.574533
+
+UP-LADDER  (offsets (0.0, 0.02, 0.04, 0.06, 0.08)) n = 3 seeds
+   seed 1: phi_lo = 0.5745  phi_c_E2 = 0.5670  (lo - root = +0.0076)  b = 3.64
+   seed 2: phi_lo = 0.5745  phi_c_E2 = 0.5687  (lo - root = +0.0059)  b = 3.25
+   seed 3: phi_lo = 0.5745  phi_c_E2 = 0.5729  (lo - root = +0.0017)  b = 2.19
+   mean 0.5695 +- 0.0030
+
+DOWN-LADDER, per rung (mean over seeds) -- THE FIT-FREE HALF
+        phi     off  n    p_ss_hat   z_nr rattlers         I  stdy   qs
+     0.5145  -0.060  3   1.159e-07   2.38    0.796  8.85e-02     2    0
+     0.5345  -0.040  3   2.719e-07   2.84    0.462  5.78e-02     2    0
+     0.5545  -0.020  3   7.650e-07   3.30    0.268  3.43e-02     3    0
+     0.5745  -0.000  3   3.740e-06   3.94    0.126  1.55e-02     1    0
+     0.5945  +0.020  3   4.725e-04   4.58    0.066  1.59e-03     1    3
+
+   of the 2 rungs below the up-ladder's claimed root 0.5695: 2 carry p_ss_hat < 1e-06, 2 have z_nr < 4
+
+DOWN-LADDER  phi_c_E2, n = 0 seeds resolved of 3
+   seed 1: phi_lo = 0.5145  phi_c_E2 REFUSED  b = 8.00 AT THE BOUND 8.0, root it would have returned = 0.4511
+   seed 2: phi_lo = 0.5145  phi_c_E2 REFUSED  b = 8.00 AT THE BOUND 8.0, root it would have returned = 0.4522
+   seed 3: phi_lo = 0.5145  phi_c_E2 REFUSED  b = 8.00 AT THE BOUND 8.0, root it would have returned = 0.4594
+   -> E2's exponent SATURATES on a ladder that brackets the root. The power law cannot represent a rung below the root, where p -> 0 and log p -> -inf, so the fit runs `b` to its ceiling instead. This is a THIRD failure mode, distinct from 'tracks the window': the roots it would have returned (printed above) sit far below the ladder, not just under its bottom rung.
+
+🔴 no down-ladder root resolved; H_pinned and H_real cannot be separated on the fitted channel. The fit-free readout above still stands.
+
+=== offset census: how far below its lowest rung does E2's root land? ===
+   57 resolved fits over prod2 + p5uniform x 4 gate sets
+   offset (lowest rung - root): min 0.0002  median 0.0043  max 0.0323
+   in ladder spacings (0.020): 0.01 to 1.61; 7 of 57 exceed one spacing, 0 exceed two
+   worst: lognormal cv0.20 under the steady gate, 0.0323
+   The ceiling is not the argument -- the RESPONSE below is. A root that always sits within two spacings below a moving window, and moves with it, is a property of the window.
+
+=== the same window move, seen by E4 (isostatic crossing) ===
+   up-ladder   phi_c_E4 = 0.5763 +- 0.0013 (n3)
+   down-ladder phi_c_E4 = 0.5763 +- 0.0013 (n3)
+
+=== window sensitivity: does the root care which END moves? ===
+   TOP moved +0.040 (two rungs added above): root moved +0.0024 on 3 seeds (response 0.06 of the window move)
+   BOTTOM moved +0.020 (quasi-static gate drops the lowest rung): root moved +0.0229 on 3 seeds (response 1.15)
+   -> the root follows the BOTTOM of its window and is nearly blind to the TOP, which is what a local extrapolation does and what a material root does not.
+
+=== VERDICT against PREREG_ROOT_PINNING_2026-09-09.md ===
+   H_pinned  root in [0.4945, 0.5145]      : fail
+   H_real    root in [0.565, 0.575]        : fail
+   H_real    low rungs unjammed (fit-free)   : PASS
+
+   -> SPLIT. The critical state is BRACKETED physically (the low rungs are unjammed) but E2 does not return it under a window move, so the pressure root is the wrong estimator and the quoted phi_c values must be replaced, not merely re-gated.

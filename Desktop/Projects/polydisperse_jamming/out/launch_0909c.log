@@ -1,0 +1,7 @@
+ext05 worker 0 -> /home/cpb/pj/out/ext05_w00.log (pid 8421)
+ext05 worker 1 -> /home/cpb/pj/out/ext05_w01.log (pid 8423)
+ext05 worker 2 -> /home/cpb/pj/out/ext05_w02.log (pid 8425)
+ext05 worker 3 -> /home/cpb/pj/out/ext05_w03.log (pid 8427)
+ext05 worker 4 -> /home/cpb/pj/out/ext05_w04.log (pid 8429)
+ext05 worker 5 -> /home/cpb/pj/out/ext05_w05.log (pid 8431)
+=== ext05 DONE, 0 nonzero exits ===

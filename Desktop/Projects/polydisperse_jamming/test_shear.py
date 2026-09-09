@@ -231,6 +231,62 @@ def test_E4_isostatic_target_depends_on_FRICTION():
     assert frictionless["phi_c_E4"] == pytest.approx(0.6363, abs=1e-3)
 
 
+def test_E4_accepts_a_MEASURED_isostatic_target_and_it_changes_the_answer():
+    """d+1 = 4 is the mu_p -> infinity limit and the production arm runs at mu_p = 0.3,
+    where the measured count is 4.535. A target override that did not move the crossing
+    would be a no-op dressed as a correction, so the size of the move is asserted too:
+    it must equal the target shift divided by the local dz/dphi."""
+    phi = np.linspace(0.56, 0.64, 5)
+    z = np.linspace(3.0, 5.0, 5)                 # dz/dphi = 25 exactly
+    theory = A.e4_z_crossing(phi, z, mu_p=0.3)["phi_c_E4"]
+    measured = A.e4_z_crossing(phi, z, mu_p=0.3, z_iso=4.535,
+                               tag="E4m")["phi_c_E4m"]
+    assert theory == pytest.approx(0.60, abs=1e-9)
+    assert measured - theory == pytest.approx((4.535 - 4.0) / 25.0, rel=1e-9)
+    assert measured > theory
+
+
+def test_Z_ISO_MEASURED_is_the_artifact_not_a_remembered_number():
+    """The same rule as PHI_J_ISO: the table must be the project's own measurement,
+    recomputed here from the committed isotropic records rather than trusted."""
+    import measure_z_iso as M
+
+    recs = M._load_phase2()
+    assert recs, "the committed phase2 records are missing"
+    from collections import defaultdict
+    by = defaultdict(list)
+    for r in recs:
+        by[(r.get("family", "lognormal"), round(float(r["cv"]), 3),
+            round(float(r["mu_p"]), 3), int(r["n_requested"]))].append(r)
+    checked = 0
+    for (fam, cv), tabled in A.Z_ISO_MEASURED.items():
+        rs = by.get((fam, cv, A.Z_ISO_MEASURED_MU, M.N_REQ))
+        assert rs, f"no isotropic ladder for {(fam, cv)}"
+        zi, _n, _p = M._z_iso(rs)
+        assert zi == pytest.approx(tabled, abs=5e-4), (fam, cv, zi, tabled)
+        checked += 1
+    assert checked == len(A.Z_ISO_MEASURED) == 18
+
+
+def test_the_measured_isostatic_count_is_NOT_the_theory_constant_at_mu_0p3():
+    """The finding itself, pinned: if a future run makes 4.0 right, this fails and the
+    docstring, the table and analyse_phase8's default all have to be revisited
+    together."""
+    v = np.array([A.Z_ISO_MEASURED[k] for k in A.Z_ISO_MEASURED], float)
+    assert v.mean() == pytest.approx(4.535, abs=0.01)
+    assert abs(v.mean() - A.Z_ISO_FRICTIONAL) > 0.4
+    # and it DRIFTS with CV on the skewed family, which is what biases the contrast
+    ln = [A.Z_ISO_MEASURED[("lognormal", cv)] for cv in (0.0, 0.5)]
+    assert ln[0] - ln[1] == pytest.approx(0.232, abs=0.01)
+
+
+def test_z_iso_measured_refuses_a_friction_it_was_not_measured_at():
+    assert np.isnan(A.z_iso_measured("lognormal", 0.0, 0.0))
+    assert np.isnan(A.z_iso_measured("lognormal", 0.0, 3.0))
+    assert A.z_iso_measured("lognormal", 0.0, 0.3) == pytest.approx(4.609)
+    assert np.isnan(A.z_iso_measured("no_such_family", 0.0, 0.3))
+
+
 def test_E4_finds_the_isostatic_crossing_and_returns_nan_when_uncrossed():
     phi = np.array([0.55, 0.57, 0.59, 0.61])
     z = np.array([2.0, 3.0, 5.0, 6.0])

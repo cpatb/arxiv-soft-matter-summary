@@ -30,8 +30,8 @@
 
 === A SECOND ANCHOR, FREE: the macroscopic friction must fall with mu_p ===
   mu_s(mu_p = 0)   = 0.1050 +/- 0.0033   (this run)
-  mu_s(mu_p = 0.3) = 0.3589 +/- 0.0095   (phase8_prod2, 9 groups, computed here not typed)
-  ratio            = 3.42x
+  mu_s(mu_p = 0.3) = 0.3542 +/- 0.0123   (phase8_prod2, 9 groups, computed here not typed)
+  ratio            = 3.37x
   Removing particle friction cuts the macroscopic friction by that factor but
   does NOT take it to zero -- a frictionless packing still resists shear
   geometrically. Both the direction and the non-zero floor are what the mu(I)
