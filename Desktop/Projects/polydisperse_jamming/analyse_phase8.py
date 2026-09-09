@@ -44,27 +44,58 @@ it is printed.
 WHAT IS REFUSED
 ---------------
   * a root outside the ladder it was fitted on (extrapolation dressed as measurement)
-  * 🔴 **NOT WHAT THIS LINE USED TO SAY.** It claimed "a group whose cells are not all
-    steady, or not all quasi-static -- excluded cells are PRINTED with their reason,
-    never dropped silently". That was FALSE for the primary estimator: `e1_phi_of_I`
-    does filter on `I <= I_FIT_MAX`, but `_pressure_root` (E2 and E3) and
-    `e4_z_crossing` filter on NOTHING except a pressure floor. The flags were COUNTED
-    into `n_steady`/`n_quasistatic` and printed, and never used to exclude.
-    Found by a numerics reviewer 2026-09-09. MEASURED IMPACT on the headline, prod2:
-
-        as shipped (no gate applied)    dphi_c = +0.0623
-        quasi-static cells only         dphi_c = +0.0444
-        steady cells only               dphi_c = +0.0485
-        both gates applied              dphi_c = +0.0438   (but n = 1 at cv = 0)
-
-    i.e. **the headline falls ~30 %**. The sign and the qualitative conclusion survive;
-    the number does not. The exclusions are also CV-ASYMMETRIC (3/3/1 non-quasi-static
-    at cv = 0/0.2/0.5), which is the direction that inflates the contrast.
-    ⚠ Applying both gates leaves ONE seed at cv = 0, so the fix is NOT simply to switch
-    the gates on -- the run needs more cells at the low-CV end. See NEXT_STEPS_2026-09-09.md
-    item 1. Until then, quote +0.044 to +0.062 and say why.
   * fitting against `phi_target`; every fit uses the REALISED `phi`, because stage B
     lands on the target only to a tolerance and the first version of it did not
+
+THE QUALITY GATES, AND WHY EVERY CONTRAST IS PRINTED FOUR TIMES
+---------------------------------------------------------------
+🔴 Until 2026-09-09 this docstring claimed "a group whose cells are not all steady, or
+not all quasi-static -- excluded cells are PRINTED with their reason, never dropped
+silently". That was FALSE for the primary estimator. `e1_phi_of_I` does filter on
+`I <= I_FIT_MAX`, but `_pressure_root` (E2 and E3) and `e4_z_crossing` filtered on
+NOTHING except a pressure floor. The flags were counted into `n_steady`/`n_quasistatic`,
+printed, and never used to exclude. Found by a numerics reviewer 2026-09-09.
+
+The fix is NOT to switch the gates on, because there is no defensible single answer:
+
+  * the QUASI-STATIC gate removes, at cv = 0 and 0.2, exactly and only the BOTTOM rung
+    of each ladder -- the rung NEAREST the root the fit is extrapolating to. Gating
+    therefore buys admissibility at the cost of a longer extrapolation. Both costs are
+    real and they point opposite ways.
+  * the exclusions are CV-ASYMMETRIC (3/3/1 non-quasi-static cells at cv = 0/0.2/0.5),
+    which is the direction that inflates the contrast.
+
+So `main` computes every contrast under ALL FOUR gate sets and prints them side by side,
+with the per-CV-level `n` beside each, and never reports one alone. Measured on prod2
+as of 2026-09-09 (the numbers this module prints, not typed here from memory -- see
+out/phase8_verdict.txt):
+
+        ungated                         dphi_c = +0.0623
+        quasi-static cells only         dphi_c = +0.0444
+        steady cells only               dphi_c = +0.0485
+        both gates                      dphi_c = +0.0438
+
+**The headline falls ~30 % under any gate.** Sign and qualitative conclusion survive;
+the number does not. **Quote the range +0.044 to +0.062, with the gate named.**
+
+`test_shear.py::test_every_defined_gate_is_applied` fails if a gate is added to `GATES`
+and no estimator path honours it.
+
+THE SHEAR RATE IS NOT A CONTROLLED VARIABLE ALONG THE CV LADDER
+---------------------------------------------------------------
+🔴 Found 2026-09-09, previously unrecorded. `shear.py` sets
+`gdot = gamma_max / (shear_steps * O.dt)` with `O.dt = DT_SAFETY * PWaveTimeStep()`,
+and the P-wave timestep is set by the SMALLEST particle. Widening the size distribution
+shrinks the smallest particle, shrinks `dt`, and therefore RAISES `gdot`. Measured on
+prod2: `gdot` = 3.000e-05 at cv = 0 against 1.437e-04 at cv = 0.5, a factor **4.79**.
+
+Every CV contrast on prod2 is therefore confounded with a shear-rate contrast, and
+`I = gdot d50 sqrt(rho/p)` carries it directly into the quasi-static gate above. This
+module now prints the realised `gdot` per CV level beside every contrast and raises a
+🔴 line when it varies by more than `GDOT_MATCH_TOL` across the levels being contrasted.
+The control run that removes the confound is tagged `ratem` (analyse it with
+`--pattern "phase8_ratem*.jsonl"`), where `shear_steps` was chosen per cell so that
+`gdot` lands on the cv = 0.5 value.
 """
 
 from __future__ import annotations
@@ -101,11 +132,53 @@ PHI_MATCH_TOL = 5.0e-3  # how close two rungs from different CV ladders must be 
                         # only genuine near-coincidences and never two different rungs.
 PHI_GROUP_TOL = 1.0e-3  # how close two SEEDS' realised phi must be to be one rung;
                         # stage B lands within ~1e-4, so this is loose by 10x
+GDOT_MATCH_TOL = 1.20   # how far the realised shear rate may vary across the CV levels
+                        # of a contrast before the contrast is flagged as confounded
+                        # with a rate contrast. The three SEEDS at one CV span at
+                        # most 1.10 (dt is set by the smallest particle DRAWN), so 1.20
+                        # sits just above seed scatter and any ladder-wide move beyond
+                        # it is a systematic. Measured span on prod2: 4.78x.
+
+# --- the quality gates -------------------------------------------------------------
+# Every gate is a named predicate on ONE record. `analyse_group` takes a tuple of gate
+# names and drops every record failing any of them BEFORE any estimator sees the data,
+# and `main` runs every set in GATE_SETS and prints them side by side. Adding an entry
+# here without an estimator honouring it is what went wrong before 2026-09-09; the test
+# `test_shear.py::test_every_defined_gate_is_applied` now fails if that happens again.
+GATES = {
+    "quasistatic": lambda r: bool(r.get("quasistatic", False)),
+    "steady": lambda r: bool(r.get("steady", False)),
+}
+GATE_SETS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("ungated", ()),
+    ("quasistatic", ("quasistatic",)),
+    ("steady", ("steady",)),
+    ("both", ("quasistatic", "steady")),
+)
+
+
+def apply_gates(recs: list[dict], gate_names: tuple[str, ...]) -> list[dict]:
+    """Records passing EVERY named gate. Unknown names raise rather than pass silently."""
+    for g in gate_names:
+        if g not in GATES:
+            raise KeyError(f"unknown gate {g!r}; defined: {sorted(GATES)}")
+    return [r for r in recs if all(GATES[g](r) for g in gate_names)]
 
 
 def load(pattern: str) -> list[dict]:
+    """Records under out/ matching `pattern`, which may be a COMMA-SEPARATED list.
+
+    The list form exists for the rate-matched control, whose arms were run with
+    different `shear_steps` per CV level and therefore live under different tags; a
+    single glob cannot name them. Every record still carries its own `protocol`,
+    `gamma_max`, `shear_steps` and realised `gdot`, all of which `group_key` and the
+    contrast block report, so pooling two patterns cannot hide a knob.
+    """
     recs = []
-    for path in sorted(glob.glob(os.path.join(OUT_DIR, pattern))):
+    paths: list[str] = []
+    for pat in (p.strip() for p in pattern.split(",") if p.strip()):
+        paths.extend(glob.glob(os.path.join(OUT_DIR, pat)))
+    for path in sorted(set(paths)):
         with open(path, encoding="utf-8") as fh:
             for line in fh:
                 line = line.strip()
@@ -242,8 +315,22 @@ def e4_z_crossing(phi: np.ndarray, z: np.ndarray, mu_p: float = 1.0) -> dict:
     return out
 
 
-def analyse_group(recs: list[dict]) -> dict:
+def analyse_group(recs: list[dict], gate_names: tuple[str, ...] = ()) -> dict:
+    """Every estimator for one (family, cv, mu, seed, ...) ladder.
+
+    `gate_names` is applied to the RECORDS, before any estimator sees them, so that
+    every estimator honours the same gate. The unfiltered counts are still reported as
+    `n_steady`/`n_quasistatic` so a reader can see what a gate would cost.
+    """
+    n_before = len(recs)
+    recs = apply_gates(recs, gate_names)
     recs = sorted(recs, key=lambda r: r["phi"])
+    if not recs:
+        return {"n_cells": 0, "n_dropped_by_gate": n_before, "gate": "+".join(gate_names) or "ungated",
+                "phi_lo": np.nan, "phi_hi": np.nan, "n_steady": 0, "n_quasistatic": 0,
+                "p_hat_max": np.nan, "phi_c_E2": np.nan, "phi_c_E3": np.nan,
+                "phi_c_E4": np.nan, "phi_dense_E1": np.nan, "mu_s": np.nan,
+                "b_E2": np.nan, "gdot_mean": np.nan}
     phi = np.array([r["phi"] for r in recs], float)
     p = np.array([r["p_ss_hat"] for r in recs], float)
     ivals = np.array([r["i_ss"] for r in recs], float)
@@ -252,8 +339,12 @@ def analyse_group(recs: list[dict]) -> dict:
 
     res = {"n_cells": len(recs), "phi_lo": float(phi.min()), "phi_hi": float(phi.max()),
            "n_steady": int(sum(bool(r["steady"]) for r in recs)),
-           "n_quasistatic": int(sum(bool(r["quasistatic"]) for r in recs))}
+           "n_quasistatic": int(sum(bool(r["quasistatic"]) for r in recs)),
+           "n_dropped_by_gate": n_before - len(recs),
+           "gate": "+".join(gate_names) or "ungated"}
     res["p_hat_max"] = float(np.nanmax(p))
+    gd = np.array([r.get("gdot", np.nan) for r in recs], float)
+    res["gdot_mean"] = float(np.nanmean(gd)) if np.isfinite(gd).any() else np.nan
     res.update(e1_phi_of_I(phi, ivals))
     res.update(_pressure_root(phi, p, None))
     res.update(_pressure_root(phi, p, 1.0))
@@ -323,64 +414,102 @@ def main() -> int:
           f"selection -- {protos}. Re-run with a --pattern that picks one.")
         p("   (per-cell rows are still printed below, keyed by protocol)")
 
-    rows = []
+    def rows_under(gate_names: tuple[str, ...]) -> list[dict]:
+        out = []
+        for k in sorted(by_g):
+            r = analyse_group(by_g[k], gate_names)
+            fam, cv, mu, seed, n, proto, gmax, steps = k
+            out.append({"family": fam, "cv": cv, "mu_p": mu, "seed": seed,
+                        "n_requested": n, "protocol": proto, "gamma_max": gmax,
+                        "shear_steps": steps, **r})
+        return out
+
+    rows = rows_under(())
     p(f"{'family':10s} {'cv':>5s} {'mu':>5s} {'seed':>4s} {'cells':>5s} "
       f"{'stdy':>4s} {'qs':>3s} {'phi_c_E2*':>9s} {'b_E2':>6s} "
       f"{'phi_c_E3':>9s} {'phi_c_E4':>9s} {'phiDenseE1':>10s} {'mu_s':>6s} "
-      f"{'p_hat_max':>10s}")
+      f"{'p_hat_max':>10s} {'gdot':>10s}")
     p("   (* E2 is PRIMARY; phiDenseE1 is the retracted E1, relabelled -- see docstring)")
-    for k in sorted(by_g):
-        r = analyse_group(by_g[k])
-        fam, cv, mu, seed, n, proto, gmax, steps = k
-        rows.append({"family": fam, "cv": cv, "mu_p": mu, "seed": seed,
-                     "n_requested": n, "protocol": proto, "gamma_max": gmax,
-                     "shear_steps": steps, **r})
-        p(f"{fam:10s} {cv:5.2f} {mu:5.2f} {seed:4d} {r['n_cells']:5d} "
-          f"{r['n_steady']:4d} {r['n_quasistatic']:3d} "
+    p("   (this table is UNGATED; `stdy`/`qs` are how many of `cells` pass each gate)")
+    for r in rows:
+        p(f"{r['family']:10s} {r['cv']:5.2f} {r['mu_p']:5.2f} {r['seed']:4d} "
+          f"{r['n_cells']:5d} {r['n_steady']:4d} {r['n_quasistatic']:3d} "
           f"{r['phi_c_E2']:9.4f} {r.get('b_E2', np.nan):6.2f} "
           f"{r['phi_c_E3']:9.4f} {r['phi_c_E4']:9.4f} "
-          f"{r['phi_dense_E1']:10.4f} {r['mu_s']:6.3f} {r['p_hat_max']:10.3e}")
+          f"{r['phi_dense_E1']:10.4f} {r['mu_s']:6.3f} {r['p_hat_max']:10.3e} "
+          f"{r['gdot_mean']:10.3e}")
 
-    # --- CV contrasts, per family/mu, averaged over seeds ---------------------------
+    # --- CV contrasts, per family/mu, averaged over seeds, UNDER EVERY GATE SET ------
+    # 🔴 Never one alone. See the docstring: the gates were defined and not applied
+    # until 2026-09-09, the headline falls ~30 % under any of them, and there is no
+    # defensible single choice because the quasi-static gate removes precisely the rung
+    # nearest the root. Printing all four is the honest report.
     p()
-    p("=== CV contrasts (mean over seeds, +/- sd) ===")
+    p("=== CV contrasts (mean over seeds, +/- sd) -- ALL FOUR GATE SETS ===")
     if len(protos) > 1:
         p("   SKIPPED -- see the protocol refusal above")
-        rows_for_contrast = []
+        gate_rows = {}
     else:
-        rows_for_contrast = rows
-    for fam in sorted({r["family"] for r in rows_for_contrast}):
-        for mu in sorted({r["mu_p"] for r in rows_for_contrast
-                          if r["family"] == fam}):
-            sub = [r for r in rows_for_contrast
-                   if r["family"] == fam and r["mu_p"] == mu]
-            cvs = sorted({r["cv"] for r in sub})
-            if len(cvs) < 2:
+        gate_rows = {label: rows_under(g) for label, g in GATE_SETS}
+
+    for fam in sorted({r["family"] for r in rows}) if gate_rows else []:
+        for mu in sorted({r["mu_p"] for r in rows if r["family"] == fam}):
+            base = [r for r in rows if r["family"] == fam and r["mu_p"] == mu]
+            if len({r["cv"] for r in base}) < 2:
                 continue
             p(f"-- {fam}, mu_p = {mu}")
+
+            # THE SHEAR RATE IS NOT CONTROLLED ALONG THIS LADDER. Print it, and flag it.
+            gd = {}
+            for cv in sorted({r["cv"] for r in base}):
+                v = [r["gdot_mean"] for r in base
+                     if r["cv"] == cv and np.isfinite(r["gdot_mean"])]
+                if v:
+                    gd[cv] = (float(np.mean(v)), float(np.min(v)), float(np.max(v)))
+            if gd:
+                p("   realised gdot: " + "  ".join(
+                    f"cv{cv:.2f}={m:.3e}" for cv, (m, _, _) in sorted(gd.items())))
+                span = max(m for m, _, _ in gd.values()) / min(
+                    m for m, _, _ in gd.values())
+                if span > GDOT_MATCH_TOL:
+                    p(f"   🔴 SHEAR RATE VARIES {span:.2f}x ACROSS THIS CONTRAST "
+                      f"(bar {GDOT_MATCH_TOL:.2f}x). gdot = gamma_max/(shear_steps*dt) "
+                      f"and dt is set by the SMALLEST particle, so widening the size "
+                      f"distribution raises the rate. Every dphi_c below is confounded "
+                      f"with a rate contrast of this size; the rate-matched control is "
+                      f"--pattern \"phase8_ratem*.jsonl\".")
+                else:
+                    p(f"   shear rate matched to {span:.2f}x across this contrast "
+                      f"(bar {GDOT_MATCH_TOL:.2f}x) -- not a rate confound")
+
             for tag in ("E2", "E3", "E4", "dense_E1"):
-                vals = {}
-                for cv in cvs:
-                    col = ("phi_dense_E1" if tag == "dense_E1"
-                           else f"phi_c_{tag}")
-                    v = [r[col] for r in sub if r["cv"] == cv
-                         and np.isfinite(r[col])]
-                    if v:
-                        vals[cv] = (float(np.mean(v)), float(np.std(v, ddof=1))
-                                    if len(v) > 1 else float("nan"), len(v))
-                if len(vals) < 2:
-                    p(f"   {tag}: too few resolved points ({len(vals)})")
-                    continue
-                txt = "  ".join(f"cv{cv:.2f}={m:.4f}+-{s:.4f}(n{n})"
-                                for cv, (m, s, n) in sorted(vals.items()))
-                lo, hi = min(vals), max(vals)
-                d = vals[hi][0] - vals[lo][0]
-                sd = np.nanmax([vals[hi][1], vals[lo][1]])
-                sig = d / sd if np.isfinite(sd) and sd > 0 else float("nan")
-                slope = d / (hi - lo)
-                p(f"   {tag}: {txt}")
-                p(f"       delta(cv {lo:.2f}->{hi:.2f}) = {d:+.4f}  "
-                  f"({sig:+.1f} sd)   slope s = {slope:+.4f} per unit CV")
+                col = "phi_dense_E1" if tag == "dense_E1" else f"phi_c_{tag}"
+                p(f"   {tag}:")
+                for label, _gates in GATE_SETS:
+                    sub = [r for r in gate_rows[label]
+                           if r["family"] == fam and r["mu_p"] == mu]
+                    vals = {}
+                    for cv in sorted({r["cv"] for r in sub}):
+                        v = [r[col] for r in sub
+                             if r["cv"] == cv and np.isfinite(r[col])]
+                        if v:
+                            vals[cv] = (float(np.mean(v)),
+                                        float(np.std(v, ddof=1)) if len(v) > 1
+                                        else float("nan"), len(v))
+                    if len(vals) < 2:
+                        p(f"      {label:12s} too few resolved CV levels "
+                          f"({len(vals)}) -- no contrast")
+                        continue
+                    lo, hi = min(vals), max(vals)
+                    d = vals[hi][0] - vals[lo][0]
+                    sds = [x for x in (vals[hi][1], vals[lo][1]) if np.isfinite(x)]
+                    sd = max(sds) if sds else float("nan")
+                    sig = d / sd if np.isfinite(sd) and sd > 0 else float("nan")
+                    slope = d / (hi - lo)
+                    txt = " ".join(f"cv{cv:.2f}={m:.4f}+-{s:.4f}(n{n})"
+                                   for cv, (m, s, n) in sorted(vals.items()))
+                    p(f"      {label:12s} d(cv {lo:.2f}->{hi:.2f}) = {d:+.4f} "
+                      f"({sig:+.1f} sd) slope {slope:+.4f}/CV   {txt}")
 
     # --- P3: the CV contrast at MATCHED phi -----------------------------------------
     # The ladders are centred per CV, so they share no exact phi. Where they OVERLAP the
@@ -472,7 +601,13 @@ def main() -> int:
     path = os.path.join(OUT_DIR, args.out)
     with open(path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
-    csv = os.path.join(OUT_DIR, "phase8_summary.csv")
+    # 🔴 The CSV name is derived from --out, not hardcoded. Until 2026-09-09 every run
+    # wrote `phase8_summary.csv` whatever `--out` said, so analysing the P5 uniform arm
+    # silently clobbered the production arm's summary table with uniform-family rows --
+    # a derived artifact overwritten by a different measurement, which is the
+    # sync_back.sh defect of 2026-09-08 in a second place. Found by a numerics reviewer.
+    stem = os.path.splitext(os.path.basename(args.out))[0]
+    csv = os.path.join(OUT_DIR, f"{stem.replace('_verdict', '')}_summary.csv")
     import csv as _csv
     if rows:
         keys = sorted({k for r in rows for k in r})

@@ -271,6 +271,101 @@ def test_duplicate_realised_phi_is_detectable():
     assert sum(1 for a, b in zip(ok, ok[1:]) if abs(a - b) < 1e-4) == 0
 
 
+# =====================================================================================
+# the quality gates -- defined AND applied (the 2026-09-09 defect)
+# =====================================================================================
+def test_every_defined_gate_is_APPLIED_not_merely_counted():
+    """Until 2026-09-09 the gates were counted into `n_steady`/`n_quasistatic` and
+    never used to exclude, so the primary estimator saw every cell whatever the flags
+    said. One gate at a time, on a ladder built so that the flagged rung is the ONLY
+    thing moving the root: a gate that is counted but not applied returns the UNGATED
+    root and this fails.
+
+    The second assertion is the discriminating half. A routine that dropped the rung
+    but did not refit -- or one that dropped every rung -- would pass a bare count.
+    """
+    for gate in sorted(A.GATES):
+        phi = np.array([0.60, 0.62, 0.64, 0.66, 0.68])
+        p = 0.5 * (phi - 0.59)                  # four honest rungs, root at 0.59
+        # one corrupt rung, carrying 5x too LITTLE stress -- which is the direction the
+        # real non-quasi-static bottom rungs sit in (cv = 0 rung 0 reads p = 3.4e-06
+        # against ~2e-04 from the rungs above it)
+        p[0] *= 0.2
+        ivals = np.full_like(phi, 1e-3)
+        z = np.linspace(4.5, 6.5, 5)
+        recs = _recs_from(phi, p, ivals, z)
+        recs[0][gate] = False
+
+        gated = A.analyse_group(recs, (gate,))
+        ungated = A.analyse_group(recs, ())
+        assert gated["n_cells"] == 4, gate
+        assert gated["n_dropped_by_gate"] == 1, gate
+        assert ungated["n_cells"] == 5 and ungated["n_dropped_by_gate"] == 0, gate
+        assert gated["phi_c_E2"] == pytest.approx(0.59, abs=3e-3), gate
+        assert abs(ungated["phi_c_E2"] - gated["phi_c_E2"]) > 5e-3, (
+            f"gate {gate!r} did not move the primary estimator, so it was not applied")
+
+
+def test_GATE_SETS_reports_every_defined_gate_AND_the_ungated_number():
+    """A gate nobody prints is a gate nobody sees, and the ungated number must always
+    be printed beside the gated ones -- the whole point of the 2026-09-09 fix is that
+    neither is quoted alone."""
+    covered = {g for _label, gs in A.GATE_SETS for g in gs}
+    assert covered == set(A.GATES), (
+        f"gates defined but never reported: {set(A.GATES) - covered}")
+    assert ("ungated", ()) in A.GATE_SETS
+    assert ("both", tuple(sorted(A.GATES))) in A.GATE_SETS
+
+
+def test_apply_gates_refuses_an_unknown_gate_name():
+    """An unknown name must raise, not silently admit everything."""
+    with pytest.raises(KeyError):
+        A.apply_gates([], ("no_such_gate",))
+
+
+def test_a_gate_that_empties_the_ladder_returns_nan_not_a_number():
+    phi = np.linspace(0.60, 0.68, 5)
+    recs = _recs_from(phi, 0.5 * (phi - 0.59), np.full_like(phi, 1e-3),
+                      np.linspace(4.5, 6.5, 5), steady=False)
+    res = A.analyse_group(recs, ("steady",))
+    assert res["n_cells"] == 0 and res["n_dropped_by_gate"] == 5
+    assert np.isnan(res["phi_c_E2"])
+
+
+def test_the_prod2_shear_rate_is_NOT_matched_across_the_CV_ladder():
+    """gdot = gamma_max/(shear_steps*dt) and dt is set by the SMALLEST particle, so
+    widening the size distribution RAISES the shear rate. Measured on the committed
+    prod2 records; pinned here so that a future protocol change which fixes it (or
+    makes it worse) cannot pass unnoticed."""
+    import glob
+    import json
+    paths = sorted(glob.glob(os.path.join(HERE, "out", "phase8_prod2_shard*.jsonl")))
+    assert paths, "the committed prod2 records are missing"
+    by_cv = {}
+    for path in paths:
+        with open(path, encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                r = json.loads(line)
+                if "error" in r or not np.isfinite(r.get("gdot", np.nan)):
+                    continue
+                by_cv.setdefault(round(float(r["cv"]), 3), []).append(float(r["gdot"]))
+    assert set(by_cv) == {0.0, 0.2, 0.5}
+    means = {cv: float(np.mean(v)) for cv, v in by_cv.items()}
+    span = max(means.values()) / min(means.values())
+    assert span == pytest.approx(4.78, abs=0.05), means
+    assert span > A.GDOT_MATCH_TOL, (
+        "the rate confound is gone -- if that is real, update this test and the "
+        "analyse_phase8 docstring together")
+    # within one CV level the seeds span at most 1.10 (dt is set by the smallest
+    # particle DRAWN, which is seed-dependent), so the 4.78x across CV is a systematic
+    # several times larger than the seed scatter, not an instance of it
+    for cv, v in by_cv.items():
+        assert max(v) / min(v) < 1.10, (cv, v)
+
+
 def test_analyse_group_counts_the_gates_it_was_given():
     phi = np.linspace(0.56, 0.62, 7)
     p = 0.5 * np.maximum(phi - 0.58, 0) + 1e-12

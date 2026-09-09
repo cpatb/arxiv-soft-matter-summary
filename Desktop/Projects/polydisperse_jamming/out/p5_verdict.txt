@@ -1,23 +1,40 @@
 phase8: 30 records from phase8_p5uniform*.jsonl; 30 usable, 0 errored
 duplicate-state check: 0 offending pairs
 
-family        cv    mu seed cells stdy  qs phi_c_E2*   b_E2  phi_c_E3  phi_c_E4 phiDenseE1   mu_s  p_hat_max
+family        cv    mu seed cells stdy  qs phi_c_E2*   b_E2  phi_c_E3  phi_c_E4 phiDenseE1   mu_s  p_hat_max       gdot
    (* E2 is PRIMARY; phiDenseE1 is the retracted E1, relabelled -- see docstring)
-uniform     0.00  0.30    1     5    3   4    0.5665   3.73       nan       nan     0.6430  0.362  1.643e-02
-uniform     0.00  0.30    2     5    4   4    0.5733   2.22       nan       nan     0.6542  0.353  1.655e-02
-uniform     0.00  0.30    3     5    4   4    0.5672   3.61       nan       nan     0.6435  0.353  1.680e-02
-uniform     0.50  0.30    1     5    5   4    0.5925   1.84    0.5972    0.5987     0.6924  0.342  1.753e-02
-uniform     0.50  0.30    2     5    4   4    0.5911   1.95    0.5971       nan     0.6915  0.349  1.770e-02
-uniform     0.50  0.30    3     5    4   4    0.5878   2.24    0.5969    0.5982     0.6853  0.372  1.741e-02
+   (this table is UNGATED; `stdy`/`qs` are how many of `cells` pass each gate)
+uniform     0.00  0.30    1     5    3   4    0.5665   3.73       nan       nan     0.6430  0.362  1.643e-02  3.000e-05
+uniform     0.00  0.30    2     5    4   4    0.5733   2.22       nan       nan     0.6542  0.353  1.655e-02  3.000e-05
+uniform     0.00  0.30    3     5    4   4    0.5672   3.61       nan       nan     0.6435  0.353  1.680e-02  3.000e-05
+uniform     0.50  0.30    1     5    5   4    0.5925   1.84    0.5972    0.5987     0.6924  0.342  1.753e-02  2.236e-04
+uniform     0.50  0.30    2     5    4   4    0.5911   1.95    0.5971       nan     0.6915  0.349  1.770e-02  2.189e-04
+uniform     0.50  0.30    3     5    4   4    0.5878   2.24    0.5969    0.5982     0.6853  0.372  1.741e-02  2.217e-04
 
-=== CV contrasts (mean over seeds, +/- sd) ===
+=== CV contrasts (mean over seeds, +/- sd) -- ALL FOUR GATE SETS ===
 -- uniform, mu_p = 0.3
-   E2: cv0.00=0.5690+-0.0037(n3)  cv0.50=0.5905+-0.0024(n3)
-       delta(cv 0.00->0.50) = +0.0215  (+5.7 sd)   slope s = +0.0429 per unit CV
-   E3: too few resolved points (1)
-   E4: too few resolved points (1)
-   dense_E1: cv0.00=0.6469+-0.0063(n3)  cv0.50=0.6897+-0.0039(n3)
-       delta(cv 0.00->0.50) = +0.0428  (+6.8 sd)   slope s = +0.0857 per unit CV
+   realised gdot: cv0.00=3.000e-05  cv0.50=2.214e-04
+   🔴 SHEAR RATE VARIES 7.38x ACROSS THIS CONTRAST (bar 1.20x). gdot = gamma_max/(shear_steps*dt) and dt is set by the SMALLEST particle, so widening the size distribution raises the rate. Every dphi_c below is confounded with a rate contrast of this size; the rate-matched control is --pattern "phase8_ratem*.jsonl".
+   E2:
+      ungated      d(cv 0.00->0.50) = +0.0215 (+5.7 sd) slope +0.0429/CV   cv0.00=0.5690+-0.0037(n3) cv0.50=0.5905+-0.0024(n3)
+      quasistatic  d(cv 0.00->0.50) = +0.0143 (+4.2 sd) slope +0.0286/CV   cv0.00=0.5939+-0.0010(n3) cv0.50=0.6081+-0.0034(n3)
+      steady       d(cv 0.00->0.50) = +0.0196 (+1.5 sd) slope +0.0392/CV   cv0.00=0.5838+-0.0127(n2) cv0.50=0.6033+-0.0099(n3)
+      both         d(cv 0.00->0.50) = +0.0154 (+4.5 sd) slope +0.0308/CV   cv0.00=0.5927+-nan(n1) cv0.50=0.6081+-0.0034(n3)
+   E3:
+      ungated      too few resolved CV levels (1) -- no contrast
+      quasistatic  d(cv 0.00->0.50) = +0.0178 (+12.4 sd) slope +0.0355/CV   cv0.00=0.5935+-0.0014(n3) cv0.50=0.6113+-0.0011(n3)
+      steady       d(cv 0.00->0.50) = +0.0144 (+1.7 sd) slope +0.0288/CV   cv0.00=0.5925+-0.0009(n2) cv0.50=0.6068+-0.0084(n3)
+      both         d(cv 0.00->0.50) = +0.0186 (+17.4 sd) slope +0.0373/CV   cv0.00=0.5926+-0.0007(n3) cv0.50=0.6113+-0.0011(n3)
+   E4:
+      ungated      too few resolved CV levels (1) -- no contrast
+      quasistatic  too few resolved CV levels (0) -- no contrast
+      steady       too few resolved CV levels (1) -- no contrast
+      both         too few resolved CV levels (0) -- no contrast
+   dense_E1:
+      ungated      d(cv 0.00->0.50) = +0.0428 (+6.8 sd) slope +0.0857/CV   cv0.00=0.6469+-0.0063(n3) cv0.50=0.6897+-0.0039(n3)
+      quasistatic  d(cv 0.00->0.50) = +0.0428 (+6.8 sd) slope +0.0857/CV   cv0.00=0.6469+-0.0063(n3) cv0.50=0.6897+-0.0039(n3)
+      steady       d(cv 0.00->0.50) = -0.0011 (-0.0 sd) slope -0.0022/CV   cv0.00=0.6908+-0.0317(n3) cv0.50=0.6897+-0.0039(n3)
+      both         d(cv 0.00->0.50) = -0.0011 (-0.0 sd) slope -0.0022/CV   cv0.00=0.6908+-0.0317(n3) cv0.50=0.6897+-0.0039(n3)
 
 === P3: the CV contrast at MATCHED phi (no fit, no estimator) ===
    4 overlapping pairs within 0.005 in phi; ALL are reported
