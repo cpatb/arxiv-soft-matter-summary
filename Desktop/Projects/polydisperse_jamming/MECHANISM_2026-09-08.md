@@ -188,14 +188,36 @@ measured `Δφ_c(CV)`, because the boundary is `φ = φ_c(CV)`.
    φ_needed(CV_high) − φ_needed(CV_low)  =  Δφ_c(CV_low → CV_high)     [DEM, no fit]
 ```
 
-No other candidate mechanism predicts a number here. A viscosity-shift account predicts
-a smooth weakening with no return; a permeability account predicts the increment is
-independent of CV.
+No other candidate mechanism predicts a number here. A permeability account predicts the
+increment is independent of CV. ⚠ A *viscosity* account (M2a, §7a) predicts a smooth
+weakening — but note it also predicts a return on raising `φ`, so E-2 tests the
+**quantitative** prediction (the size of the increment) and not the qualitative one.
 
-⚠ **This is why the evaporation problem is now load-bearing rather than merely annoying.**
-With `dφ_c/dCV` ≈ 0.12, resolving CV\* to ±0.02 needs `φ` held to ±0.0025. The Status
-card records the drop drying on the nozzle at **3.4× that tolerance before impact**. The
-reversal test cannot be run until that is closed.
+**Now that `Δφ_c` is measured, the requirement can be stated properly — and it is looser
+than I first wrote.**
+
+```
+   predicted increment = Δφ_c(CV 0 → 0.5) = 0.0623 ± 0.003   (measured, 20.6 sd)
+```
+
+The experiment must resolve the **difference of two thresholds** against that 0.062. If
+each threshold is located by stepping `φ` in increments of `δ`, each is known to about
+`δ/2` and the difference to `δ/√2`. Testing 0.062 at 3σ therefore needs
+`δ/√2 ≲ 0.021`, i.e.
+
+> **`φ` steps of ≲ 0.03 and drift held below ≈ 0.015** — comfortably coarser than a
+> concentration series already has to be.
+
+🔴 **CORRECTION to what this section said earlier today.** It read "resolving CV\* to
+±0.02 needs `φ` held to ±0.0025 … the reversal test cannot be run until [evaporation] is
+closed". That tolerance belongs to a *different* measurement — **locating CV\*** on the
+CV axis, which does need `φ` to ±0.0025 because `dφ_c/dCV` ≈ 0.12 converts a CV
+resolution into a much tighter `φ` one. **E-2 does not locate CV\***; it measures a
+*shift* of 0.062, and a shift that large needs an order of magnitude less `φ` control.
+E-2 is **not blocked by evaporation**; locating `CV*` is.
+
+⚠ Evaporation still matters here — a drift comparable to the step size blurs each
+threshold — but the bar is ≈ 0.015, not 0.0025.
 
 ### E-3 (the discriminator) — the SIGN of the pore pressure
 
