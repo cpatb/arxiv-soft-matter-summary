@@ -228,6 +228,58 @@ def fig_M3() -> None:
          "phi_c is not commensurable with the experiment's, only its SHIFT is.")
 
 
+def fig_M4() -> None:
+    """p_ss(phi) per CV -- the ladder shifting right, and the matched-phi collapse.
+
+    This is the whole phase-8 result in one panel: three ladders, each the constant-
+    volume grain pressure against packing fraction, displaced to the right as CV rises.
+    The vertical gap where two ladders overlap in phi IS the headline number.
+    """
+    import csv as _csv
+    import json as _json
+    import glob as _glob
+
+    recs = []
+    for f in _glob.glob(os.path.join(HERE, "out", "phase8_prod2*.jsonl")):
+        for line in open(f, encoding="utf-8"):
+            r = _json.loads(line)
+            if "error" not in r:
+                recs.append(r)
+    if not recs:
+        print("  M4 SKIPPED: no phase8_prod2 records")
+        return
+    del _csv
+    rows = []
+    fig, ax = plt.subplots(figsize=(3.6, 2.9), constrained_layout=True)
+    cvs = sorted({round(float(r["cv"]), 3) for r in recs})
+    for cv, c in zip(cvs, COL[1:]):
+        by_phi = {}
+        for r in recs:
+            if round(float(r["cv"]), 3) != cv:
+                continue
+            by_phi.setdefault(round(r["phi"], 3), []).append(r["p_ss_hat"])
+        xs = sorted(by_phi)
+        ys = [float(np.mean(by_phi[x])) for x in xs]
+        es = [float(np.std(by_phi[x], ddof=1)) if len(by_phi[x]) > 1 else 0.0
+              for x in xs]
+        ax.errorbar(xs, ys, yerr=es, color=c, lw=1.3, marker="o", ms=3.5, capsize=2,
+                    label=f"CV = {cv:.1f}")
+        for x, y, e in zip(xs, ys, es):
+            rows.append({"figure": "M4", "cv": cv, "phi": x, "p_ss_hat": y, "sd": e,
+                         "n": len(by_phi[x])})
+    ax.set_yscale("log")          # p_ss spans four decades
+    ax.set_xlabel(r"$\phi$")
+    ax.set_ylabel(r"$\hat p_{ss}$")
+    ax.legend(frameon=False, fontsize=7)
+    save(fig, "M4_pss_vs_phi", rows,
+         "phase8_criticalstate.py, protocol cv-shear-v2, mu_p=0.3, lognormal, 3 seeds. "
+         "Constant-volume steady-state grain pressure against packing fraction, one "
+         "ladder per CV. y is LOG (four decades); x is linear and does NOT start at "
+         "zero because phi is a fraction near 0.6 and the ladders span 0.09 -- the "
+         "range shown is the range occupied. The vertical gap where the CV=0 and "
+         "CV=0.5 ladders overlap in phi is the matched-phi result (5.4x to 43x).")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
@@ -237,6 +289,9 @@ def main() -> int:
     fig_M1()
     fig_M2()
     fig_M3()
+    fig_M4()
+    if os.path.exists(os.path.join(FIG, "M4_pss_vs_phi.png")):
+        names.append("M4_pss_vs_phi")
     if os.path.exists(os.path.join(FIG, "M3_phi_c_vs_CV.png")):
         names.append("M3_phi_c_vs_CV")
     if args.check:
@@ -246,6 +301,7 @@ def main() -> int:
         fig_M1()
         fig_M2()
         fig_M3()
+        fig_M4()
         bad = [n for n in names if _h(n) != before[n]]
         print("BYTE-IDENTICAL REGENERATION: "
               + ("PASSED" if not bad else f"FAILED for {bad}"))

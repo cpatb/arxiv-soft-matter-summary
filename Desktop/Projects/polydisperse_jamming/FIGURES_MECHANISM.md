@@ -118,3 +118,25 @@ commensurable with the `φ_c` = 0.37–0.42 that `impact_stress` uses for cornst
 silica.** Only the *shift* `dφ_c/dCV` transfers, which is why the figure carries no
 `φ` = 0.44 line: an intersection with it would be a `CV*` computed from two numbers that
 are not on the same axis.
+
+---
+
+## M4 — the whole phase-8 result in one panel
+
+`figures/M4_pss_vs_phi.{pdf,png,csv}`
+
+Constant-volume steady-state grain pressure against packing fraction, one ladder per CV,
+`μ_p` = 0.3, lognormal, 3 seeds, protocol `cv-shear-v2`.
+
+**The three ladders are the same curve displaced to the right.** That displacement is
+Δ`φ_c` = +0.062 over CV 0 → 0.5, and it is the measurement the mechanism turns on.
+
+The headline is the **vertical gap where two ladders overlap in `φ`**: near φ = 0.635 the
+CV = 0 ladder sits at `p̂` ≈ 1.1e-2 and the CV = 0.5 ladder at 2.5e-4 — **43×**, at the
+same packing fraction, with the CV = 0.5 point marginally *denser*. Read the range 5.4×
+to 43× rather than one number: the two overlapping rungs tie on `φ` mismatch and the
+ratio grows as `φ_c` is approached.
+
+`y` is **logarithmic** — `p̂_ss` spans four decades. `x` is linear and does **not** start
+at zero, because `φ` is a fraction near 0.6 while the ladders span 0.09; the range shown
+is the range occupied, and it is stated here rather than implied by the axis.

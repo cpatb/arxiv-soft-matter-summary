@@ -252,6 +252,33 @@ the largest run-to-run scatter (a threshold crossed by evaporation drift would).
 
 ---
 
+### E-6 🆕 (added 2026-09-08) — the nozzle test, and it needs no new material either
+
+`drop_size_test.py`. The drainage length is the derivation's largest stated uncertainty
+and E-4 proposed a particle-size ladder to settle it. **Drop diameter tests the same
+length with a different nozzle, and the readings differ in SIGN.**
+
+| reading | `γ̇` | pressure length | boundary velocity |
+|---|---|---|---|
+| (M) macroscopic, = [M26] Eq. 6 | `U₀/D₀` | `D₀` | **`U₀* ∝ D₀`** |
+| (B) band drainage | `U₀/D₀` | `ξ` | **`U₀* ∝ 1/D₀`** |
+| (L) fully localised | `U₀/ξ` | `ξ` | **independent of `D₀`** |
+
+Pinned to the same observation so all three agree at `D₀` = 4 mm, halving the drop to
+2 mm gives **3.6 / 14.4 / 7.2 m/s** — a 4× separation between the extremes, decided by
+the sign, so it depends on neither the band thickness nor the `ID` prefactor nor where
+the boundary sits.
+
+**Run it on cornstarch, not silica** (silica's boundary is 278 m/s, unreachable), and
+score the **regime**, not the spread factor — `We` and `Re` move with `D₀` by themselves,
+so the control is a Newtonian liquid of matched viscosity and density on the same ladder.
+
+🔑 **This is also the second hardware-free separator from the rival M2a**, which has no
+boundary in `(U₀, D₀)` at all. Until now the only clean separator was E-3's
+pore-pressure sign, which needs a transducer.
+
+---
+
 ## 6a. The second simulation leg: the transient, and the strain clock
 
 `poro_impact.py` solves the 1D consolidation problem (Terzaghi + a Reynolds source +
@@ -330,6 +357,7 @@ Three separations, in order of cost:
 | **pore-pressure sign** | overpressure when spreading, suction when arrested | **makes no prediction** (a scalar viscosity has no signed-pressure coupling) | E-3 |
 | **strain history** ⚠ *restated* | undrained **locking**: the suction grows with strain, so the body **stiffens as it spreads** | none — a viscosity is a state function with no strain history | `poro_impact.py` + high-speed footage |
 | **drainage number** | the effect weakens as `Λ` rises; locking is an undrained phenomenon | `Λ` does not appear | E-4's size ladder moves `Λ` by 10² |
+| **a boundary in `(U₀, D₀)`** 🆕 | there is one, and its slope has a sign per drainage reading | **there is none at all** — `φ_m` and `φ` are material properties | **E-6, a nozzle change** |
 | **salt** | strengthens with screening, `∝ a/6λ_D` | `φ_m` is geometric; salt enters only via `σ*` | Paper 1's existing salt series |
 
 ⚠ The **strain-history** row previously read "a strain clock; the effect decays as
