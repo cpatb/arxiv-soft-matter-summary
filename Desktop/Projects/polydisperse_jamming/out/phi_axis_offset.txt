@@ -58,3 +58,43 @@
   bigger change than a sweep but a much smaller one than a new experiment, and
   it would say whether a charge-stabilised pack has a critical state anywhere
   near 0.44.
+
+=== CAN OPTION (2) ACTUALLY CLOSE THE GAP? -- an estimate, not a result ===
+  Charge-stabilised particles never touch, so the pack jams when the EFFECTIVE
+  spheres reach the hard-sphere critical state. For an exponentially screened
+  repulsion the separation at which the repulsive force balances the confining
+  one is h = lambda_D ln(sigma*/sigma), so
+
+      phi_c_eff = phi_c_HS * [ d / (d + 2 h) ]^3
+
+      salt  lam_D[nm]  sigma/sigma*   h [nm]   d_eff/d  phi_c_eff  vs lab phi
+      0 mM         30         1e-02   138.16    1.3454     0.2339    DILATANT
+      0 mM         30         1e-01    69.08    1.1727     0.3531    DILATANT
+      1 mM         10         1e-02    46.05    1.1151     0.4107    DILATANT
+      1 mM         10         1e-01    23.03    1.0576     0.4815 contractive
+     10 mM          3         1e-02    13.82    1.0345     0.5143 contractive
+     10 mM          3         1e-01     6.91    1.0173     0.5410 contractive
+    100 mM          1         1e-02     4.61    1.0115     0.5503 contractive
+    100 mM          1         1e-01     2.30    1.0058     0.5598 contractive
+
+  The range spanned is 0.234 to 0.560, and the
+  lab's phi = 0.44 falls INSIDE it. So the 0.117 gap that friction cannot
+  close IS closable by the double layer, at plausible salt and stress. That is
+  the quantitative content of option (2) and it is the main result of this
+  section.
+
+  ⚠⚠ WHAT THIS IS NOT. Composing this with the Wyart-Cates friction activation
+  is NOT done here, and the naive composition points the WRONG WAY: using the
+  FRICTIONLESS phi_c at low stress and the FRICTIONAL one at high stress makes
+  phi_c_eff RISE with stress, i.e. the material would become MORE contractive as
+  it is loaded harder -- the opposite of shear thickening. Either the composition
+  is wrong or one of the two ingredients is being misapplied, and that is not
+  settled here. Treat the table above as a REACHABILITY estimate -- 'the double
+  layer is big enough to matter' -- and not as a value of phi_c for this
+  material.
+
+  🔑 The estimate does something else worth keeping: it makes phi_c a function of
+  STRESS, which is precisely the critical-state LINE that poro_impact.py's
+  docstring identifies as the closure the transient model is missing. The same
+  gap shows up in two places, which is weak evidence that it is a real gap and
+  not a bookkeeping error.

@@ -144,6 +144,54 @@ def main() -> int:
     p("  it would say whether a charge-stabilised pack has a critical state anywhere")
     p("  near 0.44.")
 
+    # ---------------------------------------------------------------------------------
+    p()
+    p("=== CAN OPTION (2) ACTUALLY CLOSE THE GAP? -- an estimate, not a result ===")
+    p("  Charge-stabilised particles never touch, so the pack jams when the EFFECTIVE")
+    p("  spheres reach the hard-sphere critical state. For an exponentially screened")
+    p("  repulsion the separation at which the repulsive force balances the confining")
+    p("  one is h = lambda_D ln(sigma*/sigma), so")
+    p()
+    p("      phi_c_eff = phi_c_HS * [ d / (d + 2 h) ]^3")
+    p()
+    p(f"  {'salt':>8s} {'lam_D[nm]':>10s} {'sigma/sigma*':>13s} {'h [nm]':>8s} "
+      f"{'d_eff/d':>9s} {'phi_c_eff':>10s} {'vs lab phi':>11s}")
+    d = 800e-9
+    import math as _m
+    reachable = []
+    for lam_nm, salt in ((30.0, "0 mM"), (10.0, "1 mM"), (3.0, "10 mM"),
+                         (1.0, "100 mM")):
+        for ratio in (1e-2, 1e-1):
+            h = lam_nm * 1e-9 * _m.log(1.0 / ratio)
+            d_eff = d + 2 * h
+            pc = phi_c * (d / d_eff) ** 3
+            side = "DILATANT" if PHI_LAB > pc else "contractive"
+            reachable.append(pc)
+            p(f"  {salt:>8s} {lam_nm:10.0f} {ratio:13.0e} {h * 1e9:8.2f} "
+              f"{d_eff / d:9.4f} {pc:10.4f} {side:>11s}")
+    p()
+    p(f"  The range spanned is {min(reachable):.3f} to {max(reachable):.3f}, and the")
+    p(f"  lab's phi = {PHI_LAB} falls INSIDE it. So the 0.117 gap that friction cannot")
+    p("  close IS closable by the double layer, at plausible salt and stress. That is")
+    p("  the quantitative content of option (2) and it is the main result of this")
+    p("  section.")
+    p()
+    p("  ⚠⚠ WHAT THIS IS NOT. Composing this with the Wyart-Cates friction activation")
+    p("  is NOT done here, and the naive composition points the WRONG WAY: using the")
+    p("  FRICTIONLESS phi_c at low stress and the FRICTIONAL one at high stress makes")
+    p("  phi_c_eff RISE with stress, i.e. the material would become MORE contractive as")
+    p("  it is loaded harder -- the opposite of shear thickening. Either the composition")
+    p("  is wrong or one of the two ingredients is being misapplied, and that is not")
+    p("  settled here. Treat the table above as a REACHABILITY estimate -- 'the double")
+    p("  layer is big enough to matter' -- and not as a value of phi_c for this")
+    p("  material.")
+    p()
+    p("  🔑 The estimate does something else worth keeping: it makes phi_c a function of")
+    p("  STRESS, which is precisely the critical-state LINE that poro_impact.py's")
+    p("  docstring identifies as the closure the transient model is missing. The same")
+    p("  gap shows up in two places, which is weak evidence that it is a real gap and")
+    p("  not a bookkeeping error.")
+
     out = os.path.join(HERE, "out", "phi_axis_offset.txt")
     with open(out, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
