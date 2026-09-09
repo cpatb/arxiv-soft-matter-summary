@@ -1,0 +1,34 @@
+=== COVERAGE OF THE EXISTING PER-DROP TABLE (160 drops) ===
+  figures_rebuild_2026-08-16/phase_drops.csv, read-only
+  CONTROL variables only -- no derived flag is read, deliberately.
+
+  axis             n       min       max      span  max/min  levels
+  phi            160     0.420     0.450     0.030     1.07       3
+  u0 [m/s]       121     1.145     5.127     3.982     4.48     104
+  salt [mM]      160     0.000   100.000   100.000      inf       4
+  d0 [mm]        154     2.103     2.608     0.504     1.24     115
+
+=== WHAT THIS DATA CAN AND CANNOT TEST ===
+  E-2 (raise phi until the solid branch returns) must resolve a shift of
+      0.0623 in phi. The table's ENTIRE phi span is 0.030.
+      🔴 2.1x TOO SMALL -- the existing ladder cannot test E-2
+      at all. It needs roughly doubling, to about 0.42-0.56.
+      (and only 3 distinct levels, so the threshold in phi
+      could not be LOCATED even if the span were wide enough.)
+
+  E-6 (drop-size ladder) needs the three drainage readings to separate,
+      which they do over a factor ~2-3 in D0. Here D0 ranges 2.10-2.61 mm,
+      a ratio of 1.24.
+      🔴 That is NOZZLE SCATTER, not a designed axis: the values are
+      near-continuous around a single nominal size. E-6 needs deliberate
+      nozzles, not a re-analysis of what exists.
+
+  THE SALT AXIS IS A REAL LADDER: 4 levels, [np.float64(0.0), np.float64(10.0), np.float64(50.0), np.float64(100.0)].
+      🔑 This is the one designed axis the lab already has, and the mechanism
+      makes predictions on it -- the double-layer estimate in
+      phi_axis_offset.py has phi_c_eff moving from 0.23 to 0.56 across
+      0-100 mM. So the CHEAPEST test of the sign mechanism may be a
+      re-analysis of the existing salt series, not a new experiment.
+      ⚠ Testing that needs a regime classification, and the project records
+      that the `arrested` flag went stale once. Establish which criterion is
+      current BEFORE using it -- this module deliberately does not.

@@ -113,6 +113,24 @@ the evaporation problem, on a tolerance of ±0.0025 in `φ`. That tolerance belo
 one. E-2 measures a **shift of 0.062**, needing an order of magnitude less control —
 `φ` steps ≲0.03, drift <0.015. **E-2 is not blocked; locating CV\* is.**
 
+### What the EXISTING data can already test — checked, `experiment_coverage.py`
+
+Read-only from the per-drop table (**control variables only**; the project records that
+the `arrested` flag once went stale, so no derived flag is used here):
+
+| axis | range | levels | verdict |
+|---|---|---|---|
+| `φ` | 0.420 – 0.450, span **0.030** | 3 | 🔴 **2.1× too small for E-2** (needs 0.062) — and 3 levels cannot locate a threshold anyway |
+| `d₀` | 2.10 – 2.61 mm, ratio **1.24** | ~continuous | 🔴 **nozzle scatter, not a designed axis** — E-6 needs deliberate nozzles |
+| `U₀` | 1.15 – 5.13 m/s, ratio 4.5 | 104 | a real axis |
+| **salt** | **0 / 10 / 50 / 100 mM** | **4** | 🔑 **the one designed ladder the lab already has** |
+
+🔑 **So the cheapest test may be a re-analysis, not a new experiment.** The salt series
+already exists, and the double-layer estimate has `φ_c^eff` moving 0.23 → 0.56 across
+it — i.e. the *sign* of `φ − φ_c` should flip inside data already taken. ⚠ Doing that
+needs a regime classification, and establishing which criterion is current must come
+first.
+
 ## 5. What would kill it
 
 `φ_c` flat in CV (it is not: 20.6 sd); the high-CV spreading state showing pore *suction*;
