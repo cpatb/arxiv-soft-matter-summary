@@ -1,0 +1,49 @@
+=== THE DOUBLE LAYER NARROWS THE EFFECTIVE SIZE DISTRIBUTION ===
+  d_eff = d + 2h with the same h for every particle, so sigma is unchanged and
+  the mean rises: CV_eff = CV * d10 / (d10 + 2h).
+  d10 = 800 nm, h = lambda_D ln(sigma*/sigma)
+
+      salt  lam_D[nm]  sigma/sigma*    h[nm]  CV_eff/CV   CV effect
+      0 mM         30         1e-02   138.16     0.7433      25.7 % weaker
+      0 mM         30         1e-01    69.08     0.8527      14.7 % weaker
+      1 mM         10         1e-02    46.05     0.8968      10.3 % weaker
+      1 mM         10         1e-01    23.03     0.9456       5.4 % weaker
+     10 mM          3         1e-02    13.82     0.9666       3.3 % weaker
+     10 mM          3         1e-01     6.91     0.9830       1.7 % weaker
+    100 mM          1         1e-02     4.61     0.9886       1.1 % weaker
+    100 mM          1         1e-01     2.30     0.9943       0.6 % weaker
+
+  🔑 THE PREDICTION: the SAME powder, at the SAME true CV, should show a
+  measurably SMALLER polydispersity effect at low salt than at high salt.
+
+  Across the lab's own 0-100 mM ladder the factor runs 0.743 to 0.994,
+  i.e. the CV effect is up to 26 % weaker at the low-salt end.
+
+  In the quantity the mechanism actually uses, with the MEASURED slope
+  dphi_c/dCV = 0.1247:
+    true CV   dphi_c at 100 mM   dphi_c at 0 mM   difference
+       0.20             0.0248           0.0185       0.0063
+       0.35             0.0434           0.0324       0.0110
+       0.50             0.0620           0.0463       0.0156
+
+  ⚠ IS IT RESOLVABLE? The seed scatter on dphi_c is 0.003 (out/phase8_verdict.txt),
+  so a difference of 0.008-0.02 is 3-7 seed scatters IN THE SIMULATION. Whether
+  the BENCH can resolve it is a different question and is not answered here.
+
+=== ⚠ AND IT POINTS THE OPPOSITE WAY TO THE OTHER SALT EFFECT ===
+  The same effective-diameter model has screening move phi_c^eff ITSELF from
+  0.23 (0 mM) to 0.56 (100 mM) -- a LARGE effect that pushes the material toward
+  the contractive side as salt is added. The narrowing effect above is a SMALL
+  effect that makes the CV lever weaker as salt is REMOVED. On the salt axis the
+  two are confounded, and separating them needs the CV ladder run AT TWO SALTS
+  rather than a single salt series.
+
+  🔑 That is a concrete experimental design: a 2 x 2 of (CV low/high) x (salt
+  low/high). The interaction term is the narrowing prediction; the salt main
+  effect is the phi_c^eff shift. Neither is identifiable from a one-dimensional
+  ladder, which is what the lab currently has.
+
+  ⚠⚠ PROVENANCE: all of this is a consequence of the effective-diameter ESTIMATE,
+  which phi_axis_offset.py labels a reachability estimate and NOT a value of
+  phi_c. It is a prediction OF THAT MODEL. The measured quantities it uses --
+  dphi_c/dCV = 0.1247 and its 0.003 scatter -- are real.
