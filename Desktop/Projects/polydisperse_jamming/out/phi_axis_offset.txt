@@ -1,0 +1,60 @@
+=== IS THE LAB'S SILICA ABOVE OR BELOW ITS CRITICAL STATE? ===
+  lab working point                       phi   = 0.4400
+  MEASURED critical state (mu_p=0.3, CV=0) phi_c = 0.5695 +/- 0.0030
+  phi - phi_c                                    = -0.1295
+
+  On its face the lab sits 0.13 BELOW the critical state, i.e. permanently
+  CONTRACTIVE -- which would mean the solid-like branch the project exists to
+  explain cannot happen at all. Something in that comparison is wrong, and this
+  module bounds which part.
+
+=== HOW FAR CAN FRICTION PUSH phi_c DOWN? (the only knob a hard-sphere model has)
+  Isotropic phi_J against mu_p, from the project's committed A4 ladder:
+    mu_p     phi_J       sd  drop from mu=0
+    0.00    0.6332   0.0002         +0.0000
+    0.30    0.5745   0.0006         -0.0586
+    1.00    0.5590   0.0012         -0.0741
+    3.00    0.5574   0.0017         -0.0757
+
+  phi_J SATURATES at 0.5574: the step from mu_p = 1 to 3 is -0.0016, i.e. inside the seed scatter. More friction buys
+  essentially nothing. So for FRICTIONAL HARD SPHERES there is a FLOOR.
+
+  floor - lab phi = +0.1174
+  ⇒ 🔑 NO amount of interparticle friction can bring a hard-sphere critical state
+    down to phi = 0.44. The gap that friction cannot close is 0.117 in phi.
+
+=== SO ONE OF THESE MUST BE TRUE, and they are testable against each other ===
+  (1) THE LOCAL phi DURING IMPACT IS MUCH HIGHER THAN THE BULK 0.44.
+      Reaching the measured phi_c needs a local densification of 1.294x,
+      i.e. a volumetric compaction of 23 % at the
+      contact. That is large but it is exactly the Status card's own
+      next-action #2 ('measure the LOCAL phi reached during impact'), and this
+      is the number that measurement has to beat.
+
+  (2) THE MATERIAL IS NOT A FRICTIONAL HARD-SPHERE PACK. 800 nm silica at low
+      salt is charge-stabilised: the particles never touch, and a repulsive
+      network is mechanically rigid at far lower solid fractions than a hard
+      sphere pack. This DEM has NO repulsion, so its phi_c is the wrong
+      quantity for that material, and the floor above does not apply to it.
+
+  (3) THE EXPERIMENT'S phi IS SYSTEMATICALLY LOW. The Status card already
+      records three irreconcilable numbers on this axis (fronts at 0.42-0.45
+      here, first solid patches at 0.47 in Shah et al., a fitted phi_M of
+      0.5176). A controlled simulation now adds a FLOOR to that list rather
+      than a fourth free number.
+
+=== WHAT THIS DOES AND DOES NOT DO TO THE MECHANISM ===
+  DOES NOT TOUCH: the CV CONTRAST. Every claim in MECHANISM_2026-09-08.md is a
+  DIFFERENCE at fixed protocol -- dphi_c/dCV = +0.125, the 43x collapse at
+  matched phi -- and a common offset in the phi axis cancels out of all of them.
+
+  DOES TOUCH: any statement about WHICH SIDE the lab's silica is on, including
+  the critical width CV* and the regime map's assignment of the lab to R1. Those
+  need phi_c for THIS material, which this DEM does not measure, and they should
+  be read as conditional on resolution (1), (2) or (3).
+
+  🔑 AND IT MAKES ONE CHEAP THING URGENT: option (2) is decidable in this same
+  DEM by adding a repulsive contact law and re-running one ladder. That is a
+  bigger change than a sweep but a much smaller one than a new experiment, and
+  it would say whether a charge-stabilised pack has a critical state anywhere
+  near 0.44.

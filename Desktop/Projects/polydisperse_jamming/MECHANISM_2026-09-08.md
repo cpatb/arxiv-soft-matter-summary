@@ -325,6 +325,67 @@ order 1. An anchor that reproduced the code's own convention would not have foun
 
 ---
 
+## 6b. 🔴 The largest quantitative gap: which side of `φ_c` is the lab actually on?
+
+`phi_axis_offset.py` → `out/phi_axis_offset.txt`.
+
+The mechanism turns on the **sign** of `φ − φ_c`. So the first question in applying it to
+the lab's own experiment is which side the lab sits on — and on the numbers now measured,
+the answer is the wrong one:
+
+```
+   lab working point                          φ   = 0.4400
+   MEASURED critical state (μ_p = 0.3, CV = 0) φ_c = 0.5695 ± 0.0030
+   φ − φ_c                                        = −0.1295
+```
+
+Taken at face value the lab is **0.13 below its critical state**, i.e. permanently
+contractive and never solid-like — which contradicts the observation the project exists
+to explain.
+
+**Friction cannot rescue it.** `φ_J` saturates with `μ_p` on the project's own A4 ladder:
+
+| `μ_p` | 0 | 0.3 | 1 | 3 |
+|---|---|---|---|---|
+| `φ_J` | 0.6332 | 0.5745 | 0.5590 | **0.5574** |
+
+The step from `μ_p` = 1 to 3 is −0.0016, inside the seed scatter. So there is a **floor**
+at ≈ 0.557, and
+
+> **No amount of interparticle friction can bring a hard-sphere critical state down to
+> φ = 0.44. The gap friction cannot close is 0.117.**
+
+**One of three things must therefore be true**, and they are distinguishable:
+
+1. **The local `φ` during impact far exceeds the bulk 0.44.** Reaching the measured
+   `φ_c` needs **1.29×** densification, a **23 % volumetric compaction** at the contact.
+   That is the number the Status card's next-action #2 ("measure the local `φ` during
+   impact") has to beat.
+2. **The material is not a frictional hard-sphere pack.** 800 nm silica at low salt is
+   charge-stabilised — the particles never touch — and a repulsive network is rigid at
+   far lower solid fractions than a hard-sphere pack. **This DEM has no repulsion, so its
+   `φ_c` is the wrong quantity for that material and the floor does not apply.**
+3. **The experiment's `φ` axis is systematically low.** The Paper 1 card already records
+   three irreconcilable numbers here (fronts at 0.42–0.45, first solid patches at 0.47 in
+   Shah *et al.*, a fitted `φ_M` of 0.5176). What is new is that a controlled simulation
+   now contributes a **floor** rather than a fourth free number.
+
+**What this does and does not touch.**
+
+- **Untouched: every CV claim.** They are all *differences at fixed protocol* —
+  `dφ_c/dCV` = +0.125, the 43× collapse at matched `φ` — and a common offset in the `φ`
+  axis cancels out of all of them.
+- **Touched: any statement about which side the lab is on**, including the critical width
+  `CV*` and the regime map's assignment of the lab to R1. Those are **conditional** on
+  resolution (1), (2) or (3) and should be read that way.
+
+🔑 **And it makes one cheap thing urgent.** Option (2) is decidable *in this same DEM* by
+adding a repulsive contact law and re-running one ladder — a bigger change than a sweep,
+far smaller than a new experiment, and it would say whether a charge-stabilised pack has
+a critical state anywhere near 0.44.
+
+---
+
 ## 7. What would kill the mechanism outright
 
 | observation | verdict |
