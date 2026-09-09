@@ -10,3 +10,35 @@ FAILED cv=0.5 seed=3 E=10.0: ValueError('cell too small for the periodic collide
 FAILED cv=0.5 seed=3 E=0.1: ValueError('cell too small for the periodic collider at cv=0.5, N=800, truncate=(0.2, 5.0): largest grain d_max=4.298 needs a final cell edge >= 10.745 but phi=0.72 gives 10.520. Use N >= 853, or tighten `truncate`.')
   cv=0.50 pc=1e-03 u0=0.020 J=0.4 -> Zc=1.95 Zl=2.17 ret=1.11 JAMMED Zpk=3.41 COR=+0.0005 spread=0.927 263s
   cv=0.50 pc=1e-03 u0=0.063 J=0.4 -> Zc=1.94 Zl=1.99 ret=1.03 JAMMED Zpk=3.44 COR=+0.0012 spread=0.926 194s
+  cv=0.50 pc=1e-03 u0=0.006 J=0.4 -> Zc=2.01 Zl=2.26 ret=1.12 JAMMED Zpk=3.32 COR=-0.0002 spread=0.931 442s
+  cv=0.50 pc=1e-03 u0=0.020 J=0.4 -> Zc=2.40 Zl=2.61 ret=1.09 JAMMED Zpk=3.50 COR=+0.0005 spread=0.960 425s
+  cv=0.50 pc=1e-03 u0=0.063 J=0.4 -> Zc=2.42 Zl=2.61 ret=1.08 JAMMED Zpk=2.89 COR=+0.0989 spread=2.939 339s
+  cv=0.50 pc=1e-03 u0=0.006 J=0.4 -> Zc=2.30 Zl=2.62 ret=1.14 JAMMED Zpk=2.85 COR=+0.1244 spread=2.506 381s
+  cv=0.50 pc=1e-03 u0=0.020 J=0.4 -> Zc=1.85 Zl=2.10 ret=1.14 JAMMED Zpk=2.04 COR=+0.1509 spread=5.083 293s
+  cv=0.50 pc=1e-03 u0=0.063 J=0.4 -> Zc=2.14 Zl=2.17 ret=1.02 JAMMED Zpk=2.48 COR=+0.0795 spread=3.692 268s
+  cv=0.50 pc=1e-03 u0=0.006 J=0.4 -> Zc=2.35 Zl=2.49 ret=1.06 JAMMED Zpk=2.46 COR=+0.0719 spread=4.194 216s
+
+ran 15 cells in 67.3 min
+
+==============================================================================
+SCALE INVARIANCE OF THE DYNAMIC MODEL
+==============================================================================
+Same dimensionless cell at three stiffnesses, with u0 scaled as sqrt(E) so
+that p_imp/E is held fixed. Invariance requires every observable to agree.
+
+  --- CV = 0.5 ---
+    observable                  E=1           E=10          E=0.1  spread/scatter  verdict
+    z_carved                1.98039        2.09710        2.10749            0.60  invariant
+    z_launch                2.21307        2.27979        2.34068            0.54  invariant
+    z_retention             1.11920        1.08930        1.11169            0.47  invariant [gate verdict same at every E]
+    z_peak                  3.03930        3.08190        2.97784            0.24  invariant
+    cor                     0.03101        0.03606        0.03909            0.14  invariant [rebound verdict same at every E]
+    spread                  1.77014        1.88555        1.90262            0.09  invariant
+    ke_ratio                0.16886        0.11664        0.10135            0.30  invariant [admissibility same at every E]
+
+==============================================================================
+SCALE_INVARIANCE_PASS
+  No observable varies enough with stiffness to change any verdict it
+  feeds, across two decades of E with p_imp/E held fixed. Residual
+  variation of a few percent remains and is printed above; it is smaller
+  than the margin of every threshold in the analysis.

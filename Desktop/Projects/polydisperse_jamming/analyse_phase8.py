@@ -56,6 +56,11 @@ Z_ISO_FRICTIONAL = 4.0  # isostatic contact number for frictional spheres in 3D
                         # mobilised); the project's A3 anchor measures 3.98-4.07 at
                         # mu_p = 3. It is a CONVENTION here, and E4 is reported as such.
 P_FLOOR = 1.0e-9        # below this p_hat the cell carries no measurable stress
+PHI_MATCH_TOL = 5.0e-3  # how close two rungs from different CV ladders must be to count
+                        # as "matched phi". The ladder spacing is 0.020, so this admits
+                        # only genuine near-coincidences and never two different rungs.
+PHI_GROUP_TOL = 1.0e-3  # how close two SEEDS' realised phi must be to be one rung;
+                        # stage B lands within ~1e-4, so this is loose by 10x
 
 
 def load(pattern: str) -> list[dict]:
@@ -140,6 +145,16 @@ def _pressure_root(phi: np.ndarray, p: np.ndarray, pin_b: float | None) -> dict:
     out[f"n_{tag}"] = int(ok.sum())
     if pin_b is None:
         out["b_E2"] = float(popt[2])
+
+    # 🔴 A FIT ON A BOUND IS NOT A MEASUREMENT. Both roots are bounded above by
+    # `lo - 1e-6` (the root must lie below the lowest rung). On the 2026-09-08 prod2 run
+    # E3 returned EXACTLY that bound on 6 of 9 groups -- 0.5745 at cv 0 and 0.5880 at
+    # cv 0.2, i.e. the ladder's own bottom rung, with a seed sd of 0.0000 and an
+    # apparent significance of 161 sd. That is the bound reporting itself, not phi_c.
+    # Flagged and returned as NaN, with the value kept under a `_at_bound` key.
+    if abs(popt[0] - (lo - 1e-6)) < 1e-4:
+        out[f"phi_c_{tag}_at_bound"] = float(popt[0])
+        out[f"phi_c_{tag}"] = np.nan
     return out
 
 
@@ -296,6 +311,76 @@ def main() -> int:
                 p(f"   {tag}: {txt}")
                 p(f"       delta(cv {lo:.2f}->{hi:.2f}) = {d:+.4f}  "
                   f"({sig:+.1f} sd)   slope s = {slope:+.4f} per unit CV")
+
+    # --- P3: the CV contrast at MATCHED phi -----------------------------------------
+    # The ladders are centred per CV, so they share no exact phi. Where they OVERLAP the
+    # nearest rungs are still a direct test of the prediction that raising CV at fixed
+    # volume fraction collapses the undrained grain pressure -- and it needs no fit at
+    # all, so no estimator systematic enters.
+    #
+    # 🔴 EVERY overlapping pair is reported, not the closest one. The first version took
+    # the single nearest pair; at this ladder spacing TWO pairs tie to within rounding
+    # (both 0.0023 apart in phi) and they give 43x and 5.8x, so which one a min() returns
+    # is a floating-point accident. Reporting one of them would have been cherry-picking
+    # by tie-break.
+    p()
+    p("=== P3: the CV contrast at MATCHED phi (no fit, no estimator) ===")
+    if len(protos) > 1:
+        p("   SKIPPED -- more than one protocol present")
+    else:
+        good2 = [r for r in good if np.isfinite(r.get("phi", np.nan))]
+        cvs = sorted({round(float(r["cv"]), 3) for r in good2})
+        pairs = []
+        for i_, c1 in enumerate(cvs):
+            for c2 in cvs[i_ + 1:]:
+                A_ = [r for r in good2 if round(float(r["cv"]), 3) == c1]
+                B_ = [r for r in good2 if round(float(r["cv"]), 3) == c2]
+                seen = set()
+                for ra in A_:
+                    for rb in B_:
+                        d = abs(ra["phi"] - rb["phi"])
+                        if d > PHI_MATCH_TOL:
+                            continue
+                        key = (c1, c2, round(ra["phi"], 4), round(rb["phi"], 4))
+                        if key in seen:
+                            continue
+                        seen.add(key)
+                        pairs.append((c1, c2, ra["phi"], rb["phi"], d))
+        if not pairs:
+            p(f"   no cross-CV phi pair within {PHI_MATCH_TOL}")
+        else:
+            p(f"   {len(pairs)} overlapping pairs within {PHI_MATCH_TOL} in phi; "
+              f"ALL are reported")
+            ratios = []
+            for c1, c2, p1, p2, d in sorted(pairs, key=lambda t: t[2]):
+                A_ = [r for r in good2 if round(float(r["cv"]), 3) == c1
+                      and abs(r["phi"] - p1) < PHI_GROUP_TOL]
+                B_ = [r for r in good2 if round(float(r["cv"]), 3) == c2
+                      and abs(r["phi"] - p2) < PHI_GROUP_TOL]
+                pa = np.array([r["p_ss_hat"] for r in A_], float)
+                pb = np.array([r["p_ss_hat"] for r in B_], float)
+                za = np.array([r["z_nr_ss"] for r in A_], float)
+                zb = np.array([r["z_nr_ss"] for r in B_], float)
+                ra_ = np.array([r["rattler_frac_ss"] for r in A_], float)
+                rb_ = np.array([r["rattler_frac_ss"] for r in B_], float)
+                sd = max(pa.std(ddof=1) if len(pa) > 1 else 0.0,
+                         pb.std(ddof=1) if len(pb) > 1 else 0.0)
+                ratio = pa.mean() / pb.mean()
+                ratios.append(ratio)
+                nsd = abs(pa.mean() - pb.mean()) / sd if sd > 0 else float("inf")
+                p(f"   phi {p1:.5f}(cv{c1:.2f}, n{len(pa)}) vs {p2:.5f}"
+                  f"(cv{c2:.2f}, n{len(pb)}), mismatch {d:.5f}")
+                p(f"      p_ss {pa.mean():.4e} -> {pb.mean():.4e}  "
+                  f"ratio {ratio:6.1f}x  ({nsd:.0f} sd)   "
+                  f"Z_nr {za.mean():.2f} -> {zb.mean():.2f}   "
+                  f"rattlers {ra_.mean():.3f} -> {rb_.mean():.3f}")
+                if p2 > p1:
+                    p("      (the higher-CV cell is the DENSER of the two, which works "
+                      "AGAINST the effect: conservative)")
+            if len(ratios) > 1:
+                p(f"   spread across pairs: {min(ratios):.1f}x to {max(ratios):.1f}x "
+                  f"-- a factor {max(ratios) / min(ratios):.1f} between pairs that "
+                  f"differ only in which rung they sit on. Quote the RANGE.")
 
     path = os.path.join(OUT_DIR, args.out)
     with open(path, "w", encoding="utf-8") as fh:

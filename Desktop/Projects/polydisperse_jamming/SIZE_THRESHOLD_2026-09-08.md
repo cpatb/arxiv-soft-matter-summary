@@ -1,256 +1,200 @@
-# Is there a critical particle size? — the hypothesis, enumerated and narrowed
+# Is there a critical particle size? — the hypothesis, and what survives a referee
 
 **2026-09-08.** Author's hypothesis, in his words: *"maybe there is just a size threshold
 after which you transition from solid-like to inertial-dilatant thickening."*
 
-Everything below is printed by `size_threshold.py` into `out/size_threshold.txt`; no
-number here is typed by hand. Companion: `MECHANISM_2026-09-08.md` and
-`derivations/dilatancy_sign_mechanism.md`.
+Everything below is printed by `size_threshold.py` into `out/size_threshold.txt`.
+Companions: `MECHANISM_2026-09-08.md`, `derivations/dilatancy_sign_mechanism.md`.
+
+> ## 🔴 THE FIRST VERSION OF THIS PAGE WAS WRONG AND IS WITHDRAWN
+>
+> It claimed "of seven candidate thresholds exactly one survives", and that headline was
+> an artefact. It computed a single critical size `a*` **at the lab silica's operating
+> point** and then sorted **cornstarch** with it — but `a*` depends on `φ_c`, `D₀` and
+> `ρ`, and [M26]'s cornstarch differs in all three. Recomputed at cornstarch's own point,
+> `a*` = **15.4 µm** and cornstarch falls **below** its own threshold, so the "survivor"
+> does not separate the two materials at all.
+>
+> This is the project's own standing lesson — *never grade a knob at one setting of the
+> knob it interacts with* — committed again, one day after it was written down. Found by
+> `physics-referee`, confirmed independently before acting.
+>
+> Also withdrawn: the ID-boundary "inference" (§3, an identity), and the size **window**
+> as a quantitative claim (§4, thinner than its own error bars).
 
 ---
 
-## Result box
+## 1. What replaces it
 
-> **The hypothesis is not one hypothesis — it is seven**, because a size threshold is
-> exactly what a critical value of a size-dependent dimensionless group *is*. Enumerated
-> and filtered on two requirements (does it separate 800 nm silica from 10 µm
-> cornstarch, and does it have the right *polarity*), **six die and one survives**:
->
-> | | candidate | `a*` [µm] | verdict |
-> |---|---|---|---|
-> | **T1** | **macroscopic drainage, `ID = 6.6e-3`** | **7.66** | **SURVIVES** |
-> | T1′ | macroscopic drainage, `ID = 1` | 94.3 | both materials below |
-> | T2 | grain-scale drainage | — | predicts *no* threshold |
-> | T3 | dilatant strengthening capacity | 1.3–4.0 | **reverse polarity** |
-> | T4 | Brownian, `Pe = 1` | 0.113 | both materials above |
-> | T6 | Stokes, `St = 1` | 61.2 | both below |
-> | T8 | capillary / granulation | 143 | both below |
-> | T7 | grain inertia, `I = 1` | 2121 | both below |
->
-> And the sharpened version is better than the original: because the two live
-> size-dependent effects grow at **different rates and point opposite ways** —
-> strengthening capacity as `a¹`, drainage as `a²` — **the solid-like state is a WINDOW
-> in particle size, not a half-line**, with a lower edge set by **salt** and an upper
-> edge set by **velocity**.
+A size threshold is what a critical value of a size-dependent dimensionless group *is*,
+so the hypothesis is a family with one member per such group. The repair is to stop
+converting to a critical size across materials, because that conversion smuggles in one
+material's operating point. Two statements, of which only the second involves an `a*`:
 
----
+**(A) Cross-material — compare the GROUPS, not a size.** Evaluate every size-dependent
+group at each material's own parameters:
 
-## 1. Why "a threshold" has to be turned into "which group"
+| group | silica @ 3 m/s | starch @ 0.5 | starch @ 7.2 | separated? |
+|---|---|---|---|---|
+| `ID` drainage, `ℓ = D₀` | 7.19e-05 | 4.64e-04 | 6.67e-03 | **yes** |
+| `ID` drainage, `ℓ = 10a` | 7.03 | 0.742 | 10.7 | no |
+| `p_dil^max/P_conf` capacity | 0.202 | — (Hertzian) | — | n/a |
+| `Pe` Brownian | 358 | 7.3e4 | 1.0e6 | yes |
+| `St` | 1.71e-04 | 2.15e-03 | 0.031 | yes |
+| `ρU₀²/p_capillary` | 5.6e-03 | 1.7e-03 | 0.343 | no |
+| `I` inertial number | 3.8e-04 | 2.8e-03 | 2.8e-03 | yes |
+| **`De = τ_p/τ_imp`** | 3.6e+05 | — (Hertzian) | — | n/a |
+| **`τ_χ/τ_imp`** | **1.06** | 1.5e-03 | 0.021 | yes |
+| **`Pe_grav`** | 0.260 | 3489 | 3489 | yes |
+| **`Re_p`** | 1.1e-03 | 0.015 | 0.222 | yes |
+| **`λ_D/r_throat`** | **0.484** | 0.039 | 0.039 | yes |
 
-Any statement of the form "above size `a*` the behaviour changes" is a statement that
-some dimensionless group crosses a critical value, and the group is what carries the
-content: two thresholds can sit at the same size and still be told apart, because they
-move differently when you turn a knob. So the useful question is not *is there a
-threshold* but *which group sets it*, and the way to answer it is to enumerate every
-group in the problem whose value depends on `a`, compute where each puts `a*`, and ask
-which ones the observation can already distinguish.
+The last five were **missing from v1's enumeration** and were added on the referee's
+list. Two of them matter:
 
-Seven were found. Each formula is an identity, a group already implemented in this
-repo's own modules, or a textbook definition, and every convention that has variants
-(Péclet, Stokes) is stated at the point of use because the variants move `a*` by up to
-~2×.
+- **`τ_χ/τ_imp` = 1.06 for the lab's silica** — Jérôme's own validity condition for
+  treating the pore fluid as incompressible, and the lab's particle sits *exactly on it*
+  while cornstarch is two decades clear. `inertial_dilatant.py` calls this "the
+  size-dependent statement that survives review", and v1 did not enumerate it.
+- **`λ_D/r_throat` = 0.484 at nominal zero salt** — the double layer fills half the pore
+  throat, which is why §5 below retracts the claim that the drainage groups are
+  salt-blind.
 
-## 2. The two filters
+**(B) Within one material — `a*` is well posed**, because a ladder that holds chemistry,
+`φ`, `φ_c`, `D₀` and `U₀` fixed and moves only `a` has no other operating point to
+smuggle. **That is exactly the experiment being proposed (E-4)**, so the concept survives
+precisely where it is going to be used, and nowhere else.
 
-**Filter 1 — separation.** The observation to be explained is that 800 nm silica is
-solid-like and 10 µm cornstarch reaches the inertial-dilatant mode. A candidate must
-therefore put `a*` *between* them. Four candidates fail here: T4 (0.113 µm — both
-materials are already non-Brownian at impact strain rates), T6 (61 µm), T8 (143 µm) and
-T7 (2121 µm) all leave both materials on the same side, so none of them can be what
-distinguishes the two.
+## 2. What can still be said about silica vs cornstarch — without any `a*`
 
-**Filter 2 — polarity, and this is the one that does real work.** A candidate must have
-`a > a*` on the **inertial** side. **T3 does not.** Its criterion (`PORE_PHYSICS.md`
-Eq. 9.1) is
+[M26] observe the regime transition somewhere inside their own velocity range, so the
+boundary lies between the `ID` their cornstarch has at the bottom and the top of it:
 
 ```
-   p_dil^max / P_conf = (a / 6λ_D)(Δφ/φ)
+   ID_boundary ∈ [4.64e-04, 6.67e-03]
+   lab silica  =  7.19e-05
 ```
 
-which *grows* with size, so above `a*_T3` frustrated dilation is *more* able to
-strengthen the pack — bigger grains are **more solid-like**, the reverse of the
-hypothesis. T3 is a real criterion and it is excluded as *this* threshold.
+**Silica sits 6.4× below even the bottom of that interval**, at the lab's `φ`, `D₀` and
+3 m/s.
 
-T2 is excluded by construction: if the drainage length scales with the grain, every
-factor of `a` cancels out of `ID` and there is **no threshold at all**. That is a
-falsifiable prediction rather than a missing number, and §5 says how to test it.
+> On the drainage reading, the lab's silica **cannot reach the inertial regime by
+> velocity alone** at the lab's drop size. It would need a larger particle or a larger
+> drop.
 
-**One survivor: T1**, macroscopic drainage, at `a* = 7.66 µm`.
+That is the defensible version of the author's hypothesis, and it needs no critical size.
 
-## 3. What the surviving candidate costs: the ID boundary
+⚠ **The v1 claim that the hypothesis "independently requires" an ID boundary near 6.6e-3
+is withdrawn as circular.** The bracket was algebraically `ID(silica)` to
+`ID(cornstarch)` at the lab's parameters, and 6.6e-3 is itself just `ID(cornstarch)` at
+the top of [M26]'s velocity range — computed here as **6.675e-03**. Saying "the bracket
+contains 6.6e-3" restates where 6.6e-3 came from.
 
-`a*` goes as `√(ID_boundary)`, and at `ID_boundary = 1` it is **94.3 µm** — which puts
-cornstarch on the *solid* side and contradicts [M26]'s own observation. For the threshold
-to fall between the two materials,
+## 3. The window: structure survives, numbers do not
 
-```
-   ID_boundary ∈ [7.2e-5, 1.1e-2]
-```
+Two criteria grow with size at different rates and point opposite ways — capacity as
+`a¹`, drainage as `a²` — so *in structure* frustrated dilation can hold a drop solid only
+in a band. **That structure is sound.** The numbers are not:
 
-which brackets the **6.6e-3** that [M26]'s Eq. 6 returns at their own Regime-2/3
-transition, and **excludes `ID = 1` by 89×**.
+- v1 quoted the band as [3.96, 7.66] µm, a factor **1.94**.
+- `PORE_PHYSICS.md` §6.3 states the affine `K_p` is an **upper bound** and real packings
+  measure **2–5× softer**. `K_p` sets the lower edge, so the lower edge is a *lower
+  bound* and moves up by the same factor: **at 2× the window is already empty.**
+- The upper edge is calibrated (through the ID boundary) and the lower edge is not, so
+  the *ratio* carries the whole O(10)–O(100) prefactor freedom `inertial_dilatant.py`
+  declares in its own docstring.
 
-⚠ **This is an inference *from* the hypothesis, not evidence *for* it.** It says only
-that the hypothesis is self-consistent on the smaller calibration and not on the nominal
-one. But it does bear on the Status card's standing landmine (§8, "`ID` Eq. 6 does not
-evaluate to 1 at the boundary it is drawn at, and a co-author can settle it"): the
-size-threshold reading independently requires the smaller value.
+**A 1.94× band cannot be asserted against a ≥2× one-sided uncertainty on one of its
+edges.** The window is withdrawn as a quantitative claim and with it the sorting of any
+material by it — including v1's §4(b) conclusion that silica's solid branch "has to be"
+frictional jamming, which was an elimination from a list that never enumerated the
+frictional-onset group.
 
-## 4. 🔑 The sharpened hypothesis: a window, not a threshold
+⚠ A separate error in the same section: v1 computed the lower edge for **cornstarch**
+from the double-layer contact law. Cornstarch is **Hertzian** (`PORE_PHYSICS.md` §6.4),
+where `K_p ∝ E^(2/3)P^(1/3)` carries **no particle size at all**, so that criterion has no
+lower edge for cornstarch and both cornstarch rows of v1's window table were computed
+with the wrong law. (This project had already written the caveat down — "`a¹` belongs to
+the double layer" — and then violated it two sections later.)
 
-T1 and T3 are not redundant. Both grow with size and they grow at **different rates**:
+## 4. The salt discriminator is broken
 
-| | criterion | scaling | meaning of "above" |
+v1's headline experimental design rested on "the capacity criterion is the **only**
+candidate that moves with salt". **False.** `PORE_PHYSICS.md` §5.2 — cited by v1 — says
+the double layer occupies the pore throat at low salt, and at 800 nm:
+
+| salt | `λ_D` | `λ_D/r_throat` |
+|---|---|---|
+| 0 mM | 30 nm | **0.484** |
+| 1 mM | 10 nm | 0.161 |
+| 10 mM | 3 nm | 0.048 |
+| 100 mM | 1 nm | 0.016 |
+
+So the permeability that the drainage groups are built on is itself salt-dependent at the
+small end, by an order-unity factor. A salt ladder moves the drainage groups too — and,
+separately, moves `σ*`, i.e. the frictional mechanism. **The salt axis is not a clean
+discriminator.** What survives is that the candidates still scale differently with
+**velocity** (`U₀^(-1/2)`, `U₀^(-1/3)`, `U₀^(-2)`, none), so a size × velocity ladder
+retains discriminating power.
+
+## 5. The CV question — the one part that got stronger
+
+On a pure size threshold, width acts by moving the moment the threshold reads.
+Carman–Kozeny's length is the **Sauter** mean and `d₃₂/d₁₀ = (1+CV²)²` for a lognormal at
+fixed number mean, so crossing `a*` needs a specific CV. **The algebra was checked and is
+exact, and the Sauter mean is the right moment** (CK's length is *defined* by
+`S_v = 6/d₃₂`).
+
+But v1 held `φ_c` fixed while doing it, and this project has now **measured** that `φ_c`
+rises with CV (`MECHANISM_2026-09-08.md` §8: +0.058 to +0.062 over CV 0 → 0.5). Since
+`a* ∝ √(φ − φ_c)`, broadening moves the *threshold down* as well as moving `d₃₂` up, and
+the two push the same way:
+
+| `φ_c` | `Δφ` | `a*` (silica ladder) | CV needed via `d₃₂` |
 |---|---|---|---|
-| **T3** | strengthening capacity | `a¹` | dilatancy *can* raise the particle pressure |
-| **T1** | drainage | `a²` | the pore fluid keeps up, so it *cannot* |
+| 0.420 | 0.0200 | 7.71 µm | **1.45** (v1's number) |
+| 0.425 | 0.0150 | 6.65 µm | 1.37 |
+| 0.430 | 0.0100 | 5.40 µm | 1.26 |
+| 0.435 | 0.0050 | 3.80 µm | **1.09** |
 
-Below T3 dilatancy has nothing to give; above T1 the fluid drains and it does not matter
-what it had. **Frustrated dilation can hold a drop solid only in the band between them.**
+*(`a*` here targets `ID` = 6.675e-03, cornstarch's own value at the top of [M26]'s
+velocity range, rather than the rounded 6.6e-3 — which is why it reads 7.71 and not the
+7.66 v1 quoted.)*
 
-| salt | `U₀` [m/s] | lower edge (T3) | upper edge (T1) | inside the window |
-|---|---|---|---|---|
-| 0 mM | 0.5 | 3.96 µm | 18.8 µm | **cornstarch** |
-| 0 mM | 3.0 | 3.96 µm | 7.66 µm | *neither* |
-| 1 mM | 0.5 | 1.32 µm | 18.8 µm | **cornstarch** |
-| 1 mM | 3.0 | 1.32 µm | 7.66 µm | *neither* |
-| 100 mM | 0.5 | 0.13 µm | 18.8 µm | **silica + cornstarch** |
-| 100 mM | 3.0 | 0.13 µm | 7.66 µm | **silica** |
+A `φ_c` shift of +0.015 — a quarter of what the DEM measured at CV = 0.5 — takes the
+requirement from 1.45 to ~1.1. **So v1's bold "CV ≈ 1.45 needed" is an upper bound that
+assumed a fixed `φ_c`; the honest range is ~1.0–1.5**, and the two CV routes are not
+independent.
 
-Three consequences, each on an axis the lab already turns:
+⚠ **And the provenance of "800 nm" is unstated.** Whether it is a *number* mean is not on
+record; `psd.py` notes laser diffraction reports `d₄₃`. If 800 nm is a volume or intensity
+mean then `d₃₂` **falls** as CV rises and this route reverses sign. That is Q1 on the
+Status card, and it remains the measurement that decides the most here.
 
-**(a) [M26]'s re-entrant transition is recovered as a window edge sweeping past a fixed
-particle size.** Cornstarch at 10 µm is *inside* the window at 0.5 m/s and *outside the
-top* by 3 m/s, because the upper edge falls as `U₀^(-1/2)`. That is their velocity-driven
-Regime 2 → Regime 3 transition, obtained here without fitting anything to it.
-
-**(b) ⚠ 800 nm silica sits BELOW the window at 0 and 1 mM salt — so its solid-like branch,
-which is observed, is probably not frustrated dilation at all.** It would have to be
-frictional / repulsive (Wyart–Cates) jamming. If that holds, **silica and cornstarch are
-solid for different reasons**, which matters well beyond this question: it is a caution
-against reading silica as a small-particle model of cornstarch. Note the honest limit of
-this claim — the criterion says the poroelastic channel is *weak* there
-(`p_dil^max/P_conf` = 0.20 at 0 mM), not that it is zero.
-
-**(c) The lower edge crosses 800 nm inside the lab's own salt series.** `a*_T3 = 6λ_D φ/Δφ`
-falls with screening: 3.96 µm at nominal zero salt, 1.32 µm at 1 mM, 0.40 µm at 10 mM,
-0.13 µm at 100 mM. **So the same silica should enter the dilatancy window somewhere
-between 1 and 10 mM** — no new particles, no new apparatus, and Paper 1 already sweeps
-this axis for a different reason.
-
-## 5. What separates the candidates — the experiment
-
-This is the payoff of enumerating rather than picking. The thresholds sit at different
-sizes, but more usefully they **move differently**:
-
-| candidate | vs `U₀` | vs salt | vs `Δφ` | vs `D₀` |
-|---|---|---|---|---|
-| T1 drainage (`ℓ = D₀`) | `U₀^(-1/2)` | none | `Δφ^(+1/2)` | `D₀^(+1/2)` |
-| T2 drainage (`ℓ ∝ a`) | *no threshold* | — | — | — |
-| T3 strengthening | **none** | **`∝ λ_D`** | `Δφ^(-1)` | none |
-| T4 Brownian | `U₀^(-1/3)` | none | none | `D₀^(+1/3)` |
-| T6 Stokes | `U₀^(-1/2)` | none | none | `D₀^(+1/2)` |
-| T8 capillary | `U₀^(-2)` | none | none | none |
-
-> **T3 is the only candidate that moves with salt and the only one that does not move
-> with velocity.** Every other finite threshold falls with `U₀` and is salt-blind.
-
-So the discriminating experiment is a **size ladder crossed with a velocity ladder and a
-salt ladder**, and the readings are unambiguous:
-
-- `a*` falls as `U₀^(-1/2)` and ignores salt ⇒ **T1**, drainage.
-- `a*` ignores `U₀` and tracks `λ_D` ⇒ **T3**, strengthening capacity.
-- **no threshold anywhere on the size axis** ⇒ **T2**, grain-scale drainage — which
-  would also settle the drainage-length question that `derivations/…` §6 calls the
-  largest single uncertainty in the lab's use of `ID`.
-- `Δφ` is a second, independent separator with the **opposite sign** in the two live
-  candidates: raising `φ` *raises* `a*_T1` (7.66 → 16.5 µm from φ = 0.44 to 0.48) and
-  *lowers* `a*_T3` (3.96 → 1.44 µm). A φ ladder alone therefore widens the window from
-  one end and narrows it from the other.
-
-## 6. Does a pure size threshold explain the **CV** observation?
-
-On a pure size threshold, width acts only by moving the moment the threshold reads. T1
-reads Carman–Kozeny, whose length is the **Sauter** mean, and for a lognormal at fixed
-number mean `d₃₂/d₁₀ = (1+CV²)²`. So crossing `a*` from a given `d₁₀` requires a specific
-CV — a number, not a story:
-
-| `d₁₀` [µm] | `d₃₂/d₁₀` needed to reach 7.66 µm | CV needed |
-|---|---|---|
-| 0.8 | 9.58 | **1.45** |
-| 1.5 | 5.11 | **1.12** |
-| 3.0 | 2.55 | **0.77** |
-
-**This is the sharpest thing on the page for the bench.** At the lab's 800 nm number-mean
-a pure size threshold needs **CV ≈ 1.45** to carry a sample across — far broader than the
-CV 0.2–0.5 this project has simulated, and broader than most Stöber batches.
-
-> **If the author's two samples have CV below about 1, a pure size threshold acting
-> through `d₃₂` cannot carry them across T1 and something else must be moving as well.
-> If they are broader than that, it can.**
-
-Which makes the **raw size distributions of the two bench samples** — already Q1 on the
-Status card, still open — the measurement that decides it. Not a new experiment: a
-measurement of samples that already exist.
-
-### 6a. But CV has a second, much stronger route — inside this same framework
-
-Both window edges are functions of `Δφ = φ − φ_c`, and CV raises `φ_c`, so CV **shrinks
-`Δφ`** — and the two edges then move *toward each other*:
-
-```
-   lower edge  T3 ∝ Δφ^(-1)     RISES as Δφ falls
-   upper edge  T1 ∝ Δφ^(+1/2)   FALLS as Δφ falls
-```
-
-so there is a CV at which the window **closes** and no particle size at all can be held
-solid by frustrated dilation. Solving `T3 = T1`:
-
-| CV | `Δφ` | T3 [µm] | T1 [µm] | window |
-|---|---|---|---|---|
-| 0.00 | 0.0200 | 3.96 | 7.66 | open |
-| 0.04 | 0.0150 | 5.27 | 6.61 | open |
-| **0.057** | **0.0129** | **6.13** | **6.13** | **closes** |
-| 0.08 | 0.0100 | 7.90 | 5.38 | closed |
-
-⚠⚠ **Provisional and very sensitive**: both `φ_c` = 0.42 and the slope `dφ_c/dCV` are
-placeholders (the slope is the *isotropic* `φ_J` slope standing in for the
-*critical-state* one, which is exactly what the phase-8 sweep is measuring). The closure
-CV goes as 1/slope. **What is not provisional is the sign of each edge's response**,
-which is algebra.
-
-**🔑 The two CV routes differ by 25×.**
-
-| route | what CV does | CV needed |
-|---|---|---|
-| through `d₃₂` (permeability) | moves the *sample* across a fixed edge | **1.45** |
-| through `φ_c` (packing) | moves the *edges* onto each other | **0.057** |
-
-So **even inside the author's own size-threshold framing, the dominant CV channel is the
-packing one, not the permeability one** — which is the same ordering
-`derivations/dilatancy_sign_mechanism.md` Step 8 reaches from the two terms of
-`d ln ID/dCV`, arrived at here by a completely different route.
-
-### 6b. The two framings are not rivals
-
-The dilatancy-sign mechanism says CV raises `φ_c` until `φ − φ_c` changes **sign** and the
-pack turns contractive. This page says CV shrinks `φ − φ_c` until the size **window**
-closes. They are two readings of one shrinking gap, and both end the solid-like branch at
-a critical **width**. The author's size hypothesis and the `φ_c` mechanism are the same
-statement on two different axes — which is why the phase-8 measurement of `φ_c(CV)`
-serves both.
-
-## 7. What would kill this
+## 6. What would kill what is left
 
 | observation | verdict |
 |---|---|
-| `a*` measured, and it does **not** move with `U₀` | T1 dead; T3 or something unlisted |
-| `a*` measured, and it moves with **salt** | T1 dead |
-| no threshold found anywhere over a decade of `a` | T1 dead, T2 alive, and `ID`'s `a²` scaling goes with it |
-| the two bench samples have CV ≪ 1 and still switch regime | a *pure* size threshold cannot be the whole story |
-| silica shows a pore **suction** signature at 0 mM salt | §4(b) wrong — frustrated dilation is acting below where the criterion says it can |
+| a critical size found in a single-material ladder, and it does **not** move with `U₀` | the drainage reading is dead |
+| no threshold found anywhere over a decade of `a` | drainage dead, grain-scale drainage alive, and `ID`'s `a²` scaling goes with it |
+| the two bench samples have CV ≪ 1 and still switch regime | a *pure* size threshold is not the whole story |
+| `τ_χ/τ_imp` ≈ 1 turns out to matter | the incompressible-pore-fluid assumption fails for the lab's own particle, and every group above is affected |
 
-## 8. Referee
+## 7. Referee
 
-*(pending — `physics-referee` pass in flight at the time of writing. Nothing in §§1–7 is
-to be quoted into the Status card before it returns.)*
+`physics-referee`, second pass, on this page and its script. **Three FATAL and five
+MATERIAL findings, all acted on above**: the operating-point artefact (§0), the window's
+error bars (§3), the incomplete enumeration (§1), the circular boundary bracket (§2), the
+salt discriminator (§4), the fixed-`φ_c` CV number and the `d₄₃` provenance (§5), the
+Hertzian/EDL mix-up (§3), and the fact that the two-filter procedure could not return
+"no threshold" because the null was eliminated by the first filter by construction.
+
+Findings recorded as **surviving** the attack: the capacity criterion's inversion and its
+reverse polarity; radius-versus-diameter consistency throughout; the Péclet convention;
+the Sauter-mean algebra in §5. Minor and not acted on: two polarity labels
+(`St`, capillary) are arguable but do not change any verdict, and the candidate numbering
+skips T5 with no note.
+
+⚠ The referee could not resolve the window construction to a published DOI and marks it
+`[UNVERIFIED]` as new; it is in kind the standard two-sided bound (capacity below,
+drainage above) rather than a new result.

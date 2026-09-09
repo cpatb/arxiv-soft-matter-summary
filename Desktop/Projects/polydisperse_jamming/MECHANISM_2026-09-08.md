@@ -346,8 +346,68 @@ through the pore fluid or through the viscosity is open.**
 
 ## 8. Results and grading of P1–P7
 
-*(To be filled from `out/phase8_verdict.txt`. Nothing may be written into this section
-before the sweep returns, and the bars in §5 of the derivation do not move.)*
+45 cells, protocol `cv-shear-v2`, lognormal, `μ_p` = 0.3, N = 1500, CV ∈ {0, 0.2, 0.5},
+5 volume-fraction rungs at 0.020 spacing, 3 seeds, `γ_max` = 1.5, 200 000 steps.
+**0 failed, 0 duplicate states, all cells quasi-static** (`I` = 2.3e-4 … 1.7e-2, median
+~1e-3). Source: `out/phase8_verdict.txt`, `out/phase8_summary.csv`. Bars unchanged from
+`derivations/dilatancy_sign_mechanism.md` §5.
+
+| # | prediction | bar | result | verdict |
+|---|---|---|---|---|
+| **P1** | `φ_c` rises with CV | Δ > 0 and > 3× seed scatter | **+0.0578 (E1, 46 sd)**, **+0.0623 (E2, 21 sd)**; all resolved estimators agree in sign | ✅ **PASS**, by >6× the bar |
+| **P2** | critical-state slope ≈ isotropic `φ_J` slope | within 2× of +0.1246/CV | **E1 0.1157, E2 0.1247** — within **8 %**, and E2 within 0.1 % | ✅ **PASS** |
+| **P3** | at fixed `φ`, raising CV drives the pack toward/past critical | `p_ss` falls and crosses the unjammed bar | at matched `φ`, `p_ss` falls **5.4×–43×** (15–63 sd); `Z_nr` 6.1 → 4.4, rattlers **0.004 → 0.448** | ✅ **PASS** on the fall; ⚠ *partial* on "crosses" — see below |
+| **P4** | frictionless control `φ_c(μ_p=0)` ≈ `φ_J`(μ_p=0) = 0.6332 | within 0.01 | **NOT RUN** | ⬜ **not tested** |
+| **P5** | uniform vs lognormal at matched CV give different slopes | ratio > 1.5 | **NOT RUN** | ⬜ **not tested** |
+| P6, P7 | bench | — | for the author | — |
+
+### The headline measurement, and it needs no fit at all
+
+The estimators disagree on the *absolute* `φ_c` by 0.074 (E1 ≈ 0.643, E2 ≈ 0.570 at
+CV = 0) — **a systematic larger than the effect being measured**, which is why this
+project's convention is to quote contrasts and never absolutes. The contrast is robust:
+every resolved estimator gives the same sign and a slope within 8 %.
+
+But the cleanest result involves no estimator at all. Where the CV = 0 and CV = 0.5
+ladders overlap, two rungs nearly coincide in `φ`:
+
+| `φ` | CV | `p_ss` | `Z_nr` | rattlers |
+|---|---|---|---|---|
+| 0.63453 | 0.00 | 1.082e-2 | 6.12 | 0.004 |
+| 0.63687 | 0.50 | **2.506e-4** | **4.43** | **0.448** |
+| 0.65453 | 0.00 | 1.636e-2 | 6.49 | 0.002 |
+| 0.65686 | 0.50 | **3.054e-3** | **5.15** | **0.337** |
+
+> **At matched packing fraction, raising CV from 0 to 0.5 collapses the undrained grain
+> pressure by 5.4× to 43×.** In the mechanism's terms that is the pore-suction capacity
+> collapsing at fixed `φ` — the thing the whole argument turns on — measured directly.
+
+Two honesty notes. **Both pairs are reported**, not the closest: they tie to within
+rounding on `φ` mismatch (0.0023) and differ 8× in the answer, so a `min()` tie-break
+would have been cherry-picking — the ratio grows as you approach `φ_c`, which is expected
+and is why the **range** is quoted. And in both pairs the higher-CV cell sits at the
+*denser* `φ`, which works **against** the effect, so the ratios are conservative.
+
+⚠ **P3's "crosses the unjammed bar" is only partial.** `Z_nr` = 4.43 at the closer pair
+is *at* the frictional isostatic value, i.e. marginal, not clearly unjammed. The fall is
+decisive; the crossing is not demonstrated by these cells.
+
+### What was not tested, and why it matters
+
+**P4 and P5 were not run.** Machine time went to the CV arm and to two re-launches after
+defects (the quantized compression, then the periodic-collider abort). P4 is the
+protocol's only external anchor — frictionless shear jamming should coincide with the
+isotropic `φ_J` = 0.6332 the project already has — so **until it runs, the constant-volume
+protocol is unanchored against anything outside itself.** P5 is the discriminator that
+would separate a CV effect from a `d₃₂` effect. Both are the first thing to run next.
+
+### One estimator was disqualified mid-analysis
+
+E3 (pressure root with the exponent pinned to 1) first returned Δ`φ_c` = +0.0612 with a
+seed sd of **0.0000** and an apparent significance of **161 sd** — and it was returning
+its own **fit bound** (`lo − 1e-6`, i.e. the ladder's bottom rung) on 6 of 9 groups. A fit
+on a bound is not a measurement; `analyse_phase8.py` now detects and NaNs it. Had it been
+believed it would have been the most significant number on the page.
 
 ---
 

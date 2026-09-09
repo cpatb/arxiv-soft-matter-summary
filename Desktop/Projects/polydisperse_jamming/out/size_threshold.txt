@@ -1,176 +1,104 @@
-=== CANDIDATE SIZE THRESHOLDS at the lab's operating point ===
-  phi = 0.44, phi_c = 0.42 (PLACEHOLDER), U0 = 3.0 m/s, D0 = 2.5 mm, T = 293.15 K
-  threshold                                         a* [um]         silica (lab)    cornstarch [M26]
-  T1 drainage (ell = D0), ID_b = 1                   94.321        below (0.01x)       below (0.11x)
-  T1 drainage (ell = D0), ID_b = 0.0066               7.663        below (0.10x)       ABOVE (1.31x)
-  T2 drainage (ell ~ a)                                  --         no threshold        no threshold
-  T3 dilatant strength, 0 mM (lambda_D 30 nm)         3.960        below (0.20x)       ABOVE (2.53x)
-  T3 dilatant strength, 1 mM (lambda_D 10 nm)         1.320        below (0.61x)       ABOVE (7.58x)
-  T3 dilatant strength, 100 mM (lambda_D 1 nm)        0.132        ABOVE (6.06x)      ABOVE (75.76x)
-  T4 Brownian (Pe = 1)                                0.113        ABOVE (7.10x)      ABOVE (88.73x)
-  T6 Stokes (St = 1)                                 61.237        below (0.01x)       below (0.16x)
-  T8 capillary / granulation                        143.369        below (0.01x)       below (0.07x)
-  T7 grain inertia (I = 1)                         2121.320        below (0.00x)       below (0.00x)
+=== (A) EVERY SIZE-DEPENDENT GROUP, AT EACH MATERIAL'S OWN OPERATING POINT ===
+  Not converted to a critical size: converting requires all the OTHER parameters
+  to be shared, and they are not. This is the defect that made v1's headline
+  wrong, and it is avoided by comparing the numbers directly.
+  silica     : a = 0.80 um, phi = 0.44, phi_c = 0.42 (PLACEHOLDER), D0 = 2.5 mm, U0 = 3.0
+  cornstarch : a = 10.00 um, phi = 0.42, phi_c = 0.37, D0 = 4.0 mm, U0 = 0.5 and 7.2
 
-=== WHICH CANDIDATES SURVIVE: polarity AND separation ===
-  A candidate must do TWO things: put silica below and cornstarch above (so it
-  separates the observation), AND have the right POLARITY (a > a* must be the
-  INERTIAL side, not the solid-like one).
+  group                             silica @3  starch @0.5  starch @7.2  separated?
+  ID (drainage, ell=D0)             7.194e-05    0.0004635     0.006675         yes
+  ID (drainage, ell=10a)                7.025       0.7416        10.68          no
+  p_dil_max/P_conf                      0.202          nan          nan         n/a
+  Pe (Brownian)                         357.7    7.277e+04    1.048e+06         yes
+  St (grain inertia in fluid)       0.0001707     0.002153        0.031         yes
+  rho U0^2 / p_capillary              0.00558     0.001656       0.3434          no
+  I (inertial number)               0.0003771     0.002805     0.002805         yes
+  De (tau_p/tau_imp)                3.633e+05          nan          nan         n/a
+  tau_chi/tau_imp                       1.058     0.001481      0.02133         yes
+  Pe_grav                              0.2598         3489         3489         yes
+  Re_p                               0.001106      0.01539       0.2216         yes
+  lambda_D / r_throat                  0.4839      0.03871      0.03871         yes
 
-  threshold                         a*[um]  separates?  polarity    VERDICT
-  T1 drainage (ell = D0)         94.32/7.6         YES       big   SURVIVES
-  T2 drainage (ell ~ a)                 --          no      none   EXCLUDED
-      (ID carries no particle size)
-  T3 dilatant strength           3.96/1.32         YES     small   EXCLUDED
-      (above a* frustrated dilation CAN strengthen, so big grains are MORE solid-like -- the reverse)
-  T4 Brownian (Pe = 1)                0.11          no       big   EXCLUDED
-      (does not separate: both materials on the same side)
-  T6 Stokes (St = 1)                 61.24          no       big   EXCLUDED
-      (does not separate: both materials on the same side)
-  T8 capillary / granulation        143.37          no       big   EXCLUDED
-      (does not separate: both materials on the same side)
-  T7 grain inertia (I = 1)         2121.32          no       big   EXCLUDED
-      (does not separate: both materials on the same side)
+=== THE BOUNDARY BRACKET, done WITHOUT circularity ===
+  v1 claimed the hypothesis 'independently requires' an ID boundary near 6.6e-3.
+  🔴 WITHDRAWN: that bracket was algebraically ID(silica) to ID(cornstarch) at
+  the lab's own parameters, i.e. an identity, and 6.6e-3 is itself just
+  ID(cornstarch) evaluated at the top of [M26]'s velocity range:
+     ID(cornstarch, M26 pars, U0 = 7.2) = 6.6748e-03
+  so 'the bracket contains 6.6e-3' restates where 6.6e-3 came from.
 
-  🔑 1 of 7 candidates survive both filters:
-     - T1 drainage (ell = D0), ID_b = 0.0066  ->  a* = 7.663 um
+  What IS non-circular: [M26] observe the transition somewhere inside their own
+  velocity range, so the boundary lies between the ID their cornstarch has at
+  the bottom and at the top of it:
+     ID_boundary in [4.635e-04, 6.675e-03]
+  and the lab's silica sits at 7.194e-05, which is
+  6.4x below even the BOTTOM of that interval.
+  ⇒ On the drainage reading, the lab's silica cannot reach the inertial regime
+    by velocity alone at the lab's drop size. That statement needs no a*.
 
-=== THE HYPOTHESIS SHARPENED: a WINDOW in size, not a threshold ===
-  T1 and T3 both grow with particle size and they are NOT redundant, because
-  they grow at different rates and point opposite ways:
-     T3  strengthening capacity   ~ a^1   below it dilatancy CANNOT strengthen
-     T1  drainage                 ~ a^2   above it the pore fluid keeps up
-  so frustrated dilation can hold a drop solid only in the band between them:
+=== (B) A CRITICAL SIZE, WITHIN ONE MATERIAL'S LADDER (the proposed experiment) ===
+  Here every other parameter IS held fixed, so a* is well posed. This is the only
+  place a critical size is quoted.
+  silica ladder, U0 =  0.5 m/s: to reach ID = 6.67e-03 needs a =   18.876 um  ( 23.59x its present size)
+  silica ladder, U0 =  1.0 m/s: to reach ID = 6.67e-03 needs a =   13.347 um  ( 16.68x its present size)
+  silica ladder, U0 =  3.0 m/s: to reach ID = 6.67e-03 needs a =    7.706 um  (  9.63x its present size)
+  silica ladder, U0 =  5.0 m/s: to reach ID = 6.67e-03 needs a =    5.969 um  (  7.46x its present size)
+  capacity edge for silica (p_dil_max/P_conf = 1): a = 3.960 um at 0 mM
+  capacity edge for cornstarch: n/a -- HERTZIAN contact, K_p carries no size
+  ⚠ v1 built a size WINDOW from these two edges and quoted it as [3.96, 7.66] um,
+  a factor 1.94. 🔴 WITHDRAWN as a quantitative claim: PORE_PHYSICS 6.3 says the
+  affine K_p is an UPPER bound and real packings measure 2-5x softer, which moves
+  the lower edge UP by the same factor and CLOSES the window at 2x. A 1.94x band
+  cannot be asserted against a >=2x one-sided uncertainty on one of its edges.
+  What survives is the STRUCTURE -- a capacity condition below and a rate
+  condition above -- not the numbers, and not the sorting of any material by it.
 
-      salt  U0[m/s]  lower edge T3  upper edge T1                 window
-      0 mM     0.50          3.960         18.770       cornstarch [M26]
-      0 mM     3.00          3.960          7.663     (neither material)
-      1 mM     0.50          1.320         18.770       cornstarch [M26]
-      1 mM     3.00          1.320          7.663     (neither material)
-    100 mM     0.50          0.132         18.770 silica (lab), cornstarch [M26]
-    100 mM     3.00          0.132          7.663           silica (lab)
+=== HOW EACH THRESHOLD MOVES ===
+  group                          U0                     salt         dphi         D0
+  G1 ID (ell = D0)          U0^-1/2  ⚠ NOT blind -- see note    dphi^+1/2    D0^+1/2
+  G2 ID (ell ~ a)                 —                        —            —          —
+  G3 capacity                  NONE               ~ lambda_D      dphi^-1       NONE
+  G4 Pe                     U0^-1/3                        —            —    D0^+1/3
+  G5 St                     U0^-1/2                        —            —    D0^+1/2
+  G6 capillary                U0^-2                        —            —       NONE
+  G8 De                     U0^-1/3           ~ lambda_D^1/3            —    D0^-1/3
+  G9 tau_chi/tau_imp        U0^-1/2                        —            —    D0^-1/2
 
-  🔑 THREE things fall out, and each is checkable on an axis already in use.
-  (a) CORNSTARCH sits INSIDE the window at 0.5 m/s and EXITS THE TOP by 3 m/s.
-      That IS [M26]'s re-entrant transition, recovered as a window edge moving
-      down past a fixed particle size as U0 rises.
-  (b) 800 nm SILICA sits BELOW the window at 0 and 1 mM -- too small for
-      frustrated dilation to raise the particle pressure above what already
-      drives it. So silica's solid-like branch, which is OBSERVED, is NOT
-      frustrated dilation; it has to be frictional/repulsive jamming. ⚠ That
-      is a substantive claim about the lab's own material and it says silica
-      and cornstarch are solid for DIFFERENT REASONS.
-  (c) Adding salt lowers the bottom edge past 800 nm, so the SAME silica should
-      enter the window inside the salt series Paper 1 already runs -- no new
-      particles, no new apparatus.
+  🔴 NOTE, and it breaks v1's headline discriminator. v1 said G3 is the ONLY
+  candidate that moves with salt, and built the experiment on that. It is
+  false: PORE_PHYSICS 5.2 says the double layer occupies the pore throat at
+  low salt, and at 800 nm
+     lambda_D/r_throat = 0.484 at 0 mM
+     lambda_D/r_throat = 0.161 at 1 mM
+     lambda_D/r_throat = 0.048 at 10 mM
+     lambda_D/r_throat = 0.016 at 100 mM
+  so the permeability that G1 and G8 are built on is itself salt-dependent
+  at the small end, by an order-unity factor. A salt ladder therefore moves
+  the drainage groups too, and -- separately -- moves sigma*, i.e. the
+  frictional mechanism as well. The salt axis is NOT a clean discriminator.
 
-=== WHAT CV DOES TO THE WINDOW: it closes from BOTH ends ===
-  Both edges are functions of dphi = phi - phi_c, and CV moves phi_c UP, so CV
-  shrinks dphi. The two edges then move TOWARD each other, because:
-     lower edge T3 = 6 lambda_D phi / dphi        ~ dphi^-1   RISES as dphi falls
-     upper edge T1                                ~ dphi^+1/2 FALLS as dphi falls
-  so there is a CV at which the window CLOSES and no particle size can be held
-  solid by frustrated dilation at all.
+=== WHAT CV DOES, and the two routes are not comparable ===
+  Route 1, through d32: CV moves the SAMPLE along the size axis, because
+  Carman-Kozeny's length is the Sauter mean and d32/d10 = (1+CV^2)^2 for a
+  lognormal at fixed NUMBER mean.
+  ⚠ PROVENANCE UNSTATED: whether the lab's '800 nm' is a number mean at all
+  is not on record. psd.py notes laser diffraction reports d43; if 800 nm is
+  a volume or intensity mean then d32 FALLS as CV rises and this route
+  reverses sign. Q1 on the Status card.
 
-      CV     dphi   T3 [um]   T1 [um]   T1/T3     window
-    0.00   0.0200     3.960     7.663   1.935       open
-    0.02   0.0175     4.524     7.154   1.581       open
-    0.04   0.0150     5.274     6.611   1.253       open
-    0.06   0.0125     6.324     6.025   0.953     CLOSED
-    0.08   0.0100     7.895     5.381   0.682     CLOSED
-    0.10   0.0075    10.504     4.655   0.443     CLOSED
-    0.16   0.0001  1237.500     0.426   0.000     CLOSED
+  Route 2, through phi_c: CV raises phi_c, which shrinks dphi, which moves
+  a* DOWN (a* ~ sqrt(dphi)). v1's SCALINGS said G1 depends on CV 'through
+  d32 only', which contradicted this project's own measured +0.062 shift.
 
-  solved: the window closes at dphi = 0.01288, i.e. phi_c risen to 0.42712
-  which at the PLACEHOLDER slope dphi_c/dCV = 0.1246 is CV = 0.057
-  ⚠⚠ PROVISIONAL AND VERY SENSITIVE. Both phi_c0 = 0.42 and the slope are
-  PLACEHOLDERS -- the slope is the ISOTROPIC phi_J slope standing in for the
-  CRITICAL-STATE one, which phase8_criticalstate.py is measuring. The closure CV
-  goes as 1/slope and dphi_close depends on phi_c0, so this number will move.
-  What is NOT provisional is the SIGN of each edge's response, which is algebra.
+    phi_c     dphi  a*(silica ladder)  CV needed via d32
+    0.420   0.0200              7.706               1.45
+    0.425   0.0150              6.645               1.37
+    0.430   0.0100              5.402               1.26
+    0.435   0.0050              3.804               1.09
 
-  🔑 AND THE TWO CV ROUTES ARE NOT COMPARABLE IN STRENGTH.
-     Within this same size-threshold framework CV can act two ways, and they
-     are separated by more than an order of magnitude:
-        through d32   (moving the SAMPLE across a fixed edge): CV = 1.45
-        through phi_c (moving the EDGES onto each other)     : CV = 0.057
-     a ratio of 25x. So even inside the author's own
-     framing, the dominant CV channel is the PACKING one, not the permeability
-     one -- the same ordering the dilatancy-sign derivation reaches from the
-     two terms of d ln(ID)/dCV, and reached here by a different route.
-
-  🔑 CONSISTENCY with the sibling mechanism: there, CV raises phi_c until
-     phi - phi_c changes SIGN and the pack turns contractive. Here, CV shrinks
-     phi - phi_c until the size window closes. Two framings of one shrinking
-     gap, both ending the solid-like branch at a critical WIDTH -- so the size
-     hypothesis and the phi_c mechanism are not rivals, they are the same
-     statement read on two different axes.
-
-=== WHAT THE HYPOTHESIS IMPLIES ABOUT THE ID BOUNDARY (the card's landmine) ===
-  a* goes as sqrt(ID_boundary), and a*(ID_b = 1) = 94.32 um.
-  For the threshold to sit BETWEEN 800 nm silica and 10 um cornstarch,
-      ID_boundary must lie in [7.19e-05, 0.0112]
-  which BRACKETS the 6.6e-3 that [M26]'s own Eq. 6 returns at their own
-  Regime-2/3 transition, and EXCLUDES ID_boundary = 1 by 89x.
-  ⚠ This is an inference FROM the hypothesis, not independent support for it:
-  it says the hypothesis is only self-consistent on the smaller calibration.
-
-=== CAN A PURE SIZE THRESHOLD EXPLAIN THE CV OBSERVATION? ===
-  On a pure size threshold, CV acts ONLY by moving the moment the threshold
-  uses. T1 uses Carman-Kozeny, whose length is the SAUTER mean, and for a
-  lognormal at fixed number mean d32/d10 = (1 + CV^2)^2. So crossing a* from a
-  starting d10 needs a specific CV -- which is a testable number, not a story.
-   d10 [um]   a* [um]  d32/d10 needed  CV needed
-       0.80      7.66            9.58       1.45   (T1, ID_b=6.6e-3)
-       1.50      7.66            5.11       1.12   (T1, ID_b=6.6e-3)
-       3.00      7.66            2.55       0.77   (T1, ID_b=6.6e-3)
-
-  🔑 At the lab's 800 nm number-mean a pure size threshold needs CV ~ 1.5 to
-     reach a*, and CV ~ 1.1 even at a 1.5 um mean. Those are far broader than
-     the CV 0.2-0.5 this project has simulated. SO: if the author's two samples
-     have CV below ~1, a pure size threshold acting through d32 CANNOT carry
-     them across T1, and something else must be moving as well. If they are
-     broader than that, it can -- which makes the raw size distributions the
-     measurement that decides it (Q1 on the Status card, still open).
-
-=== HOW EACH THRESHOLD MOVES -- this is what discriminates them ===
-  threshold                              U0           salt         dphi         D0
-  T1 drainage (ell = D0)            U0^-1/2              —    dphi^+1/2    D0^+1/2
-  T2 drainage (ell ~ a)                   —              —            —          —
-  T3 dilatant strength                 NONE     ~ lambda_D      dphi^-1       NONE
-  T4 Brownian (Pe = 1)              U0^-1/3              —            —    D0^+1/3
-  T6 Stokes (St = 1)                U0^-1/2              —            —    D0^+1/2
-  T8 capillary / granulation          U0^-2              —            —       NONE
-  T7 grain inertia (I = 1)             NONE              —            —       ~ D0
-
-  🔑 T3 is the ONLY candidate that moves with SALT and the ONLY one that does
-     NOT move with U0. Every other finite threshold falls with U0 and is
-     salt-blind. So a size ladder crossed with a VELOCITY ladder and a SALT
-     ladder identifies which threshold is operating, with no new apparatus.
-
-=== the sweeps, explicitly ===
-    U0 [m/s]   T1(ID_b=1)   T1(6.6e-3)   T3 (0 mM)   T4 Brown  T6 Stokes     T8 cap
-        0.50      231.039       18.770       3.960      0.205    150.000   5161.290
-        1.00      163.369       13.272       3.960      0.163    106.066   1290.323
-        2.00      115.520        9.385       3.960      0.129     75.000    322.581
-        3.00       94.321        7.663       3.960      0.113     61.237    143.369
-        5.00       73.061        5.936       3.960      0.095     47.434     51.613
-
-  lambda_D[nm]       salt    T3 [um]   is 800 nm silica above it?
-          30.0       0 mM      3.960   no
-          10.0       1 mM      1.320   no
-           3.0      10 mM      0.396   YES -- dilatant strengthening AVAILABLE
-           1.0     100 mM      0.132   YES -- dilatant strengthening AVAILABLE
-
-  🔑 T3 crosses the lab's own particle size INSIDE its own salt series.
-     At nominal zero salt the 800 nm silica is BELOW the threshold and
-     frustrated dilation is not available; by 10 mM it is ABOVE it. So the
-     salt axis Paper 1 already sweeps should switch the solid-like branch
-     on and off AT FIXED PARTICLE SIZE -- which is a size-threshold
-     prediction testable without making a single new particle.
-
-     phi     dphi    T3 [um]  T1(6.6e-3) [um]
-    0.44    0.020      3.960            7.663
-    0.46    0.040      2.070           12.089
-    0.48    0.060      1.440           16.523
-    0.50    0.080      1.125           21.308
+  🔑 BOTH CV routes push the same way and they are NOT independent, so the
+  'CV = 1.45 needed' figure of v1 is an UPPER bound that assumed phi_c fixed.
+  A phi_c shift of +0.015 -- a quarter of what this project measured at
+  CV = 0.5 -- already takes it to ~1.1. The honest statement is that the
+  required CV is between about 1.0 and 1.5 and depends on a phi_c(CV) slope
+  that phase8_criticalstate.py is measuring right now.

@@ -7,3 +7,28 @@
 [7] phase6 deep still running: 4
 [8] phase6 deep still running: 2
 === phase6 deep drained after ~8 min ===
+ran 15 cells in 67.3 min
+
+==============================================================================
+SCALE INVARIANCE OF THE DYNAMIC MODEL
+==============================================================================
+Same dimensionless cell at three stiffnesses, with u0 scaled as sqrt(E) so
+that p_imp/E is held fixed. Invariance requires every observable to agree.
+
+  --- CV = 0.5 ---
+    observable                  E=1           E=10          E=0.1  spread/scatter  verdict
+    z_carved                1.98039        2.09710        2.10749            0.60  invariant
+    z_launch                2.21307        2.27979        2.34068            0.54  invariant
+    z_retention             1.11920        1.08930        1.11169            0.47  invariant [gate verdict same at every E]
+    z_peak                  3.03930        3.08190        2.97784            0.24  invariant
+    cor                     0.03101        0.03606        0.03909            0.14  invariant [rebound verdict same at every E]
+    spread                  1.77014        1.88555        1.90262            0.09  invariant
+    ke_ratio                0.16886        0.11664        0.10135            0.30  invariant [admissibility same at every E]
+
+==============================================================================
+SCALE_INVARIANCE_PASS
+  No observable varies enough with stiffness to change any verdict it
+  feeds, across two decades of E with p_imp/E held fixed. Residual
+  variation of a few percent remains and is printed above; it is smaller
+  than the margin of every threshold in the analysis.
+=== DEEP INVARIANCE COMPLETE ===

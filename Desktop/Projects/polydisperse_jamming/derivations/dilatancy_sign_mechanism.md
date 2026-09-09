@@ -260,12 +260,23 @@ Using the isotropic `φ_J` slope as a placeholder for `s` (+0.0623 over CV 0 →
 | 0.16 | 0 | **pole** |
 | ≥ 0.20 | negative | past the pole — contractive branch, Eq. 6 does not apply |
 
-⚠ **`s` here is the ISOTROPIC jamming slope, not the critical-state one.** They are
-different quantities and the substitution is an assumption, not a measurement. Closing it
-is what `phase8_criticalstate.py` exists for, and until it returns, **every number in
-this table is provisional and the `CV* = 0.16` must not be quoted.** What is *not*
-provisional is Step 8: the ordering of the two channels at small CV holds for any
-`s ≠ 0`.
+✅ **MEASURED 2026-09-08, and the substitution holds.** `s` above was the ISOTROPIC
+jamming slope standing in for the critical-state one — a different quantity, and an
+assumption rather than a measurement. `phase8_criticalstate.py` has now measured the
+critical-state slope directly, by constant-volume shear, over 45 cells:
+
+| estimator | Δ`φ_c` (CV 0 → 0.5) | slope `s` per unit CV | vs the isotropic 0.1246 |
+|---|---|---|---|
+| E1, `φ(I → 0)` | +0.0578 (46 sd) | **0.1157** | 0.93× |
+| E2, free-exponent pressure root | +0.0623 (21 sd) | **0.1247** | 1.0006× |
+
+So the table above now stands on a measured slope and **P2 passes**. ⚠ A third estimator
+appeared to agree to 0.1 % with a seed sd of *zero* and was disqualified — it was sitting
+on its own fit bound (`MECHANISM_2026-09-08.md` §8). ⚠ `CV*` ≈ 0.16 still carries its
+*other* placeholder, `φ_c(0)` = 0.42, which is unmeasured; the slope is no longer one.
+
+What was *never* provisional is Step 8: the ordering of the two channels at small CV
+holds for any `s ≠ 0`.
 
 ---
 
@@ -276,11 +287,11 @@ can fail.
 
 | # | prediction | bar | status |
 |---|---|---|---|
-| **P1** | `φ_c` rises with CV for the lognormal family at `μ_p` = 0.3 | Δ`φ_c`(CV 0→0.5) > 0 and > 3× seed scatter | *pending* |
-| **P2** | the critical-state slope `s` agrees with the isotropic `φ_J` slope | within a factor of 2 of +0.1246 per unit CV | *pending* — **a failure here does not damage the mechanism, it damages §4's placeholder** |
-| **P3** | there exists a `φ` between `φ_c(CV=0)` and `φ_c(CV=0.5)` where raising CV alone takes the pack from dilatant to contractive | `p_ss` at fixed φ falls with CV and crosses the unjammed bar | *pending* |
-| **P4** | frictionless control: `φ_c(μ_p=0, CV=0)` coincides with the isotropic `φ_J`(μ_p=0) = 0.6332, because frictionless shear jamming and isotropic jamming coincide | agree within 0.01 | *pending* |
-| **P5** | the CV effect is **not** explained by `d₃₂`: a uniform (zero-skew) PSD and a lognormal at matched CV have `d₃₂` within 9 % but must give different `s` | `s_lognormal/s_uniform > 1.5` | *pending* — the isotropic analogue is already 2.7× (+0.0623 vs +0.0228) |
+| **P1** | `φ_c` rises with CV for the lognormal family at `μ_p` = 0.3 | Δ`φ_c`(CV 0→0.5) > 0 and > 3× seed scatter | ✅ **PASS** +0.0578 (46 sd) / +0.0623 (21 sd) |
+| **P2** | the critical-state slope `s` agrees with the isotropic `φ_J` slope | within a factor of 2 of +0.1246 per unit CV | ✅ **PASS** — 0.1157 and 0.1247, within 8 % |
+| **P3** | there exists a `φ` between `φ_c(CV=0)` and `φ_c(CV=0.5)` where raising CV alone takes the pack from dilatant to contractive | `p_ss` at fixed φ falls with CV and crosses the unjammed bar | ✅ **PASS on the fall** (5.4–43× at matched φ, 15–63 sd); ⚠ partial on the crossing |
+| **P4** | frictionless control: `φ_c(μ_p=0, CV=0)` coincides with the isotropic `φ_J`(μ_p=0) = 0.6332, because frictionless shear jamming and isotropic jamming coincide | agree within 0.01 | ⬜ **NOT RUN** — and it is the protocol's only external anchor |
+| **P5** | the CV effect is **not** explained by `d₃₂`: a uniform (zero-skew) PSD and a lognormal at matched CV have `d₃₂` within 9 % but must give different `s` | `s_lognormal/s_uniform > 1.5` | ⬜ **NOT RUN** — the isotropic analogue is already 2.7× (+0.0623 vs +0.0228) |
 | **P6** | **experiment**: at fixed φ and fixed `d₁₀`, the impact regime switches at a critical CV\*, and raising φ moves CV\* **up** | a monotone CV\*(φ) with the predicted sign | *for the bench* |
 | **P7** | **experiment, the discriminator**: in the high-CV spreading state the pore pressure is **positive** (overpressure), where [M26]'s R3 has none and R1 has suction | sign of a pore-pressure measurement, or the absence of cavitation bubbles | *for the bench* |
 
