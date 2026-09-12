@@ -98,6 +98,111 @@ I_MAX = 1.0e-2                # quasi-static bar on the inertial number
 # Sampling. 200 samples over the shear is enough to see a plateau and cheap.
 N_SAMPLES = 200
 
+# --- constant-PRESSURE shear (added 2026-09-12) -----------------------------------
+# Why it exists, in one line: at fixed pressure the steady-state solid fraction IS
+# phi_c(p) -- no ladder, no root, no fitting window, and no isostatic target. Every
+# estimator this project has used so far (E2, E4, E4m) needs at least one of those, and
+# at mu_p = 0.3 all of them end up reading the isotropic phi_J the shear ladders are
+# centred on (PREREG_ROOT_PINNING_2026-09-09.md, PREREG_ZISO_2026-09-12.md §8).
+#
+# The servo is strain-clocked, not time-clocked: the volumetric strain rate is set as a
+# multiple of the SHEAR rate, so `gamma` remains the only clock and the gain is
+# dimensionless. Sign: Yade's velGrad diagonal is positive in EXPANSION and
+# `_stress_hat` returns p positive in COMPRESSION, so an over-pressured cell
+# (p > p_target) must expand, i.e. edot_v > 0. Getting this backwards runs away in one
+# sample, which is the cheap way it is caught.
+SERVO_GAIN = 0.5          # edot_v = GAIN * gdot * (p/p_target - 1)
+SERVO_EDOT_CLAMP = 0.5    # |edot_v| <= CLAMP * gdot, so one sample cannot blow the cell
+SERVO_P_TOL = 0.05        # |<p>_ss/p_target - 1| for the servo to count as HELD
+# The dilatancy fit uses the FIRST part of the strain, where phi is still approaching
+# phi_c; the steady window is the last STEADY_FRAC. These must not overlap.
+ALPHA_FIT_FRAC = 0.4      # fit d ln|phi - phi_ss| / d gamma over the first 40 % of strain
+ALPHA_MIN_DECADES = 0.3   # below this, |phi - phi_ss| never moved enough to fit a rate
+
+
+def servo_edot(p_hat: float, p_hat_target: float, gdot: float,
+               gain: float = SERVO_GAIN, clamp: float = SERVO_EDOT_CLAMP) -> float:
+    """Volumetric strain rate the pressure servo asks for. Positive = EXPAND.
+
+    Pure arithmetic, deliberately separate from the Yade loop so that the sign and the
+    clamp can be tested without a DEM engine (Yade does not import on the Windows side
+    where the test suite runs).
+
+    An unjammed cell reads p_hat <= 0; the relative error is then floored at -1, which
+    asks for the maximum CONTRACTION, which is the physically right response.
+    """
+    if not (p_hat_target > 0):
+        raise ValueError(f"p_hat_target must be positive, got {p_hat_target!r}")
+    if not math.isfinite(p_hat):
+        return 0.0
+    rel = max(p_hat, 0.0) / p_hat_target - 1.0
+    edot = gain * gdot * rel
+    lim = clamp * abs(gdot)
+    return float(max(-lim, min(lim, edot)))
+
+
+def dilatancy_rate(gamma: list[float] | np.ndarray, phi: list[float] | np.ndarray,
+                   phi_ss: float, *, fit_frac: float = ALPHA_FIT_FRAC,
+                   min_decades: float = ALPHA_MIN_DECADES) -> dict:
+    """The Reynolds dilatancy rate from the APPROACH of phi to its steady value.
+
+    The constitutive law this measures is
+
+        edot_v = alpha * gdot * (phi - phi_c)                                    (1)
+
+    and at constant pressure the steady state is phi = phi_c, so writing the volumetric
+    strain rate in terms of phi -- with V phi = const (the grains are incompressible),
+    so edot_v = d ln V / dt = -d ln phi / dt -- gives
+
+        -(1/phi) dphi/dt = alpha gdot (phi - phi_c)
+        =>  dphi/dgamma  = -alpha phi (phi - phi_c)                             (2)
+
+    Linearised about phi_c, (2) is an exponential in the STRAIN with rate
+    alpha*phi_c, so
+
+        alpha = -[d ln|phi - phi_c| / d gamma] / phi_c                          (3)
+
+    and the sign structure is a check rather than an assumption: a pack denser than
+    phi_c must DILATE (phi falls) and a looser one must CONTRACT (phi rises), so the
+    fitted rate must be NEGATIVE in |phi - phi_c| from either side, and the two sides
+    must return the same alpha.
+
+    Returns the fitted rate, alpha, and the refusal reason if any. `alpha` is NaN
+    unless the fit is admissible -- a rate fitted to a signal that never moved is the
+    2026-09-01 lesson (gate on the SHAPE the functional form requires, not only on
+    signal-to-noise).
+    """
+    g = np.asarray(gamma, float)
+    ph = np.asarray(phi, float)
+    out = {"alpha": float("nan"), "alpha_rate": float("nan"), "alpha_decades": 0.0,
+           "alpha_n": 0, "alpha_note": "", "alpha_sign_ok": False}
+    if g.size != ph.size or g.size < 4 or not (phi_ss > 0):
+        out["alpha_note"] = "too few samples, or phi_ss is not positive"
+        return out
+    win = g <= fit_frac * float(g.max())
+    d = np.abs(ph - phi_ss)
+    ok = win & np.isfinite(d) & (d > 0)
+    if ok.sum() < 4:
+        out["alpha_note"] = f"only {int(ok.sum())} usable samples in the fit window"
+        return out
+    y = np.log(d[ok])
+    decades = float((y.max() - y.min()) / math.log(10.0))
+    out["alpha_decades"] = decades
+    out["alpha_n"] = int(ok.sum())
+    if decades < min_decades:
+        out["alpha_note"] = (f"|phi - phi_ss| moved {decades:.2f} decades, below "
+                             f"{min_decades} -- there is no rate to fit")
+        return out
+    rate = float(np.polyfit(g[ok], y, 1)[0])
+    out["alpha_rate"] = rate
+    out["alpha_sign_ok"] = rate < 0
+    if rate >= 0:
+        out["alpha_note"] = ("|phi - phi_ss| GREW over the fit window: the state is "
+                             "moving away from its own steady value")
+        return out
+    out["alpha"] = float(-rate / phi_ss)
+    return out
+
 
 @dataclass
 class ShearState:
@@ -146,6 +251,21 @@ class ShearState:
     z_series: list[float] = field(default_factory=list)
     force: dict = field(default_factory=dict)
     wall_s: float = float("nan")
+    # --- constant-PRESSURE fields; all NaN/empty for a constant-volume run ----------
+    p_hat_target: float = float("nan")   # the servo's set point (constant-p runs only)
+    servo_gain: float = float("nan")
+    phi_series: list[float] = field(default_factory=list)
+    edot_v_series: list[float] = field(default_factory=list)
+    phi_ss: float = float("nan")         # THE MEASUREMENT: phi_c(p) at steady state
+    phi_ss_split: float = float("nan")   # the two halves of the steady window
+    p_servo_err: float = float("nan")    # |<p>_ss/p_target - 1|
+    servo_held: bool = False
+    alpha: float = float("nan")          # Reynolds dilatancy coefficient
+    alpha_rate: float = float("nan")     # d ln|phi - phi_ss| / d gamma
+    alpha_decades: float = float("nan")
+    alpha_n: int = 0
+    alpha_sign_ok: bool = False
+    alpha_note: str = ""
     protocol: str = "cv-shear-v2"
     notes: list[str] = field(default_factory=list)
 
@@ -184,24 +304,20 @@ def _measure_network(O):  # noqa: E741
             rep[f"rattler_frac_k{RATTLER_MIN_CONTACTS}"], forces)
 
 
-def shear_at_constant_volume(cv: float, mu_p: float, phi_target: float, n: int,
-                             seed: int, *,
-                             truncate: tuple[float, float] | None = (0.2, 5.0),
-                             young: float = 1.0, family: str = "lognormal",
-                             gamma_max: float = 1.0, shear_steps: int = 300_000,
-                             verbose: bool = True) -> ShearState:
-    """Insert, compress to `phi_target`, then shear at constant volume."""
-    import time
+def _prepare(st: ShearState, O, Matrix3, utils, *,  # noqa: E741
+             truncate: tuple[float, float] | None) -> float:
+    """Stages A-C: insert, compress to `st.phi_target`, relax. Returns the phi reached.
 
-    from yade import O, Matrix3, utils
-
-    t0 = time.time()
-    O.reset()
-
-    st = ShearState(n_requested=n, cv=cv, mu_p=mu_p, phi_target=phi_target,
-                    seed=seed, family=family, young=young, gamma_max=gamma_max,
-                    shear_steps=shear_steps)
-
+    ⚠ EXTRACTED VERBATIM from `shear_at_constant_volume` on 2026-09-12 so that the
+    constant-PRESSURE driver runs the identical preparation. Not a rewrite: the block
+    was moved, and the move is verified by re-running a committed cell and requiring the
+    record to come back bit-identical (scripts/check_prepare_refactor.sh). If that check
+    is not green, nothing measured through either driver is comparable with the records
+    already on disk.
+    """
+    n, cv, mu_p = st.n_requested, st.cv, st.mu_p
+    seed, family, young = st.seed, st.family, st.young
+    phi_target = st.phi_target
     # --- stage A: insert -----------------------------------------------------------
     pk = PackingState(n_requested=n, cv=cv, mu_p=mu_p, p_hat_target=float("nan"),
                       seed=seed, family=family)
@@ -289,7 +405,28 @@ def shear_at_constant_volume(cv: float, mu_p: float, phi_target: float, n: int,
         if float(utils.unbalancedForce()) < UNBALANCED_TOL:
             break
 
-    phi_start = float(1.0 - utils.porosity())
+    return float(1.0 - utils.porosity())
+
+
+def shear_at_constant_volume(cv: float, mu_p: float, phi_target: float, n: int,
+                             seed: int, *,
+                             truncate: tuple[float, float] | None = (0.2, 5.0),
+                             young: float = 1.0, family: str = "lognormal",
+                             gamma_max: float = 1.0, shear_steps: int = 300_000,
+                             verbose: bool = True) -> ShearState:
+    """Insert, compress to `phi_target`, then shear at constant volume."""
+    import time
+
+    from yade import O, Matrix3, utils
+
+    t0 = time.time()
+    O.reset()
+
+    st = ShearState(n_requested=n, cv=cv, mu_p=mu_p, phi_target=phi_target,
+                    seed=seed, family=family, young=young, gamma_max=gamma_max,
+                    shear_steps=shear_steps)
+
+    phi_start = _prepare(st, O, Matrix3, utils, truncate=truncate)
 
     # --- stage D: constant-volume simple shear -------------------------------------
     # trace(velGrad) = 0 exactly, so the volume is conserved to machine precision.
@@ -374,4 +511,151 @@ def shear_at_constant_volume(cv: float, mu_p: float, phi_target: float, n: int,
               f"mu_M={st.mu_macro:.3f} Z={st.z_ss:.2f} rat={st.rattler_frac_ss:.3f} "
               f"I={st.i_ss:.2e} steady={st.steady}({st.steady_split:.2f}) "
               f"drift={st.phi_drift:.1e} {st.wall_s:.1f}s", flush=True)
+    return st
+
+
+def shear_at_constant_pressure(cv: float, mu_p: float, p_hat_target: float, n: int,
+                               seed: int, *, phi_start_target: float,
+                               truncate: tuple[float, float] | None = (0.2, 5.0),
+                               young: float = 1.0, family: str = "lognormal",
+                               gamma_max: float = 3.0, shear_steps: int = 900_000,
+                               servo_gain: float = SERVO_GAIN,
+                               verbose: bool = True) -> ShearState:
+    """Insert, compress to `phi_start_target`, then shear at CONSTANT PRESSURE.
+
+    THE MEASUREMENT: `st.phi_ss` is `phi_c(p_hat_target)` directly. There is no ladder,
+    no power-law root, no fitting window and no isostatic contact target -- which is
+    what makes this the first `phi_c` estimator in the project that does not read the
+    isotropic `phi_J` the shear ladders are centred on.
+
+    `phi_start_target` is the state the pack is prepared in, NOT an answer. The critical
+    state is by definition independent of it, so two cells prepared on opposite sides of
+    `phi_c` must converge to the same `phi_ss` -- the strongest internal check available
+    here, and one that needs nothing from outside the run. It also gives `alpha` from
+    both the dilating and the contracting side, where the magnitudes must agree.
+
+    ⚠ THE SERVO IS A KNOB AND ITS ANSWER MUST NOT DEPEND ON IT. `servo_gain` is recorded
+    in every record; a gain sweep at fixed everything else is the validity test, and
+    `phi_ss` moving with the gain means the cell is tracking the controller rather than
+    the material. The answer is not quotable until that sweep is flat.
+    """
+    import time
+
+    from yade import O, Matrix3, utils
+
+    t0 = time.time()
+    O.reset()
+
+    st = ShearState(n_requested=n, cv=cv, mu_p=mu_p, phi_target=phi_start_target,
+                    seed=seed, family=family, young=young, gamma_max=gamma_max,
+                    shear_steps=shear_steps)
+    st.protocol = "cp-shear-v1"
+    st.p_hat_target = float(p_hat_target)
+    st.servo_gain = float(servo_gain)
+
+    phi_start = _prepare(st, O, Matrix3, utils, truncate=truncate)
+    st.dt = float(O.dt)
+
+    # --- stage D': simple shear with a pressure servo on the volumetric part --------
+    # velGrad = [[e/3, gdot, 0], [0, e/3, 0], [0, 0, e/3]] -- trace = e, so the cell
+    # volume follows dV/V = e dt while the shear component is untouched. `gamma` is
+    # still gdot*t, so the strain clock is unchanged from the constant-volume protocol.
+    gdot = gamma_max / (shear_steps * O.dt)
+    st.gdot = float(gdot)
+    O.cell.flipFlippable = True     # same reason as the constant-volume driver
+
+    every = max(1, shear_steps // N_SAMPLES)
+    steps_done = 0
+    edot = 0.0
+    while steps_done < shear_steps:
+        third = edot / 3.0
+        O.cell.velGrad = Matrix3(third, gdot, 0,
+                                 0, third, 0,
+                                 0, 0, third)
+        take = min(every, shear_steps - steps_done)
+        O.run(take, wait=True)
+        steps_done += take
+        p_hat, tau_hat = _stress_hat(utils, young)
+        z_all, _, _, _ = _measure_network(O)
+        phi_now = float(1.0 - utils.porosity())
+        st.gamma.append(gdot * O.dt * steps_done)
+        st.p_hat_series.append(p_hat)
+        st.tau_hat_series.append(tau_hat)
+        st.z_series.append(z_all)
+        st.phi_series.append(phi_now)
+        st.edot_v_series.append(float(edot))
+        edot = servo_edot(p_hat, p_hat_target, gdot, gain=servo_gain)
+    O.cell.velGrad = Matrix3.Zero
+
+    st.phi = float(1.0 - utils.porosity())
+    st.phi_drift = abs(st.phi - phi_start)      # here a MEASUREMENT, not a gate: the
+                                                # cell is supposed to change volume
+
+    # --- stage E': the steady state -------------------------------------------------
+    g = np.asarray(st.gamma)
+    p = np.asarray(st.p_hat_series)
+    tau = np.asarray(st.tau_hat_series)
+    ph = np.asarray(st.phi_series)
+    win = g >= (1.0 - STEADY_FRAC) * gamma_max
+    st.p_ss_hat = float(np.mean(p[win]))
+    st.tau_ss_hat = float(np.mean(tau[win]))
+    st.mu_macro = float(st.tau_ss_hat / st.p_ss_hat) if st.p_ss_hat > 0 else float("nan")
+    st.phi_ss = float(np.mean(ph[win]))
+
+    idx = np.flatnonzero(win)
+    half = len(idx) // 2
+    a, b = float(np.mean(p[idx[:half]])), float(np.mean(p[idx[half:]]))
+    scale = max(abs(a), abs(b))
+    st.steady_split = float(abs(a - b) / scale) if scale > 0 else 0.0
+    pa, pb = float(np.mean(ph[idx[:half]])), float(np.mean(ph[idx[half:]]))
+    st.phi_ss_split = float(abs(pa - pb) / max(abs(pa), abs(pb)))
+    # BOTH channels have to be steady. p being held is the servo's job and phi being
+    # settled is the physics; a cell where the servo is still hunting can hold <p> on
+    # average while phi drifts, and that cell's phi_ss is not phi_c.
+    st.steady = bool(st.steady_split <= STEADY_SPLIT_TOL
+                     and st.phi_ss_split <= STEADY_SPLIT_TOL)
+    if not st.steady:
+        st.notes.append(
+            f"NOT STEADY: p halves differ by {st.steady_split:.1%}, phi halves by "
+            f"{st.phi_ss_split:.1%} (bar {STEADY_SPLIT_TOL:.0%})")
+
+    st.p_servo_err = abs(st.p_ss_hat / p_hat_target - 1.0)
+    st.servo_held = bool(st.p_servo_err <= SERVO_P_TOL)
+    if not st.servo_held:
+        st.notes.append(
+            f"SERVO DID NOT HOLD: <p>_ss/p_target - 1 = "
+            f"{st.p_ss_hat / p_hat_target - 1:+.1%} (bar {SERVO_P_TOL:.0%})")
+
+    # --- the dilatancy coefficient, from the approach rather than the steady state ---
+    al = dilatancy_rate(st.gamma, st.phi_series, st.phi_ss)
+    st.alpha = al["alpha"]
+    st.alpha_rate = al["alpha_rate"]
+    st.alpha_decades = al["alpha_decades"]
+    st.alpha_n = al["alpha_n"]
+    st.alpha_sign_ok = al["alpha_sign_ok"]
+    st.alpha_note = al["alpha_note"]
+    if al["alpha_note"]:
+        st.notes.append("ALPHA: " + al["alpha_note"])
+
+    z_all, z_nr, rat, forces = _measure_network(O)
+    st.z_ss, st.z_nr_ss, st.rattler_frac_ss = z_all, z_nr, rat
+    st.force = force_moments(forces)
+
+    p_dim = st.p_ss_hat * young
+    st.i_ss = (float(gdot * st.d50_realised / math.sqrt(p_dim))
+               if p_dim > 0 else float("inf"))
+    st.quasistatic = bool(st.i_ss <= I_MAX)
+    if not st.quasistatic:
+        st.notes.append(f"NOT QUASI-STATIC: I = {st.i_ss:.3e} > {I_MAX:.0e}")
+
+    st.wall_s = time.time() - t0
+    if verbose:
+        print(f"[shearP {family[:4]}] cv={cv:.2f} mu={mu_p:.2f} "
+              f"p*={p_hat_target:.3e} K={servo_gain:.2f} phi0={phi_start:.6f} "
+              f"N={n} s={seed} -> phi_ss={st.phi_ss:.6f} "
+              f"p_err={st.p_servo_err:+.1%} held={st.servo_held} "
+              f"alpha={st.alpha:.3g}({st.alpha_decades:.2f}dec) "
+              f"mu_M={st.mu_macro:.3f} Z={st.z_ss:.2f} I={st.i_ss:.2e} "
+              f"steady={st.steady}({st.steady_split:.2f}/{st.phi_ss_split:.2f}) "
+              f"{st.wall_s:.1f}s", flush=True)
     return st

@@ -8,3 +8,5 @@ out/*_w[0-9][0-9].log
 out/calib_cost.log
 out/diag_*.log
 out/phase4_impact.log
+shear_pre_refactor_src.txt
+shear_pre_refactor.py

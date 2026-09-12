@@ -1,0 +1,77 @@
+=== grade_constp.py -- PREREG_CONSTP_2026-09-12.md, S1-S7 ===
+   10 records, 10 usable, 0 errored
+
+  phi0     K    phi_ss    p_err  held  z_wmin    p_wmin  jammed    alpha   dec         I  steady   wall
+  0.55  0.05  0.591706    -8.7% False    4.11   6.9e-05    True     2.03  0.66  3.63e-03   False    176
+  0.55  0.10  0.593908    -0.4%  True    3.84   3.9e-05    True     7.25  3.85  3.47e-03    True    182
+  0.55  0.25  0.594411    -1.2%  True    4.30   1.4e-04    True     5.24  2.98  3.48e-03    True    221
+  0.55  0.50  0.592376   +19.7% False    0.05   3.7e-08   False     2.47  3.67  3.17e-03    True    214
+  0.55  1.00  0.593779   +23.6% False    0.02   2.1e-08   False     1.93  2.15  3.12e-03    True    207
+  0.64  0.05  0.593515    +3.8%  True    4.03   4.6e-05    True     2.65  2.66  3.40e-03   False    190
+  0.64  0.10  0.594195    +6.6% False    4.19   1.3e-04    True     1.64  4.08  3.35e-03    True    190
+  0.64  0.25  0.591170    -0.0%  True    4.19   1.1e-04    True      1.5  2.52  3.46e-03    True    227
+  0.64  0.50  0.594609   +20.2% False    0.02   1.0e-08   False     2.19  2.64  3.16e-03    True    215
+  0.64  1.00  0.593979   +20.5% False    0.02   1.5e-08   False     4.03  3.59  3.16e-03   False    216
+
+=== S1 the servo holds (|<p>/p*-1| <= 5% on >= 5/6) ===
+   held on 4 of 10; worst 23.6% -> FAIL -- the gain RANGE is wrong, not the bar
+
+=== S2 🔑 phi_ss does not depend on the GAIN (spread <= 0.005) ===
+   phi0 0.55: K0.05=0.591706  K0.10=0.593908  K0.25=0.594411  K0.50=0.592376  K1.00=0.593779   spread 0.002705
+   phi0 0.64: K0.05=0.593515  K0.10=0.594195  K0.25=0.591170  K0.50=0.594609  K1.00=0.593979   spread 0.003439
+   worst spread 0.003439 (bar 0.005) -> PASS -- the answer is the material, not the controller
+
+=== S3 🔑 the critical state forgets its preparation (gap <= 0.005) ===
+   K 0.05: phi_ss(0.55) = 0.591706, phi_ss(0.64) = 0.593515   gap 0.001809
+   K 0.10: phi_ss(0.55) = 0.593908, phi_ss(0.64) = 0.594195   gap 0.000287
+   K 0.25: phi_ss(0.55) = 0.594411, phi_ss(0.64) = 0.591170   gap 0.003241
+   K 0.50: phi_ss(0.55) = 0.592376, phi_ss(0.64) = 0.594609   gap 0.002233
+   K 1.00: phi_ss(0.55) = 0.593779, phi_ss(0.64) = 0.593979   gap 0.000199
+   worst gap 0.003241 (bar 0.005) -> PASS
+
+=== S2'/S3' the same two tests, restricted to cells that PASSED S1 ===
+   4 held cells, at gains [0.05, 0.1, 0.25]
+   phi0 0.55: K0.10=0.593908  K0.25=0.594411   spread 0.000502
+   phi0 0.64: K0.05=0.593515  K0.25=0.591170   spread 0.002345
+   S2' -> PASS
+   K 0.25: gap between preparations = 0.003241
+   S3' -> PASS
+   gains that stayed jammed: [0.05, 0.1, 0.25]; gains that unjammed: [0.5, 1.0]
+   => the servo's stability boundary is between K = 0.25 and K = 0.5 for this cell. A production run must sit below it and must report z_win_min per cell, because a cell can hold <p> on average while visiting an unjammed state.
+
+=== S4 alpha is admissible and consistent (sign 6/6, >= 0.3 decades, sides within 2.0x) ===
+   fitted rate negative on 10 of 10; 10 cells have a quotable alpha
+   K 0.05: alpha(0.55) = 2.035, alpha(0.64) = 2.647   ratio 1.30x
+   K 0.10: alpha(0.55) = 7.252, alpha(0.64) = 1.645   ratio 4.41x
+   K 0.25: alpha(0.55) = 5.236, alpha(0.64) = 1.498   ratio 3.50x
+   K 0.50: alpha(0.55) = 2.474, alpha(0.64) = 2.19   ratio 1.13x
+   K 1.00: alpha(0.55) = 1.927, alpha(0.64) = 4.028   ratio 2.09x
+   -> NOT PASSED  (§5 said a clean disagreement between the dilating and contracting branches is a PHYSICAL result, not a protocol failure -- read the ratios)
+
+=== S5 the cell is a valid measurement (I <= 1e-2 and steady, >= 5/6) ===
+   7 of 10 quasi-static AND steady on both channels -> PASS
+      phi0 0.64 K1.00: I = 3.16e-03, p-split 18.4%, phi-split 0.1%
+      phi0 0.55 K0.05: I = 3.63e-03, p-split 28.0%, phi-split 0.8%
+      phi0 0.64 K0.05: I = 3.40e-03, p-split 32.7%, phi-split 0.3%
+
+=== S6 phi_ss lies strictly inside (0.55, 0.64) ===
+   0 cells outside the bracket -> PASS
+
+=== S7 the comparison, REPORTED not gated ===
+   mean phi_ss over the valid cells = 0.593493
+   isotropic phi at the same p* = 0.583314 +- 0.000725 (N = 1500) -> phi_ss is DENSER by +0.010179  [predicted: denser]
+   E4m phi_c(cv 0) on the common ladder = 0.5902 -> |d| = 0.0033 (informative if <= 0.015)
+   🔑 an estimator needing NO isostatic target and NO ladder agrees with E4m to within the bar. ⚠ N = 600 here against 1500 there, so finite size alone could account for a move of this size; the production run is what settles it.
+
+=== SUMMARY ===
+   S1: NOT PASSED
+   S2: PASS
+   S2p: PASS
+   S3: PASS
+   S3p: PASS
+   S4: NOT PASSED
+   S5: PASS
+   S6: PASS
+   S7: reported, not gated
+
+   ✅ THE PROTOCOL IS ADMISSIBLE: phi_ss depends on neither the gain nor the preparation, which is what a critical state means. A production pre-registration may now be written.
