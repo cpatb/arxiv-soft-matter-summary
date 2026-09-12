@@ -22,6 +22,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "out")
 
 PATTERN = "phase9_prod*.jsonl"
+# 🔴 An explicit N, because the glob is NOT clean and cannot be trusted to be. The
+# N = 600 and N = 800 attempts (PREREG_CONSTP_PROD_2026-09-12.md §2a) wrote refusal
+# records under this same tag, and a cleanup chain that began with `pkill` aborted on
+# pkill's own exit status before its `rm` ran, so 8 stale records reached the analysis
+# directory. Selecting N here is the fix; the count excluded is printed.
+N_REQUIRED = 1000
 CVS = (0.0, 0.2, 0.5)
 STARTS = (0.55, 0.64)
 
@@ -66,8 +72,8 @@ def phi_iso_at_p(p_target: float = 3.0e-4) -> dict:
     return {cv: float(np.mean(v)) for cv, v in by.items() if v}
 
 
-def load() -> list[dict]:
-    recs, seen = [], set()
+def load() -> tuple[list[dict], int]:
+    recs, seen, wrong_n = [], set(), 0
     for path in sorted(glob.glob(os.path.join(OUT, PATTERN))):
         with open(path, encoding="utf-8") as fh:
             for line in fh:
@@ -78,8 +84,11 @@ def load() -> list[dict]:
                 if r.get("key") in seen:
                     continue
                 seen.add(r["key"])
+                if int(r.get("n_requested", -1)) != N_REQUIRED:
+                    wrong_n += 1
+                    continue
                 recs.append(r)
-    return recs
+    return recs, wrong_n
 
 
 def admit(r: dict) -> tuple[bool, str]:
@@ -107,9 +116,10 @@ def main() -> int:
         print(m)
         lines.append(m)
 
-    recs = load()
+    recs, wrong_n = load()
     p("=== grade_constp_prod.py -- PREREG_CONSTP_PROD_2026-09-12.md, P1-P5 ===")
-    p(f"   {len(recs)} records on disk (18 expected)")
+    p(f"   {len(recs)} records at N = {N_REQUIRED} (18 expected); {wrong_n} records "
+      f"EXCLUDED for being at another N (the abandoned N = 600 / 800 attempts, §2a)")
     if not recs:
         p("   🔴 no records -- nothing to grade")
         return 1
@@ -137,6 +147,27 @@ def main() -> int:
           f"{r['alpha']:9.3g}{r['alpha_decades']:6.2f}{adm:>5s}  {why}")
     p("")
     p(f"   admitted {len(ok_cells)} of {len(recs)}; refused {len(refused)}")
+
+    # 🔴 REPORTED, NOT A RE-GRADE. The admission rule's z floor is ABSOLUTE (2.0) and was
+    # calibrated on the shakeout, which ran at CV 0 where z_all ~ 4.3. `z_series` records
+    # z_ALL, rattlers included, and at CV 0.5 a pack whose rattler fraction is ~0.23 sits
+    # near z_all ~ 2 BY CONSTRUCTION -- the project's own M3 result. So the floor can
+    # refuse the high-CV arm for being polydisperse rather than for unjamming. The
+    # genuine unjamming signature in the shakeout was z_all -> 0.02 WITH p -> 1e-08, two
+    # orders lower on both channels. The relative measure below is printed so the next
+    # pre-registration can use the quantity the rule meant; the verdicts above stand as
+    # registered.
+    p("")
+    p("   z floor, re-read relatively (REPORTED -- the verdicts above are unchanged):")
+    for r in sorted(recs, key=lambda r: (r.get("cv", 0), r.get("phi_target", 0))):
+        if r.get("error"):
+            continue
+        d = stability(r)
+        frac = (d["z_win_min"] / float(r["z_ss"])) if r.get("z_ss") else float("nan")
+        p(f"      cv {r['cv']:.1f} phi0 {r['phi_target']:.2f} s{r['seed']}: "
+          f"z_win_min {d['z_win_min']:.2f} / z_ss {r['z_ss']:.2f} = {frac:.2f}, "
+          f"z_nr_ss {r['z_nr_ss']:.2f}, rattler_frac {r['rattler_frac_ss']:.3f}, "
+          f"p_win_min/p* {d['p_win_min'] / float(r['p_hat_target']):.2f}")
 
     # per (cv, start) blocks
     blocks: dict[tuple, list[dict]] = defaultdict(list)

@@ -134,26 +134,45 @@ the same cell: **bit-identical on all five continuous channels**.
 
 ## 2. The programme, re-ordered
 
-### 1. Grade the production ladder — it is running, do this first
+### 1. Re-run the CV 0.5 arm quasi-statically — that is the whole of what P1 needs
 
-```
-python grade_constp_prod.py          # P1-P5, out/constp_prod.txt
-```
+The production ladder **landed** (18 cells, N = 1000, `out/constp_prod.txt`,
+`PREREG_CONSTP_PROD_2026-09-12.md` §6): servo held 18/18, steady 18/18, and
 
-Bars are in `PREREG_CONSTP_PROD_2026-09-12.md` §4. Read in this order:
+- `φ_c` = **0.593254 ± 0.000641** (CV 0) and **0.601989 ± 0.001313** (CV 0.2), from a
+  route with no `φ_J` in it;
+- **P4 at 4.8e-05 / 3.9e-05** — the critical state forgets a preparation 0.09 apart in
+  `φ` to five decimals, on 3 seeds each side;
+- the admitted CV 0 → 0.2 contrast is **+0.00874** against the common ladder's +0.0105,
+  agreeing to 0.0018;
+- 🔴 but **all six CV 0.5 cells fail the quasi-static bar** at `I` = 1.4–1.5e-02, because
+  `γ̇` is an output of the packing and runs **4.70×** across the CV ladder. So
+  `Δφ_c`(CV 0 → 0.5) is **UNRESOLVED** and the raw +0.0412 is not quotable.
 
-- **Admission first** (§3). The shakeout held on 4 of 10, so expect refusals. If fewer
-  than 2 seeds survive at any (CV, `φ_start`), §5 says the block is **UNRESOLVED** and P1
-  is neither passed nor failed — do not average one seed.
-- **P4 before P1**, because pooling the two preparations is only legitimate if
-  start-independence holds at every CV. At CV 0.5 the 0.55 preparation travels furthest,
-  so that is where `γ_max` = 3 is most likely to be too little strain — and the diagnosis
-  is in the `φ` series, not the gap.
-- **P1** is the headline: `|Δφ_c − 0.0525| ≤ 0.015`. ⚠ **A miss is a disagreement between
-  two structurally different routes, which puts the common-ladder headline in doubt, not
-  just the new route.** Do not quietly prefer whichever agrees with the existing number.
-- **If the run is incomplete**, re-invoke the launcher: it skips keys already present.
-  `wsl bash /mnt/c/.../scripts/run_constp_prod.sh` — from **PowerShell**, see §3.
+**What to run:** the same grid at CV 0.5 with `--shear-steps 300000` (`I` × 0.68 → 1.0e-02,
+just inside the bar) — and note that **matching** `γ̇` to CV 0's 6e-05 needs 940 000 steps,
+≈3900 s/cell, which this harness cannot hold (§3). Clearing the bar is what is available
+here; rate-matching is the better science and is an author-run job. Say which one the
+number came from.
+
+**Two rule repairs to make in the same commit**, both diagnosed in §6:
+
+- The admission `z` floor is **absolute (2.0) and refuses polydisperse packs for being
+  polydisperse**: `z_series` is `z_ALL`, and at CV 0.5 the rattler fraction is 0.42–0.52,
+  so `z_all` ≈ 2 by construction (the project's own M3 result). Read relatively,
+  `z_win_min/z_ss` = 0.77–1.00 on **all 18** cells and nothing unjammed. Use
+  `z_nr_series` (now recorded) or a relative floor.
+  ⚠ **Repairing it does NOT rescue P1** — the rate refusal applies to all six CV 0.5
+  cells independently. Do not report the repair as having moved the verdict.
+- `grade_constp_prod.py` needs its explicit `N_REQUIRED`: the abandoned N = 600 / 800
+  attempts wrote refusal records under the same tag, and 8 of them reached the analysis
+  directory because a cleanup chain beginning with `pkill` aborted on pkill's own exit
+  status before its `rm` ran. The filter is in place and prints what it excluded.
+
+🆕 **And carry the flag:** `φ_ss` − `φ_iso` runs +0.0099 → +0.0064 → **−0.0072** across
+CV 0 / 0.2 / 0.5 (the last on refused cells). A sign flip in the shear-minus-compression
+offset would be a new statement about polydispersity and the critical state, and it is the
+first candidate explanation for **H-3**.
 
 ### 2. If P1 lands, the constant-pressure ladder replaces the estimator argument
 

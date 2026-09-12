@@ -132,6 +132,92 @@ is quoted on whatever survives **with the per-cell table printed**, and P1 is re
 UNRESOLVED rather than passed or failed. Ten cells decided nothing about `α` and 18 may
 not either; saying so is the outcome.
 
-## 6. OUTCOME
+## 6. OUTCOME — 2026-09-12, `out/constp_prod.txt`, 18 cells at N = 1000, 0 failures
 
-*(empty until the cells land)*
+**P1 is UNRESOLVED, exactly as §5 provides for, and the reason is a rate confound the
+project already had on its hazard list — not anything about the new protocol.** The
+servo held on **18 of 18** (K = 0.15 was the right choice) and every cell was steady on
+both channels.
+
+| gate | bar | measured | verdict |
+|---|---|---|---|
+| P1 contrast vs common ladder | \|Δ − 0.0525\| ≤ 0.015 | **UNRESOLVED** — no admitted CV 0.5 cell | not passed |
+| P2 reproduces the shakeout | ≤ 0.005 | **0.00025** | **PASS** (600 → 1000, not 1500) |
+| P3 denser than isotropic | > 0 at every CV | +0.0099, +0.0064, **(−0.0072 at CV 0.5, refused)** | PASS on 2 of 2 admitted |
+| P4 forgets its preparation | ≤ 0.005 | **0.000048 and 0.000039** | pass on 2 CVs, UNREADABLE at CV 0.5 |
+| P5 `α` branch asymmetry | reported | between/within = **2.98 and 3.62** | reported |
+
+### The numbers, all 18 cells (CV 0.5 is NOT admitted and is marked so)
+
+| CV | `φ_ss` (n = 6) | − `φ_iso`(3e-04) | `E4` (common ladder) | `γ̇` | `I` |
+|---|---|---|---|---|---|
+| 0.0 | **0.593254 ± 0.000641** | +0.00994 | 0.5745 | 6.00e-05 | 3.5e-03 |
+| 0.2 | **0.601989 ± 0.001313** | +0.00635 | 0.5850 | 1.18e-04 | 6.7e-03 |
+| 0.5 | *0.634438 ± 0.003833* | **−0.00717** | 0.6299 | 2.82e-04 | **1.5e-02** |
+
+### 🔴 Why P1 is unresolved, and why fixing the obvious thing would not rescue it
+
+**All six CV 0.5 cells fail the quasi-static bar**: `I` = 1.42–1.51e-02 against
+`I_MAX` = 1e-02. The cause is on the project's own hazard list — **`γ̇` is an OUTPUT of
+the packing, not a control**: `γ̇ = γ_max/(steps·dt)` and `dt` is set by the *smallest*
+grain, so widening the PSD raises the rate. Measured here: **4.70× across the CV ladder**,
+against the 4.78× the constant-volume campaign measured. So the high-CV arm was sheared
+4.7× faster than the low-CV arm and is not quasi-static.
+
+**A second refusal reason fired first on three of the six, and it is a defect in my own
+admission rule.** §3.1's `z_win_min ≥ 2.0` is an ABSOLUTE floor calibrated on the
+shakeout, which ran at CV 0 where `z_all` ≈ 4.3. But `z_series` records `z_ALL`, rattlers
+included, and **at CV 0.5 the rattler fraction is 0.42–0.52**, so `z_all` ≈ 2 *by
+construction* — which is this project's own M3 result (polydispersity removes grains from
+the force network rather than restructuring it) arriving as a spurious refusal. Read
+relatively, `z_win_min/z_ss` = **0.77–1.00 on all 18 cells** and `p_win_min/p*` =
+**0.29–0.65 on all 18**, against the shakeout's genuine unjamming signature of 0.02 and
+3e-05. **No cell in this run unjammed.**
+⚠ **But repairing the z floor does NOT rescue P1**, and saying so is the point: the
+quasi-static refusal applies to all six CV 0.5 cells independently. The rule defect is
+real and is not what decided the verdict. (`z_nr_series` is now recorded alongside
+`z_series` so the next rule can use the quantity it meant.)
+
+### What IS established
+
+- 🔑 **`φ_c` from a route with no `φ_J` in it, at two CV levels, reproducible across
+  seeds and preparations.** CV 0: 0.593254 ± 0.000641; CV 0.2: 0.601989 ± 0.001313.
+- 🔑 **P4 at 4.8e-05 and 3.9e-05.** The critical state forgets a preparation 0.09 apart in
+  `φ` to **five decimal places**. That is the defining property of a critical state,
+  measured rather than assumed, with 3 seeds on each side.
+- 🔑 **P2 at 0.00025.** `φ_ss`(CV 0) moved by a quarter of a thousandth between N = 600
+  and N = 1000, so the shakeout's S7 corroboration of `E4m` (|Δ| = 0.0033) is not a
+  finite-size artefact at that size. ⚠ Still not N = 1500.
+- **The admitted CV 0 → 0.2 contrast is +0.00874**, against the common ladder's `E4`
+  +0.0105 — the two routes agree to **0.0018** on the interval where both are admissible.
+  That is the strongest form the P1 comparison takes from this run.
+- **`α` is now more than a number**: the branch asymmetry (dilating 6.21 ± 1.14 and 7.02 ±
+  1.45; contracting 3.49 ± 0.684 and 3.14 ± 0.696) is **3.0–3.6× the within-branch seed
+  scatter** at both CVs. §4's P5 predicted the asymmetry would beat the scatter, and it
+  does. A pack that must dilate to keep flowing does so about twice as fast, per unit
+  strain, as one that must contract. ⚠ Refused CV 0.5 cells excluded; one `α` is NaN
+  (the fit refused, as designed).
+
+### 🆕 The flag worth carrying: `φ_ss` − `φ_iso` FALLS with CV and flips sign
+
++0.00994 (CV 0) → +0.00635 (CV 0.2) → **−0.00717 (CV 0.5, refused cells)**. If that
+survives a quasi-static run it is a **new statement**: steady shear reaches a denser state
+than isotropic compression at low polydispersity and a **looser** one at high
+polydispersity, i.e. the shear-minus-compression offset changes sign with CV. §4's P3
+pre-registered that a sign flip "would be a genuinely new statement about polydispersity
+and the critical state" — it appeared, on cells that are not admissible, which is the most
+one can say. It is also the first candidate explanation for **H-3**, the E4/E4m split that
+`PREREG_ZISO_2026-09-12.md` §8 left unexplained.
+
+### What the next run must do
+
+1. **`shear_steps` per CV so the rate is matched, not merely legal.** `I` ≤ 1e-02 at
+   CV 0.5 needs steps × 1.47 (300 000). *Matching* `γ̇` to CV 0's 6e-05 needs **steps ×
+   4.70** (940 000, ≈3900 s/cell) — **out of reach in this harness** (§2a) and therefore
+   an author-run job. Clearing the bar is achievable here; matching the rate is the better
+   science and must not be silently skipped.
+2. **A relative `z` floor** (`z_win_min/z_ss`, or `z_nr_series`) instead of the absolute
+   2.0, which refuses polydisperse packs for being polydisperse.
+3. **N = 1500** once the session-lifetime problem is solved (§2a).
+4. **The four isotropic rungs** {3e-05, 1e-04, 3e-04, 1e-03}, which turn the sign-flip
+   flag into `φ_c(p)` at four pressures with no estimator on either side.

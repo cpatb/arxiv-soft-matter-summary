@@ -256,6 +256,14 @@ class ShearState:
     servo_gain: float = float("nan")
     phi_series: list[float] = field(default_factory=list)
     edot_v_series: list[float] = field(default_factory=list)
+    # 🔴 Added 2026-09-12 after the production ladder. `z_series` records z_ALL, which
+    # includes rattlers, and at CV 0.5 a pack with a rattler fraction ~0.23 sits at
+    # z_all ~ 2 BY CONSTRUCTION (the project's own M3 result). An admission rule with an
+    # absolute floor on z_all therefore refuses the high-CV arm for being polydisperse
+    # rather than for unjamming -- the genuine unjamming signature in the shakeout was
+    # z_all -> 0.02 WITH p -> 1e-08, two orders lower. The non-rattler count is recorded
+    # beside it so the next run's rule can use the quantity it meant.
+    z_nr_series: list[float] = field(default_factory=list)
     phi_ss: float = float("nan")         # THE MEASUREMENT: phi_c(p) at steady state
     phi_ss_split: float = float("nan")   # the two halves of the steady window
     p_servo_err: float = float("nan")    # |<p>_ss/p_target - 1|
@@ -576,12 +584,13 @@ def shear_at_constant_pressure(cv: float, mu_p: float, p_hat_target: float, n: i
         O.run(take, wait=True)
         steps_done += take
         p_hat, tau_hat = _stress_hat(utils, young)
-        z_all, _, _, _ = _measure_network(O)
+        z_all, z_nr_now, _, _ = _measure_network(O)
         phi_now = float(1.0 - utils.porosity())
         st.gamma.append(gdot * O.dt * steps_done)
         st.p_hat_series.append(p_hat)
         st.tau_hat_series.append(tau_hat)
         st.z_series.append(z_all)
+        st.z_nr_series.append(z_nr_now)
         st.phi_series.append(phi_now)
         st.edot_v_series.append(float(edot))
         edot = servo_edot(p_hat, p_hat_target, gdot, gain=servo_gain)
