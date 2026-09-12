@@ -1,0 +1,118 @@
+=== grade_capfix.py — PREREG_DST_WINDOW_2026-09-09.md §5 H-1 ===
+   every bar is quoted from that file; none is computed here
+   635 records, 180 at the raised cap of 1000000
+=== THE CONTROL: raising a cap a run never reached must change nothing ===
+   15 old-cap cells, 12 new-cap, 12 comparable
+   -- (i) 2 cells STOPPED AT THE OLD CAP. These MUST move; that is
+          the knob doing its job, and they are not part of the control.
+      seed 2 p_hat 3e-05: phi 0.630649425 -> 0.630897017  |d| 2.48e-04   iters 200000 -> 211806   conv False -> True
+      seed 3 p_hat 3e-05: phi 0.633183843 -> 0.633235891  |d| 5.20e-05   iters 200000 -> 205276   conv False -> True
+   -- (ii) THE ACTUAL CONTROL: 10 cells stopped before the old cap.
+          Raising a cap a run never reached cannot change these.
+      seed 1 p_hat 3e-05: phi 0.631327162855 -> 0.631327162855  |d| 0.00e+00   iters 99466 -> 99466   IDENTICAL
+      seed 1 p_hat 1e-04: phi 0.635189408115 -> 0.635892622890  |d| 7.03e-04   iters 114606 -> 111381
+      seed 1 p_hat 3e-04: phi 0.631903103377 -> 0.636930788120  |d| 5.03e-03   iters 27831 -> 59566
+      seed 1 p_hat 1e-03: phi 0.643436442818 -> 0.642588959259  |d| 8.47e-04   iters 28991 -> 24676
+      seed 2 p_hat 1e-04: phi 0.633650411432 -> 0.633650411432  |d| 0.00e+00   iters 105141 -> 105141   IDENTICAL
+      seed 2 p_hat 3e-04: phi 0.632977750249 -> 0.635811491260  |d| 2.83e-03   iters 39021 -> 42586
+      seed 2 p_hat 1e-03: phi 0.642576422335 -> 0.641307685944  |d| 1.27e-03   iters 15446 -> 22526
+      seed 3 p_hat 1e-04: phi 0.631243416924 -> 0.631243416924  |d| 0.00e+00   iters 60811 -> 60811   IDENTICAL
+      seed 3 p_hat 3e-04: phi 0.634769790892 -> 0.634769790892  |d| 0.00e+00   iters 46536 -> 46536   IDENTICAL
+      seed 3 p_hat 1e-03: phi 0.639805389484 -> 0.639805389484  |d| 0.00e+00   iters 15006 -> 15006   IDENTICAL
+      5 bit-identical, 5 not; worst |dphi| = 5.028e-03 -> 🔴 control FAILS
+   -- (iii) WHAT THE FAILURE IS, because it is not the knob:
+      phi is identical EXACTLY WHEN the iteration count is identical: YES on all 10 cells.
+      So the TRAJECTORY is deterministic and the STOPPING is not -- the
+      convergence check fires at a different iteration between runs. That is
+      a stopping-rule artefact, the same family as a stopping rule quantized
+      by its own step, and it PRE-DATES this knob: the worst value here
+      (5.03e-03) is the SAME cell and the SAME size as the worst pre-existing
+      duplicate conflict measured before capfix ran. This run is a third
+      independent draw confirming it, not a new defect.
+      ⚠ CONSEQUENCE: the knob is NOT exonerated by this control, because the
+        control cannot separate the two effects at this cell. What can be
+        said is that the knob's effect, if any, is at or below the
+        pre-existing run-to-run spread of 5.03e-03 at CV = 0.
+
+=== CONVERGENCE: lognormal mu_p = 0, CV 0.5 must rise 0.33 -> > 0.8 ===
+   family      mu   cv    OLD cap        NEW cap
+   bidisperse 0.3  0.0    12/ 12 1.00        --   
+   bidisperse 0.3  0.1    12/ 12 1.00        --   
+   bidisperse 0.3  0.2    12/ 12 1.00        --   
+   bidisperse 0.3  0.3    12/ 12 1.00        --   
+   bidisperse 0.3  0.4    12/ 12 1.00        --   
+   bidisperse 0.3  0.5    12/ 12 1.00        --   
+   lognormal  0.0  0.0    13/ 15 0.87    12/ 12 1.00
+   lognormal  0.0  0.1     9/ 12 0.75        --   
+   lognormal  0.0  0.2     9/ 12 0.75        --   
+   lognormal  0.0  0.3     7/ 12 0.58    12/ 12 1.00
+   lognormal  0.0  0.4     5/ 12 0.42    11/ 12 0.92
+   lognormal  0.0  0.5     4/ 12 0.33    10/ 12 0.83   <- the bar: PASS
+   lognormal  0.3  0.0    13/ 13 1.00        --   
+   lognormal  0.3  0.1    12/ 12 1.00        --   
+   lognormal  0.3  0.2    12/ 12 1.00        --   
+   lognormal  0.3  0.3    12/ 12 1.00        --   
+   lognormal  0.3  0.4     9/ 12 0.75    12/ 12 1.00
+   lognormal  0.3  0.5     9/ 12 0.75    12/ 12 1.00
+   lognormal  1.0  0.0    12/ 12 1.00    12/ 12 1.00
+   lognormal  1.0  0.2        --       12/ 12 1.00
+   lognormal  1.0  0.5        --       12/ 12 1.00
+   lognormal  3.0  0.0    12/ 12 1.00        --   
+   uniform    0.0  0.0    10/ 12 0.83    12/ 12 1.00
+   uniform    0.0  0.1    10/ 12 0.83        --   
+   uniform    0.0  0.2     9/ 12 0.75        --   
+   uniform    0.0  0.3     8/ 12 0.67    12/ 12 1.00
+   uniform    0.0  0.4     7/ 12 0.58    12/ 12 1.00
+   uniform    0.0  0.5     2/ 12 0.17     9/ 12 0.75
+   uniform    0.3  0.0    12/ 12 1.00        --   
+   uniform    0.3  0.1    12/ 12 1.00        --   
+   uniform    0.3  0.2    12/ 12 1.00        --   
+   uniform    0.3  0.3    12/ 12 1.00        --   
+   uniform    0.3  0.4    11/ 12 0.92    12/ 12 1.00
+   uniform    0.3  0.5     6/ 12 0.50    12/ 12 1.00
+   ⚠ a cell that still fails at 1e6 iterations is NOT merely slow, and the
+     diagnosis in PREREG_DST_WINDOW §3 would be wrong for it.
+
+=== THE WINDOW at mu_p = 0 vs 0.3 (the production friction, the graded one) ===
+   cv    n_pairs  phi_0      phi_mu     W         cap(0/mu)
+   0.0   3        0.632371  0.574876  0.057495   [(1000000, 200000)]
+   0.1   3        0.637495  0.578113  0.059382   [(200000, 200000)]
+   0.2   3        0.645392  0.588050  0.057342   [(200000, 200000)]
+   0.3   3        0.658318  0.603985  0.054332   [(1000000, 200000)]
+   0.4   3        0.672622  0.619698  0.052923   [(1000000, 1000000)]
+   0.5   3        0.690401  0.636605  0.053796   [(1000000, 1000000)]
+   dW/dCV = -0.01168 +- 0.00351  (t = -3.33, n = 6 levels)
+   dphi_mu/dCV = +0.12838 +- 0.01266   (no window in its denominator)
+   W(CV=0) = 0.05750  =>  2.23 windows per unit CV, traverse dCV = 0.448
+   ⚠ CV = 0 carries a run-to-run spread of 0.0032 in W (PREREG_DST_WINDOW
+     §3(c)), and it sits at this slope's leverage end. Moving W(CV=0) across that
+     spread alone takes dW/dCV to [-0.01397, -0.00939] --
+     a systematic of +-0.00229 against a fit error
+     of +-0.00351.
+   under grade: the pre-repair value was -0.01690
+   -> THIRD BRANCH (declared in advance): partly real -- quote the repaired number and retract -0.0169 as an over-estimate
+
+=== THE WINDOW at mu_p = 0 vs 1.0 (the SATURATED friction -- Wyart-Cates' phi_mu) ===
+   cv    n_pairs  phi_0      phi_mu     W         cap(0/mu)
+   0.0   3        0.632371  0.559036  0.073334   [(1000000, 1000000)]
+   0.2   3        0.645392  0.572635  0.072757   [(200000, 1000000)]
+   0.5   3        0.690401  0.615247  0.075154   [(1000000, 1000000)]
+   dW/dCV = +0.00398 +- 0.00298  (t = +1.34, n = 3 levels)
+   dphi_mu/dCV = +0.11476 +- 0.02025   (no window in its denominator)
+   W(CV=0) = 0.07333  =>  1.56 windows per unit CV, traverse dCV = 0.639
+   ⚠ CV = 0 carries a run-to-run spread of 0.0032 in W (PREREG_DST_WINDOW
+     §3(c)), and it sits at this slope's leverage end. Moving W(CV=0) across that
+     spread alone takes dW/dCV to [+0.00104, +0.00693] --
+     a systematic of +-0.00295 against a fit error
+     of +-0.00298.
+   ⚠ no pre-registered bar exists for this friction; it is reported, not graded.
+     Its job is to say whether the WINDOW WIDTH used as a denominator in
+     PREREG_DST_WINDOW §1 should be read at 0.3 or at the saturated friction.
+
+🔴 THE CONTROL FAILED -- but NOT in the way the pre-registration imagined, and
+   'void' is the wrong word. Read (iii): the trajectory is deterministic and
+   the STOPPING is not, the effect pre-dates this knob, and the two cells that
+   legitimately changed were sitting AT the old cap. What the control cannot
+   do is exonerate the knob at CV = 0, because the knob's effect there is
+   below the pre-existing run-to-run spread. So the window verdicts are not
+   void; they carry an extra systematic at CV = 0, propagated above.

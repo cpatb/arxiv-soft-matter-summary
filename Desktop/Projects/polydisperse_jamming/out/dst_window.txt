@@ -1,0 +1,169 @@
+=== dst_window.py — the shear-thickening WINDOW, not its location ===
+⚠ phi_0/phi_mu here are ISOTROPIC jamming fractions at mu_p = 0 and 0.3.
+  The Wyart-Cates reading of them is a HYPOTHESIS (see module docstring).
+
+=== lognormal: the two isotropic ladders ===
+   cv   mu_p  n  n_ladder_min  phi_J      sd        thin?
+  0.0  0.0  3      4       0.632371  0.000722   
+  0.1  0.0  3      3       0.637495  0.000303   THIN
+  0.2  0.0  3      3       0.645392  0.000685   THIN
+  0.3  0.0  3      4       0.658318  0.002178   
+  0.4  0.0  3      3       0.672622  0.001351   THIN
+  0.5  0.0  3      3       0.690401  0.004665   THIN
+  0.0  0.3  3      4       0.574533  0.000650   
+  0.1  0.3  3      4       0.578113  0.001497   
+  0.2  0.3  3      4       0.588050  0.000480   
+  0.3  0.3  3      4       0.603985  0.002775   
+  0.4  0.3  3      4       0.619698  0.003349   
+  0.5  0.3  3      4       0.636605  0.003979   
+
+=== lognormal: the shear-thickening window W = phi_0 - phi_mu ===
+   cv   phi_0 (n)      phi_mu (n)     W        +-se      flags
+  0.0  0.632371(3)  0.574533(3)  0.057837  0.000290   
+  0.1  0.637495(3)  0.578113(3)  0.059382  0.000795   THIN-LADDER
+  0.2  0.645392(3)  0.588050(3)  0.057342  0.000653   THIN-LADDER
+  0.3  0.658318(3)  0.603985(3)  0.054332  0.000706   
+  0.4  0.672622(3)  0.619698(3)  0.052923  0.001154   THIN-LADDER
+  0.5  0.690401(3)  0.636605(3)  0.053796  0.000435   THIN-LADDER
+
+   slopes over CV, ALL 6 levels and the 6 without a single-seed arm, side by side.
+   ⚠ `difference` is the UNPAIRED statistic (two arm slopes differenced); `dW/dCV`
+     is the PAIRED one (per-seed differences fitted directly). The arms share seeds,
+     so the paired one is correct and the unpaired one is conservative by the shared
+     realisation variance. Both are printed so the gap is visible.
+   all             : dphi_0/dCV = +0.11670 +- 0.01165   dphi_mu/dCV = +0.12887 +- 0.01240
+                     difference  = -0.01217 +- 0.01701  (t = -0.72, n = 6);  dW/dCV = -0.01217 +- 0.00333
+   no single-seed  : dphi_0/dCV = +0.11670 +- 0.01165   dphi_mu/dCV = +0.12887 +- 0.01240
+                     difference  = -0.01217 +- 0.01701  (t = -0.72, n = 6);  dW/dCV = -0.01217 +- 0.00333
+
+   THE TRAVERSE, at fixed phi, using the 'no single-seed' slopes and W(CV=0) = 0.05784:
+      the window is 0.0578 wide in phi;
+      polydispersity moves phi_mu at +0.1289 per unit CV, i.e. 2.23 windows per unit CV.
+      dCV needed to move a material one FULL window at fixed phi: 0.449
+      at x = 0.0 (phi = 0.5745):  dx/dCV = -2.228
+      at x = 0.5 (phi = 0.6035):  dx/dCV = -2.123
+      at x = 1.0 (phi = 0.6324):  dx/dCV = -2.018
+      ⚠ x is a RATIO whose denominator W is itself moving; the absolute companion is dphi_mu/dCV = +0.12887, quoted above and independent of W.
+
+   IS W CONSTANT IN CV?  dW/dCV = -0.01217 +- 0.00333, t = -3.65 on n = 6 levels.
+      RESOLVED as a CHANGE: over CV 0.0 -> 0.5 the window moves by -0.0061 against W = 0.0578, i.e. -11 % of itself.
+      Measured endpoints over the FITTED range: W = 0.05784 -> 0.05380 (all 6 levels end at 0.05380).
+      ⚠ 4 of 6 levels are THIN (a phi_J extrapolation from <= 3 ladder
+        points has 0-1 residual dof and reports r2 = 1 by construction): cv 0.1, 0.2, 0.4, 0.5.
+
+   the lab's bench phi = 0.440 against this window:
+   cv   phi-phi_mu     x      class       phi_eff/phi needed to ENTER / to JAM
+  0.0   -0.1345   -2.33   CST only    1.306x / 1.437x   (volumetric compaction 23 % / 30 %)
+  0.1   -0.1381   -2.33   CST only    1.314x / 1.449x   (volumetric compaction 24 % / 31 %)
+  0.2   -0.1481   -2.58   CST only    1.336x / 1.467x   (volumetric compaction 25 % / 32 %)
+  0.3   -0.1640   -3.02   CST only    1.373x / 1.496x   (volumetric compaction 27 % / 33 %)
+  0.4   -0.1797   -3.40   CST only    1.408x / 1.529x   (volumetric compaction 29 % / 35 %)
+  0.5   -0.1966   -3.65   CST only    1.447x / 1.569x   (volumetric compaction 31 % / 36 %)
+
+   CV*, the width at which a material of EFFECTIVE fraction phi_eff leaves
+   the window from above:   CV* = (phi_eff - 0.5745) / 0.1289
+      phi_eff = 0.58  ->  CV* = 0.04 +- 0.00 (slope error only)
+      phi_eff = 0.60  ->  CV* = 0.20 +- 0.02 (slope error only)
+      phi_eff = 0.62  ->  CV* = 0.35 +- 0.03 (slope error only)
+      phi_eff = 0.64  ->  CV* = 0.51 +- 0.05 (slope error only)
+   ⚠ phi_eff is NOT measured. This converts an unmeasured densification into
+     a predicted width, it does not supply one.
+
+=== uniform: the two isotropic ladders ===
+   cv   mu_p  n  n_ladder_min  phi_J      sd        thin?
+  0.0  0.0  3      4       0.632371  0.000722   
+  0.1  0.0  3      3       0.635985  0.000481   THIN
+  0.2  0.0  3      3       0.644209  0.000358   THIN
+  0.3  0.0  3      4       0.652395  0.001027   
+  0.4  0.0  3      4       0.655838  0.000539   
+  0.5  0.0  3      3       0.656218  0.002835   THIN
+  0.0  0.3  3      4       0.575136  0.001399   
+  0.1  0.3  3      4       0.578957  0.001507   
+  0.2  0.3  3      4       0.586646  0.002632   
+  0.3  0.3  3      4       0.595909  0.002205   
+  0.4  0.3  3      4       0.597440  0.000643   
+  0.5  0.3  3      4       0.599337  0.001397   
+
+=== uniform: the shear-thickening window W = phi_0 - phi_mu ===
+   cv   phi_0 (n)      phi_mu (n)     W        +-se      flags
+  0.0  0.632371(3)  0.575136(3)  0.057234  0.000466   
+  0.1  0.635985(3)  0.578957(3)  0.057028  0.000593   THIN-LADDER
+  0.2  0.644209(3)  0.586646(3)  0.057562  0.001379   THIN-LADDER
+  0.3  0.652395(3)  0.595909(3)  0.056486  0.000684   
+  0.4  0.655838(3)  0.597440(3)  0.058398  0.000134   
+  0.5  0.656218(3)  0.599337(3)  0.056880  0.000835   THIN-LADDER
+
+   slopes over CV, ALL 6 levels and the 6 without a single-seed arm, side by side.
+   ⚠ `difference` is the UNPAIRED statistic (two arm slopes differenced); `dW/dCV`
+     is the PAIRED one (per-seed differences fitted directly). The arms share seeds,
+     so the paired one is correct and the unpaired one is conservative by the shared
+     realisation variance. Both are printed so the gap is visible.
+   all             : dphi_0/dCV = +0.05342 +- 0.00673   dphi_mu/dCV = +0.05306 +- 0.00672
+                     difference  = +0.00036 +- 0.00952  (t = +0.04, n = 6);  dW/dCV = +0.00036 +- 0.00176
+   no single-seed  : dphi_0/dCV = +0.05342 +- 0.00673   dphi_mu/dCV = +0.05306 +- 0.00672
+                     difference  = +0.00036 +- 0.00952  (t = +0.04, n = 6);  dW/dCV = +0.00036 +- 0.00176
+
+   THE TRAVERSE, at fixed phi, using the 'no single-seed' slopes and W(CV=0) = 0.05723:
+      the window is 0.0572 wide in phi;
+      polydispersity moves phi_mu at +0.0531 per unit CV, i.e. 0.93 windows per unit CV.
+      dCV needed to move a material one FULL window at fixed phi: 1.079
+      at x = 0.0 (phi = 0.5751):  dx/dCV = -0.927
+      at x = 0.5 (phi = 0.6038):  dx/dCV = -0.930
+      at x = 1.0 (phi = 0.6324):  dx/dCV = -0.933
+      ⚠ x is a RATIO whose denominator W is itself moving; the absolute companion is dphi_mu/dCV = +0.05306, quoted above and independent of W.
+
+   IS W CONSTANT IN CV?  dW/dCV = +0.00036 +- 0.00176, t = +0.21 on n = 6 levels.
+      NOT RESOLVED. |dW/dCV| < 0.00388 at ~2 se, i.e. over CV 0.0 -> 0.5 the window changes by less
+      than 0.0019 against W = 0.0572 -- 3 % of itself. That is a BOUND on a change,
+      not a demonstration that W is the same number at every CV.
+      ⚠ 3 of 6 levels are THIN (a phi_J extrapolation from <= 3 ladder
+        points has 0-1 residual dof and reports r2 = 1 by construction): cv 0.1, 0.2, 0.5.
+
+   the lab's bench phi = 0.440 against this window:
+   cv   phi-phi_mu     x      class       phi_eff/phi needed to ENTER / to JAM
+  0.0   -0.1351   -2.36   CST only    1.307x / 1.437x   (volumetric compaction 23 % / 30 %)
+  0.1   -0.1390   -2.44   CST only    1.316x / 1.445x   (volumetric compaction 24 % / 31 %)
+  0.2   -0.1466   -2.55   CST only    1.333x / 1.464x   (volumetric compaction 25 % / 32 %)
+  0.3   -0.1559   -2.76   CST only    1.354x / 1.483x   (volumetric compaction 26 % / 33 %)
+  0.4   -0.1574   -2.70   CST only    1.358x / 1.491x   (volumetric compaction 26 % / 33 %)
+  0.5   -0.1593   -2.80   CST only    1.362x / 1.491x   (volumetric compaction 27 % / 33 %)
+
+   CV*, the width at which a material of EFFECTIVE fraction phi_eff leaves
+   the window from above:   CV* = (phi_eff - 0.5751) / 0.0531
+      phi_eff = 0.58  ->  CV* = 0.09 +- 0.01 (slope error only)
+      phi_eff = 0.60  ->  CV* = 0.47 +- 0.06 (slope error only)
+      phi_eff = 0.62  ->  CV* = 0.85 +- 0.11 (slope error only)
+      phi_eff = 0.64  ->  CV* = 1.22 +- 0.15 (slope error only)
+   ⚠ phi_eff is NOT measured. This converts an unmeasured densification into
+     a predicted width, it does not supply one.
+
+=== WHICH mu_p IS `frictional`? the window is a DEFINITION, so price it ===
+   Wyart-Cates' phi_mu is the FULLY frictional jamming point. This script's
+   default reads it at mu_p = 0.3, which is the production friction, NOT the
+   saturated one -- so the window it reports is the NARROWEST admissible.
+   at CV = 0, lognormal, N = 1500: phi_0 = 0.632763 (n 6)
+   mu_p   phi_mu (n)     W        lab x     dCV to traverse
+   0.3   0.574533(3)  0.0582  -2.31     0.50
+   1.0   0.559036(6)  0.0737  -1.61     0.63
+   3.0   0.557423(3)  0.0753  -1.56     0.64
+   phi_J SATURATES in friction (the mu_p 1 -> 3 step is inside seed scatter),
+   so the window is bounded: 0.0586 (mu_p 0.3) to 0.0757 (saturated), a factor
+   1.29. Every conclusion in the docstring survives that spread IN KIND -- the
+   traverse is 0.50 to 0.65 in CV either way, and the lab sits 1.6 to 2.3
+   windows BELOW the window -- but no single number should be quoted without
+   naming the mu_p it was read at.
+   ⚠ NOT measured: dphi_mu/dCV at the SATURATED friction. The mu_p = 1 and 3
+     ladders exist only at CV = 0, so the traverse above mixes a saturated
+     window width with a mu_p = 0.3 slope. That is the cheapest remaining gap.
+
+=== families side by side (the zero-skew control) ===
+   lognormal  dW/dCV = -0.01217 +- 0.00333  (n = 6 CV levels)
+   uniform    dW/dCV = +0.00036 +- 0.00176  (n = 6 CV levels)
+
+   ⚠ Singh et al. (arXiv:2510.16464) report phi_J^mu NON-monotonic in
+     polydispersity for ZERO-SKEW distributions -- which is the `uniform` row,
+     not the `lognormal` one. A linear slope is the wrong summary if that
+     carries over; the per-level table above is the primary output.
+   ⚠ Guy et al. report Wyart-Cates FAILING for suspensions with a predominant
+     fraction of large particles, i.e. exactly the broad-lognormal end of this
+     table. LITERATURE_2026-08-31.md §1.

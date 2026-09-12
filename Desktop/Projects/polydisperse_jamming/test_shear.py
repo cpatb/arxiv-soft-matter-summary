@@ -37,6 +37,16 @@ def test_ladder_centres_match_phase2_summary():
         for row in csv.DictReader(fh):
             if int(row["n_requested"]) != 1500:
                 continue
+            # ⚠ DEFAULT CAP ONLY, added 2026-09-09. The `capfix` campaign re-measured
+            # part of this grid at PJ_MAX_ITER = 1e6 and analyse_phase2 now keeps the
+            # two caps as separate rows. PHI_J_ISO records WHERE THE SHEAR LADDERS WERE
+            # ACTUALLY PLACED, which was the default-cap measurement, so this test must
+            # compare against that row -- updating PHI_J_ISO to the repaired values
+            # would make the constant disagree with every ladder already on disk.
+            # test_a_REPAIRED_phi_J_set_exists_and_differs below keeps the pending
+            # decision visible.
+            if int(row.get("max_iter", 200000) or 200000) != 200000:
+                continue
             key = (row["family"], round(float(row["cv_nom"]), 3),
                    round(float(row["mu_p"]), 3))
             table[key] = float(row["phi_J"])
@@ -258,6 +268,13 @@ def test_Z_ISO_MEASURED_is_the_artifact_not_a_remembered_number():
     for r in recs:
         by[(r.get("family", "lognormal"), round(float(r["cv"]), 3),
             round(float(r["mu_p"]), 3), int(r["n_requested"]))].append(r)
+    # ⚠ DEFAULT CAP ONLY, same reason as PHI_J_ISO above: Z_ISO_MEASURED is the target
+    # E4m used for every phi_c already reported, and it was measured under the default
+    # cap. The repaired count is a real improvement and adopting it would move E4m
+    # everywhere, including the common-ladder verdict -- that is a decision for the
+    # author, recorded in NEXT_STEPS_2026-09-11.md, not a silent test update.
+    by = {k: [r for r in v if int(r.get("max_iter", 200000)) == 200000]
+          for k, v in by.items()}
     checked = 0
     for (fam, cv), tabled in A.Z_ISO_MEASURED.items():
         rs = by.get((fam, cv, A.Z_ISO_MEASURED_MU, M.N_REQ))
@@ -266,6 +283,36 @@ def test_Z_ISO_MEASURED_is_the_artifact_not_a_remembered_number():
         assert zi == pytest.approx(tabled, abs=5e-4), (fam, cv, zi, tabled)
         checked += 1
     assert checked == len(A.Z_ISO_MEASURED) == 18
+
+
+def test_a_REPAIRED_phi_J_set_exists_and_differs():
+    """Keep the pending decision visible: a better phi_J now exists and is NOT adopted.
+
+    `capfix` re-ran the isotropic grid at PJ_MAX_ITER = 1e6 and repaired a frictionless
+    arm that was censored 0.92 -> 0.33 across CV. The two tests above deliberately read
+    the DEFAULT-cap rows, because that is where the shear ladders were placed. This test
+    fails the day someone deletes the repaired rows (which would hide the decision) AND
+    the day the two sets stop differing (which would mean the repair did nothing).
+    """
+    path = os.path.join(HERE, "out", "phase2_summary.csv")
+    rows = [r for r in csv.DictReader(open(path, encoding="utf-8"))
+            if int(r["n_requested"]) == 1500]
+    caps = {int(r.get("max_iter", 200000) or 200000) for r in rows}
+    assert 1_000_000 in caps, (
+        "the repaired (PJ_MAX_ITER = 1e6) rows are gone from phase2_summary.csv; "
+        "regenerate with analyse_phase2.py or the pending decision is invisible")
+    def get(cap):
+        return {(r["family"], round(float(r["cv_nom"]), 3), round(float(r["mu_p"]), 3)):
+                float(r["phi_J"]) for r in rows
+                if int(r.get("max_iter", 200000) or 200000) == cap}
+    old, new = get(200_000), get(1_000_000)
+    shared = sorted(set(old) & set(new))
+    assert shared, "no cell was re-run at both caps"
+    diffs = {k: new[k] - old[k] for k in shared}
+    worst = max(diffs, key=lambda k: abs(diffs[k]))
+    assert abs(diffs[worst]) > 1e-6, (
+        f"the repaired and default phi_J agree to {abs(diffs[worst]):.2e} on every "
+        f"shared cell; the repair changed nothing and this test is vacuous")
 
 
 def test_the_measured_isostatic_count_is_NOT_the_theory_constant_at_mu_0p3():

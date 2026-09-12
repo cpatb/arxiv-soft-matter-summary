@@ -1,0 +1,127 @@
+=== grade_common_ladder.py — PREREG_COMMON_LADDER_2026-09-09.md ===
+   every bar is quoted from that file; none is computed here
+=== §6 INTEGRITY (the pre-registration's own uninterpretability bars) ===
+   records: 54, errored 0, usable 54 (expected 54)
+   worst |phi_realised - grid| = 8.22e-05 (bar 1e-04) -> OK
+   cv 0.0: seeds [1, 2, 3], 6 rungs [0.545, 0.57, 0.5951, 0.62, 0.645, 0.67]
+   cv 0.2: seeds [1, 2, 3], 7 rungs [0.545, 0.57, 0.595, 0.62, 0.645, 0.67, 0.6701]
+   cv 0.5: seeds [1, 2, 3], 6 rungs [0.545, 0.57, 0.595, 0.62, 0.645, 0.67]
+
+=== §3 THE VERDICT: delta phi_c on a window that cannot move with CV ===
+   reference (centred ladders): E4 +0.0505, E4m +0.0410, midpoint +0.0458
+   H_inherit predicts [-0.0150, +0.0150];  H_real predicts [+0.0308, +0.0608]
+
+   -- E4 (PRIMARY)
+      ungated      d = +0.0554  -> H_real
+                   cv0.0=0.5745+-0.0015(n3)  cv0.2=0.5850+-0.0010(n3)  cv0.5=0.6299+-0.0048(n3)
+      quasistatic  unresolved (n = 0, 0, 0)
+      steady       d = +0.0521  -> H_real
+                   cv0.0=0.5744+-0.0013(n3)  cv0.2=0.5853(n1)  cv0.5=0.6265+-0.0050(n3)
+      both         unresolved (n = 0, 0, 0)
+   -- E4m
+      ungated      d = +0.0497  -> H_real
+                   cv0.0=0.5902+-0.0049(n3)  cv0.2=0.5993+-0.0014(n3)  cv0.5=0.6400+-0.0057(n3)
+      quasistatic  d = +0.0506  -> H_real
+                   cv0.0=0.5958(n1)  cv0.2=0.6005(n1)  cv0.5=0.6464(n1)
+      steady       d = +0.0494  -> H_real
+                   cv0.0=0.5896+-0.0009(n3)  cv0.2=0.5966(n1)  cv0.5=0.6390+-0.0067(n3)
+      both         unresolved (n = 0, 0, 1)
+   -- E2  [reported, NOT quoted -- window-dependent]
+      ungated      unresolved (n = 0, 0, 0)
+      quasistatic  unresolved (n = 3, 1, 0)
+      steady       unresolved (n = 1, 1, 0)
+      both         unresolved (n = 0, 0, 0)
+   -- E3
+      ungated      unresolved (n = 0, 0, 3)
+      quasistatic  unresolved (n = 3, 3, 0)
+      steady       unresolved (n = 0, 2, 3)
+      both         unresolved (n = 3, 3, 0)
+
+   §3 requires the call to hold on E4 AND E4m. Summary:
+      E4: ungated=H_real, steady=H_real
+      E4m: ungated=H_real, quasistatic=H_real, steady=H_real
+   distinct calls across E4/E4m and all gate sets: ['H_real']
+
+=== §5a WINDOW TEST: drop the bottom rung, E4 must move < 0.01 ===
+   cv 0.0 seed 1: E4 0.5751 -> 0.5751  move +0.0000
+   cv 0.0 seed 2: E4 0.5729 -> 0.5729  move +0.0000
+   cv 0.0 seed 3: E4 0.5757 -> 0.5757  move +0.0000
+   cv 0.2 seed 1: E4 0.5862 -> 0.5862  move +0.0000
+   cv 0.2 seed 2: E4 0.5843 -> 0.5843  move +0.0000
+   cv 0.2 seed 3: E4 0.5846 -> 0.5846  move +0.0000
+   cv 0.5 seed 1: E4 0.6261 -> 0.6261  move +0.0000
+   cv 0.5 seed 2: E4 0.6353 -> 0.6353  move +0.0000
+   cv 0.5 seed 3: E4 0.6284 -> 0.6284  move +0.0000
+   worst move 0.0000 over 9 groups, bar 0.01 -> PASS
+   🔴 THIS TEST IS VACUOUS AS WRITTEN, and the exact zero is the proof.
+      E4 interpolates between the two rungs that BRACKET z_nr = 4. Those
+      are rungs 2-3 at cv 0 and 0.2 and rungs 4-5 at cv 0.5, so deleting
+      rung 1 cannot touch the interpolation and the answer must come back
+      bit-identical for ANY correct implementation. A routine returning a
+      constant would pass it too. The number stays printed; the
+      non-vacuous version is `placement_test` below, which moves the whole
+      ladder instead of trimming it.
+
+=== §5a' PLACEMENT TEST (the version that can fail): E4 must move < 0.01 ===
+   cv 0.0 seed 1: common [0.545,0.670] -> 0.5751   centred [0.515,0.695] -> 0.5778   diff -0.0028
+   cv 0.0 seed 2: common [0.545,0.670] -> 0.5729   centred [0.515,0.695] -> 0.5758   diff -0.0029
+   cv 0.0 seed 3: common [0.545,0.670] -> 0.5757   centred [0.515,0.695] -> 0.5754   diff +0.0003
+   cv 0.2 seed 1: common [0.545,0.670] -> 0.5862   centred [0.528,0.708] -> 0.5876   diff -0.0014
+   cv 0.2 seed 2: common [0.545,0.670] -> 0.5843   centred [0.528,0.708] -> 0.5881   diff -0.0038
+   cv 0.2 seed 3: common [0.545,0.670] -> 0.5846   centred [0.528,0.708] -> 0.5860   diff -0.0014
+   cv 0.5 seed 1: common [0.545,0.670] -> 0.6261   centred [0.577,0.757] -> 0.6252   diff +0.0009
+   cv 0.5 seed 2: common [0.545,0.670] -> 0.6353   centred [0.577,0.757] -> 0.6320   diff +0.0033
+   cv 0.5 seed 3: common [0.545,0.670] -> 0.6284   centred [0.577,0.757] -> 0.6233   diff +0.0051
+   worst |move| 0.0051 over 9 cells, bar 0.01 -> PASS
+   ⚠ and it is NOT zero (0.0003 to 0.0051), so unlike §5a
+     this test had room to fail and did not.
+
+=== §5b P3 AT MATCHED phi (identical TARGETS; realised mismatch below) ===
+     phi     p_ss(cv0)   p_ss(cv0.5)   ratio    Z_nr 0 -> 0.5   rattlers 0 -> 0.5
+   0.545   4.6999e-07  1.3861e-06      0.3x   3.00 -> 2.39   0.386 -> 0.944   (below 0.595: EXCLUDED by §5b)
+   0.570   2.2931e-06  2.8741e-06      0.8x   3.82 -> 2.55   0.159 -> 0.863   (below 0.595: EXCLUDED by §5b)
+   0.595   4.6049e-04  8.0152e-06     57.5x   4.83 -> 3.11   0.048 -> 0.715
+   0.620   7.0244e-03  3.9569e-05    177.5x   5.83 -> 3.62   0.007 -> 0.562
+   0.645   1.3488e-02  8.1407e-04     16.6x   6.30 -> 4.59   0.002 -> 0.447
+   0.670   2.0339e-02  6.4316e-03      3.2x   6.70 -> 5.45   0.001 -> 0.288
+   headline range over the rungs at/above 0.595: 3.2x to 177.5x
+   §5b predicted every one of these > 1: PASS
+
+=== §5c THE FIT-FREE BRACKET (quote this if every estimator refuses) ===
+   cv 0.0:
+      phi 0.545  p_ss 4.700e-07  z_nr 3.00  (n 3)
+      phi 0.570  p_ss 2.293e-06  z_nr 3.82  (n 3)
+      phi 0.595  p_ss 4.605e-04  z_nr 4.83  (n 3)
+      ^^ z_nr crosses 4 between 0.570 and 0.595
+      phi 0.620  p_ss 7.024e-03  z_nr 5.83  (n 3)
+      phi 0.645  p_ss 1.349e-02  z_nr 6.30  (n 3)
+      phi 0.670  p_ss 2.034e-02  z_nr 6.70  (n 3)
+   cv 0.2:
+      phi 0.545  p_ss 8.033e-07  z_nr 2.64  (n 3)
+      phi 0.570  p_ss 3.438e-06  z_nr 3.53  (n 3)
+      phi 0.595  p_ss 3.629e-05  z_nr 4.30  (n 3)
+      ^^ z_nr crosses 4 between 0.570 and 0.595
+      phi 0.620  p_ss 4.110e-03  z_nr 5.52  (n 3)
+      phi 0.645  p_ss 1.069e-02  z_nr 6.03  (n 3)
+      phi 0.670  p_ss 1.778e-02  z_nr 6.45  (n 3)
+   cv 0.5:
+      phi 0.545  p_ss 1.386e-06  z_nr 2.39  (n 3)
+      phi 0.570  p_ss 2.874e-06  z_nr 2.55  (n 3)
+      phi 0.595  p_ss 8.015e-06  z_nr 3.11  (n 3)
+      phi 0.620  p_ss 3.957e-05  z_nr 3.62  (n 3)
+      phi 0.645  p_ss 8.141e-04  z_nr 4.59  (n 3)
+      ^^ z_nr crosses 4 between 0.620 and 0.645
+      phi 0.670  p_ss 6.432e-03  z_nr 5.45  (n 3)
+
+=== H-3 (PREREG_DST_WINDOW_2026-09-09.md): shear vs compression, same CV ===
+   bar: the offset is CONSTANT in CV to within 0.010
+   E4 cv 0.0: phi_c 0.5745 - phi_J_iso 0.5745 = +0.0000 (n 3)
+   E4 cv 0.2: phi_c 0.5850 - phi_J_iso 0.5881 = -0.0030 (n 3)
+   E4 cv 0.5: phi_c 0.6299 - phi_J_iso 0.6369 = -0.0069 (n 3)
+   E4: offset spans 0.0069 -> CONSTANT (H-3 passes)
+   E4m cv 0.0: phi_c 0.5902 - phi_J_iso 0.5745 = +0.0157 (n 3)
+   E4m cv 0.2: phi_c 0.5993 - phi_J_iso 0.5881 = +0.0113 (n 3)
+   E4m cv 0.5: phi_c 0.6400 - phi_J_iso 0.6369 = +0.0031 (n 3)
+   E4m: offset spans 0.0126 -> 🔴 MOVES WITH CV
+   ⚠ this comparison is only meaningful on the COMMON ladder. On the centred
+     ladders it is forced, because they are centred on these same phi_J_iso.

@@ -454,6 +454,48 @@ Note that §2's revival of M2 as "M2′" was, strictly, a revival of *both*. The
 statement until E-3 is run: **the width acts through the packing, and whether it acts
 through the pore fluid or through the viscosity is open.**
 
+## 7b. 🆕 A FOURTH candidate, added 2026-09-09 — the window, not the edge
+
+`PREREG_DST_WINDOW_2026-09-09.md`, `dst_window.py` → `out/dst_window.txt`.
+
+M1, M2a and M2′ all ask where `φ` sits relative to **one** packing fraction. Wyart–Cates
+shear thickening turns on **two** — the frictionless `φ_0` and the frictional `φ_μ` — and
+it is the position *between* them that sets the **type** of thickening (CST below `φ_μ`,
+DST/shear-jamming between, jammed above `φ_0`) rather than its size.
+
+Read off this project's own isotropic ladders at `μ_p` = 0 and 0.3 (paired per seed):
+
+```
+   mu_p = 0.3 : W = 0.0575  dphi_mu/dCV = +0.128 +- 0.013  -> 2.23 windows/CV
+   mu_p = 1.0 : W = 0.0733  dphi_mu/dCV = +0.115 +- 0.020  -> 1.56 windows/CV
+   => dCV = 0.45 to 0.64 traverses the WHOLE window at fixed phi
+   (mu_p = 1 is the SATURATED friction, i.e. Wyart-Cates' phi_mu as this protocol
+    reaches it; phi_J stops moving between mu_p 1 and 3. REPAIRED numbers, capfix,
+    180 cells -- PREREG_DST_WINDOW_2026-09-09.md section 7.)
+```
+
+**M4:** the window is narrow and rigid, and polydispersity slides it bodily upward about
+twice as fast as it is wide, so a modest widening carries a material clean across it —
+a **threshold in CV**, with no pore fluid involved. Its own discriminator is the **shape
+of the flow curve** (S-shaped ⇄ monotonic on a rheometer), which M2a does not predict and
+which needs no pressure transducer. See the decision tree in that file's §5.
+
+⚠ **Two things it does NOT do, said plainly.** (a) It does not rescue the lab's working
+point: at `φ` = 0.44 the material is 1.6–2.3 window-widths *below* the window at every CV
+measured, and raising CV moves it further below, not across — which is a point *for* M2a
+at the lab's stated `φ`, not for M4. It converts §6b's gap into a requirement (impact must
+supply 31 % more packing fraction, 23 % volumetric compaction, merely to reach the bottom
+edge). (b) 🔑 **`dW/dCV` is REPAIRED and the answer improves M4.** The frictionless arm was
+censored 0.92 → 0.33 across CV against 1.00 → 0.75 at `μ_p` = 0.3; `capfix` took it to
+0.83–1.00 everywhere. At `μ_p` = 0.3 the narrowing survives but shrinks, −0.0117 ± 0.0035
+against −0.0169 (31 % of it was the censoring, ≈28 % predicted in advance). **At the
+SATURATED friction the window is FLAT** (+0.0040 ± 0.0030, t = +1.34, not resolved) — so
+the rigid-window premise M4 needs is measured, not assumed. ⚠ A third defect remains:
+the isotropic protocol is not deterministic at CV = 0 (the trajectory is, the STOPPING is
+not), which puts a 0.0032 run-to-run spread on `W`(CV = 0).
+**The traverse number does not depend on that row** — `dφ_μ/dCV` has no window in its
+denominator.
+
 ---
 
 ## 8. Results and grading of P1–P7

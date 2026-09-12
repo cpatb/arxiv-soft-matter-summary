@@ -34,6 +34,7 @@ import time
 
 import numpy as np
 
+import packing
 from packing import build_and_compress
 
 OUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
@@ -120,7 +121,14 @@ def cell_key(cv: float, mu: float, seed: int, p_hat: float, n: int,
     # The family suffix is omitted for lognormal so that keys written before
     # the uniform family existed still match and stay resumable.
     base = f"cv{cv:.3f}_mu{mu:.3f}_s{seed}_p{p_hat:.3e}_N{n}"
-    return base if family == "lognormal" else f"{base}_{family}"
+    key = base if family == "lognormal" else f"{base}_{family}"
+    # The iteration cap is part of the protocol, so it is part of the key -- but ONLY
+    # when it is non-default, so every key written before 2026-09-09 still matches and
+    # stays resumable. Without this a re-run at a higher cap would collide with the
+    # capped record it exists to replace, and analyse_phase2's dedup keeps whichever
+    # shard it read last.
+    cap = packing.max_iter()
+    return key if cap == packing.MAX_ITER else f"{key}_it{cap}"
 
 
 def load_done(path: str) -> set[str]:

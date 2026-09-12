@@ -96,6 +96,7 @@ def load_all() -> list[dict]:
     """
     by_key: dict[str, dict] = {}
     dupes = 0
+    conflicts: list[tuple[str, float, float]] = []
     files = sorted(glob.glob(os.path.join(OUT, "phase2*.jsonl")))
     n_lines = 0
     for f in files:
@@ -114,10 +115,35 @@ def load_all() -> list[dict]:
                     continue
                 if k in by_key:
                     dupes += 1
+                    # 🔴 2026-09-09. This function's docstring said duplicates are
+                    # "genuinely redundant" because "the protocol is deterministic
+                    # given the seed". IT IS NOT. 14 duplicated keys return a
+                    # DIFFERENT phi and a different iteration count from the same
+                    # (cv, mu, seed, p_hat, N) -- all 14 at CV = 0.0, worst 5.0e-03,
+                    # median 2.3e-03, against a seed scatter of 2.2e-04 at that cell.
+                    # Which one survives is set by the FILENAME SORT ORDER, and the
+                    # spread it puts on W(CV = 0) = phi_J(mu 0) - phi_J(mu 0.3) is
+                    # 0.0032, i.e. 11x the quoted standard error. Silently keeping the
+                    # last is what hid it; the disagreements are now counted and the
+                    # worst is printed.
+                    if not np.isclose(r.get("phi", np.nan),
+                                      by_key[k].get("phi", np.nan),
+                                      rtol=0, atol=1e-12, equal_nan=True):
+                        conflicts.append((k, float(by_key[k]["phi"]), float(r["phi"])))
                     continue
                 by_key[k] = r
     print(f"loaded {n_lines} lines from {len(files)} shard files -> "
           f"{len(by_key)} unique cells ({dupes} duplicates dropped)")
+    if conflicts:
+        worst = max(conflicts, key=lambda c: abs(c[2] - c[1]))
+        med = float(np.median([abs(c[2] - c[1]) for c in conflicts]))
+        cvs = sorted({k.split("_")[0] for k, _, _ in conflicts})
+        print(f"   🔴 NON-DETERMINISM: {len(conflicts)} of {dupes} duplicated keys "
+              f"return a DIFFERENT phi. worst |dphi| = {abs(worst[2] - worst[1]):.2e} "
+              f"({worst[0]}), median {med:.2e}. Affected cv values: {cvs}.")
+        print(f"      Which record survives is set by the filename sort order. See "
+              f"PREREG_DST_WINDOW_2026-09-09.md §3(c); the run-to-run spread this puts "
+              f"on W(cv 0) is 0.0032 against a quoted se of 0.00028.")
     return list(by_key.values())
 
 
@@ -157,6 +183,38 @@ def main() -> int:
               f"most {mx:.4f} across {len(bias)} affected cells "
               f"(median |shift| {np.median([abs(b) for b in bias]):.5f}). "
               f"{'NEGLIGIBLE' if mx < 0.005 else '*** NOT NEGLIGIBLE ***'}")
+    # 🔴 ADDED 2026-09-09. The SELECTION CHECK above is POOLED over every cell, and a
+    # pooled rate cannot see the failure mode that matters here: the drop rate is not
+    # flat in CV, and it is not the SAME in the two friction arms. Anything that
+    # DIFFERENCES the arms -- the phi_0 - phi_mu window of PREREG_DST_WINDOW_2026-09-09
+    # -- then differences a heavily censored arm against a lightly censored one, on the
+    # very axis under test. Measured on the data as it stood: lognormal mu_p = 0 runs
+    # 0.92 (CV 0) -> 0.33 (CV 0.5) while mu_p = 0.3 runs 1.00 -> 0.75.
+    print("CONVERGENCE BY ARM (a pooled rate cannot see an arm asymmetry):")
+    tot: dict[tuple, int] = {}
+    con: dict[tuple, int] = {}
+    for r in recs:
+        k = (r.get("family", "lognormal"), r["mu_p"], r["cv"])
+        tot[k] = tot.get(k, 0) + 1
+        if r.get("converged"):
+            con[k] = con.get(k, 0) + 1
+    worst_span = 0.0
+    by_arm: dict[tuple, list[float]] = {}
+    for k in sorted(tot):
+        rate = con.get(k, 0) / tot[k]
+        by_arm.setdefault((k[0], k[1]), []).append(rate)
+        print(f"   {k[0]:10s} mu={k[1]:.1f} cv={k[2]:.1f}  "
+              f"{con.get(k, 0):3d}/{tot[k]:3d}  {rate:.2f}")
+    for arm, rates in sorted(by_arm.items()):
+        span = max(rates) - min(rates)
+        worst_span = max(worst_span, span)
+        print(f"   -> {arm[0]:10s} mu={arm[1]:.1f}: rate spans {min(rates):.2f}-"
+              f"{max(rates):.2f} across CV (span {span:.2f})")
+    if worst_span > 0.25:
+        print(f"   🔴 an arm's convergence rate spans {worst_span:.2f} across CV. Any "
+              f"quantity that DIFFERENCES two arms is differencing two different "
+              f"censorings; see PREREG_DST_WINDOW_2026-09-09.md §3.")
+
     recs = kept
 
     finite_size = [r for r in recs if r.get("d_max_over_L", 0) > 0.25]
@@ -171,14 +229,21 @@ def main() -> int:
     # diag_n_pooling.py measures what that cost: phi_J moved up to 1.30 seed scatters,
     # and the pre-registered exponent anchor FAILS either way (median b 0.567 pooled,
     # 0.488 split), so the pooling never explained the anchor's failure.
+    # 🔴 max_iter ADDED TO THE GROUP KEY 2026-09-09, for exactly the reason N was added
+    # on 2026-09-08. The `capfix` campaign re-ran part of this grid at
+    # PJ_MAX_ITER = 1e6; those records have a DIFFERENT cell key (so dedup keeps both,
+    # correctly) but without the cap in the GROUP key a single phi_J ladder would be
+    # fitted across rungs run under two different stopping caps -- a protocol difference
+    # entering as ladder scatter, which is the defect this project has now met three
+    # times (protocol v1/v2 in phase8, N = 1500/3000 here, and now the cap).
     groups: dict[tuple, list[dict]] = {}
     for r in recs:
         fam = r.get("family", "lognormal")
-        groups.setdefault((fam, r["cv"], r["mu_p"], r["seed"], r["n_requested"]),
-                          []).append(r)
+        groups.setdefault((fam, r["cv"], r["mu_p"], r["seed"], r["n_requested"],
+                           int(r.get("max_iter", 200_000))), []).append(r)
 
     rows = []
-    for (fam, cv, mu, seed, n_req), g in sorted(groups.items()):
+    for (fam, cv, mu, seed, n_req, cap), g in sorted(groups.items()):
         g_fit = [r for r in g if r["p_hat"] <= P_HAT_FIT_MAX]
         dropped = len(g) - len(g_fit)
         if len(g_fit) < 2:
@@ -190,7 +255,8 @@ def main() -> int:
         d32 = float(np.mean([r["d32_realised"] for r in g_fit]))
         rows.append({"family": fam, "cv_nom": cv, "cv_real": cvr,
                      "d32": d32, "mu_p": mu, "n_requested": n_req,
-                     "seed": seed, "n_ladder": len(g_fit), "n_dropped_highp": dropped,
+                     "seed": seed, "max_iter": cap,
+                     "n_ladder": len(g_fit), "n_dropped_highp": dropped,
                      "phi_range": float(f.max() - f.min()),
                      "phi_monotone": bool(np.all(np.diff(f[np.argsort(p)]) >= 0)
                                           or np.all(np.diff(f[np.argsort(p)]) <= 0)),
@@ -275,19 +341,22 @@ def main() -> int:
     # ---- aggregate over seeds ------------------------------------------------
     # Also keyed on N: averaging phi_J over seeds must not average over system sizes,
     # and n_seeds would have counted the same seed twice at two N.
+    # ...and on max_iter, for the same reason: averaging over seeds must not average
+    # over stopping caps, and n_seeds would count the same seed twice at two caps.
     agg: dict[tuple, list[dict]] = {}
     for r in rows:
-        agg.setdefault((r["family"], r["cv_nom"], r["mu_p"], r["n_requested"]),
-                       []).append(r)
+        agg.setdefault((r["family"], r["cv_nom"], r["mu_p"], r["n_requested"],
+                        r["max_iter"]), []).append(r)
 
     srows = []
-    for (fam, cv, mu, n_req), g in sorted(agg.items()):
+    for (fam, cv, mu, n_req, cap), g in sorted(agg.items()):
         pj = np.array([x["phi_J_lin"] for x in g], float)
         pj = pj[np.isfinite(pj)]
         if pj.size == 0:
             continue
         srows.append({
             "family": fam, "cv_nom": cv, "mu_p": mu, "n_requested": n_req,
+            "max_iter": cap,
             "cv_real": float(np.mean([x["cv_real"] for x in g])),
             "d32": float(np.mean([x["d32"] for x in g])),
             "n_seeds": int(pj.size),

@@ -64,6 +64,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from dataclasses import asdict, dataclass, field
 
 import numpy as np
@@ -82,6 +83,19 @@ REL_STRESS_TOL = 2e-3     # PeriTriaxController's own stress-convergence bar
 PHI_INSERT = 0.30
 DT_SAFETY = 0.5
 MAX_ITER = 200_000
+# ⚠ OVERRIDABLE, added 2026-09-09. 82 of the isotropic cells on disk are marked
+# non-converged and EVERY ONE of them stopped at exactly MAX_ITER -- they are slow,
+# not wrong. The drop rate is not flat in the axis this project measures: for the
+# lognormal FRICTIONLESS arm it runs 0.92 (CV 0) to 0.33 (CV 0.5), against 1.00 -> 0.75
+# at mu_p = 0.3, so the two arms of any frictionless-vs-frictional difference are
+# censored at different, CV-dependent rates. `PJ_MAX_ITER` raises the cap so those
+# cells can be re-run; the value actually used is recorded in every record as
+# `max_iter`, so a run at a non-default cap can never be pooled with one at the
+# default without it being visible.
+def max_iter() -> int:
+    """The iteration cap, read at CALL time so a launcher can set it per run."""
+    v = os.getenv("PJ_MAX_ITER")
+    return MAX_ITER if not v else int(v)
 POISSON = 0.30
 
 # Periodic-collider geometry. Yade requires cell edge > 2.1 * maxBodySpan; 2.5 leaves
@@ -122,6 +136,8 @@ class PackingState:
     unbalanced: float = float("nan")
     converged: bool = False
     iters: int = 0
+    max_iter: int = MAX_ITER      # the cap this cell actually ran under
+    tol_met: bool = False         # unbalanced < UNBALANCED_TOL, ignoring the cap
     wall_s: float = float("nan")
     rattler: dict = field(default_factory=dict)   # every threshold, see measure
     force: dict = field(default_factory=dict)     # contact-force moments
@@ -293,15 +309,21 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
         utils.NewtonIntegrator(damping=0.4),
     ]
     O.dt = DT_SAFETY * utils.PWaveTimeStep()
-    O.run(MAX_ITER, wait=True)
+    cap = max_iter()
+    st.max_iter = cap
+    O.run(cap, wait=True)
 
     st = measure(O, utils, st, young)
     st.wall_s = time.time() - t0
-    st.converged = bool(st.unbalanced < UNBALANCED_TOL and O.iter < MAX_ITER)
+    st.converged = bool(st.unbalanced < UNBALANCED_TOL and O.iter < cap)
+    # Recorded separately: `unbalanced` alone met the physical bar. 18 of the 82
+    # non-converged cells on disk are in this state -- rejected ONLY on the iteration
+    # count -- and 12 of those 18 sit in the starved frictionless arm.
+    st.tol_met = bool(st.unbalanced < UNBALANCED_TOL)
     if not st.converged:
         st.notes.append(
             f"NOT CONVERGED: unbalanced={st.unbalanced:.3e} tol={UNBALANCED_TOL} "
-            f"iters={st.iters}/{MAX_ITER}"
+            f"iters={st.iters}/{cap} tol_met={st.tol_met}"
         )
     rel_p = abs(st.p_hat - p_hat) / p_hat if p_hat > 0 else float("nan")
     if np.isfinite(rel_p) and rel_p > 0.10:

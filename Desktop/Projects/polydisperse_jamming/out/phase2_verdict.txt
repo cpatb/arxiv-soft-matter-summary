@@ -9,11 +9,11 @@ GATE: a ladder counts only if its phi range exceeds 2.0x the seed scatter AND it
 MONOTONE in p. phi_J + c*p^b is monotonic by construction, so a
 non-monotonic ladder cannot be described by it at any b. The
 frictionless ladders go down/up/down and one returned b = 0.248.
-  median seed scatter in phi = 0.00178 (from 124 replicated cells)
-  ladders with a free-exponent fit: 60; 31 excluded (0 flat, 31 non-monotonic)
-  b_free over 29 INFORMATIVE ladders: median 0.452  mean 0.463  IQR [0.321, 0.664]
+  median seed scatter in phi = 0.00180 (from 149 replicated cells)
+  ladders with a free-exponent fit: 99; 53 excluded (0 flat, 53 non-monotonic)
+  b_free over 46 INFORMATIVE ladders: median 0.383  mean 0.459  IQR [0.274, 0.664]
   -> FAIL (bar: median b in [0.6, 1.6])
-  (excluded ladders would have given median b = 0.985 -- printed so the exclusion is visible)
+  (excluded ladders would have given median b = 1.077 -- printed so the exclusion is visible)
    NOTE: that median is not a measurement and must not be read
    as evidence the gate is wrong. Fitting phi_J + c*p^b to one of
    the actual excluded (non-monotonic) ladders was tested directly
@@ -33,11 +33,15 @@ bidisperse   0.30    0.40    0.400   1.276   3   0.5941   0.0011
 bidisperse   0.30    0.50    0.500   1.400   3   0.5890   0.0035
 bidisperse   0.30    0.50    0.500   1.400   3   0.5865   0.0015
  lognormal   0.00    0.00    0.000   1.000   3   0.6332   0.0002
+ lognormal   0.00    0.00    0.000   1.000   3   0.6324   0.0007
  lognormal   0.00    0.10    0.100   1.018   3   0.6375   0.0003
  lognormal   0.00    0.20    0.200   1.076   3   0.6454   0.0007
  lognormal   0.00    0.30    0.300   1.180   3   0.6583   0.0021
+ lognormal   0.00    0.30    0.300   1.180   3   0.6583   0.0022
  lognormal   0.00    0.40    0.407   1.338   2   0.6729   0.0043
+ lognormal   0.00    0.40    0.400   1.334   3   0.6726   0.0014
  lognormal   0.00    0.50    0.479   1.522   1   0.6833      nan
+ lognormal   0.00    0.50    0.496   1.530   3   0.6904   0.0047
  lognormal   0.30    0.00    0.000   1.000   3   0.5745   0.0006
  lognormal   0.30    0.00    0.000   1.000   3   0.5764   0.0019
  lognormal   0.30    0.10    0.100   1.018   3   0.5781   0.0015
@@ -45,26 +49,37 @@ bidisperse   0.30    0.50    0.500   1.400   3   0.5865   0.0015
  lognormal   0.30    0.30    0.300   1.180   3   0.6040   0.0028
  lognormal   0.30    0.30    0.300   1.187   3   0.6042   0.0016
  lognormal   0.30    0.40    0.400   1.334   3   0.6196   0.0030
+ lognormal   0.30    0.40    0.400   1.334   3   0.6197   0.0033
  lognormal   0.30    0.50    0.496   1.530   3   0.6369   0.0048
+ lognormal   0.30    0.50    0.496   1.530   3   0.6366   0.0040
  lognormal   0.30    0.50    0.495   1.541   3   0.6367   0.0054
  lognormal   1.00    0.00    0.000   1.000   3   0.5590   0.0012
+ lognormal   1.00    0.00    0.000   1.000   3   0.5590   0.0012
+ lognormal   1.00    0.20    0.200   1.076   3   0.5726   0.0015
+ lognormal   1.00    0.50    0.496   1.530   3   0.6152   0.0065
  lognormal   3.00    0.00    0.000   1.000   3   0.5574   0.0017
    uniform   0.00    0.00    0.000   1.000   3   0.6324   0.0012
+   uniform   0.00    0.00    0.000   1.000   3   0.6324   0.0007
    uniform   0.00    0.10    0.100   1.021   3   0.6360   0.0005
    uniform   0.00    0.20    0.201   1.080   3   0.6442   0.0004
    uniform   0.00    0.30    0.300   1.170   3   0.6516   0.0012
+   uniform   0.00    0.30    0.300   1.170   3   0.6524   0.0010
    uniform   0.00    0.40    0.400   1.283   3   0.6565   0.0024
+   uniform   0.00    0.40    0.400   1.283   3   0.6558   0.0005
+   uniform   0.00    0.50    0.499   1.409   3   0.6562   0.0028
    uniform   0.30    0.00    0.000   1.000   3   0.5751   0.0014
    uniform   0.30    0.10    0.100   1.021   3   0.5790   0.0015
    uniform   0.30    0.20    0.201   1.080   3   0.5866   0.0026
    uniform   0.30    0.30    0.300   1.170   3   0.5959   0.0022
    uniform   0.30    0.40    0.400   1.283   3   0.5960   0.0024
+   uniform   0.30    0.40    0.400   1.283   3   0.5974   0.0006
    uniform   0.30    0.40    0.405   1.277   3   0.6025   0.0026
    uniform   0.30    0.50    0.499   1.409   3   0.5979   0.0054
+   uniform   0.30    0.50    0.499   1.409   3   0.5993   0.0014
    uniform   0.30    0.50    0.506   1.402   3   0.6032   0.0017
 
 ANCHOR A1 (frictionless monodisperse RCP = 0.64 +/- 0.02): measured 0.6332 -> PASS
-ANCHOR A4 (phi_J falls monotonically with mu_p), N = 1500: ['0.0:0.6332', '0.3:0.5745', '1.0:0.5590', '3.0:0.5574'] -> PASS
+ANCHOR A4 (phi_J falls monotonically with mu_p), N = 1500: ['0.0:0.6332', '0.0:0.6324', '0.3:0.5745', '1.0:0.5590', '1.0:0.5590', '3.0:0.5574'] -> PASS
 ANCHOR A4 (N = 3000): only 1 mu_p value(s); not gradeable at this size
 
 --- family = bidisperse, mu_p = 0.30, N = 1500 ---
@@ -92,47 +107,47 @@ ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.500 gives phi_J 0.575
     -> M2 VERDICT: INSUFFICIENT at the lab's phi = 0.44 -- the shift is real and well-resolved, but worth only 0.82x there, not a decade. A decade needs phi >= 0.569.
 
 --- family = lognormal, mu_p = 0.00, N = 1500 ---
-ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.479 gives phi_J 0.6332 -> 0.6833, Delta = +0.0502
-    seed scatter (max sd) = 0.0002; Delta/scatter = 226.80
+ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.496 gives phi_J 0.6332 -> 0.6904, Delta = +0.0572
+    seed scatter (max sd) = 0.0047; Delta/scatter = 12.27
     M2 effect on eta ~ (phi_J - phi)^-2.
     Ratio is eta(high CV) / eta(low CV). phi_J RISES with CV, so the
     high-CV pack is FURTHER from jamming and the ratio is BELOW 1 --
     i.e. polydispersity THINS the suspension, which is the direction
     of the bench observation. The ratio runs to 0, never to infinity.
          phi  (phiJlo-phi)  (phiJhi-phi)  eta_hi/eta_lo  decades
-        0.40        0.2332        0.2833          0.677   -0.169
-        0.44        0.1932        0.2433          0.630   -0.201
-        0.48        0.1532        0.2033          0.567   -0.246
-        0.50        0.1332        0.1833          0.528   -0.278
-        0.52        0.1132        0.1633          0.480   -0.319
-        0.55        0.0832        0.1333          0.389   -0.410
-        0.58        0.0532        0.1033          0.265   -0.577
-        0.60        0.0332        0.0833          0.158   -0.800
-    phi at which the shift is worth ONE DECADE of thinning: 0.6100
+        0.40        0.2332        0.2904          0.645   -0.191
+        0.44        0.1932        0.2504          0.595   -0.225
+        0.48        0.1532        0.2104          0.530   -0.276
+        0.50        0.1332        0.1904          0.489   -0.311
+        0.52        0.1132        0.1704          0.441   -0.356
+        0.55        0.0832        0.1404          0.351   -0.455
+        0.58        0.0532        0.1104          0.232   -0.635
+        0.60        0.0332        0.0904          0.135   -0.871
+    phi at which the shift is worth ONE DECADE of thinning: 0.6067
     (that is BELOW phi_J(low CV) = 0.6332, so it is reachable)
-    at the lab's phi = 0.44 the effect is 0.630x (-0.201 decades)
-    -> M2 VERDICT: INSUFFICIENT at the lab's phi = 0.44 -- the shift is real and well-resolved, but worth only 0.63x there, not a decade. A decade needs phi >= 0.610.
+    at the lab's phi = 0.44 the effect is 0.595x (-0.225 decades)
+    -> M2 VERDICT: INSUFFICIENT at the lab's phi = 0.44 -- the shift is real and well-resolved, but worth only 0.60x there, not a decade. A decade needs phi >= 0.607.
 
 --- family = lognormal, mu_p = 0.30, N = 1500 ---
-ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.496 gives phi_J 0.5745 -> 0.6369, Delta = +0.0623
-    seed scatter (max sd) = 0.0048; Delta/scatter = 13.11
+ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.496 gives phi_J 0.5745 -> 0.6366, Delta = +0.0621
+    seed scatter (max sd) = 0.0040; Delta/scatter = 15.60
     M2 effect on eta ~ (phi_J - phi)^-2.
     Ratio is eta(high CV) / eta(low CV). phi_J RISES with CV, so the
     high-CV pack is FURTHER from jamming and the ratio is BELOW 1 --
     i.e. polydispersity THINS the suspension, which is the direction
     of the bench observation. The ratio runs to 0, never to infinity.
          phi  (phiJlo-phi)  (phiJhi-phi)  eta_hi/eta_lo  decades
-        0.40        0.1745        0.2369          0.543   -0.265
-        0.44        0.1345        0.1969          0.467   -0.331
-        0.48        0.0945        0.1569          0.363   -0.440
-        0.50        0.0745        0.1369          0.297   -0.528
-        0.52        0.0545        0.1169          0.218   -0.662
-        0.55        0.0245        0.0869          0.080   -1.098
+        0.40        0.1745        0.2366          0.544   -0.264
+        0.44        0.1345        0.1966          0.468   -0.330
+        0.48        0.0945        0.1566          0.364   -0.438
+        0.50        0.0745        0.1366          0.298   -0.526
+        0.52        0.0545        0.1166          0.219   -0.660
+        0.55        0.0245        0.0866          0.080   -1.096
         0.58   ABOVE phi_J -- already jammed
         0.60   ABOVE phi_J -- already jammed
-    phi at which the shift is worth ONE DECADE of thinning: 0.5457
+    phi at which the shift is worth ONE DECADE of thinning: 0.5458
     (that is BELOW phi_J(low CV) = 0.5745, so it is reachable)
-    at the lab's phi = 0.44 the effect is 0.467x (-0.331 decades)
+    at the lab's phi = 0.44 the effect is 0.468x (-0.330 decades)
     -> M2 VERDICT: INSUFFICIENT at the lab's phi = 0.44 -- the shift is real and well-resolved, but worth only 0.47x there, not a decade. A decade needs phi >= 0.546.
 
 --- family = lognormal, mu_p = 0.30, N = 3000 ---
@@ -157,51 +172,73 @@ ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.495 gives phi_J 0.576
     at the lab's phi = 0.44 the effect is 0.481x (-0.318 decades)
     -> M2 VERDICT: INSUFFICIENT at the lab's phi = 0.44 -- the shift is real and well-resolved, but worth only 0.48x there, not a decade. A decade needs phi >= 0.549.
 
---- family = uniform, mu_p = 0.00, N = 1500 ---
-ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.400 gives phi_J 0.6324 -> 0.6565, Delta = +0.0241
-    seed scatter (max sd) = 0.0024; Delta/scatter = 10.08
+--- family = lognormal, mu_p = 1.00, N = 1500 ---
+ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.496 gives phi_J 0.5590 -> 0.6152, Delta = +0.0562
+    seed scatter (max sd) = 0.0065; Delta/scatter = 8.65
     M2 effect on eta ~ (phi_J - phi)^-2.
     Ratio is eta(high CV) / eta(low CV). phi_J RISES with CV, so the
     high-CV pack is FURTHER from jamming and the ratio is BELOW 1 --
     i.e. polydispersity THINS the suspension, which is the direction
     of the bench observation. The ratio runs to 0, never to infinity.
          phi  (phiJlo-phi)  (phiJhi-phi)  eta_hi/eta_lo  decades
-        0.40        0.2324        0.2565          0.821   -0.086
-        0.44        0.1924        0.2165          0.790   -0.102
-        0.48        0.1524        0.1765          0.746   -0.127
-        0.50        0.1324        0.1565          0.716   -0.145
-        0.52        0.1124        0.1365          0.678   -0.169
-        0.55        0.0824        0.1065          0.599   -0.223
-        0.58        0.0524        0.0765          0.470   -0.328
-        0.60        0.0324        0.0565          0.329   -0.482
-    phi at which the shift is worth ONE DECADE of thinning: 0.6213
+        0.40        0.1590        0.2152          0.546   -0.263
+        0.44        0.1190        0.1752          0.461   -0.336
+        0.48        0.0790        0.1352          0.342   -0.467
+        0.50        0.0590        0.1152          0.262   -0.581
+        0.52        0.0390        0.0952          0.168   -0.775
+        0.55        0.0090        0.0652          0.019   -1.717
+        0.58   ABOVE phi_J -- already jammed
+        0.60   ABOVE phi_J -- already jammed
+    phi at which the shift is worth ONE DECADE of thinning: 0.5330
+    (that is BELOW phi_J(low CV) = 0.5590, so it is reachable)
+    at the lab's phi = 0.44 the effect is 0.461x (-0.336 decades)
+    -> M2 VERDICT: INSUFFICIENT at the lab's phi = 0.44 -- the shift is real and well-resolved, but worth only 0.46x there, not a decade. A decade needs phi >= 0.533.
+
+--- family = uniform, mu_p = 0.00, N = 1500 ---
+ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.499 gives phi_J 0.6324 -> 0.6562, Delta = +0.0238
+    seed scatter (max sd) = 0.0028; Delta/scatter = 8.38
+    M2 effect on eta ~ (phi_J - phi)^-2.
+    Ratio is eta(high CV) / eta(low CV). phi_J RISES with CV, so the
+    high-CV pack is FURTHER from jamming and the ratio is BELOW 1 --
+    i.e. polydispersity THINS the suspension, which is the direction
+    of the bench observation. The ratio runs to 0, never to infinity.
+         phi  (phiJlo-phi)  (phiJhi-phi)  eta_hi/eta_lo  decades
+        0.40        0.2324        0.2562          0.823   -0.085
+        0.44        0.1924        0.2162          0.792   -0.101
+        0.48        0.1524        0.1762          0.748   -0.126
+        0.50        0.1324        0.1562          0.719   -0.143
+        0.52        0.1124        0.1362          0.681   -0.167
+        0.55        0.0824        0.1062          0.603   -0.220
+        0.58        0.0524        0.0762          0.474   -0.325
+        0.60        0.0324        0.0562          0.333   -0.477
+    phi at which the shift is worth ONE DECADE of thinning: 0.6215
     (that is BELOW phi_J(low CV) = 0.6324, so it is reachable)
-    at the lab's phi = 0.44 the effect is 0.790x (-0.102 decades)
+    at the lab's phi = 0.44 the effect is 0.792x (-0.101 decades)
     -> M2 VERDICT: INSUFFICIENT at the lab's phi = 0.44 -- the shift is real and well-resolved, but worth only 0.79x there, not a decade. A decade needs phi >= 0.621.
 
 --- family = uniform, mu_p = 0.30, N = 1500 ---
     !! CV SPAN DIFFERS BETWEEN SYSTEM SIZES: N=1500: cv 0.00-0.50, N=3000: cv 0.40-0.50
     !! These blocks are NOT a matched finite-size comparison.
-ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.499 gives phi_J 0.5751 -> 0.5979, Delta = +0.0228
-    seed scatter (max sd) = 0.0054; Delta/scatter = 4.20
+ANCHOR A5 (phi_J RISES with polydispersity): cv 0.000 -> 0.499 gives phi_J 0.5751 -> 0.5993, Delta = +0.0242
+    seed scatter (max sd) = 0.0014; Delta/scatter = 17.30
     M2 effect on eta ~ (phi_J - phi)^-2.
     Ratio is eta(high CV) / eta(low CV). phi_J RISES with CV, so the
     high-CV pack is FURTHER from jamming and the ratio is BELOW 1 --
     i.e. polydispersity THINS the suspension, which is the direction
     of the bench observation. The ratio runs to 0, never to infinity.
          phi  (phiJlo-phi)  (phiJhi-phi)  eta_hi/eta_lo  decades
-        0.40        0.1751        0.1979          0.783   -0.106
-        0.44        0.1351        0.1579          0.732   -0.135
-        0.48        0.0951        0.1179          0.651   -0.186
-        0.50        0.0751        0.0979          0.589   -0.230
-        0.52        0.0551        0.0779          0.501   -0.300
-        0.55        0.0251        0.0479          0.275   -0.560
+        0.40        0.1751        0.1993          0.772   -0.112
+        0.44        0.1351        0.1593          0.719   -0.143
+        0.48        0.0951        0.1193          0.636   -0.197
+        0.50        0.0751        0.0993          0.572   -0.243
+        0.52        0.0551        0.0793          0.483   -0.316
+        0.55        0.0251        0.0493          0.260   -0.586
         0.58   ABOVE phi_J -- already jammed
         0.60   ABOVE phi_J -- already jammed
-    phi at which the shift is worth ONE DECADE of thinning: 0.5646
+    phi at which the shift is worth ONE DECADE of thinning: 0.5639
     (that is BELOW phi_J(low CV) = 0.5751, so it is reachable)
-    at the lab's phi = 0.44 the effect is 0.732x (-0.135 decades)
-    -> M2 VERDICT: INSUFFICIENT at the lab's phi = 0.44 -- the shift is real and well-resolved, but worth only 0.73x there, not a decade. A decade needs phi >= 0.565.
+    at the lab's phi = 0.44 the effect is 0.719x (-0.143 decades)
+    -> M2 VERDICT: INSUFFICIENT at the lab's phi = 0.44 -- the shift is real and well-resolved, but worth only 0.72x there, not a decade. A decade needs phi >= 0.564.
 
 --- family = uniform, mu_p = 0.30, N = 3000 ---
     !! CV SPAN DIFFERS BETWEEN SYSTEM SIZES: N=1500: cv 0.00-0.50, N=3000: cv 0.40-0.50
