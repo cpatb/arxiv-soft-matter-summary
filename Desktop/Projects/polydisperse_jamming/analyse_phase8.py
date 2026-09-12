@@ -146,6 +146,21 @@ Z_ISO_MU_BAR = 1.0e-9   # below this mu_p the pack is treated as frictionless
 # and is NOT an independent check of "phi_c = phi_J". Both readings are reported; the
 # default stays the theory constant so that no previously published number moves
 # silently. Source: out/z_iso_measured.txt.
+#
+# ✅ AUDITED 2026-09-12 -- PREREG_ZISO_2026-09-12.md, out/ziso_audit.txt, 8/8 gates.
+# The table below is measured under the SHIPPED rung-selection rule, which was found to
+# fit two distinct pressures while claiming five rungs (D2). The values are DELIBERATELY
+# LEFT as they are: the rung-correct rule moves them by at most 0.052 contacts and moves
+# E4m's CV contrast by +0.0003 (0.0497 -> 0.0501), so changing them here would invalidate
+# the reproduction of every committed artifact to buy the third decimal place. The
+# correction is measured and bounded, which is worth more.
+# Two consequences worth carrying:
+#   - Delta phi_c is NOT sensitive to this target. A uniform shift cancels out of a
+#     contrast exactly; only the CV-dependence survives, and that is 0.0003 in phi. So
+#     the E4/E4m split on H-3 (0.0069 vs 0.0126) CANNOT be a target effect of this size.
+#   - the CV drift is a LOGNORMAL effect (-0.213); on the zero-skew families it is
+#     -0.056 (uniform) and -0.012 (bidisperse). `test_shear.py` recomputes this table
+#     with rule="broken" on purpose.
 Z_ISO_MEASURED = {
     ("lognormal", 0.0): 4.609, ("lognormal", 0.1): 4.553, ("lognormal", 0.2): 4.513,
     ("lognormal", 0.3): 4.431, ("lognormal", 0.4): 4.446, ("lognormal", 0.5): 4.377,

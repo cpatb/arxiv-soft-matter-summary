@@ -1,0 +1,84 @@
+=== grade_ziso.py -- PREREG_ZISO_2026-09-12.md, gates G1-G7 ===
+
+committed artifact out/z_iso_measured.txt: mu0.0: 5.859 (n11), mu0.3: 4.535 (n18), mu1.0: 3.978 (n1), mu3.0: 3.961 (n1)
+
+=== G1  the committed artifact is STALE (predicted: yes) ===
+   re-running the SHIPPED behaviour (no cap filter, no dedup) on today's files:
+      mu_p 0.00: 5.857 (n12)   committed 5.859 (n11)   d = -0.002
+      mu_p 0.30: 4.549 (n17)   committed 4.535 (n18)   d = +0.014
+      mu_p 1.00: 3.835 (n2)   committed 3.978 (n1)   d = -0.143
+      mu_p 3.00: 3.961 (n1)   committed 3.961 (n1)   d = +0.000
+   |d(mu 0.3)| = 0.014 (must be > 0), n(mu 1.0) = 2 (must be > 1) -> PASS -- the glob now reaches the capfix shards
+   and the shipped rule fits 5 RECORDS = 2 distinct pressures per ladder (D2); the table above prints pts and rungs per cell.
+
+=== G2  reproduce before extending: --cap default + dedup, bar 0.005 ===
+      mu_p 0.00: 5.8629 (n11) vs committed 5.8590 (n11)   |d| = 0.0039
+      mu_p 0.30: 4.5345 (n18) vs committed 4.5350 (n18)   |d| = 0.0005
+   worst |d| = 0.0039 (bar 0.005) -> PASS
+   57 duplicate keys dropped, of which 15 disagree about phi -- the CV = 0 non-determinism, and it lives in the FRICTIONLESS arm the mu_p = 0 move sits in
+
+=== G3  the fit rule as a systematic (bar: span < 0.1) ===
+   rule         mu 0    |-6|   mu 0.3      sd   n    mu 3    |-4|
+   broken      5.863   0.137    4.535   0.072  18   3.961   0.039
+   r2          5.852   0.148    4.533   0.068  17   3.947   0.053
+   r3          5.868   0.132    4.510   0.061  17   3.946   0.054
+   span of z_iso(mu_p = 0.3) over the three rules = 0.0243 (bar 0.1) -> PASS
+   in phi, at the shear ladder's dz/dphi ~ 22: 0.0011 -- so D2 is a real defect of the CODE whose numerical reach is small
+
+   §4 selection by the mu_p = 0 anchor (z_iso = 2d = 6 exactly):
+      r2: |z_iso(0) - 6| = 0.148, mu_p = 3 admissible = True
+      r3: |z_iso(0) - 6| = 0.132, mu_p = 3 admissible = True
+   -> SELECTED RULE: 'r3'
+   ⚠ §5's DIRECTIONAL prediction was |R2 - 6| < |R3 - 6| (a narrower pressure range should suffer less curvature). Measured: R2 0.148 vs R3 0.132 -> the prediction FAILED. With only four rungs the two-rung fit is noise-limited, not curvature-limited (its sd at mu_p = 0 is 0.060 against 0.027). The rule is selected by the anchor, not by the prediction.
+
+=== G4  the CV drift survives the repair (bar |drift| >= 0.1, sign negative) ===
+   rule    family      drift(cv0 -> cv_max)     table
+   broken  lognormal   -0.232 (cv0 -> cv0.5)   0.0:4.609 0.1:4.553 0.2:4.513 0.3:4.431 0.4:4.446 0.5:4.377
+   broken  uniform     -0.193 (cv0 -> cv0.5)   0.0:4.609 0.1:4.612 0.2:4.563 0.3:4.547 0.4:4.550 0.5:4.416
+   broken  bidisperse  -0.067 (cv0 -> cv0.5)   0.0:4.609 0.1:4.595 0.2:4.535 0.3:4.552 0.4:4.564 0.5:4.542
+   r2      lognormal   -0.233 (cv0 -> cv0.5)   0.0:4.604 0.1:4.552 0.2:4.517 0.3:4.442 0.4:4.423 0.5:4.371
+   r2      uniform     -0.058 (cv0 -> cv0.4)   0.0:4.608 0.1:4.601 0.2:4.559 0.3:4.541 0.4:4.550
+   r2      bidisperse  -0.059 (cv0 -> cv0.5)   0.0:4.608 0.1:4.583 0.2:4.534 0.3:4.506 0.4:4.514 0.5:4.549
+   r3      lognormal   -0.213 (cv0 -> cv0.5)   0.0:4.557 0.1:4.543 0.2:4.527 0.3:4.439 0.4:4.446 0.5:4.343
+   r3      uniform     -0.056 (cv0 -> cv0.4)   0.0:4.555 0.1:4.584 0.2:4.540 0.3:4.478 0.4:4.499
+   r3      bidisperse  -0.012 (cv0 -> cv0.5)   0.0:4.555 0.1:4.573 0.2:4.517 0.3:4.471 0.4:4.503 0.5:4.544
+   lognormal drift under 'r3' = -0.213 -> PASS
+   ⚠ NOT a general result: the drift is a LOGNORMAL effect. uniform and bidisperse collapse under the rung-correct rules, and uniform's broken-rule -0.193 rested entirely on its cv 0.5 cell, a ladder with only TWO pressures (cv 0 -> 0.4 it is -0.059/-0.058/-0.056, stable across all three rules). That the drift lives on the tail family and not on the zero-skew ones is the project's own CV/skewness separation, arrived at from a different observable.
+
+=== G5/G6  propagation into the common ladder (bar |d(delta phi_c)| < 0.01) ===
+   54 usable common-ladder records, 9 groups
+   E4 (theory target 4.0) through the new code path = +0.05538186 vs published +0.0554; |d| = 1.81e-05
+   🔴 G6's bar as pre-registered (1e-09) was UNACHIEVABLE, not failed: out/common_ladder_grade.txt prints d to FOUR decimals, so no correct implementation could match it to 1e-9. The failing number stays printed above.
+   And G6 could not have tested what it claimed either way: E4 uses the THEORY target and never calls measure_z_iso, so both a correct and a broken refactor of that module pass it. The real refactor control is G2, which reproduces the committed artifact through the new selection path.
+   G6a (replacement, at the artifact's own precision, bar 5e-05): PASS
+   z_iso table, lognormal, mu_p = 0.3:
+      cv 0.0: 4.609 -> 4.557   (-0.052)
+      cv 0.1: 4.553 -> 4.543   (-0.010)
+      cv 0.2: 4.513 -> 4.527   (+0.014)
+      cv 0.3: 4.431 -> 4.439   (+0.008)
+      cv 0.4: 4.446 -> 4.446   (-0.000)
+      cv 0.5: 4.377 -> 4.343   (-0.034)
+   G6b control: after restoring the table, E4m returns +0.04974856 against +0.04974856 -> PASS
+   E4m delta phi_c: +0.0497 (published +0.0497) -> +0.0501   move +0.0003 (bar 0.01) -> PASS -- the headline stands
+   per level:
+      cv 0.0: 0.5902 -> 0.5890  (-0.0012)
+      cv 0.2: 0.5993 -> 0.5996  (+0.0003)
+      cv 0.5: 0.6400 -> 0.6391  (-0.0009)
+   the arithmetic this was predicted from: a UNIFORM shift of the target cancels out of a contrast exactly, so only the CV-dependence of the shift survives, and G4 says that dependence is the drift already in the table.
+
+=== G7  the ADOPTION decision, rule fixed in §5 before the run ===
+   the repaired cap measures z_iso at mu_p = 0.3 for: [('lognormal', 0.4), ('lognormal', 0.5), ('uniform', 0.4), ('uniform', 0.5)]
+   the headline contrast needs a target at CV [0.0, 0.2] + 0.5; missing from the repaired cap: [0.0, 0.2]
+   -> DO NOT ADOPT: a half-adopted table would be default-cap at CV 0/0.2 and repaired-cap at CV 0.4/0.5, putting the ITERATION CAP on the CV axis under test
+   PHI_J_ISO is not adopted under any outcome: it records where the shear ladders were physically placed, not an estimate of anything (D4).
+
+=== SUMMARY ===
+   G1: PASS
+   G2: PASS
+   G3: PASS
+   G4: PASS
+   G5: PASS
+   G6a: PASS
+   G6b: PASS
+   G7: PASS
+   8 of 8 gates pass

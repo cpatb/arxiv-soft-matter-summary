@@ -261,7 +261,13 @@ def test_Z_ISO_MEASURED_is_the_artifact_not_a_remembered_number():
     recomputed here from the committed isotropic records rather than trusted."""
     import measure_z_iso as M
 
-    recs = M._load_phase2()
+    # ⚠ 2026-09-12: the loader gained an explicit cap filter and a dedup (D1 of
+    # PREREG_ZISO_2026-09-12.md), and the rung-selection rule became selectable (D2).
+    # This test recomputes the TABLE AS SHIPPED, so it must ask for the rule the table
+    # was measured under -- `broken` -- and not the rung-correct default. The audit's
+    # §8 records that the rung-correct rule moves the table by at most 0.052 contacts
+    # and the CV contrast by 0.0003; adopting it here would silently move E4m.
+    recs, _info = M.load_phase2(cap="default")
     assert recs, "the committed phase2 records are missing"
     from collections import defaultdict
     by = defaultdict(list)
@@ -279,7 +285,7 @@ def test_Z_ISO_MEASURED_is_the_artifact_not_a_remembered_number():
     for (fam, cv), tabled in A.Z_ISO_MEASURED.items():
         rs = by.get((fam, cv, A.Z_ISO_MEASURED_MU, M.N_REQ))
         assert rs, f"no isotropic ladder for {(fam, cv)}"
-        zi, _n, _p = M._z_iso(rs)
+        zi = M.z_iso_fit(rs, rule="broken")["z_iso"]
         assert zi == pytest.approx(tabled, abs=5e-4), (fam, cv, zi, tabled)
         checked += 1
     assert checked == len(A.Z_ISO_MEASURED) == 18

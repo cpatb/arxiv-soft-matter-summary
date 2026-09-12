@@ -1,0 +1,40 @@
+cap = 'repaired'   rule = 'r3'   dedup = True
+selection: 717 lines in 158 files -> 174 cells (0 errors, 110 unconverged, 433 wrong cap, 0 duplicate keys dropped)
+extrapolating z_nr to p -> 0 under rule 'r3' (every record at the 3 lowest distinct rungs), N = 1500
+
+family        cv  mu_p  pts rungs     p_min  p_fit_max   z_iso
+lognormal   0.00  0.00    9     3  3.00e-05   3.00e-04   5.852
+lognormal   0.00  1.00    9     3  3.00e-05   3.00e-04   3.995
+lognormal   0.20  1.00    9     3  3.00e-05   3.00e-04   3.982
+lognormal   0.30  0.00    9     3  3.00e-05   3.00e-04   5.870
+lognormal   0.40  0.00    8     3  3.00e-05   3.00e-04   5.835
+lognormal   0.40  0.30    9     3  3.00e-05   3.00e-04   4.457
+lognormal   0.50  0.00    7     3  3.00e-05   3.00e-04   5.882
+lognormal   0.50  0.30    9     3  3.00e-05   3.00e-04   4.428
+lognormal   0.50  1.00    9     3  3.00e-05   3.00e-04   3.859
+uniform     0.00  0.00    9     3  3.00e-05   3.00e-04   5.852
+uniform     0.30  0.00    9     3  3.00e-05   3.00e-04   5.862
+uniform     0.40  0.00    9     3  3.00e-05   3.00e-04   5.892
+uniform     0.40  0.30    9     3  3.00e-05   3.00e-04   4.509
+uniform     0.50  0.00    9     3  9.99e-05   1.00e-03   5.835
+uniform     0.50  0.30    9     3  3.00e-05   3.00e-04   4.492
+
+=== z_iso by friction ===
+     mu_p  n cells    z_iso      sd    in analyse_phase8
+     0.00        8    5.860   0.021                  6.0
+     0.30        4    4.472   0.036                  4.0
+     1.00        3    3.945   0.075                  4.0
+
+🔴 AT THE PRODUCTION FRICTION mu_p = 0.3 the measured isostatic count is 4.472 +- 0.036 (4 cells), while E4 uses 4.0.
+   The gap is +0.472 contacts. d+1 = 4 is the mu_p -> infinity limit; nothing pins the count at finite friction, so 4.0 is not a convention here, it is a wrong number.
+
+   what a +0.472 target error costs E4, using each CV ladder's own dz/dphi:
+      cv   dz/dphi    dphi_c
+    0.00      28.3    0.0167
+    0.20      27.3    0.0173
+    0.50      23.5    0.0200
+
+=== and z_iso is not constant in CV, which biases the CONTRAST ===
+   lognormal   cv0.40=4.457  cv0.50=4.428   drift -0.028
+   uniform     cv0.40=4.509  cv0.50=4.492   drift -0.018
+   A single Z_ISO therefore puts a CV-dependent offset into E4's own CV contrast. E4 needs a per-cell target, and the only place to read one is the isotropic ladder -- which is the measurement the shear ladder is already centred on.
