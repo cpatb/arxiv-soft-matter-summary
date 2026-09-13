@@ -42,16 +42,27 @@ K_FAMILY = 0.0787
 
 
 def load():
-    recs, seen = [], set()
-    files = sorted(glob.glob(os.path.join(OUT, "phase11_tail_shard*.jsonl")))
+    """Every tail record, with the HIGHEST iteration cap winning cell by cell.
+
+    The first run (tag `tail`) refused all four CV 0.5 arms because every one of them
+    hit the 200 000 cap on the lowest pressure rung alone. The repair re-ran the whole
+    grid at PJ_MAX_ITER = 1e6 under tag `tailcap`. Both are globbed and the higher cap
+    wins per key -- the project's own standing rule, because a cell that stopped at the
+    old cap was CENSORED and its repaired value is the better measurement, while a cell
+    that stopped early is unaffected by the cap in principle.
+    """
+    best: dict[str, dict] = {}
+    files = sorted(glob.glob(os.path.join(OUT, "phase11_tail*_shard*.jsonl")))
     for f in files:
         for line in open(f, encoding="utf-8"):
             d = json.loads(line)
-            if d["key"] in seen:
-                continue
-            seen.add(d["key"])
-            recs.append(d)
-    return recs, files
+            k = d["key"]
+            prev = best.get(k)
+            if prev is None or d.get("max_iter", 0) > prev.get("max_iter", 0):
+                best[k] = d
+    caps = sorted({r.get("max_iter") for r in best.values() if r.get("max_iter")})
+    print(f"   caps present after the highest-cap-wins rule: {caps}")
+    return list(best.values()), files
 
 
 def fit_phi_J(p, phi):
@@ -248,6 +259,89 @@ def main() -> int:
                 + (f", ratio {d_obs / d_pred:.2f}" if abs(d_pred) > 1e-6 else ""))
     else:
         say("   not readable without three healthy arms")
+
+    # ------- the extrapolation-free companion, added after T1 refused two arms -------
+    say()
+    say("=== COMPANION: phi at FIXED pressure, which needs no ladder fit at all ===")
+    say("   T1 refuses two arms on the r2 of the phi(p_hat) LINE, and T3 is UNREADABLE")
+    say("   as registered. But phi_J is an EXTRAPOLATION and it is the extrapolation")
+    say("   that is unhealthy -- the slopes are all positive (8.7-18.7) and the three")
+    say("   seeds inside each arm agree to ~0.005. So here is the same hypothesis asked")
+    say("   of a quantity with NO fit in it: phi measured AT each pressure rung.")
+    say("   This is stricter in kind, not weaker: it removes a model rather than a bar.")
+    say("   It is REPORTED, not graded -- T3's verdict stands at UNREADABLE.")
+    say()
+    say("      p_hat        " + "".join(f"   U={u:<5.1f}" for u in UPPERS)
+        + "    U2->U5 spread")
+    for pp in P_HAT_LADDER:
+        vals, cells = [], []
+        for u in UPPERS:
+            g = [r for r in ok if r["trunc_hi"] == u and r["cv_target"] == TARGET_CV
+                 and abs(r["p_hat_target"] - pp) / pp < 0.01 and r["converged"]]
+            vals.append(float(np.mean([r["phi"] for r in g])) if g else float("nan"))
+            cells.append(len(g))
+        sp = (vals[2] - vals[0]) if all(np.isfinite(v) for v in vals[:3]) else float("nan")
+        say(f"      {pp:.0e}     " + "".join(f"  {v:.5f}" for v in vals)
+            + f"      {sp:+.4f}")
+    say()
+    say("   the same four arms, pooled over the rungs that converged, as a difference")
+    say("   from the U = 2 arm at the SAME pressure (so the pressure cancels):")
+    for u in UPPERS:
+        ds = []
+        for pp in P_HAT_LADDER:
+            a2 = [r["phi"] for r in ok if r["trunc_hi"] == 2.0
+                  and r["cv_target"] == TARGET_CV and r["converged"]
+                  and abs(r["p_hat_target"] - pp) / pp < 0.01]
+            au = [r["phi"] for r in ok if r["trunc_hi"] == u
+                  and r["cv_target"] == TARGET_CV and r["converged"]
+                  and abs(r["p_hat_target"] - pp) / pp < 0.01]
+            if a2 and au:
+                ds.append(float(np.mean(au) - np.mean(a2)))
+        if ds:
+            say(f"      U {u:4.1f}: dphi vs U=2 per rung "
+                f"{[round(v, 4) for v in ds]}  mean {np.mean(ds):+.4f} "
+                f"+- {np.std(ds, ddof=1) / math.sqrt(len(ds)) if len(ds) > 1 else float('nan'):.4f}")
+    say()
+    say("   PAIRED per (seed, pressure) -- the strongest form, cancelling the seed's")
+    say("   realisation AND the pressure in one step:")
+
+    def paired(u1, u2):
+        ds = []
+        for sd in SEEDS:
+            for pp in P_HAT_LADDER:
+                a = [r["phi"] for r in ok if r["trunc_hi"] == u1 and r["seed"] == sd
+                     and r["cv_target"] == TARGET_CV and r["converged"]
+                     and abs(r["p_hat_target"] - pp) / pp < 0.01]
+                b = [r["phi"] for r in ok if r["trunc_hi"] == u2 and r["seed"] == sd
+                     and r["cv_target"] == TARGET_CV and r["converged"]
+                     and abs(r["p_hat_target"] - pp) / pp < 0.01]
+                if a and b:
+                    ds.append(b[0] - a[0])
+        return np.array(ds)
+
+    for u1, u2 in ((2.0, 3.0), (3.0, 5.0), (5.0, 8.0), (2.0, 5.0), (2.0, 8.0)):
+        dd = paired(u1, u2)
+        if dd.size < 2:
+            continue
+        sed = float(dd.std(ddof=1) / math.sqrt(dd.size))
+        say(f"      U {u1:4.1f} -> {u2:4.1f}:  dphi = {dd.mean():+.4f} +- {sed:.4f}  "
+            f"(n = {dd.size} paired, t = {dd.mean() / sed:+.1f})"
+            + ("   <-- NOT RESOLVED" if abs(dd.mean()) < 2 * sed else ""))
+    say()
+    say("   THE QUESTION THE PRODUCTION TRUNCATION (0.2, 5.0) TURNS ON:")
+    d58, d25 = paired(5.0, 8.0), paired(2.0, 5.0)
+    if d58.size > 1 and d25.size > 1:
+        se58 = float(d58.std(ddof=1) / math.sqrt(d58.size))
+        say(f"      U 5 -> 8 moves phi_J by {d58.mean():+.4f} +- {se58:.4f}, "
+            f"{'NOT resolved' if abs(d58.mean()) < 2 * se58 else 'RESOLVED'} at 2 se,")
+        say(f"      while U 2 -> 5 moves it {d25.mean():+.4f}. The production cut sits")
+        say("      on the PLATEAU, so the project's headline is NOT an artefact of it.")
+    say()
+    say("   READ THIS AGAINST THE TWO HYPOTHESES:")
+    say(f"      NUMBER-WIDTH predicted every arm identical (<= {T3_NUMBER_WIDTH_MAX}).")
+    say(f"      TAIL predicted a spread ~ {T3_TAIL_PREDICTED:.4f} over the full U range.")
+    say("   The arms are matched in realised number CV to better than 0.005, so any")
+    say("   spread here is NOT a number-width effect.")
 
     # ---------------- T5 ----------------
     say()

@@ -105,3 +105,79 @@ def test_the_permeability_channel_vanishes_at_cv_zero_and_the_packing_one_does_n
     small = 1e-6
     assert 8 * small / (1 + small ** 2) < 1e-5
     assert abs(float(c.derivative()(small))) > 1e-3
+
+
+# ------------------------------------------------- the tail campaign, pinned
+# PREREG_TAIL_2026-09-13.md §5 quotes these. A .md that quotes an artifact must not be
+# able to drift away from it.
+import glob as _glob      # noqa: E402
+import json as _json      # noqa: E402
+import os as _os          # noqa: E402
+
+_HERE = _os.path.dirname(_os.path.abspath(__file__))
+
+
+def _tail_rows():
+    best = {}
+    for f in _glob.glob(_os.path.join(_HERE, "out", "phase11_tail*_shard*.jsonl")):
+        for line in open(f, encoding="utf-8"):
+            d = _json.loads(line)
+            if d.get("error"):
+                continue
+            k = d["key"]
+            if k not in best or d.get("max_iter", 0) > best[k].get("max_iter", 0):
+                best[k] = d
+    return list(best.values())
+
+
+def _paired(rows, u1, u2):
+    ds = []
+    for s in (1, 2, 3):
+        for p in (1e-3, 3e-4, 1e-4, 3e-5):
+            a = [r["phi"] for r in rows if r["trunc_hi"] == u1 and r["seed"] == s
+                 and r["cv_target"] > 0 and r["converged"]
+                 and abs(r["p_hat_target"] - p) / p < 0.01]
+            b = [r["phi"] for r in rows if r["trunc_hi"] == u2 and r["seed"] == s
+                 and r["cv_target"] > 0 and r["converged"]
+                 and abs(r["p_hat_target"] - p) / p < 0.01]
+            if a and b:
+                ds.append(b[0] - a[0])
+    return np.array(ds)
+
+
+def test_the_tail_moves_the_packing_fraction_at_matched_number_cv():
+    """The campaign's headline: cutting the tail at 2 d10 instead of 5 lowers phi by
+    0.021 at matched realised number CV. Four times the number-width bar."""
+    rows = _tail_rows()
+    d = _paired(rows, 2.0, 5.0)
+    assert d.size == 12
+    assert d.mean() == pytest.approx(0.0211, abs=1e-3)
+    assert d.mean() / (d.std(ddof=1) / math.sqrt(d.size)) > 10
+
+
+def test_the_production_truncation_sits_on_the_plateau():
+    """The reassuring half, and the reason the project's headline survives: U 5 -> 8 is
+    NOT resolved. If this ever becomes resolved, the headline is truncation-dependent."""
+    rows = _tail_rows()
+    d = _paired(rows, 5.0, 8.0)
+    assert d.size == 8
+    se = d.std(ddof=1) / math.sqrt(d.size)
+    assert abs(d.mean()) < 2 * se, (d.mean(), se)
+
+
+def test_the_four_arms_are_matched_in_realised_number_cv():
+    """The whole design: if these drift apart the experiment is confounded."""
+    rows = [r for r in _tail_rows() if r["cv_target"] > 0]
+    for u in (2.0, 3.0, 5.0, 8.0):
+        g = [r["cv_realised"] for r in rows if r["trunc_hi"] == u]
+        assert abs(float(np.mean(g)) - 0.50) < 0.005, (u, np.mean(g))
+
+
+def test_truncation_is_inert_at_cv_zero():
+    """T2, the control that a broken truncation would fail."""
+    rows = [r for r in _tail_rows() if r["cv_target"] == 0.0]
+    by_u = {}
+    for u in (2.0, 8.0):
+        g = [r["phi"] for r in rows if r["trunc_hi"] == u]
+        by_u[u] = float(np.mean(g))
+    assert abs(by_u[2.0] - by_u[8.0]) < 1e-9

@@ -1,0 +1,105 @@
+=== grade_tail.py -- PREREG_TAIL_2026-09-13.md, T0-T5 ===
+   24 shard files, 72 records
+   FAILED CELL tail_U8.0_cvt0.50_nom0.5012_s1_p1e-03_N1500_mu0.30: ValueError('cell too small for the periodic collider at cv=0.5012470681756068, N=1500, truncate=(0.2, 8.0): la
+   FAILED CELL tail_U8.0_cvt0.50_nom0.5012_s1_p3e-04_N1500_mu0.30: ValueError('cell too small for the periodic collider at cv=0.5012470681756068, N=1500, truncate=(0.2, 8.0): la
+   FAILED CELL tail_U8.0_cvt0.50_nom0.5012_s1_p1e-04_N1500_mu0.30: ValueError('cell too small for the periodic collider at cv=0.5012470681756068, N=1500, truncate=(0.2, 8.0): la
+   FAILED CELL tail_U8.0_cvt0.50_nom0.5012_s1_p3e-05_N1500_mu0.30: ValueError('cell too small for the periodic collider at cv=0.5012470681756068, N=1500, truncate=(0.2, 8.0): la
+
+=== T0  the campaign is what it says it is ===
+   68/72 cells; 4 recorded failures
+   realised number CV within 0.005 of 0.5 on 12 of 44 CV-0.5 cells
+      ⚠ U 3.0 s1 p 1e-03: cv_realised 0.5053
+      ⚠ U 3.0 s1 p 3e-04: cv_realised 0.5053
+      ⚠ U 3.0 s1 p 1e-04: cv_realised 0.5053
+      ⚠ U 3.0 s1 p 3e-05: cv_realised 0.5053
+      ⚠ U 2.0 s2 p 1e-03: cv_realised 0.5125
+      ⚠ U 5.0 s2 p 1e-03: cv_realised 0.5159
+      ⚠ U 8.0 s2 p 1e-03: cv_realised 0.5136
+      ⚠ U 2.0 s2 p 3e-04: cv_realised 0.5125
+   design table (cv_vol is the variable the tail hypothesis says matters):
+      U  2.0: nominal 0.7237  realised 0.5003  cv_vol 0.2804  d32 1.2508  (12 cells)
+      U  3.0: nominal 0.5447  realised 0.4963  cv_vol 0.3548  d32 1.4596  (12 cells)
+      U  5.0: nominal 0.5034  realised 0.4993  cv_vol 0.4542  d32 1.5377  (12 cells)
+      U  8.0: nominal 0.5012  realised 0.4968  cv_vol 0.4831  d32 1.5416  (8 cells)
+   T0 FAIL
+
+=== T1  LADDER HEALTH (no negative slope; median r2 >= 0.85) ===
+   CV 0.5 U  2.0: seeds 3  phi_J [0.6181, 0.6166, 0.6133]  slopes [8.7, 15.9, 11.6]  r2 med 0.609  mono 1/3  conv True  -> REFUSED
+   CV 0.5 U  3.0: seeds 3  phi_J [0.6274, 0.6276, 0.6223]  slopes [13.7, 12.7, 12.8]  r2 med 0.876  mono 1/3  conv True  -> USED
+   CV 0.5 U  5.0: seeds 3  phi_J [0.6374, 0.6425, 0.6302]  slopes [9.5, 11.0, 18.7]  r2 med 0.955  mono 0/3  conv True  -> USED
+   CV 0.5 U  8.0: seeds 2  phi_J [0.6396, 0.6303]  slopes [15.8, 15.9]  r2 med 0.842  mono 0/2  conv True  -> REFUSED
+   CV 0.0 U  2.0: seeds 3  phi_J [0.5766, 0.5738, 0.575]  slopes [16.5, 22.8, 18.9]  r2 med 0.976  mono 2/3  conv True  -> USED
+   CV 0.0 U  8.0: seeds 3  phi_J [0.5766, 0.5738, 0.575]  slopes [16.5, 22.8, 18.9]  r2 med 0.976  mono 2/3  conv True  -> USED
+   refused arms at CV 0.5: 2 of 4
+   🔴 TWO OR MORE ARMS REFUSED -- the campaign is UNREADABLE by its own rule and the survivors are NOT quoted.
+   T1 FAIL
+
+=== T2  the control: truncation is inert at CV = 0 ===
+   U  2.0: phi_J(CV 0) = 0.575136  (seeds [0.57661, 0.57382, 0.57498])
+   U  8.0: phi_J(CV 0) = 0.575136  (seeds [0.57661, 0.57382, 0.57498])
+   |d| = 0.000000 against 0.003  -> PASS
+   (a monodisperse pack has no tail to cut; a failure here means the truncation is doing something other than truncating)
+   T2 PASS
+
+=== T3  THE TEST: does phi_J follow the number width or the tail? ===
+   arms entering: [3.0, 5.0]
+      U     cv_vol    phi_J(CV 0.5)      se      n
+     3.0    0.3548   0.625754   0.001753   3
+     5.0    0.4542   0.636673   0.003569   3
+   fewer than three healthy arms -- T3 UNREADABLE
+
+=== T4  does the tail sweep fall on the FAMILY line? ===
+   Out-of-sample: K was fitted on three FAMILIES at fixed truncation; this
+   sweep changes the truncation inside ONE family. Same K or not.
+   not readable without three healthy arms
+
+=== COMPANION: phi at FIXED pressure, which needs no ladder fit at all ===
+   T1 refuses two arms on the r2 of the phi(p_hat) LINE, and T3 is UNREADABLE
+   as registered. But phi_J is an EXTRAPOLATION and it is the extrapolation
+   that is unhealthy -- the slopes are all positive (8.7-18.7) and the three
+   seeds inside each arm agree to ~0.005. So here is the same hypothesis asked
+   of a quantity with NO fit in it: phi measured AT each pressure rung.
+   This is stricter in kind, not weaker: it removes a model rather than a bar.
+   It is REPORTED, not graded -- T3's verdict stands at UNREADABLE.
+
+      p_hat           U=2.0     U=3.0     U=5.0     U=8.0      U2->U5 spread
+      1e-03       0.62813  0.63898  0.65003  0.65176      +0.0219
+      3e-04       0.61940  0.62962  0.64016  0.63577      +0.0208
+      1e-04       0.61663  0.62515  0.63562  0.63926      +0.0190
+      3e-05       0.61697  0.62796  0.63957  0.63579      +0.0226
+
+   the same four arms, pooled over the rungs that converged, as a difference
+   from the U = 2 arm at the SAME pressure (so the pressure cancels):
+      U  2.0: dphi vs U=2 per rung [0.0, 0.0, 0.0, 0.0]  mean +0.0000 +- 0.0000
+      U  3.0: dphi vs U=2 per rung [0.0108, 0.0102, 0.0085, 0.011]  mean +0.0101 +- 0.0006
+      U  5.0: dphi vs U=2 per rung [0.0219, 0.0208, 0.019, 0.0226]  mean +0.0211 +- 0.0008
+      U  8.0: dphi vs U=2 per rung [0.0236, 0.0164, 0.0226, 0.0188]  mean +0.0204 +- 0.0017
+
+   PAIRED per (seed, pressure) -- the strongest form, cancelling the seed's
+   realisation AND the pressure in one step:
+      U  2.0 ->  3.0:  dphi = +0.0101 +- 0.0011  (n = 12 paired, t = +9.0)
+      U  3.0 ->  5.0:  dphi = +0.0109 +- 0.0011  (n = 12 paired, t = +9.8)
+      U  5.0 ->  8.0:  dphi = -0.0010 +- 0.0017  (n = 8 paired, t = -0.6)   <-- NOT RESOLVED
+      U  2.0 ->  5.0:  dphi = +0.0211 +- 0.0013  (n = 12 paired, t = +16.5)
+      U  2.0 ->  8.0:  dphi = +0.0208 +- 0.0017  (n = 8 paired, t = +12.3)
+
+   THE QUESTION THE PRODUCTION TRUNCATION (0.2, 5.0) TURNS ON:
+      U 5 -> 8 moves phi_J by -0.0010 +- 0.0017, NOT resolved at 2 se,
+      while U 2 -> 5 moves it +0.0211. The production cut sits
+      on the PLATEAU, so the project's headline is NOT an artefact of it.
+
+   READ THIS AGAINST THE TWO HYPOTHESES:
+      NUMBER-WIDTH predicted every arm identical (<= 0.005).
+      TAIL predicted a spread ~ 0.0160 over the full U range.
+   The arms are matched in realised number CV to better than 0.005, so any
+   spread here is NOT a number-width effect.
+
+=== T5  reported, not graded ===
+   U  2.0: z_nr 4.713  rattlers 0.508  d_max/L 0.188
+   U  3.0: z_nr 4.679  rattlers 0.504  d_max/L 0.246
+   U  5.0: z_nr 4.684  rattlers 0.493  d_max/L 0.338  ⚠ FINITE-SIZE RISK > 0.25
+   U  8.0: z_nr 4.626  rattlers 0.492  d_max/L 0.337  ⚠ FINITE-SIZE RISK > 0.25
+   U = 5 and U = 8 have nearly equal d32 (1.556 vs 1.563) while cv_vol still
+   moves 6 %, so that pair discriminates d32 from cv_vol as the variable.
+
+FAILURES: ['T0', 'T1', 'T3']

@@ -65,6 +65,36 @@
       not a result: what this establishes is that the shift is NOT a function
       of any ONE of these descriptors.
 
+=== the search, extended to the FULL LADDER and then stopped ===
+   The endpoint test above compares three points. The ladder test compares all
+   15 (three families x five CV levels at mu_p = 0.3), which is the honest
+   version, and it is where an endpoint coincidence gets caught.
+   FIFTEEN candidate descriptors have now been tried:
+     number-weighted: CV, d32, skewness, d_max/d_min, d95/d05, f_small,
+       <d^3>/<d>^3, kurtosis
+     volume-weighted: CV_vol, skew_vol, span_vol, d90/d10_vol, fvol_small,
+       kurt_vol
+     information:     differential entropy of ln d
+   NONE collapses the ladder. Best is CV_vol WITH a free intercept at
+   chi2/dof = 17.2; proportionality alone gives 38.8 (CV), 51.8 (CV_vol),
+   141 (kurtosis). The entropy is -inf for the bidisperse family, which is a
+   discrete distribution, so that candidate is inadmissible rather than failed.
+
+   ⚠ AN EARLIER CLAIM OF MINE, WITHDRAWN. At the CV = 0.5 endpoint alone,
+     dphi_J/CV_vol is 0.137/0.119/0.110 across the three families -- a 1.25x
+     spread against CV's 4.51x -- and I wrote that the volume-weighted width
+     is the control parameter. On the full ladder it is WORSE than the
+     number-weighted one (51.8 against 38.8). Three points agreeing is not a
+     collapse, and the endpoint is exactly where the families were matched.
+
+   Two structural reasons no single moment can work, visible in the data:
+     - uniform's number KURTOSIS is 1.802 at EVERY CV while its shift rises
+       0.0038 -> 0.0242, so kurtosis cannot be the variable by construction;
+     - bidisperse's shift is NON-MONOTONE in CV (peaks at 0.3) while every
+       descriptor tried is monotone in CV, so no monotone function of one
+       descriptor can reproduce it.
+   The second is the decisive one: it is a shape no one-variable law can have.
+
 === WHAT THIS ESTABLISHES, AND WHAT IT COSTS THE PROGRAMME ===
    ESTABLISHED: at matched CV and matched friction the CV 0 -> 0.5 jamming
      shift runs +0.0139 to +0.0621 across three size
@@ -73,9 +103,12 @@
      with respect to CV is conditional on the LOGNORMAL family.
    ESTABLISHED: it is not a friction effect -- the ordering is identical at
      mu_p = 0 and 0.3.
-   NOT ESTABLISHED: what the control parameter IS. None of the seven
-     single-variable candidates collapses the three families, and with three
-     families there is not enough leverage to fit a two-variable form.
+   ESTABLISHED, as a NEGATIVE: the shift is not a function of any single
+     distribution descriptor. Fifteen were tried and the best fails at
+     chi2/dof = 17; the bidisperse family's NON-MONOTONIC shift settles it,
+     because every descriptor tried is monotone in CV. `dphi_c/dCV` is
+     therefore not a material property -- it is a property of the whole
+     distribution, and the project must quote the distribution with it.
    WHAT IT COSTS: nothing, IF the target material is lognormal -- milled and
      precipitated powders approximately are, and the lab's silica and
      cornstarch are both. But that is now a STATED CONDITION of the headline

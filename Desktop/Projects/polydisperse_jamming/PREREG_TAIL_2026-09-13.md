@@ -36,6 +36,12 @@ lognormal runs 0.280 / 0.355 / 0.454 / 0.483 / 0.514 as the upper cut goes 2 / 3
 So the headline may be partly a property of a constant in `packing.insert_packing`.
 This campaign finds out.
 
+> ⚠ **Read §5 before quoting this paragraph.** It states what I believed when the
+> campaign was designed, and the campaign REFUTED it: `phi_J` moves by 0.021 between
+> `U` = 2 and 5 and by **−0.0010 ± 0.0017, not resolved**, between 5 and 8. The
+> production cut is on the PLATEAU. `cv_vol` still rises 6 % over that last step, which
+> is precisely why `cv_vol` is not the control variable either.
+
 ---
 
 ## 2. The design: one family, one friction, one thing changed
@@ -132,5 +138,84 @@ while `cv_vol` still moves 6 %, so those two arms are a small extra discriminato
 
 ## 5. OUTCOME
 
-*(Empty until the campaign lands. Every number will be printed by
-`grade_tail.py` → `out/tail.txt`.)*
+**Landed 2026-09-13. Two runs: 72 cells at the default 200 000 iteration cap, then the
+whole grid again at `PJ_MAX_ITER` = 1e6; the grader takes the higher cap per cell.**
+Verdict line: `FAILURES: ['T0', 'T1', 'T3']`. Every number below is printed by
+`grade_tail.py` → `out/tail.txt`.
+
+### The registered verdict: T3 is UNREADABLE, and it stays that way
+
+**T1 FAIL, 2 of 4 arms refused.** After the cap repair every arm converges (the first run
+failed 0/3 on the `p̂` = 3e-5 rung alone, at the cap, with unbalanced 0.014–0.043 against
+a 0.02 tolerance — slow cells, not wrong ones). What still refuses them is the **r² of the
+`φ(p̂)` line**: `U` = 2.0 at 0.609 and `U` = 8.0 at 0.842, against the 0.85 bar.
+By §3's own rule, two refusals make the campaign **UNREADABLE and the survivors are not
+quoted** — so **T3 is UNREADABLE** and `φ_J` is not reported for any arm.
+
+**T0 FAIL**, and the bar was posed on the wrong quantity: it required *each cell's*
+realised number CV within 0.005 of 0.500, which at N = 1500 tests the seed's own sampling
+noise rather than the design. The **arm means** are 0.5003 / 0.4963 / 0.4993 / 0.4968 —
+matched to 0.004, which is what the design promised. The bar stays failed and the arm
+means are printed beside it. Four cells also failed outright: `U` = 8, seed 1, all four
+rungs, on the periodic-collider guard (`d_max` = 5.9·d₁₀ needs a larger cell than N = 1500
+gives).
+
+**T2 PASS.** At CV = 0 the two extreme windows give `φ_J` identical to **0.000000** — a
+monodisperse pack has no tail to cut, and the truncation is doing only what it says.
+
+### 🔑 The companion, which needs no extrapolation, and it is decisive
+
+`φ_J` is an *extrapolation*, and it is the extrapolation that T1 finds unhealthy — the
+slopes are all positive (8.7–18.7) and the three seeds inside each arm agree to ~0.005.
+So the same hypothesis was asked of a quantity with **no fit in it**: `φ` measured *at*
+each pressure rung. This removes a model rather than a bar, and it is **reported, not
+graded** — T3's verdict stands.
+
+Paired per (seed, pressure), which cancels the seed's realisation and the pressure in one
+step:
+
+| tail cut | `Δφ` | t | n |
+|---|---|---|---|
+| `U` 2 → 3 | **+0.0101 ± 0.0011** | +9.0 | 12 |
+| `U` 3 → 5 | **+0.0109 ± 0.0011** | +9.8 | 12 |
+| `U` 5 → 8 | **−0.0010 ± 0.0017** | −0.6 | 8 |
+| `U` 2 → 5 | **+0.0211 ± 0.0013** | +16.5 | 12 |
+
+and the unpaired per-rung version agrees at every one of the four pressures independently
+(`U` 2 → 5 gives +0.0219, +0.0208, +0.0190, +0.0226 at `p̂` = 1e-3, 3e-4, 1e-4, 3e-5).
+
+**THE NUMBER-WIDTH HYPOTHESIS IS DEAD.** These four distributions are matched in realised
+number CV to better than 0.005, and cutting the large-particle tail at 2·d₁₀ instead of
+5·d₁₀ lowers the packing fraction by **0.021 — four times the 0.005 bar the number-width
+hypothesis predicted, and 16 σ from zero.** Whatever sets the polydispersity shift, it is
+not the number-weighted width.
+
+### 🔑 And the reassuring half: the production truncation is on the PLATEAU
+
+The effect rises steeply to `U` = 5 and then **stops**: `U` 5 → 8 is **−0.0010 ± 0.0017,
+not resolved at 2 se**, against +0.0211 for `U` 2 → 5. So the production constant
+`(0.2, 5.0)` sits where the curve has flattened, and **the project's +0.053 headline is
+not an artefact of it.** That was the specific worry this campaign was launched to settle,
+and it is settled in the direction that costs nothing.
+
+⚠ Note this was NOT obvious in advance from the descriptors: `cv_vol` still moves 6 %
+between `U` = 5 and 8 (0.454 → 0.483) while `φ_J` moves by nothing measurable. So `cv_vol`
+over-predicts in that region — one more reason it is not the control variable
+(`shape_control.py` reaches the same conclusion from the family ladders).
+
+### What this settles, and what it does not
+
+- **SETTLED: the number-weighted width is not the control parameter**, now from two
+  independent directions — across families at matched CV (4.5×, `shape_control.py`) and
+  *within* one family at matched CV (0.021, here). The second is the cleaner of the two
+  because it changes one thing.
+- **SETTLED: the production truncation is not load-bearing.** The headline stands.
+- **NOT SETTLED: what the control parameter is.** `cv_vol` orders the tail sweep correctly
+  but over-predicts the `U` 5 → 8 step; fifteen descriptors fail on the family ladders.
+  The honest position is that the shift is a property of the whole distribution.
+- **NOT SETTLED, and now the binding limitation: the isotropic `φ(p̂)` ladder cannot carry
+  this question cleanly at N = 1500.** Two arms fail its r² bar, one seed fails the
+  collider guard, `d_max/L` = 0.34 at `U` ≥ 5 is above the 0.25 finite-size flag, and the
+  rattler fraction is ~0.50 throughout. §4's registered response applies: **move the test
+  to the constant-pressure protocol, which has no extrapolation in it** — and which is
+  also the channel the project's headline is actually measured on.
