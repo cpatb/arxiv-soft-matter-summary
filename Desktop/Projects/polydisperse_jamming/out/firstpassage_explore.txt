@@ -126,6 +126,27 @@
    b per CV is itself a statement about the critical-state pressure scale:
       cv 0.0: b = 0.987, cv 0.2: b = 0.990, cv 0.5: b = 1.262
 
+=== the phi_c convention, priced ===
+   dphi is phi - phi_c, and this campaign has TWO measurements of phi_c: the
+   constant-pressure phi_mu the ladder was placed on, and the crossing this
+   protocol itself returns (PREREG_STRAINCLOCK §7 G5), which is 0.0035-0.0046
+   LOWER. At x = +0.05 that is a factor 2.5-3.0 in dphi, so it is not small.
+      cv   a(phi_mu)  a(G5)   |da|  |  a/b(phi_mu)  a/b(G5)  |d(a/b)|
+   -- threshold 1e-04 --
+      0.0      1.153   1.335  0.182  |       1.168     1.163     0.005
+      0.2      1.295   1.484  0.189  |       1.308     1.309     0.002
+      0.5      1.801   2.153  0.351  |       1.428     1.429     0.002
+   -- threshold 3e-04 --
+      0.0      1.015   1.176  0.162  |       1.028     1.025     0.003
+      0.2      1.065   1.220  0.156  |       1.075     1.077     0.002
+      0.5      1.548   1.851  0.303  |       1.227     1.229     0.002
+   -> `a` carries a 0.15-0.35 systematic from the convention alone, which is
+      the size of the CV differences F3 is testing. `a/b` does not: both
+      exponents are d ln(.)/d ln(dphi) on the SAME abscissa, so moving the
+      origin rescales the two log-derivatives by the same local factor and it
+      cancels in the ratio. This is a second, independent reason F6 is the
+      sharper test -- and it is a systematic ON F3 that must be quoted with it.
+
 === F5  reported, not graded ===
    shape statistic t_fp(3e-4)/t_fp(1e-4) per rung -- must be CV-independent if the pressure builds by the same trajectory everywhere:
       cv 0.0: x+0.10: 2.52  x+0.35: 2.60  x+0.60: 3.07  x+0.85: 2.90

@@ -205,3 +205,89 @@ def test_ratio_bootstrap_responds_to_scatter():
     noisy = [_cell_p(0.0, x, d, 1e-4 / (0.21 * d) * math.exp(0.3 * rng.normal()),
                      0.21 * d, seed=s) for x, d in rungs for s in (1, 2, 3)]
     assert bootstrap_ratio(noisy, 0.0, 1e-4, n_boot=500) > 0.05
+
+
+# ------------------------------------------- the landed campaign, pinned to the prose
+# PREREG_FIRSTPASSAGE_2026-09-13.md §5 quotes these; a .md that quotes an artifact must
+# not be able to drift away from it silently.
+from firstpassage import P_PRIMARY, THRESHOLDS, cell_table, load_records   # noqa: E402
+
+
+def _rows():
+    recs, _, _ = load_records()
+    return cell_table(recs)
+
+
+def test_the_pooled_campaign_is_99_cells_with_six_seeds_everywhere():
+    rows = _rows()
+    assert len(rows) == 99
+    for cv in (0.0, 0.2, 0.5):
+        for x in (0.05, 0.10, 0.35, 0.60, 0.85):
+            n = len({r["seed"] for r in rows
+                     if r["cv"] == cv and abs(r["x"] - x) < 1e-9})
+            assert n == 6, (cv, x, n)
+    assert all(r["protocol"] == "cv-shear-v3-fprep" for r in rows)
+
+
+def test_f6_ratios_are_what_the_prereg_states():
+    rows = _rows()
+    for cv, want in ((0.0, 1.203), (0.2, 1.295), (0.5, 1.378)):
+        a = powerlaw_fit(rows, cv, P_PRIMARY)[0]
+        b = pss_exponent(rows, cv, P_PRIMARY)[0]
+        assert a / b == pytest.approx(want, abs=5e-3), (cv, a / b)
+
+
+def test_pss_is_linear_in_dphi_at_every_cv():
+    """b = 1.02-1.06. If this ever moves, the whole a/b reading changes meaning."""
+    rows = _rows()
+    for cv in (0.0, 0.2, 0.5):
+        b = pss_exponent(rows, cv, P_PRIMARY)[0]
+        assert 0.95 < b < 1.15, (cv, b)
+
+
+def test_the_estimator_reaches_within_0002_of_critical():
+    """F1: the point of the whole extension. The half-rise clock was unreadable on
+    16/16 cells at x <= +0.10; this one is admitted on 93 % at x >= +0.05."""
+    rows = [r for r in _rows() if r["x"] >= 0.05 - 1e-9]
+    assert len(rows) == 90
+    assert sum(admitted(r, P_PRIMARY) for r in rows) == 84
+
+
+def test_f2_fails_as_registered_and_the_phi_c_convention_is_why():
+    """Both halves are asserted: the registered failure, and its diagnosis. If the
+    diagnosis ever stops holding, the prereg's §5 explanation is wrong."""
+    from firstpassage import rung_means
+    PHI_C_G5 = {0.0: 0.5876, 0.2: 0.5987, 0.5: 0.6399}
+    rows = _rows()
+    got = {}
+    for cv in (0.0, 0.2, 0.5):
+        for name, ref in (("mu", None), ("g5", PHI_C_G5)):
+            rr = ([dict(r, dphi=r["phi_target"] - ref[cv]) for r in rows
+                   if r["cv"] == cv] if ref else [r for r in rows if r["cv"] == cv])
+            a, lnA, _ = powerlaw_fit(rr, cv, P_PRIMARY)
+            rm = rung_means(rr, cv, P_PRIMARY)
+            d = float(np.mean([q["dphi"] for q in rr if abs(q["x"] - 0.05) < 1e-9]))
+            got[(cv, name)] = rm[0.05][0] / math.exp(lnA - a * math.log(d))
+    # registered: FAIL at CV 0.2 (0.49 < 0.5), marginal pass at CV 0
+    assert got[(0.2, "mu")] < 0.5
+    assert got[(0.0, "mu")] == pytest.approx(0.51, abs=0.02)
+    # diagnosed: the protocol's own phi_c brings both to within 10 % of 1
+    assert abs(got[(0.0, "g5")] - 1.0) < 0.10
+    assert abs(got[(0.2, "g5")] - 1.0) < 0.10
+
+
+def test_the_ratio_is_invariant_to_the_phi_c_convention_and_a_is_not():
+    """The measured reason F6 is the sharper statistic."""
+    PHI_C_G5 = {0.0: 0.5876, 0.2: 0.5987, 0.5: 0.6399}
+    rows = _rows()
+    for thr in THRESHOLDS:
+        for cv in (0.0, 0.2, 0.5):
+            vals = []
+            for ref in (None, PHI_C_G5):
+                rr = ([dict(r, dphi=r["phi_target"] - ref[cv]) for r in rows
+                       if r["cv"] == cv] if ref else [r for r in rows if r["cv"] == cv])
+                a = powerlaw_fit(rr, cv, thr)[0]
+                b = pss_exponent(rr, cv, thr)[0]
+                vals.append((a, a / b))
+            assert abs(vals[0][0] - vals[1][0]) > 0.10, (cv, thr, "a should move")
+            assert abs(vals[0][1] - vals[1][1]) < 0.01, (cv, thr, "a/b should not")

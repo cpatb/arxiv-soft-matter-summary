@@ -1,0 +1,277 @@
+=== grade_firstpassage.py -- PREREG_FIRSTPASSAGE_2026-09-13.md, F0-F5 ===
+   51 shard files, 99 cells
+
+   cv     x    dphi     p_prep    p_ss    | t_fp(1e-4) frac | t_fp(3e-4) frac | adm
+ 0.00 -0.15 -0.0062 6.72e-09 8.69e-05 |    0.2633 0.42 |    1.1142 0.01 | N
+ 0.00 -0.15 -0.0062 5.70e-09 6.46e-05 |    0.3841 0.35 |    0.6532 0.01 | N
+ 0.00 -0.15 -0.0062 5.09e-09 9.01e-05 |    0.2631 0.29 |       nan nan | N
+ 0.00 +0.05 +0.0021 1.35e-09 5.34e-04 |    0.0749 0.97 |    0.1953 0.85 | y
+ 0.00 +0.05 +0.0021 9.18e-10 5.87e-04 |    0.0954 1.00 |    0.2436 0.87 | y
+ 0.00 +0.05 +0.0021 5.27e-09 6.23e-04 |    0.1125 0.99 |    0.1655 0.85 | y
+ 0.00 +0.05 +0.0021 3.36e-09 7.64e-04 |    0.0513 1.00 |    0.1584 0.87 | y
+ 0.00 +0.05 +0.0021 4.12e-09 6.92e-04 |    0.0759 1.00 |    0.1599 0.86 | y
+ 0.00 +0.05 +0.0021 6.66e-10 6.68e-04 |    0.0527 0.97 |    0.2468 0.92 | y
+ 0.00 +0.10 +0.0042 1.35e-09 1.03e-03 |    0.0659 1.00 |    0.1487 0.97 | y
+ 0.00 +0.10 +0.0042 7.21e-10 9.15e-04 |    0.0599 1.00 |    0.1815 0.95 | y
+ 0.00 +0.10 +0.0042 3.36e-09 8.38e-04 |    0.0597 1.00 |    0.1403 1.00 | y
+ 0.00 +0.10 +0.0042 6.65e-10 6.27e-04 |    0.0330 1.00 |    0.0813 0.95 | y
+ 0.00 +0.10 +0.0042 9.31e-10 1.11e-03 |    0.0683 1.00 |    0.1299 0.96 | y
+ 0.00 +0.10 +0.0042 1.71e-09 8.13e-04 |    0.0407 1.00 |    0.2092 0.97 | y
+ 0.00 +0.35 +0.0145 4.16e-11 3.75e-03 |    0.0164 1.00 |    0.0423 1.00 | y
+ 0.00 +0.35 +0.0145 1.63e-10 3.47e-03 |    0.0133 1.00 |    0.0374 1.00 | y
+ 0.00 +0.35 +0.0145 7.84e-11 3.24e-03 |    0.0116 1.00 |    0.0281 1.00 | y
+ 0.00 +0.35 +0.0145 8.62e-11 3.29e-03 |    0.0128 1.00 |    0.0405 1.00 | y
+ 0.00 +0.35 +0.0145 4.93e-10 3.37e-03 |    0.0207 1.00 |    0.0394 1.00 | y
+ 0.00 +0.35 +0.0145 1.15e-11 3.43e-03 |    0.0110 1.00 |    0.0293 1.00 | y
+ 0.00 +0.60 +0.0248 4.74e-11 5.92e-03 |    0.0067 1.00 |    0.0202 1.00 | y
+ 0.00 +0.60 +0.0248 1.79e-10 5.38e-03 |    0.0063 1.00 |    0.0201 1.00 | y
+ 0.00 +0.60 +0.0248 2.01e-11 6.25e-03 |    0.0051 1.00 |    0.0154 1.00 | y
+ 0.00 +0.60 +0.0248 2.31e-11 5.99e-03 |    0.0063 1.00 |    0.0179 1.00 | y
+ 0.00 +0.60 +0.0248 3.34e-11 6.20e-03 |    0.0070 1.00 |    0.0187 1.00 | y
+ 0.00 +0.60 +0.0248 5.99e-10 5.83e-03 |    0.0052 1.00 |    0.0155 1.00 | y
+ 0.00 +0.85 +0.0351 5.64e-10 8.67e-03 |    0.0051 1.00 |    0.0145 1.00 | y
+ 0.00 +0.85 +0.0351 6.99e-11 7.98e-03 |    0.0058 1.00 |    0.0166 1.00 | y
+ 0.00 +0.85 +0.0351 3.01e-09 8.43e-03 |    0.0044 1.00 |    0.0131 1.00 | y
+ 0.00 +0.85 +0.0351 5.51e-11 8.91e-03 |    0.0049 1.00 |    0.0142 1.00 | y
+ 0.00 +0.85 +0.0351 3.93e-12 8.12e-03 |    0.0039 1.00 |    0.0114 1.00 | y
+ 0.00 +0.85 +0.0351 4.18e-11 8.61e-03 |    0.0052 1.00 |    0.0148 1.00 | y
+ 0.20 -0.15 -0.0065 8.53e-09 1.02e-04 |    0.2554 0.36 |       nan nan | N
+ 0.20 -0.15 -0.0065 1.35e-08 6.77e-05 |    0.5108 0.12 |       nan nan | N
+ 0.20 -0.15 -0.0065 3.94e-08 8.70e-05 |    0.8066 0.44 |       nan nan | N
+ 0.20 +0.05 +0.0022 1.13e-09 5.81e-04 |    0.1355 1.00 |    0.1886 0.89 | y
+ 0.20 +0.05 +0.0022 2.90e-09 4.43e-04 |    0.1229 0.99 |    0.2580 0.76 | y
+ 0.20 +0.05 +0.0022 5.33e-09 7.31e-04 |    0.1334 1.00 |    0.2860 0.85 | y
+ 0.20 +0.05 +0.0022 5.99e-09 4.98e-04 |    0.0740 1.00 |    0.1498 0.73 | y
+ 0.20 +0.05 +0.0022 1.23e-08 4.79e-04 |    0.0951 0.96 |    0.3054 0.64 | y
+ 0.20 +0.05 +0.0022 4.08e-09 7.42e-04 |    0.0950 1.00 |    0.2237 1.00 | y
+ 0.20 +0.10 +0.0043 1.88e-08 9.27e-04 |    0.0972 1.00 |    0.1598 0.93 | y
+ 0.20 +0.10 +0.0043 2.49e-09 8.04e-04 |    0.0550 1.00 |    0.1048 1.00 | y
+ 0.20 +0.10 +0.0043 8.95e-10 7.21e-04 |    0.0866 1.00 |    0.1548 0.92 | y
+ 0.20 +0.10 +0.0043 3.66e-09 8.79e-04 |    0.0573 1.00 |    0.1522 1.00 | y
+ 0.20 +0.10 +0.0043 3.46e-09 1.06e-03 |    0.0829 1.00 |    0.1698 1.00 | y
+ 0.20 +0.10 +0.0043 7.09e-10 1.03e-03 |    0.0493 0.98 |    0.1600 0.93 | y
+ 0.20 +0.35 +0.0152 1.46e-09 3.86e-03 |    0.0129 1.00 |    0.0343 1.00 | y
+ 0.20 +0.35 +0.0152 1.20e-09 3.68e-03 |    0.0204 1.00 |    0.0448 1.00 | y
+ 0.20 +0.35 +0.0152 7.72e-10 3.51e-03 |    0.0146 1.00 |    0.0382 1.00 | y
+ 0.20 +0.35 +0.0152 1.63e-09 3.12e-03 |    0.0162 1.00 |    0.0355 1.00 | y
+ 0.20 +0.35 +0.0152 9.29e-10 3.44e-03 |    0.0237 1.00 |    0.0472 1.00 | y
+ 0.20 +0.35 +0.0152 3.45e-10 3.78e-03 |    0.0108 1.00 |    0.0336 1.00 | y
+ 0.20 +0.60 +0.0260 1.65e-09 6.05e-03 |    0.0093 1.00 |    0.0291 1.00 | y
+ 0.20 +0.60 +0.0260 1.60e-10 5.85e-03 |    0.0073 1.00 |    0.0199 1.00 | y
+ 0.20 +0.60 +0.0260 7.41e-10 6.32e-03 |    0.0099 1.00 |    0.0255 1.00 | y
+ 0.20 +0.60 +0.0260 7.76e-10 6.23e-03 |    0.0060 1.00 |    0.0172 1.00 | y
+ 0.20 +0.60 +0.0260 9.22e-10 6.11e-03 |    0.0066 1.00 |    0.0186 1.00 | y
+ 0.20 +0.60 +0.0260 4.10e-09 6.19e-03 |    0.0067 1.00 |    0.0196 1.00 | y
+ 0.20 +0.85 +0.0369 1.11e-07 8.84e-03 |    0.0048 1.00 |    0.0145 1.00 | y
+ 0.20 +0.85 +0.0369 2.46e-09 8.88e-03 |    0.0049 1.00 |    0.0149 1.00 | y
+ 0.20 +0.85 +0.0369 6.13e-08 8.94e-03 |    0.0050 1.00 |    0.0152 1.00 | y
+ 0.20 +0.85 +0.0369 5.33e-08 9.02e-03 |    0.0045 1.00 |    0.0135 1.00 | y
+ 0.20 +0.85 +0.0369 2.01e-08 9.41e-03 |    0.0048 1.00 |    0.0143 1.00 | y
+ 0.20 +0.85 +0.0369 3.64e-07 9.06e-03 |    0.0048 1.00 |    0.0144 1.00 | y
+ 0.50 -0.15 -0.0068 3.86e-08 1.77e-04 |    0.1679 0.81 |    0.4233 0.09 | N
+ 0.50 -0.15 -0.0068 4.03e-08 9.87e-05 |    0.5734 0.29 |       nan nan | N
+ 0.50 -0.15 -0.0068 4.33e-08 1.82e-04 |    0.1418 0.92 |    0.9730 0.20 | y
+ 0.50 +0.05 +0.0023 2.33e-08 1.09e-03 |    0.0616 1.00 |    0.0902 1.00 | y
+ 0.50 +0.05 +0.0023 2.90e-08 2.33e-04 |    0.1089 0.90 |    0.1769 0.24 | N
+ 0.50 +0.05 +0.0023 2.58e-08 5.76e-04 |    0.0905 1.00 |    0.1487 0.91 | y
+ 0.50 +0.05 +0.0023 1.03e-08 2.30e-03 |    0.0390 1.00 |    0.1037 1.00 | y
+ 0.50 +0.05 +0.0023 3.09e-08 7.88e-04 |    0.0919 1.00 |    0.1471 0.91 | y
+ 0.50 +0.05 +0.0023 2.64e-08 1.57e-03 |    0.0472 1.00 |    0.0711 1.00 | y
+ 0.50 +0.10 +0.0046 3.54e-08 1.59e-03 |    0.0522 1.00 |    0.0848 1.00 | y
+ 0.50 +0.10 +0.0046 8.67e-09 2.75e-04 |    0.1131 0.93 |    0.2005 0.49 | y
+ 0.50 +0.10 +0.0046 2.74e-08 8.32e-04 |    0.0553 1.00 |    0.0884 0.98 | y
+ 0.50 +0.10 +0.0046 3.31e-08 2.27e-03 |    0.0293 1.00 |    0.0508 1.00 | y
+ 0.50 +0.10 +0.0046 2.14e-08 1.41e-03 |    0.0592 1.00 |    0.0993 1.00 | y
+ 0.50 +0.10 +0.0046 1.10e-08 2.06e-03 |    0.0449 1.00 |    0.0694 1.00 | y
+ 0.50 +0.35 +0.0161 7.40e-08 3.86e-03 |    0.0108 1.00 |    0.0361 1.00 | y
+ 0.50 +0.35 +0.0161 2.19e-08 1.74e-03 |    0.0370 1.00 |    0.0626 1.00 | y
+ 0.50 +0.35 +0.0161 1.97e-08 3.70e-03 |    0.0136 1.00 |    0.0330 1.00 | y
+ 0.50 +0.35 +0.0161 3.89e-08 5.11e-03 |    0.0059 1.00 |    0.0192 1.00 | y
+ 0.50 +0.35 +0.0161 2.55e-08 4.30e-03 |    0.0143 1.00 |    0.0349 1.00 | y
+ 0.50 +0.35 +0.0161 1.00e-08 4.93e-03 |    0.0116 1.00 |    0.0266 1.00 | y
+ 0.50 +0.60 +0.0276 3.20e-08 8.11e-03 |    0.0054 1.00 |    0.0160 1.00 | y
+ 0.50 +0.60 +0.0276 7.18e-08 4.81e-03 |    0.0072 1.00 |    0.0198 1.00 | y
+ 0.50 +0.60 +0.0276 5.77e-08 6.70e-03 |    0.0057 1.00 |    0.0160 1.00 | y
+ 0.50 +0.60 +0.0276 1.20e-07 8.43e-03 |    0.0037 1.00 |    0.0117 1.00 | y
+ 0.50 +0.60 +0.0276 1.99e-08 6.82e-03 |    0.0096 1.00 |    0.0243 1.00 | y
+ 0.50 +0.60 +0.0276 3.76e-08 8.77e-03 |    0.0047 1.00 |    0.0140 1.00 | y
+ 0.50 +0.85 +0.0391 1.96e-04 1.13e-02 |    0.0020 1.00 |    0.0051 1.00 | N
+ 0.50 +0.85 +0.0391 1.79e-07 8.07e-03 |    0.0039 1.00 |    0.0113 1.00 | y
+ 0.50 +0.85 +0.0391 1.65e-05 1.00e-02 |    0.0029 1.00 |    0.0099 1.00 | N
+ 0.50 +0.85 +0.0391 8.41e-04 1.23e-02 |    0.0020 1.00 |    0.0020 1.00 | N
+ 0.50 +0.85 +0.0391 3.08e-05 1.09e-02 |    0.0030 1.00 |    0.0106 1.00 | N
+ 0.50 +0.85 +0.0391 4.57e-04 1.18e-02 |    0.0020 1.00 |    0.0020 1.00 | N
+
+=== F0  the campaign is what it says it is ===
+   99 cells; protocol v3-fprep 99; friction_switch_ok 99; mu_prep=0 99; n_samples=1500 99; N=1000 99
+   gdot per CV: 0.0: 1.1765e-04, 0.2: 1.1748e-04, 0.5: 1.1582e-04   spread 1.016 against 1.2
+   seeds per (cv, rung):
+      cv 0.0: x-0.15:3  x+0.05:6  x+0.10:6  x+0.35:6  x+0.60:6  x+0.85:6
+      cv 0.2: x-0.15:3  x+0.05:6  x+0.10:6  x+0.35:6  x+0.60:6  x+0.85:6
+      cv 0.5: x-0.15:3  x+0.05:6  x+0.10:6  x+0.35:6  x+0.60:6  x+0.85:6
+   F0 PASS
+
+=== F1  admission: frac_above >= 0.9 and p_prep < 1e-06 ===
+   thr 1e-04: admitted 84/90 of the cells at x >= +0.05 (93%, bar 85%)
+      refused cv 0.5 x +0.85 s1: prep jammed
+      refused cv 0.5 x +0.85 s3: prep jammed
+      refused cv 0.5 x +0.05 s2: frac_above 0.90
+      refused cv 0.5 x +0.85 s4: prep jammed
+      refused cv 0.5 x +0.85 s5: prep jammed
+      refused cv 0.5 x +0.85 s6: prep jammed
+   thr 3e-04: admitted 73/90 of the cells at x >= +0.05 (81%, bar 85%)
+      refused cv 0.5 x +0.85 s1: prep jammed
+      refused cv 0.5 x +0.10 s2: frac_above 0.49
+      refused cv 0.5 x +0.85 s3: prep jammed
+      refused cv 0.0 x +0.05 s1: frac_above 0.85
+      refused cv 0.0 x +0.05 s2: frac_above 0.87
+      refused cv 0.0 x +0.05 s3: frac_above 0.85
+      refused cv 0.0 x +0.05 s4: frac_above 0.87
+      refused cv 0.0 x +0.05 s5: frac_above 0.86
+      refused cv 0.2 x +0.05 s1: frac_above 0.89
+      refused cv 0.2 x +0.05 s2: frac_above 0.76
+      refused cv 0.2 x +0.05 s3: frac_above 0.85
+      refused cv 0.2 x +0.05 s4: frac_above 0.73
+      refused cv 0.2 x +0.05 s5: frac_above 0.64
+      refused cv 0.5 x +0.05 s2: frac_above 0.24
+      refused cv 0.5 x +0.85 s4: prep jammed
+      refused cv 0.5 x +0.85 s5: prep jammed
+      refused cv 0.5 x +0.85 s6: prep jammed
+   F1 PASS (on the primary threshold 1e-04)
+
+=== t_fp against dphi, per CV, per threshold ===
+   -- threshold 1e-04 --
+      cv 0.0:  x+0.05: 0.0740(n6)  x+0.10: 0.0528(n6)  x+0.35: 0.0139(n6)  x+0.60: 0.0061(n6)  x+0.85: 0.0048(n6)
+         fit on x = (0.35, 0.6, 0.85) (18 cells): a = 1.229 +- 0.120   A = 7.284e-05
+      cv 0.2:  x+0.05: 0.1068(n6)  x+0.10: 0.0691(n6)  x+0.35: 0.0159(n6)  x+0.60: 0.0075(n6)  x+0.85: 0.0048(n6)
+         fit on x = (0.35, 0.6, 0.85) (18 cells): a = 1.357 +- 0.131   A = 5.389e-05
+      cv 0.5:  x+0.05: 0.0624(n5)  x+0.10: 0.0543(n6)  x+0.35: 0.0132(n6)  x+0.60: 0.0058(n6)  x+0.85: 0.0039(n1)
+         fit on x = (0.35, 0.6, 0.85) (13 cells): a = 1.464 +- 0.377   A = 3.078e-05
+   -- threshold 3e-04 --
+      cv 0.0:  x+0.05: 0.2468(n1)  x+0.10: 0.1425(n6)  x+0.35: 0.0357(n6)  x+0.60: 0.0179(n6)  x+0.85: 0.0140(n6)
+         fit on x = (0.35, 0.6, 0.85) (18 cells): a = 1.077 +- 0.092   A = 3.606e-04
+      cv 0.2:  x+0.05: 0.2237(n1)  x+0.10: 0.1485(n6)  x+0.35: 0.0386(n6)  x+0.60: 0.0212(n6)  x+0.85: 0.0145(n6)
+         fit on x = (0.35, 0.6, 0.85) (18 cells): a = 1.109 +- 0.068   A = 3.719e-04
+      cv 0.5:  x+0.05: 0.1078(n5)  x+0.10: 0.0765(n5)  x+0.35: 0.0332(n6)  x+0.60: 0.0165(n6)  x+0.85: 0.0113(n1)
+         fit on x = (0.35, 0.6, 0.85) (13 cells): a = 1.258 +- 0.253   A = 1.823e-04
+
+=== F2  THE OUT-OF-SAMPLE TEST: predict x = +0.05 from a fit that never saw it ===
+   -- threshold 1e-04 --
+      cv 0.0 x +0.05 (dphi 0.0021): predicted 0.1446, observed 0.0740, obs/pred = 0.51   [GRADED]
+      cv 0.0 x +0.10 (dphi 0.0042): predicted 0.0612, observed 0.0528, obs/pred = 0.86   [reported]
+      cv 0.2 x +0.05 (dphi 0.0022): predicted 0.2158, observed 0.1068, obs/pred = 0.49   [GRADED]   OUTSIDE (0.5, 2.0)
+      cv 0.2 x +0.10 (dphi 0.0043): predicted 0.0872, observed 0.0691, obs/pred = 0.79   [reported]
+      cv 0.5 x +0.05 (dphi 0.0023): predicted 0.2318, observed 0.0624, obs/pred = 0.27   [reported]   OUTSIDE (0.5, 2.0)
+      cv 0.5 x +0.10 (dphi 0.0046): predicted 0.0827, observed 0.0543, obs/pred = 0.66   [reported]
+   -- threshold 3e-04 --
+      cv 0.0 x +0.05 (dphi 0.0021): predicted 0.2806, observed 0.2468, obs/pred = 0.88   [reported]
+      cv 0.0 x +0.10 (dphi 0.0042): predicted 0.1321, observed 0.1425, obs/pred = 1.08   [reported]
+      cv 0.2 x +0.05 (dphi 0.0022): predicted 0.3275, observed 0.2237, obs/pred = 0.68   [reported]
+      cv 0.2 x +0.10 (dphi 0.0043): predicted 0.1562, observed 0.1485, obs/pred = 0.95   [reported]
+      cv 0.5 x +0.05 (dphi 0.0023): predicted 0.3901, observed 0.1078, obs/pred = 0.28   [reported]   OUTSIDE (0.5, 2.0)
+      cv 0.5 x +0.10 (dphi 0.0046): predicted 0.1610, observed 0.0765, obs/pred = 0.48   [reported]   OUTSIDE (0.5, 2.0)
+   F2 FAIL (x = +0.05 at CV (0.0, 0.2) on the primary threshold, band (0.5, 2.0))
+
+=== F3  does the EXPONENT depend on CV? (G4's question where G4 had no data) ===
+   the estimator's own systematic first: |a(1e-4) - a(3e-4)| per CV = cv 0.0: 0.152, cv 0.2: 0.248, cv 0.5: 0.206
+   that is the FLOOR -- an exponent difference smaller than it is a readout of the threshold, not of the material.
+   thr 1e-04 cv 0.2: a = 1.357 +- 0.131 vs a(0) = 1.229 +- 0.120; da = +0.128 +- 0.178 (0.7 se); A(cv)/A(0) = 0.74 -> COLLAPSE
+   thr 1e-04 cv 0.5: a = 1.464 +- 0.377 vs a(0) = 1.229 +- 0.120; da = +0.236 +- 0.396 (0.6 se); A(cv)/A(0) = 0.42 -> UNDETERMINED
+   thr 3e-04 cv 0.2: a = 1.109 +- 0.068 vs a(0) = 1.077 +- 0.092; da = +0.032 +- 0.114 (0.3 se); A(cv)/A(0) = 1.03 -> COLLAPSE
+   thr 3e-04 cv 0.5: a = 1.258 +- 0.253 vs a(0) = 1.077 +- 0.092; da = +0.181 +- 0.269 (0.7 se); A(cv)/A(0) = 0.51 -> COLLAPSE
+   F3 verdict per (cv, threshold) above. A claim needs BOTH thresholds to agree; where they do not, the verdict is UNDETERMINED by the floor rule.
+      cv 0.2: consistent -> COLLAPSE
+      cv 0.5: thresholds DISAGREE -> UNDETERMINED
+
+=== F4  does the CV 0.5 extrapolation failure survive six seeds? ===
+   the number that motivated the campaign: exploratory obs/pred at x = +0.10, CV 0.5 = 0.30 on three seeds (CV 0: 1.14, CV 0.2: 0.94)
+   thr 1e-04 cv 0.0: obs/pred = 0.86 -> scatter
+   thr 1e-04 cv 0.2: obs/pred = 0.79 -> scatter
+   thr 1e-04 cv 0.5: obs/pred = 0.66 -> scatter
+   thr 3e-04 cv 0.0: obs/pred = 1.08 -> scatter
+   thr 3e-04 cv 0.2: obs/pred = 0.95 -> scatter
+   thr 3e-04 cv 0.5: obs/pred = 0.48 -> REAL
+
+=== F6  the PROPERLY NORMALISED collapse: a/b, where p_ss ~ dphi^b ===
+   a inherits b's CV dependence, so comparing a across CV partly re-measures b.
+   A universal build curve p(gamma) = p_ss f(gamma/gamma*) with gamma*
+   independent of phi predicts a/b = 1 exactly.
+   -- threshold 1e-04 --
+      cv 0.0: a = 1.229, b = 1.021 (on the same 18 cells) -> a/b = 1.203 +- 0.131
+      cv 0.2: a = 1.357, b = 1.048 (on the same 18 cells) -> a/b = 1.295 +- 0.116
+      cv 0.5: a = 1.464, b = 1.063 (on the same 13 cells) -> a/b = 1.378 +- 0.191
+   -- threshold 3e-04 --
+      cv 0.0: a = 1.077, b = 1.021 (on the same 18 cells) -> a/b = 1.055 +- 0.104
+      cv 0.2: a = 1.109, b = 1.048 (on the same 18 cells) -> a/b = 1.059 +- 0.068
+      cv 0.5: a = 1.258, b = 1.063 (on the same 13 cells) -> a/b = 1.184 +- 0.145
+   collapse test, against CV 0 at the same threshold:
+      thr 1e-04 cv 0.2: d(a/b) = +0.092 +- 0.175 (0.5 se) -> COLLAPSE
+      thr 1e-04 cv 0.5: d(a/b) = +0.175 +- 0.231 (0.8 se) -> COLLAPSE
+      thr 3e-04 cv 0.2: d(a/b) = +0.004 +- 0.125 (0.0 se) -> COLLAPSE
+      thr 3e-04 cv 0.5: d(a/b) = +0.129 +- 0.179 (0.7 se) -> COLLAPSE
+   F6 cv 0.2: both thresholds agree -> COLLAPSE
+   F6 cv 0.5: both thresholds agree -> COLLAPSE
+   ⚠ F3 stays graded as registered; F6 is the sharper test beside it. If the two disagree, that disagreement is the result.
+   b per CV is itself a statement about the critical-state pressure scale:
+      cv 0.0: b = 1.021, cv 0.2: b = 1.048, cv 0.5: b = 1.063
+
+=== the phi_c convention, priced ===
+   dphi is phi - phi_c, and this campaign has TWO measurements of phi_c: the
+   constant-pressure phi_mu the ladder was placed on, and the crossing this
+   protocol itself returns (PREREG_STRAINCLOCK §7 G5), which is 0.0035-0.0046
+   LOWER. At x = +0.05 that is a factor 2.5-3.0 in dphi, so it is not small.
+      cv   a(phi_mu)  a(G5)   |da|  |  a/b(phi_mu)  a/b(G5)  |d(a/b)|
+   -- threshold 1e-04 --
+      0.0      1.229   1.424  0.195  |       1.203     1.199     0.004
+      0.2      1.357   1.552  0.195  |       1.295     1.294     0.001
+      0.5      1.464   1.761  0.297  |       1.378     1.381     0.003
+   -- threshold 3e-04 --
+      0.0      1.077   1.249  0.172  |       1.055     1.052     0.003
+      0.2      1.109   1.269  0.160  |       1.059     1.058     0.000
+      0.5      1.258   1.514  0.256  |       1.184     1.187     0.003
+
+   F2 RE-RUN UNDER BOTH CONVENTIONS -- a DIAGNOSIS of the registered failure,
+   not a re-grading of it. F2 is graded on phi_mu, which is where the ladder
+   was placed, and it FAILS there.
+      cv    x     obs/pred(phi_mu)   obs/pred(G5 own phi_c)
+   -- threshold 1e-04 --
+      0.0  +0.05          0.51                  1.06
+      0.0  +0.10          0.86                  1.19
+      0.2  +0.05          0.49                  1.04
+      0.2  +0.10          0.79                  1.11
+      0.5  +0.05          0.27                  0.68
+      0.5  +0.10          0.66                  0.99
+   -- threshold 3e-04 --
+      0.0  +0.05          0.88                  1.67
+      0.0  +0.10          1.08                  1.43
+      0.2  +0.05          0.68                  1.25
+      0.2  +0.10          0.95                  1.25
+      0.5  +0.05          0.28                  0.61
+      0.5  +0.10          0.48                  0.68
+   -> the power law extrapolates a factor 7 in dphi CORRECTLY when dphi is
+      measured from the critical fraction this protocol itself returns, and
+      under-predicts by 2x when it is measured from the constant-pressure one.
+      So F2's failure locates a 0.004 disagreement between two phi_c estimates;
+      it is not a saturation of the approach law.
+   ⚠ How independent is that? The G5 crossing is read from p_ss on THESE cells,
+      so it is not independent of `b`. The part that is: `t_fp` is a different
+      observable from `p_ss`, and its extrapolation prefers the SAME origin.
+
+   -> `a` carries a 0.15-0.35 systematic from the convention alone, which is
+      the size of the CV differences F3 is testing. `a/b` does not: both
+      exponents are d ln(.)/d ln(dphi) on the SAME abscissa, so moving the
+      origin rescales the two log-derivatives by the same local factor and it
+      cancels in the ratio. This is a second, independent reason F6 is the
+      sharper test -- and it is a systematic ON F3 that must be quoted with it.
+
+=== F5  reported, not graded ===
+   shape statistic t_fp(3e-4)/t_fp(1e-4) per rung -- must be CV-independent if the pressure builds by the same trajectory everywhere:
+      cv 0.0: x+0.05: 3.33  x+0.10: 2.70  x+0.35: 2.56  x+0.60: 2.95  x+0.85: 2.90
+      cv 0.2: x+0.05: 2.09  x+0.10: 2.15  x+0.35: 2.43  x+0.60: 2.83  x+0.85: 3.02
+      cv 0.5: x+0.05: 1.73  x+0.10: 1.41  x+0.35: 2.51  x+0.60: 2.86  x+0.85: 2.90
+   t_fp against x (the reduced coordinate) rather than dphi -- the two differ by W(CV) and a collapse could hold in one and not the other:
+      cv 0.0: x+0.05: 0.0740  x+0.10: 0.0528  x+0.35: 0.0139  x+0.60: 0.0061  x+0.85: 0.0048
+      cv 0.2: x+0.05: 0.1068  x+0.10: 0.0691  x+0.35: 0.0159  x+0.60: 0.0075  x+0.85: 0.0048
+      cv 0.5: x+0.05: 0.0624  x+0.10: 0.0543  x+0.35: 0.0132  x+0.60: 0.0058  x+0.85: 0.0039
+
+FAILURES: ['F2']

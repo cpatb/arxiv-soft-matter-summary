@@ -30,6 +30,11 @@ F2_BAND = (0.5, 2.0)
 F2_GRADED_CVS = (0.0, 0.2)
 F3_PREFACTOR_BAND = (0.5, 2.0)
 F4_REAL_BELOW = 0.5
+# This protocol's OWN critical fraction, from PREREG_STRAINCLOCK_2026-09-13.md §7 G5:
+# the phi at which the measured p_ss(phi) crosses p* = 3e-04. It sits 0.0035-0.0046 BELOW
+# the constant-pressure phi_mu the ladder was placed on, which at x = +0.05 is a factor
+# 2.5-3.0 in dphi. Used only for the reported convention systematic, never in a bar.
+PHI_C_G5 = {0.0: 0.5876, 0.2: 0.5987, 0.5: 0.6399}
 N_SEEDS_TARGET = 6
 X_ALL = (-0.15, 0.05, 0.10, 0.35, 0.60, 0.85)
 
@@ -279,6 +284,66 @@ def main() -> int:
     for thr in (P_PRIMARY,):
         say("      " + ", ".join(
             f"cv {cv}: b = {pss_exponent(rows, cv, thr)[0]:.3f}" for cv in sorted(PHI_MU)))
+
+    # -------- the phi_c CONVENTION systematic, reported (added before arm B landed) --
+    say()
+    say("=== the phi_c convention, priced ===")
+    say("   dphi is phi - phi_c, and this campaign has TWO measurements of phi_c: the")
+    say("   constant-pressure phi_mu the ladder was placed on, and the crossing this")
+    say("   protocol itself returns (PREREG_STRAINCLOCK §7 G5), which is 0.0035-0.0046")
+    say("   LOWER. At x = +0.05 that is a factor 2.5-3.0 in dphi, so it is not small.")
+    say("      cv   a(phi_mu)  a(G5)   |da|  |  a/b(phi_mu)  a/b(G5)  |d(a/b)|")
+    for thr in THRESHOLDS:
+        say(f"   -- threshold {thr:.0e} --")
+        for cv in sorted(PHI_MU):
+            vals = []
+            for ref in (PHI_MU, PHI_C_G5):
+                rr = [dict(r, dphi=r["phi_target"] - ref[cv]) for r in rows
+                      if r["cv"] == cv]
+                a_, _, _ = powerlaw_fit(rr, cv, thr)
+                b_, _ = pss_exponent(rr, cv, thr)
+                vals.append((a_, a_ / b_ if b_ else float("nan")))
+            say(f"      {cv:.1f}   {vals[0][0]:8.3f} {vals[1][0]:7.3f} "
+                f"{abs(vals[0][0] - vals[1][0]):6.3f}  |  {vals[0][1]:10.3f} "
+                f"{vals[1][1]:9.3f}  {abs(vals[0][1] - vals[1][1]):8.3f}")
+    say()
+    say("   F2 RE-RUN UNDER BOTH CONVENTIONS -- a DIAGNOSIS of the registered failure,")
+    say("   not a re-grading of it. F2 is graded on phi_mu, which is where the ladder")
+    say("   was placed, and it FAILS there.")
+    say("      cv    x     obs/pred(phi_mu)   obs/pred(G5 own phi_c)")
+    for thr in THRESHOLDS:
+        say(f"   -- threshold {thr:.0e} --")
+        for cv in sorted(PHI_MU):
+            for x in PREDICT_RUNGS:
+                vals = []
+                for ref in (PHI_MU, PHI_C_G5):
+                    rr = [dict(r, dphi=r["phi_target"] - ref[cv]) for r in rows
+                          if r["cv"] == cv]
+                    a_, lnA_, _ = powerlaw_fit(rr, cv, thr)
+                    rm_ = rung_means(rr, cv, thr)
+                    if x not in rm_:
+                        vals.append(float("nan"))
+                        continue
+                    d_ = float(np.mean([q["dphi"] for q in rr
+                                        if abs(q["x"] - x) < 1e-9]))
+                    vals.append(rm_[x][0] / predict(a_, lnA_, d_))
+                say(f"      {cv:.1f}  {x:+.2f}      {vals[0]:8.2f}              "
+                    f"{vals[1]:8.2f}")
+    say("   -> the power law extrapolates a factor 7 in dphi CORRECTLY when dphi is")
+    say("      measured from the critical fraction this protocol itself returns, and")
+    say("      under-predicts by 2x when it is measured from the constant-pressure one.")
+    say("      So F2's failure locates a 0.004 disagreement between two phi_c estimates;")
+    say("      it is not a saturation of the approach law.")
+    say("   ⚠ How independent is that? The G5 crossing is read from p_ss on THESE cells,")
+    say("      so it is not independent of `b`. The part that is: `t_fp` is a different")
+    say("      observable from `p_ss`, and its extrapolation prefers the SAME origin.")
+    say()
+    say("   -> `a` carries a 0.15-0.35 systematic from the convention alone, which is")
+    say("      the size of the CV differences F3 is testing. `a/b` does not: both")
+    say("      exponents are d ln(.)/d ln(dphi) on the SAME abscissa, so moving the")
+    say("      origin rescales the two log-derivatives by the same local factor and it")
+    say("      cancels in the ratio. This is a second, independent reason F6 is the")
+    say("      sharper test -- and it is a systematic ON F3 that must be quoted with it.")
 
     # ---------------- F5 ----------------
     say()
