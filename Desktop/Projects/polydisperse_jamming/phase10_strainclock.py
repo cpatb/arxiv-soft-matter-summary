@@ -76,13 +76,19 @@ CV_LADDER = (0.0, 0.2, 0.5)
 FAMILY = "lognormal"
 
 
-def rungs_for(cv: float) -> list[float]:
-    """The five absolute phi for this CV, rounded to 4 dp (the grid, as registered)."""
+def rungs_for(cv: float, xs=None) -> list[float]:
+    """The absolute phi for this CV, rounded to 4 dp (the grid, as registered).
+
+    `xs` defaults to X_RUNGS, the strain-clock grid. The first-passage extension
+    (PREREG_FIRSTPASSAGE_2026-09-13.md) passes its own list so that a rung nearer the
+    critical line can be added WITHOUT changing the grid the 45 committed records were
+    taken on -- the cell key carries phi and seed, so the two campaigns cannot collide.
+    """
     if cv not in PHI_MU:
         raise KeyError(f"no measured phi_mu for CV = {cv}; this grid is pre-registered "
                        f"and a new level needs a measurement, not an interpolation")
     w = PHI_0[cv] - PHI_MU[cv]
-    return [round(PHI_MU[cv] + x * w, 4) for x in X_RUNGS]
+    return [round(PHI_MU[cv] + x * w, 4) for x in (X_RUNGS if xs is None else xs)]
 
 
 def cell_key(cv: float, seed: int, phi: float, n: int, steps: int) -> str:
@@ -102,17 +108,18 @@ def load_done(path: str) -> set[str]:
     return done
 
 
-def build_grid(cvs, seeds, n: int):
+def build_grid(cvs, seeds, n: int, xs=None):
     """(cv, seed, phi, x, steps) tuples.
 
     Ordered CV-OUTERMOST so that round-robin sharding hands each worker one cell from
     each CV: the CV 0.5 cells are 2x the wall time of the CV 0 ones, and a shard that
     drew only CV 0.5 would set the campaign's wall clock on its own.
     """
+    xs = X_RUNGS if xs is None else xs
     grid = []
     for cv in cvs:
         for seed in seeds:
-            for x, phi in zip(X_RUNGS, rungs_for(cv)):
+            for x, phi in zip(xs, rungs_for(cv, xs)):
                 grid.append((cv, seed, phi, x, SHEAR_STEPS[cv], n))
     return grid
 
@@ -129,6 +136,11 @@ def main() -> int:
     ap.add_argument("--seeds", default="")
     ap.add_argument("--n-samples", type=int, default=N_SAMPLES)
     ap.add_argument("--gamma-max", type=float, default=GAMMA_MAX)
+    ap.add_argument("--x-rungs", default="",
+                    help="comma-separated x = (phi - phi_mu)/(phi_0 - phi_mu) rungs, "
+                         "overriding X_RUNGS. Used by the first-passage extension to "
+                         "add a rung nearer the critical line without disturbing the "
+                         "strain-clock grid.")
     ap.add_argument("--steps-scale", type=float, default=1.0,
                     help="multiply every per-CV step count (smoke/timing only; any "
                          "value but 1.0 changes gdot and is recorded in the key)")
@@ -141,7 +153,8 @@ def main() -> int:
     if args.smoke:
         cvs, seeds = (0.0,), (1,)
 
-    grid = build_grid(cvs, seeds, n)
+    xs = tuple(float(v) for v in args.x_rungs.split(",")) if args.x_rungs else None
+    grid = build_grid(cvs, seeds, n, xs)
     if args.smoke:
         grid = [g for g in grid if abs(g[3] - 0.60) < 1e-9]      # one jammed rung
         assert grid, "smoke filter matched no cell -- X_RUNGS moved"

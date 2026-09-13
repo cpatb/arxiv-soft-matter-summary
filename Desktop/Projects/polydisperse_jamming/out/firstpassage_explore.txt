@@ -1,0 +1,139 @@
+=== grade_firstpassage.py -- EXPLORATORY (committed strain-clock records only; GRADES NOTHING) ===
+   15 shard files, 45 cells
+
+   cv     x    dphi     p_prep    p_ss    | t_fp(1e-4) frac | t_fp(3e-4) frac | adm
+ 0.00 -0.15 -0.0062 6.72e-09 8.69e-05 |    0.2633 0.42 |    1.1142 0.01 | N
+ 0.00 -0.15 -0.0062 5.70e-09 6.46e-05 |    0.3841 0.35 |    0.6532 0.01 | N
+ 0.00 -0.15 -0.0062 5.09e-09 9.01e-05 |    0.2631 0.29 |       nan nan | N
+ 0.00 +0.10 +0.0042 1.35e-09 1.03e-03 |    0.0659 1.00 |    0.1487 0.97 | y
+ 0.00 +0.10 +0.0042 7.21e-10 9.15e-04 |    0.0599 1.00 |    0.1815 0.95 | y
+ 0.00 +0.10 +0.0042 3.36e-09 8.38e-04 |    0.0597 1.00 |    0.1403 1.00 | y
+ 0.00 +0.35 +0.0145 4.16e-11 3.75e-03 |    0.0164 1.00 |    0.0423 1.00 | y
+ 0.00 +0.35 +0.0145 1.63e-10 3.47e-03 |    0.0133 1.00 |    0.0374 1.00 | y
+ 0.00 +0.35 +0.0145 7.84e-11 3.24e-03 |    0.0116 1.00 |    0.0281 1.00 | y
+ 0.00 +0.60 +0.0248 4.74e-11 5.92e-03 |    0.0067 1.00 |    0.0202 1.00 | y
+ 0.00 +0.60 +0.0248 1.79e-10 5.38e-03 |    0.0063 1.00 |    0.0201 1.00 | y
+ 0.00 +0.60 +0.0248 2.01e-11 6.25e-03 |    0.0051 1.00 |    0.0154 1.00 | y
+ 0.00 +0.85 +0.0351 5.64e-10 8.67e-03 |    0.0051 1.00 |    0.0145 1.00 | y
+ 0.00 +0.85 +0.0351 6.99e-11 7.98e-03 |    0.0058 1.00 |    0.0166 1.00 | y
+ 0.00 +0.85 +0.0351 3.01e-09 8.43e-03 |    0.0044 1.00 |    0.0131 1.00 | y
+ 0.20 -0.15 -0.0065 8.53e-09 1.02e-04 |    0.2554 0.36 |       nan nan | N
+ 0.20 -0.15 -0.0065 1.35e-08 6.77e-05 |    0.5108 0.12 |       nan nan | N
+ 0.20 -0.15 -0.0065 3.94e-08 8.70e-05 |    0.8066 0.44 |       nan nan | N
+ 0.20 +0.10 +0.0043 1.88e-08 9.27e-04 |    0.0972 1.00 |    0.1598 0.93 | y
+ 0.20 +0.10 +0.0043 2.49e-09 8.04e-04 |    0.0550 1.00 |    0.1048 1.00 | y
+ 0.20 +0.10 +0.0043 8.95e-10 7.21e-04 |    0.0866 1.00 |    0.1548 0.92 | y
+ 0.20 +0.35 +0.0152 1.46e-09 3.86e-03 |    0.0129 1.00 |    0.0343 1.00 | y
+ 0.20 +0.35 +0.0152 1.20e-09 3.68e-03 |    0.0204 1.00 |    0.0448 1.00 | y
+ 0.20 +0.35 +0.0152 7.72e-10 3.51e-03 |    0.0146 1.00 |    0.0382 1.00 | y
+ 0.20 +0.60 +0.0260 1.65e-09 6.05e-03 |    0.0093 1.00 |    0.0291 1.00 | y
+ 0.20 +0.60 +0.0260 1.60e-10 5.85e-03 |    0.0073 1.00 |    0.0199 1.00 | y
+ 0.20 +0.60 +0.0260 7.41e-10 6.32e-03 |    0.0099 1.00 |    0.0255 1.00 | y
+ 0.20 +0.85 +0.0369 1.11e-07 8.84e-03 |    0.0048 1.00 |    0.0145 1.00 | y
+ 0.20 +0.85 +0.0369 2.46e-09 8.88e-03 |    0.0049 1.00 |    0.0149 1.00 | y
+ 0.20 +0.85 +0.0369 6.13e-08 8.94e-03 |    0.0050 1.00 |    0.0152 1.00 | y
+ 0.50 -0.15 -0.0068 3.86e-08 1.77e-04 |    0.1679 0.81 |    0.4233 0.09 | N
+ 0.50 -0.15 -0.0068 4.03e-08 9.87e-05 |    0.5734 0.29 |       nan nan | N
+ 0.50 -0.15 -0.0068 4.33e-08 1.82e-04 |    0.1418 0.92 |    0.9730 0.20 | y
+ 0.50 +0.10 +0.0046 3.54e-08 1.59e-03 |    0.0522 1.00 |    0.0848 1.00 | y
+ 0.50 +0.10 +0.0046 8.67e-09 2.75e-04 |    0.1131 0.93 |    0.2005 0.49 | y
+ 0.50 +0.10 +0.0046 2.74e-08 8.32e-04 |    0.0553 1.00 |    0.0884 0.98 | y
+ 0.50 +0.35 +0.0161 7.40e-08 3.86e-03 |    0.0108 1.00 |    0.0361 1.00 | y
+ 0.50 +0.35 +0.0161 2.19e-08 1.74e-03 |    0.0370 1.00 |    0.0626 1.00 | y
+ 0.50 +0.35 +0.0161 1.97e-08 3.70e-03 |    0.0136 1.00 |    0.0330 1.00 | y
+ 0.50 +0.60 +0.0276 3.20e-08 8.11e-03 |    0.0054 1.00 |    0.0160 1.00 | y
+ 0.50 +0.60 +0.0276 7.18e-08 4.81e-03 |    0.0072 1.00 |    0.0198 1.00 | y
+ 0.50 +0.60 +0.0276 5.77e-08 6.70e-03 |    0.0057 1.00 |    0.0160 1.00 | y
+ 0.50 +0.85 +0.0391 1.96e-04 1.13e-02 |    0.0020 1.00 |    0.0051 1.00 | N
+ 0.50 +0.85 +0.0391 1.79e-07 8.07e-03 |    0.0039 1.00 |    0.0113 1.00 | y
+ 0.50 +0.85 +0.0391 1.65e-05 1.00e-02 |    0.0029 1.00 |    0.0099 1.00 | N
+
+=== F1  admission: frac_above >= 0.9 and p_prep < 1e-06 ===
+   thr 1e-04: admitted 34/36 of the cells at x >= +0.05 (94%, bar 85%)
+      refused cv 0.5 x +0.85 s1: prep jammed
+      refused cv 0.5 x +0.85 s3: prep jammed
+   thr 3e-04: admitted 33/36 of the cells at x >= +0.05 (92%, bar 85%)
+      refused cv 0.5 x +0.85 s1: prep jammed
+      refused cv 0.5 x +0.10 s2: frac_above 0.49
+      refused cv 0.5 x +0.85 s3: prep jammed
+
+=== t_fp against dphi, per CV, per threshold ===
+   -- threshold 1e-04 --
+      cv 0.0:  x+0.10: 0.0618(n3)  x+0.35: 0.0136(n3)  x+0.60: 0.0060(n3)  x+0.85: 0.0051(n3)
+         fit on x = (0.35, 0.6, 0.85) (9 cells): a = 1.153 +- 0.118   A = 9.735e-05
+      cv 0.2:  x+0.10: 0.0774(n3)  x+0.35: 0.0156(n3)  x+0.60: 0.0087(n3)  x+0.85: 0.0049(n3)
+         fit on x = (0.35, 0.6, 0.85) (9 cells): a = 1.295 +- 0.133   A = 7.156e-05
+      cv 0.5:  x+0.10: 0.0689(n3)  x+0.35: 0.0176(n3)  x+0.60: 0.0061(n3)  x+0.85: 0.0039(n1)
+         fit on x = (0.35, 0.6, 0.85) (7 cells): a = 1.801 +- 0.433   A = 1.003e-05
+   -- threshold 3e-04 --
+      cv 0.0:  x+0.10: 0.1558(n3)  x+0.35: 0.0354(n3)  x+0.60: 0.0184(n3)  x+0.85: 0.0147(n3)
+         fit on x = (0.35, 0.6, 0.85) (9 cells): a = 1.015 +- 0.131   A = 4.674e-04
+      cv 0.2:  x+0.10: 0.1374(n3)  x+0.35: 0.0389(n3)  x+0.60: 0.0245(n3)  x+0.85: 0.0149(n3)
+         fit on x = (0.35, 0.6, 0.85) (9 cells): a = 1.065 +- 0.077   A = 4.655e-04
+      cv 0.5:  x+0.10: 0.0866(n2)  x+0.35: 0.0421(n3)  x+0.60: 0.0172(n3)  x+0.85: 0.0113(n1)
+         fit on x = (0.35, 0.6, 0.85) (7 cells): a = 1.548 +- 0.232   A = 6.897e-05
+
+=== F2  THE OUT-OF-SAMPLE TEST: predict x = +0.05 from a fit that never saw it ===
+   -- threshold 1e-04 --
+      cv 0.0 x +0.05: no admitted cells
+      cv 0.0 x +0.10 (dphi 0.0042): predicted 0.0540, observed 0.0618, obs/pred = 1.14   [reported]
+      cv 0.2 x +0.05: no admitted cells
+      cv 0.2 x +0.10 (dphi 0.0043): predicted 0.0826, observed 0.0774, obs/pred = 0.94   [reported]
+      cv 0.5 x +0.05: no admitted cells
+      cv 0.5 x +0.10 (dphi 0.0046): predicted 0.1659, observed 0.0689, obs/pred = 0.42   [reported]   OUTSIDE (0.5, 2.0)
+   -- threshold 3e-04 --
+      cv 0.0 x +0.05: no admitted cells
+      cv 0.0 x +0.10 (dphi 0.0042): predicted 0.1213, observed 0.1558, obs/pred = 1.28   [reported]
+      cv 0.2 x +0.05: no admitted cells
+      cv 0.2 x +0.10 (dphi 0.0043): predicted 0.1535, observed 0.1374, obs/pred = 0.90   [reported]
+      cv 0.5 x +0.05: no admitted cells
+      cv 0.5 x +0.10 (dphi 0.0046): predicted 0.2912, observed 0.0866, obs/pred = 0.30   [reported]   OUTSIDE (0.5, 2.0)
+
+=== F3  does the EXPONENT depend on CV? (G4's question where G4 had no data) ===
+   the estimator's own systematic first: |a(1e-4) - a(3e-4)| per CV = cv 0.0: 0.139, cv 0.2: 0.230, cv 0.5: 0.253
+   that is the FLOOR -- an exponent difference smaller than it is a readout of the threshold, not of the material.
+   thr 1e-04 cv 0.2: a = 1.295 +- 0.133 vs a(0) = 1.153 +- 0.118; da = +0.141 +- 0.178 (0.8 se); A(cv)/A(0) = 0.74 -> COLLAPSE
+   thr 1e-04 cv 0.5: a = 1.801 +- 0.433 vs a(0) = 1.153 +- 0.118; da = +0.648 +- 0.449 (1.4 se); A(cv)/A(0) = 0.10 -> UNDETERMINED
+   thr 3e-04 cv 0.2: a = 1.065 +- 0.077 vs a(0) = 1.015 +- 0.131; da = +0.050 +- 0.152 (0.3 se); A(cv)/A(0) = 1.00 -> COLLAPSE
+   thr 3e-04 cv 0.5: a = 1.548 +- 0.232 vs a(0) = 1.015 +- 0.131; da = +0.534 +- 0.266 (2.0 se); A(cv)/A(0) = 0.15 -> DOES NOT COLLAPSE
+
+=== F4  does the CV 0.5 extrapolation failure survive six seeds? ===
+   the number that motivated the campaign: exploratory obs/pred at x = +0.10, CV 0.5 = 0.30 on three seeds (CV 0: 1.14, CV 0.2: 0.94)
+   thr 1e-04 cv 0.0: obs/pred = 1.14 -> scatter
+   thr 1e-04 cv 0.2: obs/pred = 0.94 -> scatter
+   thr 1e-04 cv 0.5: obs/pred = 0.42 -> REAL
+   thr 3e-04 cv 0.0: obs/pred = 1.28 -> scatter
+   thr 3e-04 cv 0.2: obs/pred = 0.90 -> scatter
+   thr 3e-04 cv 0.5: obs/pred = 0.30 -> REAL
+
+=== F6  the PROPERLY NORMALISED collapse: a/b, where p_ss ~ dphi^b ===
+   a inherits b's CV dependence, so comparing a across CV partly re-measures b.
+   A universal build curve p(gamma) = p_ss f(gamma/gamma*) with gamma*
+   independent of phi predicts a/b = 1 exactly.
+   -- threshold 1e-04 --
+      cv 0.0: a = 1.153, b = 0.987 (on the same 9 cells) -> a/b = 1.168 +- 0.156
+      cv 0.2: a = 1.295, b = 0.990 (on the same 9 cells) -> a/b = 1.308 +- 0.132
+      cv 0.5: a = 1.801, b = 1.262 (on the same 7 cells) -> a/b = 1.428 +- 0.087
+   -- threshold 3e-04 --
+      cv 0.0: a = 1.015, b = 0.987 (on the same 9 cells) -> a/b = 1.028 +- 0.165
+      cv 0.2: a = 1.065, b = 0.990 (on the same 9 cells) -> a/b = 1.075 +- 0.074
+      cv 0.5: a = 1.548, b = 1.262 (on the same 7 cells) -> a/b = 1.227 +- 0.149
+   collapse test, against CV 0 at the same threshold:
+      thr 1e-04 cv 0.2: d(a/b) = +0.140 +- 0.205 (0.7 se) -> COLLAPSE
+      thr 1e-04 cv 0.5: d(a/b) = +0.260 +- 0.179 (1.5 se) -> COLLAPSE
+      thr 3e-04 cv 0.2: d(a/b) = +0.048 +- 0.181 (0.3 se) -> COLLAPSE
+      thr 3e-04 cv 0.5: d(a/b) = +0.199 +- 0.222 (0.9 se) -> COLLAPSE
+   b per CV is itself a statement about the critical-state pressure scale:
+      cv 0.0: b = 0.987, cv 0.2: b = 0.990, cv 0.5: b = 1.262
+
+=== F5  reported, not graded ===
+   shape statistic t_fp(3e-4)/t_fp(1e-4) per rung -- must be CV-independent if the pressure builds by the same trajectory everywhere:
+      cv 0.0: x+0.10: 2.52  x+0.35: 2.60  x+0.60: 3.07  x+0.85: 2.90
+      cv 0.2: x+0.10: 1.78  x+0.35: 2.48  x+0.60: 2.80  x+0.85: 3.05
+      cv 0.5: x+0.10: 1.26  x+0.35: 2.39  x+0.60: 2.84  x+0.85: 2.90
+   t_fp against x (the reduced coordinate) rather than dphi -- the two differ by W(CV) and a collapse could hold in one and not the other:
+      cv 0.0: x+0.10: 0.0618  x+0.35: 0.0136  x+0.60: 0.0060  x+0.85: 0.0051
+      cv 0.2: x+0.10: 0.0774  x+0.35: 0.0156  x+0.60: 0.0087  x+0.85: 0.0049
+      cv 0.5: x+0.10: 0.0689  x+0.35: 0.0176  x+0.60: 0.0061  x+0.85: 0.0039
+
+EXPLORATORY -- no bar was graded here. The estimator was chosen after the registered one failed, so these numbers are in-sample and exist to let PREREG_FIRSTPASSAGE_2026-09-13.md state an out-of-sample test against them.
