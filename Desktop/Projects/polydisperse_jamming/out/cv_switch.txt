@@ -1,0 +1,123 @@
+=== cv_switch.py -- the dilatancy switch, from the MEASURED phi_c(CV) ===
+   phi_c from out/constp_ratematch.txt (constant-pressure, no phi_J input).
+
+   cv    phi_c        se       d phi_c        per unit CV
+  0.0   0.591127  0.000416
+  0.2   0.601989  0.000536  +0.0109   +0.0543
+  0.5   0.644447  0.001770  +0.0425   +0.1415
+   -> the SWITCHABLE BAND is phi in [0.5911, 0.6444], width 0.0533 +- 0.0018
+      Any material whose effective phi during impact lies inside its own
+      version of this band can be moved from the dilatant side of critical to
+      the contractive side by CHANGING THE WIDTH OF ITS SIZE DISTRIBUTION
+      ALONE, at fixed mean size, fixed phi and fixed everything else.
+      The move is NOT linear in CV: +0.0109 over the first 0.2 and +0.0425 over the next 0.3, i.e. 2.61x steeper at the top of the ladder.
+
+=== CV*(phi): the width at which a pack at fixed phi crosses critical ===
+   PCHIP on the three measured levels, against the derivation's Eq. (14)
+   linearisation CV* = (phi - phi_c(0))/s with s = 0.1066.
+   A bootstrap over the seed scatter (2000 draws, seed 20260913) gives the interval.
+
+    phi      CV* (PCHIP)   CV* 95% band      CV* (linear Eq.14)   gap
+   0.595      0.0976    [0.0843, 0.1105]         0.0363   +0.0613
+   0.600      0.1734    [0.1609, 0.1871]         0.0832   +0.0902
+   0.605      0.2353    [0.2229, 0.2486]         0.1301   +0.1052
+   0.610      0.2827    [0.2718, 0.2945]         0.1770   +0.1058
+   0.615      0.3227    [0.3124, 0.3338]         0.2239   +0.0988
+   0.620      0.3582    [0.3478, 0.3696]         0.2708   +0.0874
+   0.630      0.4209    [0.4091, 0.4342]         0.3645   +0.0563
+   0.640      0.4767    [0.4620, 0.4934]         0.4583   +0.0184
+   -> the `gap` column is POSITIVE at every phi: because phi_c(CV) is CONVEX (it rises 2.6x faster
+      over the top of the ladder than the bottom), the single-slope Eq. (14)
+      UNDERSTATES the width needed, everywhere in the band. The error peaks
+      near the middle and closes at the top, where the chord and the curve
+      meet by construction. Worst gap +0.1058 in CV, which is 0.5x the whole CV 0 -> 0.2 step: a systematic, not a
+      rounding.
+
+=== Eq. (11): the two channels of d ln ID/dCV, with phi_c'(CV) MEASURED ===
+   permeability term  = 8 CV/(1 + CV^2)          [O(CV), vanishes at CV = 0]
+   critical-state term = phi_c'(CV)/(phi - phi_c(CV))   [O(1), pole at phi_c=phi]
+   The 2026-08-31 exclusion swept the FIRST term only, with phi - phi_c pinned
+   at 0.02. Both are now computed from the same measurement.
+
+    phi     cv   perm      crit        ratio crit/perm   d ln ID/dCV (2 terms)
+   0.66   0.05   0.399       0.608           1.52              1.007
+   0.66   0.20   1.538       1.314           0.85              2.853
+   0.66   0.35   2.494       3.514           1.41              6.009
+   0.66   0.50   3.200      12.464           3.90             15.664
+
+   0.70   0.05   0.399       0.381           0.96              0.780
+   0.70   0.20   1.538       0.778           0.51              2.316
+   0.70   0.35   2.494       1.783           0.71              4.277
+   0.70   0.50   3.200       3.490           1.09              6.690
+
+   0.80   0.05   0.399       0.197           0.49              0.596
+   0.80   0.20   1.538       0.385           0.25              1.923
+   0.80   0.35   2.494       0.799           0.32              3.293
+   0.80   0.50   3.200       1.246           0.39              4.446
+
+   ⚠ phi must exceed phi_c(cv) for ID to be defined at all; the rows above are
+      chosen above phi_c(0.5) = 0.6444 so every cell of the table exists. The
+      pinned-Delta-phi sweep used Delta phi = 0.02, which on this measurement
+      corresponds to phi = 0.6111 at CV 0 -- BELOW phi_c(0.5),
+      i.e. inside the band where the critical-state channel diverges and then
+      changes sign. That is the regime the exclusion could not see.
+
+   at the pinned Delta phi = 0.02 the derivation's own comparison reads:
+      cv 0.05: perm  0.399   crit     2.046   crit/perm =      5.1x
+      cv 0.20: perm  1.538   crit     3.812   crit/perm =      2.5x
+      cv 0.35: perm  2.494   crit     7.238   crit/perm =      2.9x
+      cv 0.50: perm  3.200   crit     9.693   crit/perm =      3.0x
+   -> with Delta phi held at 0.02 the critical-state channel beats the
+      permeability one by 2.5-5.1x across the ladder -- NOT by orders of
+      magnitude. The old verdict 'M1 permeability is the weaker channel'
+      survives AT THAT Delta phi, with a measured margin instead of an assumed
+      one; the table above shows it REVERSES by phi = 0.80.
+
+=== which channel wins is a property of Delta phi, and here is the boundary ===
+   Setting phi_c'(CV)/Delta phi = 8 CV/(1 + CV^2) gives the distance from
+   critical inside which polydispersity acts through PACKING and outside which
+   it acts through PERMEABILITY:
+      cv     phi_c'(cv)   Delta phi* (crossover)    phi* = phi_c(cv) + Delta phi*
+      0.05    0.04092        0.1025                0.6952
+      0.10    0.05755        0.0727                0.6678
+      0.20    0.07623        0.0496                0.6515
+      0.35    0.14477        0.0580                0.6768
+      0.50    0.19386        0.0606                0.7050
+   -> the crossover DIVERGES as CV -> 0 (the permeability term is O(CV) and
+      the packing term is O(1)), so near a monodisperse pack the packing
+      channel wins at any distance from critical. At CV = 0.5 it wins only
+      within about 0.05 of the critical line -- which is the same width as
+      the switchable band itself, and that coincidence is not an accident:
+      both are set by phi_c'(CV).
+
+=== robustness: what the interpolation is worth ===
+      cv     piecewise-linear   PCHIP      difference
+     0.0     0.591127        0.591127   +0.000000
+     0.1     0.596558        0.595138   -0.001420
+     0.2     0.601989        0.601989   +0.000000
+     0.3     0.616142        0.612077   -0.004065
+     0.4     0.630294        0.626518   -0.003777
+     0.5     0.644447        0.644447   +0.000000
+   max |PCHIP - linear| over the ladder = 0.004065, against a seed se of 0.001770 at the worst level.
+   -> the interpolation choice is worth less than the measurement's own error
+      except near CV 0.35, where it is comparable; CV*(phi) in that region
+      should be quoted with the band, not the central value.
+
+=== WHAT IS AND IS NOT SETTLED ===
+   SETTLED: the switchable band is 0.0533 +- 0.0018 wide in phi,
+     measured by a route that takes no input from phi_J, and the switch is
+     STEEPER at high CV than a single slope implies.
+   SETTLED: WHICH channel of Eq. (11) dominates is set by the distance from
+     critical, and the boundary is now computed rather than assumed. At the
+     derivation's pinned Delta phi = 0.02 the critical-state channel wins by
+     2.5-5.1x; by phi = 0.80 the permeability channel wins by 2.5-4x. The
+     order-counting (packing O(1), permeability O(CV)) is confirmed near
+     CV = 0 and is NOT a statement about the whole ladder.
+   NOT SETTLED: where phi actually sits during an impact. The sign turns on
+     phi - phi_c AT THE CONTACT, and the bench phi = 0.44 is far below every
+     phi_c here, so the band is reached only if the impact densifies the
+     suspension into it. That is the drop-side measurement, not this one.
+   NOT SETTLED: the absolute level of phi_c for a real material. Only the
+     shift transfers from a frictional-sphere DEM to an experiment.
+   NOT SETTLED: whether CV acts on the TRANSIENT as well as on the critical
+     line -- that is the strain-clock campaign, PREREG_STRAINCLOCK_2026-09-13.

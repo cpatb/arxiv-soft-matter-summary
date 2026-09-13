@@ -110,6 +110,12 @@ from scipy.integrate import solve_ivp
 # --- named constants, with origin ---------------------------------------------------
 P_ATM = 1.013e5          # Pa; the suction a pore fluid sustains before cavitating
 ALPHA_DIL = 1.0          # tan(psi) = alpha (phi - phi_c); alpha ~ 1 per [M26]
+# alpha is UNMEASURED. A 2026-09-12 attempt to read it off the constant-pressure
+# campaign (alpha = 6.62 / 3.31 by branch) was RETRACTED the same day: the fitted rate was
+# the volume servo's clamp on one branch and the servo compressing an unjammed pack on
+# the other, and the branch labels were swapped. `derivations/alpha_from_dem.md` keeps
+# the numbers beside the reason, and `alpha_from_dem_numbers.py` prints the evidence.
+# Nothing in this module carries a measured coefficient; alpha ~ 1 stays an IMPORT.
 N_NODES = 201            # method-of-lines grid; convergence is checked in test_poro.py
 
 

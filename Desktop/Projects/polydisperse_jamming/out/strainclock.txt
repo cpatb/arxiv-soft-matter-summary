@@ -1,0 +1,149 @@
+=== grade_strainclock.py -- PREREG_STRAINCLOCK_2026-09-13.md, G0-G6 ===
+   45 cells with results, 0 recorded failures
+
+   cv     x    phi_t   p_prep     p_ss     ratio  z_nr  gamma_c  g_last  g90   n_dn rd mo st   I
+ 0.00 -0.15 0.5849 6.72e-09 8.69e-05  1.29e+04  3.83  0.1485  2.8775  0.167  234 N N N 1.26e-02
+ 0.00 -0.15 0.5849 5.70e-09 6.46e-05  1.13e+04  4.46  0.1646  2.7197  0.196  125 N N N 1.46e-02
+ 0.00 -0.15 0.5849 5.09e-09 9.01e-05  1.77e+04  4.32  0.1824  2.9662  0.217  435 N N N 1.24e-02
+ 0.00 +0.10 0.5953 1.35e-09 1.03e-03  7.66e+05  4.85  0.3047  1.3280  0.373  454 N N y 3.66e-03
+ 0.00 +0.10 0.5953 7.21e-10 9.15e-04  1.27e+06  4.84  0.2369  2.0498  0.445   65 N N N 3.89e-03
+ 0.00 +0.10 0.5953 3.36e-09 8.38e-04  2.49e+05  4.96  0.1762  1.6558  0.249  174 N y N 4.06e-03
+ 0.00 +0.35 0.6056 4.16e-11 3.75e-03     9e+07  5.49  0.2442  0.2442  1.000  101 y y y 1.92e-03
+ 0.00 +0.35 0.6056 1.63e-10 3.47e-03  2.13e+07  5.42  0.1911  0.1911  0.445  334 y y y 2.00e-03
+ 0.00 +0.35 0.6056 7.84e-11 3.24e-03  4.13e+07  5.43  0.1142  0.1142  0.387  434 y y N 2.07e-03
+ 0.00 +0.60 0.6159 4.74e-11 5.92e-03  1.25e+08  5.81  0.2046  0.2046  0.475  471 y y y 1.53e-03
+ 0.00 +0.60 0.6159 1.79e-10 5.38e-03     3e+07  5.75  0.1666  0.1666  0.415  134 y y y 1.60e-03
+ 0.00 +0.60 0.6159 2.01e-11 6.25e-03  3.11e+08  5.74  0.1571  0.1571  0.484   32 y y y 1.49e-03
+ 0.00 +0.85 0.6262 5.64e-10 8.67e-03  1.54e+07  5.95  0.1804  0.1804  0.679  148 y y y 1.26e-03
+ 0.00 +0.85 0.6262 6.99e-11 7.98e-03  1.14e+08  5.96  0.1672  0.1672  0.344  162 y y y 1.32e-03
+ 0.00 +0.85 0.6262 3.01e-09 8.43e-03   2.8e+06  5.92  0.1538  0.1538  0.356  281 y y y 1.28e-03
+ 0.20 -0.15 0.5955 8.53e-09 1.02e-04  1.19e+04  4.32  0.1871  2.6866  0.252  566 N N N 1.19e-02
+ 0.20 -0.15 0.5955 1.35e-08 6.77e-05  5.02e+03  4.01  0.1566  2.9461  0.279  113 N N N 1.31e-02
+ 0.20 -0.15 0.5955 3.94e-08 8.70e-05  2.21e+03  4.29  0.2001  2.4370  0.342  233 N N N 1.25e-02
+ 0.20 +0.10 0.6063 1.88e-08 9.27e-04  4.92e+04  5.06  0.3226  1.9706  0.574  523 N N N 3.95e-03
+ 0.20 +0.10 0.6063 2.49e-09 8.04e-04  3.23e+05  4.71  0.1232  1.9159  0.288  226 N y N 3.80e-03
+ 0.20 +0.10 0.6063 8.95e-10 7.21e-04  8.06e+05  4.96  0.1650  2.2622  0.364   65 N y N 4.35e-03
+ 0.20 +0.35 0.6172 1.46e-09 3.86e-03  2.65e+06  5.41  0.2149  0.2149  0.421  276 y y y 1.94e-03
+ 0.20 +0.35 0.6172 1.20e-09 3.68e-03  3.07e+06  5.28  0.2413  0.2413  0.420  319 y y N 1.78e-03
+ 0.20 +0.35 0.6172 7.72e-10 3.51e-03  4.54e+06  5.28  0.1839  0.1839  0.285  352 y y y 1.97e-03
+ 0.20 +0.60 0.6280 1.65e-09 6.05e-03  3.67e+06  5.62  0.1807  0.1807  0.692  266 y y y 1.55e-03
+ 0.20 +0.60 0.6280 1.60e-10 5.85e-03  3.65e+07  5.69  0.1521  0.1521  0.259   48 y y y 1.41e-03
+ 0.20 +0.60 0.6280 7.41e-10 6.32e-03  8.53e+06  5.71  0.1871  0.1871  0.405  206 y y y 1.47e-03
+ 0.20 +0.85 0.6389 1.11e-07 8.84e-03  7.97e+04  5.82  0.1625  0.1625  0.462  225 y y y 1.28e-03
+ 0.20 +0.85 0.6389 2.46e-09 8.88e-03   3.6e+06  5.89  0.1679  0.1679  0.298   23 y y y 1.14e-03
+ 0.20 +0.85 0.6389 6.13e-08 8.94e-03  1.46e+05  5.91  0.1799  0.1799  0.437  373 y y y 1.24e-03
+ 0.50 -0.15 0.6376 3.86e-08 1.77e-04  4.59e+03  4.26  0.1655  2.8514  0.181  601 N N y 7.93e-03
+ 0.50 -0.15 0.6376 4.03e-08 9.87e-05  2.45e+03  3.76  0.2188  2.9546  0.348  455 N N y 1.02e-02
+ 0.50 -0.15 0.6376 4.33e-08 1.82e-04   4.2e+03  4.02  0.1388  2.9475  0.215  359 N N N 8.00e-03
+ 0.50 +0.10 0.6490 3.54e-08 1.59e-03  4.49e+04  5.08  0.1394  2.4138  0.397  601 N y y 2.65e-03
+ 0.50 +0.10 0.6490 8.67e-09 2.75e-04  3.17e+04  4.33  0.1252  2.8965  0.196   32 N N N 6.11e-03
+ 0.50 +0.10 0.6490 2.74e-08 8.32e-04  3.04e+04  4.72  0.1031  1.9719  0.168   51 N y N 3.74e-03
+ 0.50 +0.35 0.6605 7.40e-08 3.86e-03  5.22e+04  5.26  0.1869  0.1869  0.317  101 y y y 1.70e-03
+ 0.50 +0.35 0.6605 2.19e-08 1.74e-03  7.95e+04  4.94  0.1217  0.1217  0.181  111 y y N 2.43e-03
+ 0.50 +0.35 0.6605 1.97e-08 3.70e-03  1.88e+05  5.28  0.2436  0.2436  0.477  434 y N N 1.77e-03
+ 0.50 +0.60 0.6720 3.20e-08 8.11e-03  2.54e+05  5.65  0.1428  0.1428  0.522  308 y y y 1.17e-03
+ 0.50 +0.60 0.6720 7.18e-08 4.81e-03   6.7e+04  5.30  0.1164  0.1164  0.297  232 y y y 1.46e-03
+ 0.50 +0.60 0.6720 5.77e-08 6.70e-03  1.16e+05  5.48  0.1616  0.1616  0.549  234 y y y 1.32e-03
+ 0.50 +0.85 0.6835 1.96e-04 1.13e-02      57.6  5.74  0.1918  0.1918  0.400  411 y y y 9.93e-04
+ 0.50 +0.85 0.6835 1.79e-07 8.07e-03   4.5e+04  5.47  0.1489  0.1541  0.283  204 y y y 1.13e-03
+ 0.50 +0.85 0.6835 1.65e-05 1.00e-02       606  5.74  0.1387  0.1387  0.406  479 y y y 1.08e-03
+
+=== G0  the campaign is what it says it is ===
+   records 45/45; protocol v3-fprep 45; friction_switch_ok 45; mu_prep=0 45; n_samples=1500 45; N=1000 45
+   cv 0.0: gdot = 1.1765e-04  (n 15)
+   cv 0.2: gdot = 1.1747e-04  (n 15)
+   cv 0.5: gdot = 1.1757e-04  (n 15)
+   between-CV gdot spread = 1.001 against bar 1.2
+   max I over ALL cells      = 1.46e-02 against bar 1e-02  [AS REGISTERED]
+   max I over cells carrying the clock (z_nr_ss >= 4.0) = 1.46e-02  [the stricter companion, §5 amendment]
+   max I over cells with z_nr_ss >= the MEASURED z_iso 4.535 (35 cells) = 4.35e-03
+   G0 FAIL
+
+=== G1  the premise: the frictionless prep carries no pressure ===
+   graded rungs (x <= 0.6): 36; p_hat_prep < 1e-06 on 36
+   x = 0.85 rungs REPORTED not graded (phi_0 sd; §2 caveat 2): p_prep max 1.96e-04, 2 of 9 above the threshold i.e. prepared JAMMED
+   G1 PASS
+
+=== G2  the clock exists ===
+   jammed cells (z_nr_ss >= 4.0): 43
+   p_ss/p_prep > 100 on 42; monotone rise to gamma_c on 31 (90% needed); readable clock on 27
+   ⚠ NOT READABLE cv 0.0 x -0.15 s2: gamma_c 0.1646 vs last 2.7197 (125 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.0 x -0.15 s3: gamma_c 0.1824 vs last 2.9662 (435 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.0 x +0.10 s1: gamma_c 0.3047 vs last 1.3280 (454 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.0 x +0.10 s2: gamma_c 0.2369 vs last 2.0498 (65 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.0 x +0.10 s3: gamma_c 0.1762 vs last 1.6558 (174 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.2 x -0.15 s1: gamma_c 0.1871 vs last 2.6866 (566 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.2 x -0.15 s2: gamma_c 0.1566 vs last 2.9461 (113 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.2 x -0.15 s3: gamma_c 0.2001 vs last 2.4370 (233 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.2 x +0.10 s1: gamma_c 0.3226 vs last 1.9706 (523 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.2 x +0.10 s2: gamma_c 0.1232 vs last 1.9159 (226 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.2 x +0.10 s3: gamma_c 0.1650 vs last 2.2622 (65 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.5 x -0.15 s1: gamma_c 0.1655 vs last 2.8514 (601 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.5 x -0.15 s3: gamma_c 0.1388 vs last 2.9475 (359 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.5 x +0.10 s1: gamma_c 0.1394 vs last 2.4138 (601 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.5 x +0.10 s2: gamma_c 0.1252 vs last 2.8965 (32 down-crossings before the argmax) -- EXCLUDED
+   ⚠ NOT READABLE cv 0.5 x +0.10 s3: gamma_c 0.1031 vs last 1.9719 (51 down-crossings before the argmax) -- EXCLUDED
+   by rung (the split is the whole story):
+      x = -0.15: readable 0/7, monotone 0/7
+      x = +0.10: readable 0/9, monotone 5/9
+      x = +0.35: readable 9/9, monotone 8/9
+      x = +0.60: readable 9/9, monotone 9/9
+      x = +0.85: readable 9/9, monotone 9/9
+   G2 FAIL
+
+=== G3  below phi_mu nothing jams ===
+   cv 0.0: x<0 z_nr = [3.83, 4.46, 4.32] (all < 4.0: False); x>=0.35 min z_nr = 5.42 (all >= 4.0: True)
+   cv 0.2: x<0 z_nr = [4.32, 4.01, 4.29] (all < 4.0: False); x>=0.35 min z_nr = 5.28 (all >= 4.0: True)
+   cv 0.5: x<0 z_nr = [4.26, 3.76, 4.02] (all < 4.0: False); x>=0.35 min z_nr = 4.94 (all >= 4.0: True)
+   G3 FAIL (bar 4.0, AS REGISTERED)
+   -- companion at the MEASURED z_iso(4.535) for mu_p = 0.3, reported not graded --
+      cv 0.0: x<0 all < 4.535: True; x>=0.35 all >= 4.535: True
+      cv 0.2: x<0 all < 4.535: True; x>=0.35 all >= 4.535: True
+      cv 0.5: x<0 all < 4.535: True; x>=0.35 all >= 4.535: True
+
+=== G4  THE MECHANISM BIT: does the clock collapse on distance from phi_c? ===
+   27 readable jammed cells above phi_mu enter the statistic
+      rung x = +0.10: 0 of 9 cells readable   <-- rung lost
+      rung x = +0.35: 9 of 9 cells readable
+      rung x = +0.60: 9 of 9 cells readable
+      rung x = +0.85: 9 of 9 cells readable
+      x       cv 0.0: gamma_c (n)        cv 0.2: gamma_c (n)        cv 0.5: gamma_c (n)      
+   +0.10           --               --               --      
+   +0.35    0.1747 +-0.0654 (3)  0.2121 +-0.0287 (3)  0.1769 +-0.0610 (3)
+   +0.60    0.1750 +-0.0252 (3)  0.1726 +-0.0186 (3)  0.1390 +-0.0227 (3)
+   +0.85    0.1668 +-0.0133 (3)  0.1699 +-0.0089 (3)  0.1582 +-0.0282 (3)
+   cv 0.2: R = 1.069 +- 0.092 (per-rung [1.214, 0.987, 1.019]), rung-trend rho = -0.793
+      -> COLLAPSE -- CV acts through phi_c only (M2a)
+   cv 0.5: R = 0.914 +- 0.103 (per-rung [1.013, 0.795, 0.948]), rung-trend rho = -0.288
+      -> COLLAPSE -- CV acts through phi_c only (M2a)
+   [reported, first coding] the CV 0.5 per-rung ratios span 1.27x -- this is rung-to-rung SCATTER, not candidate separation
+   candidate predictions: M2a R = 1.00; M4 with U4's 2-3x prior R = 0.33-0.50. Separation 2.00x-3.00x against the 1.6x rule -> the test IS informative
+   measured R(0.5) = 0.914; distance from M2a = 0.8 se, from the M4 band = 4.0 se
+   -> the U4-sized kinetic effect is EXCLUDED; a kinetic effect smaller than the seed scatter is not.
+   G4 verdict: COLLAPSE
+
+=== G5  cross-protocol anchor: p_ss(phi) crosses p* at phi_c(p*) ===
+   cv 0.0: p_ss = ['8.05e-05', '9.29e-04', '3.49e-03', '5.85e-03', '8.36e-03'] at phi ['0.5849', '0.5953', '0.6056', '0.6159', '0.6262']
+           crossing p* = 3e-04 at phi = 0.5876 vs constant-pressure phi_c = 0.5911  -> |d| = 0.0035
+   cv 0.2: p_ss = ['8.55e-05', '8.17e-04', '3.68e-03', '6.07e-03', '8.89e-03'] at phi ['0.5955', '0.6063', '0.6172', '0.6280', '0.6389']
+           crossing p* = 3e-04 at phi = 0.5987 vs constant-pressure phi_c = 0.6020  -> |d| = 0.0033
+   cv 0.5: p_ss = ['1.53e-04', '8.99e-04', '3.10e-03', '6.54e-03', '9.80e-03'] at phi ['0.6376', '0.6490', '0.6605', '0.6720', '0.6835']
+           crossing p* = 3e-04 at phi = 0.6399 vs constant-pressure phi_c = 0.6444  -> |d| = 0.0046
+   G5 PASS (bar 0.01)
+   🔑 the CONTRAST from these crossings: Delta phi_c(CV 0 -> 0.5) = +0.0523, against +0.0533 from the constant-pressure ladder -- agreeing to 0.0011.
+      Two protocols with nothing in common but the material: constant
+      PRESSURE with a volumetric servo, and constant VOLUME from a
+      FRICTIONLESS preparation. A shared systematic would have to survive
+      both, and the offsets it leaves are one-sided (both crossings sit
+      BELOW their constant-pressure value by 0.0033-0.0046) so they largely
+      cancel in the contrast -- which is why the contrast agrees better
+      than either absolute does.
+
+=== G6  reported, not graded ===
+   gamma_90/gamma_c over 27 readable cells: median 2.32, range 1.49-4.10
+   cv 0.0: rattler_frac_prep 0.036-1.000; z_nr_prep NaN on 12/15 (expected below phi_0)
+   cv 0.2: rattler_frac_prep 0.079-1.000; z_nr_prep NaN on 12/15 (expected below phi_0)
+   cv 0.5: rattler_frac_prep 0.308-1.000; z_nr_prep NaN on 10/15 (expected below phi_0)
+   W = phi_0 - phi_mu used to place the ladder: cv 0.0: 0.0412, cv 0.2: 0.0434, cv 0.5: 0.0460
+
+FAILURES: ['G0', 'G2', 'G3']

@@ -1,0 +1,131 @@
+=== window_shearedge.py -- the DST window with a SHEAR-measured lower edge ===
+   Reads out/phase2_fits.csv and the constant-pressure phi_c transcribed in
+   this module's header. No simulation.
+
+=== the three edges at the three CV levels the shear campaign covers ===
+   cv   phi_0 (iso, mu=0)    phi_J (iso, mu=0.3)   phi_c (SHEAR, p*=3e-4)
+  0.0   0.632371 +-0.000417   0.574533 +-0.000375   0.591127 +-0.000416
+  0.2   0.645392 +-0.000396   0.588050 +-0.000277   0.601989 +-0.000536
+  0.5   0.690401 +-0.002693   0.636605 +-0.002297   0.644447 +-0.001770
+
+   the shear critical state sits ABOVE the isotropic frictional phi_J by
+      cv 0.0: +0.0166
+      cv 0.2: +0.0139
+      cv 0.5: +0.0078
+   which is the reason the shipped lower edge was flagged as NOT safe.
+
+=== the pressure gauge, priced ===
+   phi = phi_J + c * p_hat (phase2_phiJ.py), so a fraction measured AT p*
+   carries c*p* above the p -> 0 intercept the frictionless edge is.
+   cv    c(iso, mu=0.3)     c*p*      c(iso, mu=0)
+  0.0    20.712 +-1.359   0.00621     9.099 +-0.606
+  0.2    21.420 +-0.046   0.00643     8.475 +-0.881
+  0.5    12.625 +-1.213   0.00379     6.098 +-1.285
+   c(frictional) FALLS with CV: 20.71 -> 12.63, a difference of 8.09 +- 1.82 (t = 4.44)
+   -> the gauge bias is CV-DEPENDENT and does NOT cancel out of the contrast.
+   ⚠ this is the ISOTROPIC compressibility used as a PROXY for the
+     critical-state one, which has never been measured here.
+
+=== W = phi_0 - (lower edge), three readings of the same three CV levels ===
+   -- A. isotropic frictional edge (the SHIPPED reading) -- dst_window.py's own, restricted to these 3 levels
+      cv      W       +-se
+     0.0   0.0578   0.0006
+     0.2   0.0573   0.0005
+     0.5   0.0538   0.0035
+      dW/dCV = -0.00348 +- 0.00344  (t = -1.01, n = 3, 1 residual dof)
+      W(0.5) - W(0.0) = -0.0040 +- 0.0036  (t = -1.13) -> NOT RESOLVED at 2 se; that is -7.0 % of W(0)
+
+   -- B. SHEAR edge, uncorrected (measured at p* = 3e-04) -- mixes a finite-p edge with a p -> 0 one
+      cv      W       +-se
+     0.0   0.0412   0.0006
+     0.2   0.0434   0.0007
+     0.5   0.0460   0.0032
+      dW/dCV = +0.01040 +- 0.00387  (t = +2.68, n = 3, 1 residual dof)
+      W(0.5) - W(0.0) = +0.0047 +- 0.0033  (t = +1.44) -> NOT RESOLVED at 2 se; that is +11.4 % of W(0)
+
+   -- C. SHEAR edge, gauge-corrected with the isotropic c(CV) proxy -- both edges now nominally at p -> 0
+      cv      W       +-se
+     0.0   0.0475   0.0007
+     0.2   0.0498   0.0007
+     0.5   0.0497   0.0032
+      dW/dCV = +0.00949 +- 0.00422  (t = +2.25, n = 3, 1 residual dof)
+      W(0.5) - W(0.0) = +0.0023 +- 0.0033  (t = +0.69) -> NOT RESOLVED at 2 se; that is +4.8 % of W(0)
+
+   -- D. isotropic edge at the SATURATED friction mu_p = 1.0 -- a second high-friction edge, no shear in it
+      cv      W       +-se
+     0.0   0.0733   0.0008
+     0.2   0.0728   0.0010
+     0.5   0.0752   0.0046
+      dW/dCV = -0.00102 +- 0.00544  (t = -0.19, n = 3, 1 residual dof)
+      W(0.5) - W(0.0) = +0.0018 +- 0.0047  (t = +0.39) -> NOT RESOLVED at 2 se; that is +2.5 % of W(0)
+
+=== Q1  does the SIGN of dW/dCV survive the change of edge? ===
+   A: dW/dCV = -0.00348 -> the window narrows with CV
+   B: dW/dCV = +0.01040 -> the window widens with CV
+   C: dW/dCV = +0.00949 -> the window widens with CV
+   D: dW/dCV = -0.00102 -> the window narrows with CV
+   -> the sign REVERSES between the shipped edge and the shear-measured one.
+
+   ⚠ TWO statistics, and they do not agree on the grouping. The WLS slope
+     weights by 1/se^2 and on these three levels that is nearly a fit through
+     CV 0 and 0.2 alone; the endpoint difference uses the axis end to end.
+      reading   dW/dCV (WLS)      dW endpoint      signs agree?
+      A        -0.00348         -0.0040          yes
+      B        +0.01040         +0.0047          yes
+      C        +0.00949         +0.0023          yes
+      D        -0.00102         +0.0018          NO
+   ⚠ ALL FOUR READINGS SHARE THE UPPER EDGE phi_0, so any grouping among them
+     is a statement about the LOWER edge alone.
+     On the ENDPOINT statistic the three high-friction/sheared edges are ALL POSITIVE (B +0.0047, C +0.0023, D +0.0018) against A -0.0040.
+     On the WLS slope D is -0.00102, i.e. the SAME sign as A and consistent with zero (t = -0.19), so that grouping does NOT survive the change of statistic.
+     A claim that 'saturated and sheared edges move together' is therefore NOT
+     supported: what is supported is that no edge resolves a width trend, and
+     that the sign of the central value is set by the edge AND the statistic.
+
+=== Q2  is any of them RESOLVED against its own error? ===
+   A: |dW| = 0.0040 against 2 se = 0.0072  -> NOT RESOLVED
+   B: |dW| = 0.0047 against 2 se = 0.0066  -> NOT RESOLVED
+   C: |dW| = 0.0023 against 2 se = 0.0066  -> NOT RESOLVED
+   D: |dW| = 0.0018 against 2 se = 0.0094  -> NOT RESOLVED
+   ⚠ reading A's error here is NOT dst_window.py's: that one pairs the two
+     arms per SEED, which cancels the shared realisation variance and is the
+     right error for two ladders sharing seeds. B and C cannot be paired --
+     the two edges come from different campaigns, N and protocol -- so their
+     larger error is a property of the comparison, not a worse analysis.
+   ⚠ phi_0(CV 0.5) carries se 0.0027 on a ladder of 3 rungs (dst_window flags <= 3 as THIN), and it is what dominates every error above.
+
+=== Q3  the TRAVERSE: dphi_mu/dCV measured in windows ===
+   TWO slopes are printed and they are not the same statistic. The WLS one
+   weights by 1/se^2, and on three levels whose top rung carries 5x the error
+   of the others that is very nearly a two-point fit through CV 0 and 0.2.
+   The ENDPOINT slope (phi_mu(0.5) - phi_mu(0))/0.5 uses the axis under test
+   end to end and is what dst_window.py's 6-level '2.23 windows' compares to.
+   A isotropic frictional: mean W = 0.0563
+      WLS      dphi_mu/dCV = +0.07697 +- 0.00218 -> 1.37 windows per unit CV (one window at dCV = 0.732)
+      ENDPOINT dphi_mu/dCV = +0.12414 +- 0.00465 -> 2.20 windows per unit CV (one window at dCV = 0.454)
+   B shear, uncorrected: mean W = 0.0435
+      WLS      dphi_mu/dCV = +0.07837 +- 0.00265 -> 1.80 windows per unit CV (one window at dCV = 0.555)
+      ENDPOINT dphi_mu/dCV = +0.10664 +- 0.00364 -> 2.45 windows per unit CV (one window at dCV = 0.408)
+   C shear, gauge-corrected: mean W = 0.0490
+      WLS      dphi_mu/dCV = +0.08394 +- 0.00303 -> 1.71 windows per unit CV (one window at dCV = 0.584)
+      ENDPOINT dphi_mu/dCV = +0.11149 +- 0.00380 -> 2.27 windows per unit CV (one window at dCV = 0.440)
+   -> on the endpoint statistic the traverse runs 2.20-2.45 windows per unit CV across the three readings (a spread of 1.11x), i.e. one full window at dCV = 0.41-0.45.
+
+=== WHAT THIS DOES AND DOES NOT SETTLE ===
+   SETTLED: the SIGN of the width trend is a property of which lower edge
+     is used. Central values: A narrows, B and C widen. And on the three CV
+     levels the shear campaign covers, NONE of the three readings resolves a
+     change at 2 se -- including A. dst_window.py's 'RESOLVED as a CHANGE'
+     rests on SIX levels and a PER-SEED pairing of two ladders that share
+     their seeds; the shear edge comes from a different campaign, N and
+     protocol, so it can have neither. The honest statement is that the width
+     trend is not established, not that the shipped one is refuted.
+   SETTLED: the traverse survives all three readings at 2.20-2.45 windows per unit CV (endpoint statistic), so
+     'a CV ladder of about 0.4 moves a material across the
+     window' does not depend on the edge definition.
+   NOT SETTLED: the critical-state compressibility. Reading C uses the
+     isotropic proxy. The 4-pressure constant-pressure ladder measures it
+     directly and would also give phi_c(p -> 0) with no proxy at all.
+   NOT SETTLED: phi_0 itself at CV 0.5, whose THIN 3-rung ladder dominates
+     every error bar above. A frictionless constant-pressure ladder would
+     give phi_0 the same way phi_c now comes.

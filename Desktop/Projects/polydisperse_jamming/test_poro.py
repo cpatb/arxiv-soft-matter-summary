@@ -272,3 +272,36 @@ def test_quasisteady_peak_equals_Pi_over_two_in_physical_variables():
     from_solver = abs(PI.quasistatic_peak(n["Lambda"], n["S"], dphi))
     pi_closed = PI.ALPHA_DIL * mu_w * dphi * ell**2 / (rho * kappa * u0 * d0)
     assert from_solver == pytest.approx(pi_closed / 2.0, rel=1e-12)
+
+
+# =====================================================================================
+# the dilatancy coefficient: measured 2026-09-12 and RETRACTED the same day
+# =====================================================================================
+def test_no_measured_alpha_is_shipped():
+    """The 2026-09-12 'measured alpha' (6.62 dilating / 3.31 contracting) was retracted:
+    the fitted rate was the volume servo's clamp, not the grains, and the branch labels
+    were swapped (`derivations/alpha_from_dem.md`). The constants that carried it into
+    this module were removed; this fails the day they come back without the derivation
+    being re-done, and it pins the default at its imported value.
+    """
+    assert PI.ALPHA_DIL == 1.0
+    for name in ("ALPHA_DIL_MEASURED_DILATING", "ALPHA_DIL_MEASURED_CONTRACTING",
+                 "ALPHA_DIL_MEASURED_SD"):
+        assert not hasattr(PI, name), f"{name} is a retracted constant"
+
+
+def test_alpha_enters_linearly_only_while_phi_is_frozen():
+    """With phi frozen the source S alpha dphi is a constant forcing of a linear PDE, so
+    doubling alpha must exactly double the peak (closed form: quasistatic_peak). With
+    phi FREE the source shuts itself off after a strain ~1/alpha, so the peak must NOT
+    double -- the discriminating negative that shows the solver is not just rescaling.
+    """
+    kw = dict(lam=1.0e-3, s_dil=1.0e3, dphi0=0.02, t_end=0.2)
+    a = PI.solve(alpha=1.0, freeze_phi=True, **kw)
+    b = PI.solve(alpha=2.0, freeze_phi=True, **kw)
+    assert a.p_peak_hat != 0.0, "a zero here would make the test vacuous"
+    assert b.p_peak_hat == pytest.approx(2.0 * a.p_peak_hat, rel=1e-6)
+    c = PI.solve(alpha=1.0, freeze_phi=False, **kw)
+    d = PI.solve(alpha=2.0, freeze_phi=False, **kw)
+    assert d.p_peak_hat != pytest.approx(2.0 * c.p_peak_hat, rel=1e-2), (
+        "with phi free the source self-limits; exact doubling means the feedback is off")

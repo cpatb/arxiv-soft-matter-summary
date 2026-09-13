@@ -1,0 +1,269 @@
+cv_unloading.py -- the undrained sign of an isotropically prepared pack
+quasi-static bar I_ss <= 1e-02 (shear.I_MAX); p* = 3e-04
+
+  commonlad   54 distinct records
+  prod2       45 distinct records
+  prod2ext    18 distinct records
+  ratem       30 distinct records
+constant-volume records: 147 raw, 147 distinct keys
+after protocol/N/mu/family/compressed filter: 147
+isotropic phase-2 records (cap=default, dedup): 376  ({'files': 158, 'lines': 717, 'errors': 0, 'unconverged': 110, 'wrong_cap': 174, 'dupes': 57, 'conflicts': [('cv0.000_mu0.000_s1_p3.000e-03_N1500', 0.652546038980115, 0.6516390001445846), ('cv0.000_mu0.000_s1_p1.000e-03_N1500', 0.6425889592593483, 0.6434364428184032), ('cv0.000_mu0.000_s1_p3.000e-04_N1500', 0.6369307881198145, 0.6319031033769016), ('cv0.000_mu0.300_s1_p1.000e-04_N1500', 0.5748312454705709, 0.57855725627591), ('cv0.000_mu0.000_s1_p1.000e-04_N1500', 0.6358926228902213, 0.6351894081154833), ('cv0.000_mu0.300_s1_p1.000e-03_N1500', 0.5928043769862512, 0.5949026452037707), ('cv0.000_mu0.000_s2_p1.000e-03_N1500', 0.6418309546686269, 0.6413076859443436), ('cv0.000_mu0.300_s2_p1.000e-03_N1500', 0.596028235594836, 0.5920489030463796), ('cv0.000_mu0.000_s2_p3.000e-03_N1500', 0.651915884198141, 0.6519845440257245), ('cv0.000_mu0.000_s2_p1.000e-03_N1500', 0.6418309546686269, 0.6425764223352294), ('cv0.000_mu0.000_s2_p3.000e-04_N1500', 0.6358114912603829, 0.6329777502488758), ('cv0.000_mu0.300_s2_p1.000e-04_N1500', 0.5749100969926533, 0.5723430410994168), ('cv0.000_mu1.000_s1_p1.000e-03_N1500', 0.5688801803588899, 0.5652820022179785), ('cv0.000_mu0.300_s3_p1.000e-03_N1500', 0.5952269694330605, 0.5931238065437556), ('cv0.000_mu0.000_s3_p1.000e-04_N1500', 0.6343627633498429, 0.6312434169237315)], 'n': 376, 'cap': 'default', 'dedup': True})
+  N=1500, mu_p=0.3, lognormal: 67
+constant-pressure rate-matched cells admitted: CV 0.0: 6, CV 0.2: 6, CV 0.5: 6
+  reproduces the graded phi_c(p*) to 1e-03: 0.5911, 0.6020, 0.6444
+
+jammed (quasi-static) cells: 108; flowing (I_ss > 1e-02): 39
+
+U1  SIGN of the net undrained pressure change on every jammed cell
+    set        CV   phi     seed  p_0        p_max/p_0  p_ss/p_0  gamma(p_max)  I_ss     steady
+    prod2      0.0  0.5945  1     5.572e-03     1.000     0.039   0.008       2.0e-03  False
+    ratem      0.0  0.5945  1     5.651e-03     1.000     0.216   0.007       4.1e-03  False
+    prod2      0.0  0.5945  2     5.571e-03     1.000     0.055   0.008       1.7e-03  True
+    ratem      0.0  0.5945  2     5.587e-03     1.000     0.197   0.007       4.3e-03  False
+    prod2      0.0  0.5945  3     4.889e-03     1.000     0.183   0.008       1.0e-03  False
+    ratem      0.0  0.5945  3     4.905e-03     1.000     0.139   0.007       5.5e-03  False
+    commonlad  0.0  0.5951  1     5.705e-03     1.000     0.108   0.008       1.2e-03  False
+    commonlad  0.0  0.5951  2     5.698e-03     1.000     0.090   0.008       1.3e-03  False
+    commonlad  0.0  0.5951  3     5.010e-03     1.000     0.050   0.008       1.9e-03  False
+    prod2      0.0  0.6145  1     1.048e-02     1.000     0.554   0.008       3.9e-04  True
+    ratem      0.0  0.6145  1     1.048e-02     1.000     0.508   0.007       2.0e-03  True
+    prod2      0.0  0.6145  2     1.036e-02     1.000     0.591   0.008       3.8e-04  True
+    ratem      0.0  0.6145  2     1.036e-02     1.000     0.546   0.007       1.9e-03  True
+    prod2      0.0  0.6145  3     9.589e-03     1.000     0.577   0.008       4.0e-04  True
+    ratem      0.0  0.6145  3     9.592e-03     1.000     0.641   0.007       1.8e-03  True
+    commonlad  0.0  0.6200  1     1.185e-02     1.000     0.620   0.008       3.5e-04  True
+    commonlad  0.0  0.6200  2     1.172e-02     1.000     0.597   0.008       3.6e-04  True
+    commonlad  0.0  0.6200  3     1.097e-02     1.000     0.613   0.008       3.7e-04  True
+    prod2      0.0  0.6345  1     1.564e-02     1.000     0.680   0.008       2.9e-04  True
+    ratem      0.0  0.6345  1     1.565e-02     1.000     0.699   0.007       1.4e-03  True
+    prod2      0.0  0.6345  2     1.543e-02     1.000     0.710   0.008       2.9e-04  True
+    ratem      0.0  0.6345  2     1.543e-02     1.000     0.712   0.007       1.4e-03  True
+    prod2      0.0  0.6345  3     1.479e-02     1.000     0.736   0.008       2.9e-04  True
+    ratem      0.0  0.6345  3     1.479e-02     1.000     0.730   0.007       1.4e-03  True
+    commonlad  0.0  0.6450  1     1.843e-02     1.000     0.729   0.008       2.6e-04  True
+    commonlad  0.0  0.6450  2     1.825e-02     1.000     0.734   0.008       2.6e-04  True
+    commonlad  0.0  0.6450  3     1.766e-02     1.000     0.773   0.008       2.6e-04  True
+    prod2      0.0  0.6545  1     2.113e-02     1.000     0.779   0.008       2.3e-04  True
+    ratem      0.0  0.6545  1     2.113e-02     1.000     0.759   0.007       1.1e-03  True
+    prod2      0.0  0.6545  2     2.091e-02     1.000     0.789   0.008       2.3e-04  True
+    ratem      0.0  0.6545  2     2.091e-02     1.000     0.790   0.007       1.1e-03  True
+    prod2      0.0  0.6545  3     2.033e-02     1.000     0.792   0.008       2.4e-04  True
+    ratem      0.0  0.6545  3     2.034e-02     1.000     0.798   0.007       1.1e-03  True
+    commonlad  0.0  0.6700  1     2.562e-02     1.000     0.804   0.008       2.1e-04  True
+    commonlad  0.0  0.6700  2     2.540e-02     1.000     0.805   0.008       2.1e-04  True
+    commonlad  0.0  0.6700  3     2.492e-02     1.000     0.802   0.008       2.1e-04  True
+    prod2ext   0.0  0.6745  1     2.700e-02     1.000     0.813   0.008       2.0e-04  True
+    prod2ext   0.0  0.6745  2     2.676e-02     1.000     0.807   0.008       2.0e-04  True
+    prod2ext   0.0  0.6745  3     2.631e-02     1.000     0.836   0.008       2.0e-04  True
+    prod2ext   0.0  0.6945  1     3.326e-02     1.000     0.836   0.008       1.8e-04  True
+    prod2ext   0.0  0.6945  2     3.295e-02     1.000     0.858   0.008       1.8e-04  True
+    prod2ext   0.0  0.6945  3     3.264e-02     1.000     0.858   0.008       1.8e-04  True
+    commonlad  0.2  0.5950  3     2.423e-03     1.000     0.021   0.007       8.1e-03  False
+    prod2      0.2  0.6081  1     4.883e-03     1.000     0.206   0.007       1.9e-03  False
+    ratem      0.2  0.6081  1     4.925e-03     1.000     0.190   0.007       4.6e-03  False
+    prod2      0.2  0.6081  3     5.640e-03     1.000     0.188   0.007       1.8e-03  False
+    ratem      0.2  0.6081  3     5.662e-03     1.000     0.303   0.007       3.4e-03  True
+    prod2      0.2  0.6081  2     6.273e-03     1.000     0.170   0.007       1.7e-03  False
+    ratem      0.2  0.6081  2     6.297e-03     1.000     0.229   0.007       3.7e-03  False
+    commonlad  0.2  0.6200  1     7.818e-03     1.000     0.548   0.007       9.2e-04  True
+    commonlad  0.2  0.6200  3     8.542e-03     1.000     0.524   0.007       8.7e-04  True
+    commonlad  0.2  0.6200  2     9.254e-03     1.000     0.386   0.007       9.1e-04  True
+    prod2      0.2  0.6281  3     1.055e-02     1.000     0.625   0.007       7.2e-04  True
+    ratem      0.2  0.6281  3     1.056e-02     1.000     0.620   0.007       1.7e-03  True
+    prod2      0.2  0.6281  2     1.132e-02     1.000     0.512   0.007       7.2e-04  True
+    ratem      0.2  0.6281  2     1.133e-02     1.000     0.524   0.007       1.8e-03  True
+    prod2      0.2  0.6281  1     9.820e-03     1.000     0.631   0.007       7.7e-04  True
+    ratem      0.2  0.6281  1     9.821e-03     1.000     0.626   0.007       1.8e-03  True
+    commonlad  0.2  0.6450  1     1.436e-02     1.000     0.753   0.007       5.8e-04  True
+    commonlad  0.2  0.6450  2     1.599e-02     1.000     0.653   0.007       5.3e-04  True
+    commonlad  0.2  0.6450  3     1.502e-02     1.000     0.721   0.007       5.6e-04  True
+    prod2      0.2  0.6481  3     1.586e-02     1.000     0.757   0.007       5.3e-04  True
+    ratem      0.2  0.6481  3     1.586e-02     1.000     0.760   0.007       1.3e-03  True
+    prod2      0.2  0.6481  1     1.523e-02     1.000     0.779   0.007       5.5e-04  True
+    ratem      0.2  0.6481  1     1.523e-02     1.000     0.748   0.007       1.3e-03  True
+    prod2      0.2  0.6481  2     1.687e-02     1.000     0.651   0.007       5.2e-04  True
+    ratem      0.2  0.6481  2     1.687e-02     1.000     0.682   0.007       1.3e-03  True
+    prod2      0.2  0.6681  3     2.154e-02     1.000     0.802   0.007       4.5e-04  True
+    ratem      0.2  0.6681  3     2.155e-02     1.000     0.809   0.007       1.1e-03  True
+    prod2      0.2  0.6681  1     2.110e-02     1.000     0.822   0.007       4.6e-04  True
+    ratem      0.2  0.6681  1     2.110e-02     1.000     0.803   0.007       1.1e-03  True
+    prod2      0.2  0.6681  2     2.275e-02     1.000     0.751   0.007       4.2e-04  True
+    ratem      0.2  0.6681  2     2.275e-02     1.000     0.747   0.007       1.1e-03  True
+    commonlad  0.2  0.6700  1     2.170e-02     1.000     0.806   0.007       4.6e-04  True
+    commonlad  0.2  0.6700  3     2.212e-02     1.000     0.827   0.007       4.3e-04  True
+    commonlad  0.2  0.6701  2     2.336e-02     1.000     0.751   0.007       4.1e-04  True
+    prod2ext   0.2  0.6881  3     2.769e-02     1.000     0.847   0.007       3.8e-04  True
+    prod2ext   0.2  0.6881  2     2.900e-02     1.000     0.794   0.007       3.6e-04  True
+    prod2ext   0.2  0.6881  1     2.733e-02     1.000     0.836   0.007       4.0e-04  True
+    prod2ext   0.2  0.7081  1     3.396e-02     1.000     0.879   0.007       3.5e-04  True
+    prod2ext   0.2  0.7081  3     3.425e-02     1.000     0.875   0.007       3.4e-04  True
+    prod2ext   0.2  0.7081  2     3.554e-02     1.000     0.827   0.007       3.2e-04  True
+    prod2      0.5  0.6369  1     1.825e-03     1.000     0.163   0.007       7.4e-03  True
+    prod2      0.5  0.6369  3     4.742e-04     1.661     0.692   0.495       7.2e-03  True
+    commonlad  0.5  0.6450  3     3.752e-03     1.000     0.290   0.008       3.9e-03  False
+    commonlad  0.5  0.6450  2     4.507e-04     1.554     0.714   0.540       7.0e-03  True
+    commonlad  0.5  0.6450  1     4.113e-03     1.000     0.251   0.007       4.0e-03  False
+    prod2      0.5  0.6569  1     6.881e-03     1.000     0.526   0.007       2.1e-03  True
+    prod2      0.5  0.6569  2     5.721e-03     1.000     0.359   0.007       2.8e-03  True
+    prod2      0.5  0.6569  3     7.146e-03     1.000     0.487   0.008       2.2e-03  False
+    commonlad  0.5  0.6700  3     1.072e-02     1.000     0.694   0.008       1.5e-03  True
+    commonlad  0.5  0.6700  1     1.057e-02     1.000     0.652   0.007       1.5e-03  True
+    commonlad  0.5  0.6700  2     9.117e-03     1.000     0.545   0.007       1.8e-03  True
+    prod2      0.5  0.6769  3     1.242e-02     1.000     0.770   0.008       1.3e-03  True
+    prod2      0.5  0.6769  2     1.094e-02     1.000     0.684   0.007       1.4e-03  True
+    prod2      0.5  0.6769  1     1.257e-02     1.000     0.678   0.007       1.4e-03  True
+    prod2      0.5  0.6969  1     1.885e-02     1.000     0.812   0.007       1.0e-03  True
+    prod2      0.5  0.6969  3     1.891e-02     1.000     0.822   0.008       1.0e-03  True
+    prod2      0.5  0.6969  2     1.722e-02     1.000     0.745   0.007       1.1e-03  True
+    prod2      0.5  0.7169  2     2.404e-02     1.000     0.844   0.007       8.8e-04  True
+    prod2      0.5  0.7169  3     2.589e-02     1.000     0.863   0.008       8.7e-04  True
+    prod2      0.5  0.7169  1     2.576e-02     1.000     0.862   0.007       8.5e-04  True
+    prod2ext   0.5  0.7369  2     3.146e-02     1.000     0.862   0.007       7.6e-04  True
+    prod2ext   0.5  0.7369  3     3.320e-02     1.000     0.881   0.008       7.6e-04  True
+    prod2ext   0.5  0.7369  1     3.304e-02     1.000     0.886   0.007       7.4e-04  True
+    prod2ext   0.5  0.7569  2     3.932e-02     1.000     0.898   0.007       6.7e-04  True
+    prod2ext   0.5  0.7569  3     4.099e-02     1.000     0.890   0.008       6.8e-04  True
+    prod2ext   0.5  0.7569  1     4.087e-02     1.000     0.892   0.007       6.7e-04  True
+
+    CV 0.0: p_ss < p_0 on 42 of 42 jammed cells
+    CV 0.2: p_ss < p_0 on 40 of 40 jammed cells
+    CV 0.5: p_ss < p_0 on 26 of 26 jammed cells
+    transient rise (p_max > p_0) on 2 of 108 jammed cells
+U1  PASS: contractive on 108/108 jammed cells (bar: all)
+
+    flowing cells (not quasi-static): p_0 -> p_max -> p_ss, all inertial
+    commonlad  0.0  0.5450  1     2.072e-08      39.3      20.5   0.487       4.6e-02  z_nr_ss 2.91
+    commonlad  0.0  0.5450  2     4.949e-08      17.0       9.9   0.495       4.3e-02  z_nr_ss 3.02
+    commonlad  0.0  0.5450  3     1.503e-08      55.2      32.8   0.818       4.3e-02  z_nr_ss 3.07
+    commonlad  0.0  0.5700  1     2.097e-07      27.1      11.0   0.315       2.0e-02  z_nr_ss 3.76
+    commonlad  0.0  0.5700  2     1.533e-07      27.4      13.5   1.492       2.1e-02  z_nr_ss 3.87
+    commonlad  0.0  0.5700  3     3.137e-07      18.7       8.0   0.503       1.9e-02  z_nr_ss 3.83
+    prod2      0.0  0.5745  1     7.168e-07       9.9       4.7   0.473       1.6e-02  z_nr_ss 3.89
+    ratem      0.0  0.5745  1     7.440e-06       7.4       4.0   0.471       2.6e-02  z_nr_ss 4.02
+    prod2      0.0  0.5745  2     1.352e-06       6.1       3.0   0.608       1.5e-02  z_nr_ss 3.97
+    ratem      0.0  0.5745  2     1.245e-05       4.2       2.0   0.426       2.9e-02  z_nr_ss 3.88
+    prod2      0.0  0.5745  3     1.047e-06       5.7       3.6   1.073       1.5e-02  z_nr_ss 3.97
+    ratem      0.0  0.5745  3     1.146e-05       4.8       3.0   1.442       2.5e-02  z_nr_ss 3.96
+    commonlad  0.2  0.5450  2     4.315e-08      33.6      15.9   0.772       6.6e-02  z_nr_ss 2.56
+    commonlad  0.2  0.5450  1     1.194e-07      16.6       7.4   0.765       6.4e-02  z_nr_ss 2.68
+    commonlad  0.2  0.5450  3     1.673e-07       9.7       5.1   0.480       6.4e-02  z_nr_ss 2.68
+    commonlad  0.2  0.5700  2     8.707e-08      54.9      32.9   1.185       3.2e-02  z_nr_ss 3.62
+    commonlad  0.2  0.5700  3     1.224e-07      79.3      35.0   1.402       2.8e-02  z_nr_ss 3.67
+    commonlad  0.2  0.5700  1     1.353e-07      40.9      23.4   0.915       3.4e-02  z_nr_ss 3.30
+    prod2      0.2  0.5881  2     4.785e-06       4.3       2.2   0.645       1.7e-02  z_nr_ss 4.00
+    ratem      0.2  0.5881  2     1.732e-05       4.8       2.9   0.950       2.0e-02  z_nr_ss 4.07
+    prod2      0.2  0.5881  1     1.090e-06      19.5      11.9   0.885       1.7e-02  z_nr_ss 4.02
+    ratem      0.2  0.5881  1     5.269e-06      10.8       6.6   0.727       2.4e-02  z_nr_ss 4.03
+    prod2      0.2  0.5881  3     2.420e-06       9.0       5.6   0.712       1.6e-02  z_nr_ss 4.05
+    ratem      0.2  0.5881  3     1.059e-05       8.8       4.7   1.212       2.0e-02  z_nr_ss 4.16
+    commonlad  0.2  0.5950  1     8.147e-04       1.0       0.0   0.007       1.1e-02  z_nr_ss 4.38
+    commonlad  0.2  0.5950  2     2.654e-03       1.0       0.0   0.007       1.0e-02  z_nr_ss 4.29
+    commonlad  0.5  0.5450  2     3.589e-07       7.2       3.0   0.967       1.2e-01  z_nr_ss 2.53
+    commonlad  0.5  0.5450  1     4.272e-07       6.9       3.3   1.267       1.1e-01  z_nr_ss 2.29
+    commonlad  0.5  0.5450  3     2.395e-07      14.3       7.0   1.418       1.0e-01  z_nr_ss 2.36
+    commonlad  0.5  0.5700  3     2.284e-07      31.9      13.7   0.405       7.3e-02  z_nr_ss 2.54
+    commonlad  0.5  0.5700  2     1.802e-07      29.3      15.4   0.870       7.5e-02  z_nr_ss 2.48
+    commonlad  0.5  0.5700  1     1.419e-07      46.6      19.2   0.720       7.7e-02  z_nr_ss 2.61
+    commonlad  0.5  0.5950  1     7.127e-07      24.0      11.8   0.397       4.4e-02  z_nr_ss 3.11
+    commonlad  0.5  0.5950  3     7.180e-07      24.6      12.5   0.323       4.3e-02  z_nr_ss 3.12
+    commonlad  0.5  0.5950  2     8.228e-07      17.8       8.1   0.630       4.9e-02  z_nr_ss 3.11
+    commonlad  0.5  0.6200  1     5.799e-06      11.0       6.4   0.165       2.1e-02  z_nr_ss 3.80
+    commonlad  0.5  0.6200  2     2.806e-06      27.6      10.2   0.817       2.3e-02  z_nr_ss 3.49
+    commonlad  0.5  0.6200  3     6.240e-06      19.9       8.5   1.268       1.8e-02  z_nr_ss 3.58
+    prod2      0.5  0.6369  2     1.098e-05      23.9      11.6   0.682       1.1e-02  z_nr_ss 4.19
+
+U2  ONE critical-state line from two protocols: phi at p* from constant-volume
+    p_ss(phi) (common ladder, jammed rungs, rung means) vs phi_c(p*) at constant pressure
+    CV 0.0  phi 0.5951  p_ss 4.299e-04  n 3  steady 0/3
+    CV 0.0  phi 0.6200  p_ss 7.020e-03  n 3  steady 3/3
+    CV 0.0  phi 0.6450  p_ss 1.349e-02  n 3  steady 3/3
+    CV 0.0  phi 0.6700  p_ss 2.034e-02  n 3  steady 3/3
+    CV 0.2  phi 0.5950  p_ss 5.160e-05  n 1  steady 0/1
+    CV 0.2  phi 0.6200  p_ss 4.091e-03  n 3  steady 3/3
+    CV 0.2  phi 0.6450  p_ss 1.069e-02  n 3  steady 3/3
+    CV 0.2  phi 0.6700  p_ss 1.778e-02  n 3  steady 3/3
+    CV 0.5  phi 0.6450  p_ss 7.123e-04  n 3  steady 1/3
+    CV 0.5  phi 0.6700  p_ss 6.338e-03  n 3  steady 3/3
+
+    CV 0.0: phi_CV(p*) = nan   phi_c,constp(p*) = 0.5911 +- 0.0010 (n=6)   dphi = +nan   MISS (bar 0.01)
+    CV 0.2: phi_CV(p*) = 0.6051   phi_c,constp(p*) = 0.6020 +- 0.0013 (n=6)   dphi = +0.0031   ok (bar 0.01)
+    CV 0.5: phi_CV(p*) = nan   phi_c,constp(p*) = 0.6444 +- 0.0043 (n=6)   dphi = +nan   MISS (bar 0.01)
+    Delta phi(CV 0 -> 0.5) from the constant-volume side: +nan (constant-pressure +0.0533, band +-0.015: OUTSIDE)
+U2  FAIL: the two protocols agree to 0.01 at every CV
+
+U3  the isotropic line sits ABOVE the critical-state line in pressure
+    (phase-2 isotropic rung means, N=1500 mu_p=0.3 lognormal, interpolated in ln p to the
+     common-ladder phi; p_0 is the phase-8 preparation's own first sample)
+    CV 0.0  phi 0.5951: p_iso 1.053e-03  p_ss 4.299e-04  p_iso/p_ss   2.45   prep p_0 5.461e-03  p_0/p_iso   5.19   ok
+    CV 0.0  phi 0.6200: outside the isotropic ladder (0.5744-0.6031), no anchor
+    CV 0.0  phi 0.6450: outside the isotropic ladder (0.5744-0.6031), no anchor
+    CV 0.0  phi 0.6700: outside the isotropic ladder (0.5744-0.6031), no anchor
+    CV 0.2  phi 0.5950: p_iso 2.617e-04  p_ss 5.160e-05  p_iso/p_ss   5.07   prep p_0 2.423e-03  p_0/p_iso   9.26   ok
+    CV 0.2  phi 0.6200: outside the isotropic ladder (0.5875-0.6091), no anchor
+    CV 0.2  phi 0.6450: outside the isotropic ladder (0.5875-0.6091), no anchor
+    CV 0.2  phi 0.6700: outside the isotropic ladder (0.5875-0.6091), no anchor
+    CV 0.5  phi 0.6450: p_iso 5.246e-04  p_ss 7.123e-04  p_iso/p_ss   0.74   prep p_0 1.909e-03  p_0/p_iso   3.64   VIOLATED
+    CV 0.5  phi 0.6700: outside the isotropic ladder (0.6373-0.6489), no anchor
+U3  FAIL: p_iso > p_ss on 3 overlapping rungs
+
+U4  REPORTED: strain over which the overpressure decays (common ladder, jammed cells)
+    CV   phi     seed  p_0/p_ss  gamma_half(first)  gamma_half(last)  monotone_to_ss
+    0.0  0.5951  1        9.23           0.083           0.083      True
+    0.0  0.5951  2       11.11           0.075           0.075      True
+    0.0  0.5951  3       19.99           0.075           0.075      True
+    0.0  0.6200  1        1.61           0.083           0.083      True
+    0.0  0.6200  2        1.67           0.090           0.090      True
+    0.0  0.6200  3        1.63           0.098           0.098      True
+    0.0  0.6450  1        1.37           0.098           0.098      True
+    0.0  0.6450  2        1.36           0.113           0.113      True
+    0.0  0.6450  3        1.29           0.105           0.105      True
+    0.0  0.6700  1        1.24           0.120           0.120      True
+    0.0  0.6700  2        1.24           0.150           0.150      True
+    0.0  0.6700  3        1.25           0.135           0.135      True
+    0.2  0.5950  3       46.95           0.030           0.030      True
+    0.2  0.6200  1        1.83           0.067           0.067      False
+    0.2  0.6200  3        1.91           0.082           0.082      False
+    0.2  0.6200  2        2.59           0.090           0.090      True
+    0.2  0.6450  1        1.33           0.090           0.090      False
+    0.2  0.6450  2        1.53           0.105           0.105      True
+    0.2  0.6450  3        1.39           0.097           0.097      True
+    0.2  0.6700  1        1.24           0.120           0.120      True
+    0.2  0.6700  3        1.21           0.105           0.105      False
+    0.2  0.6701  2        1.33           0.120           0.120      False
+    0.5  0.6450  3        3.45           0.038           0.038      False
+    0.5  0.6450  2        1.40           0.015           1.207      False
+    0.5  0.6450  1        3.98           0.052           0.052      False
+    0.5  0.6700  3        1.44           0.053           0.053      False
+    0.5  0.6700  1        1.53           0.090           0.090      False
+    0.5  0.6700  2        1.83           0.067           0.067      False
+
+    per rung: mean +- sd of gamma_half(first), n
+    CV 0.0  phi_target 0.595: 0.077 +- 0.004  (n=3 of 3)
+    CV 0.0  phi_target 0.620: 0.090 +- 0.007  (n=3 of 3)
+    CV 0.0  phi_target 0.645: 0.105 +- 0.007  (n=3 of 3)
+    CV 0.0  phi_target 0.670: 0.135 +- 0.015  (n=3 of 3)
+    CV 0.2  phi_target 0.595: 0.030  (n=1 of 1)
+    CV 0.2  phi_target 0.620: 0.080 +- 0.011  (n=3 of 3)
+    CV 0.2  phi_target 0.645: 0.097 +- 0.007  (n=3 of 3)
+    CV 0.2  phi_target 0.670: 0.115 +- 0.009  (n=3 of 3)
+    CV 0.5  phi_target 0.645: 0.035 +- 0.019  (n=3 of 3)
+    CV 0.5  phi_target 0.670: 0.070 +- 0.019  (n=3 of 3)
+
+U5  REPORTED: p_0/p_ss on every jammed common-ladder cell = the overconsolidation
+    ratio at which the sign would flip, per rung (geometric mean, range, n)
+    CV 0.0  phi_target 0.595: OCR*  12.70  [9.23, 19.99]  n=3
+    CV 0.0  phi_target 0.620: OCR*   1.64  [1.61, 1.67]  n=3
+    CV 0.0  phi_target 0.645: OCR*   1.34  [1.29, 1.37]  n=3
+    CV 0.0  phi_target 0.670: OCR*   1.24  [1.24, 1.25]  n=3
+    CV 0.2  phi_target 0.595: OCR*  46.95  [46.95, 46.95]  n=1
+    CV 0.2  phi_target 0.620: OCR*   2.08  [1.83, 2.59]  n=3
+    CV 0.2  phi_target 0.645: OCR*   1.41  [1.33, 1.53]  n=3
+    CV 0.2  phi_target 0.670: OCR*   1.26  [1.21, 1.33]  n=3
+    CV 0.5  phi_target 0.645: OCR*   2.68  [1.40, 3.98]  n=3
+    CV 0.5  phi_target 0.670: OCR*   1.59  [1.44, 1.83]  n=3
+
+    matched phi, CV 0 vs CV 0.5 (both jammed at 0.645 and 0.670 only):
+    phi 0.645: OCR*(CV 0) 1.34  OCR*(CV 0.5) 2.68  ratio 2.00
+    phi 0.670: OCR*(CV 0) 1.24  OCR*(CV 0.5) 1.59  ratio 1.28
+
+FAILURES: ['U2', 'U3']

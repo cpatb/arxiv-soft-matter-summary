@@ -1,0 +1,95 @@
+================================================================================================
+alpha_from_dem_numbers.py -- the dilatancy coefficient: RETRACTED 2026-09-12
+================================================================================================
+servo: K = [0.15] (from the records; shear.SERVO_GAIN default is 0.5), clamp = 0.5 gdot,
+       alpha fit window = first 40% of strain; transit = |gap| < 10% of gap0
+records: 18 production + 18 rate-matched = 36, 30 admitted (N = 1000), 24 distinct (cv, phi0, seed, steps) cells after dropping the bit-identical CV 0.2 twins
+
+=== the 2026-09-12 claim, verbatim (kept; this is what is retracted) ===
+  alpha (dilating)    = 6.62 +- 1.25  (n = 6)   <- fitted on the phi0 = 0.55 cells
+  alpha (contracting) = 3.31 +- 0.65  (n = 6)   <- fitted on the phi0 = 0.64 cells
+  ratio 2.00x; propagated into Pi, ID, M1's corner and E-3
+
+=== per admitted cell: what the series actually do ===
+    cv seed  phi0   steps   phi_ss     gap0  branch        p0/p*  g_half   g_10 g_servo  clamp%  p<p*/2%  mono alpha_fit
+   0.0    1  0.55  102000   0.5907  -0.0407  contracting     0.0   0.285  0.630     nan       0       78   yes      3.33
+   0.0    1  0.55  200000   0.5938  -0.0438  contracting     0.0   0.285  0.570     nan       0      100   yes      5.62
+   0.0    2  0.55  102000   0.5914  -0.0414  contracting     0.0   0.285  0.660     nan       0       70   yes      9.59
+   0.0    2  0.55  200000   0.5939  -0.0439  contracting     0.0   0.285  0.630     nan       0       80   yes      5.49
+   0.0    3  0.55  102000   0.5916  -0.0416  contracting     0.0   0.285  0.720     nan       0       60   yes      7.63
+   0.0    3  0.55  200000   0.5921  -0.0421  contracting     0.0   0.270  0.570     nan       0       89   yes      7.52
+   0.0    1  0.64  102000   0.5922  +0.0478  dilating       59.0   0.105  0.165   0.139      90        0   yes      5.36
+   0.0    1  0.64  200000   0.5932  +0.0468  dilating       59.0   0.090  0.165   0.136      90        0   yes      3.01
+   0.0    2  0.64  102000   0.5915  +0.0485  dilating       56.7   0.105  0.165   0.141      90        0   yes      2.76
+   0.0    2  0.64  200000   0.5934  +0.0466  dilating       56.7   0.090  0.165   0.136      90        0   yes      3.19
+   0.0    3  0.64  102000   0.5893  +0.0507  dilating       54.8   0.105  0.165   0.148      90        0   yes      4.75
+   0.0    3  0.64  200000   0.5932  +0.0467  dilating       54.8   0.090  0.165   0.136      90        0   yes      4.27
+   0.2    1  0.55  200000   0.6012  -0.0512  contracting     0.0   0.330  0.675     nan       0       86   yes      5.36
+   0.2    2  0.55  200000   0.6029  -0.0529  contracting     0.0   0.345  0.645     nan       0      100   yes      8.03
+   0.2    3  0.55  200000   0.6018  -0.0518  contracting     0.0   0.345  0.690     nan       0       89   yes      7.68
+   0.2    1  0.64  200000   0.6007  +0.0393  dilating       46.4   0.090  0.135   0.114      88        0   yes      2.42
+   0.2    2  0.64  200000   0.6042  +0.0359  dilating       44.9   0.075  0.120   0.103      86        0   yes      3.18
+   0.2    3  0.64  200000   0.6012  +0.0388  dilating       45.7   0.090  0.135   0.112      88        0   yes      3.81
+   0.5    1  0.55  480000   0.6407  -0.0907  contracting     0.0   0.555  1.065     nan       0       99   yes      3.87
+   0.5    2  0.55  480000   0.6477  -0.0977  contracting     0.0   0.600  1.110     nan       0      100   yes      3.45
+   0.5    3  0.55  480000   0.6426  -0.0926  contracting     0.0   0.570  1.080     nan       0       99   yes      3.52
+   0.5    1  0.64  480000   0.6407  -0.0007  contracting     6.0   0.780  0.825     nan       2        7    no      1.23
+   0.5    2  0.64  480000   0.6516  -0.0116  contracting     3.9   0.210  0.495     nan       0       22    no      1.44
+   0.5    3  0.64  480000   0.6434  -0.0034  contracting    12.9   0.495  0.540     nan       6       20    no      0.40
+
+=== L1  the labels: which way does each start actually move? ===
+  [ok] L1a every phi0 = 0.55 cell is CONTRACTING (phi0 < phi_ss)   12 of 12
+  [ok] L1b every phi0 = 0.64 cell at CV <= 0.2 is DILATING (phi0 > phi_ss)   9 of 9
+  => the 2026-09-12 file labelled phi0 = 0.55 'dilating' and phi0 = 0.64 'contracting': backwards on every cell.
+
+=== L2  the dilating transit is the servo clamp ===
+  dilating cells with a readable gap (|gap0| >= 0.012): 9
+  fraction of the transit at the clamp: min 0.86, median 0.90, max 0.90
+  measured transit / clamp-only prediction: min 1.12, median 1.19, max 1.22
+  [ok] L2a the servo is at its clamp for >= 80 % of every dilating transit   min 0.86
+  [ok] L2b the transit strain matches the clamp-only prediction within 1.5x on every cell   range 1.12-1.22
+  => the pack is not dilating under shear; the box is expanding at its maximum rate
+     to relax p/p* ~ 45-59 to 1. alpha(dilating) is a readout of SERVO_EDOT_CLAMP = 0.5.
+  contracting cells (12): fraction of the transit spent UNDER-pressured (p < p*/2, the servo
+     compressing an unjammed pack): min 0.60, median 0.89, max 1.00 -- that part is not dilatancy either
+
+=== L3  the fitted alpha orders the branches against the fit-free strain ===
+  fitted alpha:    dilating 3.64 +- 0.98 (n 9), contracting 5.92 +- 2.13 (n 12)
+  fit-free g_half: dilating 0.093 +- 0.010, contracting 0.370 +- 0.127
+  a larger alpha is a FASTER approach, so the fit says the contracting pack is 1.63x faster; the half-strain says the dilating pack is 3.96x faster
+  [ok] L3 the two orderings contradict each other
+  => the estimator is not measuring the transit at all. On the dilating cells the
+     transit is over in ~0.15 strain and the remaining ~1.05 of the fit window is
+     noise about phi_ss; on the contracting cells the window straddles the servo
+     compression and the material approach. Neither slope is alpha.
+
+=== L4  CV 0.5 has no dilating branch ===
+  [ok] L4 every CV 0.5 phi0 = 0.64 cell has |gap0| < 0.012   max |gap0| = 0.0116 over 3 cells
+  => phi_c(CV 0.5) = 0.641-0.652 sits ABOVE the 'dense' start of 0.64. The alpha values there
+     are fits to a gap of 0.001-0.012, i.e. to seed scatter.
+
+=== A1, A2  the algebra that still stands (and is now moot) ===
+  [ok] A1 edot_v = alpha gdot dphi has dimensions of 1/time for dimensionless alpha
+  [ok] A2 Pi(2 alpha) = 2 Pi(alpha) exactly
+  So a measured alpha WOULD propagate as a factor -- there just is not one.
+
+=== WITHDRAWN, STANDING, AND THE PROTOCOL THAT MEASURES alpha ===
+  WITHDRAWN: alpha = 6.62 / 3.31, the 2.00x asymmetry, the 3.3-6.6x factor on Pi and
+    1/ID, the conditional 12-24x closure of M1's corner, and the E-3 'magnitude'
+    upgrade (dense-side suction ~2x loose-side overpressure). E-3 is a SIGN test again.
+  STANDS: the sign of the approach (every admitted cell moves toward phi_ss) -- a
+    property of a stable steady state, not evidence about alpha.
+  THE PROTOCOL: the servo must be much faster than the grains and the pack must start
+    ON the pressure it is sheared at. Consolidate isotropically to p = p* -- a
+    frictional pack for the contracting side (phi_iso(p*) < phi_c), a FRICTIONLESS
+    consolidation with friction switched on at the first shear step for the dilating
+    side (phi_iso,0(p*) > phi_c) -- and shear at p*. Then edot_v is the grains' and
+    phi(gamma) from phi_iso(p*) to phi_c(p*) is the Reynolds transient. Stop the fit
+    where |phi - phi_ss| reaches the seed scatter, not at a fixed fraction of strain.
+  FIT-FREE NUMBERS THAT SURVIVE (contracting side, servo compression INCLUDED, so an
+    UPPER bound on the material strain), g_half from phi0 = 0.55:
+    CV 0: 0.285, 0.285, 0.285, 0.285, 0.285, 0.270;  CV 0.2: 0.330, 0.345, 0.345;  CV 0.5: 0.555, 0.600, 0.570
+    -- from a common phi0, so the CV 0.5 pack also has ~2x the gap to close.
+
+================================================================================================
+ALL CHECKS PASSED -- the retraction's evidence holds

@@ -1,0 +1,91 @@
+=== grade_constp_rm.py -- PREREG_CONSTP_RATEMATCH_2026-09-12.md, R1-R5 ===
+   18 rate-matched records at N = 1000 (18 expected); 18 production records for R3/R5
+
+   cv  phi0 seed   steps       gdot        I    phi_ss   p_err  z_rel   alpha  adm  why refused
+ 0.00  0.55    1  102000 1.1765e-04 6.94e-03  0.590731   -4.3%   0.91    3.33  yes  
+ 0.00  0.55    2  102000 1.1765e-04 6.77e-03  0.591375   +0.5%   0.97    9.59  yes  
+ 0.00  0.55    3  102000 1.1765e-04 6.88e-03  0.591617   -2.4%   0.95    7.63  yes  
+ 0.00  0.64    1  102000 1.1765e-04 6.84e-03  0.592209   -1.3%   0.97    5.36  yes  
+ 0.00  0.64    2  102000 1.1765e-04 6.88e-03  0.591544   -2.6%   0.95    2.76  yes  
+ 0.00  0.64    3  102000 1.1765e-04 6.87e-03  0.589283   -2.3%   0.95    4.75  yes  
+ 0.20  0.55    1  200000 1.2357e-04 6.91e-03  0.601220   +1.3%   0.95    5.36  yes  
+ 0.20  0.55    2  200000 1.1048e-04 6.20e-03  0.602866   +0.9%   0.98    8.03  yes  
+ 0.20  0.55    3  200000 1.1837e-04 6.80e-03  0.601821   -1.4%   0.90    7.68  yes  
+ 0.20  0.64    1  200000 1.2357e-04 6.98e-03  0.600656   -0.9%   0.93    2.42  yes  
+ 0.20  0.64    2  200000 1.1048e-04 6.34e-03  0.604183   -3.7%   0.94    3.18  yes  
+ 0.20  0.64    3  200000 1.1837e-04 6.67e-03  0.601186   +2.5%   1.00    3.81  yes  
+ 0.50  0.55    1  480000 1.1976e-04 6.03e-03  0.640654   +2.3%   0.91    3.87  yes  
+ 0.50  0.55    2  480000 1.1443e-04 5.81e-03  0.647684   +1.2%   0.94    3.45  yes  
+ 0.50  0.55    3  480000 1.1853e-04 6.24e-03  0.642619   -0.2%   0.93    3.52  yes  
+ 0.50  0.64    1  480000 1.1976e-04 6.06e-03  0.640736   +1.3%   0.83    1.23  yes  
+ 0.50  0.64    2  480000 1.1443e-04 5.80e-03  0.651584   +1.5%   1.00    1.44  yes  
+ 0.50  0.64    3  480000 1.1853e-04 6.34e-03  0.643403   -3.5%   0.85    0.40  yes  
+   admitted 18 of 18; refused 0
+
+=== R1  the rate is matched ===
+   cv 0.0: gdot = 1.1765e-04  (n 6)
+   cv 0.2: gdot = 1.1747e-04  (n 6)
+   cv 0.5: gdot = 1.1757e-04  (n 6)
+   between-CV spread max/min = 1.001 against bar 1.2 (production: 4.7)
+   max I over all cells = 6.98e-03 against bar 1e-02
+   R1 PASS
+
+=== blocks (>= 2 admitted seeds to be usable) ===
+   cv 0.0 phi0 0.55: n = 3, phi_ss = 0.591241 +- 0.000458   usable
+   cv 0.0 phi0 0.64: n = 3, phi_ss = 0.591012 +- 0.001533   usable
+   cv 0.2 phi0 0.55: n = 3, phi_ss = 0.601969 +- 0.000833   usable
+   cv 0.2 phi0 0.64: n = 3, phi_ss = 0.602008 +- 0.001902   usable
+   cv 0.5 phi0 0.55: n = 3, phi_ss = 0.643652 +- 0.003627   usable
+   cv 0.5 phi0 0.64: n = 3, phi_ss = 0.645241 +- 0.005653   usable
+   phi_c(CV 0.0) = 0.591127  (pooled over both starts, sd over 6 cells 0.001020)
+   phi_c(CV 0.2) = 0.601989  (pooled over both starts, sd over 6 cells 0.001313)
+   phi_c(CV 0.5) = 0.644447  (pooled over both starts, sd over 6 cells 0.004336)
+
+=== R2  Delta phi_c(CV 0 -> 0.5) ===
+   Delta phi_c = +0.0533; bar [+0.0375, +0.0675]; unmatched production +0.0412
+   in band: True; moved UP from the unmatched value: True (by +0.0121)
+   Delta phi_c(0 -> 0.2) = +0.0109; (0.2 -> 0.5) = +0.0425 -- per unit CV: +0.054 then +0.142 (REPORTED: the move is not linear in CV)
+   R2 PASS
+
+=== R3  bit-identity of CV 0.2 against production (phi_ss, p_ss_hat, alpha) ===
+   cv 0.2 phi0 0.55 s1: steps 200000 vs 200000; phi_ss 0.601219704 vs 0.601219704; p_ss 0.000303783368 vs 0.000303783368; alpha 5.36187207 vs 5.36187207  -> IDENTICAL
+   cv 0.2 phi0 0.55 s2: steps 200000 vs 200000; phi_ss 0.602866331 vs 0.602866331; p_ss 0.000302751199 vs 0.000302751199; alpha 8.03477085 vs 8.03477085  -> IDENTICAL
+   cv 0.2 phi0 0.55 s3: steps 200000 vs 200000; phi_ss 0.601821485 vs 0.601821485; p_ss 0.000295865466 vs 0.000295865466; alpha 7.67643147 vs 7.67643147  -> IDENTICAL
+   cv 0.2 phi0 0.64 s1: steps 200000 vs 200000; phi_ss 0.600655653 vs 0.600655653; p_ss 0.000297360839 vs 0.000297360839; alpha 2.41979697 vs 2.41979697  -> IDENTICAL
+   cv 0.2 phi0 0.64 s2: steps 200000 vs 200000; phi_ss 0.604182627 vs 0.604182627; p_ss 0.000289023628 vs 0.000289023628; alpha 3.1762417 vs 3.1762417  -> IDENTICAL
+   cv 0.2 phi0 0.64 s3: steps 200000 vs 200000; phi_ss 0.601185785 vs 0.601185785; p_ss 0.000307536614 vs 0.000307536614; alpha 3.81032487 vs 3.81032487  -> IDENTICAL
+   6 of 6 pairs bit-identical on all three continuous channels
+   R3 PASS
+
+=== R4  sign of phi_ss - phi_iso(p*) at CV 0.5, on admissible cells ===
+   cv 0.0: phi_c 0.5911 - phi_iso 0.5833 = +0.0078
+   cv 0.2: phi_c 0.6020 - phi_iso 0.5956 = +0.0063
+   cv 0.5: phi_c 0.6444 - phi_iso 0.6416 = +0.0028
+   predicted negative at CV 0.5: FAIL (+0.0028)
+   (phi_iso is N = 1500, these are N = 1000: the magnitude mixes finite size in)
+
+=== R5  alpha(CV 0) at 1.96x the production rate -- GRADED AS REGISTERED ===
+   NOTE: alpha was RETRACTED after this pre-registration (derivations/alpha_from_dem.md):
+   the fitted rate is the servo clamp on the phi0 = 0.64 side and the servo compressing
+   an unjammed pack on the phi0 = 0.55 side, and the prereg's branch labels are swapped
+   (phi0 = 0.55 is BELOW phi_c and contracts). The bar is graded on the numbers as
+   registered; whatever it says is about the servo, not about a material coefficient.
+   phi0 0.55 (prereg label dilating, actual CONTRACTING): alpha = 6.85 +- 3.20 (n 3) vs production 6.21 +- 1.14; |diff| = 0.64 against 2.28 -> within
+   phi0 0.64 (prereg label contracting, actual DILATING): alpha = 4.29 +- 1.36 (n 3) vs production 3.49 +- 0.68; |diff| = 0.80 against 1.36 -> within
+   asymmetry between/within = 2.56/2.28 = 1.12 against 2.0 (production 2.98, 3.62)
+   R5 FAIL as registered -- and decides nothing (retracted quantity)
+
+=== REPORTED (not a bar): rate sensitivity a = -dphi_ss/dI from the two runs ===
+   two-point differences, ALL production cells (refused ones included, since the
+   refusal was the rate itself); the CV 0.5 value is the one the sign flip rested on
+   cv 0.0: I 6.86e-03 -> 3.49e-03, phi_ss 0.5911 -> 0.5933 (dphi +0.0021 +- 0.0005); a = 0.63 +- 0.15
+   cv 0.2: I unchanged (6.65e-03 -> 6.65e-03), no lever (dphi = +0.0000 +- 0.0008)
+   cv 0.5: I 6.05e-03 -> 1.47e-02, phi_ss 0.6444 -> 0.6344 (dphi -0.0100 +- 0.0024); a = 1.16 +- 0.27
+
+=== verdict ===
+   R1: PASS
+   R2: PASS
+   R3: PASS
+   R4: FAIL
+   R5: FAIL
+   rate-matched Delta phi_c(0 -> 0.5) is a MEASUREMENT

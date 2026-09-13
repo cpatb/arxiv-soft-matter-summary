@@ -274,6 +274,20 @@ class ShearState:
     alpha_n: int = 0
     alpha_sign_ok: bool = False
     alpha_note: str = ""
+    # --- strain-clock fields (added 2026-09-12, PREREG_STRAINCLOCK_2026-09-13.md) ------
+    # `mu_prep` is the contact friction during stages A-C. It equals `mu_p` on every
+    # record before this date (a frictional pack prepared frictionally). The strain-clock
+    # campaign prepares FRICTIONLESS (mu_prep = 0), which is the OCR -> infinity limit of
+    # the unloading test cv_unloading.md §7 asks for: below phi_0(CV) such a pack carries
+    # p ~ 0, so the whole pressure the shear builds is the clock. Friction is switched on
+    # AFTER stage C and BEFORE stage D, and the switch is read back from the engine state
+    # (`friction_switch_ok`) rather than trusted.
+    mu_prep: float = float("nan")
+    friction_switch_ok: bool = False
+    p_hat_prep: float = float("nan")       # p/E after stage C, before any shear
+    z_nr_prep: float = float("nan")
+    rattler_frac_prep: float = float("nan")
+    n_samples: int = 0                     # samples over the shear (N_SAMPLES if 0)
     protocol: str = "cv-shear-v2"
     notes: list[str] = field(default_factory=list)
 
@@ -323,7 +337,10 @@ def _prepare(st: ShearState, O, Matrix3, utils, *,  # noqa: E741
     is not green, nothing measured through either driver is comparable with the records
     already on disk.
     """
-    n, cv, mu_p = st.n_requested, st.cv, st.mu_p
+    n, cv = st.n_requested, st.cv
+    # The material is built with the PREPARATION friction. With `mu_prep` unset (every
+    # record before 2026-09-12) this is `st.mu_p` and the code path is unchanged.
+    mu_p = st.mu_p if math.isnan(st.mu_prep) else st.mu_prep
     seed, family, young = st.seed, st.family, st.young
     phi_target = st.phi_target
     # --- stage A: insert -----------------------------------------------------------
@@ -416,13 +433,59 @@ def _prepare(st: ShearState, O, Matrix3, utils, *,  # noqa: E741
     return float(1.0 - utils.porosity())
 
 
+def _switch_friction(st: ShearState, O, utils) -> None:  # noqa: E741
+    """Set the contact friction to `st.mu_p` on every material AND every existing
+    interaction, then READ IT BACK.
+
+    `utils.setContactFriction(angle)` is compiled (`_utils.so`); the Yade docs describe
+    it as writing `frictionAngle` into the FrictMat of every dynamic body and
+    `tangensOfFrictionAngle` into every existing FrictPhys. That description is a
+    claim about a library, so each call verifies it on the state it just produced:
+    one body's material and every real interaction must carry tan(atan(mu_p)) to
+    machine precision, or the record is flagged and the cell is not a measurement.
+    Interactions created AFTER the switch get their friction from the (now updated)
+    materials through Ip2_FrictMat_FrictMat_FrictPhys, so the read-back on the
+    existing set is the only part that can silently fail.
+    """
+    tan_target = math.tan(math.atan(st.mu_p))
+    utils.setContactFriction(math.atan(st.mu_p))
+    mats_ok = all(
+        math.isclose(math.tan(b.mat.frictionAngle), tan_target, rel_tol=1e-12, abs_tol=1e-15)
+        for b in O.bodies if b is not None
+    )
+    n_real = 0
+    ints_ok = True
+    for i in O.interactions:
+        if not i.isReal:
+            continue
+        n_real += 1
+        if not math.isclose(i.phys.tangensOfFrictionAngle, tan_target,
+                            rel_tol=1e-12, abs_tol=1e-15):
+            ints_ok = False
+    st.friction_switch_ok = bool(mats_ok and ints_ok)
+    st.notes.append(f"friction switch: mu {st.mu_prep:g} -> {st.mu_p:g}, "
+                    f"materials_ok={mats_ok} interactions_ok={ints_ok} on {n_real} real")
+    if not st.friction_switch_ok:
+        st.notes.append("FRICTION SWITCH FAILED READ-BACK: not a measurement")
+
+
 def shear_at_constant_volume(cv: float, mu_p: float, phi_target: float, n: int,
                              seed: int, *,
                              truncate: tuple[float, float] | None = (0.2, 5.0),
                              young: float = 1.0, family: str = "lognormal",
                              gamma_max: float = 1.0, shear_steps: int = 300_000,
+                             mu_prep: float | None = None,
+                             n_samples: int = N_SAMPLES,
                              verbose: bool = True) -> ShearState:
-    """Insert, compress to `phi_target`, then shear at constant volume."""
+    """Insert, compress to `phi_target`, then shear at constant volume.
+
+    `mu_prep` (default None -> `mu_p`, the historical path) is the friction during
+    stages A-C; when it differs from `mu_p` the friction is switched after stage C and
+    the protocol string becomes "cv-shear-v3-fprep" so these records are never pooled
+    with cv-shear-v2 ones. `n_samples` sets the sampling cadence of the series; the
+    strain-clock campaign needs ~600 over gamma_max = 3 (0.005 per sample) where the
+    default 200 gives 0.015, coarser than the half-strains it is reading.
+    """
     import time
 
     from yade import O, Matrix3, utils
@@ -433,8 +496,21 @@ def shear_at_constant_volume(cv: float, mu_p: float, phi_target: float, n: int,
     st = ShearState(n_requested=n, cv=cv, mu_p=mu_p, phi_target=phi_target,
                     seed=seed, family=family, young=young, gamma_max=gamma_max,
                     shear_steps=shear_steps)
+    switch = False
+    if mu_prep is not None and mu_prep != mu_p:
+        switch = True
+        st.mu_prep = float(mu_prep)
+        st.protocol = "cv-shear-v3-fprep"
+    st.n_samples = int(n_samples)
 
     phi_start = _prepare(st, O, Matrix3, utils, truncate=truncate)
+
+    if switch:
+        # The prepared state, BEFORE friction and before shear: the pressure the
+        # frictionless pack carries at this phi is what the strain clock starts from.
+        st.p_hat_prep, _ = _stress_hat(utils, young)
+        _, st.z_nr_prep, st.rattler_frac_prep, _ = _measure_network(O)
+        _switch_friction(st, O, utils)
 
     # --- stage D: constant-volume simple shear -------------------------------------
     # trace(velGrad) = 0 exactly, so the volume is conserved to machine precision.
@@ -461,17 +537,18 @@ def shear_at_constant_volume(cv: float, mu_p: float, phi_target: float, n: int,
                              0, 0, 0,
                              0, 0, 0)
 
-    every = max(1, shear_steps // N_SAMPLES)
+    every = max(1, shear_steps // st.n_samples)
     steps_done = 0
     while steps_done < shear_steps:
         O.run(min(every, shear_steps - steps_done), wait=True)
         steps_done += min(every, shear_steps - steps_done)
         p_hat, tau_hat = _stress_hat(utils, young)
-        z_all, _, _, _ = _measure_network(O)
+        z_all, z_nr_now, _, _ = _measure_network(O)
         st.gamma.append(gdot * O.dt * steps_done)
         st.p_hat_series.append(p_hat)
         st.tau_hat_series.append(tau_hat)
         st.z_series.append(z_all)
+        st.z_nr_series.append(z_nr_now)
     O.cell.velGrad = Matrix3.Zero
 
     st.phi = float(1.0 - utils.porosity())

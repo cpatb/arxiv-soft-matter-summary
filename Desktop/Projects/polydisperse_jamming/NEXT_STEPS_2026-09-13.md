@@ -13,6 +13,146 @@
 
 ---
 
+## 0″. 2026-09-13 — §0′.1 IS DISCHARGED. Read this first; it supersedes §0′.1 entirely.
+
+The strain-clock campaign was pre-registered as **`PREREG_STRAINCLOCK_2026-09-13.md`**
+(not `-09-12`; the two documents citing the old name were corrected in the same commit),
+ran 45 cells with 0 failures, and is graded in that file's §7 by `grade_strainclock.py`
+→ `out/strainclock.txt`.
+
+**The answer to §0′.1 prediction (iii) is COLLAPSE.** `γ_c` at matched distance from the
+critical line is the same at every CV: `R` = 1.069 ± 0.092 (CV 0.2) and 0.914 ± 0.103
+(CV 0.5) against a pre-registered [0.67, 1.50], with the candidates 2.0–3.0× apart, so
+the test was informative and **M4 — "CV changes the network-building kinetics" — is
+demoted on its own discriminator**. M2a is the surviving packing channel.
+
+Three more things landed with it:
+
+- **`Δφ_c` now has two protocols.** `p_ss(φ)` from constant-volume shear crosses
+  `p*` = 3e-04 at 0.5876 / 0.5987 / 0.6399, giving `Δφ_c`(0→0.5) = **+0.0523** against the
+  constant-pressure **+0.0533** — agreement to 0.0011 between methods sharing no machinery.
+- **§0′.1 prediction (ii) is REFUTED**: `γ_c` does not grow toward `φ_μ`. It is flat at
+  ≈ 0.15 across `φ` and CV, and near the critical line the observable stops existing
+  (the pressure fluctuates by its own size). Whether a divergence is hidden under those
+  fluctuations is the one gap left and it needs a different observable, not more rungs.
+- **Two registered bars were wrong when written** (a quasi-static `I` bar that no rate can
+  meet at an unjammed rung; an isostatic bracket at `d+1` = 4.0 where this project has
+  measured 4.535 at `μ_p` = 0.3). Neither was moved; both failing numbers stay printed
+  with a sharper companion beside them.
+
+Two analyses of data already on disk landed the same night and are in the Status card:
+`window_shearedge.py` (the DST window's width trend is a property of which lower edge you
+use, and is not established under any of them; the TRAVERSE is robust at 2.20–2.45
+windows per unit CV) and `cv_switch.py` (the switchable band is 0.0533 ± 0.0018 wide in
+`φ`; which channel of Eq. (11) dominates is set by `Δφ`, with the crossover computed).
+
+**The programme now is the Status card §3 list**, whose item 1 is the ensemble-averaged
+`p(γ)` near `φ_μ` that closes the gap above.
+
+---
+
+## 0′. EVENING UPDATE, 2026-09-12 — read this before §1 and §2; it supersedes §1 items 1, 2, 6 and §2.1
+
+Three things landed after this file was written. Every number below is printed by the
+script named beside it.
+
+**(a) P1 is RESOLVED: `Δφ_c`(CV 0 → 0.5) = +0.0533 at matched `I` ≈ 6–7e-03**
+(`grade_constp_rm.py` → `out/constp_ratematch.txt`; `PREREG_CONSTP_RATEMATCH_2026-09-12.md`
+§5). Rate spread 1.001 (was 4.70); `φ_c` = 0.5911 ± 0.0010 / 0.6020 ± 0.0013 /
+0.6444 ± 0.0043; CV 0.2 bit-identical to production on `φ_ss`, `p_ss_hat` and `α` (the
+constant-pressure protocol is deterministic, unlike the isotropic one). §2.1 below is
+discharged. ⚠ The move is not linear in CV: +0.0109 over 0 → 0.2, +0.0425 over 0.2 → 0.5.
+**The H-3 "sign-flip candidate" is withdrawn**: `φ_c − φ_iso(p*)` = +0.0078 / +0.0063 /
++0.0028, never negative; the −0.0072 was the rate.
+
+**(b) `α` is RETRACTED** (`derivations/alpha_from_dem.md`, evidence in
+`alpha_from_dem_numbers.txt`): the fitted rate read the servo clamp (86–90 % of the dense
+transit at `SERVO_EDOT_CLAMP`), the loose branch started unjammed and was 60–100 % servo
+compression, and the branch labels were swapped. §1 item 6 is closed the other way —
+`α` is not measurable by that protocol at all. `poro_impact.ALPHA_DIL` = 1.0 is an
+unmeasured import again; E-3 is a sign test again.
+
+**(c) The undrained SIGN of a fresh pack, from the 147 constant-volume records already on
+disk** (`cv_unloading.py` → `out/cv_unloading.txt`, `cv_unloading.md`; bars U1–U3 fixed in
+the docstring before the first run; exit `FAILED: U2, U3`):
+
+| bar | result |
+|---|---|
+| U1 — `p_ss < p_0` on every jammed cell | **PASS 108/108**, every CV, both sides of `φ_c(0)` |
+| U2 — CSL from two protocols agree at `p*` to 0.01 | **FAIL as registered**: NaN at CV 0 and 0.5 (`p*` = 3e-04 lies *below* the lowest jammed constant-volume rung, 4.3e-04 / 7.1e-04 — the bar was posed outside the data); CV 0.2, the one readable level, agrees to **+0.0031** |
+| U3 — `p_iso(φ) > p_ss(φ)` on overlapping rungs | **FAIL as registered**: 2.45× (CV 0, 0.595) and 5.07× (CV 0.2, 0.595) hold; **0.74× at CV 0.5, 0.645** on a rung steady 1 of 3 seeds — undecided, not a sign flip |
+| U4 reported — `γ_half` of the overpressure | grows with `φ`: 0.077 → 0.135 (CV 0), 0.030 → 0.115 (CV 0.2), 0.035 → 0.070 (CV 0.5); at matched `φ` the CV 0.5 pack relaxes 2–3× faster |
+| U5 reported — OCR* = `p_0/p_ss` | 1.24–1.64 at `φ` ≥ 0.62 (CV 0), 12.7 at 0.595; CV 0.5 is **2.00×** CV 0 at `φ` = 0.645 and 1.28× at 0.670 |
+
+**And the number no bar asked for, which is the session's most important one:
+`p_0/p_iso` = 3.6–9.3.** The phase-8 preparation (rate compression, then constant-volume
+relaxation) sits 3.6–9.3× above the phase-2 servo-held isotropic state at the *same* `φ`
+and N. `p(φ)` for a frictional pack is a history, not a function, and U1's "isotropically
+prepared pack is contractive" is true of a *rate-compressed* pack. The clean test is
+§0′.2 below.
+
+**What this does to the mechanism.** The dilatancy sign is not a function of `φ`; it is
+`sign(p_shear − p_ss(φ))`, set by the loading path. A DST suspension at rest is a
+*frictionless* pack at its `φ`, which for `φ_μ(CV) < φ < φ_0` carries no frictional
+pressure at all — the OCR → ∞ limit — so the first frictional shear must *build* `p`
+from zero: dilative, suction, arrest, over a finite strain `γ_c(φ − φ_μ(CV))` that
+diverges at `φ_μ(CV)⁺`. That is the strain-clock protocol, and it is the physically right
+preparation for the drop; the isotropic-frictional one was not. The drop-side prediction
+E-3 becomes a **sign reversal within one impact** (loading → overpressure; unloading while
+still shearing → suction), not a single sign.
+
+### The programme now, in order
+
+**0′.1 — The strain-clock campaign (frictionless prep → `utils.setContactFriction(0.3)` →
+constant-volume shear).** Pre-register as `PREREG_STRAINCLOCK_2026-09-12.md` (referenced
+by `alpha_from_dem.md` §4 and `cv_unloading.md` §6 — **it does not exist yet; write it
+before any cell runs**). N = 1000, lognormal, CV {0, 0.2, 0.5}, 3 seeds, `φ` ladder from
+just below `φ_μ(CV)` [= `φ_c(p*)`: 0.591 / 0.602 / 0.644] to just below `φ_0(CV)`
+[frictionless `φ_J`], 5 rungs, rate-matched at 1.17e-04, `γ_max` ≥ 3. Predictions to
+write down: (i) `p` rises from ~0 at every rung above `φ_μ(CV)` — the first dilative,
+suction-generating state this DEM has produced; (ii) `γ_c` (strain to `p` = half its
+steady value) grows as `φ → φ_μ(CV)⁺` and no rung below `φ_μ(CV)` jams; (iii) **the
+mechanism bit: `γ_c` plotted against `φ − φ_μ(CV)` COLLAPSES across CV if polydispersity
+acts only through the critical line, and does NOT if it changes the network-building
+kinetics** (the 0.23 rattler fraction at CV 0.5 is a reason it might not). (iii) is the
+test that separates "CV shifts `φ_c`" (M2a-degenerate) from "CV changes the clock" (M4),
+which no steady-state measurement can. Launch: copy `scripts/run_constp_ratematch.sh`
+into `scripts/run_strainclock.sh`; a `--friction-on-at-shear` flag in `shear.py::_prepare`
+(prep at `μ_p` = 0, set friction before stage C); invoke by path from PowerShell in a
+background Bash call; cells must fit ~600 s each. Also register there the OCR test: unload
+an isotropic pack at `φ` to `p₂ < p_ss(φ)` and require `p` to *rise* — graded against U5's
+OCR* per rung.
+
+**0′.2 — The clean U1: shear the phase-2 state itself.** Servo-consolidate to (`φ`, `p_iso`)
+with the phase-9 servo (it already exists), then constant-volume shear. 6 cells: CV 0 at
+`φ` = 0.595 (prediction from U3: `p` falls 2.45×, contractive, no prep overpressure to hide
+behind) and CV 0.5 at 0.645 (undecided; the constant-pressure line puts `p_ss` ≈ `p*`, i.e.
+a fall of ≈ 1.7×; a *rise* would make CV 0.5 dilative at its own `φ_c` and U3's violation
+real). If CV 0's `p` does not fall, U1's sign was the preparation and `cv_unloading.md` §6
+is withdrawn.
+
+**0′.3 — Make U2 readable.** Constant-volume rungs between `φ_c(p*)` and the present lowest
+jammed rung: CV 0 at 0.600 and 0.607, CV 0.5 at 0.650 and 0.657, 3 seeds, rate-matched,
+`γ_max` ≥ 3 (the near-`φ_c` rungs are the ones that were not steady at 1.5). 12 cells.
+⚠ N = 1500 to match the ladder cannot run from an agent session (600 s cap); either the
+author runs it from a terminal, or it runs at N = 1000 with the finite-size caveat stated
+in the pre-registration, not after.
+
+**0′.4 — Documents that are now stale and must catch up in the same commit as 0′.1's
+pre-registration:** `MECHANISM_2026-09-08.md` §1 ("above `φ_c` the pack dilates" —
+history-dependent now), §6a/E-3 (α magnitude → sign reversal within one impact), R4 H-3
+candidate (withdrawn), `Δφ_c` = +0.053 rate-matched; this file's §1 items 1, 2, 6 and §2.1.
+
+**0′.5 — Lab side, unchanged and still the cheapest discriminator the author owns:** H-2
+(flow-curve shape on a CV ladder, §2.3) and E-6 (§2.4). Nothing in (a)–(c) touches them.
+
+**Verification for this update (all ran 2026-09-12 evening):** `python grade_constp_rm.py`
+(exit 0), `python derivations/alpha_from_dem_numbers.py` (`ALL CHECKS PASSED`),
+`python cv_unloading.py` (exit 1, `FAILURES: ['U2', 'U3']` as reported above),
+`ruff check cv_unloading.py` clean.
+
+---
+
 ## 0. What changed
 
 ### 🔑 `φ_c` now has an estimator that takes NO input from `φ_J`
