@@ -1,0 +1,89 @@
+=== shape_control.py -- CV is not the control parameter. What is? ===
+
+=== LADDER HEALTH first -- the same gate transfer_law.py now applies ===
+   An adversarial review on 2026-09-13 found a friction arm whose phi_J came
+   from ladders that were 0/6 monotone with r2 down to 0.002 and one NEGATIVE
+   slope. These family arms use the same estimator, so they get the same gate
+   BEFORE their numbers are read: no negative slope, median r2 >= 0.85.
+   family        mu_p    n   monotone  r2 median  r2 min  neg slopes  verdict
+   lognormal     0.3    6     3/6       0.953    0.910          0   USED
+   lognormal     0.0    6     3/6       0.916    0.869          0   USED
+   uniform       0.3    6     3/6       0.926    0.856          0   USED
+   uniform       0.0    6     5/6       0.930    0.869          0   USED
+   bidisperse    0.3    6     2/6       0.930    0.238          0   USED
+   -> all family arms pass. The finding below is NOT an artefact of the defect the review found.
+
+=== the finding, at MATCHED CV and MATCHED friction ===
+   CV 0.0 -> 0.5, mu_p = 0.3, paired per seed
+   family        dphi_J        se      n
+   lognormal    +0.0621     0.0026   3
+   uniform      +0.0242     0.0008   3
+   bidisperse   +0.0139     0.0025   3
+   -> spread 4.47x across families at the SAME CV.
+   -> for comparison: moving phi_J by 0.058 with friction (mu_p 0 -> 0.3, the two arms
+      that pass ladder health) moves the SAME lognormal shift by 1.07x, +0.0580 -> +0.0621.
+      SHAPE moves it 4.47x; FRICTION moves it 1.07x. The axis the project has been
+      controlling is the smaller of the two by a wide margin.
+
+   the same three families at mu_p = 0, where only two were run:
+      lognormal    +0.0580 +- 0.0027  (n 3)
+      uniform      +0.0238 +- 0.0016  (n 3)
+   -> the ordering is the same at both frictions, so it is not a friction effect.
+
+=== candidate control variables, computed from the TRUNCATED SAMPLED psd ===
+   (200000 draws, seed 20260913, truncate (0.2, 5.0) -- the same truncation the packings used)
+   family                  cv         d32        skew       ratio     d95_d05     f_small m3_over_m1c      dphi_J
+   lognormal           0.4956      1.5429      1.5324     24.9421      4.7331      0.0311      1.9233   +0.0621
+   uniform             0.4995      1.3987     -0.0025     13.9269      8.0584      0.1623      1.7481   +0.0242
+   bidisperse          0.5000      1.4000      0.0000      3.0000      3.0000      0.0000      1.7500   +0.0139
+
+=== does any single variable order the three families correctly? ===
+   A control variable must at minimum put them in the right ORDER, and the
+   discriminating pair is uniform vs bidisperse: their shifts differ by
+   1.74x 
+   true order (smallest shift first): ['bidisperse', 'uniform', 'lognormal']
+      cv           orders as ['lognormal', 'uniform', 'bidisperse']                  no
+      d32          orders as ['uniform', 'bidisperse', 'lognormal']                  no
+      skew         orders as ['uniform', 'bidisperse', 'lognormal']                  no
+      ratio        orders as ['bidisperse', 'uniform', 'lognormal']                  MATCHES
+      d95_d05      orders as ['bidisperse', 'lognormal', 'uniform']                  no
+      f_small      orders as ['bidisperse', 'lognormal', 'uniform']                  no
+      m3_over_m1c  orders as ['uniform', 'bidisperse', 'lognormal']                  no
+
+=== the quantitative test: proportionality, one free constant ===
+   If dphi_J = K * X, then dphi_J / X must be the SAME for all three families.
+   variable          lognormal    uniform  bidispers     max/min
+   cv                   0.1252     0.0485     0.0278       4.51x
+   d32                  0.0402     0.0173     0.0099       4.06x
+   skew                 0.0405    -9.5007        nan        nanx
+   ratio                0.0025     0.0017     0.0046       2.66x
+   d95_d05              0.0131     0.0030     0.0046       4.37x
+   f_small              1.9949     0.1491        nan        nanx
+   m3_over_m1c          0.0323     0.0138     0.0079       4.07x
+   -> a collapsing variable would show max/min near 1. NONE of these does.
+      The two that come closest are reported, but 'closest' among failures is
+      not a result: what this establishes is that the shift is NOT a function
+      of any ONE of these descriptors.
+
+=== WHAT THIS ESTABLISHES, AND WHAT IT COSTS THE PROGRAMME ===
+   ESTABLISHED: at matched CV and matched friction the CV 0 -> 0.5 jamming
+     shift runs +0.0139 to +0.0621 across three size
+     distributions, a factor 4.5. CV is NOT the
+     control parameter, and every result this project quotes as a derivative
+     with respect to CV is conditional on the LOGNORMAL family.
+   ESTABLISHED: it is not a friction effect -- the ordering is identical at
+     mu_p = 0 and 0.3.
+   NOT ESTABLISHED: what the control parameter IS. None of the seven
+     single-variable candidates collapses the three families, and with three
+     families there is not enough leverage to fit a two-variable form.
+   WHAT IT COSTS: nothing, IF the target material is lognormal -- milled and
+     precipitated powders approximately are, and the lab's silica and
+     cornstarch are both. But that is now a STATED CONDITION of the headline
+     rather than an unexamined assumption, and it is a far stronger condition
+     than the jamming-point matching transfer_law.py was built to check.
+   WHAT WOULD SETTLE IT: a fourth and fifth family chosen to SEPARATE the
+     candidates rather than to add coverage -- e.g. a negatively-skewed
+     distribution at the same CV and d32, and a bidisperse at a size ratio
+     large enough to fill interstices (>= 1/0.414 = 2.4), which the CV = 0.5
+     bidisperse already is, so the interstitial picture predicts it should
+     pack WELL and it packs worst of the three.

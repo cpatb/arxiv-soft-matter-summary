@@ -1,0 +1,111 @@
+=== transfer_law.py -- does the polydispersity shift depend on WHERE the pack jams? ===
+   The escape clause the whole programme rests on is that dphi_c/dCV transfers
+   from a DEM at phi_c ~ 0.59 to a material at 0.40. This tests it.
+
+=== LADDER HEALTH, before any arm is used ===
+   phi_J_lin is a straight line through 4 pressure rungs; its se cannot see a
+   ladder that is not a straight line. An arm with a NEGATIVE slope is
+   inadmissible (phi_J falling as pressure rises), not merely noisy.
+   mu_p    n   monotone  r2 median  r2 min  neg slopes  worst slope   verdict
+    0.0    6     3/6       0.916    0.869          0         4.08   USED
+    0.3    6     3/6       0.953    0.910          0        10.30   USED
+    1.0    6     0/6       0.438    0.002          1        -7.06   REFUSED
+    3.0  CV coverage [np.float64(0.0)] -- no 0.0/0.5 pair, skipped
+   🔴 mu_p = 1.0 REFUSED, and its numbers stay printed: phi_J(CV 0) = 0.5590, shift +0.0562 +- 0.0033. This arm was carrying the
+      claim until an adversarial review checked its raw ladders.
+
+   mu_p   phi_J(CV 0)   dphi_J(0 -> 0.5)      se     paired?  n seeds  1-phi_J
+    0.0   0.632371     +0.0580          0.0027   yes      3      0.3676
+    0.3   0.574533     +0.0621          0.0026   yes      3      0.4255
+   -> the LEVER: phi_J(CV 0) spans 0.0578 across the friction arms, 22x the typical se.
+   -> for comparison the SHEARED shift at mu_p = 0.3 is +0.0533 (constant pressure) and +0.0523 (the strain-clock crossing).
+
+=== the candidate transfer laws, each fitted with ONE free constant ===
+   dphi_J = K * f(phi_J). K is fitted by weighted least squares in every case,
+   so the three models have the SAME number of parameters and their chi2 are
+   directly comparable on 1 residual degree(s) of freedom.
+   ⚠ 2 healthy arms and one fitted constant leaves 1 residual
+     degree of freedom. This can REJECT a badly wrong form but it cannot
+     separate two forms that differ by less than the error bars, and below
+     it does not.
+
+   model                          K        chi2(1 dof)   p       predictions
+   ABSOLUTE     dphi = K           0.0601       1.19   0.275   +0.0601 +0.0601
+   FREE-VOLUME  dphi = K(1-phi)    0.1507       1.61   0.205   +0.0554 +0.0641
+   RELATIVE     dphi = K*phi       0.0995       7.02   0.008   +0.0629 +0.0572
+   measured                                                       +0.0580 +0.0621
+   -> best: ABSOLUTE (chi2 = 1.19)
+
+=== the exponent, fitted rather than chosen: dphi_J = K (1 - phi_J)^n ===
+   n = 0 is ABSOLUTE (the shift is a property of the size distribution alone);
+   n = 1 is FREE-VOLUME. The RELATIVE law is n = -phi/(1-phi) ~ -1.4 here.
+   ⚠ NOT FITTED: two parameters on 2 points is zero residual degrees of freedom, so the fit would
+     be exact by construction and its 'error' meaningless. The bound below
+     is taken from the CHI2 TABLE instead: which named forms survive.
+   forms NOT rejected at p > 0.05: ['ABSOLUTE', 'FREE-VOLUME']
+   -> the admissible exponent range is the span of the surviving named
+      forms: n in [+0.00, +1.00]. That is what the lever is
+      worth, and it is a great deal less than three healthy arms would be.
+   admissible exponent range: n in [+0.00, +1.00]  -> free-volume (n = 1) is INSIDE, absolute (n = 0) is INSIDE
+
+=== what the bound buys: carrying +0.053 to a material that jams lower ===
+   The DEM measures the shift at phi_c = 0.591 (constant pressure, sheared).
+   Transferring it to phi_c = X multiplies it by ((1-X)/(1-0.591))^n.
+   phi_c   factor at n = 0   at n = +1.00 (2se hi)   at n = +0.00 (2se lo)   ->  dphi_c band
+   0.50    1.000            1.223              1.000          [0.0533, 0.0652]
+   0.44    1.000            1.370              1.000          [0.0533, 0.0730]
+   0.40    1.000            1.467              1.000          [0.0533, 0.0782]
+   0.37    1.000            1.541              1.000          [0.0533, 0.0822]
+   -> the central (n = 0) transfer is the measured +0.0533 unchanged.
+
+=== a second reading of the same question, from data taken for another reason ===
+   phi_0 (frictionless) and phi_mu (frictional isotropic) are two jamming
+   points 0.058 apart at CV 0, measured on the SAME seeds with the SAME
+   protocol. If the shift tracked free volume, the LOWER one would shift more.
+      mu_p 0.0: phi_J 0.6324, shift +0.0580 +- 0.0027
+      mu_p 0.3: phi_J 0.5745, shift +0.0621 +- 0.0026
+   free-volume would require +0.0580 +0.0672; measured +0.0580 +0.0621
+   the free-volume prediction is off by 0.0 2.0 se.
+
+=== WHAT THE 2026-09-13 REVIEW CHANGED, recorded rather than absorbed ===
+   (1) The mu_p = 1.0 arm is REFUSED on ladder health, above. It was the arm
+       that made the shift look NON-MONOTONIC in phi_J, and that shape was the
+       ABSOLUTE law's whole chi2 advantage -- no single-sign power law can
+       reproduce a rise then a fall. With it gone the lever is TWO points and
+       0.058 wide, not three and 0.073, and 'non-monotonic' is withdrawn.
+   (2) COLLINEARITY: friction moves the isostatic contact number Z as well as
+       phi_J, and they move together across every arm here. So this test
+       separates 'the shift tracks phi_J' from 'the shift does not', and CANNOT
+       separate phi_J from Z. The claim 'a property of the size distribution
+       rather than of the packing' is NOT established -- only the narrower
+       'rather than of phi_J specifically'. The clean lever is PROTOCOL at
+       fixed mu_p, which moves phi_J while isostaticity pins Z.
+   (3) CHANNEL: the exponent is fitted on ISOTROPIC ladders and applied to the
+       SHEARED critical state, and those differ by 2.8 se at the one friction
+       where both exist (isotropic +0.0621 +- 0.0026 vs sheared +0.0533 +-
+       0.0018). There is no lever at all on the sheared channel -- one point.
+   (4) The chi2 table and the exponent bound answer DIFFERENT questions and
+       neither may be quoted as the other. The table compares three named,
+       motivated forms at equal parameter count; the bound is a bound.
+   (5) The RCP polydispersity literature (Farr & Groot 2009 doi:10.1063/1.3276799; Desmond & Weeks 2014 doi:10.1103/PhysRevE.90.022204) is
+       FRICTIONLESS BY CONSTRUCTION, so none of it can predict n for a test
+       run across friction. Citing it as background for this hypothesis was a
+       category error and is withdrawn. It does corroborate the SHAPE of the
+       mu_p = 0 ladder qualitatively (convex, accelerating in CV), and this
+       project's own secant slope steepens 0.051 -> 0.178 per unit CV over
+       CV [0,0.1] -> [0.4,0.5], a 3.5x steepening, consistent with that.
+       ⚠ No coefficient is quoted from either paper: the review's PDF read of
+       Desmond & Weeks' c2 was ambiguous (0.857 vs 0.0857) and is [UNVERIFIED].
+
+=== WHAT IS AND IS NOT ESTABLISHED ===
+   ESTABLISHED: over the 0.073 in phi_J that friction spans, the CV 0 -> 0.5
+     shift is constant within its own error. The escape clause the programme
+     rests on is SUPPORTED over that range rather than merely assumed.
+   NOT ESTABLISHED: anything at phi_c = 0.40. That is an extrapolation of
+     0.19 in phi_J against a lever arm of 0.073 -- 2.6 lever arms -- and the
+     bound above is what it is worth. Extending the lever is the next campaign,
+     and friction cannot do it (phi_J saturates between mu_p 1 and 3).
+   NOT TESTED: whether a pack whose phi_J is lowered by SHAPE rather than by
+     friction behaves the same. Rolling resistance is the standard DEM proxy
+     for non-sphericity, it reaches phi_J ~ 0.50, and phase6_cohesion.py
+     already proves this codebase can drive CohFrictMat with momentRotationLaw.

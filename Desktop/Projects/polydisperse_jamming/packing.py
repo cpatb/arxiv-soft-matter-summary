@@ -136,6 +136,7 @@ class PackingState:
     unbalanced: float = float("nan")
     converged: bool = False
     iters: int = 0
+    eta_roll: float | None = None  # None = FrictMat (every record before 2026-09-13)
     max_iter: int = MAX_ITER      # the cap this cell actually ran under
     tol_met: bool = False         # unbalanced < UNBALANCED_TOL, ignoring the cap
     wall_s: float = float("nan")
@@ -192,6 +193,41 @@ def measure(O, utils, st: PackingState, young: float) -> PackingState:  # noqa: 
     st.unbalanced = float(utils.unbalancedForce())
     st.iters = int(O.iter)
     return st
+
+
+# --- the rolling-resistance path -----------------------------------------------------
+# ALPHA_KR is Yade's dimensionless rolling-stiffness coefficient (k_r = alphaKr * k_n *
+# r1 * r2). 2.0 is the library default and is kept rather than tuned: this arm exists to
+# move phi_J, not to fit anything, and a tuned stiffness would be a second knob.
+ALPHA_KR = 2.0
+
+
+def interaction_loop(utils, eta_roll):
+    """The InteractionLoop for this contact model.
+
+    `eta_roll is None` returns EXACTLY the engine list every record on disk was taken
+    with. Anything else returns the 6-degree-of-freedom cohesive-frictional stack with
+    cohesion off and the moment law forced on.
+
+    🔴 THE TRAP, verified against this Yade build by probe_roll_api.py:
+    `Law2_ScGeom6D_CohFrictPhys_CohesionMoment.always_use_moment_law` DEFAULTS TO FALSE,
+    and with `isCohesive=False` nothing is ever bonded -- so without this flag the
+    rolling-resistance knob would be silently INERT and the whole arm would measure
+    nothing while returning plausible numbers.
+    """
+    if eta_roll is None:
+        return utils.InteractionLoop(
+            [utils.Ig2_Sphere_Sphere_ScGeom()],
+            [utils.Ip2_FrictMat_FrictMat_FrictPhys()],
+            [utils.Law2_ScGeom_FrictPhys_CundallStrack()],
+        )
+    return utils.InteractionLoop(
+        [utils.Ig2_Sphere_Sphere_ScGeom6D()],
+        [utils.Ip2_CohFrictMat_CohFrictMat_CohFrictPhys(
+            setCohesionNow=False, setCohesionOnNewContacts=False)],
+        [utils.Law2_ScGeom6D_CohFrictPhys_CohesionMoment(
+            always_use_moment_law=True, useIncrementalForm=True)],
+    )
 
 
 def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
@@ -255,10 +291,30 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
             f"FINITE SIZE RISK: d_max/L_dense = {st.d_max_over_L:.3f} > 0.25"
         )
 
-    mat = O.materials.append(
-        utils.FrictMat(young=young, poisson=POISSON, density=1.0,
-                       frictionAngle=math.atan(st.mu_p), label="grain")
-    )
+    if st.eta_roll is None:
+        mat = O.materials.append(
+            utils.FrictMat(young=young, poisson=POISSON, density=1.0,
+                           frictionAngle=math.atan(st.mu_p), label="grain")
+        )
+    else:
+        # ROLLING-RESISTANCE PATH (transfer_law.py's lever; see module docstring).
+        # `isCohesive=False` makes this a COHESIONLESS pack that merely resists
+        # rolling -- not a bonded aggregate. `momentRotationLaw=True` is what turns
+        # the moment branch on at all; it defaults to False.
+        # `etaRoll` is the plastic moment limit in units of (normal force x radius):
+        # 0 means the moment is always at its limit, i.e. NO rolling resistance, which
+        # is this path's own control against the FrictMat default.
+        mat = O.materials.append(
+            utils.CohFrictMat(young=young, poisson=POISSON, density=1.0,
+                              frictionAngle=math.atan(st.mu_p),
+                              isCohesive=False,
+                              normalCohesion=0.0, shearCohesion=0.0,
+                              momentRotationLaw=True,
+                              etaRoll=float(st.eta_roll),
+                              etaTwist=float(st.eta_roll),
+                              alphaKr=ALPHA_KR, alphaKtw=ALPHA_KR,
+                              label="grain")
+        )
     O.periodic = True
     O.cell.hSize = np.diag([L, L, L])
     for r in radii:
@@ -270,7 +326,8 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
 def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
                        truncate: tuple[float, float] | None = (0.2, 5.0),
                        young: float = 1.0, verbose: bool = True,
-                       family: str = "lognormal") -> PackingState:
+                       family: str = "lognormal",
+                       eta_roll: float | None = None) -> PackingState:
     """Compress a packing isotropically to reduced pressure `p_hat` = p/E.
 
     Dimensionless throughout: d10 = 1, rho = 1, E = `young` (default 1).
@@ -282,7 +339,7 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
     t0 = time.time()
     O.reset()
     st = PackingState(n_requested=n, cv=cv, mu_p=mu_p, p_hat_target=p_hat,
-                      seed=seed, family=family)
+                      seed=seed, family=family, eta_roll=eta_roll)
     insert_packing(st, truncate=truncate, young=young)
 
     # Yade sign convention for the triax goal: compressive stress is NEGATIVE.
@@ -291,11 +348,7 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
         utils.ForceResetter(),
         utils.InsertionSortCollider([utils.Bo1_Sphere_Aabb()],
                                     allowBiggerThanPeriod=False),
-        utils.InteractionLoop(
-            [utils.Ig2_Sphere_Sphere_ScGeom()],
-            [utils.Ip2_FrictMat_FrictMat_FrictPhys()],
-            [utils.Law2_ScGeom_FrictPhys_CundallStrack()],
-        ),
+        interaction_loop(utils, st.eta_roll),
         utils.PeriTriaxController(
             label="triax",
             goal=(goal, goal, goal),
