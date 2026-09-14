@@ -1,0 +1,63 @@
+=== grade_mixture_mu0.py -- PREREG_MIXTURE_2026-09-13.md section 4c ===
+   63 frictionless cells, 0 errors, 0 non-converged. scale = 2.1e-03
+
+=== beta, the ONLY thing that changes between the two blocks ===
+   beta(mu_p = 0.3) = 0.5947   beta(mu_p = 0.0) = 0.6413   ratio 1.0784
+   the block's own monodisperse endpoints: 0.6412, 0.6412, 0.6412, 0.6412
+   -> they agree with beta(mu_p = 0) to 0.0 scale, which is the control that
+      the frictionless block is at the friction it says it is.
+
+=== the prediction: the ALL-RATIO calibration (PA = 0.961, PB = 2.214),
+    fitted on mu_p = 0.3 binaries, evaluated with beta = 0.6413 ===
+      r     X_s  phi_meas     sem     pred  /scale  n_min  grad
+    2.0  0.0000    0.6412  0.0008   0.6413    +0.0      0     y
+    2.0  0.0500    0.6515  0.0007   0.6512    -0.2    444     y
+    2.0  0.1000    0.6611  0.0011   0.6613    +0.1    706     y
+    2.0  0.1500    0.6678  0.0010   0.6718    +1.9    622     y
+    2.0  0.2000    0.6742  0.0007   0.6826    +4.0    500     y
+    2.0  0.2500    0.6756  0.0007   0.6808    +2.4    409     y
+    2.0  0.3000    0.6783  0.0003   0.6780    -0.1    339     y
+    2.0  0.4000    0.6768  0.0010   0.6725    -2.1    237     y
+    2.0  0.6000    0.6675  0.0005   0.6618    -2.7    115     y
+    2.0  1.0000    0.6412  0.0008   0.6413    +0.0      0     y
+    3.0  0.0000    0.6412  0.0008   0.6413    +0.0      0     y
+    3.0  0.0357    0.6587  0.0005   0.6514    -3.5    750     y
+    3.0  0.0500    0.6648  0.0005   0.6555    -4.5    620     y
+    3.0  0.1000    0.6880  0.0003   0.6703    -8.5    375     y
+    3.0  0.1500    0.7097  0.0005   0.6857   -11.4    260     y
+    3.0  0.2000    0.7170  0.0010   0.7019    -7.2    194     y
+    3.0  0.2500    0.7230  0.0010   0.7189    -1.9    150     y
+    3.0  0.3000    0.7196  0.0005   0.7144    -2.5    119     y
+    3.0  0.4000    0.7128  0.0006   0.7030    -4.7     79     y
+    3.0  0.6000    0.6902  0.0002   0.6811    -4.3     36    NO
+    3.0  1.0000    0.6412  0.0008   0.6413    +0.0      0     y
+
+=== F1 -- the matched pair, at ZERO friction ===
+   both at size ratio 3 and number CV 0.500000 / 0.500000 (agreeing to 5.6e-17)
+   phi = 0.6587 and 0.7230
+   MEASURED dphi = +0.0643 +- 0.0011  (+30.6 scale, +59.7 se)
+   REGISTERED PREDICTION (4c) = +0.0684; this run's calibration gives +0.0676
+   descriptor account = +0.0000
+   -> F1 PASS (30.6 scale against a bar of 5.0); the prediction is 5% off
+
+=== F2 -- are the interaction functions GEOMETRIC? ===
+   per-point chi2, same calibration, MATCHED compositions:
+      mu_p = 0.3:    11.00  over 16 points (this is the fit's OWN set, so it is a floor, not a comparison)
+         [over all 32 mu_p = 0.3 compositions instead it would be 8.00, i.e. the restriction matters]
+      mu_p = 0.0:    22.17  over 16 points  -- BLIND
+   ratio = 2.02 against a registered bar of 3.0
+   -> F2 PASS: only beta carried the friction, at this bar. The interaction
+      functions transfer across a friction change that moves beta by 22 scale.
+   /!\ the mu_p = 0.3 column is the calibration set, so it is a floor rather
+       than a fair comparison; the bar is 3x precisely to allow for that, and
+       the blind number is the one that means anything.
+
+=== F3 -- the collider guard, registered in advance ===
+   1 cells exceed packing.PHI_DENSE_BOUND = 0.72:
+      r = 3, X_s = 0.25: phi = 0.7230 (+0.0030)
+   The guard sizes the cell for the collider at the DENSEST state, so it was
+   optimistic by this much. d_max/L scales as phi^(1/3), so the worst cell's
+   d_max/L is understated by 0.14% -- it
+   cannot invalidate a cell, and it was written down before the run.
+
+FAILURES: []

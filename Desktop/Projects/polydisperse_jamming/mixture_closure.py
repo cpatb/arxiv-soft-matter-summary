@@ -60,7 +60,7 @@ FAMILIES = mm.FAMILIES
 CVS = (0.1, 0.2, 0.3, 0.4, 0.5)
 
 
-def binary_points() -> list[tuple[float, float, float]]:
+def binary_points(mu_p: float = 0.3) -> list[tuple[float, float, float]]:
     """(ratio, x_small, phi) for every GRADABLE interior binary cell, seed-averaged.
 
     The M5 admission rule of PREREG_MIXTURE_2026-09-13.md is applied here too, and for
@@ -77,6 +77,12 @@ def binary_points() -> list[tuple[float, float, float]]:
                     continue
                 r = json.loads(line)
                 if r.get("error") or r.get("n_requested") != N_PROD:
+                    continue
+                # The shard glob matches any tag, including a block at another friction.
+                # beta is friction-dependent and the whole model is built on one beta, so
+                # pooling two frictions here would be silently meaningless rather than
+                # noisy. Default 0.3 is the friction every number in this file is read at.
+                if abs(float(r.get("mu_p", -1)) - mu_p) > 1e-9:
                     continue
                 x = round(float(r["x_small_vol"]), 6)
                 if x in (0.0, 1.0):

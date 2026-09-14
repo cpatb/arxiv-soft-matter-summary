@@ -37,6 +37,10 @@ M2_SCALES = 5.0               # interior maximum over both endpoints
 M4_SCALES = 3.0               # ratio 3 must beat ratio 2 by this much in peak excess
 SEPARATION_MIN = 1.6          # a test whose candidates are closer than this decides nothing
 
+# The friction M0-M6 are CLOSED on. Frozen here rather than read from a shared constant,
+# so that adding a block at another friction cannot move a closed gate.
+GRADED_MU_P = 0.3
+
 
 def load_cells() -> dict[tuple[float, float], list[dict]]:
     rows: list[dict] = []
@@ -51,6 +55,14 @@ def load_cells() -> dict[tuple[float, float], list[dict]]:
                     rows.append(r)
                     continue
                 if r.get("n_requested") != N_PROD:
+                    continue
+                # 🔴 2026-09-13, added BEFORE the frictionless block ran, not after.
+                # M0-M6 are CLOSED on the mu_p = 0.3 grid. The shard glob is
+                # `phase12_mixr*`, which a `mixr3mu0` tag matches, so without this line
+                # a later block at another friction would silently re-decide six closed
+                # gates -- the exact shape of the 2026-09-06 lesson about appending to a
+                # list a closed gate iterates. mu_p is in the cell key as well.
+                if abs(float(r.get("mu_p", -1)) - GRADED_MU_P) > 1e-9:
                     continue
                 rows.append(r)
     g: dict[tuple[float, float], list[dict]] = collections.defaultdict(list)

@@ -85,15 +85,15 @@ X_ANCHOR = 0.5 ** 3 / (0.5 ** 3 + 1.5 ** 3)
 MIN_PHASE_COUNT = 50
 
 
-def build_grid(ratio: float, n: int, with_anchor: bool):
-    xs = list(X_GRID)
+def build_grid(ratio: float, n: int, with_anchor: bool, xs=None):
+    xs = list(X_GRID if xs is None else xs)
     if with_anchor:
         xs.append(X_ANCHOR)
     return [(ratio, x, seed, n) for x in xs for seed in SEEDS]
 
 
-def cell_key(ratio: float, x: float, seed: int, n: int) -> str:
-    return f"mix_r{ratio:.2f}_x{x:.6f}_s{seed}_p{P_HAT:.0e}_N{n}_mu{MU_P:.2f}"
+def cell_key(ratio: float, x: float, seed: int, n: int, mu_p: float) -> str:
+    return f"mix_r{ratio:.2f}_x{x:.6f}_s{seed}_p{P_HAT:.0e}_N{n}_mu{mu_p:.2f}"
 
 
 def load_done(path: str) -> set[str]:
@@ -116,17 +116,29 @@ def main() -> int:
     ap.add_argument("--nshards", type=int, default=1)
     ap.add_argument("--n", type=int, default=N_PROD)
     ap.add_argument("--no-anchor", action="store_true")
+    # mu_p and the composition grid are OPTIONS, not constants, because the extensions
+    # registered in PREREG_MIXTURE_2026-09-13.md section 4c need them. The defaults are
+    # the production values every ratio 2/3 record on disk was taken with, and mu_p is
+    # written into every cell KEY, so a frictionless block can never pool with a
+    # frictional one by accident.
+    ap.add_argument("--mu", type=float, default=MU_P)
+    ap.add_argument("--xgrid", type=str, default="",
+                    help="comma-separated fines VOLUME fractions; default X_GRID")
     args = ap.parse_args()
 
     os.makedirs(OUT_DIR, exist_ok=True)
-    grid = build_grid(args.ratio, args.n, not args.no_anchor)
+    xs = [float(v) for v in args.xgrid.split(",")] if args.xgrid else None
+    if xs is not None and (min(xs) < 0.0 or max(xs) > 1.0):
+        raise SystemExit(f"--xgrid values must lie in [0, 1], got {xs}")
+    grid = build_grid(args.ratio, args.n, not args.no_anchor, xs)
     suffix = f"_{args.tag}"
     if args.nshards > 1:
         suffix += f"_shard{args.shard:02d}of{args.nshards:02d}"
     path = os.path.join(OUT_DIR, f"phase12{suffix}.jsonl")
     done = load_done(path)
     mine = sum(1 for i in range(len(grid)) if i % args.nshards == args.shard)
-    print(f"phase12 mixture: ratio {args.ratio}, {len(grid)} cells, {mine} on shard "
+    print(f"phase12 mixture: ratio {args.ratio}, mu_p {args.mu}, "
+          f"{len(grid)} cells, {mine} on shard "
           f"{args.shard}/{args.nshards}, N={args.n}, {len(done)} done -> {path}",
           flush=True)
 
@@ -135,7 +147,7 @@ def main() -> int:
     for idx, (ratio, x, seed, ncell) in enumerate(grid):
         if idx % args.nshards != args.shard:
             continue
-        key = cell_key(ratio, x, seed, ncell)
+        key = cell_key(ratio, x, seed, ncell, args.mu)
         if key in done:
             continue
         # FULL round-trip precision in the family string, not a rounded one. At the
@@ -145,7 +157,7 @@ def main() -> int:
         fam = f"binary:r{ratio!r}:x{x!r}"
         psd = BinaryPSD(d10=1.0, ratio=ratio, x_small=x)
         try:
-            st = build_and_compress(cv=0.0, mu_p=MU_P, p_hat=P_HAT, n=ncell, seed=seed,
+            st = build_and_compress(cv=0.0, mu_p=args.mu, p_hat=P_HAT, n=ncell, seed=seed,
                                     family=fam, truncate=None, verbose=True)
             rec = json.loads(st.to_json())
             rec["key"] = key

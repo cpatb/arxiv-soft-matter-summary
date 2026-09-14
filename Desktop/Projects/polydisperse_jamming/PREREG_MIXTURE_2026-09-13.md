@@ -211,6 +211,57 @@ coincidence and must be reported as such.
 
 ⚠ Nothing in §4 is re-graded by these cells. M0–M6 are closed on the ratio 2/3 grid.
 
+## 4c. THE FRICTIONLESS BLOCK — a genuinely BLIND prediction, written before the run
+
+Everything above is either held out or pre-registered but calibrated against data already
+on disk. This one is not: **no binary packing at `μ_p` = 0 exists anywhere in this
+project.** The model's central structural claim is that the interaction functions are
+**geometric** and `β` carries all the friction, so with **`β` changed from 0.5947 to the
+measured 0.6413 and nothing else touched**, the whole composition curve is predicted.
+
+**Run:** `phase12_mixture.py --mu 0.0` at `r` = 2 and 3, the same `X_s` grid, same seeds,
+N = 1500, `p̂` = 1e-3. 60 cells.
+
+**Predictions, computed 2026-09-13 before the first cell (`mixture_model` / `mixture_closure`,
+three calibrations, all with `β` = 0.6413):**
+
+| `r` | `X_s` | textbook | ratio 2/3 fit | all-ratio fit |
+|---|---|---|---|---|
+| 3 | 0.10 | 0.6693 | 0.6711 | 0.6703 |
+| 3 | 0.20 | 0.6998 | 0.7039 | 0.7019 |
+| 3 | 0.25 | 0.7162 | **0.7215** | 0.7189 |
+| 3 | 0.30 | 0.7333 | 0.7175 | 0.7144 |
+| 3 | 0.40 | 0.7264 | 0.7055 | 0.7030 |
+| 2 | 0.20 | 0.6805 | 0.6846 | 0.6826 |
+| 2 | 0.30 | 0.7020 | 0.6806 | 0.6780 |
+| 2 | 0.40 | 0.6941 | 0.6747 | 0.6725 |
+
+**F1 — the matched pair, at zero friction.** The same two packs as M1 (`r` = 3,
+`X_s` = 0.0357 and 0.25, both at number CV 0.5000) must differ by **more than 5 ×
+`PHI_SCALE`** and in the **positive** direction. The all-ratio calibration predicts
+**+0.0684**. FAIL if |Δφ| < 2 scale.
+
+**F2 — is the interaction GEOMETRIC?** Grade the all-ratio-calibrated prediction against
+the 16 gradable interior compositions. **Registered bar: the per-point χ² at `μ_p` = 0
+must be within 3× the per-point χ² the same calibration achieves at `μ_p` = 0.3.** If it
+is, only `β` carried the friction and the functions are geometric as claimed. If it is
+not, the interaction functions are friction-dependent, and the whole closure is a
+`μ_p` = 0.3 object — which is a real limitation on the programme, not a failure of the
+campaign.
+**Prediction:** PASS. The `μ_p` = 0 continuous families in `mixture_model.py` §7 already
+show residuals of the same size as the `μ_p` = 0.3 ones (+3 to +7 scale in both), which is
+the only prior evidence and is weaker than this test.
+
+**F3 — ⚠ a guard, not a gate.** `packing.PHI_DENSE_BOUND` = 0.72 is the upper bound the
+periodic-collider pre-flight check assumes, and the model predicts **φ up to 0.733** at
+`r` = 3, `X_s` = 0.30. If any cell exceeds 0.72 the guard was optimistic by that amount;
+the effect on `d_max/L` is under 0.2 % so it cannot invalidate a cell, but it is recorded
+here in advance rather than discovered afterwards.
+
+⚠ **This block must not reach M0–M6.** Those gates are closed on the `μ_p` = 0.3 grid,
+`grade_mixture.py` now filters on `GRADED_MU_P` = 0.3, and `test_mixture.py` asserts that
+the grader sees exactly one friction.
+
 ## 5. Outcome
 
 **123 cells at N = 1500, 0 errors, 0 non-converged.** `grade_mixture.py` →
@@ -287,6 +338,37 @@ lands within **+3.8 / −0.4 scale**. **E2 passes as predicted.**
   the optimiser stopped. The route is refused, its held-out χ² (375.9, worse than the
   two-exponent fit) is printed rather than hidden, and **the two-exponent fit remains the
   reported closure.**
+
+### The frictionless block (§4c) — the blind test
+
+**63 cells at `μ_p` = 0, 0 errors, 0 non-converged.** `grade_mixture_mu0.py` →
+`out/mixture_mu0.txt`, exit 0, **`FAILURES: []`**.
+
+- **Control first:** the block's own four monodisperse endpoints all give **0.6412**,
+  agreeing with the independently measured `β`(`μ_p` = 0) = 0.6413 to **0.0 scale**. The
+  block is at the friction it says it is.
+- 🔑 **F1 PASS, and the number is the one that matters.** The same matched pair
+  (`r` = 3, `X_s` = 0.0357 vs 0.25, both at number CV 0.500000) gives
+  **Δφ = +0.0643 ± 0.0011 — 30.6 scale, 59.7 se** — against a prediction of **+0.0684**
+  written into §4c before the first cell, i.e. **5 % off a blind prediction**.
+  🔑 **And it is +0.0635 at `μ_p` = 0.3 against +0.0643 at `μ_p` = 0: the composition
+  effect is friction-independent in ABSOLUTE terms, to 0.4 scale**, while `β` itself moves
+  by 22 scale between the two blocks. Nothing predicted that in advance and it is the
+  strongest single piece of evidence that the effect is geometric.
+- **F2 PASS at 2.02 against a bar of 3.0.** Per-point χ², same calibration, **matched
+  compositions**: 11.00 at `μ_p` = 0.3 (the fit's own set, a floor) and **22.17 blind at
+  `μ_p` = 0**. ⚠ A defect was found and fixed on the way in: the first version compared
+  the 16 blind compositions against all **32** `μ_p` = 0.3 compositions while the comment
+  beside it claimed "same compositions" — two arms of a comparison on different grids.
+  Restricted, the ratio moves 2.77 → 2.02; both numbers are printed.
+  🔴 **The residual is STRUCTURED, not noise:** at `r` = 3 every point is under-predicted,
+  by up to **−11.4 scale** at `X_s` = 0.15, while `r` = 2 scatters ±4. So the geometric
+  claim passes its registered bar and should be read as *supported*, not as established —
+  there is a real, systematic friction dependence in the loosening branch below the bar.
+- **F3, the guard registered in advance:** exactly one cell (`r` = 3, `X_s` = 0.25) exceeds
+  `packing.PHI_DENSE_BOUND` = 0.72, at **φ = 0.7230**. `d_max/L` is understated by 0.14 %,
+  which cannot invalidate a cell. `PHI_DENSE_BOUND`'s comment ("nothing here should exceed
+  0.72") is now false for frictionless mixtures and should be updated.
 
 ### What this establishes, and what it does not
 
