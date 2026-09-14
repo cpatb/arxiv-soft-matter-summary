@@ -1,0 +1,145 @@
+=== mixture_closure.py -- calibrate on BINARIES, predict the FAMILIES ===
+   beta = 0.5947 (measured, not fitted). scale = 2.1e-03.
+   calibration set: 16 gradable interior binary compositions at
+   size ratios [2.0, 3.0]. No continuous-family point is in it.
+
+=== the refit, on the ratio 2 and 3 grid ===
+   textbook   PA = 1.020  PB = 1.500
+   refitted   PA = 0.911  PB = 2.122   chi2 on the calibration set = 162.1  (per point 10.1)
+   textbook exponents on the same set:            chi2 = 364.9  (per point 22.8)
+
+   what the refit does to the interaction functions, at the ratios that matter:
+       d_fine/d_coarse  a textbook   a refit  b textbook   b refit
+                1.0000      1.0000    1.0000      1.0000    1.0000
+                0.8000      0.8980    0.8770      0.9106    0.9672
+                0.6667      0.8209    0.7952      0.8075    0.9029
+                0.5000      0.7120    0.6841      0.6464    0.7703
+                0.3333      0.5820    0.5556      0.4557    0.5771
+                0.2000      0.4512    0.4288      0.2845    0.3772
+                0.1000      0.3192    0.3025      0.1462    0.2004
+   a -> 1 and b -> 1 mean NO separation (the mixture is just a monodisperse pack);
+   a -> 0 and b -> 0 mean ideal Furnas filling. A refit that RAISES these at
+   moderate ratios is saying frictional spheres fill less well than the textbook
+   functions -- which were calibrated on concrete aggregates -- assume.
+
+=== TRANSFER: the continuous families, no point of which is in the fit ===
+   family        CV  phi_meas  textbook  /scale    refit  /scale
+   lognormal    0.1    0.5974    0.6057    +3.9   0.6006    +1.5
+   lognormal    0.2    0.6091    0.6201    +5.2   0.6113    +1.1
+   lognormal    0.3    0.6194    0.6350    +7.4   0.6238    +2.1
+   lognormal    0.4    0.6336    0.6496    +7.6   0.6365    +1.3
+   lognormal    0.5    0.6489    0.6625    +6.4   0.6481    -0.4
+   uniform      0.1    0.5973    0.6065    +4.4   0.6009    +1.7
+   uniform      0.2    0.6048    0.6187    +6.6   0.6113    +3.1
+   uniform      0.3    0.6119    0.6251    +6.3   0.6173    +2.6
+   uniform      0.4    0.6160    0.6272    +5.3   0.6194    +1.6
+   uniform      0.5    0.6157    0.6275    +5.6   0.6197    +1.9
+   bidisperse   0.1    0.5971    0.6070    +4.7   0.5989    +0.9
+   bidisperse   0.2    0.6054    0.6201    +7.0   0.6133    +3.8
+   bidisperse   0.3    0.6112    0.6164    +2.5   0.6188    +3.6
+   bidisperse   0.4    0.6113    0.6098    -0.7   0.6111    -0.1
+   bidisperse   0.5    0.6042    0.6037    -0.2   0.6043    +0.0
+   chi2 over 15 held-out family points:  textbook    437.7   refit     63.0
+   -> (a) the functional TRANSFERS: refit/textbook = 0.14
+
+=== the contrast the project quotes, under both calibrations ===
+   family        d_meas  textbook    refit  meas/txt  meas/refit
+   lognormal    +0.0543   +0.0678  +0.0534      0.80        1.02
+   uniform      +0.0218   +0.0329  +0.0251      0.66        0.87
+   bidisperse   +0.0102   +0.0090  +0.0096      1.13        1.06
+   spread of the ratio across families (1.00 = collapse):  textbook 1.71x   refit 1.23x
+   against 4.51x for CV and 4.06x for d32 (shape_control.py).
+
+=== E1 -- is the two-exponent FORM rigid enough? per-ratio fits ===
+     ratio   n       PA       PB      chi2   per pt
+      1.25   8    2.348    2.222       1.3      0.2
+      1.50   8    1.760    2.083       2.1      0.3
+      2.00   8    1.384    1.983      20.1      2.5
+      3.00   8    0.781    1.972      48.7      6.1
+     JOINT  32    0.961    2.214     256.1      8.0
+   sum of per-ratio chi2 = 72.2; joint = 256.1; ratio = 3.55
+   -> E1 verdict: TOO RIGID (bar: joint within 2x the sum of per-ratio fits)
+   the per-ratio exponents themselves: r=1.25 -> (2.35, 2.22), r=1.50 -> (1.76, 2.08), r=2.00 -> (1.38, 1.98), r=3.00 -> (0.78, 1.97)
+
+=== E2 -- does the WIDER calibration improve the held-out family transfer? ===
+   family chi2 over 15 held-out points:
+      textbook exponents                      437.7
+      calibrated on ratios 2, 3 only           63.0
+      calibrated on ratios [1.25, 1.5, 2.0, 3.0]        34.9
+   -> E2 as predicted: the wider calibration IMPROVES the transfer.
+      (the exponents moved from (0.911, 2.122) to (0.961, 2.214))
+
+=== E1 follow-up: the interaction functions MEASURED, not assumed ===
+   E1 says the two-exponent FORM is too rigid, and it says WHERE: PA drifts
+   monotonically with ratio while PB does not. Inside the linear packing
+   structure a binary at one ratio determines TWO NUMBERS -- a(u) and b(u) at
+   u = d_fine/d_coarse -- so they can be fitted directly, per ratio, with no
+   functional form at all. Eight compositions constrain two numbers.
+        u = 1/r  a measured  a textbook  b measured  b textbook  chi2/pt
+         0.3333      0.5210      0.5820      0.5505      0.4557     6.09
+         0.5000      0.7854      0.7120      0.7471      0.6464     2.51
+         0.6667      0.9249      0.8209      0.8985      0.8075     0.26
+         0.8000      0.9904      0.8980      0.4992      0.9106     0.19
+   The two endpoints are the limits proved in mixture_model.check_limits, not
+   fitted: a = b = 1 at equal size, a = b = 0 at infinite separation.
+   monotone in u:  a True   b False
+
+   IDENTIFIABILITY, before anything is read off the table above. A fitted
+   number is worth nothing if the data does not constrain it, and the b
+   column is the one to suspect: it is non-monotone, and the two ratios
+   where it misbehaves are the ones whose composition curve barely moves.
+   Profiling each parameter with the other free, at a bar of delta chi2 = 1
+   PER POINT (the scale at which a point is fitted to its own error):
+        u = 1/r            a interval            b interval  phi span
+         0.3333      [0.500, 0.540]         [0.530, 0.570]    0.0721
+         0.5000      [0.750, 0.800]         [0.720, 0.790]    0.0277
+         0.6667      [0.900, 0.940]         [0.845, 0.930]    0.0125
+         0.8000      [0.000, 1.000]         [0.000, 1.000]    0.0037
+   An interval spanning most of [0, 1] means that parameter is NOT determined
+   at that ratio, and its fitted value is an artefact of where the optimiser
+   stopped rather than a measurement.
+
+   -> THE MEASURED-INTERACTION ROUTE IS NOT DEFENSIBLE ON THIS DATA, by the
+      rule written one paragraph above it rather than after seeing the
+      answer. The transfer is computed and printed below because a number
+      that is refused should still be visible, and it is NOT quoted
+      anywhere else. The two-exponent fit remains the reported closure.
+
+
+   TRANSFER with the MEASURED interaction functions (shape-preserving
+   interpolation in u; the four measured points plus the two proved limits):
+   family        CV  phi_meas   phi_np  /scale
+   lognormal    0.1    0.5974   0.6029    +2.6
+   lognormal    0.2    0.6091   0.6251    +7.6
+   lognormal    0.3    0.6194   0.6434   +11.4
+   lognormal    0.4    0.6336   0.6537    +9.6
+   lognormal    0.5    0.6489   0.6606    +5.6
+   uniform      0.1    0.5973   0.5989    +0.8
+   uniform      0.2    0.6048   0.6117    +3.3
+   uniform      0.3    0.6119   0.6204    +4.0
+   uniform      0.4    0.6160   0.6235    +3.6
+   uniform      0.5    0.6157   0.6240    +3.9
+   bidisperse   0.1    0.5971   0.5964    -0.3
+   bidisperse   0.2    0.6054   0.6051    -0.1
+   bidisperse   0.3    0.6112   0.6091    -1.0
+   bidisperse   0.4    0.6113   0.6088    -1.2
+   bidisperse   0.5    0.6042   0.6050    +0.4
+   chi2 over 15 held-out family points = 375.9, against
+   437.7 (textbook), 63.0 (two-ratio exponent fit).
+   ⚠ u < 1/3 is constrained ONLY by the u = 0 limit -- no binary in this
+      campaign has a ratio above 3 -- and the lognormal at CV 0.5 truncated
+      at (0.2, 5.0) contains pairs down to u = 0.04. That part of the curve is
+      interpolated between two anchors, not measured, and a ratio-5 and
+      ratio-10 block is what would fix it.
+
+=== what is NOT established ===
+   * The calibration has size ratios 2 and 3 only. A continuous PSD is a sum over
+     many pairs, most of them at ratios BELOW 2, where nothing constrains the
+     exponents and where the binary campaign already showed the textbook form is
+     worst. A ratio ladder (1.25, 1.5, 5, 10) is what would fix that, and it is
+     the same runner with a different --ratio.
+   * beta is the same measured number in every column, so none of this tests the
+     model at a different friction; section 7 of mixture_model.py does, at the
+     textbook exponents only.
+   * Every phi here is read at ONE pressure rung. Nothing says the interaction
+     functions are pressure-independent, and this campaign cannot say it.

@@ -1,0 +1,132 @@
+=== mixture_model.py -- the shift as a PAIRWISE-FILLING FUNCTIONAL ===
+
+=== 0. the model's own limits, computed rather than asserted ===
+   K = 1 returns beta; ratio -> 1 returns beta at every composition; and
+   ratio -> inf reproduces the closed-form Furnas branches at two different
+   exponent pairs, so the ideal limit is a property of the RATIO, not a
+   limit of the fitted exponents. ALL LIMITS PASS.
+
+=== 1. beta is MEASURED, not fitted ===
+   monodisperse phi, lognormal   0.5947 +- 0.0010  (n = 3)
+   monodisperse phi, uniform     0.5940 +- 0.0010  (n = 3)
+   monodisperse phi, bidisperse  0.5940 +- 0.0010  (n = 3)
+   -> beta = 0.5947 (the lognormal CV = 0 cell). The three families agree
+      to 0.0007, which is one check that CV = 0 is CV = 0.
+   grading scale PHI_SCALE = 2.1e-03: the protocol's own run-to-run
+   non-determinism, NOT the seed sem (~2e-04), which is 10x smaller than the
+   reproducibility of the thing being modelled.
+
+=== 2. discretisation: is K = 160 enough? ===
+   lognormal  cv 0.2  K = 10..160: 0.62009 0.62010 0.62010 0.62008 0.62007   last step -0.00001
+   lognormal  cv 0.5  K = 10..160: 0.66495 0.66436 0.66351 0.66284 0.66247   last step -0.00037
+   uniform    cv 0.2  K = 10..160: 0.61848 0.61867 0.61872 0.61873 0.61873   last step +0.00000
+   uniform    cv 0.5  K = 10..160: 0.62693 0.62732 0.62756 0.62755 0.62755   last step -0.00000
+   -> the lognormal CV = 0.5 value converges slowest; the K = 80 -> 160 step is
+      the systematic to carry and it is below PHI_SCALE.
+
+=== 3. THE ZERO-PARAMETER MODEL. Nothing is fitted: beta is measured and the
+    exponents are held at the textbook values PA = 1.02, PB = 1.50 ===
+   family        CV     X_s  ratio  phi_meas  phi_model    resid  /scale
+   lognormal    0.0       -      -    0.5947     0.5947  +0.0000    +0.0
+   lognormal    0.1       -      -    0.5974     0.6057  +0.0082    +3.9
+   lognormal    0.2       -      -    0.6091     0.6201  +0.0110    +5.2
+   lognormal    0.3       -      -    0.6194     0.6350  +0.0156    +7.4
+   lognormal    0.4       -      -    0.6336     0.6496  +0.0159    +7.6
+   lognormal    0.5       -      -    0.6489     0.6625  +0.0135    +6.4
+   uniform      0.0       -      -    0.5940     0.5947  +0.0007    +0.3
+   uniform      0.1       -      -    0.5973     0.6065  +0.0092    +4.4
+   uniform      0.2       -      -    0.6048     0.6187  +0.0139    +6.6
+   uniform      0.3       -      -    0.6119     0.6251  +0.0132    +6.3
+   uniform      0.4       -      -    0.6160     0.6272  +0.0112    +5.3
+   uniform      0.5       -      -    0.6157     0.6275  +0.0118    +5.6
+   bidisperse   0.0   0.500   1.00    0.5940     0.5947  +0.0007    +0.3
+   bidisperse   0.1   0.354   1.22    0.5971     0.6070  +0.0100    +4.7
+   bidisperse   0.2   0.229   1.50    0.6054     0.6201  +0.0147    +7.0
+   bidisperse   0.3   0.135   1.86    0.6112     0.6164  +0.0052    +2.5
+   bidisperse   0.4   0.073   2.33    0.6113     0.6098  -0.0015    -0.7
+   bidisperse   0.5   0.036   3.00    0.6042     0.6037  -0.0005    -0.2
+
+=== 4. the two things no descriptor could do ===
+   measured  bidisperse peaks at CV = 0.4  [0.5940 0.5971 0.6054 0.6112 0.6113 0.6042]
+   measured  family order at CV = 0.5, smallest phi first: ['bidisperse', 'uniform', 'lognormal']
+   model     bidisperse peaks at CV = 0.2  [0.5947 0.6070 0.6201 0.6164 0.6098 0.6037]
+   model     family order at CV = 0.5, smallest phi first: ['bidisperse', 'uniform', 'lognormal']
+   -> the model has BOTH: an interior maximum on the bidisperse path, and the
+      right family order at matched CV. No monotone function of a single
+      descriptor can have the first (shape_control.py, fifteen tried).
+
+=== 5. the CONTRAST the project quotes, CV 0 -> 0.5 ===
+   family        d_meas  d_model  meas/model
+   lognormal    +0.0543  +0.0678        0.80
+   uniform      +0.0218  +0.0329        0.66
+   bidisperse   +0.0102  +0.0090        1.13
+   -> a collapsing model gives the SAME ratio for all three families.
+      spread = 1.71x, against 4.51x for CV and 4.06x for d32
+      (shape_control.py) -- and with the same number of fitted parameters
+      as those had: ZERO.
+
+=== 6. THE NULL: the same bookkeeping with the size ratio DELETED ===
+   both fitted on the same 5 non-trivial bidisperse points, both with 2
+   free parameters, both scaled by PHI_SCALE:
+     real model  PA = 0.900  PB = 3.154    chi2(fitted set) =      7.02
+     blind null  a  = 0.559  b  = 0.939    chi2(fitted set) =     16.67
+     real model: HELD OUT on 10 uniform+lognormal points, chi2 =    159.94, worst -8.9 scale at ('lognormal', 0.5)
+     blind null: HELD OUT on 10 uniform+lognormal points, chi2 =    588.66, worst -18.6 scale at ('lognormal', 0.5)
+   -> the null is calibrated on the same data with the same freedom, and it can
+      still see how the volume SPLITS between coarser and finer classes. What it
+      cannot see is how big the size gaps are, which is the claim under test.
+
+=== 7. does the SAME zero-parameter model work at mu_p = 0? ===
+   beta(mu_p = 0) = 0.6413   (vs 0.5947 at mu_p = 0.3)
+   family        CV  phi_meas  phi_model  /scale
+   lognormal    0.0    0.6413     0.6413    +0.0
+   lognormal    0.1    0.6456     0.6523    +3.2
+   lognormal    0.2    0.6539     0.6667    +6.1
+   lognormal    0.3    0.6664     0.6816    +7.2
+   lognormal    0.4    0.6822     0.6960    +6.6
+   lognormal    0.5    0.6966     0.7088    +5.8
+   uniform      0.0    0.6412     0.6413    +0.0
+   uniform      0.1    0.6443     0.6532    +4.2
+   uniform      0.2    0.6536     0.6658    +5.8
+   uniform      0.3    0.6608     0.6725    +5.6
+   uniform      0.4    0.6628     0.6747    +5.7
+   uniform      0.5    0.6669     0.6751    +3.9
+   -> the interaction functions are GEOMETRIC, so only beta should carry the
+      friction. Whether that survives is what this block measures; it is a
+      claim that can fail, not a restatement.
+
+=== 8. THE BLIND PREDICTION, for PREREG_MIXTURE_2026-09-13.md ===
+   phi at FIXED size ratio across the fines volume fraction -- a region where
+   this project has no data at all. The bidisperse family reaches X_s = 0.036 at
+   ratio 3, which is the far right-hand tail of this curve and nothing else.
+   size ratio 2.0:
+         X_s  zero-param   fitted  blind null
+        0.00      0.5947   0.5947      0.5947
+        0.05      0.6034   0.6043      0.6081
+        0.10      0.6123   0.6143      0.6083
+        0.15      0.6215   0.6186      0.6075
+        0.20      0.6310   0.6172      0.6068
+        0.25      0.6408   0.6157      0.6060
+        0.30      0.6509   0.6143      0.6052
+        0.40      0.6506   0.6114      0.6037
+        0.60      0.6308   0.6057      0.6007
+        0.80      0.6122   0.6002      0.5977
+        1.00      0.5947   0.5947      0.5947
+   size ratio 3.0:
+         X_s  zero-param   fitted  blind null
+        0.00      0.5947   0.5947      0.5947
+        0.05      0.6074   0.6083      0.6081
+        0.10      0.6206   0.6225      0.6083
+        0.15      0.6345   0.6374      0.6075
+        0.20      0.6489   0.6531      0.6068
+        0.25      0.6641   0.6497      0.6060
+        0.30      0.6800   0.6457      0.6052
+        0.40      0.6854   0.6379      0.6037
+        0.60      0.6522   0.6228      0.6007
+        0.80      0.6221   0.6084      0.5977
+        1.00      0.5947   0.5947      0.5947
+
+   The three columns SEPARATE by construction of the experiment, which is what
+   makes it worth running: the pairwise model puts a large interior maximum near
+   X_s ~ 0.3, the blind null cannot put the maximum anywhere the size ratio
+   says, and no filling at all is a flat line at beta.

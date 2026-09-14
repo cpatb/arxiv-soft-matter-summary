@@ -1,0 +1,157 @@
+=== grade_mixture.py -- PREREG_MIXTURE_2026-09-13.md, N = 1500 ===
+   123 cells, 0 errors, 0 non-converged, grading scale PHI_SCALE = 2.1e-03
+
+=== M0 -- REPRODUCTION, bit-identity (registered as |dphi| < 1e-12) ===
+   (a) the anchor cell is BidispersePSD(cv = 0.5) reached the other way:
+      seed 1: new 0.60847727576562238  old 0.60847727576562238  |dphi| = 0.000e+00
+      seed 2: new 0.60610273235531054  old 0.60610273235531054  |dphi| = 0.000e+00
+      seed 3: new 0.59800894860360432  old 0.59800894860360432  |dphi| = 0.000e+00
+   (b) both endpoints are monodisperse at d = 1 and must agree with each other:
+      seed 1: |x0 - x1| = 0.000e+00   |r3 - r2 at x0| = 0.000e+00
+      seed 2: |x0 - x1| = 0.000e+00   |r3 - r2 at x0| = 0.000e+00
+      seed 3: |x0 - x1| = 0.000e+00   |r3 - r2 at x0| = 0.000e+00
+   (c) and against the existing CV = 0 lognormal cells -- SAME inputs entirely:
+      seed 1: |dphi| = 0.000e+00
+      seed 2: |dphi| = 0.000e+00
+      seed 3: |dphi| = 2.103e-03
+      -> 1 of 3 seeds differ, worst 2.10e-03. This is
+         NOT counted as an M0 failure: it is the protocol's own documented
+         non-determinism, which analyse_phase2.load_all reports at a median
+         2.1e-03 and finds ONLY at cv = 0. Measuring 2.1e-03 here from a
+         completely separate campaign is an independent confirmation of the
+         number PHI_SCALE was set from, arrived at by a gate written to test
+         something else. (a) and (b) are the parts that bind.
+   -> M0 PASS
+
+=== the measurement: phi at fixed size ratio, across composition ===
+      r       X_s      phi     sem  n  cv_real  n_minor  d_max/L  gradable
+    1.2  0.000000   0.5940  0.0010  3   0.0000        0    0.097       yes
+    1.2  0.050000   0.5939  0.0011  3   0.0593      140    0.099       yes
+    1.2  0.100000   0.5951  0.0004  3   0.0793      267    0.100       yes
+    1.2  0.150000   0.5972  0.0004  3   0.0920      384    0.102       yes
+    1.2  0.200000   0.5970  0.0015  3   0.1005      492    0.103       yes
+    1.2  0.250000   0.5953  0.0006  3   0.1061      591    0.104       yes
+    1.2  0.300000   0.5964  0.0007  3   0.1096      683    0.106       yes
+    1.2  0.400000   0.5976  0.0011  3   0.1118      652    0.108       yes
+    1.2  0.600000   0.5974  0.0002  3   0.1024      382    0.113       yes
+    1.2  1.000000   0.5940  0.0010  3   0.0000        0    0.097       yes
+    1.5  0.000000   0.5940  0.0010  3   0.0000        0    0.097       yes
+    1.5  0.050000   0.5970  0.0010  3   0.1255      226    0.101       yes
+    1.5  0.100000   0.6006  0.0006  3   0.1633      409    0.104       yes
+    1.5  0.150000   0.6033  0.0015  3   0.1841      560    0.108       yes
+    1.5  0.200000   0.6026  0.0006  3   0.1959      686    0.111       yes
+    1.5  0.250000   0.6069  0.0012  3   0.2020      706    0.113       yes
+    1.5  0.300000   0.6071  0.0006  3   0.2041      613    0.116       yes
+    1.5  0.400000   0.6095  0.0009  3   0.2000      462    0.121       yes
+    1.5  0.600000   0.6049  0.0011  3   0.1713      247    0.131       yes
+    1.5  1.000000   0.5940  0.0010  3   0.0000        0    0.097       yes
+    2.0  0.000000   0.5940  0.0010  3   0.0000        0    0.097       yes
+    2.0  0.050000   0.6040  0.0012  3   0.2679      444    0.107       yes
+    2.0  0.100000   0.6114  0.0021  3   0.3264      706    0.116       yes
+    2.0  0.150000   0.6194  0.0006  3   0.3483      622    0.123       yes
+    2.0  0.200000   0.6222  0.0020  3   0.3536      500    0.130       yes
+    2.0  0.250000   0.6295  0.0018  3   0.3499      409    0.136       yes
+    2.0  0.300000   0.6304  0.0013  3   0.3411      339    0.142       yes
+    2.0  0.400000   0.6317  0.0008  3   0.3150      237    0.152       yes
+    2.0  0.600000   0.6232  0.0005  3   0.2471      115    0.168       yes
+    2.0  1.000000   0.5940  0.0010  3   0.0000        0    0.097       yes
+    3.0  0.000000   0.5940  0.0010  3   0.0000        0    0.097       yes
+    3.0  0.035714   0.6042  0.0032  3   0.5000      750    0.121       yes
+    3.0  0.050000   0.6139  0.0004  3   0.5392      620    0.128       yes
+    3.0  0.100000   0.6274  0.0016  3   0.5774      375    0.149       yes
+    3.0  0.150000   0.6469  0.0025  3   0.5622      260    0.165       yes
+    3.0  0.200000   0.6616  0.0029  3   0.5332      194    0.178       yes
+    3.0  0.250000   0.6677  0.0006  3   0.5000      150    0.190       yes
+    3.0  0.300000   0.6763  0.0011  3   0.4665      119    0.201       yes
+    3.0  0.400000   0.6741  0.0006  3   0.4042       79    0.219       yes
+    3.0  0.600000   0.6495  0.0009  3   0.2921       36    0.248   NO (M5)
+    3.0  1.000000   0.5940  0.0010  3   0.0000        0    0.097       yes
+
+=== M1 -- THE MATCHED PAIR. Same ratio, same number CV, different composition ===
+   A: r = 3, X_s = 0.035714, cv_realised = 0.500000, phi = 0.6042 +- 0.0032 (n=3)
+   B: r = 3, X_s = 0.250000, cv_realised = 0.500000, phi = 0.6677 +- 0.0006 (n=3)
+   the two CVs agree to 5.55e-17; the size ratio, d_max/d_min, d95/d05,
+   number span and the number of atoms are IDENTICAL by construction.
+   MEASURED  dphi = +0.0635 +- 0.0032  (+30.2 scale, +19.7 se)
+   predicted: descriptor account +0.0000, filling account +0.0604
+   candidate separation = 18.7 measurement errors (the rule refuses to call a test informative below 1.6)
+   -> M1 PASS: 30.2 scale against a bar of 5.0, sign positive as predicted.
+      the filling account predicted +0.0604 and the measurement is +0.0635, i.e. 5% off a ZERO-PARAMETER prediction.
+
+=== M2 -- an interior maximum exists; M3 -- where it is (reported, not graded) ===
+   r = 3: endpoints 0.5940, maximum 0.6763 at X_s = 0.30, excess +0.0823 (+39.2 scale)  -> PASS
+   r = 2: endpoints 0.5940, maximum 0.6317 at X_s = 0.40, excess +0.0377 (+18.0 scale)  -> PASS
+   M3, the peak POSITION: measured r=3 at X_s=0.30, r=2 at X_s=0.40
+   against zero-parameter model r=3 at 0.40 and r=2 at 0.30, fitted 0.20 / 0.15.
+   Reported only: the grid spacing (0.05) is coarser than the model's own
+   uncertainty in the peak position, so this cannot separate them.
+
+=== M4 -- THE SIZE RATIO MATTERS, which the blind null denies ===
+   peak excess over beta: r = 3 gives +0.0823, r = 2 gives +0.0377, difference +0.0446 (+21.2 scale)
+   zero-parameter prediction: +0.0907 vs +0.0562. The size-ratio-blind null
+   predicts the SAME curve at both ratios, i.e. a difference of exactly 0.
+   -> M4 PASS against a bar of 3.0 scale.
+
+=== the negative, now from WITHIN a single two-atom family ===
+   Every point below is a binary at ONE size ratio. If CV were the control
+   parameter, phi would be a function of cv_realised alone on each block.
+   r = 3:  cv 0.0000->phi 0.5940  cv 0.0000->phi 0.5940  cv 0.4042->phi 0.6741  cv 0.4665->phi 0.6763  cv 0.5000->phi 0.6677  cv 0.5000->phi 0.6042  cv 0.5332->phi 0.6616  cv 0.5392->phi 0.6139  cv 0.5622->phi 0.6469  cv 0.5774->phi 0.6274
+      closest-in-CV pair (dcv = 0.0000): X_s 0.250 and 0.036 give phi 0.6677 and 0.6042, apart by 0.0635 (30 scale)
+      phi monotone in cv_realised on this block: False
+   r = 2:  cv 0.0000->phi 0.5940  cv 0.0000->phi 0.5940  cv 0.2471->phi 0.6232  cv 0.2679->phi 0.6040  cv 0.3150->phi 0.6317  cv 0.3264->phi 0.6114  cv 0.3411->phi 0.6304  cv 0.3483->phi 0.6194  cv 0.3499->phi 0.6295  cv 0.3536->phi 0.6222
+      closest-in-CV pair (dcv = 0.0114): X_s 0.400 and 0.100 give phi 0.6317 and 0.6114, apart by 0.0202 (10 scale)
+      phi monotone in cv_realised on this block: False
+
+=== the model against the measurement, point by point ===
+   beta = 0.5947 (measured). zero-param PA = 1.02, PB = 1.50 (textbook).
+   fitted-on-bidisperse PA = 0.900, PB = 3.154; blind null a = 0.559, b = 0.939.
+      r     X_s  phi_meas  zero-par  /scale   fitted  /scale    null  /scale
+    1.2    0.05    0.5939    0.5977    +1.8   0.5961    +1.1  0.6081    +6.8
+    1.2    0.10    0.5951    0.6008    +2.7   0.5960    +0.5  0.6083    +6.3
+    1.2    0.15    0.5972    0.6039    +3.2   0.5960    -0.6  0.6075    +4.9
+    1.2    0.20    0.5970    0.6071    +4.8   0.5959    -0.5  0.6068    +4.7
+    1.2    0.25    0.5953    0.6103    +7.1   0.5958    +0.2  0.6060    +5.1
+    1.2    0.30    0.5964    0.6102    +6.6   0.5957    -0.3  0.6052    +4.2
+    1.2    0.40    0.5976    0.6079    +4.9   0.5956    -1.0  0.6037    +2.9
+    1.2    0.60    0.5974    0.6034    +2.9   0.5953    -1.0  0.6007    +1.6
+    1.5    0.05    0.5970    0.6001    +1.4   0.6009    +1.9  0.6081    +5.3
+    1.5    0.10    0.6006    0.6055    +2.3   0.6015    +0.4  0.6083    +3.7
+    1.5    0.15    0.6033    0.6111    +3.7   0.6012    -1.0  0.6075    +2.0
+    1.5    0.20    0.6026    0.6168    +6.8   0.6008    -0.9  0.6068    +2.0
+    1.5    0.25    0.6069    0.6226    +7.5   0.6004    -3.1  0.6060    -0.4
+    1.5    0.30    0.6071    0.6284   +10.2   0.6000    -3.4  0.6052    -0.9
+    1.5    0.40    0.6095    0.6239    +6.8   0.5992    -4.9  0.6037    -2.8
+    1.5    0.60    0.6049    0.6138    +4.2   0.5977    -3.4  0.6007    -2.0
+    2.0    0.05    0.6040    0.6034    -0.3   0.6043    +0.2  0.6081    +2.0
+    2.0    0.10    0.6114    0.6123    +0.4   0.6143    +1.3  0.6083    -1.5
+    2.0    0.15    0.6194    0.6215    +1.0   0.6186    -0.3  0.6075    -5.6
+    2.0    0.20    0.6222    0.6310    +4.2   0.6172    -2.4  0.6068    -7.3
+    2.0    0.25    0.6295    0.6408    +5.4   0.6157    -6.5  0.6060   -11.2
+    2.0    0.30    0.6304    0.6509    +9.8   0.6143    -7.7  0.6052   -12.0
+    2.0    0.40    0.6317    0.6506    +9.0   0.6114    -9.7  0.6037   -13.3
+    2.0    0.60    0.6232    0.6308    +3.6   0.6057    -8.3  0.6007   -10.7
+    3.0    0.04    0.6042    0.6037    -0.2   0.6043    +0.1  0.6042    -0.0
+    3.0    0.05    0.6139    0.6074    -3.1   0.6083    -2.7  0.6081    -2.8
+    3.0    0.10    0.6274    0.6206    -3.2   0.6225    -2.3  0.6083    -9.1
+    3.0    0.15    0.6469    0.6345    -5.9   0.6374    -4.5  0.6075   -18.7
+    3.0    0.20    0.6616    0.6489    -6.0   0.6531    -4.1  0.6068   -26.1
+    3.0    0.25    0.6677    0.6641    -1.7   0.6497    -8.6  0.6060   -29.4
+    3.0    0.30    0.6763    0.6800    +1.8   0.6457   -14.6  0.6052   -33.8
+    3.0    0.40    0.6741    0.6854    +5.4   0.6379   -17.3  0.6037   -33.5
+   chi2 over 32 gradable interior points, in PHI_SCALE units:
+      zero         826.0   (per point    25.8)
+      fitted       972.0   (per point    30.4)
+      null        5159.3   (per point   161.2)
+   The zero-parameter column had NOTHING fitted to this campaign; the fitted one
+   was calibrated on the bidisperse family before this campaign existed; the null
+   had the same two free parameters and the same calibration set.
+
+=== where the zero-parameter model is wrong, which is the useful part ===
+   r = 3: residual (meas - model) runs -0.0113 to +0.0127, mean +0.0034 (+1.6 scale)
+   r = 2: residual (meas - model) runs -0.0206 to +0.0006, mean -0.0087 (-4.2 scale)
+   -> the model OVER-credits filling at the smaller ratio and is close at the
+      larger one. That is the same defect the pre-registration named in advance
+      from the family path (its bidisperse maximum sits at CV 0.2 where the
+      measurement puts it at CV 0.4), now measured directly and with a sign.
+
+FAILURES: []

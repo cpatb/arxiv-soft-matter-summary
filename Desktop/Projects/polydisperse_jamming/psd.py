@@ -383,8 +383,159 @@ class BidispersePSD:
     radii_for_yade = LogNormalPSD.radii_for_yade
 
 
+@dataclass(frozen=True)
+class BinaryPSD:
+    """A two-atom PSD parameterised by SIZE RATIO and FINES VOLUME FRACTION.
+
+    ADDED 2026-09-13 for PREREG_MIXTURE_2026-09-13.md. `BidispersePSD` is also a
+    two-atom distribution, but it is a ONE-parameter family: 50:50 by NUMBER at
+    d10*(1 -/+ CV), which ties the size ratio and the composition together. Writing the
+    fines VOLUME fraction as (1-CV)^3/[(1-CV)^3 + (1+CV)^3] shows the path it traces --
+    ratio 1.00 -> 3.00 while the fines volume collapses 0.500 -> 0.036 -- so the whole
+    family lives in the fines-poor corner and never visits the composition where a
+    filling model puts its optimum. That is why the CV = 0.5 bidisperse packs WORST of
+    the three families despite having the largest size ratio, and it is why the
+    "interstitial picture is refuted" reading of that fact does not follow.
+
+    This class separates the two axes. `ratio` = d_large/d_small; `x_small` is the
+    fraction of the SOLID VOLUME carried by the small atom. The number fraction follows:
+
+        n_s = x_s * r^3 / (1 - x_s + x_s * r^3)
+
+    and the small diameter is set so the NUMBER mean is exactly `d10`, which is the
+    normalisation every other family in this module uses.
+
+    `cv` is a DERIVED property here, not an input -- the realised number CV of a binary
+    is fixed once (ratio, x_small) are. It is exposed so a record built from this family
+    carries a CV that means the same thing as every other record's.
+
+    ANCHOR, checked in test_psd.py: at ratio 3 and x_small = 0.03571... this family must
+    reproduce `BidispersePSD(cv = 0.5)` exactly, because that is the same distribution
+    reached along the other parameterisation.
+    """
+
+    d10: float
+    ratio: float
+    x_small: float
+
+    def __post_init__(self) -> None:
+        if self.d10 <= 0:
+            raise ValueError(f"d10 must be > 0 m, got {self.d10}")
+        if self.ratio < 1.0:
+            raise ValueError(f"ratio = d_large/d_small must be >= 1, got {self.ratio}")
+        if not (0.0 <= self.x_small <= 1.0):
+            raise ValueError(f"x_small must be in [0, 1], got {self.x_small}")
+
+    @property
+    def n_small(self) -> float:
+        """NUMBER fraction of the small atom."""
+        if self.ratio == 1.0:
+            return 1.0
+        xs = self.x_small
+        r3 = self.ratio ** 3
+        den = 1.0 - xs + xs * r3
+        return float(xs * r3 / den)
+
+    @property
+    def d_small(self) -> float:
+        ns = self.n_small
+        return float(self.d10 / (ns + (1.0 - ns) * self.ratio))
+
+    @property
+    def d_large(self) -> float:
+        return float(self.ratio * self.d_small)
+
+    def moment(self, n: int) -> float:
+        ns = self.n_small
+        return float(ns * self.d_small ** n + (1.0 - ns) * self.d_large ** n)
+
+    @property
+    def cv(self) -> float:
+        """Realised NUMBER coefficient of variation -- derived, not chosen."""
+        m1 = self.moment(1)
+        var = self.moment(2) - m1 * m1
+        return float(np.sqrt(max(var, 0.0)) / m1)
+
+    @property
+    def d32(self) -> float:
+        return self.moment(3) / self.moment(2)
+
+    @property
+    def d43(self) -> float:
+        return self.moment(4) / self.moment(3)
+
+    @property
+    def d50(self) -> float:
+        """Median diameter: whichever atom holds the 50th number percentile."""
+        return float(self.d_small if self.n_small >= 0.5 else self.d_large)
+
+    def sample(self, n: int, rng: np.random.Generator, *, truncate=None) -> np.ndarray:
+        """Draw `n` diameters. `truncate` is accepted and IGNORED: already bounded.
+
+        The split is EXACT (round(n_small * n) small grains), not binomial, so the
+        realised composition does not fluctuate with the seed -- the composition is the
+        control variable of this campaign and a binomial draw would blur the axis being
+        measured. Only the POSITIONS are random between seeds, exactly as for
+        `BidispersePSD`.
+        """
+        if n <= 0:
+            raise ValueError(f"n must be > 0, got {n}")
+        if self.ratio == 1.0 or self.x_small <= 0.0 or self.x_small >= 1.0:
+            d = self.d10 if self.ratio == 1.0 else (
+                self.d_small if self.x_small >= 1.0 else self.d_large)
+            return np.full(n, float(d), dtype=float)
+        k = int(round(self.n_small * n))
+        k = min(max(k, 1), n - 1)           # never produce an empty phase
+        out = np.concatenate([np.full(k, self.d_small),
+                              np.full(n - k, self.d_large)])
+        rng.shuffle(out)
+        return out
+
+    realised_moments = LogNormalPSD.realised_moments
+    radii_for_yade = LogNormalPSD.radii_for_yade
+
+
+def parse_binary_family(family: str) -> tuple[float, float] | None:
+    """Decode "binary:r<RATIO>:x<X_SMALL>" -> (ratio, x_small), or None.
+
+    The two parameters are encoded in the family STRING rather than added to
+    `make_psd`'s signature because `family` is already a string in every record on
+    disk and in every caller (`packing.insert_packing`, `shear.py`,
+    `analyse_phase2.load_all`), so this adds a family without touching the schema or
+    any existing record. The price is that the string must be parsed strictly: an
+    unparsable one RAISES rather than falling through to a default, because a silent
+    default here would put a cell of the wrong composition into the campaign.
+    """
+    if not family.startswith("binary:"):
+        return None
+    parts = family.split(":")
+    if len(parts) != 3 or not parts[1].startswith("r") or not parts[2].startswith("x"):
+        raise ValueError(
+            f"malformed binary family {family!r}; expected 'binary:r<RATIO>:x<X_SMALL>'")
+    try:
+        ratio = float(parts[1][1:])
+        x_small = float(parts[2][1:])
+    except ValueError as exc:
+        raise ValueError(f"malformed binary family {family!r}: {exc}") from exc
+    return ratio, x_small
+
+
 def make_psd(family: str, d10: float, cv: float):
-    """Factory. `family` is "lognormal", "uniform" or "bidisperse"."""
+    """Factory. `family` is "lognormal", "uniform", "bidisperse", or a binary spec.
+
+    A binary spec is "binary:r<RATIO>:x<X_SMALL>", e.g. "binary:r3.0:x0.30". For that
+    family `cv` is DERIVED from (ratio, x_small) and the `cv` argument is ignored --
+    passing a non-zero one is a caller error and raises, so a record can never claim a
+    CV the distribution does not have.
+    """
+    binary = parse_binary_family(family)
+    if binary is not None:
+        ratio, x_small = binary
+        if cv not in (0.0, None):
+            raise ValueError(
+                f"the binary family derives its CV from (ratio, x_small); pass cv=0.0, "
+                f"got cv={cv}. The realised CV is recorded as `cv_realised`.")
+        return BinaryPSD(d10=d10, ratio=ratio, x_small=x_small)
     if family == "lognormal":
         return LogNormalPSD(d10=d10, cv=cv)
     if family == "uniform":
@@ -392,7 +543,8 @@ def make_psd(family: str, d10: float, cv: float):
     if family == "bidisperse":
         return BidispersePSD(d10=d10, cv=cv)
     raise ValueError(
-        f"unknown PSD family {family!r}; use 'lognormal', 'uniform' or 'bidisperse'")
+        f"unknown PSD family {family!r}; use 'lognormal', 'uniform', 'bidisperse' "
+        f"or 'binary:r<RATIO>:x<X_SMALL>'")
 
 
 def summarise_cv_ladder(d10: float, cvs, phi: float) -> str:
