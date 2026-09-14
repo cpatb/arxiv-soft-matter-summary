@@ -58,10 +58,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import time
 
-from packing import build_and_compress
+from measure import rattler_by_class
+from packing import build_and_compress, contact_graph
 from psd import BinaryPSD
 
 OUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
@@ -160,6 +162,16 @@ def main() -> int:
             st = build_and_compress(cv=0.0, mu_p=args.mu, p_hat=P_HAT, n=ncell, seed=seed,
                                     family=fam, truncate=None, verbose=True)
             rec = json.loads(st.to_json())
+            # Size-resolved structure, read off the SAME scene while it is still live
+            # (build_and_compress resets Yade at its start, not its end). The split is
+            # the geometric mean of the two design diameters, so for a binary it is
+            # exact. Recorded for every cell; graded only where PREREG_MIXTURE_EXT
+            # registers a prediction.
+            from yade import O                    # noqa: PLC0415 - WSL only
+            counts, neigh, _ = contact_graph(O)
+            diam = {b.id: 2.0 * float(b.shape.radius) for b in O.bodies if b is not None}
+            rec["by_class"] = rattler_by_class(counts, neigh, diam,
+                                               d_split=math.sqrt(psd.d_small * psd.d_large))
             rec["key"] = key
             rec["mix_ratio"] = ratio
             rec["x_small_vol"] = x

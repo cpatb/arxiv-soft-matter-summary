@@ -194,6 +194,66 @@ def rattler_report(counts: dict[int, int], neigh: dict[int, set[int]],
     return out
 
 
+def rattler_by_class(counts: dict[int, int], neigh: dict[int, set[int]],
+                     diameters: dict[int, float], d_split: float,
+                     thresholds=RATTLER_THRESHOLDS) -> dict[str, float]:
+    """Rattler fraction and coordination resolved into TWO size classes for a binary.
+
+    Grains with diameter < `d_split` are "small", the rest "large". For a binary pack
+    `d_split` is the geometric mean of the two design diameters, so the split is exact
+    and does not depend on binning. Everything returned is per class:
+
+      n_S, n_L                       grain counts (n_S + n_L = N)
+      vol_S                          volume fraction of the solid carried by the small class
+      rat_S_k{k}, rat_L_k{k}         rattler fraction BY NUMBER within each class
+      ratvol_k{k}                    rattler fraction BY VOLUME over the whole pack
+      z_S, z_L                       mean contact count per class (all grains)
+      z_SS, z_SL, z_LS, z_LL         mean number of small/large neighbours per small/large grain
+      nc_SS, nc_SL, nc_LL            contact counts by pair type (each contact once)
+
+    This exists because the pairwise-filling mechanism makes a prediction the pooled
+    rattler fraction cannot test: on the coarse-dominant branch the small grains sit in
+    the interstices of a load-bearing large skeleton, so `rat_S` is high and `rat_L`
+    low; on the fine-dominant branch the large grains are inclusions in a small-grain
+    matrix and BOTH classes carry load. The pooled fraction is number-weighted and so
+    reads the small class almost exclusively, which is why it peaks away from the
+    density maximum.
+    """
+    ids = sorted(counts)
+    if not ids or d_split <= 0.0:
+        return {"n_S": 0, "n_L": 0}
+    small = {i for i in ids if diameters[i] < d_split}
+    large = set(ids) - small
+    vol = {i: diameters[i] ** 3 for i in ids}          # pi/6 cancels in every ratio
+    vtot = sum(vol.values())
+    out: dict[str, float] = {"n_S": len(small), "n_L": len(large),
+                             "vol_S": sum(vol[i] for i in small) / vtot}
+
+    for k in thresholds:
+        rat = iterated_rattlers(counts, neigh, min_contacts=k)
+        rs, rl = rat & small, rat & large
+        out[f"rat_S_k{k}"] = len(rs) / len(small) if small else float("nan")
+        out[f"rat_L_k{k}"] = len(rl) / len(large) if large else float("nan")
+        out[f"ratvol_k{k}"] = sum(vol[i] for i in rat) / vtot
+
+    def _mean(cls: set[int], sel) -> float:
+        if not cls:
+            return float("nan")
+        return sum(sum(1 for nb in neigh.get(i, ()) if sel(nb)) for i in cls) / len(cls)
+
+    out["z_S"] = _mean(small, lambda nb: True)
+    out["z_L"] = _mean(large, lambda nb: True)
+    out["z_SS"] = _mean(small, lambda nb: nb in small)
+    out["z_SL"] = _mean(small, lambda nb: nb in large)
+    out["z_LS"] = _mean(large, lambda nb: nb in small)
+    out["z_LL"] = _mean(large, lambda nb: nb in large)
+    # each undirected contact appears in two adjacency sets; halve the same-class sums
+    out["nc_SS"] = int(round(sum(1 for i in small for nb in neigh.get(i, ()) if nb in small) / 2))
+    out["nc_LL"] = int(round(sum(1 for i in large for nb in neigh.get(i, ()) if nb in large) / 2))
+    out["nc_SL"] = int(sum(1 for i in small for nb in neigh.get(i, ()) if nb in large))
+    return out
+
+
 def spanning_cluster(neigh: dict[int, set[int]], members: set[int]) -> dict[str, float]:
     """Largest connected component of the load-bearing network, as a fraction.
 

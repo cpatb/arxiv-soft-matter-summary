@@ -1,0 +1,141 @@
+=== grade_mixture_ext.py -- PREREG_MIXTURE_EXT_2026-09-14.md ===
+   beta = 0.5947 (measured, mu_p 0.3); calibration set 32 binary points at ratios [1.25, 1.5, 2.0, 3.0]
+   per-ratio (PA, PB): r1.25 (2.348, 2.222), r1.50 (1.760, 2.083), r2.00 (1.384, 1.983), r3.00 (0.781, 1.972)
+   J = 0.961, 2.214;  R3 = 0.781, 1.972;  EXT: PA(u) = -0.287 + 3.226 u, PB(u) = 1.759 + 0.531 u
+
+=== blind predictions (section 3) ===
+      r   X_s        J       R3      EXT    ideal  J-EXT/scale
+    4.0  0.00   0.5947   0.5947   0.5947   0.5947          0.0
+    4.0  0.05   0.6102   0.6115   0.6139   0.6260         -1.8
+    4.0  0.10   0.6265   0.6294   0.6345   0.6608         -3.8
+    4.0  0.15   0.6438   0.6483   0.6565   0.6996         -6.0
+    4.0  0.20   0.6620   0.6684   0.6800   0.7434         -8.6
+    4.0  0.25   0.6813   0.6898   0.7053   0.7929        -11.4
+    4.0  0.30   0.6997   0.7087   0.7119   0.8302         -5.8
+    4.0  1.00   0.5947   0.5947   0.5947   0.5947          0.0
+    5.0  0.00   0.5947   0.5947   0.5947   0.5947          0.0
+    5.0  0.05   0.6118   0.6131   0.6170   0.6260         -2.5
+    5.0  0.10   0.6300   0.6326   0.6410   0.6608         -5.2
+    5.0  0.15   0.6493   0.6535   0.6670   0.6996         -8.4
+    5.0  1.00   0.5947   0.5947   0.5947   0.5947          0.0
+
+=== data: 39 records from 24 shard files -> 13 compositions ===
+   admitted 39 of 39
+   ratio-3 seed means available at X_s = [0.035714, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4]
+
+=== X0 -- monodisperse controls ===
+   r4 X_s 0: phi 0.5940 +- 0.0018 (n 3)  vs beta 0.5947: -0.3 scale
+   r4 X_s 1: phi 0.5940 +- 0.0018 (n 3)  vs beta 0.5947: -0.3 scale
+   r5 X_s 0: phi 0.5940 +- 0.0018 (n 3)  vs beta 0.5947: -0.3 scale
+   r5 X_s 1: phi 0.5940 +- 0.0018 (n 3)  vs beta 0.5947: -0.3 scale
+   -> X0 PASS (bar 2.0 scale)
+
+=== X1 -- blind transfer of the shipped closure J ===
+      r   X_s      phi      sd  n        J  res/scale       R3    res      EXT    res
+    4.0  0.05   0.6166  0.0027  3   0.6102        3.1   0.6115    2.4   0.6139    1.3
+    4.0  0.10   0.6370  0.0058  3   0.6265        5.0   0.6294    3.6   0.6345    1.2
+    4.0  0.15   0.6650  0.0061  3   0.6438       10.1   0.6483    8.0   0.6565    4.1
+    4.0  0.20   0.6918  0.0028  3   0.6620       14.2   0.6684   11.1   0.6800    5.6
+    4.0  0.25   0.6970  0.0040  3   0.6813        7.5   0.6898    3.5   0.7053   -3.9
+    4.0  0.30   0.7081  0.0021  3   0.6997        4.0   0.7087   -0.3   0.7119   -1.8
+    5.0  0.05   0.6135  0.0048  3   0.6118        0.8   0.6131    0.2   0.6170   -1.7
+    5.0  0.10   0.6461  0.0025  3   0.6300        7.7   0.6326    6.4   0.6410    2.4
+    5.0  0.15   0.6621  0.0054  3   0.6493        6.1   0.6535    4.1   0.6670   -2.3
+   J: rms 7.50 (bar 4.0), max |res| 14.19 (bar 6.7), mean signed +6.48, 9 of 9 positive
+   R3: rms 5.54, max |res| 11.15, mean signed +4.33  (reported, not graded here)
+   EXT: rms 3.06, max |res| 5.62, mean signed +0.53  (reported, not graded here)
+   -> X1 FAIL
+
+=== X2 -- which way does the form bend? (J vs EXT on the 3 separated points) ===
+   points ((4.0, 0.2), (4.0, 0.25), (5.0, 0.15)); J-EXT separations 8.6, 11.4, 8.4 scale
+   J residuals +14.2, +7.5, +6.1 -> rms 9.91
+   EXT residuals +5.6, -3.9, -2.3 -> rms 4.18
+   winner EXT by rms ratio 2.37 (bar 1.6); registered prediction: EXT
+   -> X2 INFORMATIVE, PASS
+
+=== X3 -- the maximum keeps rising with ratio ===
+   r4 max 0.7081 at X_s 0.30; r3 max 0.6763 at X_s 0.30; difference +15.1 scale (bar >= 3.0)
+   step 0.00->0.05: +10.8 +- 0.9 scale (J predicted +7.4)
+   step 0.05->0.10: +9.7 +- 1.8 scale (J predicted +7.8)
+   step 0.10->0.15: +13.3 +- 2.3 scale (J predicted +8.2)
+   step 0.15->0.20: +12.8 +- 1.8 scale (J predicted +8.7)
+   step 0.20->0.25: +2.5 +- 1.3 scale (J predicted +9.2)
+   step 0.25->0.30: +5.2 +- 1.2 scale (J predicted +8.8)
+   -> X3 FAIL
+
+=== X4 -- ratio ordering at fixed composition (model-free) ===
+   X_s 0.05: r5 0.6135  r4 0.6166  r3 0.6139   r5-r4 -1.5 (se 1.5, J predicts +0.8)  r4-r3 +1.3 scale  VIOLATED/ok
+   X_s 0.10: r5 0.6461  r4 0.6370  r3 0.6274   r5-r4 +4.3 (se 1.7, J predicts +1.6)  r4-r3 +4.6 scale  ok/ok
+   X_s 0.15: r5 0.6621  r4 0.6650  r3 0.6469   r5-r4 -1.4 (se 2.2, J predicts +2.6)  r4-r3 +8.6 scale  VIOLATED/ok
+   -> X4 FAIL (4 of 6)
+
+=== X5 -- size-resolved structure (exploratory; k = 2 primary, all k printed) ===
+      r   X_s   n_S  n_L  rat_S  rat_L  ratvol  pooled   z_S   z_L  z_LL  z_LS  z_SL  z_SS sd zLL
+    4.0  0.00     0 1500    nan  0.040   0.040   0.040   nan  4.91  4.91  0.00   nan   nan   0.06
+    4.0  0.05  1157  343  0.969  0.035   0.082   0.755  0.09  5.12  4.84  0.28  0.08  0.01   0.05
+    4.0  0.10  1315  185  0.961  0.045   0.137   0.848  0.11  5.30  4.59  0.70  0.10  0.01   0.14
+    4.0  0.15  1378  122  0.935  0.016   0.154   0.860  0.19  6.11  4.30  1.82  0.16  0.03   0.09
+    4.0  0.20  1412   88  0.888  0.011   0.187   0.836  0.36  7.50  4.02  3.48  0.22  0.14   0.06
+    4.0  0.25  1433   67  0.841  0.015   0.222   0.804  0.55  8.84  3.76  5.07  0.24  0.32   0.16
+    4.0  0.30  1447   53  0.532  0.006   0.163   0.513  1.75 17.22  3.26 13.96  0.51  1.24   0.17
+    4.0  1.00  1500    0  0.040    nan   0.040   0.040  4.91   nan   nan   nan  0.00  4.91    nan
+    5.0  0.00     0 1500    nan  0.040   0.040   0.040   nan  4.91  4.91  0.00   nan   nan   0.06
+    5.0  0.05  1302  198  0.986  0.025   0.073   0.859  0.04  5.15  4.92  0.23  0.03  0.00   0.10
+    5.0  0.10  1399  101  0.976  0.023   0.118   0.912  0.07  5.55  4.75  0.80  0.06  0.01   0.07
+    5.0  0.15  1435   65  0.974  0.056   0.194   0.934  0.07  5.57  4.29  1.29  0.06  0.01   0.06
+    5.0  1.00  1500    0  0.040    nan   0.040   0.040  4.91   nan   nan   nan  0.00  4.91    nan
+   rat_S / rat_L at k = 3 and k = 4:
+   r4 X_s 0.05: k3 0.982/0.049  k4 0.999/0.764
+   r4 X_s 0.10: k3 0.977/0.054  k4 1.000/1.000
+   r4 X_s 0.15: k3 0.959/0.030  k4 1.000/0.986
+   r4 X_s 0.20: k3 0.919/0.023  k4 1.000/1.000
+   r4 X_s 0.25: k3 0.888/0.020  k4 1.000/1.000
+   r4 X_s 0.30: k3 0.611/0.006  k4 1.000/1.000
+   r5 X_s 0.05: k3 0.993/0.027  k4 0.999/0.715
+   r5 X_s 0.10: k3 0.987/0.040  k4 1.000/0.779
+   r5 X_s 0.15: k3 0.988/0.077  k4 1.000/1.000
+   (a) rat_S > rat_L at every interior X_s, both ratios: PASS
+   (b) rat_L <= 0.1 everywhere: PASS (max 0.056)
+   (c) z_LL non-increasing at r4: PASS; drop 0.05->0.30 = +1.58 vs seed sd 0.05: PASS
+   (d) pooled rattler_frac_k2 peaks at X_s 0.15, density max at 0.30: PASS
+   X5 is exploratory: recorded, not in FAILURES.
+
+=== registered analysis (section 5): direct per-ratio (a, b) at six u ===
+       r      u  n       a       b    chi2          a[lo,hi]          b[lo,hi]
+    1.25  0.800  8   0.990   0.499     1.5   [0.000, 1.000]   [0.000, 1.000]   fine-branch pts 0   ** b: 0 fine-branch points -> upper bound only
+    1.50  0.667  8   0.925   0.899     2.1   [0.900, 0.940]   [0.845, 0.930]   fine-branch pts 2
+    2.00  0.500  8   0.785   0.747    20.1   [0.750, 0.800]   [0.720, 0.790]   fine-branch pts 2
+    3.00  0.333  8   0.521   0.551    48.7   [0.500, 0.540]   [0.530, 0.570]   fine-branch pts 2
+    4.00  0.250  6   0.301   0.480    45.8   [0.280, 0.325]   [0.465, 0.490]   fine-branch pts 2
+    5.00  0.200  3   0.294   0.680    12.9   [0.190, 0.280]   [0.695, 0.715]   fine-branch pts 0   ** a: best fit OUTSIDE its own interval (cusp); b: best fit OUTSIDE its own interval (cusp); b: 0 fine-branch points -> upper bound only
+   shipped forms at the same u:  a = sqrt(1-(1-u)^PA), b = 1-(1-u)^PB with J:
+   r1.25: a 0.887  b 0.972
+   r1.50: a 0.808  b 0.912
+   r2.00: a 0.697  b 0.785
+   r3.00: a 0.568  b 0.593
+   r4.00: a 0.492  b 0.471
+   r5.00: a 0.439  b 0.390
+
+=== registered analysis (section 5): tabulated a(u), b(u) -> the three continuous families ===
+   identifiable u (both intervals < 0.25 wide and containing the best fit): 0.250, 0.333, 0.500, 0.667; plus the proved limits u = 0, 1
+   monotone in u:  a True   b True
+   family        CV  phi_meas  textbook  refit23        J      tab tab/scale
+   lognormal    0.1    0.5974    0.6057   0.6006   0.5997   0.5977      +0.1
+   lognormal    0.2    0.6091    0.6201   0.6113   0.6096   0.6042      -2.3
+   lognormal    0.3    0.6194    0.6350   0.6238   0.6212   0.6130      -3.1
+   lognormal    0.4    0.6336    0.6496   0.6365   0.6333   0.6236      -4.8
+   lognormal    0.5    0.6489    0.6625   0.6481   0.6444   0.6345      -6.9
+   uniform      0.1    0.5973    0.6065   0.6009   0.6000   0.5978      +0.2
+   uniform      0.2    0.6048    0.6187   0.6113   0.6094   0.6031      -0.8
+   uniform      0.3    0.6119    0.6251   0.6173   0.6152   0.6077      -2.0
+   uniform      0.4    0.6160    0.6272   0.6194   0.6171   0.6101      -2.8
+   uniform      0.5    0.6157    0.6275   0.6197   0.6175   0.6106      -2.4
+   bidisperse   0.1    0.5971    0.6070   0.5989   0.5983   0.6001      +1.5
+   bidisperse   0.2    0.6054    0.6201   0.6133   0.6115   0.6051      -0.1
+   bidisperse   0.3    0.6112    0.6164   0.6188   0.6177   0.6089      -1.1
+   bidisperse   0.4    0.6113    0.6098   0.6111   0.6105   0.6084      -1.4
+   bidisperse   0.5    0.6042    0.6037   0.6043   0.6040   0.6050      +0.4
+   chi2 over 15 held-out family points: textbook 437.7, two-ratio refit 63.0, J 34.9, tabulated 108.1
+   (record, mixture_closure.txt: textbook 437.7, refit 63.0, tabulated-at-four-u 375.9)
+
+FAILURES: ['X1', 'X3', 'X4']
