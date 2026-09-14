@@ -1,0 +1,98 @@
+=== transfer_shear.py -- the filling closure on the SHEAR protocol ===
+    shear source: out/constp_ratematch.txt, grade_constp_rm.py (R1-R5), N = 1000
+    NOT a pre-registered gate: both datasets were on disk before this ran.
+
+=== the one input that changes ===
+   beta_iso   = 0.594687   (isotropic compression, p_hat 1e-3, N 1500, mu_p 0.3, n 3)
+   beta_shear = 0.591127   (constant-pressure rate-matched shear, N 1000, n 6, sd 1.02e-03)
+   difference = -1.7 isotropic scale (-0.003560). The two betas are NOT the same number, which is
+   why the closure is re-based rather than transplanted.
+   Everything else is held FIXED: J = (PA 0.9614, PB 2.2144); TAB at u = 0.250, 0.333, 0.500, 0.667.
+   Nothing is refitted. No bar is moved. No shear point enters any fit.
+
+=== absolute phi_c: measured vs predicted ===
+      CV  phi_c meas        sd         J       TAB   J-meas  TAB-meas   (in shear sd)
+     0.0    0.591127  1.02e-03  0.591127  0.591127  +0.0000   +0.0000   J +0.0, TAB +0.0
+     0.2    0.601989  1.31e-03  0.606021  0.600619  +0.0040   -0.0014   J +3.1, TAB -1.0
+     0.5    0.644447  4.34e-03  0.640836  0.630965  -0.0036   -0.0135   J -0.8, TAB -3.1
+   (CV 0 is beta_shear by construction and is not a test -- it is the input.)
+
+=== THE HEADLINE QUANTITY: Delta phi_c(CV) ===
+   This is what the project quotes, and it is the right comparison: it removes
+   beta from both sides, so the N = 1000 vs 1500 difference and the
+   compression-endpoint vs steady-state difference cancel to first order.
+      CV    d_meas       sd       d_J     d_TAB    J err  TAB err     in shear sd
+     0.2   +0.0109 6.79e-04   +0.0149   +0.0095  +0.0040  -0.0014   J +5.9, TAB -2.0
+     0.5   +0.0533 1.82e-03   +0.0497   +0.0398  -0.0036  -0.0135   J -2.0, TAB -7.4
+   sd column is the standard error of the DIFFERENCE (both pooled means), not
+   the per-cell sd -- lessons.md 2026-09-02.
+
+=== CONTROL at the MATCHED PRESSURE (the correct comparator) ===
+   🔴 An earlier version of this file used only the p_hat = 1e-3 isotropic
+   ladder as its control. That is the pressure the CLOSURE is calibrated at, but
+   NOT the pressure the shear protocol runs at (p* ~ 3e-4) -- so it compared a
+   shear result against an isotropic result taken at a different pressure, when a
+   pressure-matched isotropic ladder already exists in this campaign and is used
+   by grade_constp_rm.py's own R4. Found by the physics-referee pass, 2026-09-14.
+   Both controls are printed below; the MATCHED one is the comparator.
+   phi_iso(p* = 3e-4), N = 1500, mu_p 0.3: CV 0.0 -> 0.583314, CV 0.1 -> 0.587465, CV 0.2 -> 0.595639, CV 0.3 -> 0.610790, CV 0.4 -> 0.623910, CV 0.5 -> 0.641608
+      CV    d_meas     d_TAB  % captured
+     0.1   +0.0042   +0.0030         73 %
+     0.2   +0.0123   +0.0095         77 %
+     0.3   +0.0275   +0.0183         66 %
+     0.4   +0.0406   +0.0289         71 %
+     0.5   +0.0583   +0.0398         68 %
+   Against the shear protocol's 87 % / 75 %, the MATCHED isotropic control
+   is what the protocol comparison has to be read against -- not the
+   1e-3 numbers printed below, which are at the closure's calibration
+   pressure and are kept only because the closure was fitted there.
+
+=== the UNMATCHED p_hat = 1e-3 ladder, kept for continuity, NOT the comparator ===
+   Same code, same exponents, beta_iso instead of beta_shear. If the shear
+   residual is much worse than this one, the protocol is the cause; if it is
+   the same size, the closure's known family error is, and the shear transfer
+   has added nothing.
+      CV   phi meas         J       TAB    J res  TAB res   (isotropic scale 2.1e-3)
+     0.0   0.594687  0.594687  0.594687     +0.0     +0.0
+     0.2   0.609110  0.609586  0.604189     +0.2     -2.3
+     0.5   0.648937  0.644415  0.634547     -2.2     -6.9
+
+=== READING ===
+   The two protocols are compared on Delta phi_c, in each protocol's OWN units:
+   CV 0.2: shear measured +0.0109, TAB predicts +0.0095 -- the model gets 87 % of the measured shift
+   CV 0.5: shear measured +0.0533, TAB predicts +0.0398 -- the model gets 75 % of the measured shift
+   CV 0.2: ISOTROPIC measured +0.0144, TAB predicts +0.0095 -- 66 % of the measured shift
+   CV 0.5: ISOTROPIC measured +0.0543, TAB predicts +0.0399 -- 73 % of the measured shift
+
+   A model that captures a similar FRACTION of the shift on both protocols has
+   a shape that transfers and a magnitude that is wrong on both; a model that
+   captures very different fractions has a protocol dependence in its shape.
+   Which of those it is, is read off the two lines above -- not asserted here.
+
+=== HOW SENSITIVE IS THE PREDICTION TO beta AT ALL? ===
+   The whole transfer turns on re-basing the closure from beta_iso to
+   beta_shear. If the PREDICTED Delta phi barely moves when beta does, then the
+   re-basing is not what is being tested and saying 'the closure transfers'
+   would credit it for something it did not do. Measured, not assumed:
+      CV   d_pred(beta_iso)  d_pred(beta_shear)     change   as a fraction of the shear measurement se
+     0.2          +0.009503           +0.009492  -0.000011                                       0.02
+     0.5          +0.039860           +0.039838  -0.000023                                       0.01
+   d(Delta_pred)/d(beta) = +0.003 and +0.006: the predicted
+   shift is nearly INDEPENDENT of beta, so changing beta by the whole
+   0.0036 between protocols moves the prediction by ~1e-4, which is
+   a few per cent of the measurement's own standard error.
+
+   CONSEQUENCE, and it weakens the reading above: this comparison CANNOT FAIL
+   through the re-basing, because the re-basing does essentially nothing. What
+   it actually compares is ONE fixed model prediction against TWO different
+   measurements. So the honest statement is NOT 'the closure transfers across
+   protocols' -- it is:
+     (1) the closure's predicted Delta phi is protocol-BLIND to 1e-4;
+     (2) the two protocols' MEASURED Delta phi differ from each other (isotropic
+         +0.0144 vs shear +0.0109 at CV 0.2), and the single prediction sits
+         between them;
+     (3) it under-predicts BOTH, by 13-34 %, which is the same direction and a
+         similar size to the ternary's non-additivity residual.
+   A test of whether the SHAPE is protocol-dependent would have to move
+   something the prediction is actually sensitive to, and beta is not it.
+

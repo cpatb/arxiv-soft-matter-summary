@@ -1,0 +1,100 @@
+=== predict_ternary.py -- blind predictions for PREREG_TERNARY_2026-09-14.md ===
+
+   beta = 0.594687  (measured monodisperse phi, mu_p 0.3, p_hat 1e-03, N 1500; n = 3 cells, sem 9.69e-04)
+   PHI_SCALE = 2.1e-03 (declared in mixture_model.py, the protocol's own reproducibility -- NOT the seed sem)
+   binary calibration points: 32 at ratios [1.25, 1.5, 2.0, 3.0] (mixr block)
+                              41 at ratios [1.25, 1.5, 2.0, 3.0, 4.0, 5.0] (mixr + extr blocks)
+
+   J   (the SHIPPED two-exponent closure, fitted on the mixr binaries): PA = 0.9614, PB = 2.2144
+   TAB (the tabulated/nonparametric closure of grade_mixture_ext section 5),
+        identifiable (a, b) at u = 0.2500 -> (0.3010, 0.4796), 0.3333 -> (0.5210, 0.5505), 0.5000 -> (0.7854, 0.7471), 0.6667 -> (0.9249, 0.8985); plus the proved limits (0,0) at u=0 and (1,1) at u=1, joined by PCHIP
+
+=== the pairs this ladder exercises (u = d_fine/d_coarse) ===
+         pair       u      a_J      b_J    a_TAB    b_TAB    |da|    |db|
+          1-2  0.5000   0.6975   0.7845   0.7854   0.7471  0.0880  0.0375
+          2-4  0.5000   0.6975   0.7845   0.7854   0.7471  0.0880  0.0375
+          1-4  0.2500   0.4916   0.4712   0.3010   0.4796  0.1906  0.0084
+   Both u values lie INSIDE the binary calibration range (u = 0.20 to 0.80), so
+   the interaction VALUES are interpolated, not extrapolated. What is new is
+   that three pairs act at once. This is the additivity question and nothing else.
+
+=== admissibility (registered BEFORE the run, not applied after it) ===
+   MIN_PHASE_COUNT = 50 grains, inherited verbatim from phase12_mixture.py
+      y_L   y_M   y_S   n_L   n_M   n_S  d_L/d_S     CV     d32  d_max/L  family string
+     0.60  0.25  0.15    74   246  1180     4.00 0.5443  1.7941   0.2097  discrete:d1.0/2.0/4.0:y0.15/0.25/0.6
+     0.55  0.30  0.15    66   287  1147     4.00 0.5246  1.7281   0.2116  discrete:d1.0/2.0/4.0:y0.15/0.3/0.55
+     0.55  0.35  0.10    84   431   985     4.00 0.5259  1.6645   0.1950  discrete:d1.0/2.0/4.0:y0.1/0.35/0.55
+     0.65  0.20  0.15    82   203  1215     4.00 0.5649  1.8654   0.2079  discrete:d1.0/2.0/4.0:y0.15/0.2/0.65
+     0.70  0.20  0.10   121   276  1103     4.00 0.5983  1.8710   0.1873  discrete:d1.0/2.0/4.0:y0.1/0.2/0.7
+     0.60  0.30  0.10    96   383  1021     4.00 0.5487  1.7279   0.1923  discrete:d1.0/2.0/4.0:y0.1/0.3/0.6
+     0.50  0.30  0.20    48   229  1223     4.00 0.4923  1.6864   0.2281  discrete:d1.0/2.0/4.0:y0.2/0.3/0.5   <-- REFUSED, minority phase too small
+   compositions registered: 6; refused: 1 [(0.5, 0.3, 0.2)]
+
+=== in-sample residuals on the BINARY calibration set (the bars' origin) ===
+   A ternary must be predicted AS WELL AS the binaries the closure was
+   calibrated on. Anything else is a bar invented for this block.
+      J on its OWN calibration set, ratios <= 3:
+        n = 32, rms 2.83, max |res| 6.69, mean signed +0.28, 19 of 32 positive
+      J on all binaries incl. r = 4, 5 (outside its validity):
+        n = 41, rms 4.31, max |res| 14.19, mean signed -1.21, 19 of 41 positive
+    TAB on all binaries (it is fitted per ratio):
+        n = 41, rms 2.02, max |res| 5.74, mean signed +0.15, 20 of 41 positive
+   The ternary ladder's pairs are u = 0.50 and u = 0.25. u = 0.25 is r = 4, the
+   ratio X1 found J UNDER-predicts by +7.5 rms, so J is the CONTROL here and TAB
+   is the primary candidate: TAB is the only one calibrated where this block sits.
+
+=== the NON-ADDITIVE alternative: SEQUENTIAL (nested-binary) filling ===
+   The additive model sums an interaction over every pair. The oldest
+   alternative in the powder literature is SEQUENTIAL: the two coarsest classes
+   pack first, and the finest class then fills the voids of that COMPOSITE as
+   if it were one medium. It uses the SAME measured binary closure, adds NO free
+   parameter, and reduces EXACTLY to the binary closure at K = 2 -- so the
+   binary calibration cannot tell the two apart, which is precisely why a
+   ternary is the cheapest test that can.
+   It needs ONE convention: what diameter the composite presents to the fines.
+   That convention is a knob, so BOTH defensible choices are computed and the
+   test is declared not informative if they bracket the additive prediction.
+      y_L   y_M   y_S  ADD(TAB)  SEQ d32  SEQ d43  (SEQd32-ADD)  (SEQd43-ADD)
+     0.60  0.25  0.15    0.6562   0.6863   0.6961         +14.4         +19.0
+     0.55  0.30  0.15    0.6525   0.6851   0.6949         +15.6         +20.2
+     0.55  0.35  0.10    0.6449   0.6644   0.6704          +9.3         +12.1
+     0.65  0.20  0.15    0.6599   0.6816   0.6902         +10.3         +14.4
+     0.70  0.20  0.10    0.6558   0.6608   0.6659          +2.4          +4.8
+     0.60  0.30  0.10    0.6485   0.6704   0.6767         +10.4         +13.4
+   ADDITIVE vs SEQUENTIAL separation, in scale: min 4.8, median 13.9, max 20.2
+
+=== BLIND PREDICTIONS ===
+      y_L   y_M   y_S        J      TAB    ideal   J-beta  TAB-beta  (J-TAB)/scale
+     0.60  0.25  0.15   0.6591   0.6562   0.9072    +30.7     +29.3           +1.4
+     0.55  0.30  0.15   0.6560   0.6525   0.9072    +29.2     +27.5           +1.7
+     0.55  0.35  0.10   0.6452   0.6449   0.8783    +24.1     +23.9           +0.1
+     0.65  0.20  0.15   0.6623   0.6599   0.9072    +32.2     +31.1           +1.2
+     0.70  0.20  0.10   0.6545   0.6558   0.8496    +28.5     +29.1           -0.6
+     0.60  0.30  0.10   0.6483   0.6485   0.9054    +25.5     +25.6           -0.1
+     1.00  0.00  0.00   0.5947   0.5947   0.5947     +0.0      +0.0           +0.0
+
+=== CANDIDATE SEPARATION ===
+   |J - TAB| over the six compositions, in units of PHI_SCALE = 2.1e-03:
+      min 0.11   median 0.90   max 1.66   rms 1.04
+   The n = 3 seed sd on a binary cell of this block is ~1.0-2.0 scale, so the standard error of a three-seed mean is ~0.6-1.2 scale.
+   REGISTERED RULE (same form as X2 in PREREG_MIXTURE_EXT): the comparison of
+   J against TAB is declared NOT INFORMATIVE unless the rms residual ratio
+   loser/winner reaches 1.6. That is a statement about the OUTCOME, and it is
+   separate from the statement about the DESIGN, which is the number above:
+   the two candidates' predictions differ by 1.04 scale in rms. A
+   separation below ~2 scale cannot be resolved by three seeds, so T1/T2 below
+   are graded against beta and against each other's SIGN, not only their rms.
+
+=== what each outcome means (written before any cell ran) ===
+   ADDITIVE:      the ternary residual is the size the binary residual is, and
+                  its SIGN is not systematically positive. The closure's
+                  trouble with the continuous families is then a calibration
+                  problem at small u, not an additivity failure.
+   NON-ADDITIVE:  the ternary is UNDER-PREDICTED, in the same direction as the
+                  continuous families (measured phi above predicted phi), by
+                  more than the bar. Three pairs acting together fill better
+                  than the sum of their separate effects.
+   The continuous-family under-prediction the block is chasing: TAB misses the
+   lognormal by -6.9 scale at CV 0.5 (measured ABOVE predicted), held-out chi2
+   108.1 against J's 34.9.
+

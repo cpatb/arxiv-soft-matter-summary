@@ -45,6 +45,10 @@ __all__ = [
     "LogNormalPSD",
     "UniformPSD",
     "BidispersePSD",
+    "BinaryPSD",
+    "DiscretePSD",
+    "parse_binary_family",
+    "parse_discrete_family",
     "make_psd",
     "lognormal_skewness",
     "moment_ratio_d32_d10",
@@ -495,6 +499,227 @@ class BinaryPSD:
     radii_for_yade = LogNormalPSD.radii_for_yade
 
 
+@dataclass(frozen=True)
+class DiscretePSD:
+    """A K-atom PSD given as DIAMETER RATIOS and VOLUME fractions.
+
+    ADDED 2026-09-14 for PREREG_TERNARY_2026-09-14.md. `BinaryPSD` answers "what does
+    composition do at one size ratio"; this class answers the question that follows from
+    it -- **is the filling functional PAIRWISE-ADDITIVE?** The closure built in
+    `mixture_closure.py` sums an interaction over every PAIR of classes, so a THREE-class
+    pack is the cheapest object whose prediction depends on that sum containing more than
+    one term. A binary can never test additivity, because it has one pair.
+
+    Parameters
+    ----------
+    d10    : number-mean particle DIAMETER [m] -- the normalisation every family uses
+    d_rel  : RELATIVE diameters, any positive scale (only their ratios matter)
+    y      : VOLUME fraction carried by each class; normalised internally to sum 1
+
+    Number fractions follow from the volume fractions and the cube law:
+
+        n_i  proportional to  y_i / d_i^3
+
+    and the absolute scale is then set so that the NUMBER mean is exactly `d10`.
+
+    ORDER. The two sequences are paired POSITION BY POSITION as given, then sorted
+    ASCENDING in diameter internally. Sampling emits classes in that ascending order and
+    then shuffles, which is what makes the two-class case bit-identical to `BinaryPSD`
+    (which emits [small..., large...] and shuffles with the same generator).
+
+    ANCHOR, checked in `test_psd.py` and as a gate in `PREREG_TERNARY_2026-09-14.md`:
+    `DiscretePSD(d10, [1, r], [x_s, 1-x_s])` must return the SAME radii array, element
+    for element, as `BinaryPSD(d10, ratio=r, x_small=x_s)` from the same seed. Not "the
+    same to within scatter" -- the same array. A gate that can only be passed by the two
+    code paths being the same code is worth more than one passed by two numbers agreeing,
+    and this one is free.
+    """
+
+    d10: float
+    d_rel: tuple[float, ...]
+    y: tuple[float, ...]
+
+    def __post_init__(self) -> None:
+        if self.d10 <= 0:
+            raise ValueError(f"d10 must be > 0 m, got {self.d10}")
+        d = np.asarray(self.d_rel, dtype=float)
+        y = np.asarray(self.y, dtype=float)
+        if d.ndim != 1 or d.size < 1:
+            raise ValueError(f"d_rel must be a non-empty 1-D sequence, got {self.d_rel!r}")
+        if y.shape != d.shape:
+            raise ValueError(
+                f"d_rel and y must have the same length, got {d.size} and {y.size}")
+        if np.any(d <= 0):
+            raise ValueError(f"all relative diameters must be > 0, got {self.d_rel!r}")
+        if np.any(y < 0):
+            raise ValueError(f"volume fractions must be >= 0, got {self.y!r}")
+        if not y.sum() > 0:
+            raise ValueError(f"volume fractions must sum to > 0, got {self.y!r}")
+        if np.unique(d).size != d.size:
+            raise ValueError(f"relative diameters must be distinct, got {self.d_rel!r}")
+
+    # ---- derived class table --------------------------------------------------
+
+    @property
+    def _table(self) -> tuple[np.ndarray, np.ndarray]:
+        """(diameters [m], NUMBER fractions), sorted ASCENDING in diameter.
+
+        Classes carrying zero volume are DROPPED here rather than kept with a zero
+        count, so a composition with a zero entry is exactly the lower-K pack it is,
+        and the bit-identity anchor holds at the binary endpoints too.
+
+        TWO ARITHMETIC CHOICES BELOW ARE NOT COSMETIC. The first version of this method
+        wrote the number weight as `y / d**3` and the number fractions as `w / w.sum()`,
+        which is the same quantity in exact arithmetic and a DIFFERENT float: the
+        bit-identity gate in `check_discrete_psd.py` failed at 1e-16 on 3 of 8 cases,
+        and 1e-16 in `d_small` is enough to make a DEM packing a different packing (the
+        same trap `phase12_mixture.py` records for a 6-decimal family string). So:
+
+          * the weight is `y * (d_max/d_i)^3`, which for two classes at (1, r) gives
+            `(x_s r^3, 1 - x_s)` -- the exact numerator and denominator `BinaryPSD`
+            forms, and float addition is commutative so the sums agree to the bit;
+          * the LAST (coarsest) class takes `1 - sum(rest)` rather than its own
+            normalised weight, which is how `BinaryPSD` writes `1 - n_small`. It also
+            makes the fractions sum to 1.0 exactly, and it is the same
+            remainder-to-the-last-class rule `class_counts` uses.
+        """
+        d = np.asarray(self.d_rel, dtype=float)
+        y = np.asarray(self.y, dtype=float)
+        keep = y > 0
+        d, y = d[keep], y[keep]
+        order = np.argsort(d)
+        d, y = d[order], y[order]
+        w = y * (d[-1] / d) ** 3           # number weight, up to a common factor
+        nf = w / w.sum()
+        nf[-1] = 1.0 - float(np.sum(nf[:-1]))
+        if nf[-1] <= 0.0:
+            raise ValueError(
+                f"the coarsest class has a non-positive number fraction {nf[-1]!r}; "
+                f"the composition {self.y!r} at diameters {self.d_rel!r} is too "
+                f"coarse-poor to represent")
+        scale = self.d10 / float(np.sum(nf * d))
+        return d * scale, nf
+
+    @property
+    def diameters(self) -> np.ndarray:
+        return self._table[0]
+
+    @property
+    def number_fractions(self) -> np.ndarray:
+        return self._table[1]
+
+    @property
+    def volume_fractions(self) -> np.ndarray:
+        """Volume fractions of the SURVIVING classes, in ascending-diameter order."""
+        d, nf = self._table
+        v = nf * d**3
+        return v / v.sum()
+
+    @property
+    def size_ratio(self) -> float:
+        """d_max / d_min."""
+        d = self.diameters
+        return float(d[-1] / d[0])
+
+    def moment(self, n: int) -> float:
+        d, nf = self._table
+        return float(np.sum(nf * d**n))
+
+    @property
+    def cv(self) -> float:
+        """Realised NUMBER coefficient of variation -- derived, not chosen."""
+        m1 = self.moment(1)
+        var = self.moment(2) - m1 * m1
+        return float(np.sqrt(max(var, 0.0)) / m1)
+
+    @property
+    def d32(self) -> float:
+        return self.moment(3) / self.moment(2)
+
+    @property
+    def d43(self) -> float:
+        return self.moment(4) / self.moment(3)
+
+    @property
+    def d50(self) -> float:
+        """Median diameter: the class holding the 50th NUMBER percentile."""
+        d, nf = self._table
+        return float(d[int(np.searchsorted(np.cumsum(nf), 0.5, side="left"))])
+
+    # ---- sampling -------------------------------------------------------------
+
+    def class_counts(self, n: int) -> np.ndarray:
+        """Grains per class for a pack of `n`, ascending in diameter. EXACT, not binomial.
+
+        The composition is the control variable of this campaign, so a binomial draw
+        would blur the very axis being measured; only the POSITIONS are random between
+        seeds. The largest-index class absorbs the rounding remainder, which is what
+        `BinaryPSD` does too (it rounds the small count and gives the rest to the large
+        class), and no class is ever left empty.
+        """
+        if n <= 0:
+            raise ValueError(f"n must be > 0, got {n}")
+        _, nf = self._table
+        k = nf.size
+        if k == 1:
+            return np.array([n], dtype=int)
+        if k > n:
+            raise ValueError(f"cannot place {k} classes in {n} grains")
+        counts = np.empty(k, dtype=int)
+        counts[:-1] = np.rint(nf[:-1] * n).astype(int)
+        counts[-1] = n - int(counts[:-1].sum())
+        # Never an empty class: move one grain from the largest count to the smallest.
+        # For K = 2 this reduces EXACTLY to BinaryPSD's min(max(k, 1), n - 1) clamp.
+        while counts.min() < 1:
+            counts[int(np.argmin(counts))] += 1
+            counts[int(np.argmax(counts))] -= 1
+        return counts
+
+    def sample(self, n: int, rng: np.random.Generator, *, truncate=None) -> np.ndarray:
+        """Draw `n` diameters. `truncate` is accepted and IGNORED: already bounded, and
+        truncating a discrete PSD would change the composition it exists to control."""
+        d, _ = self._table
+        counts = self.class_counts(n)
+        if d.size == 1:
+            return np.full(n, float(d[0]), dtype=float)
+        out = np.concatenate([np.full(c, dd) for c, dd in zip(counts, d)])
+        rng.shuffle(out)
+        return out
+
+    realised_moments = LogNormalPSD.realised_moments
+    radii_for_yade = LogNormalPSD.radii_for_yade
+
+
+def parse_discrete_family(family: str) -> tuple[tuple[float, ...], tuple[float, ...]] | None:
+    """Decode "discrete:d<D1>/<D2>/...:y<Y1>/<Y2>/..." -> (d_rel, y), or None.
+
+    Same strictness rule as `parse_binary_family`, for the same reason: a malformed
+    spec RAISES rather than falling through to a default, because a silent default here
+    would put a pack of the wrong composition into the campaign. The two lists are
+    paired position by position and must have equal length.
+
+    >>> parse_discrete_family("discrete:d1/2/4:y0.15/0.25/0.60")
+    ((1.0, 2.0, 4.0), (0.15, 0.25, 0.6))
+    """
+    if not family.startswith("discrete:"):
+        return None
+    parts = family.split(":")
+    if len(parts) != 3 or not parts[1].startswith("d") or not parts[2].startswith("y"):
+        raise ValueError(
+            f"malformed discrete family {family!r}; expected "
+            f"'discrete:d<D1>/<D2>/...:y<Y1>/<Y2>/...'")
+    try:
+        d = tuple(float(v) for v in parts[1][1:].split("/"))
+        y = tuple(float(v) for v in parts[2][1:].split("/"))
+    except ValueError as exc:
+        raise ValueError(f"malformed discrete family {family!r}: {exc}") from exc
+    if len(d) != len(y):
+        raise ValueError(
+            f"malformed discrete family {family!r}: {len(d)} diameters but "
+            f"{len(y)} volume fractions")
+    return d, y
+
+
 def parse_binary_family(family: str) -> tuple[float, float] | None:
     """Decode "binary:r<RATIO>:x<X_SMALL>" -> (ratio, x_small), or None.
 
@@ -527,7 +752,18 @@ def make_psd(family: str, d10: float, cv: float):
     family `cv` is DERIVED from (ratio, x_small) and the `cv` argument is ignored --
     passing a non-zero one is a caller error and raises, so a record can never claim a
     CV the distribution does not have.
+
+    A discrete spec is "discrete:d<D1>/<D2>/...:y<Y1>/<Y2>/...", e.g.
+    "discrete:d1/2/4:y0.15/0.25/0.60". Same rule on `cv`: derived, not chosen.
     """
+    discrete = parse_discrete_family(family)
+    if discrete is not None:
+        d_rel, y = discrete
+        if cv not in (0.0, None):
+            raise ValueError(
+                f"the discrete family derives its CV from (d_rel, y); pass cv=0.0, "
+                f"got cv={cv}. The realised CV is recorded as `cv_realised`.")
+        return DiscretePSD(d10=d10, d_rel=d_rel, y=y)
     binary = parse_binary_family(family)
     if binary is not None:
         ratio, x_small = binary

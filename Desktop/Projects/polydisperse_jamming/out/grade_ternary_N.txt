@@ -1,0 +1,55 @@
+=== grade_ternary_N.py -- PREREG_TERNARY_N_2026-09-14.md ===
+    The closure (a, b) is the SAME tabulated one, calibrated on N = 1500
+    binaries. Only beta is re-read per block. Nothing is refitted.
+
+=== data ===
+   N = 1500: 21 records read, 21 admitted, 7 compositions
+   N = 3000: 21 records read, 21 admitted, 7 compositions
+
+=== NA0 -- beta at each N, re-measured from each block's OWN control ===
+   N = 1500: monodisperse control phi = 0.593985 +- 0.001776 (n 3)
+   N = 3000: monodisperse control phi = 0.595332 +- 0.000976 (n 3)
+   isotropic lognormal CV 0 at N = 1500 (the closure's calibration beta): 0.594687
+   finite-size shift in beta itself, N 1500 -> 3000: +0.64 scale. Using the N = 1500 beta
+   for the N = 3000 arm would fold this into the quantity under test, so each
+   arm is graded against its own.
+
+=== NA1 / NA2 -- the residual at doubled N, composition held fixed ===
+      y_L   y_M   y_S  n_L@1500  res@1500  n_L@3000  res@3000   d(res)   se(d)  in bar?
+     0.60  0.25  0.15        74    +10.25       147    +10.03    -0.22    0.70      yes
+     0.55  0.30  0.15        66    +10.39       131    +11.16    +0.76    0.62      yes
+     0.55  0.35  0.10        84     +7.02       169     +8.83    +1.81    0.48       NO
+     0.65  0.20  0.15        82     +8.82       165     +9.50    +0.68    1.56      yes
+     0.70  0.20  0.10       121     +4.67       241     +5.36    +0.69    1.89      yes
+     0.60  0.30  0.10        96     +6.00       191     +7.17    +1.17    1.07      yes
+   mean residual: N 1500 +7.86 scale;  N 3000 +8.67 scale
+   rms  residual: N 1500 8.14;  N 3000 8.88
+   sign structure at N 3000: 6/6 positive
+
+   -> NA1 verdict: **NON-ADDITIVE**  (mean +8.67 against non-additive >= +4.7, finite-size <= +2.8)
+   -> NA2: 5/6 compositions agree between the two N within 2.0 se of the difference
+
+=== NA3 -- the correlation that raised the alarm, recomputed POOLED ===
+   If the residual is set by n_L, doubling n_L must move it and the pooled
+   correlation survives. If it is set by composition, the N = 3000 points sit
+   at the SAME residual with DOUBLE the n_L, which destroys the correlation.
+   `d_max/L` is read from the SOLVER's own record, not recomputed: it is the
+   second face of the same confound (spearman +1.0000 with the residual at
+   N = 1500) and doubling N multiplies it by 2^(-1/3) = 0.794.
+   within N = 1500: spearman(res, n_L) = -1.0000 (p 0.0000, n 6)
+   within N = 3000: spearman(res, n_L) = -1.0000 (p 0.0000, n 6)
+   POOLED over 12 points:      = -0.3077 (p 0.3306)
+   POOLED spearman(res, d_max/L) over 12 points = +0.3077 (p 0.3306); d_max/L spans 0.1586-0.2256 across both N
+   -> NA3: n_L is EXCLUDED as the explanation (bar |rho| 0.6)
+   NOTE the within-block correlation is expected to stay strong in BOTH blocks
+   whatever the answer, because n_L and y_S are collinear at fixed N by
+   construction. Only the POOLED number can separate them, which is the whole
+   reason the second N was run.
+
+=== NA4 -- the surviving candidate, within the N = 3000 block alone ===
+   spearman(residual@3000,  y_S) = +0.8783  (p 0.0213)
+   spearman(residual@3000,  y_M) = +0.1765  (p 0.7379)
+   spearman(residual@3000,  y_L) = -0.5591  (p 0.2488)
+   spearman(residual@3000,   CV) = -0.7143  (p 0.1108)
+   spearman(residual@3000,  d32) = -0.1429  (p 0.7872)
+

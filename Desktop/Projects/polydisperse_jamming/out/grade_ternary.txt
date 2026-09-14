@@ -1,0 +1,85 @@
+=== grade_ternary.py -- PREREG_TERNARY_2026-09-14.md ===
+   beta = 0.594687 (measured, mu_p 0.3); PHI_SCALE = 2.1e-03
+   J  PA 0.9614 PB 2.2144;  TAB at u = 0.250, 0.333, 0.500, 0.667
+
+=== REPRODUCTION GATE: the predictions this grader reads are the ones the pre-registration committed to ===
+   (a claim is reproduced from the stored artifact BEFORE anything is graded against it -- lessons.md 2026-09-02)
+   7 predictions recovered from predict_ternary.txt
+   all 7 match the stored values to 5e-5. The gate is reading the number that was committed to.
+   in-sample J (own): rms 2.83 (prereg 2.83), max 6.69 (prereg 6.69)  -> OK
+   in-sample TAB (all): rms 2.02 (prereg 2.02), max 5.74 (prereg 5.74)  -> OK
+
+=== WIRING GATE: the K=3 path reduces to the K=2 path when a class is emptied ===
+      J empty M r=4 x_s=0.1500: K3-path 0.643786449502  K2 0.643786449502  diff +0.00e+00
+    TAB empty M r=4 x_s=0.1500: K3-path 0.664342949552  K2 0.664342949552  diff +0.00e+00
+      J empty M r=4 x_s=0.2500: K3-path 0.681286442953  K2 0.681286442953  diff -1.11e-16
+    TAB empty M r=4 x_s=0.2500: K3-path 0.706453312110  K2 0.706453312110  diff +1.11e-16
+      J empty M r=4 x_s=0.1000: K3-path 0.626543070250  K2 0.626543070250  diff +0.00e+00
+    TAB empty M r=4 x_s=0.1000: K3-path 0.639379172531  K2 0.639379172531  diff +0.00e+00
+      J empty L r=2 x_s=0.4000: K3-path 0.627571257987  K2 0.627571257987  diff +0.00e+00
+    TAB empty L r=2 x_s=0.4000: K3-path 0.633665938037  K2 0.633665938037  diff +1.11e-16
+      J empty L r=2 x_s=0.3000: K3-path 0.633408922270  K2 0.633408922270  diff +0.00e+00
+    TAB empty L r=2 x_s=0.3000: K3-path 0.635606219738  K2 0.635606219738  diff +1.11e-16
+      J empty S r=2 x_s=0.3000: K3-path 0.633408922270  K2 0.633408922270  diff +0.00e+00
+    TAB empty S r=2 x_s=0.3000: K3-path 0.635606219738  K2 0.635606219738  diff +1.11e-16
+      J empty S r=2 x_s=0.4500: K3-path 0.624692591850  K2 0.624692591850  diff +0.00e+00
+    TAB empty S r=2 x_s=0.4500: K3-path 0.630223544267  K2 0.630223544267  diff +0.00e+00
+    SEQ empty M r=4 x_s=0.1500: nested 0.664342949552  K2 0.664342949552  diff +0.00e+00
+    SEQ empty M r=4 x_s=0.2500: nested 0.706453312110  K2 0.706453312110  diff +0.00e+00
+    SEQ empty M r=4 x_s=0.1000: nested 0.639379172531  K2 0.639379172531  diff +0.00e+00
+   (the emptied-middle spec also has to be the same DISTRIBUTION -- check_discrete_psd.py G6 shows the radii array is bit-identical)
+   -> WIRING PASS (17 of 17 to 1e-12: J and TAB over both ratios and all three emptyings, plus the SEQUENTIAL rule). The K=3 residuals below are not plumbing.
+
+=== data: 21 records from 12 shard files -> 7 compositions ===
+   N before the admission filter: 21; after: 21
+   errors: 0; non-converged: 0
+
+=== T0 -- monodisperse control through the DiscretePSD code path ===
+   phi 0.593985 +- 0.001776 (n 3)  vs beta 0.594687: -0.33 scale
+   -> T0 PASS (bar 2.0 scale). The block is on the production protocol and the new PSD path does not move it.
+
+=== T1 (TAB, primary) and T2 (J, control) -- the ADDITIVE prediction ===
+      y_L   y_M   y_S       phi       sd  n      TAB     res        J     res   SEQd32     res   SEQd43     res
+     0.60  0.25  0.15    0.6770   0.0009  3   0.6562    +9.9   0.6591    +8.5   0.6863    -4.5   0.6961    -9.1
+     0.55  0.30  0.15    0.6736   0.0011  3   0.6525   +10.1   0.6560    +8.4   0.6851    -5.5   0.6949   -10.1
+     0.55  0.35  0.10    0.6589   0.0008  3   0.6449    +6.7   0.6452    +6.5   0.6644    -2.6   0.6704    -5.5
+     0.65  0.20  0.15    0.6777   0.0049  3   0.6599    +8.5   0.6623    +7.3   0.6816    -1.8   0.6902    -5.9
+     0.70  0.20  0.10    0.6650   0.0068  3   0.6558    +4.3   0.6545    +5.0   0.6608    +2.0   0.6659    -0.5
+     0.60  0.30  0.10    0.6604   0.0032  3   0.6485    +5.7   0.6483    +5.8   0.6704    -4.8   0.6767    -7.7
+   residual = MEASURED - PREDICTED, in units of PHI_SCALE. POSITIVE means the model UNDER-predicts.
+
+       TAB: rms   7.83  max |res|  10.06  mean signed  +7.53  6/6 positive
+         J: rms   7.04  max |res|   8.51  mean signed  +6.92  6/6 positive
+    SEQd32: rms   3.80  max |res|   5.50  mean signed  -2.87  1/6 positive
+    SEQd43: rms   7.19  max |res|  10.15  mean signed  -6.47  0/6 positive
+
+   -> T1 FAIL: rms 7.83 vs bar 2.8, max 10.06 vs bar 5.74
+   -> T2 FAIL: rms 7.04 vs bar 4.0, max 8.51 vs bar 6.69
+      T2's outcome was registered as CARRYING NO INFORMATION about additivity: this ladder contains u = 0.25, where X1 already found J under-predicts.
+
+=== T3 -- the SIGN structure ===
+   TAB signed residuals: 6/6 positive, mean +7.53 scale (bar 2.8)
+   ADDITIVE reading (mixed signs AND |mean| <= 2.8): False
+   NON-ADDITIVE reading (6/6 positive AND mean >= +2.8): True
+   -> T3 verdict: NON-ADDITIVE
+   two-sided sign test on 6/6: p = 0.0312 (n = 6 is small; this bounds a direction, it does not measure a size)
+
+=== T4 -- ADDITIVE vs SEQUENTIAL, the two arms ===
+   TAB rms 7.83 vs SEQd32 rms 3.80: ratio loser/winner = 2.06 (bar 1.6) -> winner SEQUENTIAL (SEQd32), INFORMATIVE
+   TAB rms 7.83 vs SEQd43 rms 7.19: ratio loser/winner = 1.09 (bar 1.6) -> winner SEQUENTIAL (SEQd43), NOT INFORMATIVE
+   convention knob: the d32/d43 variants bracket the additive prediction on 0/6 compositions (registered: not informative if they do)
+
+=== T5 -- J vs TAB: PRE-DECLARED NOT INFORMATIVE ===
+   rms ratio 1.11; prediction separation was 1.04 scale, below the seed error. Printed; decides nothing. This was written in the pre-registration, not after seeing the ratio.
+
+=== T6 (exploratory, not in FAILURES) -- three-class structure ===
+   Per-DESIGN-class mean contact number and rattler fraction. A binary cannot show the MIDDLE class, which is the whole point of a ternary.
+      y_L   y_M   y_S    z_S    z_M    z_L   rat_S   rat_M   rat_L   z_nr
+     0.60  0.25  0.15   0.78   3.80  10.91   0.899   0.340   0.005   4.84
+     0.55  0.30  0.15   0.97   4.24  12.04   0.873   0.269   0.000   4.84
+     0.55  0.35  0.10   0.68   3.64  10.40   0.924   0.346   0.004   4.85
+     0.65  0.20  0.15   0.67   3.32   9.91   0.929   0.442   0.000   4.71
+     0.70  0.20  0.10   0.37   2.49   8.02   0.960   0.582   0.008   4.85
+     0.60  0.30  0.10   0.64   3.41   9.76   0.925   0.390   0.000   4.80
+
+FAILURES: ['T1', 'T2']
