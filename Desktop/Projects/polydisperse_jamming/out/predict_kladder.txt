@@ -1,0 +1,193 @@
+=== predict_kladder.py -- PREREG_KLADDER_2026-09-15.md (BLIND) ===
+   beta = 0.594687 (measured, mu_p 0.3); PHI_SCALE = 2.1e-03
+   J  PA 0.9614 PB 2.2144;  TAB knots at u = 0.250, 0.333, 0.500, 0.667
+   calibration set: 32 binary points at ratios [1.25, 1.5, 2.0, 3.0]; TAB fitted on 41 incl. r = 4, 5
+
+=== 0. WIRING GATES: every model path reduces to the path it claims to ===
+   (PREREG_TERNARY_2026-09-14 asserted one of these by inspection and it raised
+    IndexError. Nothing below is asserted; all of it is run.)
+   W1  ideal_ceiling(K=2) == mixture_model.furnas_ideal
+       12 of 12 to 1e-12 over r = 2, 3, 4 and x = 0.05-0.50
+   W2  sequential_k(K=2) == the additive binary closure: 24 of 24 to 1e-12
+   W3  sequential_k(K=3) == grade_ternary.sequential: 24 of 24 to 1e-12 (worst |diff| 1.11e-16)
+   W4  family string round-trips to the SAME floats: 23 of 23 exact
+   W5     mono string == phase12_ternary.y_string: True  discrete:d1.0/2.0/4.0:y0.0/0.0/1.0
+   W5   NA2_x6 string == phase12_ternary.y_string: True  discrete:d1.0/2.0/4.0:y0.1/0.35/0.55
+       -> those two cells are the SAME packing as the closed block's at the same
+          seed, so seeds 1-3 must reproduce them BIT-IDENTICALLY. That is the
+          cross-block gate; it costs nothing because the cells were needed anyway.
+   WIRING: PASS
+
+=== 1. the design: a geometric ladder of FIXED SPAN 4, filled in ===
+     K  P=pairs  T=triples  diameters                        pair u values
+     2        1          0  1.0000, 4.0000                   0.2500
+     3        3          1  1.0000, 2.0000, 4.0000           0.2500, 0.5000
+     4        6          4  1.0000, 1.5874, 2.5198, 4.0000   0.2500, 0.3969, 0.6300
+     5       10         10  1.0000, 1.4142, 2.0000, 2.8284, 4.0000 0.2500, 0.3536, 0.5000, 0.7071
+   worst pair ratio anywhere on the ladder: u = 0.2500 >= 1/4. That is the
+   constraint that refused d = 1, 2, 8 for the ternary block, and span 4 holds it
+   at EVERY K by construction, so additivity stays unconfounded with extrapolation.
+
+   interaction values at each pair u (INTERPOLATED, never extrapolated):
+          u      a_J      b_J    a_TAB    b_TAB    |da|    |db|   nearest TAB knots
+     0.2500   0.4916   0.4712   0.3010   0.4796  0.1906  0.0084   [0.250, 0.250]
+     0.3536   0.5853   0.6194   0.5612   0.5715  0.0241  0.0480   [0.333, 0.500]
+     0.3968   0.6205   0.6736   0.6401   0.6227  0.0197  0.0509   [0.333, 0.500]
+     0.5000   0.6975   0.7845   0.7854   0.7471  0.0880  0.0375   [0.500, 0.500]
+     0.6300   0.7845   0.8894   0.9060   0.8754  0.1215  0.0140   [0.500, 0.667]
+     0.7071   0.8324   0.9341   0.9398   0.9177  0.1074  0.0164   [0.667, 1.000]   <-- WIDEST knot gap; K=5's adjacent pair leans on it
+
+=== 1b. admissibility, applied BEFORE the run (MIN_PHASE_COUNT = 50 on EVERY class) ===
+   --- N = 1500: 20 cells, 63 runs, 4 REFUSED
+      arm         label  K    y_S       q                     n_i per class  d_max/L     CV    d32    d43
+       T0          mono  1    nan     nan                            [1500]   0.0911 0.0000  1.000  1.000
+        K     K2_yS0.03  2   0.03   2.507                        [997, 503]   0.1299 0.7059  1.829  1.948
+        K     K2_yS0.05  2   0.05   2.124                       [1157, 343]   0.1465 0.7472  2.062  2.283
+        K     K2_yS0.08  2   0.08   1.762                       [1272, 228]   0.1661 0.7399  2.214  2.581
+        K     K2_yS0.13  2   0.13   1.371                       [1358, 142]   0.1909 0.6840  2.241  2.812
+        K     K2_yS0.18  2   0.18   1.094                       [1400, 100]   0.2104 0.6230  2.166  2.885
+        K     K3_yS0.03  3   0.03   2.381                   [723, 471, 306]   0.1445 0.5904  1.666  1.867
+        K     K3_yS0.05  3   0.05   1.959                   [871, 423, 206]   0.1609 0.6008  1.757  2.044
+        K     K3_yS0.08  3   0.08   1.550                  [1000, 366, 134]   0.1798 0.5863  1.795  2.177
+        K     K3_yS0.13  3   0.13   1.094                   [1121, 299, 80]   0.2034 0.5454  1.765  2.248
+        K     K3_yS0.18  3   0.18   0.759                   [1194, 253, 53]   0.2224 0.5041  1.701  2.236
+        K     K4_yS0.03  4   0.03   2.221              [594, 415, 289, 202]   0.1542 0.5416  1.588  1.808
+        K     K4_yS0.05  4   0.05   1.769              [725, 411, 232, 132]   0.1710 0.5413  1.637  1.927
+        K     K4_yS0.08  4   0.08   1.323               [847, 390, 180, 83]   0.1900 0.5217  1.642  2.000
+        K     K5_yS0.03  5   0.03   2.066         [517, 374, 271, 196, 142]   0.1615 0.5136  1.544  1.771
+        K     K5_yS0.05  5   0.05   1.588          [635, 390, 239, 146, 90]   0.1788 0.5069  1.571  1.858
+        K     K5_yS0.08  5   0.08   1.114          [748, 389, 202, 105, 56]   0.1976 0.4834  1.559  1.899
+    SPLIT  SPLIT_yS0.05  4   0.05   1.959              [867, 246, 182, 205]   0.1612 0.6008  1.759  2.047
+    SPLIT  SPLIT_yS0.08  4   0.08   1.550              [996, 213, 158, 133]   0.1802 0.5858  1.795  2.180
+      NA2        NA2_x6  3   0.10     nan                    [985, 431, 84]   0.1950 0.5259  1.665  2.060
+   REFUSED     K4_yS0.13            [970, 354, 129, 47]   min class count 47 < 50 at N = 1500
+   REFUSED     K4_yS0.18            [1050, 321, 98, 31]   min class count 31 < 50 at N = 1500
+   REFUSED     K5_yS0.13        [867, 373, 161, 69, 30]   min class count 30 < 50 at N = 1500
+   REFUSED     K5_yS0.18        [948, 353, 131, 49, 19]   min class count 19 < 50 at N = 1500
+   --- N = 3000: 23 cells, 72 runs, 5 REFUSED
+      arm         label  K    y_S       q                     n_i per class  d_max/L     CV    d32    d43
+       T0          mono  1    nan     nan                            [3000]   0.0723 0.0000  1.000  1.000
+        K     K2_yS0.03  2   0.03   2.507                      [1993, 1007]   0.1030 0.7059  1.829  1.948
+        K     K2_yS0.05  2   0.05   2.124                       [2313, 687]   0.1162 0.7472  2.062  2.283
+        K     K2_yS0.08  2   0.08   1.762                       [2543, 457]   0.1317 0.7399  2.214  2.581
+        K     K2_yS0.13  2   0.13   1.371                       [2716, 284]   0.1515 0.6840  2.241  2.812
+        K     K2_yS0.18  2   0.18   1.094                       [2801, 199]   0.1673 0.6230  2.166  2.885
+        K     K3_yS0.03  3   0.03   2.381                  [1446, 941, 613]   0.1147 0.5904  1.666  1.867
+        K     K3_yS0.05  3   0.05   1.959                  [1742, 847, 411]   0.1278 0.6008  1.757  2.044
+        K     K3_yS0.08  3   0.08   1.550                  [2000, 732, 268]   0.1427 0.5863  1.795  2.177
+        K     K3_yS0.13  3   0.13   1.094                  [2242, 598, 160]   0.1615 0.5454  1.765  2.248
+        K     K3_yS0.18  3   0.18   0.759                  [2388, 505, 107]   0.1763 0.5041  1.701  2.236
+        K     K4_yS0.03  4   0.03   2.221             [1188, 829, 579, 404]   0.1224 0.5416  1.588  1.808
+        K     K4_yS0.05  4   0.05   1.769             [1451, 821, 465, 263]   0.1358 0.5413  1.637  1.927
+        K     K4_yS0.08  4   0.08   1.323             [1694, 781, 360, 165]   0.1509 0.5217  1.642  2.000
+        K     K5_yS0.03  5   0.03   2.066        [1035, 749, 542, 392, 282]   0.1283 0.5136  1.544  1.771
+        K     K5_yS0.05  5   0.05   1.588        [1271, 779, 478, 293, 179]   0.1420 0.5069  1.571  1.858
+        K     K5_yS0.08  5   0.08   1.114        [1497, 778, 405, 211, 109]   0.1573 0.4834  1.559  1.899
+    SPLIT  SPLIT_yS0.05  4   0.05   1.959             [1735, 492, 364, 409]   0.1280 0.6008  1.759  2.047
+    SPLIT  SPLIT_yS0.08  4   0.08   1.550             [1993, 425, 315, 267]   0.1429 0.5858  1.795  2.180
+      NA2        NA2_x6  3   0.10     nan                  [1969, 862, 169]   0.1546 0.5259  1.665  2.060
+       KX    KX4_yS0.13  4   0.13   0.817              [1940, 708, 258, 94]   0.1695 0.4812  1.594  2.012
+       KX    KX4_yS0.18  4   0.18   0.437              [2100, 643, 197, 60]   0.1840 0.4429  1.530  1.967
+       KX    KX5_yS0.13  5   0.13   0.566         [1735, 746, 321, 138, 60]   0.1758 0.4413  1.501  1.877
+   REFUSED     K4_yS0.13            [970, 354, 129, 47]   min class count 47 < 50 at N = 1500
+   REFUSED     K4_yS0.18            [1050, 321, 98, 31]   min class count 31 < 50 at N = 1500
+   REFUSED     K5_yS0.13        [867, 373, 161, 69, 30]   min class count 30 < 50 at N = 1500
+   REFUSED     K5_yS0.18        [948, 353, 131, 49, 19]   min class count 19 < 50 at N = 1500
+   REFUSED    KX5_yS0.18       [1897, 706, 263, 98, 36]   min class count 36 < 50 at N = 3000
+
+=== 1c. the two axes are UNCROSSED (this is the whole point of the design) ===
+   balanced block (12 cells, K = 2,3,4,5 x y_S = (0.03, 0.05, 0.08)): corr(K, ln y_S) = +0.000000
+   whole core grid (16 cells, K = 2 and 3 also carry y_S = 0.13, 0.18): corr(K, ln y_S) = -0.3214
+   y_S range: 0.03 to 0.18, a factor 6.0; the closed ternary block had TWO levels, 0.10 and 0.15 (1.5x).
+   `n_L` is NOT held fixed and is not claimed to be -- it cannot be, since
+   n goes as y/d^3. What breaks that confound here is the N = 3000 block, which
+   runs the IDENTICAL cell list and moves every count by exactly 2x.
+
+=== 2. in-sample residuals on the binary calibration set -- where the bars come from ===
+      J on its OWN calibration set, ratios <= 3: n = 32, rms 2.83 (prereg 2.83), max 6.69 (prereg 6.69) -> OK
+    TAB on all binaries (it is fitted per ratio): n = 41, rms 2.02 (prereg 2.02), max 5.74 (prereg 5.74) -> OK
+   BARS, unchanged and taken from TAB's own in-sample scatter: rms 2.02, max 5.74. Nothing in this block refits anything.
+
+=== 3. BLIND PREDICTIONS (phi), one row per cell ===
+   ADD = the additive closure, TAB primary and J control. SEQ = the recursive
+   nested rule of kladder.sequential_k, its composite diameter convention SWEPT
+   over all four moment ratios rather than chosen. IDEAL = perfect separation.
+            label  K   y_S   ADDtab    ADDj  SEQd10  SEQd21  SEQd32  SEQd43   IDEAL   head    sep
+=== BLIND PREDICTIONS ===
+             mono  1   nan   0.5947  0.5947  0.5947  0.5947  0.5947  0.5947  0.5947    0.0    0.0
+        K2_yS0.03  2  0.03   0.6074  0.6039  0.6074  0.6074  0.6074  0.6074  0.6131    2.7    0.0
+        K2_yS0.05  2  0.05   0.6162  0.6102  0.6162  0.6162  0.6162  0.6162  0.6260    4.6    0.0
+        K2_yS0.08  2  0.08   0.6299  0.6199  0.6299  0.6299  0.6299  0.6299  0.6464    7.9    0.0
+        K2_yS0.13  2  0.13   0.6541  0.6368  0.6541  0.6541  0.6541  0.6541  0.6835   14.0    0.0
+        K2_yS0.18  2  0.18   0.6803  0.6546  0.6803  0.6803  0.6803  0.6803  0.7252   21.4    0.0
+        K3_yS0.03  3  0.03   0.6290  0.6343  0.6240  0.6256  0.6272  0.6282  0.7308   48.5    0.8
+        K3_yS0.05  3  0.05   0.6441  0.6472  0.6345  0.6372  0.6400  0.6423  0.7870   68.1    1.9
+        K3_yS0.08  3  0.08   0.6517  0.6493  0.6479  0.6522  0.6568  0.6612  0.8672  102.6    2.4
+        K3_yS0.13  3  0.13   0.6525  0.6543  0.6673  0.6740  0.6815  0.6899  0.9186  126.7   13.8
+        K3_yS0.18  3  0.18   0.6546  0.6604  0.6707  0.6823  0.6930  0.7049  0.8907  112.5   18.3
+        K4_yS0.03  4  0.03   0.6271  0.6318  0.6271  0.6306  0.6339  0.6369  0.9114  135.4    3.3
+        K4_yS0.05  4  0.05   0.6313  0.6390  0.6361  0.6414  0.6467  0.6518  0.9670  159.9    7.3
+        K4_yS0.08  4  0.08   0.6380  0.6496  0.6464  0.6541  0.6625  0.6706  0.9483  147.7   11.7
+        K5_yS0.03  5  0.03   0.6269  0.6368  0.6294  0.6344  0.6394  0.6440  0.9800  168.1    5.9
+        K5_yS0.05  5  0.05   0.6358  0.6437  0.6367  0.6439  0.6517  0.6589  0.9670  157.7    7.5
+        K5_yS0.08  5  0.08   0.6402  0.6488  0.6433  0.6531  0.6644  0.6757  0.9483  146.7   11.5
+     SPLIT_yS0.05  4  0.05   0.6442  0.6465  0.6266  0.6323  0.6376  0.6414  0.7870   68.0    3.2
+     SPLIT_yS0.08  4  0.08   0.6487  0.6501  0.6367  0.6446  0.6528  0.6597  0.8672  104.0    1.9
+           NA2_x6  3  0.10   0.6449  0.6452  0.6545  0.6589  0.6644  0.6704  0.8783  111.2    9.3
+       KX4_yS0.13  4  0.13   0.6499  0.6563  0.6548  0.6659  0.6790  0.6922  0.9186  127.9   13.8
+       KX4_yS0.18  4  0.18   0.6471  0.6568  0.6463  0.6605  0.6788  0.6948  0.8907  116.0   15.1
+       KX5_yS0.13  5  0.13   0.6425  0.6545  0.6414  0.6581  0.6780  0.6968  0.9186  131.5   16.9
+=== END BLIND PREDICTIONS ===
+
+=== 4. candidate separation, and the 1.6x rule ===
+   A comparison whose candidates predict nearly the same thing has decided
+   nothing whichever way it lands (lessons.md 2026-08-30). Separations below,
+   in PHI_SCALE units, over the cells each comparison is made on.
+                   comparison  mean |sep|     min     max   verdict
+             ADDtab vs SEQd32        5.28    0.00   18.31   informative
+             ADDtab vs SEQd43        7.09    0.00   23.99   informative
+             ADDtab vs SEQd10        2.05    0.00    7.67   NOT INFORMATIVE (below 1.6 x the bar)
+               ADDtab vs ADDj        3.91    0.83   12.23   informative
+              ADDtab vs IDEAL       89.03    2.69  168.11   informative
+
+   the SPLIT control -- a K = 4 spec that is physically a K = 3 one:
+      y_S 0.05: ADDtab moves  0.07 scale when the middle class is split in two (K 3->4, pairs 3->6)
+      y_S 0.08: ADDtab moves  1.41 scale when the middle class is split in two (K 3->4, pairs 3->6)
+      So the MODEL barely moves. If the measured residual jumps with the split,
+      the residual is counting classes; if it does not, the residual is a
+      functional of the distribution. Three cells, and it cannot be argued.
+
+=== 5. the hypotheses, and which pairs this design can tell apart ===
+   R3 is calibrated from the closed block's measured mean residual, 7.53
+   scale (PREREG_TERNARY_2026-09-14 T1). R(2) = 0 is an ANCHOR, not a blind
+   prediction: K = 2 IS TAB's calibration set, so its residual is the in-sample
+   noise floor by construction. Stated here so nobody reads it as a success.
+   hypothesis      K=2      K=3      K=4      K=5
+      H_sat     7.53     7.53     7.53     7.53
+        H_K     0.00     7.53    15.06    22.59
+        H_P     0.00     7.53    18.82    33.88
+        H_T     0.00     7.53    30.12    75.30
+
+   pairwise separation RATIOS (larger / smaller), bar 1.6:
+               pair   at K=4   at K=5   verdict
+       H_sat vs H_K     2.00     3.00   separable
+       H_sat vs H_P     2.50     4.50   separable
+       H_sat vs H_T     4.00    10.00   separable
+         H_K vs H_P     1.25     1.50   NOT SEPARABLE by this design
+         H_K vs H_T     2.00     3.33   separable
+         H_P vs H_T     1.60     2.22   separable
+
+   REGISTERED IN ADVANCE: H_K and H_P are NOT separable here (1.25x at K = 4,
+   1.50x at K = 5, both below 1.6). No verdict of this block may claim to have
+   distinguished 'per class' from 'per pair'. What it CAN decide is
+   saturation vs growth, and linear-in-K vs three-body -- and, through the y_S
+   axis at fixed K, whether the residual is a composition effect at all.
+
+   And the falsifiable prediction the y_S axis carries on its own: the closed
+   block found spearman(res, y_S) = +0.878 over TWO levels. Registered: at K = 3
+   over FIVE levels spanning 6x, the residual must be MONOTONE INCREASING in
+   y_S (spearman >= +0.7, and the 0.18 cell above the 0.03 cell by at least the
+   2.02 bar). If it is flat, the two-level correlation was a fluke of
+   the corner and the composition reading of T1 fails.
+
+=== PREDICTION FILE COMPLETE -- no kl* record was read to produce it ===
