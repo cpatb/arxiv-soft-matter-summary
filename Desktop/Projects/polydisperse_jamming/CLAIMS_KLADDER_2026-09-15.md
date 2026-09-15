@@ -9,7 +9,8 @@ at N = 3000 on the identical cell list plus three N = 3000-only corners.
 
 ---
 
-## C1 (HEADLINE) — the non-additive miss does NOT accumulate with K. It STEPS ONCE between three and four classes and then SATURATES.
+## C1 (HEADLINE) — the non-additive miss does NOT accumulate with K: it STEPS ONCE
+between three and four classes. Whether it then SATURATES is **undetermined** (C1a ii).
 
 At matched fines fraction `y_S`, with `R(K)` the residual (measured φ − additive
 tabulated closure) in PHI_SCALE = 2.1e−3 units:
@@ -51,16 +52,65 @@ is in the single step from three classes to four.
 **At `y_S` = 0.05 and 0.08, 79–93 % of the "step" is the additive closure's own
 prediction DROPPING by 6.1–6.5 scale when the fourth class is added** — the measurement
 moves only +0.5 to +1.6. Only at `y_S` = 0.03 is the step mostly a genuine rise in φ
-(+2.51 and +3.61, against seed se of 1.2 and 0.4). The same applies to the saturation:
-at K4→K5 the model comes back UP by +1.0 to +2.2, which is most of why ΔR goes negative.
+(+2.51 and +3.61, against seed se of 1.2 and 0.4). The same applies to the saturation —
+but **not uniformly, and the three `y_S` levels are not interchangeable**: at K4→K5 the
+model comes back UP by +2.17 (`y_S` 0.05) and +1.05 (0.08), which is most of why ΔR goes
+negative there, while at **`y_S` = 0.03 it does not come back up at all** (ΔADD = −0.05 at
+both N). At 0.03 the flat ΔR (+0.20, ratio 0.06) is therefore mostly a genuine
+deceleration in φ's own rise (Δφ = +0.15 of ΔR = +0.20); at 0.05 and 0.08 it is almost
+entirely the closure bouncing. An earlier draft wrote "the model comes back UP by +1.0 to
++2.2" without that exception.
 
 So C1 is a correct statement **about the residual** and it does refute the three growth
 laws, which are hypotheses about the residual. It is **not** a statement that the packing
 does something dramatic between three and four classes: measured φ rises smoothly and
 modestly across the whole K axis. **The robust, decomposition-free version of the finding
 is C4** — the closure's sign in K is wrong — and C1 should always be quoted next to it.
-This decomposition is printed by no gate; it was computed from `out/kladder_cells.csv`
-while writing this file, and it is the reason C1's wording changed.
+
+Two further qualifications, both from the physics-referee pass of 2026-09-15, both now
+printed by the grader as **G1c** rather than argued here:
+
+**(i) the yardstick moves by BRANCH REASSIGNMENT, not only by interaction values.**
+`packing_density` is a MINIMUM over which class is dominant, so its value can change
+because a different branch wins. The argmin index (0 = coarsest) runs:
+
+| `y_S` | K = 2 | K = 3 | K = 4 | K = 5 |
+|---|---|---|---|---|
+| 0.03 | 0 | 0 | **1** | 1 |
+| 0.05 | 0 | 0 | **1** | 1 |
+| 0.08 | 0 | **1** | 1 | **2** |
+
+**The branch changes somewhere on the K axis on 3 of 3 rows.** The referee's stronger
+reading — that the K3→K4 drop *coincides* with the reassignment — holds at `y_S` = 0.05
+but **not** at 0.08, where the −6.51 drop happens entirely *within* branch i = 1; and at
+`y_S` = 0.03 the branch does switch while the drop is only −0.91. So reassignment is
+present everywhere and is **not** in one-to-one correspondence with the size of the drop.
+The supportable statement is the weaker one: **a step in ADDtab across K is not by itself
+a filling statement, because part of it is the min-over-branches structure reacting to
+how volume is redistributed when a class is added.**
+
+**(ii) K = 5 is evaluated where the closure has NO DATA, so the SATURATION IS NOT
+ATTRIBUTABLE.** The tabulated interactions are a PCHIP through the identifiable binary
+ratios at `u` = 0.250, 0.333, 0.500, 0.667 plus the *proved but unmeasured* limits at
+`u` = 0 and 1. Pair coverage:
+
+| K | pairs | `u` values (count) | above the top measured knot 0.667 |
+|---|---|---|---|
+| 2 | 1 | 0.2500 ×1 | none |
+| 3 | 3 | 0.2500 ×1, 0.5000 ×2 | none |
+| 4 | 6 | 0.2500 ×1, 0.3968 ×2, 0.6300 ×3 | none |
+| 5 | 10 | 0.2500 ×1, 0.3536 ×2, 0.5000 ×3, **0.7071 ×4** | **4 of 10** |
+
+**K = 5's most numerous pair type sits above every measured ratio**, in the widest gap in
+the whole construction. The rung that decides "saturation" is therefore evaluated on
+interpolation, and at `y_S` = 0.05 the K4→K5 "recovery" in ADDtab (+2.17, no branch
+change) is a statement about how PCHIP guesses `a(0.707)`, not a measurement. **C1's
+"and then saturates" must be read as UNDETERMINED by this design.** What survives
+untouched is the K3→K4 rise (every pair on both those rungs is inside the measured
+bracket) and the sign test C4, which compares data with model and does not care why the
+model does what it does. This is the symmetric twin of the caveat already in "What this
+block does NOT establish" about `u` < 1/4 — the block says nothing trustworthy about
+`u` ∈ (0.667, 1) either, and it was missing until the referee asked.
 
 ### C1b — the registered *ranking* half of G1 is NOT INFORMATIVE, and the grader says so
 Every hypothesis in the registered family is a MULTIPLE of R(3), and R(3) landed **inside
@@ -83,11 +133,29 @@ each taking half its volume — K goes 3 → 4, pairs 3 → 6, the distribution 
 | R(split) − R(K = 3), N = 3000 | **−0.31** (se 0.98) | **+2.22** (se 0.80) |
 | the genuine K 3 → 4 increment at the same `y_S`, N = 3000 | +7.44 | +7.01 |
 
-The registered gate (|Δ| < 2.02 on 2 of 2, N = 1500) **passes**. At N = 3000 the
-`y_S` = 0.08 cell reaches +2.22, i.e. the gate is 1 of 2 there — reported, not repaired.
-**The decisive comparison is the ratio: a near-duplicate fourth class buys 11–32 % of what
-a genuinely intermediate fourth class buys.** The residual is a functional of the size
-distribution, not a count of how many classes a modeller chose to write down.
+🔴 **The registered sentence — "|Δ| < 2.02 on 2 of 2" — does not name an N, and the code
+scoped it to N = 1500, which is a NARROWER question than the one registered.** Widened
+after the referee pass; `grade_kladder.py` now grades **both** N, and **G3 therefore FAILS
+at N = 3000, `y_S` = 0.08 (+2.22 against the 2.02 bar)**. The bar is unchanged and the
+failure is in `FAILURES`. (lessons.md 2026-09-13: a pre-registered rule is a SENTENCE, and
+the code can compute a different quantity than the sentence names.)
+
+**The decisive comparison is the RATIO, and it must be quoted with all four values, not
+three.** The near-duplicate class buys, as a fraction of what a genuine one buys:
+
+| | `y_S` 0.05 | `y_S` 0.08 |
+|---|---|---|
+| N = 1500 | +11 % | +18 % |
+| N = 3000 | **−4 %** | +32 % |
+
+An earlier draft quoted "11–32 %", which silently dropped the one **negative** value
+(−0.31 / +7.44 at N = 3000, `y_S` = 0.05 — the split moved the residual the *wrong* way,
+though at 0.3 se it is indistinguishable from zero). **Honest restatement: on 3 of 4
+measurements a near-duplicate fourth class buys 11–32 % of what a genuinely intermediate
+one buys, and on the fourth it buys nothing.** The conclusion — the residual is a
+functional of the size distribution, not a count of classes — is supported by all four,
+since none of them approaches the +7.0 to +8.0 a genuine class delivers; but the range as
+printed was not the whole set.
 
 ---
 
@@ -103,16 +171,26 @@ levels spanning 1.5×:
 
 Registered bars: spearman ≥ +0.70 and span ≥ 2.02. **PASS at K = 3 at both N** — but the
 N = 1500 correlation lands **exactly on** the bar with p = 0.188, so the claim rests on
-the N = 3000 replicate, and that has to be said. The K = 2 row is the control: the trend
-is **absent and of the opposite sign** where the closure is in-sample, so the `y_S`
-dependence is not a property of the binary calibration leaking in.
+the N = 3000 replicate, and that has to be said.
+
+⚠ **The K = 2 row is NOT a clean control, and "control" overstates it** (referee pass,
+2026-09-15). Three things weaken it: its spearman is **not significant at either N**
+(p = 0.285, 0.391); `K2_yS0.13` gives R = **−2.97**, which *exceeds* TAB's own in-sample
+rms of 2.02 and so breaks the R(2) ≈ 0 anchor at that composition (it is still inside the
+in-sample **max** of 5.74); and `K2_yS0.13` and `K2_yS0.18` carry the **two largest
+N-doubling swings in the whole 18-cell campaign** (+3.84 and +2.12 against a campaign rms
+of 2.04). **Honest restatement: the K = 2 trend is qualitatively opposite in direction to
+K = 3's and is not resolved.** That is still useful — a `y_S` dependence created by the
+binary calibration leaking in would have to appear at K = 2 with the *same* sign, and it
+does not — but it is a direction, not a measured null.
 
 ---
 
-## C4 — the additive closure has the WRONG SIGN in K (G7)
+## C4 — the additive closure has the WRONG SIGN in K (G7) — **2 of 3 levels resolved, 1 undetermined**
 
 At matched `y_S`, the additive tabulated closure predicts φ **falls** as classes are added
-inside a fixed span. Measured, it **rises**, on 3 of 3 levels:
+inside a fixed span. Measured, it **rises** — on 3 of 3 levels by point estimate, of which
+**2 of 3 clear their own standard error**:
 
 | `y_S` | measured φ, K = 3, 4, 5 | K5−K3 (scale) | ADDtab says | ADDtab K5−K3 |
 |---|---|---|---|---|
@@ -121,8 +199,14 @@ inside a fixed span. Measured, it **rises**, on 3 of 3 levels:
 | 0.08 | 0.6543, 0.6575, 0.6560 | **+0.80** (se 0.85) | 0.6517, 0.6380, 0.6402 | −5.45 |
 
 This needs no residual bookkeeping and no closure-specific bar: it is a sign test, and the
-model is on the wrong side of it everywhere. The `y_S` = 0.08 level is +0.80 against se
-0.85, i.e. that one is not resolved on its own; the other two are.
+model is on the wrong side of it everywhere. 🔴 **But "3 of 3" was the wrong headline**
+(referee pass): at `y_S` = 0.08 the measured rise is **+0.80 against se 0.85**, a point
+estimate smaller than its own error and consistent with zero. **Report it as "2 of 3
+resolved, 1 undetermined."** The two resolved levels (+2.65 / se 1.22 and +2.22 / se 0.99)
+are what carry C4, and the model's own prediction is negative and *large* on all three
+(−0.97, −3.93, −5.45), so the model-vs-data disagreement is resolved at 3 of 3 even where
+the measured rise on its own is not. `test_kladder.py` asserts `resolved == 2`, so the
+honest count is pinned and cannot drift back to 3.
 
 ---
 
@@ -133,9 +217,21 @@ ratio identical, moving every class count ×2 and `d_max/L` ×2^(−1/3).
 
 * the graded quantity, R(5) − R(3), moves by 1.55, 0.49 and 0.46 against 2×se of 2.74,
   3.10 and 2.08 — **PASS 3 of 3**;
-* pooled over both N: spearman(R, `n_min`) = **−0.4694** (p 0.0067), spearman(R,
-  `d_max/L`) = +0.1400 (p 0.445), against the registered 0.6 bar. The grain-count null is
-  **below the bar but not at zero**, and saying so is part of the result;
+* 🔴 **the `n_min` correlation is a CONFOUNDED DIAGNOSTIC and its 0.6 bar is WITHDRAWN as
+  meaningless** (referee pass, 2026-09-15). `n_min` is collinear with **both** design axes
+  by construction: spearman(`y_S`, `n_min`) = **−1.0000 on all 8 (K, N) combinations**,
+  and `n_min` also falls monotonically with K at fixed `y_S` (because n ∝ y/d³ and adding
+  classes dilutes every count). A pooled spearman(R, `n_min`) is therefore **guaranteed**
+  to come out large and negative whether or not any finite-size leak exists — it is a
+  restatement of the grid, not a test of it. The measured **−0.4694 (p 0.0067)** is
+  reported for the record and **must not be read as "a partial residual finite-size
+  leak."** An earlier draft did read it that way. `d_max/L` is not collinear in the same
+  way and sits at +0.1400 (p 0.445), which is a real if weak reassurance. **The valid
+  finite-size control is the N-doubling comparison above**, which is the gated one and
+  passes 3 of 3;
+* the grader previously printed "bar 0.6" beside a number that **never fed `failures`** —
+  a bar that cannot fail. It now prints the collinearity that makes the number
+  uninformative instead. Nothing that *was* gated changed;
 * the residual **rises** with N on 18 of 18 cells (mean **+1.87**, rms 2.04 scale). A
   finite-size artefact must shrink as the box grows.
 
@@ -149,12 +245,21 @@ The closed ternary block left (0.55, 0.35, 0.10) as its one unexplained cell: +1
 between N = 1500 and 3000 on three seeds against an se of 0.48, where the other five
 agreed. Re-run at **six** seeds at both N:
 
-* the shift is **REAL**: +2.19 scale, se of the difference 0.29, **7.64 se**, Welch
-  t = 7.64, p = 0.0001, df 6.8. **The registered prediction (that six seeds would show it
-  as seed noise) FAILS.**
-* and it is **NOT ANOMALOUS**: its own shift is **+1.89** against a block-wide mean of
-  **+1.87** over 18 cells (rms 2.04, range +0.14 to +3.84). **Every cell in this campaign
-  moves by about +1.9 scale when N doubles.**
+* the shift is **REAL**: **Δφ/scale = +2.19**, se of the difference 0.29, **7.64 se**,
+  Welch t = 7.64, p = 0.0001, df 6.8. **The registered prediction (that six seeds would
+  show it as seed noise) FAILS.**
+* and it is **NOT AN OUTLIER OF THIS GRID**: its **ΔR = +1.89** against a mean **ΔR** of
+  **+1.87** over the 18 cells (rms 2.04, range +0.14 to +3.84).
+  ⚠ **The two numbers are different quantities and must be labelled** (referee pass):
+  +2.19 is Δφ/scale, the quantity actually significance-tested; +1.89 is ΔR, which is net
+  of the model's own `beta` recalibration between the two N and is the right thing to
+  compare against a pooled ΔR mean. Both are defensible; quoting them adjacently without
+  labels was not.
+  ⚠ And the comparator is **the entire enumerated design grid, not a sample from a
+  population**, spanning +0.14 to +3.84 — a 27× range. "Near the mean" therefore
+  establishes only that NA2 is **not an extreme outlier of this grid**, which is the
+  conclusion drawn; it is not a distributional typicality claim and "mean ± rms" language
+  should not be read as one.
 
 So the open item closes the other way round from how it was posed: there is nothing
 special about that composition, and the quantity that needed the second N was the
@@ -260,8 +365,26 @@ tested**. The next block is the one that places cells where these candidates dis
   construction, which is what keeps additivity unconfounded with extrapolation — and it
   means the block says nothing about the regime the shipped closure was already known to
   fail in (X1, `u` ≤ 1/3).
+* 🔴 **And nothing about `u` ∈ (0.667, 1) either — the symmetric caveat, missing until
+  the referee asked.** The tabulated interactions have no measured knot above `u` = 0.667,
+  and **4 of K = 5's 10 pairs sit at `u` = 0.7071**. So the K = 4 → 5 rung, the one that
+  would decide saturation, is evaluated on interpolation toward a proved-but-unmeasured
+  endpoint. The K = 2 → 3 → 4 rungs are entirely inside the measured bracket and are not
+  affected.
+* **That any step in the ADDITIVE prediction across K is a filling statement.** It is a
+  minimum over branches, and the argmin reassigns somewhere on the K axis at 3 of 3 `y_S`
+  levels (C1a i). The residual is still the registered quantity and the growth laws are
+  still refuted by it, but the *mechanism* behind the yardstick's own motion is not
+  established here.
+* **A resolved sign test at `y_S` = 0.08** (C4): +0.80 against se 0.85.
 * Nothing about friction: every cell is `mu_p` = 0.30.
 * Nothing about a continuous PSD directly. C8 is the transfer, and C8 does not settle.
-* The saturation in C1 is measured at K = 4 → 5 only. Whether it stays flat at K = 8 or
-  20 — which is where a continuous PSD lives — is the obvious next block, and the span-4
-  ladder extends to it without changing a single design constraint.
+* The saturation in C1 is measured at K = 4 → 5 only, **and is undetermined even there**
+  (C1a ii). 🔴 **Extending the same ladder to K = 8 or 20 — which is where a continuous
+  PSD lives — would make this WORSE, not better**, and an earlier draft of this bullet
+  said the opposite. On a span-4 geometric ladder the adjacent-pair ratio is
+  `4^(−1/(K−1))`: 0.707 at K = 5, **0.82 at K = 8, 0.88 at K = 12**, so every class added
+  piles more pair weight into the stretch where `a(u)` and `b(u)` have no measured knot.
+  **The blocker is therefore not K — it is binary calibration above `u` = 0.667**, which
+  costs what a ternary block costs and unlocks the whole axis. Until it exists, no ladder
+  can answer "does the miss saturate?"

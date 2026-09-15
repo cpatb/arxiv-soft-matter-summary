@@ -358,6 +358,66 @@ def main() -> int:
         notinfo.append("G1 H_K vs H_P: not separable, registered in advance")
     say()
 
+    # --------------------------------------------- G1c: what the YARDSTICK is doing
+    say("=== G1c -- WHAT THE ADDITIVE YARDSTICK ITSELF IS DOING ACROSS K ===")
+    say("   Added after the physics-referee pass, 2026-09-15, which found that the")
+    say("   closure's own K-trajectory -- 79-93 % of the K3->K4 step -- is not a smooth")
+    say("   physical statement. Two reasons, both printed rather than argued.")
+    say()
+    say("   (1) BRANCH IDENTITY. `packing_density` is a MINIMUM over which class is")
+    say("   dominant, so its value can move because a different branch WINS, not")
+    say("   because any interaction changed. Argmin index (0 = coarsest):")
+    say(f"   {'y_S':>6}" + "".join(f"{'K=' + str(k):>14}" for k in kl.K_LEVELS))
+    for ys in kl.YS_BALANCED:
+        row = f"   {ys:6.2f}"
+        for k in kl.K_LEVELS:
+            lbl = f"K{k}_yS{ys:.2f}"
+            if lbl not in cells_all:
+                row += f"{'-':>14}"
+                continue
+            c0 = cells_all[lbl]
+            d = np.asarray(sorted(c0["d_rel"], reverse=True), float)
+            yv = np.asarray([c0["y"][list(c0["d_rel"]).index(v)] for v in d], float)
+            yv = yv / yv.sum()
+            vals = []
+            for i in range(d.size):
+                tot = 0.0
+                for j in range(i):
+                    tot += (1.0 - beta1500 + float(fb(d[i] / d[j])) * beta1500
+                            * (1.0 - 1.0 / beta1500)) * yv[j]
+                for j in range(i + 1, d.size):
+                    tot += (1.0 - float(fa(d[j] / d[i]))) * yv[j]
+                vals.append(beta1500 / (1.0 - tot) if 1.0 - tot > 1e-12 else np.inf)
+            row += f"{'i=' + str(int(np.argmin(vals))):>14}"
+        say(row)
+    say("   A row whose index CHANGES between two K values is one where the yardstick")
+    say("   moved by reassignment. Read C1's step against this table, not around it.")
+    say()
+    say("   (2) KNOT COVERAGE. The tabulated a(u), b(u) are a PCHIP through the")
+    say(f"   IDENTIFIABLE binary ratios at u = "
+        f"{', '.join(f'{u:.3f}' for u in sorted(_tab))} plus the two PROVED but")
+    say("   UNMEASURED limits u = 0 and u = 1. Pairs above the top measured knot are")
+    say("   therefore interpolated across the widest gap in the whole construction:")
+    top = max(_tab)
+    say(f"   {'K':>3}{'pairs':>7}   pair u values (count)   above the top knot "
+        f"{top:.3f}")
+    for k in kl.K_LEVELS:
+        pt = kl.pair_table(kl.ladder(k))
+        cnt = collections.Counter(round(u, 6) for _, _, u in pt)
+        assert sum(cnt.values()) == len(pt)          # a count that drops a pair lies
+        us = sorted(cnt)
+        above = [u for u in us if u > top + 1e-9]
+        nab = sum(cnt[u] for u in above)
+        say(f"   {k:3d}{len(pt):7d}   "
+            + ", ".join(f"{u:.4f}x{cnt[u]}" for u in us)
+            + (f"   <-- {nab} of {len(pt)} pairs at "
+               f"{', '.join(f'{u:.4f}' for u in above)}" if above else "   none"))
+    say("   -> K = 5's MOST NUMEROUS pair type sits above every measured ratio. So the")
+    say("      K = 4 -> 5 rung, which is the one that decides 'saturation', is evaluated")
+    say("      where the closure has no data. The SATURATION IS NOT ATTRIBUTABLE from")
+    say("      this design; the K3 -> K4 rise and the sign test (G7) do not depend on it.")
+    say()
+
     # ------------------------------------------------------------------------- G2
     say("=== G2 -- the y_S axis at fixed K (five levels, 6.0x, vs the closed block's two) ===")
     for n in sorted(summ):
@@ -390,11 +450,21 @@ def main() -> int:
             d = s[a]["R"] - s[b]["R"]
             se = math.hypot(s[a]["seR"], s[b]["seR"])
             dmod = (s[a]["models"]["ADDtab"] - s[b]["models"]["ADDtab"]) / SCALE
+            gen = s[f"K4_yS{ys:.2f}"]["R"] - s[b]["R"] if f"K4_yS{ys:.2f}" in s else float("nan")
             say(f"   N {n} y_S {ys:.2f}: R(split) {s[a]['R']:+.2f} - R(K3) "
                 f"{s[b]['R']:+.2f} = {d:+.2f} (se {se:.2f}, bar {BAR_RMS}); the "
-                f"additive prediction itself moved {dmod:+.2f}")
-            if n == 1500 and abs(d) >= BAR_RMS:
-                failures.append(f"G3 y_S {ys}: split moved R by {d:+.2f}")
+                f"additive prediction itself moved {dmod:+.2f}; a GENUINE 4th class "
+                f"moves it {gen:+.2f}, so the split buys {d / gen:+.0%}")
+            # Graded at BOTH N. The registered sentence says "|delta| < 2.02 on 2 of 2"
+            # and does not name an N; an earlier version of this line scoped it to
+            # N = 1500, which is a NARROWER question than the one registered
+            # (lessons.md 2026-09-13: a pre-registered rule is a SENTENCE, and the code
+            # can compute a different quantity than the sentence names). Widened after
+            # the physics-referee pass of 2026-09-15, which makes the N = 3000
+            # y_S = 0.08 cell a FAILURE. The bar is unchanged.
+            if abs(d) >= BAR_RMS:
+                failures.append(f"G3 N={n} y_S {ys}: split moved R by {d:+.2f} "
+                                f"(genuine 4th class {gen:+.2f})")
     say("   registered: |delta| < 2.02 on 2 of 2 means the residual is a FUNCTIONAL OF")
     say("   THE DISTRIBUTION; a jump comparable to G1's K 3 -> 4 increment means it is")
     say("   COUNTING CLASSES, i.e. an artefact of how a PSD is discretised.")
@@ -428,7 +498,27 @@ def main() -> int:
         rho_d, p_d = spearman([r[2] for r in rows], [r[0] for r in rows])
         say(f"   pooled over both N ({len(rows)} points): spearman(R, n_min) = "
             f"{rho_n:+.4f} (p {p_n:.4f}); spearman(R, d_max/L) = {rho_d:+.4f} "
-            f"(p {p_d:.4f}); bar 0.6")
+            f"(p {p_d:.4f})")
+        say("   ⚠ THESE TWO ARE CONFOUNDED DIAGNOSTICS, NOT A GATE, AND THE 0.6 BAR THE")
+        say("   PREREG QUOTED BESIDE THEM IS WITHDRAWN AS MEANINGLESS. Raised by the")
+        say("   physics-referee pass, 2026-09-15: `n_min` is collinear with BOTH design")
+        say("   axes by construction (n goes as y/d^3, and adding classes at fixed y_S")
+        say("   dilutes every count), so a pooled correlation with it is guaranteed to be")
+        say("   large and negative whether or not any finite-size leak exists. Measured,")
+        say("   within fixed K and within fixed y_S:")
+        for k in kl.K_LEVELS:
+            for nn in sorted(summ):
+                pts = [(summ[nn][f"K{k}_yS{ys:.2f}"]["yS"],
+                        summ[nn][f"K{k}_yS{ys:.2f}"]["nmin"])
+                       for ys in kl.YS_LEVELS if f"K{k}_yS{ys:.2f}" in summ[nn]]
+                if len(pts) >= 3:
+                    r_, _p = spearman([a for a, _ in pts], [b for _, b in pts])
+                    say(f"      N {nn} K={k}: spearman(y_S, n_min) = {r_:+.4f} over "
+                        f"{len(pts)} levels")
+        say("   -> n_min is a RESTATEMENT of the grid, so it cannot testify. THE VALID")
+        say("      finite-size control is the N-doubling comparison ABOVE, which is")
+        say("      gated and passes 3 of 3. `d_max/L` is not collinear in the same way")
+        say("      and is near zero, which is a real (if weak) reassurance.")
     say()
 
     # ------------------------------------------------------------------------- G5

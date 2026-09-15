@@ -19,17 +19,30 @@ Scale convention throughout: `PHI_SCALE` = **2.1e−3**, the protocol's own repr
 | B | **The composition effect is friction-independent.** It survives at `mu_p` = 0 and at two pressures, so the interaction functions are geometric and `beta` carries the friction. | F1–F3 | `out/mixture_mu0.txt` |
 | C | **The closure is calibrated at `u` ≥ 1/3 and is not a predictor below it.** Blind at ratios 4 and 5 it under-predicts 9 of 9 compositions, rms 7.50 against a bar of 4.0. | X1 FAIL, 39 cells | `out/grade_mixture_ext.txt` |
 | D | 🔑 **The functional is NOT ADDITIVE beyond two classes.** Six ternaries at `d` = 1, 2, 4 — whose three pairs sit at `u` = 1/2, 1/2, 1/4, *inside* the calibration range — are under-predicted **6 of 6**, mean **+7.53**, rms **7.83** against a pre-registered bar of 2.8. **Confirmed at doubled N**: 6/6 positive again, mean **+8.67**. | T1 FAIL + NA1 NON-ADDITIVE, 42 cells, 0 errors | `out/grade_ternary.txt`, `out/grade_ternary_N.txt` |
-| E | 🔑 **The miss does NOT accumulate with the number of classes, and the closure's SIGN in K is wrong.** On a geometric ladder of fixed span 4 filled in at K = 2, 3, 4, 5 at matched fines fraction, measured φ **rises** with K on 3 of 3 levels while the additive closure says it **falls** (3 of 3). The residual steps once between three and four classes and then stops: `R4−R3` = +3.4/+7.7/+8.0, `R5−R4` = +0.2/−1.6/−1.8, i.e. increment ratios −0.22 to +0.14 against the 1.00 / 1.33 / 2.00 that per-class, per-pair and per-triple growth predict. **All three growth laws refuted, and no-K-dependence refuted too.** | G1, G7; 135 runs at two N, 135 admitted, 0 errors | `out/grade_kladder.txt` |
+| E | 🔑 **The miss does NOT accumulate with the number of classes, and the closure's SIGN in K is wrong.** On a geometric ladder of fixed span 4 filled in at K = 2, 3, 4, 5 at matched fines fraction, measured φ **rises** with K where the additive closure says it **falls**, on 3 of 3 levels (2 of 3 resolved against seed error, 1 undetermined). The residual steps once between three and four classes and does not step again — though whether that is SATURATION is undetermined, see qualification 2 below: `R4−R3` = +3.4/+7.7/+8.0, `R5−R4` = +0.2/−1.6/−1.8, i.e. increment ratios −0.22 to +0.14 against the 1.00 / 1.33 / 2.00 that per-class, per-pair and per-triple growth predict. **All three growth laws refuted, and no-K-dependence refuted too.** | G1, G7, G1c; 135 runs at two N, 135 admitted, 0 errors; refereed 2026-09-15 | `out/grade_kladder.txt` |
 
 **D and E are the new ones. E is the reason §5's first two items are now closed.**
 
-⚠ **E must always be quoted with its decomposition** (`out/grade_kladder.txt`, section
-G1). `R = (φ − ADD)/scale`, so a step in R has a measurement part and a model part, and
-at `y_S` = 0.05 and 0.08 **79–93 % of the K3→K4 step is the additive closure's own
-prediction dropping by ~6.4 scale**, not the packing rising (φ moves only +0.5 to +1.6).
-Only at `y_S` = 0.03 is the step mostly a real rise in φ (+2.5 and +3.6 against se 1.2
-and 0.4). **The decomposition-free half of E is the sign test**, which needs no residual
-bookkeeping: measured φ rises with K, the closure says it falls, on every level at both N.
+⚠ **E must always be quoted with three qualifications**, all printed by
+`out/grade_kladder.txt` (sections G1 and G1c) rather than argued:
+
+1. **Most of the step is the MODEL.** `R = (φ − ADD)/scale`, and at `y_S` = 0.05 and 0.08
+   **79–93 % of the K3→K4 step is the additive closure's own prediction dropping by
+   ~6.4 scale**, not the packing rising (φ moves only +0.5 to +1.6). Only at `y_S` = 0.03
+   is it mostly a real rise (+2.5, +3.6 against se 1.2, 0.4).
+2. **"And then saturates" is UNDETERMINED.** The tabulated interactions have no measured
+   knot above `u` = 0.667, and **4 of K = 5's 10 pairs sit at `u` = 0.7071** — its most
+   numerous pair type, in the widest gap in the construction. The rung that would decide
+   saturation is evaluated where the closure has no data. K = 2, 3, 4 are entirely inside
+   the measured bracket, so **the K3→K4 rise is unaffected.**
+3. **A step in ADD across K is not by itself a filling statement.** `packing_density` is a
+   minimum over branches, and the argmin reassigns somewhere on the K axis at **3 of 3**
+   `y_S` levels.
+
+**The decomposition-free half of E is the sign test**, which needs no residual
+bookkeeping and no bar: measured φ rises with K where the closure says it falls, at every
+level and both N — **2 of 3 levels resolved against their own seed error, 1 undetermined**
+(`y_S` = 0.08 is +0.80 against se 0.85). That is the actionable defect.
 
 ### D survived the confound that would have killed it
 
@@ -242,11 +255,15 @@ pre-registered gate — both datasets were on disk before it was written.)
   point: R shifts by ~+1.9 scale on 18 of 18 cells between N = 1500 and 3000. Increments
   and contrasts at fixed N are the robust quantities; a single R is not. (An artefact
   would *shrink* with N, which is why the direction is reassuring rather than alarming.)
-* **The grain-count null is below its bar but not at zero.** Pooled over both N,
-  spearman(R, `n_min`) = **−0.4694 (p 0.0067)** against the registered 0.6 bar, while
-  spearman(R, `d_max/L`) = +0.1400 (p 0.445) is dead. Below the bar is not the same as
-  excluded, and the honest reason to believe the effect anyway is the direction of the
-  N-shift, not the correlation.
+* 🔴 **The grain-count "null" is a CONFOUNDED DIAGNOSTIC and its 0.6 bar is WITHDRAWN**
+  (physics-referee, 2026-09-15). `n_min` is collinear with **both** design axes by
+  construction — spearman(`y_S`, `n_min`) = **−1.0000 on all 8 (K, N) combinations**, and
+  `n_min` also falls with K at fixed `y_S` — so a pooled spearman(R, `n_min`) is
+  guaranteed large and negative whether or not any leak exists. The measured **−0.4694
+  (p 0.0067)** is a restatement of the grid and testifies to nothing; an earlier draft
+  read it as a partial residual leak. `d_max/L` is not collinear that way and sits at
+  +0.1400 (p 0.445). **The valid finite-size control is the gated N-doubling comparison**,
+  which passes 3 of 3, plus the direction of the N-shift.
 * **The `d_max/L` margin**, though it is no longer the open question it looked like. The
   solver's own record gives 0.1997–0.2256 at N = 1500 and 0.1586–0.1791 at N = 3000, all
   below the 0.25 flag, with no cell carrying a note in either block — and the residual
@@ -264,16 +281,23 @@ pre-registered gate — both datasets were on disk before it was written.)
    re-run: **it does not settle**, because the convention spread (11.9×) exceeds the
    effect. See `out/transfer_kladder.txt`.
 
-1. **Push K past 5 on the same span-4 ladder.** The saturation in E is measured at
-   K = 4 → 5 only, and a continuous PSD is K → ∞; K = 8 and K = 12 extend the ladder
-   without changing a single design constraint (every pair stays at `u` ≥ 1/4 by
-   construction) and the grain budget is comfortable at N = 3000. **This is the one
-   experiment that decides whether the K-step correction transfers to real powders.**
-2. **A continuous PSD at a composition the filling model puts far from the families'
+1. 🔴 **MEASURE `a(u)`, `b(u)` ABOVE `u` = 0.667. This is the blocker, and it was not
+   visible until the referee pass.** The saturation rung is evaluated where the closure
+   has no measured knot, and **pushing K higher on a span-4 ladder makes it worse**: the
+   adjacent-pair ratio goes 4^(−1/7) = 0.82 at K = 8 and 4^(−1/11) = 0.88 at K = 12, so
+   every extra class piles more pair weight into the unmeasured gap. A binary block at
+   ratios ≈ 1.2 and ≈ 1.4 (`u` ≈ 0.83, 0.71) costs what a ternary block costs and unlocks
+   the whole K axis. **Until it exists, "does the miss saturate?" cannot be answered by
+   any ladder.**
+2. **THEN push K past 5 on the same span-4 ladder.** With knots above 0.667 in hand,
+   K = 8 and 12 extend the ladder without changing a single design constraint (every pair
+   stays at `u` ≥ 1/4 by construction) and the grain budget is comfortable at N = 3000.
+   **That is what decides whether the K-step correction transfers to real powders.**
+3. **A continuous PSD at a composition the filling model puts far from the families'
    locus** — the existing lognormal/uniform/bidisperse ladders all run through the
    fines-poor corner, which is what hid the mechanism for a month. (Unchanged, and now
    the highest-value item that is not a ladder extension.)
-3. **A block designed to separate the descriptors the post-hoc scan could not.**
+4. **A block designed to separate the descriptors the post-hoc scan could not.**
    `out/diag_kladder_descriptor.txt` ranks CV (−0.88), `fill_weight` (+0.88),
    `pair_weight` (+0.87) and `triple_weight` (+0.87) above the sample-size null
    (0.70–0.73), while K, `n_pairs` and `n_triples` score *below* it. But
@@ -282,5 +306,5 @@ pre-registered gate — both datasets were on disk before it was written.)
    tell them apart. That is a hypothesis selected on the cells that motivated it, not a
    result; the test places cells where the candidates disagree, which is exactly the move
    that turned the bidisperse negative into the filling functional.
-4. **The closure's wrong sign in K is the actionable defect** (E). Any repair should be
+5. **The closure's wrong sign in K is the actionable defect** (E). Any repair should be
    graded on the sign test first, because it needs no residual bookkeeping and no bar.

@@ -137,6 +137,35 @@
    -> the residual GROWS with K, as registered.
    nearest hypothesis per y_S level (N = 1500): ['H_K', 'H_sat', 'H_P']
 
+=== G1c -- WHAT THE ADDITIVE YARDSTICK ITSELF IS DOING ACROSS K ===
+   Added after the physics-referee pass, 2026-09-15, which found that the
+   closure's own K-trajectory -- 79-93 % of the K3->K4 step -- is not a smooth
+   physical statement. Two reasons, both printed rather than argued.
+
+   (1) BRANCH IDENTITY. `packing_density` is a MINIMUM over which class is
+   dominant, so its value can move because a different branch WINS, not
+   because any interaction changed. Argmin index (0 = coarsest):
+      y_S           K=2           K=3           K=4           K=5
+     0.03           i=0           i=0           i=1           i=1
+     0.05           i=0           i=0           i=1           i=1
+     0.08           i=0           i=1           i=1           i=2
+   A row whose index CHANGES between two K values is one where the yardstick
+   moved by reassignment. Read C1's step against this table, not around it.
+
+   (2) KNOT COVERAGE. The tabulated a(u), b(u) are a PCHIP through the
+   IDENTIFIABLE binary ratios at u = 0.250, 0.333, 0.500, 0.667 plus the two PROVED but
+   UNMEASURED limits u = 0 and u = 1. Pairs above the top measured knot are
+   therefore interpolated across the widest gap in the whole construction:
+     K  pairs   pair u values (count)   above the top knot 0.667
+     2      1   0.2500x1   none
+     3      3   0.2500x1, 0.5000x2   none
+     4      6   0.2500x1, 0.3968x2, 0.6300x3   none
+     5     10   0.2500x1, 0.3536x2, 0.5000x3, 0.7071x4   <-- 4 of 10 pairs at 0.7071
+   -> K = 5's MOST NUMEROUS pair type sits above every measured ratio. So the
+      K = 4 -> 5 rung, which is the one that decides 'saturation', is evaluated
+      where the closure has no data. The SATURATION IS NOT ATTRIBUTABLE from
+      this design; the K3 -> K4 rise and the sign test (G7) do not depend on it.
+
 === G2 -- the y_S axis at fixed K (five levels, 6.0x, vs the closed block's two) ===
    N 1500 K=2: spearman(R, y_S) = -0.6000 (p 0.2848) over 5 levels; R(0.18) - R(0.03) = -1.21 (bar 2.02) -> (reported)
       y_S 0.03: -0.85  y_S 0.05: +0.18  y_S 0.08: -0.40  y_S 0.13: -2.97  y_S 0.18: -2.06
@@ -148,10 +177,10 @@
       y_S 0.03: +1.81  y_S 0.05: +1.79  y_S 0.08: +3.44  y_S 0.13: +9.73  y_S 0.18: +12.76
 
 === G3 -- the SPLIT control: K 3 -> 4 and P 3 -> 6 with the DISTRIBUTION held ===
-   N 1500 y_S 0.05: R(split) +0.44 - R(K3) -0.39 = +0.83 (se 1.37, bar 2.02); the additive prediction itself moved +0.07
-   N 1500 y_S 0.08: R(split) +2.69 - R(K3) +1.24 = +1.45 (se 0.84, bar 2.02); the additive prediction itself moved -1.41
-   N 3000 y_S 0.05: R(split) +1.48 - R(K3) +1.79 = -0.31 (se 0.98, bar 2.02); the additive prediction itself moved +0.07
-   N 3000 y_S 0.08: R(split) +5.67 - R(K3) +3.44 = +2.22 (se 0.80, bar 2.02); the additive prediction itself moved -1.41
+   N 1500 y_S 0.05: R(split) +0.44 - R(K3) -0.39 = +0.83 (se 1.37, bar 2.02); the additive prediction itself moved +0.07; a GENUINE 4th class moves it +7.73, so the split buys +11%
+   N 1500 y_S 0.08: R(split) +2.69 - R(K3) +1.24 = +1.45 (se 0.84, bar 2.02); the additive prediction itself moved -1.41; a GENUINE 4th class moves it +8.03, so the split buys +18%
+   N 3000 y_S 0.05: R(split) +1.48 - R(K3) +1.79 = -0.31 (se 0.98, bar 2.02); the additive prediction itself moved +0.07; a GENUINE 4th class moves it +7.44, so the split buys -4%
+   N 3000 y_S 0.08: R(split) +5.67 - R(K3) +3.44 = +2.22 (se 0.80, bar 2.02); the additive prediction itself moved -1.41; a GENUINE 4th class moves it +7.01, so the split buys +32%
    registered: |delta| < 2.02 on 2 of 2 means the residual is a FUNCTIONAL OF
    THE DISTRIBUTION; a jump comparable to G1's K 3 -> 4 increment means it is
    COUNTING CLASSES, i.e. an artefact of how a PSD is discretised.
@@ -161,7 +190,26 @@
      0.03    +3.62    +5.17     1.55    2.74   PASS
      0.05    +6.15    +6.64     0.49    3.10   PASS
      0.08    +6.26    +5.80     0.46    2.08   PASS
-   pooled over both N (32 points): spearman(R, n_min) = -0.4694 (p 0.0067); spearman(R, d_max/L) = +0.1400 (p 0.4446); bar 0.6
+   pooled over both N (32 points): spearman(R, n_min) = -0.4694 (p 0.0067); spearman(R, d_max/L) = +0.1400 (p 0.4446)
+   ⚠ THESE TWO ARE CONFOUNDED DIAGNOSTICS, NOT A GATE, AND THE 0.6 BAR THE
+   PREREG QUOTED BESIDE THEM IS WITHDRAWN AS MEANINGLESS. Raised by the
+   physics-referee pass, 2026-09-15: `n_min` is collinear with BOTH design
+   axes by construction (n goes as y/d^3, and adding classes at fixed y_S
+   dilutes every count), so a pooled correlation with it is guaranteed to be
+   large and negative whether or not any finite-size leak exists. Measured,
+   within fixed K and within fixed y_S:
+      N 1500 K=2: spearman(y_S, n_min) = -1.0000 over 5 levels
+      N 3000 K=2: spearman(y_S, n_min) = -1.0000 over 5 levels
+      N 1500 K=3: spearman(y_S, n_min) = -1.0000 over 5 levels
+      N 3000 K=3: spearman(y_S, n_min) = -1.0000 over 5 levels
+      N 1500 K=4: spearman(y_S, n_min) = -1.0000 over 3 levels
+      N 3000 K=4: spearman(y_S, n_min) = -1.0000 over 3 levels
+      N 1500 K=5: spearman(y_S, n_min) = -1.0000 over 3 levels
+      N 3000 K=5: spearman(y_S, n_min) = -1.0000 over 3 levels
+   -> n_min is a RESTATEMENT of the grid, so it cannot testify. THE VALID
+      finite-size control is the N-doubling comparison ABOVE, which is
+      gated and passes 3 of 3. `d_max/L` is not collinear in the same way
+      and is near zero, which is a real (if weak) reassurance.
 
 === G5 -- the NA2 exception at six seeds ===
    phi(1500) 0.659156 (n 6, sd 0.000584), phi(3000) 0.663751 (n 6, sd 0.001352)
@@ -197,6 +245,6 @@
    -> phi rises with K on 3 of 3 levels (registered: >= 2 of 3)
 
 === SUMMARY ===
-   FAILURES: ['G6 bracket 74%/74%']
+   FAILURES: ['G3 N=3000 y_S 0.08: split moved R by +2.22 (genuine 4th class +7.01)', 'G6 bracket 74%/74%']
    NOT INFORMATIVE (registered in advance): ['G1 ranking at N=1500 y_S=0.03: |R3| = 1.68 < 2.02', 'G1 ranking at N=1500 y_S=0.05: |R3| = 0.39 < 2.02', 'G1 ranking at N=1500 y_S=0.08: |R3| = 1.24 < 2.02', 'G1 ranking at N=3000 y_S=0.03: |R3| = 1.81 < 2.02', 'G1 ranking at N=3000 y_S=0.05: |R3| = 1.79 < 2.02']
    per-cell table written to kladder_cells.csv

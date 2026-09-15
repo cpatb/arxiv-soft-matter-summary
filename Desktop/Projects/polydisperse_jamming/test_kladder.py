@@ -410,12 +410,104 @@ def test_C7_the_sequential_advantage_is_the_size_of_its_own_convention_spread():
 
 def test_G6_bracket_is_recorded_as_a_FAILURE_and_the_bar_was_not_moved():
     """The registered sub-clause wanted >= 80 % each way and got 74 %/74 %. The bar
-    stays at 80 and the miss is in FAILURES."""
+    stays at 80 and the miss is in FAILURES -- alongside G3's N = 3000 miss, which
+    only appeared once the gate was widened to the N the registered SENTENCE implies."""
     import grade_kladder as gk
     txt = open(os.path.join(OUT, "grade_kladder.txt"), encoding="utf-8").read()
-    assert "FAILURES: ['G6 bracket 74%/74%']" in txt
+    assert "G6 bracket 74%/74%" in txt
+    assert "G3 N=3000 y_S 0.08: split moved R by +2.22" in txt
     assert "registered: both >= 80%" in txt
     assert gk.BAR_RMS == 2.02          # nothing else moved either
+
+
+def test_G3_is_graded_at_BOTH_N_because_the_registered_sentence_names_no_N():
+    """An earlier version scoped G3's failure condition to N = 1500, which is a
+    NARROWER question than the prereg's "|delta| < 2.02 on 2 of 2". Widened after the
+    physics-referee pass; this asserts it can now fail at either N."""
+    src = open(os.path.join(HERE, "grade_kladder.py"), encoding="utf-8").read()
+    g3 = src.split("=== G3 --")[1].split("=== G4 --")[0]
+    assert "if abs(d) >= BAR_RMS:" in g3
+    assert "if n == 1500 and abs(d) >= BAR_RMS:" not in g3
+
+
+def test_C2_all_four_split_ratios_are_printed_including_the_negative_one():
+    """The claims file quoted "11-32 %" and silently dropped the N = 3000, y_S = 0.05
+    value of -4 %. All four are now printed by the grader, so the range cannot be
+    quoted from a subset again."""
+    txt = open(os.path.join(OUT, "grade_kladder.txt"), encoding="utf-8").read()
+    for frac in ("the split buys +11%", "the split buys +18%",
+                 "the split buys -4%", "the split buys +32%"):
+        assert frac in txt, frac
+    claims = open(os.path.join(HERE, "CLAIMS_KLADDER_2026-09-15.md"),
+                  encoding="utf-8").read()
+    assert "**−4 %**" in claims
+
+
+def test_G1c_records_that_K5_is_evaluated_where_the_closure_has_no_data():
+    """The saturation rung leans on 4 of 10 pairs at u = 0.7071, above every measured
+    knot. Computed here from the ladder and the knot set, not read from prose."""
+    import grade_mixture_ext as gx
+    import mixture_model as mm
+    beta = mm.measured(mu_p=kl.MU_P)[("lognormal", 0.0)][0]
+    tab, _, _ = gx.tabulated_closure(beta, gx.ext_points(beta))
+    top = max(tab)
+    assert abs(top - 2.0 / 3.0) < 1e-9
+    for k in (2, 3, 4):
+        assert not [u for _, _, u in kl.pair_table(kl.ladder(k)) if u > top + 1e-9], k
+    above5 = [u for _, _, u in kl.pair_table(kl.ladder(5)) if u > top + 1e-9]
+    assert len(above5) == 4, above5
+    assert all(abs(u - 0.5**0.5) < 1e-9 for u in above5)
+    txt = open(os.path.join(OUT, "grade_kladder.txt"), encoding="utf-8").read()
+    assert "SATURATION IS NOT ATTRIBUTABLE" in txt
+
+
+def test_G1c_records_that_the_argmin_branch_reassigns_across_K(ctx):
+    """A step in the ADDITIVE prediction across K is not by itself a filling
+    statement: the min-over-branches argmin moves on 3 of 3 y_S rows."""
+    beta, _, _, fa, fb = ctx
+    cells = {c["label"]: c for c in kl.build_cells(kl.N_BIG)[0]}
+
+    def argmin_branch(d_rel, y):
+        d = np.asarray(sorted(d_rel, reverse=True), float)
+        yv = np.asarray([y[list(d_rel).index(v)] for v in d], float)
+        yv = yv / yv.sum()
+        vals = []
+        for i in range(d.size):
+            tot = sum((1.0 - beta + float(fb(d[i] / d[j])) * beta * (1.0 - 1.0 / beta))
+                      * yv[j] for j in range(i))
+            tot += sum((1.0 - float(fa(d[j] / d[i]))) * yv[j]
+                       for j in range(i + 1, d.size))
+            vals.append(beta / (1.0 - tot) if 1.0 - tot > 1e-12 else np.inf)
+        return int(np.argmin(vals))
+
+    nswitch = 0
+    for ys in kl.YS_BALANCED:
+        idx = [argmin_branch(cells[f"K{k}_yS{ys:.2f}"]["d_rel"],
+                             cells[f"K{k}_yS{ys:.2f}"]["y"]) for k in kl.K_LEVELS]
+        nswitch += len(set(idx)) > 1
+    assert nswitch == 3, nswitch
+    txt = open(os.path.join(OUT, "grade_kladder.txt"), encoding="utf-8").read()
+    assert "BRANCH IDENTITY" in txt
+
+
+def test_n_min_is_collinear_with_both_axes_so_it_cannot_be_a_null():
+    """spearman(y_S, n_min) = -1.0000 at every K, by construction. The 0.6 "bar" the
+    prereg quoted beside the pooled correlation was therefore meaningless, and the
+    grader now prints the collinearity instead of the bar."""
+    from scipy import stats as _st
+    for k in kl.K_LEVELS:
+        pts = []
+        for ys in kl.YS_LEVELS:
+            d = kl.ladder(k)
+            y = kl.y_from_q(d, kl.q_for_ys(d, ys))
+            if min(kl.class_counts(d, y, kl.N_PROD)) >= kl.MIN_PHASE_COUNT:
+                pts.append((ys, int(min(kl.class_counts(d, y, kl.N_PROD)))))
+        if len(pts) >= 3:
+            rho = float(_st.spearmanr([a for a, _ in pts], [b for _, b in pts]).statistic)
+            assert abs(rho + 1.0) < 1e-12, (k, rho, pts)
+    txt = open(os.path.join(OUT, "grade_kladder.txt"), encoding="utf-8").read()
+    assert "CONFOUNDED DIAGNOSTICS, NOT A GATE" in txt
+    assert "0.6 BAR THE" in txt          # and it is explicitly withdrawn
 
 
 def test_C8_the_transfer_reproduces_the_standing_numbers_and_does_not_settle():
