@@ -122,30 +122,61 @@ def main() -> int:
     say("   table: put the pair weight above 0.90 beside the residual it is supposed to")
     say("   explain. A weight table says where phi is SENSITIVE to a(u); it does NOT say")
     say("   where the model FAILS, and here the two sit at opposite ends of the CV axis.")
+    say("   SIGN CONVENTION, and it is NOT free: the residual below is (MODEL - phi),")
+    say("   matching transfer_kladder.py and mixture_closure.py, so NEGATIVE = the model")
+    say("   sits BELOW the measurement, i.e. UNDER-predicts. A first version of this")
+    say("   section used (phi - model) and so disagreed in sign with two pre-existing")
+    say("   documents about the identical physical statement, while its own prose carried")
+    say("   a HARDCODED number from the other convention -- so the artifact contradicted")
+    say("   its own table (referee, 2026-09-16). Every number below is now printed.")
     say(f"   {'family':<11}{'CV':>5}{'w(u>0.90)':>11}{'res/scale':>11}")
     ws, rs = [], []
+    per_fam: dict[str, tuple[list, list]] = {}
+    worst_fam = worst_cv = ""
+    worst_res = 0.0
+    best_w = 0.0
+    best_res = 0.0
     for fam in mm.FAMILIES:
         for cv in mc.CVS:
             if (fam, cv) not in meas:
                 continue
             d, y = mm.psd_classes(fam, cv)
             w90 = pair_weight_above(d, y, 0.90)
-            r_ = (meas[(fam, cv)][0] - mc.packing_density_tabulated(
-                np.asarray(d, float), np.asarray(y, float), beta, fa0, fb0)) / SCALE
+            r_ = (mc.packing_density_tabulated(
+                np.asarray(d, float), np.asarray(y, float), beta, fa0, fb0)
+                - meas[(fam, cv)][0]) / SCALE
             if fam != "bidisperse":          # K = 2, no pair structure to speak of
                 ws.append(w90)
                 rs.append(abs(r_))
+                per_fam.setdefault(fam, ([], []))
+                per_fam[fam][0].append(w90)
+                per_fam[fam][1].append(abs(r_))
+                if abs(r_) > abs(worst_res):
+                    worst_res, worst_fam, worst_cv = r_, fam, f"{cv:.1f}"
+                if w90 > best_w:
+                    best_w, best_res = w90, r_
             say(f"   {fam:<11}{cv:5.1f}{w90:11.4f}{r_:+11.1f}")
     from scipy.stats import spearmanr
     rho, p_ = spearmanr(ws, rs)
-    say(f"   spearman(|residual|, weight above u = 0.90) over the {len(ws)} continuous "
-        f"cells = {rho:+.3f} (p {p_:.3f})")
-    say("   -> the cells that lean HARDEST on u > 0.9 (CV = 0.1, weight 0.54) are already")
-    say("      fit to within noise; the cells that are BADLY misfit (CV = 0.4-0.5, up to")
-    say("      -6.9 scale) have the LEAST weight there. Sensitivity and misfit are")
-    say("      ANTI-correlated, so resolving u > 0.9 would improve the predictions that")
-    say("      do not need improving and would do essentially nothing for the ones that")
-    say("      drive 'the transfer does not work'. THE CLAIM IS WITHDRAWN.")
+    say(f"   POOLED   spearman(|residual|, w(u > 0.90)) over {len(ws)} continuous cells "
+        f"= {rho:+.3f} (p {p_:.3f})")
+    say("   ⚠ but the pooled p OVERSTATES independence, because within each family BOTH")
+    say("     axes are near-perfectly monotone in CV alone -- this is two monotone curves")
+    say("     driven by one shared covariate, closer to an effective N of 2 than of 10")
+    say("     (referee). The within-family split is reported BESIDE it, not instead:")
+    for fam, (fw, fr) in sorted(per_fam.items()):
+        rf, pf = spearmanr(fw, fr)
+        rc, _pc = spearmanr(list(mc.CVS)[:len(fw)], fw)
+        say(f"        {fam:<11} n = {len(fw)}: spearman(|res|, w) = {rf:+.3f} "
+            f"(p {pf:.3f});  spearman(w, CV) = {rc:+.3f}")
+    say("   -> the anti-correlation SURVIVES the within-family reading, which is what")
+    say("      matters. Concretely: the cell that leans hardest on u > 0.9 "
+        f"(w = {best_w:.4f})")
+    say(f"      is fit to {best_res:+.1f} scale, while the worst-fit cell "
+        f"({worst_fam} CV {worst_cv}, {worst_res:+.1f} scale) has the LEAST weight there.")
+    say("      So resolving u > 0.9 would improve the predictions that do not need")
+    say("      improving and do essentially nothing for the ones that drive 'the transfer")
+    say("      does not work'. THE CLAIM IS WITHDRAWN.")
     say("      What survives is the narrower statement: a knot at u* cannot cover the")
     say("      families' weight, which is why section 2's verdict is what it is.")
     say()

@@ -279,6 +279,13 @@ def test_the_u_above_0p9_prescription_stays_withdrawn():
     assert m.group(1).lstrip("+-") in claims.replace("−", "-"), (
         f"the claims file must quote the printed correlation {m.group(1)}")
     assert "anti-correlated" in claims.lower()
+    # the within-family split must be reported BESIDE the pooled figure, because the
+    # pooled p overstates independence (both axes are monotone in CV within a family)
+    assert "lognormal" in txt and "spearman(|res|, w)" in txt
+    # and the sign convention must be the project's own, (model - phi): the first
+    # version of this section used the opposite one and contradicted two older documents
+    assert "(MODEL - phi)" in txt
+    assert "NEGATIVE = the model" in txt
 
 
 @pytest.mark.skipif(not os.path.exists(GRADE), reason="block not graded yet")

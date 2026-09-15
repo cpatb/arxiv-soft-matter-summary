@@ -36,29 +36,42 @@
    table: put the pair weight above 0.90 beside the residual it is supposed to
    explain. A weight table says where phi is SENSITIVE to a(u); it does NOT say
    where the model FAILS, and here the two sit at opposite ends of the CV axis.
+   SIGN CONVENTION, and it is NOT free: the residual below is (MODEL - phi),
+   matching transfer_kladder.py and mixture_closure.py, so NEGATIVE = the model
+   sits BELOW the measurement, i.e. UNDER-predicts. A first version of this
+   section used (phi - model) and so disagreed in sign with two pre-existing
+   documents about the identical physical statement, while its own prose carried
+   a HARDCODED number from the other convention -- so the artifact contradicted
+   its own table (referee, 2026-09-16). Every number below is now printed.
    family        CV  w(u>0.90)  res/scale
-   lognormal    0.1     0.5428       -0.1
-   lognormal    0.2     0.2885       +2.3
-   lognormal    0.3     0.1915       +3.1
-   lognormal    0.4     0.1396       +4.8
-   lognormal    0.5     0.1075       +6.9
-   uniform      0.1     0.5471       -0.2
-   uniform      0.2     0.3783       +0.8
-   uniform      0.3     0.3438       +2.0
-   uniform      0.4     0.3372       +2.8
-   uniform      0.5     0.3346       +2.4
-   bidisperse   0.1     0.0000       -1.5
-   bidisperse   0.2     0.0000       +0.1
-   bidisperse   0.3     0.0000       +1.1
-   bidisperse   0.4     0.0000       +1.4
-   bidisperse   0.5     0.0000       -0.4
-   spearman(|residual|, weight above u = 0.90) over the 10 continuous cells = -0.939 (p 0.000)
-   -> the cells that lean HARDEST on u > 0.9 (CV = 0.1, weight 0.54) are already
-      fit to within noise; the cells that are BADLY misfit (CV = 0.4-0.5, up to
-      -6.9 scale) have the LEAST weight there. Sensitivity and misfit are
-      ANTI-correlated, so resolving u > 0.9 would improve the predictions that
-      do not need improving and would do essentially nothing for the ones that
-      drive 'the transfer does not work'. THE CLAIM IS WITHDRAWN.
+   lognormal    0.1     0.5428       +0.1
+   lognormal    0.2     0.2885       -2.3
+   lognormal    0.3     0.1915       -3.1
+   lognormal    0.4     0.1396       -4.8
+   lognormal    0.5     0.1075       -6.9
+   uniform      0.1     0.5471       +0.2
+   uniform      0.2     0.3783       -0.8
+   uniform      0.3     0.3438       -2.0
+   uniform      0.4     0.3372       -2.8
+   uniform      0.5     0.3346       -2.4
+   bidisperse   0.1     0.0000       +1.5
+   bidisperse   0.2     0.0000       -0.1
+   bidisperse   0.3     0.0000       -1.1
+   bidisperse   0.4     0.0000       -1.4
+   bidisperse   0.5     0.0000       +0.4
+   POOLED   spearman(|residual|, w(u > 0.90)) over 10 continuous cells = -0.939 (p 0.000)
+   ⚠ but the pooled p OVERSTATES independence, because within each family BOTH
+     axes are near-perfectly monotone in CV alone -- this is two monotone curves
+     driven by one shared covariate, closer to an effective N of 2 than of 10
+     (referee). The within-family split is reported BESIDE it, not instead:
+        lognormal   n = 5: spearman(|res|, w) = -1.000 (p 0.000);  spearman(w, CV) = -1.000
+        uniform     n = 5: spearman(|res|, w) = -0.900 (p 0.037);  spearman(w, CV) = -1.000
+   -> the anti-correlation SURVIVES the within-family reading, which is what
+      matters. Concretely: the cell that leans hardest on u > 0.9 (w = 0.5471)
+      is fit to +0.2 scale, while the worst-fit cell (lognormal CV 0.5, -6.9 scale) has the LEAST weight there.
+      So resolving u > 0.9 would improve the predictions that do not need
+      improving and do essentially nothing for the ones that drive 'the transfer
+      does not work'. THE CLAIM IS WITHDRAWN.
       What survives is the narrower statement: a knot at u* cannot cover the
       families' weight, which is why section 2's verdict is what it is.
 

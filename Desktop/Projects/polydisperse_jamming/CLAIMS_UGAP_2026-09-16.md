@@ -253,20 +253,34 @@ this section read "**the continuous-family transfer needs a(u) at u > 0.9**". A 
 refuted it on the second pass, and the check is one column — put the weight beside the
 residual it is supposed to explain:
 
-| family | CV | w(u > 0.90) | residual (φ_meas − ADDtab)/scale |
+⚠ **Sign convention, and it was wrong here first.** The residual is **(model − φ)**,
+matching `transfer_kladder.py` and `mixture_closure.py`, so **negative = the model
+under-predicts**. The first version of this section used (φ − model), disagreeing in sign
+with two pre-existing documents about the identical physical statement, and its diagnostic
+carried a **hardcoded** number from the other convention so the artifact contradicted its
+own table (referee, 2026-09-16). Every figure below is now printed by
+`diag_transfer_ugap.py`, not typed.
+
+| family | CV | w(u > 0.90) | residual (model − φ)/scale |
 |---|---|---|---|
-| lognormal | 0.1 | **0.5428** | **−0.1** |
-| lognormal | 0.3 | 0.1915 | +3.1 |
-| lognormal | 0.5 | **0.1075** | **+6.9** |
-| uniform | 0.1 | **0.5471** | **−0.2** |
-| uniform | 0.5 | 0.3346 | +2.4 |
+| lognormal | 0.1 | **0.5428** | **+0.1** |
+| lognormal | 0.3 | 0.1915 | −3.1 |
+| lognormal | 0.5 | **0.1075** | **−6.9** |
+| uniform | 0.1 | **0.5471** | **+0.2** |
+| uniform | 0.5 | 0.3346 | −2.4 |
 
 **spearman(|residual|, w(u > 0.90)) = −0.939 (p 0.000)** over the 10 continuous cells.
 The cells that lean hardest on u > 0.9 are **already fit to within noise**; the badly
-misfit ones (CV 0.4–0.5, up to +6.9 scale) have the **least** weight there. Sensitivity and
-misfit are **anti-correlated**, so resolving u > 0.9 would improve the predictions that do
-not need improving and do essentially nothing for the ones that drive "the transfer does
+misfit ones (CV 0.4–0.5, down to −6.9 scale) have the **least** weight there. Sensitivity
+and misfit are **anti-correlated**, so resolving u > 0.9 would improve the predictions that
+do not need improving and do essentially nothing for the ones that drive "the transfer does
 not work."
+
+⚠ **And the pooled p overstates independence.** Within each family both axes are
+near-perfectly monotone in CV alone (spearman(w, CV) = −1.000 in both), so this is **two
+monotone curves driven by one shared covariate — an effective N nearer 2 than 10**. The
+within-family split is reported beside the pooled figure, not instead of it, and the
+verdict survives it: **lognormal −1.000 (n = 5), uniform −0.900 (p 0.037, n = 5)**.
 
 **A weight table says where φ is SENSITIVE to a(u). It does not say where the model
 FAILS**, and here the two sit at opposite ends of the CV axis. What survives is the
