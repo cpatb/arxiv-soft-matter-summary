@@ -1,0 +1,142 @@
+=== diag_ugap.py -- is the K = 5 prediction sensitive to the unmeasured u > 0.667 region? ===
+   beta(N=1500) = 0.594687 (measured, mu_p 0.3); PHI_SCALE = 2.1e-03
+   bars: TAB in-sample rms 2.02, max 5.74 (quoted, NOT new); separation bar 1.6x
+   u* = 4^(-1/4) = 0.70711
+
+   the shipped closure's knots (identifiable binary ratios + two PROVED limits):
+              u         a         b   source
+        0.00000    0.0000    0.0000   proved limit
+        0.25000    0.3010    0.4796   measured, r = 4.00
+        0.33333    0.5210    0.5505   measured, r = 3.00
+        0.50000    0.7854    0.7471   measured, r = 2.00
+        0.66667    0.9249    0.8985   measured, r = 1.50
+        1.00000    1.0000    1.0000   proved limit
+   -> the gap 0.667 < u < 1 contains NO knot. Width in u: 0.3333, the widest interval in the construction.
+
+=== REPRODUCTION: 43 rows on disk in out/kladder_cells.csv ===
+   recomputed ADDtab on all 43 rows; worst |diff| = 9.075e-09 (4.32e-06 scale)
+   -> reproduces the artifact. The sweep below is of the SHIPPED closure.
+
+=== pair inventory: where each K's pairs actually sit in u ===
+     K  n_pairs   u values (count)
+     2        1   0.25000 (x1)
+     3        3   0.25000 (x1), 0.50000 (x2)
+     4        6   0.25000 (x1), 0.39685 (x2), 0.62996 (x3)
+     5       10   0.25000 (x1), 0.35355 (x2), 0.50000 (x3), 0.70711 (x4)
+   -> only K = 5 has any pair above u = 0.667: 4 of its 10, at u* = 0.70711.
+
+=== the two ranges swept ===
+   MONOTONE  (what the proved limits + the monotonicity of a, b permit):
+      a(u*) in [0.9249, 1.0000]   (a(0.667) = 0.9249, a(1) = 1)
+      b(u*) in [0.8985, 1.0000]   (b(0.667) = 0.8985, b(1) = 1)
+   UNCONSTRAINED  a(u*), b(u*) in [0, 1] -- no monotonicity assumed.
+   shipped interpolated values at u*: a 0.9398  b 0.9177
+
+=== SWEEP -- MONOTONE range, 41x41 grid ===
+   phi excursion in SCALE units as a(u*), b(u*) move over the whole range.
+       N         cell   a only   b only    joint   R base           R range
+    1500    K2_yS0.03     0.00     0.00     0.00    -0.85   [  -0.85,   -0.85]
+    1500    K2_yS0.05     0.00     0.00     0.00    +0.18   [  +0.18,   +0.18]
+    1500    K2_yS0.08     0.00     0.00     0.00    -0.40   [  -0.40,   -0.40]
+    1500    K3_yS0.03     0.00     0.00     0.00    +1.68   [  +1.68,   +1.68]
+    1500    K3_yS0.05     0.00     0.00     0.00    -0.39   [  -0.39,   -0.39]
+    1500    K3_yS0.08     0.00     0.00     0.00    +1.24   [  +1.24,   +1.24]
+    1500    K4_yS0.03     0.74     2.75     3.49    +5.09   [  +2.72,   +6.21]
+    1500    K4_yS0.05     1.01     2.48     3.49    +7.34   [  +4.96,   +8.45]
+    1500    K4_yS0.08     1.34     2.18     3.53    +9.27   [  +6.86,  +10.39]
+    1500    K5_yS0.03     2.95     6.71     9.59    +5.29   [  +3.40,  +12.99]
+    1500    K5_yS0.05     3.63     5.95     9.49    +5.76   [  +3.88,  +13.38]
+    1500    K5_yS0.08     2.88     3.41     6.26    +7.50   [  +6.27,  +12.53]
+    3000    K2_yS0.03     0.00     0.00     0.00    +0.70   [  +0.70,   +0.70]
+    3000    K2_yS0.05     0.00     0.00     0.00    +1.72   [  +1.72,   +1.72]
+    3000    K2_yS0.08     0.00     0.00     0.00    +0.63   [  +0.63,   +0.63]
+    3000    K3_yS0.03     0.00     0.00     0.00    +1.81   [  +1.81,   +1.81]
+    3000    K3_yS0.05     0.00     0.00     0.00    +1.79   [  +1.79,   +1.79]
+    3000    K3_yS0.08     0.00     0.00     0.00    +3.44   [  +3.44,   +3.44]
+    3000    K4_yS0.03     0.74     2.75     3.49    +6.35   [  +3.98,   +7.47]
+    3000    K4_yS0.05     1.01     2.48     3.49    +9.23   [  +6.84,  +10.34]
+    3000    K4_yS0.08     1.34     2.18     3.53   +10.45   [  +8.03,  +11.57]
+    3000    K5_yS0.03     2.95     6.71     9.59    +6.98   [  +5.10,  +14.68]
+    3000    K5_yS0.05     3.63     5.94     9.49    +8.43   [  +6.55,  +16.04]
+    3000    K5_yS0.08     2.89     3.41     6.26    +9.24   [  +8.01,  +14.27]
+   worst joint excursion, K = 5 cells:      9.59 scale
+   worst joint excursion, K = 2/3/4 control: 3.53 scale   (their pairs all sit at u <= 0.630)
+
+=== SWEEP -- UNCONSTRAINED range, 41x41 grid ===
+   phi excursion in SCALE units as a(u*), b(u*) move over the whole range.
+       N         cell   a only   b only    joint   R base           R range
+    1500    K2_yS0.03     0.00     0.00     0.00    -0.85   [  -0.85,   -0.85]
+    1500    K2_yS0.05     0.00     0.00     0.00    +0.18   [  +0.18,   +0.18]
+    1500    K2_yS0.08     0.00     0.00     0.00    -0.40   [  -0.40,   -0.40]
+    1500    K3_yS0.03     0.00     0.00     0.00    +1.68   [  +1.68,   +1.68]
+    1500    K3_yS0.05     0.00     0.00     0.00    -0.39   [  -0.39,   -0.39]
+    1500    K3_yS0.08     0.00     0.00     0.00    +1.24   [  +1.24,   +1.24]
+    1500    K4_yS0.03     0.74     2.75     3.49    +5.09   [  +2.72,   +6.21]
+    1500    K4_yS0.05     1.01     2.48     3.49    +7.34   [  +4.96,   +8.45]
+    1500    K4_yS0.08     1.34     2.18     3.53    +9.27   [  +6.86,  +10.39]
+    1500    K5_yS0.03    29.44    18.19    60.22    +5.29   [ -47.23,  +12.99]
+    1500    K5_yS0.05    34.27    24.19    54.99    +5.76   [ -41.62,  +13.38]
+    1500    K5_yS0.08    28.61    35.03    49.20    +7.50   [ -36.67,  +12.53]
+    3000    K2_yS0.03     0.00     0.00     0.00    +0.70   [  +0.70,   +0.70]
+    3000    K2_yS0.05     0.00     0.00     0.00    +1.72   [  +1.72,   +1.72]
+    3000    K2_yS0.08     0.00     0.00     0.00    +0.63   [  +0.63,   +0.63]
+    3000    K3_yS0.03     0.00     0.00     0.00    +1.81   [  +1.81,   +1.81]
+    3000    K3_yS0.05     0.00     0.00     0.00    +1.79   [  +1.79,   +1.79]
+    3000    K3_yS0.08     0.00     0.00     0.00    +3.44   [  +3.44,   +3.44]
+    3000    K4_yS0.03     0.74     2.75     3.49    +6.35   [  +3.98,   +7.47]
+    3000    K4_yS0.05     1.01     2.48     3.49    +9.23   [  +6.84,  +10.34]
+    3000    K4_yS0.08     1.34     2.18     3.53   +10.45   [  +8.03,  +11.57]
+    3000    K5_yS0.03    29.44    18.21    60.15    +6.98   [ -45.47,  +14.68]
+    3000    K5_yS0.05    34.28    24.22    54.92    +8.43   [ -38.87,  +16.04]
+    3000    K5_yS0.08    28.57    35.08    49.14    +9.24   [ -34.87,  +14.27]
+   worst joint excursion, K = 5 cells:      60.22 scale
+   worst joint excursion, K = 2/3/4 control: 3.53 scale   (their pairs all sit at u <= 0.630)
+
+=== the quantity the claim actually rests on: R(5) - R(4) at matched y_S ===
+   C1's saturation statement is that this increment is <= 0. If the whole
+   admissible sweep cannot carry it across zero, the unmeasured region cannot
+   overturn the claim, whatever a(u*) is.
+   --- MONOTONE ---
+       N    y_S  R5-R4 base      min      max  crosses 0?
+    1500   0.03       +0.20    -2.80   +10.27         YES
+    1500   0.05       -1.58    -4.56    +8.42         YES
+    1500   0.08       -1.77    -4.12    +5.67         YES
+    3000   0.03       +0.63    -2.37   +10.70         YES
+    3000   0.05       -0.80    -3.78    +9.20         YES
+    3000   0.08       -1.21    -3.56    +6.23         YES
+
+   --- UNCONSTRAINED ---
+       N    y_S  R5-R4 base      min      max  crosses 0?
+    1500   0.03       +0.20   -53.44   +10.27         YES
+    1500   0.05       -1.58   -50.07    +8.42         YES
+    1500   0.08       -1.77   -47.06    +5.67         YES
+    3000   0.03       +0.63   -52.94   +10.70         YES
+    3000   0.05       -0.80   -49.21    +9.20         YES
+    3000   0.08       -1.21   -46.44    +6.23         YES
+
+=== VERDICT ===
+   worst K = 5 joint phi excursion: MONOTONE 9.59 scale, UNCONSTRAINED 60.22 scale
+   bar: TAB's own in-sample rms, 2.02 scale
+   candidate separation (excursion / median seR = 0.48): MONOTONE 20.09x, UNCONSTRAINED 126.21x; bar 1.6x
+   -> the MONOTONE excursion EXCEEDS the in-sample rms; the region matters.
+   -> candidate separation 20.09x >= 1.6x: a measurement at
+      u* would be informative.
+   increments that the sweep can carry across zero: 12 of 12
+      MONOTONE N1500 yS0.03: YES
+      MONOTONE N1500 yS0.05: YES
+      MONOTONE N1500 yS0.08: YES
+      MONOTONE N3000 yS0.03: YES
+      MONOTONE N3000 yS0.05: YES
+      MONOTONE N3000 yS0.08: YES
+      UNCONSTRAINED N1500 yS0.03: YES
+      UNCONSTRAINED N1500 yS0.05: YES
+      UNCONSTRAINED N1500 yS0.08: YES
+      UNCONSTRAINED N3000 yS0.03: YES
+      UNCONSTRAINED N3000 yS0.05: YES
+      UNCONSTRAINED N3000 yS0.08: YES
+
+   WHAT THIS CANNOT DECIDE: it sweeps the closure's PARAMETER, not the
+   closure's FORM. A measurement at u* that fell OUTSIDE [0, 1], or that broke
+   monotonicity, is outside every range swept here -- but both are excluded by
+   mixture_model.check_limits, not by this script. And it says nothing about
+   whether a(u) is measurable there, only whether K = 5 cares.

@@ -1,0 +1,116 @@
+=== predict_ugap.py -- BLIND, PREREG_UGAP_2026-09-16.md ===
+   U-GAP block: 3 ratios x 9 compositions = 27 cells, 27 admitted, 0 refused; 81 runs at N = 1500
+   beta = 0.594687 (measured, mu_p 0.3); PHI_SCALE = 2.1e-03; identifiability width bar 0.25 (VERBATIM, not movable)
+   no U-GAP data file exists: 0 matched out/phase12_ug*
+
+   ANCHOR -- vectorised kernel vs mixture_closure.packing_density_ab over 300 random (r, a, b, x): worst |diff| = 1.110e-16
+
+=== the shipped closure this block is testing ===
+   measured knots at u = 0.2500, 0.3333, 0.5000, 0.6667; proved limits at u = 0 and 1; NOTHING between 0.6667 and 1.
+           u        a        b
+      0.2500   0.3010   0.4796
+      0.3333   0.5210   0.5505
+      0.5000   0.7854   0.7471
+      0.6667   0.9249   0.8985
+   interpolated at u* = 0.70711:  a 0.9398   b 0.9177   <- the number arm A replaces
+
+=== the design's IDENTIFIABILITY CEILING on the registered grid ===
+   Noise-free phi generated from the shipped closure at each arm's own u, then
+   passed through the registered rule. This is the narrowest interval a perfect
+   experiment at this design could return -- an upper bound on the block, not a
+   promise about it.
+    arm         r        u  n_x  x*cross  n_c  n_f    w(a)    w(b)  ident?
+      A   1.41421  0.70711    9   0.3565    4    5   0.055   0.055  YES
+      B   1.25000  0.80000    9   0.3617    5    4   0.115   0.085  YES
+      C   1.50000  0.66667    9   0.3539    4    5   0.050   0.050  YES
+   (for comparison, out/diag_uident.txt section 5: the OLD 8-point grid's
+   ceiling is identifiable at r = 1.41421 and 1.5 and NOT at r = 1.25.)
+
+=== ROBUSTNESS: how wrong can the shipped a(u*) be before arm A fails? ===
+   Rows: assumed true a(u*). Columns: assumed true b(u*). 'Y' = both widths
+   under 0.25; otherwise the WIDER of the two is printed.
+        a\b     0.860    0.900    0.918    0.940    0.960    0.980    0.990
+      0.9000        Y        Y        Y        Y     0.96     0.99     1.00
+      0.9200        Y        Y        Y        Y     0.97     0.99     1.00
+      0.9398        Y        Y        Y        Y        Y     0.99     1.00
+      0.9600        Y        Y        Y        Y        Y     0.99     1.00
+      0.9700     0.26        Y        Y        Y        Y     0.99     1.00
+      0.9800     0.95     0.96     0.97        Y     0.99     0.99     1.00
+      0.9900     0.99     0.99     0.99     0.99     1.00     1.00     1.00
+   -> arm A stays identifiable up to a true a(u*) of 0.9800.
+
+=== the HELD-OUT evidence that sets the direction prediction ===
+   r = 1.25 failed identifiability, so `tabulated_closure` never put a knot
+   there: its phi data is genuinely OUT of the closure and is a legal test of
+   the extrapolation. Residuals phi_measured - phi_shipped, in scale units:
+   r = 1.25 (u 0.8000, HELD OUT): n = 8, mean -1.03, rms 1.19, negative on 8/8
+      -0.83 -0.68 -0.13 -0.65 -1.87 -1.80 -1.58 -0.68
+   r = 1.50 (u 0.6667, a FITTED knot (control)): n = 8, mean +0.11, rms 0.51, negative on 3/8
+      +0.05 +0.68 +0.88 -0.56 +0.38 -0.60 -0.09 +0.13
+   -> the shipped extrapolation OVER-predicts filling where it is held out, on
+      8 of 8. If that direction persists at u*, the true a(u*) is ABOVE 0.9398,
+      which is the direction that threatens BOTH arm A's identifiability and
+      the K-ladder's saturation claim. That is why it is registered as U2.
+
+=== the K-ladder consequence the block exists to settle (registered as U3) ===
+   out/diag_ugap.txt swept a(u*), b(u*) over the monotone-admissible range and
+   found R(5) - R(4) can be carried across zero on 12 of 12 rows, so a measured
+   knot decides the saturation verdict rather than confirming it. Blind
+   prediction, evaluated by reinserting a knot at u* and recomputing ADDtab:
+        N    y_S  R5-R4 now  at a=0.9398  at a=0.97  at a=0.99
+     1500   0.03      +0.20        +0.45      +1.94      +2.84
+     1500   0.05      -1.58        -1.33      +0.55      +1.66
+     1500   0.08      -1.77        -1.52      +0.19      +1.16
+     3000   0.03      +0.63        +0.88      +2.37      +3.27
+     3000   0.05      -0.80        -0.55      +1.33      +2.45
+     3000   0.08      -1.21        -0.96      +0.76      +1.73
+   (the a = 0.9398 column re-inserts the closure's OWN interpolated value as an
+   explicit knot, so any difference from 'R5-R4 now' is PCHIP reshaping, not
+   physics; it is printed so the two effects cannot be confused.)
+
+=== CAVEATS -- these must appear in the claims file ===
+   C-i   The measured knot enters at ONE friction (mu_p = 0.3), ONE pressure rung
+         (p_hat = 1e-3) and ONE N (1500). Nothing here says a(u) is pressure- or
+         friction-independent, and the closure has never been tested off that rung.
+   C-ii  Arm A's knot is measured AT u = 0.70711 exactly, which is K = 5's adjacent
+         pair ratio on a span-4 ladder. It does NOT fill the rest of the gap: the
+         interval (0.70711, 1) still has no measured point, and PCHIP's shape there
+         remains an extrapolation between a measured knot and a proved limit.
+   C-iii Inserting a knot at u* also moves a(u) and b(u) at NEIGHBOURING u through the
+         interpolant's derivatives. out/diag_ugap.txt measured that leakage: the K = 4
+         cells, whose pairs all sit at u <= 0.630, move up to 3.49 scale. So any K = 4
+         number recomputed after this block is NOT independent of it.
+   C-iv  The identifiability rule's bar (delta chi2 = 1 per point, width < 0.25) is a
+         statement in units of PHI_SCALE, not of the seed error. It therefore does not
+         tighten with seeds or with the number of compositions -- demonstrated in
+         out/diag_uident.txt section 3 -- and a PASS is not a claim about precision.
+
+=== per-cell blind phi predictions, shipped closure ===
+    arm         r      x  phi_pred  branch   n_min
+      A   1.41421   0.05   0.59648  coarse     194
+      A   1.41421   0.12   0.59901  coarse     418
+      A   1.41421   0.20   0.60193  coarse     621
+      A   1.41421   0.28   0.60488  coarse     714
+      A   1.41421   0.36   0.60766    fine     579
+      A   1.41421   0.45   0.60580    fine     453
+      A   1.41421   0.55   0.60375    fine     337
+      A   1.41421   0.70   0.60070    fine     197
+      A   1.41421   0.88   0.59708    fine      69
+      B   1.25000   0.05   0.59559  coarse     140
+      B   1.25000   0.12   0.59687  coarse     315
+      B   1.25000   0.20   0.59833  coarse     492
+      B   1.25000   0.28   0.59980  coarse     648
+      B   1.25000   0.36   0.60128  coarse     715
+      B   1.25000   0.45   0.60039    fine     577
+      B   1.25000   0.55   0.59934    fine     443
+      B   1.25000   0.70   0.59778    fine     270
+      B   1.25000   0.88   0.59592    fine      98
+      C   1.50000   0.05   0.59693  coarse     226
+      C   1.50000   0.12   0.60009  coarse     473
+      C   1.50000   0.20   0.60375  coarse     686
+      C   1.50000   0.28   0.60746  coarse     649
+      C   1.50000   0.36   0.61076    fine     518
+      C   1.50000   0.45   0.60845    fine     399
+      C   1.50000   0.55   0.60590    fine     293
+      C   1.50000   0.70   0.60212    fine     169
+      C   1.50000   0.88   0.59764    fine      58

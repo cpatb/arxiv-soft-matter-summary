@@ -1,0 +1,179 @@
+=== diag_uident.py -- is a(u) MEASURABLE near u = 0.7-0.8, or unidentifiable? ===
+   beta = 0.594687 (measured, mu_p 0.3); SCALE = 2.1e-03
+   anchor 1 -- the vectorised kernel vs mixture_closure.packing_density_ab over
+      300 random (r, a, b, x): worst |diff| = 1.110e-16
+   anchor 2 -- the vectorised profile vs mixture_closure.profile_interval on the
+      two ratios that matter, on REAL data:
+      r = 1.25 a: fast [0.0001, 0.9999]  shipped [0.0001, 0.9999]  MATCH
+      r = 1.25 b: fast [0.0001, 0.9999]  shipped [0.0001, 0.9999]  MATCH
+      r = 1.50 a: fast [0.8999, 0.9399]  shipped [0.8999, 0.9399]  MATCH
+      r = 1.50 b: fast [0.8449, 0.9299]  shipped [0.8449, 0.9299]  MATCH
+
+   identifiability rule, quoted verbatim from grade_mixture_ext.tabulated_closure:
+      both profile intervals narrower than 0.25 AND containing their own best fit.
+
+=== 1. the measured state: what each ratio's binary block returns ===
+        r       u   n  phi span  /scale       a    w(a)       b    w(b)  ident?
+     1.25  0.8000   8    0.0037     1.8  0.9904   1.000  0.4992   1.000  NO
+     1.50  0.6667   8    0.0125     6.0  0.9249   0.040  0.8985   0.085  YES
+     2.00  0.5000   8    0.0277    13.2  0.7854   0.050  0.7471   0.070  YES
+     3.00  0.3333   8    0.0721    34.3  0.5210   0.040  0.5505   0.040  YES
+     4.00  0.2500   6    0.0914    43.5  0.3010   0.045  0.4796   0.025  YES
+     5.00  0.2000   3    0.0486    23.2  0.2943   0.090  0.6799   0.020  NO
+   -> u = 0.8 (r = 1.25) is the ONLY ratio that fails, and it fails on BOTH
+      parameters with intervals spanning the entire [0, 1].
+
+=== 2. WHY: the model has an escape branch at b = 1 where phi = beta exactly ===
+   The closure is a MIN over branches. The fine-class branch carries
+   tot = (1 - beta)(1 - b) y_L, so at b = 1 it gives tot = 0 and phi = beta for
+   EVERY composition and EVERY a. If the measured phi never rises far enough
+   above beta, that constant model is inside the bar and a is free.
+        r       u  max(phi-beta)   /scale  chi2 at b=1  bar = n  escape?
+     1.25  0.8000         0.0029      1.4         7.09        8      YES
+     1.50  0.6667         0.0149      7.1       182.72        8       no
+     2.00  0.5000         0.0370     17.6      1450.70        8       no
+     3.00  0.3333         0.0816     38.9      6129.31        8       no
+     4.00  0.2500         0.1134     54.0      9065.34        6       no
+     5.00  0.2000         0.0674     32.1      1708.91        3       no
+   -> the escape is open at exactly the ratio that fails. It is NOT a noise
+      problem and NOT a sample-size problem: it is the filling SIGNAL, phi -
+      beta, falling to the size of the bar.
+
+=== 3. does adding points or seeds narrow the interval? NO, and by construction ===
+   The bar is delta chi2 = 1 PER POINT (mixture_closure.profile_interval:
+   `prof <= lo + len(pts)`). Duplicating a point set doubles chi2 AND the bar,
+   so the interval cannot move. Demonstrated rather than argued:
+   r = 1.5: n =  8  w(a) = 0.0400  w(b) = 0.0850
+   r = 1.5: n = 16  w(a) = 0.0400  w(b) = 0.0850   (same points, twice)
+   r = 1.5: n = 32  w(a) = 0.0400  w(b) = 0.0850   (same points, four times)
+   -> widths IDENTICAL: True. **More compositions at the same sensitivity
+      buy nothing under this rule, and more SEEDS buy less than that -- seeds
+      move the seed-mean phi, not the curvature, and the bar is in SCALE units,
+      not in units of the seed error.** Any design that hopes to shrink these
+      intervals has to move the SENSITIVITY, i.e. WHERE in composition it
+      samples, not HOW MUCH.
+
+=== 4. where the a-signal actually lives: the branch crossover ===
+   The coarse branch (which is the only one that sees a) binds only while
+   (1 - a) y_S < (1 - beta)(1 - b) y_L. Above that composition the fine branch
+   takes over and a stops entering the model at all. Using the SHIPPED
+   interpolated a(u), b(u) -- the blind prediction, not a measurement:
+        r       u    a(u)    b(u)  x*cross max a-signal   at x n_min@N1500
+    1.250  0.8000  0.9695  0.9574    0.361         3.15  0.361         713
+    1.333  0.7500  0.9544  0.9370    0.359         4.71  0.359         644
+    1.400  0.7143  0.9423  0.9210    0.356         5.94  0.356         596
+    1.414  0.7071  0.9398  0.9177    0.356         6.20  0.356         585
+    1.500  0.6667  0.9249  0.8985    0.353         7.71  0.353         528
+    1.600  0.6250  0.9028  0.8716    0.348         9.92  0.348         471
+    2.000  0.5000  0.7854  0.7471    0.323        21.09  0.323         311
+   -> the a-signal PEAKS at the crossover and is zero beyond it. The existing
+      block sampled x in [0.05, 0.60] at every ratio -- at r = 1.25 that is
+      almost entirely BELOW the peak, where the signal is proportional to x and
+      therefore smallest.
+
+=== 5. THE IDENTIFIABILITY CEILING: noise-free synthetic data, per design ===
+   phi is generated FROM the shipped closure with no noise, so chi2_min = 0 and
+   the width returned is the narrowest any experiment at that design could get.
+   A design that fails HERE cannot be rescued by seeds, and one that passes here
+   is an upper bound on what the real block will do, not a promise.
+   n_req / aff = compositions requested / affordable at MIN_PHASE_COUNT; n_c / n_f = points
+   on the coarse (a-sensitive) and fine (b-sensitive) branch; esc(b=1), esc(a=1) = chi2 of
+   the two escape models that collapse the closure to the CONSTANT phi = beta, against a bar of aff.
+   design                                           r       u    w(a)    w(b)  ident? n_req  aff  n_c  n_f   esc(b=1)   esc(a=1)
+   OLD  x in [0.05, 0.60] (the block that ran)  1.250  0.8000   0.095   0.980      NO     8    8    6    2       29.8       29.8
+   OLD  x in [0.05, 0.60] (the block that ran)  1.333  0.7500   0.045   0.085     YES     8    8    6    2       66.7       66.7
+   OLD  x in [0.05, 0.60] (the block that ran)  1.400  0.7143   0.040   0.085     YES     8    8    6    2      106.6      106.6
+   OLD  x in [0.05, 0.60] (the block that ran)  1.414  0.7071   0.040   0.080     YES     8    8    6    2      116.2      116.2
+   OLD  x in [0.05, 0.60] (the block that ran)  1.500  0.6667   0.035   0.080     YES     8    8    6    2      180.5      180.5
+   OLD  x in [0.05, 0.60] (the block that ran)  1.600  0.6250   0.035   0.070     YES     8    8    6    2      300.5      300.5
+   OLD  x in [0.05, 0.60] (the block that ran)  2.000  0.5000   0.030   0.055     YES     8    8    6    2     1426.6     1426.6
+
+   MID  x in [0.30, 0.75]                       1.250  0.8000   0.990   0.055      NO     8    8    1    7       37.1       37.1
+   MID  x in [0.30, 0.75]                       1.333  0.7500   0.975   0.040      NO     8    8    1    7       82.2       82.2
+   MID  x in [0.30, 0.75]                       1.400  0.7143   0.965   0.040      NO     8    8    1    7      130.5      130.5
+   MID  x in [0.30, 0.75]                       1.414  0.7071   0.965   0.040      NO     8    8    1    7      142.0      142.0
+   MID  x in [0.30, 0.75]                       1.500  0.6667   0.950   0.040      NO     8    8    1    7      218.6      218.6
+   MID  x in [0.30, 0.75]                       1.600  0.6250   0.930   0.040      NO     8    8    1    7      357.2      357.2
+   MID  x in [0.30, 0.75]                       2.000  0.5000   0.810   0.035      NO     8    8    1    7     1539.9     1539.9
+
+   PEAK x straddling the crossover              1.250  0.8000   0.110   0.975      NO     8    8    4    4       38.9       38.9
+   PEAK x straddling the crossover              1.333  0.7500   0.060   0.050     YES     8    8    4    4       86.6       86.6
+   PEAK x straddling the crossover              1.400  0.7143   0.050   0.045     YES     8    8    4    4      137.7      137.7
+   PEAK x straddling the crossover              1.414  0.7071   0.045   0.045     YES     8    8    4    4      150.0      150.0
+   PEAK x straddling the crossover              1.500  0.6667   0.045   0.050     YES     8    8    4    4      231.6      231.6
+   PEAK x straddling the crossover              1.600  0.6250   0.050   0.045     YES     8    8    4    4      381.5      381.5
+   PEAK x straddling the crossover              2.000  0.5000   0.045   0.040     YES     8    8    4    4     1717.8     1717.8
+
+   WIDE x in [0.05, 0.95]                       1.250  0.8000   0.155   0.080     YES     9    8    3    5       23.3       23.3
+   WIDE x in [0.05, 0.95]                       1.333  0.7500   0.075   0.065     YES     9    8    3    5       51.9       51.9
+   WIDE x in [0.05, 0.95]                       1.400  0.7143   0.075   0.065     YES     9    8    3    5       82.6       82.6
+   WIDE x in [0.05, 0.95]                       1.414  0.7071   0.080   0.060     YES     9    8    3    5       89.9       89.9
+   WIDE x in [0.05, 0.95]                       1.500  0.6667   0.070   0.055     YES     9    7    3    4      137.6      137.6
+   WIDE x in [0.05, 0.95]                       1.600  0.6250   0.065   0.055     YES     9    7    3    4      226.9      226.9
+   WIDE x in [0.05, 0.95]                       2.000  0.5000   0.055   0.045     YES     9    6    3    3      991.6      991.6
+
+   CONTROL -- the ceiling must reproduce what the real data already did:
+      r = 2.0: ceiling ident True, real data ident True (w(a) ceiling 0.030 vs real 0.050)
+      r = 1.5: ceiling ident True, real data ident True (w(a) ceiling 0.035 vs real 0.040)
+      and the failing case:
+      r = 1.25: ceiling ident False, real data ident False (w(a) ceiling 0.095 vs real 1.000)
+
+=== 6. the ratio the K-ladder actually needs is NOT 1.25 ===
+   K = 5's four pairs sit at u = 0.70711, i.e. r = 4^(1/4) = 1.41421, NOT at
+   u = 0.8. The ceiling above is identifiable at r = 1.41421 on the OLD design
+   and fails only at r = 1.25, where the filling signal is weakest. So the
+   design question is not 'how do we rescue u = 0.8' but 'does the standard
+   block work at u = 0.7071' -- and the ceiling says yes, AT the shipped a(u).
+   Since the shipped a(u*) is the extrapolation the block exists to replace,
+   the honest next question is how far it can be wrong before the answer flips.
+
+   ROBUSTNESS: the ceiling at r = 1.41421 as the TRUTH moves. Rows are the
+   assumed true a(u*), columns the assumed true b(u*). Entry is 'Y' when BOTH
+   widths land under 0.25, else the WIDER of the two.
+   --- OLD grid: 8 of 8 compositions affordable at N = 1500: [0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.6]
+        a\b     0.860    0.900    0.918    0.940    0.960    0.980    0.990
+       0.900        Y        Y        Y        Y     0.95     0.98     1.00
+       0.920        Y        Y        Y        Y        Y     0.98     1.00
+       0.940        Y        Y        Y        Y        Y     0.98     1.00
+       0.960     0.91     0.95     0.96        Y        Y     0.99     1.00
+       0.980     0.98     0.98     0.98     0.98     0.99     0.99     1.00
+       0.990     1.00     1.00     1.00     1.00     1.00     1.00     1.00
+       0.995     1.00     1.00     1.00     1.00     1.00     1.00     1.00
+   -> largest true a(u*) still identifiable anywhere on this grid: 0.960
+
+   --- WIDE grid: 8 of 9 compositions affordable at N = 1500: [0.05, 0.15, 0.3, 0.45, 0.6, 0.7, 0.8, 0.9]
+        a\b     0.860    0.900    0.918    0.940    0.960    0.980    0.990
+       0.900        Y        Y        Y        Y     0.96     0.99     1.00
+       0.920        Y        Y        Y        Y     0.97     0.99     1.00
+       0.940        Y        Y        Y        Y     0.98     0.99     1.00
+       0.960        Y        Y        Y        Y        Y     0.99     1.00
+       0.980     0.93        Y        Y        Y     0.99     1.00     1.00
+       0.990     0.98     0.98     0.98     0.99     0.99     1.00     1.00
+       0.995     1.00     1.00     1.00     1.00     1.00     1.00     1.00
+   -> largest true a(u*) still identifiable anywhere on this grid: 0.980
+
+=== 7. what the r = 1.25 data DOES constrain -- including the COMBINATION ===
+   If a(u) is unidentifiable there, the fallback is to constrain the combination
+   instead. That needs the JOINT region, not the two marginals, because two wide
+   marginals can still enclose a narrow diagonal.
+   n = 8 compositions; chi2_min = 1.36, bar = chi2_min + n = 9.36
+   admissible area: 4.5% of the unit square (1811 of 40401 grid nodes)
+   a range inside the joint region: [0.0001, 0.9999]
+   b range inside the joint region: [0.0001, 0.9999]
+   is the CONSTANT model (a = 1 or b = 1, i.e. phi = beta) admissible? YES
+   -> that is the whole verdict. A pack indistinguishable from monodisperse
+      constrains NO combination of a and b, because every combination that
+      makes the binding branch vanish fits it equally well. u = 0.8 is
+      uninformative about the combination, not only about a alone, so the
+      monotone bracket a(0.667) <= a(0.7071) <= a(0.8) gains nothing at its
+      upper end either.
+
+=== what this does NOT decide ===
+   * The ceiling is computed AT the shipped interpolated a(u), b(u) -- the very
+     numbers the block exists to measure. If the truth at u = 0.7 is closer to 1
+     than the PCHIP says, the signal is smaller and the real block does worse
+     than its ceiling; if it is further from 1, better. The ceiling is a
+     DESIGN comparison at a stated working point, not a prediction of the answer.
+   * It says nothing about whether the model's FORM is right at high u.
+   * MIN_PHASE_COUNT is applied per composition at N = 1500; compositions
+     refused above would need N = 3000 and are not silently included.
