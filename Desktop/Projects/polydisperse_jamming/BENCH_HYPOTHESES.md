@@ -21,7 +21,10 @@ Scale convention throughout: `PHI_SCALE` = **2.1e−3**, the protocol's own repr
 | D | 🔑 **The functional is NOT ADDITIVE beyond two classes.** Six ternaries at `d` = 1, 2, 4 — whose three pairs sit at `u` = 1/2, 1/2, 1/4, *inside* the calibration range — are under-predicted **6 of 6**, mean **+7.53**, rms **7.83** against a pre-registered bar of 2.8. **Confirmed at doubled N**: 6/6 positive again, mean **+8.67**. | T1 FAIL + NA1 NON-ADDITIVE, 42 cells, 0 errors | `out/grade_ternary.txt`, `out/grade_ternary_N.txt` |
 | E | 🔑 **The miss does NOT accumulate with the number of classes, and the closure's SIGN in K is wrong.** On a geometric ladder of fixed span 4 filled in at K = 2, 3, 4, 5 at matched fines fraction, measured φ **rises** with K where the additive closure says it **falls**, on 3 of 3 levels (2 of 3 resolved against seed error, 1 undetermined). The residual steps once between three and four classes and does not step again — though whether that is SATURATION is undetermined, see qualification 2 below: `R4−R3` = +3.4/+7.7/+8.0, `R5−R4` = +0.2/−1.6/−1.8, i.e. increment ratios −0.22 to +0.14 against the 1.00 / 1.33 / 2.00 that per-class, per-pair and per-triple growth predict. **All three growth laws refuted, and no-K-dependence refuted too.** | G1, G7, G1c; 135 runs at two N, 135 admitted, 0 errors; refereed 2026-09-15 | `out/grade_kladder.txt` |
 
-**D and E are the new ones. E is the reason §5's first two items are now closed.**
+| F | 🔑 **The filling interaction `a(u)` IS measurable in the gap the K-ladder reads — at `u` = 0.70711, and NOT at `u` = 0.8.** `a(0.70711) = 0.9481 [0.8799, 0.9699]`, `b = 0.9376 [0.8849, 0.9599]`, against an identifiability bar of 0.25 quoted verbatim from the closed block. What made it work is **where in composition the block samples**, not how many seeds: the profile bar is Δχ² = 1 *per point*, so the same point set at n = 8, 16, 32 returns w(a) = 0.0400 three times identically. At `u` = 0.8 the filling signal (max(φ−β) = **2.21 scale**) falls below what this design can resolve (**2.57**), so **no experiment at this design could determine `a(0.8)`** — an inference from a null, putting `a(0.8) ≳ 0.975`. | U0 12/12 bit-identical, U1/U1b/U4/U5 PASS, U1c/U3 FAIL; 108 runs at two N, 108 admitted, 0 errors | `out/grade_ugap.txt` |
+
+**D, E and F are the new ones. E closed §5's first two items; F closes the third and is
+what makes E's qualification 2 a measurement rather than a flag.**
 
 ⚠ **E must always be quoted with three qualifications**, all printed by
 `out/grade_kladder.txt` (sections G1 and G1c) rather than argued:
@@ -30,11 +33,16 @@ Scale convention throughout: `PHI_SCALE` = **2.1e−3**, the protocol's own repr
    **79–93 % of the K3→K4 step is the additive closure's own prediction dropping by
    ~6.4 scale**, not the packing rising (φ moves only +0.5 to +1.6). Only at `y_S` = 0.03
    is it mostly a real rise (+2.5, +3.6 against se 1.2, 0.4).
-2. **"And then saturates" is UNDETERMINED.** The tabulated interactions have no measured
-   knot above `u` = 0.667, and **4 of K = 5's 10 pairs sit at `u` = 0.7071** — its most
-   numerous pair type, in the widest gap in the construction. The rung that would decide
-   saturation is evaluated where the closure has no data. K = 2, 3, 4 are entirely inside
-   the measured bracket, so **the K3→K4 rise is unaffected.**
+2. **"And then saturates" is UNDETERMINED — and as of 2026-09-16 that is MEASURED, not
+   merely flagged.** The gap above `u` = 0.667 now has a knot (row F), and re-running the
+   comparison with it gives `R5−R4` = **+2.70 / +0.69 / −0.26** at N = 1500 and
+   **+3.13 / +1.47 / +0.30** at N = 3000 — ≤ 0 on **1 of 3** and **0 of 3**, against the
+   pre-registered bar of ≥ 2 of 3 at both, so **the registered gate U3 FAILS**. But swept
+   over the new knot's **own profile interval** the saturation verdict survives on
+   **110 of 169 corners (65 %)**, declining monotonically with `a(u*)`. So the honest
+   verdict is **undetermined**: it is no longer quotable as established, and it is not
+   refuted either. K = 2, 3, 4 pairs all sit at `u` ≤ 0.630, so **the K3→K4 rise is
+   unaffected** except through interpolant leakage (`out/grade_ugap.txt`, prereg C-iii).
 3. **A step in ADD across K is not by itself a filling statement.** `packing_density` is a
    minimum over branches, and the argmin reassigns somewhere on the K axis at **3 of 3**
    `y_S` levels.
@@ -275,24 +283,37 @@ pre-registered gate — both datasets were on disk before it was written.)
 ## 5. The cheapest next experiments, in the order that buys the most
 
 ~~1.~~ **DONE 2026-09-15** — the K-ladder block (K = 2–5 at fixed span 4, `y_S` widened
-   6×, 135 runs at two N). Answer: the miss **saturates** after the step to four classes.
+   6×, 135 runs at two N). Answer: the miss does **not accumulate** with K — it steps once
+   between three and four classes, and the closure's **sign** in K is wrong. ⚠ **Whether
+   it then SATURATES is undetermined** (E qualification 2; this line said "saturates"
+   until 2026-09-16 and contradicted that qualification in its own document).
    See E and `CLAIMS_KLADDER_2026-09-15.md`.
 ~~2.~~ **DONE 2026-09-15** — the sequential rule's convention swept, and the transfer
    re-run: **it does not settle**, because the convention spread (11.9×) exceeds the
    effect. See `out/transfer_kladder.txt`.
 
-1. 🔴 **MEASURE `a(u)`, `b(u)` ABOVE `u` = 0.667. This is the blocker, and it was not
-   visible until the referee pass.** The saturation rung is evaluated where the closure
-   has no measured knot, and **pushing K higher on a span-4 ladder makes it worse**: the
-   adjacent-pair ratio goes 4^(−1/7) = 0.82 at K = 8 and 4^(−1/11) = 0.88 at K = 12, so
-   every extra class piles more pair weight into the unmeasured gap. A binary block at
-   ratios ≈ 1.2 and ≈ 1.4 (`u` ≈ 0.83, 0.71) costs what a ternary block costs and unlocks
-   the whole K axis. **Until it exists, "does the miss saturate?" cannot be answered by
-   any ladder.**
-2. **THEN push K past 5 on the same span-4 ladder.** With knots above 0.667 in hand,
-   K = 8 and 12 extend the ladder without changing a single design constraint (every pair
-   stays at `u` ≥ 1/4 by construction) and the grain budget is comfortable at N = 3000.
-   **That is what decides whether the K-step correction transfers to real powders.**
+~~1.~~ **DONE 2026-09-16, and it came back HALF YES** — the U-GAP block, 108 runs at two
+   N (`CLAIMS_UGAP_2026-09-16.md`). `a(0.70711)` is measured (row F); `a(0.8)` is **not
+   measurable on this protocol at any seed count**, because the filling signal there is
+   below the design's resolving power. The K-axis blocker is therefore **lifted at
+   `u` = 0.70711 only**, which is exactly what K = 5 needs — and **not** what K = 8 or 12
+   would need.
+
+1. 🔴 **THE K AXIS IS UNBLOCKED AT K = 5 AND STILL BLOCKED ABOVE IT.** A span-4 ladder's
+   adjacent-pair ratio goes 4^(−1/7) = **0.82** at K = 8 and 4^(−1/11) = **0.88** at
+   K = 12, and the U-GAP block shows the closure cannot be calibrated at `u` ≳ 0.8 by this
+   method — the signal is gone. So **extending K on a span-4 ladder walks into a region
+   that is now known to be unmeasurable**, and item 2's old plan is not available as
+   written. The two ways out, in cost order: **(a) widen the SPAN** so that K = 8 keeps
+   its adjacent pair near 0.7 (span 4^(7/4) ≈ 11 puts it at 0.707, at the price of
+   breaking the `u` ≥ 1/4 constraint row C says the closure needs — so span and K trade
+   against each other and that trade is the design question); **(b) a different observable
+   at `u` → 1** with more signal than φ − β, which is what fails there.
+2. **Settle `a(u)` between 0.70711 and 1 by a means that is NOT a binary composition
+   curve**, or accept that the closure is an extrapolation there and quote it as one.
+   `out/diag_ugap.txt` shows that region still moves the K = 5 prediction by up to
+   **9.59 scale**, so it is not a cosmetic gap — it is just not reachable the way the
+   knots below it were.
 3. **A continuous PSD at a composition the filling model puts far from the families'
    locus** — the existing lognormal/uniform/bidisperse ladders all run through the
    fines-poor corner, which is what hid the mechanism for a month. (Unchanged, and now

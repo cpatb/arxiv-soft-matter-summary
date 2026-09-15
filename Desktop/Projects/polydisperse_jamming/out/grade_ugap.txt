@@ -1,0 +1,204 @@
+=== grade_ugap.py -- PREREG_UGAP_2026-09-16.md ===
+   scope OK: tags ('ug', 'ug3k') collide with none of ('mixr', 'extr', 'tern', 'kl'); 40 U-GAP shard files; IDENT_WIDTH 0.25 unmoved
+   beta = 0.594687 (measured, mu_p 0.3); PHI_SCALE = 2.1e-03
+   bars: identifiability width 0.25 (verbatim), TAB in-sample rms 2.02 / max 5.74 (quoted)
+   shipped closure at u* = 0.70711: a 0.9398  b 0.9177
+
+   ANCHOR: vectorised kernel vs mixture_closure.packing_density_ab, 300 random points, worst |diff| = 1.110e-16
+
+=== data, N = 1500: 81 records from 20 shard files -> 27 compositions ===
+   admitted 81 of 81, refused 0; expected 81
+
+=== U0 -- the bit-identity wiring gate, RUN not asserted ===
+   Four (r, x) cells exist in the `mixr` block at the same seeds, N, p_hat and
+   mu_p, and phase12_mixture.cell_key carries no tag, so they must reproduce
+   EXACTLY. diff == 0.0, not 'close'.
+   mix_r1.25_x0.050000_s1_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   mix_r1.25_x0.050000_s2_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   mix_r1.25_x0.050000_s3_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   mix_r1.25_x0.200000_s1_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   mix_r1.25_x0.200000_s2_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   mix_r1.25_x0.200000_s3_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   mix_r1.50_x0.050000_s1_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   mix_r1.50_x0.050000_s2_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   mix_r1.50_x0.050000_s3_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   mix_r1.50_x0.200000_s1_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   mix_r1.50_x0.200000_s2_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   mix_r1.50_x0.200000_s3_p1e-03_N1500_mu0.30: diff = +0.000e+00  IDENTICAL
+   -> 12 of 12 bit-identical (expected 12 of 12)
+
+=== U1 / U1b / U1c -- the registered identifiability rule, applied verbatim ===
+   'both profile intervals narrower than 0.25 AND containing their own best fit'
+    arm         r        u  n_x  phi span  /scale       a   w(a)       b   w(b)  ident?
+      A   1.41421  0.70711    9    0.0099     4.7  0.9481  0.090  0.9376  0.075  YES
+        a interval [0.8799, 0.9699]   b interval [0.8849, 0.9599]
+      B   1.25000  0.80000    9    0.0055     2.6  0.9923  0.995  0.5003  0.995  NO
+        a interval [0.0001, 0.9949]   b interval [0.0001, 0.9949]
+      C   1.50000  0.66667    9    0.0125     5.9  0.9336  0.040  0.8972  0.065  YES
+        a interval [0.9099, 0.9499]   b interval [0.8599, 0.9249]
+
+   the escape model (a = 1 or b = 1 -> phi = beta identically) against the bar:
+      arm A: chi2 at the escape =    86.93  bar = n = 9  closed
+      arm B: chi2 at the escape =    14.12  bar = n = 9  closed
+      arm C: chi2 at the escape =   189.36  bar = n = 9  closed
+
+   U1b -- the ATTRIBUTION CONTROL. Arm C is r = 1.5, an already-identifiable
+   knot; running the NEW composition grid there separates 'the grid moved the
+   answer' from 'the ratio moved the answer'.
+      old grid: a 0.9249 [0.8999, 0.9399]   b 0.8985 [0.8449, 0.9299]
+      new grid: a 0.9336 [0.9099, 0.9499]   b 0.8972 [0.8599, 0.9249]
+      both values inside the UNION of the two intervals: a True, b True
+      da = +0.0087, db = -0.0013
+   -> U1b PASS
+
+   -> U1 (arm A, u = 0.70711): IDENTIFIABLE, predicted IDENTIFIABLE -- PASS
+   -> U1c (arm B, u = 0.80000): UNDETERMINED, predicted IDENTIFIABLE -- FAIL
+   the registered reading of arm B's null, CHECKED rather than quoted.
+   The prereg said an UNDETERMINED arm B is evidence a(0.8) > 0.98, and it
+   reached that 0.98 from ARM A's robustness table -- the wrong arm. The
+   defect is recorded; arm B's own ceiling is computed here instead.
+   (It also predicted the mechanism would be the a = 1 / b = 1 escape. It
+   is NOT: the new grid CLOSED that escape at arm B, see above. So the
+   registered sentence was right about the verdict and wrong about the
+   reason, and the reason is what the bound rests on.)
+   NOISE-FREE ceiling at arm B, as the assumed truth moves (POST-HOC, declared):
+        a_true  b_true    w(a)    w(b)  ident  max signal/scale
+        0.9695  0.9177   0.030   0.155    YES              4.32
+        0.9695  0.9574   0.115   0.085    YES              3.14
+        0.9750  0.9600   0.130   0.160    YES              2.57
+        0.9800  0.9600   0.990   0.985     NO              2.55
+        0.9923  0.5003   1.000   0.995     NO              1.93
+        0.9900  0.9700   1.000   1.000     NO              1.56
+   NOT ARGUED FROM THE POINT ESTIMATE. Arm B's fitted b = 0.5003 is 1/(1 + e^0), i.e. the Nelder-Mead START -- on a flat
+   surface the optimiser did not move, and the 201-grid argmin lands
+   somewhere else entirely. A meaningless point estimate cannot carry a
+   bound, so the argument is made on the MEASURED SIGNAL instead:
+      arm B's measured max(phi - beta) = 2.21 scale
+      the ceiling above resolves down to a signal of 2.57 scale and fails at 2.55 -- both read off the table, not hardcoded
+   -> the measured filling signal at u = 0.8 (2.21) sits BELOW the
+      threshold this design can resolve, so NO experiment at this design
+      could have determined a(0.8), whatever it is. Mapping that signal
+      through the ceiling table puts a(0.8) above about 0.9750.
+      SUPPORTABLE, with its status stated: an inference FROM A NULL via the
+      design's own resolving power -- not a measurement, and not to be
+      quoted with an interval. It is consistent with the measured arm A
+      (a(0.70711) = 0.9481) under monotonicity in u.
+
+=== U2 -- the DIRECTION: does the shipped extrapolation over-predict at u*? ===
+   Registered: negative on >= 7 of 9 compositions at arm A, and the fitted
+   a(u*) above the shipped 0.9398.
+   residuals phi_measured - phi_shipped, scale units: -1.13 +0.47 -0.04 -1.14 -2.30 -0.86 -0.45 -0.85 +0.04
+   mean -0.70, rms 1.04, max|.| 2.30; negative on 7/9, sign-test p = 0.1797
+   fitted a(u*) = 0.9481 against the shipped 0.9398 (+0.0083); b 0.9376 vs 0.9177 (+0.0199)
+   -> U2 PASS (7 negative, bar >= 7) -- and 7/9 is EXACTLY the bar, a marginal pass, labelled as one.
+   TWO HONEST QUALIFICATIONS, both of which weaken it:
+   (1) The registered sentence said '>= 7 of 9 (sign-test p <= 0.09)'. Those halves do not agree: 7/9 gives one-sided p = 0.0898 and two-sided p = 0.1797, so it
+       clears the bar only on the one-sided reading, which the sentence did
+       not specify. The prereg named the COUNT as the gate, so the count is
+       what is graded -- but the parenthetical was ambiguous and is recorded
+       as a defect rather than resolved in the direction that passes.
+   (2) The a interval [0.8799, 0.9699] CONTAINS the shipped 0.9398, so the SECOND half of U2 -- 'the fitted
+       a(u*) comes out above 0.9398' -- is true of the point estimate and
+       NOT RESOLVED by the interval. The direction is a trend, not a
+       measured disagreement.
+
+=== U4 -- monotonicity of a(u), b(u) with the new knots inserted ===
+           u        a        b   source
+     0.00000   0.0000   0.0000   proved limit
+     0.25000   0.3010   0.4796   existing
+     0.33333   0.5210   0.5505   existing
+     0.50000   0.7854   0.7471   existing
+     0.66667   0.9336   0.8972   REMEASURED
+     0.70711   0.9481   0.9376   NEW
+     1.00000   1.0000   1.0000   proved limit
+   -> U4 monotone: a True, b True -- PASS
+
+=== U3 -- the K-ladder consequence: does 'and then SATURATES' survive? ===
+   R = (phi - ADDtab)/scale, so a step in R is (data - model) and BOTH move;
+   the decomposition is printed rather than the increment alone. phi is FIXED
+   data here, so every change from 'old' to 'new' is the model, and it is split
+   between the K = 5 and K = 4 arms because caveat C-iii says both move.
+        N    y_S  R5-R4 old  R5-R4 new     dR5     dR4  d(phi)5-4  d(ADD)5-4  <= 0?
+     1500   0.03      +0.20      +2.70   +1.66   -0.84      +0.15      -2.55     no
+     1500   0.05      -1.58      +0.69   +1.58   -0.69      +0.59      -0.10     no
+     1500   0.08      -1.77      -0.26   +0.99   -0.52      -0.72      -0.46    YES
+     3000   0.03      +0.63      +3.13   +1.66   -0.84      +0.58      -2.54     no
+     3000   0.05      -0.80      +1.47   +1.58   -0.69      +1.38      -0.09     no
+     3000   0.08      -1.21      +0.30   +0.99   -0.52      -0.17      -0.47     no
+
+   AND THE SAME TABLE WITH ARM A'S KNOT ONLY, keeping the existing u = 0.6667
+   knot rather than replacing it with arm C's re-measurement. Arm C was
+   registered as a CONTROL, not as a new calibration point, so the verdict
+   must not rest on having silently re-measured an existing knot.
+        N    y_S  R5-R4 old   A-only      A+C  <= 0?
+     1500   0.03      +0.20    +2.88    +2.70     no
+     1500   0.05      -1.58    +1.00    +0.69     no
+     1500   0.08      -1.77    +0.20    -0.26     no
+     3000   0.03      +0.63    +3.31    +3.13     no
+     3000   0.05      -0.80    +1.78    +1.47     no
+     3000   0.08      -1.21    +0.76    +0.30     no
+   -> arm-A-knot-only: <= 0 on 0/3 and 0/3; verdict does NOT survive
+   -> the two readings AGREE, so the verdict does not turn on whether arm
+      C's re-measurement replaces the existing knot.
+
+   ROBUSTNESS OF THE U3 VERDICT OVER THE MEASURED INTERVAL. A verdict read at
+   the point estimate is a verdict without an error bar; this sweeps a and b
+   over arm A's OWN profile intervals and asks where saturation would survive.
+   a swept over [0.8799, 0.9699], b over [0.8849, 0.9599], 13x13 = 169 corners
+   saturation SURVIVES on 110 of 169 corners (65.1%)
+   survival by a(u*), so it is visible WHICH parameter the verdict turns on:
+      a0.880:13/13  a0.887:12/13  a0.895:12/13  a0.902:11/13  a0.910:10/13  a0.917:9/13  a0.925:9/13
+      a0.932:8/13  a0.940:7/13  a0.947:6/13  a0.955:5/13  a0.962:4/13  a0.970:4/13
+   -> the U3 verdict is NOT RESOLVED -- it turns on where inside its own interval a(u*) sits
+   ** So the GRADED gate fails at the point estimate, as registered, but
+      the scientific statement is UNDETERMINED, not REFUTED: the measured
+      knot is not precise enough to decide saturation either way. The
+      registered verdict and the supportable claim are different
+      sentences and both are recorded. **
+
+   -> R(5) - R(4) <= 0 on 1/3 levels at N = 1500 and 0/3 at N = 3000; bar >= 2 of 3 at BOTH
+   -> U3 FAIL -- saturation does NOT survive the measured knot
+   NOTE (prereg C-iii): the K = 4 cells move too, through the interpolant's
+   shape at u <= 0.630, so the two arms of this difference are NOT independent
+   of the new knot. K = 2 and K = 3 are untouched.
+
+=== U5 -- the N = 3000 arm, and what it is NOT ===
+   Declared in advance: the K-ladder measured a block-wide +1.9 scale offset
+   when N doubles (G5), so a knot fitted at N = 3000 is NOT comparable to a
+   closure calibrated at N = 1500. A difference in a between the two N is
+   EXPECTED and is not evidence about the closure. What is graded is only that
+   arm A's identifiability is not a finite-size accident.
+   N = 3000: 27 records from 20 files, admitted 27, refused 0
+   arm A at N = 3000: a 0.9259 [0.8599, 0.9549]  b 0.9114 [0.8449, 0.9349]  IDENTIFIABLE
+   da(N) = -0.0223, db(N) = -0.0262 -- EXPECTED to be nonzero; not graded, per the registered reading above.
+   mean phi shift on the identical cell list: +1.51 scale (the K-ladder's block-wide figure was +1.9)
+   -> U5 PASS
+
+=== U6 -- POST-HOC, declared: the held-out continuous-family transfer ===
+   A search, not a test. out/diag_transfer_ugap.txt already swept this knot and
+   found no value collapses G8's convention spread; this row is the MEASURED
+   knot's own entry in that table.
+   held-out points 15: J 34.9, ADDtab before 108.1, after 147.1
+   nested, measured knot: d10 316.8, d21 108.3, d32 14.9, d43 430.1; spread 28.95x (standing 11.90x), best 14.9
+   the spread NARROWING while every member gets WORSE is not a collapse; both
+   the ratio and the best member are printed so it cannot read as one.
+
+=== CAVEATS carried from out/predict_ugap.txt (prereg section 6) ===
+   C-i   The measured knot enters at ONE friction (mu_p = 0.3), ONE pressure rung
+         (p_hat = 1e-3) and ONE N (1500). Nothing here says a(u) is pressure- or
+         friction-independent, and the closure has never been tested off that rung.
+   C-ii  Arm A's knot is measured AT u = 0.70711 exactly, which is K = 5's adjacent
+         pair ratio on a span-4 ladder. It does NOT fill the rest of the gap: the
+         interval (0.70711, 1) still has no measured point, and PCHIP's shape there
+         remains an extrapolation between a measured knot and a proved limit.
+   C-iii Inserting a knot at u* also moves a(u) and b(u) at NEIGHBOURING u through the
+         interpolant's derivatives. out/diag_ugap.txt measured that leakage: the K = 4
+         cells, whose pairs all sit at u <= 0.630, move up to 3.49 scale. So any K = 4
+         number recomputed after this block is NOT independent of it.
+   C-iv  The identifiability rule's bar (delta chi2 = 1 per point, width < 0.25) is a
+         statement in units of PHI_SCALE, not of the seed error. It therefore does not
+         tighten with seeds or with the number of compositions -- demonstrated in
+         out/diag_uident.txt section 3 -- and a PASS is not a claim about precision.
+
+NOT INFORMATIVE: ['U3 not resolved over the measured interval: survives on 110/169 corners (65%)']
+FAILURES: ['U1c: arm B came back UNDETERMINED', 'U3: 1/3 and 0/3 levels <= 0']

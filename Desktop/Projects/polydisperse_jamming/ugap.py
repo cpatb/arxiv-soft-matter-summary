@@ -112,6 +112,27 @@ def n_min_frac(ratio: float, x: float) -> float:
     return float(min(p.n_small, 1.0 - p.n_small))
 
 
+def branch_tots(x, beta: float, a: float, b: float):
+    """The two branch totals of the linear packing model for ONE binary.
+
+    Hand-derived from `mixture_closure.packing_density_ab` so that it can serve as an
+    ANCHOR OUTSIDE the code under test rather than as a second call to it:
+
+        coarse-class branch   tot = (1 - a) * y_S           -- sees `a` ONLY
+        fine-class branch     tot = (1 - beta)(1 - b) * y_L -- sees `b` ONLY
+
+    (the shipped fine-branch expression `1 - beta + b*beta*(1 - 1/beta)` simplifies to
+    `(1 - beta)(1 - b)`). phi = beta / (1 - min(tot)), and larger tot means larger phi,
+    so the MIN over branches picks the SMALLER tot.
+
+    That each parameter is seen by exactly one branch is the fact the whole design rests
+    on, and `test_ugap.test_branch_algebra_matches_the_shipped_closure` runs it against
+    the shipped closure rather than trusting this docstring.
+    """
+    y_S, y_L = x, 1.0 - x
+    return (1.0 - a) * y_S, (1.0 - beta) * (1.0 - b) * y_L
+
+
 def crossover(beta: float, a: float, b: float) -> float:
     """The composition where the binding branch swaps, solved in closed form.
 

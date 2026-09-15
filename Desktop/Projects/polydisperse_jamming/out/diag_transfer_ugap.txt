@@ -1,0 +1,56 @@
+=== diag_transfer_ugap.py -- G8 follow-up, POST-HOC ===
+   beta = 0.594687; SCALE = 2.1e-03; highest measured knot u = 0.6667
+   u* = 0.70711; K_CLASSES = 160 (the family discretisation, printed not quoted)
+
+=== 1. where the continuous families' pair weight actually sits ===
+   A knot at u* can only move a family's prediction through pairs NEAR u*.
+   family        CV  w(u > 0.6667)  w(u > 0.70711)  w(u < 0.25)
+   lognormal    0.1         0.9965          0.9865       0.0000
+   lognormal    0.2         0.8527          0.7839       0.0000
+   lognormal    0.3         0.6686          0.5918       0.0005
+   lognormal    0.4         0.5379          0.4636       0.0082
+   lognormal    0.5         0.4456          0.3809       0.0281
+   uniform      0.1         1.0000          0.9999       0.0000
+   uniform      0.2         0.8846          0.8292       0.0000
+   uniform      0.3         0.8164          0.7627       0.0000
+   uniform      0.4         0.8021          0.7487       0.0020
+   uniform      0.5         0.7990          0.7466       0.0039
+   bidisperse   0.1         1.0000          1.0000       0.0000
+   bidisperse   0.2         1.0000          0.0000       0.0000
+   bidisperse   0.3         0.0000          0.0000       0.0000
+   bidisperse   0.4         0.0000          0.0000       0.0000
+   bidisperse   0.5         0.0000          0.0000       0.0000
+
+=== 2. the held-out chi2 table as a knot at u* is swept ===
+   The knot is inserted into the SAME tabulated closure the standing numbers
+   use; a = b = the shipped interpolated values reproduces them up to PCHIP
+   reshaping, which is printed as its own row so it cannot be read as physics.
+   knot                                    J   ADDtab   SEQd10   SEQd21   SEQd32   SEQd43  SEQ spread     best
+   no knot (the standing numbers)       34.9    108.1    186.3     42.8     48.0    509.3      11.90x     42.8
+   knot at the SHIPPED value            34.9     84.7    176.8     57.6     81.1    574.7       9.98x     57.6
+   a 0.9249, b 0.8985                   34.9    157.0    468.8    427.9    454.3    857.1       2.00x    427.9
+   a 0.9249, b 0.9600                   34.9     78.4    433.4    185.8     14.9    316.6      29.03x     14.9
+   a 0.9249, b 0.9990                   34.9    147.9    948.5    581.4    215.5    231.2       4.40x    215.5
+   a 0.9600, b 0.8985                   34.9     61.6    186.6     64.6     51.5    449.4       8.73x     51.5
+   a 0.9600, b 0.9600                   34.9    216.0    502.7    222.3     32.8    364.7      15.34x     32.8
+   a 0.9600, b 0.9990                   34.9    317.8    956.3    583.4    210.2    253.6       4.55x    210.2
+   a 0.9800, b 0.8985                   34.9     74.9    544.8    254.5     67.3    386.3       8.09x     67.3
+   a 0.9800, b 0.9600                   34.9    253.9    630.5    306.6     77.9    374.2       8.09x     77.9
+   a 0.9800, b 0.9990                   34.9    359.0    971.9    599.7    219.4    253.1       4.43x    219.4
+   a 0.9990, b 0.8985                   34.9     95.7    984.2    615.6    230.3    246.5       4.27x    230.3
+   a 0.9990, b 0.9600                   34.9    290.3    984.2    615.6    230.3    246.5       4.27x    230.3
+   a 0.9990, b 0.9990                   34.9    395.8    995.2    625.2    235.4    244.8       4.23x    235.4
+   (held-out family points: 15)
+   record, out/transfer_kladder.txt: J 34.9, ADDtab 108.1, d21 42.8, d32 48.0,
+   d10 186.3, d43 509.3 -- spread 11.9x.
+
+=== VERDICT ===
+   convention spread over the whole swept knot range: 2.00x to 29.03x
+   pair weight above u = 0.6667, over all families and CV: 0.0000 to 1.0000
+   -> a knot above 0.667 does NOT collapse the spread anywhere in the
+      admissible range. G8 stays unsettled, and for a reason this rules IN
+      or OUT explicitly rather than by argument.
+
+   WHAT THIS CANNOT DECIDE: the composite-diameter convention is a property of
+   the NESTED RULE, not of the interaction table, so nothing about a(u) is
+   required to move it. This measures whether it DOES, not whether it should.
