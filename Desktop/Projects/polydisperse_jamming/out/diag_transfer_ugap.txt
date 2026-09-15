@@ -28,9 +28,39 @@
    discretises into 160 equal-count classes and ADJACENT classes of a
    continuous PSD are nearly the same size. So the new knot does not cover the
    families' weight -- it only changes how PCHIP GUESSES on [u*, 1], which is
-   where that weight lives. That is the mechanism behind section 2's verdict,
-   and it says the family transfer needs a(u) at u > 0.9 -- precisely where the
-   U-GAP block showed a binary composition curve has no signal left to fit.
+   where that weight lives. That is the mechanism behind section 2's verdict.
+
+=== 1b. WHERE THE SENSITIVITY IS vs WHERE THE FAILURE IS -- they are NOT the same ===
+   ⚠ A first draft of this file concluded 'therefore the family transfer NEEDS
+   a(u) at u > 0.9'. A REFEREE refuted it (2026-09-16) and the check is one
+   table: put the pair weight above 0.90 beside the residual it is supposed to
+   explain. A weight table says where phi is SENSITIVE to a(u); it does NOT say
+   where the model FAILS, and here the two sit at opposite ends of the CV axis.
+   family        CV  w(u>0.90)  res/scale
+   lognormal    0.1     0.5428       -0.1
+   lognormal    0.2     0.2885       +2.3
+   lognormal    0.3     0.1915       +3.1
+   lognormal    0.4     0.1396       +4.8
+   lognormal    0.5     0.1075       +6.9
+   uniform      0.1     0.5471       -0.2
+   uniform      0.2     0.3783       +0.8
+   uniform      0.3     0.3438       +2.0
+   uniform      0.4     0.3372       +2.8
+   uniform      0.5     0.3346       +2.4
+   bidisperse   0.1     0.0000       -1.5
+   bidisperse   0.2     0.0000       +0.1
+   bidisperse   0.3     0.0000       +1.1
+   bidisperse   0.4     0.0000       +1.4
+   bidisperse   0.5     0.0000       -0.4
+   spearman(|residual|, weight above u = 0.90) over the 10 continuous cells = -0.939 (p 0.000)
+   -> the cells that lean HARDEST on u > 0.9 (CV = 0.1, weight 0.54) are already
+      fit to within noise; the cells that are BADLY misfit (CV = 0.4-0.5, up to
+      -6.9 scale) have the LEAST weight there. Sensitivity and misfit are
+      ANTI-correlated, so resolving u > 0.9 would improve the predictions that
+      do not need improving and would do essentially nothing for the ones that
+      drive 'the transfer does not work'. THE CLAIM IS WITHDRAWN.
+      What survives is the narrower statement: a knot at u* cannot cover the
+      families' weight, which is why section 2's verdict is what it is.
 
 === 2. the held-out chi2 table as a knot at u* is swept ===
    The knot is inserted into the SAME tabulated closure the standing numbers

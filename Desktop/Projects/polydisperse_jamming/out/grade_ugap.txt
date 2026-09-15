@@ -55,6 +55,8 @@
       [registered wording] both values inside the UNION: a True, b True -- VACUOUS, true for any two identifiable fits
       [replacement] the two INTERSECTIONS must be non-empty: a overlap +0.0300 (narrower interval 0.0400), b overlap +0.0650 (0.0650)
       and |da| must not exceed the narrower interval's width: |da| 0.0087 vs 0.0400; |db| 0.0013 vs 0.0650
+      [nested-model test, stronger in kind] one shared (a, b) for BOTH grids: chi2 6.31 vs 5.54 separate, delta chi2 = 0.77 for 2 extra dof
+      against the project's 1-per-dof convention (bar 2.0): PASS -- one interaction pair explains both grids
    -> U1b PASS
 
    -> U1 (arm A, u = 0.70711): IDENTIFIABLE, predicted IDENTIFIABLE -- PASS

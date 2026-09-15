@@ -57,9 +57,18 @@ than these.** It was a gate that could not fire. The vacuous result stays printe
 replacement that is stricter in kind: the two intervals must actually **intersect**, and
 |Δ| must not exceed the narrower interval's width. Measured: a overlap **+0.0300**
 (narrower interval 0.0400), b overlap **+0.0650** (0.0650); |Δa| 0.0087 vs 0.0400, |Δb|
-0.0013 vs 0.0650. **PASS on the replacement**, so the conclusion is unchanged — arm A's
-number is attributable to the **ratio**, not to the composition grid — but it is now
-supported by a test that could have failed.
+0.0013 vs 0.0650.
+
+**And a third test, stronger in kind again, added on the referee's second pass**: interval
+overlap is shape-blind — two intervals can intersect while each fit's optimum sits at a
+far edge — so the gate now also runs a **nested-model test** asking directly whether *one*
+(a, b) explains *both* grids. Pooling the 8 old and 9 new r = 1.5 points costs
+**Δχ² = 0.77 for 2 extra degrees of freedom**, against the project's own 1-per-dof
+convention (bar 2.0). **PASS.**
+
+So the conclusion is unchanged — arm A's number is attributable to the **ratio**, not to
+the composition grid — but it now rests on a test that could have failed, and on the
+strongest of the three.
 
 ## C4 — 🔴 **u = 0.8 is NOT measurable on this protocol, and the reason is not the one the prereg gave**
 
@@ -237,10 +246,34 @@ same size, so:
 
 **Over half the lognormal and uniform pair weight at CV = 0.1 sits above u = 0.90.** The
 new knot therefore does not *cover* that weight — it only changes how PCHIP **guesses** on
-[u\*, 1], which is why the transfer moved and moved the wrong way. **The continuous-family
-transfer needs a(u) at u > 0.9 — exactly where this block proved a binary composition
-curve has no signal left to fit.** That is a structural statement about the whole
-calibration route, not a defect of this block.
+[u\*, 1], which is why the transfer moved, and moved the wrong way.
+
+🔴 ⚠ **AND THE CONCLUSION I FIRST DREW FROM THAT TABLE IS WITHDRAWN.** The first version of
+this section read "**the continuous-family transfer needs a(u) at u > 0.9**". A referee
+refuted it on the second pass, and the check is one column — put the weight beside the
+residual it is supposed to explain:
+
+| family | CV | w(u > 0.90) | residual (φ_meas − ADDtab)/scale |
+|---|---|---|---|
+| lognormal | 0.1 | **0.5428** | **−0.1** |
+| lognormal | 0.3 | 0.1915 | +3.1 |
+| lognormal | 0.5 | **0.1075** | **+6.9** |
+| uniform | 0.1 | **0.5471** | **−0.2** |
+| uniform | 0.5 | 0.3346 | +2.4 |
+
+**spearman(|residual|, w(u > 0.90)) = −0.939 (p 0.000)** over the 10 continuous cells.
+The cells that lean hardest on u > 0.9 are **already fit to within noise**; the badly
+misfit ones (CV 0.4–0.5, up to +6.9 scale) have the **least** weight there. Sensitivity and
+misfit are **anti-correlated**, so resolving u > 0.9 would improve the predictions that do
+not need improving and do essentially nothing for the ones that drive "the transfer does
+not work."
+
+**A weight table says where φ is SENSITIVE to a(u). It does not say where the model
+FAILS**, and here the two sit at opposite ends of the CV axis. What survives is the
+narrower statement: a knot at u\* cannot cover the families' weight, which is *why* U6's
+verdict is what it is — not a prescription for where to measure next. (The same caution
+the section's last paragraph already applies to the nested rule's convention had to be
+extended to the plain-ADDtab argument.)
 
 ---
 

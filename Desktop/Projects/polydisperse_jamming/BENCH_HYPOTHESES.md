@@ -317,9 +317,16 @@ pre-registered gate — both datasets were on disk before it was written.)
    at `u` → 1** with more signal than φ − β, which is what fails there.
 2. **Settle `a(u)` between 0.70711 and 1 by a means that is NOT a binary composition
    curve**, or accept that the closure is an extrapolation there and quote it as one.
-   `out/diag_ugap.txt` shows that region still moves the K = 5 prediction by up to
+   `out/diag_ugap.txt` shows that region still moves the **K = 5** prediction by up to
    **9.59 scale**, so it is not a cosmetic gap — it is just not reachable the way the
    knots below it were.
+   ⚠ **But do NOT justify this item by the continuous-family transfer.** A first draft
+   did, on the grounds that the families carry over half their pair weight above
+   u = 0.90. A referee refuted it: **spearman(|family residual|, w(u > 0.90)) = −0.939
+   (p 0.000)** — the cells that lean hardest on that region are already fit to within
+   noise, and the badly misfit ones (CV 0.4–0.5) have the least weight there. **A weight
+   table says where φ is sensitive, not where the model fails.** The case for this item is
+   K = 5, not the families.
 3. **A continuous PSD at a composition the filling model puts far from the families'
    locus** — the existing lognormal/uniform/bidisperse ladders all run through the
    fines-poor corner, which is what hid the mechanism for a month. (Unchanged, and now

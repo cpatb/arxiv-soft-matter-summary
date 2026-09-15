@@ -15,6 +15,7 @@ import csv
 import fnmatch
 import math
 import os
+import re
 
 import numpy as np
 import pytest
@@ -248,6 +249,36 @@ def test_U1b_is_no_longer_a_gate_that_cannot_fire():
     txt = open(GRADE, encoding="utf-8").read()
     assert "VACUOUS, true for any two identifiable fits" in txt
     assert "the two INTERSECTIONS must be non-empty" in txt
+    # and the strongest of the three, added on the referee's second pass
+    assert "nested-model test, stronger in kind" in txt
+    assert "for 2 extra dof" in txt
+
+
+@pytest.mark.skipif(not os.path.exists(GRADE), reason="block not graded yet")
+def test_the_u_above_0p9_prescription_stays_withdrawn():
+    """A referee refuted 'the family transfer needs a(u) at u > 0.9': sensitivity and
+    misfit are ANTI-correlated across the families. If a future edit reinstates the
+    prescription without the refutation beside it, this fails."""
+    dt = os.path.join(OUT, "diag_transfer_ugap.txt")
+    if not os.path.exists(dt):
+        pytest.skip("diagnostic not run")
+    txt = open(dt, encoding="utf-8").read()
+    assert "THE CLAIM IS WITHDRAWN" in txt
+    assert "ANTI-correlated" in txt
+    # the correlation must be strongly negative and must be PRINTED, not asserted
+    m = re.search(r"weight above u = 0\.90\) over the \d+ continuous cells = ([-+][\d.]+)",
+                  txt)
+    assert m, "the spearman value is not printed"
+    assert float(m.group(1)) < -0.5, f"correlation {m.group(1)} no longer supports it"
+    claims = open(os.path.join(HERE, "CLAIMS_UGAP_2026-09-16.md"), encoding="utf-8").read()
+    assert "WITHDRAWN" in claims
+    # anchor on the NUMBER, which cannot drift the way prose does -- the first version
+    # of this test asserted a phrase that the claims file worded differently
+    # the artifact prints an ASCII hyphen and the prose uses a Unicode minus, so the
+    # comparison is normalised -- a real mismatch this test caught on first run
+    assert m.group(1).lstrip("+-") in claims.replace("−", "-"), (
+        f"the claims file must quote the printed correlation {m.group(1)}")
+    assert "anti-correlated" in claims.lower()
 
 
 @pytest.mark.skipif(not os.path.exists(GRADE), reason="block not graded yet")

@@ -283,6 +283,29 @@ def main() -> int:
         u1b_ok = bool(res["C"]["ok"] and a_ov > 0 and b_ov > 0
                       and abs(res["C"]["a"] - a_old) <= a_nar
                       and abs(res["C"]["b"] - b_old) <= b_nar)
+        # The referee's recommended gate, stronger than interval overlap in KIND: a
+        # NESTED-MODEL test. Interval overlap is shape-blind -- two intervals can
+        # intersect while each fit's optimum sits at a far edge -- so ask directly
+        # whether ONE (a, b) explains BOTH grids. delta chi2 for 2 extra parameters,
+        # against the project's own "1 unit per dof" convention (bar 2).
+        gg = np.linspace(1e-4, 1 - 1e-4, 401)
+
+        def chi_min_of(pset):
+            xx = np.array([p[1] for p in pset])
+            yy = np.array([p[2] for p in pset])
+            return float((((ug.phi_fast(gg[:, None, None], gg[None, :, None],
+                                        xx[None, None, :], beta) - yy[None, None, :])
+                           / SCALE) ** 2).sum(axis=2).min())
+
+        c_sep = chi_min_of(old_pts) + chi_min_of(res["C"]["pts"])
+        c_pool = chi_min_of(old_pts + res["C"]["pts"])
+        d_chi = c_pool - c_sep
+        say(f"      [nested-model test, stronger in kind] one shared (a, b) for BOTH "
+            f"grids: chi2 {c_pool:.2f} vs {c_sep:.2f} separate, "
+            f"delta chi2 = {d_chi:.2f} for 2 extra dof")
+        say(f"      against the project's 1-per-dof convention (bar 2.0): "
+            f"{'PASS -- one interaction pair explains both grids' if d_chi <= 2.0 else 'FAIL'}")
+        u1b_ok = bool(u1b_ok and d_chi <= 2.0)
     say(f"   -> U1b {'PASS' if u1b_ok else 'FAIL'}")
     if not u1b_ok:
         failures.append("U1b: the composition grid moved the answer at a fixed ratio")
