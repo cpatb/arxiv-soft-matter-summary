@@ -89,8 +89,8 @@ def main() -> int:
     # ------------------------------------------------------------------ section 1
     say("=== 1. where the continuous families' pair weight actually sits ===")
     say("   A knot at u* can only move a family's prediction through pairs NEAR u*.")
-    say(f"   {'family':<11}{'CV':>5}{'w(u > 0.6667)':>15}{'w(u > 0.70711)':>16}"
-        f"{'w(u < 0.25)':>13}")
+    say(f"   {'family':<11}{'CV':>5}{'>0.6667':>10}{'>0.70711':>10}{'>0.90':>9}"
+        f"{'>0.95':>9}{'>0.99':>9}{'<0.25':>9}")
     wt = {}
     for fam in mm.FAMILIES:
         for cv in mc.CVS:
@@ -99,9 +99,24 @@ def main() -> int:
             d, y = mm.psd_classes(fam, cv)
             hi667 = pair_weight_above(d, y, u_lo)
             histar = pair_weight_above(d, y, ug.U_STAR)
+            h90 = pair_weight_above(d, y, 0.90)
+            h95 = pair_weight_above(d, y, 0.95)
+            h99 = pair_weight_above(d, y, 0.99)
             lo25 = tk.pair_weight_below(d, y, 0.25)
-            wt[(fam, cv)] = (hi667, histar, lo25)
-            say(f"   {fam:<11}{cv:5.1f}{hi667:15.4f}{histar:16.4f}{lo25:13.4f}")
+            wt[(fam, cv)] = (hi667, histar, lo25, h90)
+            say(f"   {fam:<11}{cv:5.1f}{hi667:10.4f}{histar:10.4f}{h90:9.4f}"
+                f"{h95:9.4f}{h99:9.4f}{lo25:9.4f}")
+    say()
+    say("   🔑 THE COLUMN THAT MATTERS IS NOT THE FIRST ONE. A knot at u* = 0.70711 sits")
+    say("   at the BOTTOM of the gap, and the continuous families put their weight at the")
+    say("   TOP of it: the lognormal and uniform at CV = 0.1 carry 0.54 of their pair")
+    say("   weight above u = 0.90 and 0.28-0.30 above 0.95, because `psd_classes`")
+    say(f"   discretises into {mm.K_CLASSES} equal-count classes and ADJACENT classes of a")
+    say("   continuous PSD are nearly the same size. So the new knot does not cover the")
+    say("   families' weight -- it only changes how PCHIP GUESSES on [u*, 1], which is")
+    say("   where that weight lives. That is the mechanism behind section 2's verdict,")
+    say("   and it says the family transfer needs a(u) at u > 0.9 -- precisely where the")
+    say("   U-GAP block showed a binary composition curve has no signal left to fit.")
     say()
 
     # ------------------------------------------------------------------ section 2

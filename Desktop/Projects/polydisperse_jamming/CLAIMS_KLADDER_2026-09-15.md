@@ -107,20 +107,22 @@ interpolation, and at `y_S` = 0.05 the K4→K5 "recovery" in ADDtab (+2.17, no b
 change) is a statement about how PCHIP guesses `a(0.707)`, not a measurement. **C1's
 "and then saturates" must be read as UNDETERMINED by this design.**
 
-> **ADDENDUM 2026-09-16 — the gap has now been MEASURED, and this caveat was right.**
-> `CLAIMS_UGAP_2026-09-16.md` puts a knot at `a(0.70711) = 0.9481 [0.8799, 0.9699]`.
-> Re-running the comparison with it, the registered saturation gate **FAILS** (R5−R4 ≤ 0
-> on 1 of 3 levels at N = 1500 and 0 of 3 at N = 3000) — but swept over that knot's own
-> profile interval, saturation survives on **110 of 169 corners (65 %)**. So "and then
-> saturates" remains **UNDETERMINED**, now for a measured reason rather than a structural
-> one, and it is **not** refuted either. The K3→K4 rise and the sign test C4 are
-> unaffected, exactly as this paragraph predicted.
- What survives
+What survives
 untouched is the K3→K4 rise (every pair on both those rungs is inside the measured
 bracket) and the sign test C4, which compares data with model and does not care why the
 model does what it does. This is the symmetric twin of the caveat already in "What this
 block does NOT establish" about `u` < 1/4 — the block says nothing trustworthy about
 `u` ∈ (0.667, 1) either, and it was missing until the referee asked.
+
+> **ADDENDUM 2026-09-16 — the gap has now been MEASURED, and this caveat was right.**
+> `CLAIMS_UGAP_2026-09-16.md` puts a knot at `a(0.70711) = 0.9481 [0.8799, 0.9699]`.
+> Re-running the comparison with it, the registered saturation gate **FAILS** (R5−R4 ≤ 0
+> on 1 of 3 levels at N = 1500 and 0 of 3 at N = 3000) — but swept over that knot's own
+> profile interval, saturation survives on **33 of 87 jointly admissible corners
+> (37.9 %)**. So "and then saturates" remains **UNDETERMINED**, now for a measured reason
+> rather than a structural one, and it is **not** refuted either — though at 37.9 % the
+> balance leans *against* it. The K3→K4 rise and the sign test C4 are unaffected,
+> **exactly as this paragraph predicted.**
 
 ### C1b — the registered *ranking* half of G1 is NOT INFORMATIVE, and the grader says so
 Every hypothesis in the registered family is a MULTIPLE of R(3), and R(3) landed **inside

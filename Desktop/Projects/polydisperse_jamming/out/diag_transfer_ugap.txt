@@ -4,22 +4,33 @@
 
 === 1. where the continuous families' pair weight actually sits ===
    A knot at u* can only move a family's prediction through pairs NEAR u*.
-   family        CV  w(u > 0.6667)  w(u > 0.70711)  w(u < 0.25)
-   lognormal    0.1         0.9965          0.9865       0.0000
-   lognormal    0.2         0.8527          0.7839       0.0000
-   lognormal    0.3         0.6686          0.5918       0.0005
-   lognormal    0.4         0.5379          0.4636       0.0082
-   lognormal    0.5         0.4456          0.3809       0.0281
-   uniform      0.1         1.0000          0.9999       0.0000
-   uniform      0.2         0.8846          0.8292       0.0000
-   uniform      0.3         0.8164          0.7627       0.0000
-   uniform      0.4         0.8021          0.7487       0.0020
-   uniform      0.5         0.7990          0.7466       0.0039
-   bidisperse   0.1         1.0000          1.0000       0.0000
-   bidisperse   0.2         1.0000          0.0000       0.0000
-   bidisperse   0.3         0.0000          0.0000       0.0000
-   bidisperse   0.4         0.0000          0.0000       0.0000
-   bidisperse   0.5         0.0000          0.0000       0.0000
+   family        CV   >0.6667  >0.70711    >0.90    >0.95    >0.99    <0.25
+   lognormal    0.1    0.9965    0.9865   0.5428   0.2797   0.0510   0.0000
+   lognormal    0.2    0.8527    0.7839   0.2885   0.1385   0.0211   0.0000
+   lognormal    0.3    0.6686    0.5918   0.1915   0.0881   0.0112   0.0005
+   lognormal    0.4    0.5379    0.4636   0.1396   0.0605   0.0048   0.0082
+   lognormal    0.5    0.4456    0.3809   0.1075   0.0445   0.0021   0.0281
+   uniform      0.1    1.0000    0.9999   0.5471   0.2973   0.0593   0.0000
+   uniform      0.2    0.8846    0.8292   0.3783   0.2008   0.0357   0.0000
+   uniform      0.3    0.8164    0.7627   0.3438   0.1815   0.0325   0.0000
+   uniform      0.4    0.8021    0.7487   0.3372   0.1762   0.0231   0.0020
+   uniform      0.5    0.7990    0.7466   0.3346   0.1757   0.0257   0.0039
+   bidisperse   0.1    1.0000    1.0000   0.0000   0.0000   0.0000   0.0000
+   bidisperse   0.2    1.0000    0.0000   0.0000   0.0000   0.0000   0.0000
+   bidisperse   0.3    0.0000    0.0000   0.0000   0.0000   0.0000   0.0000
+   bidisperse   0.4    0.0000    0.0000   0.0000   0.0000   0.0000   0.0000
+   bidisperse   0.5    0.0000    0.0000   0.0000   0.0000   0.0000   0.0000
+
+   🔑 THE COLUMN THAT MATTERS IS NOT THE FIRST ONE. A knot at u* = 0.70711 sits
+   at the BOTTOM of the gap, and the continuous families put their weight at the
+   TOP of it: the lognormal and uniform at CV = 0.1 carry 0.54 of their pair
+   weight above u = 0.90 and 0.28-0.30 above 0.95, because `psd_classes`
+   discretises into 160 equal-count classes and ADJACENT classes of a
+   continuous PSD are nearly the same size. So the new knot does not cover the
+   families' weight -- it only changes how PCHIP GUESSES on [u*, 1], which is
+   where that weight lives. That is the mechanism behind section 2's verdict,
+   and it says the family transfer needs a(u) at u > 0.9 -- precisely where the
+   U-GAP block showed a binary composition curve has no signal left to fit.
 
 === 2. the held-out chi2 table as a knot at u* is swept ===
    The knot is inserted into the SAME tabulated closure the standing numbers

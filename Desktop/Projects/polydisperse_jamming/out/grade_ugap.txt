@@ -37,18 +37,24 @@
       C   1.50000  0.66667    9    0.0125     5.9  0.9336  0.040  0.8972  0.065  YES
         a interval [0.9099, 0.9499]   b interval [0.8599, 0.9249]
 
-   the escape model (a = 1 or b = 1 -> phi = beta identically) against the bar:
-      arm A: chi2 at the escape =    86.93  bar = n = 9  closed
-      arm B: chi2 at the escape =    14.12  bar = n = 9  closed
-      arm C: chi2 at the escape =   189.36  bar = n = 9  closed
+   the escape model (a = 1 or b = 1 -> phi = beta identically) against the bar.
+   The bar is the SAME one the profile uses, chi2_min + n, not n -- an earlier
+   draft of the claims quoted a bar of 10.41 that no artifact printed (referee,
+   2026-09-16). Both chi2_min and the bar are printed here so it cannot recur.
+        arm  chi2_min   n      bar  chi2 escape  verdict
+          A      3.41   9    12.41        86.93  closed
+          B      1.41   9    10.41        14.12  closed
+          C      3.50   9    12.50       189.36  closed
 
    U1b -- the ATTRIBUTION CONTROL. Arm C is r = 1.5, an already-identifiable
    knot; running the NEW composition grid there separates 'the grid moved the
    answer' from 'the ratio moved the answer'.
       old grid: a 0.9249 [0.8999, 0.9399]   b 0.8985 [0.8449, 0.9299]
       new grid: a 0.9336 [0.9099, 0.9499]   b 0.8972 [0.8599, 0.9249]
-      both values inside the UNION of the two intervals: a True, b True
       da = +0.0087, db = -0.0013
+      [registered wording] both values inside the UNION: a True, b True -- VACUOUS, true for any two identifiable fits
+      [replacement] the two INTERSECTIONS must be non-empty: a overlap +0.0300 (narrower interval 0.0400), b overlap +0.0650 (0.0650)
+      and |da| must not exceed the narrower interval's width: |da| 0.0087 vs 0.0400; |db| 0.0013 vs 0.0650
    -> U1b PASS
 
    -> U1 (arm A, u = 0.70711): IDENTIFIABLE, predicted IDENTIFIABLE -- PASS
@@ -101,6 +107,16 @@
        a(u*) comes out above 0.9398' -- is true of the point estimate and
        NOT RESOLVED by the interval. The direction is a trend, not a
        measured disagreement.
+   (3) The 9 compositions share the SAME 3 seed values, so the sign test's
+       independence assumption is not free. Per-seed residual correlation
+       across compositions:
+          seed 1 vs 2: r = +0.726
+          seed 1 vs 3: r = -0.225
+          seed 2 vs 3: r = -0.003
+       One pair is strongly correlated, so the binomial p-values above are
+       optimistic. It changes no verdict -- U2 is already reported as
+       marginal on three other grounds -- but the count is not 9 independent
+       trials and must not be quoted as if it were.
 
 === U4 -- monotonicity of a(u), b(u) with the new knots inserted ===
            u        a        b   source
@@ -145,10 +161,13 @@
    the point estimate is a verdict without an error bar; this sweeps a and b
    over arm A's OWN profile intervals and asks where saturation would survive.
    a swept over [0.8799, 0.9699], b over [0.8849, 0.9599], 13x13 = 169 corners
-   saturation SURVIVES on 110 of 169 corners (65.1%)
-   survival by a(u*), so it is visible WHICH parameter the verdict turns on:
-      a0.880:13/13  a0.887:12/13  a0.895:12/13  a0.902:11/13  a0.910:10/13  a0.917:9/13  a0.925:9/13
-      a0.932:8/13  a0.940:7/13  a0.947:6/13  a0.955:5/13  a0.962:4/13  a0.970:4/13
+   over the MARGINAL box:  saturation survives on 110 of 169 (65.1%) -- SUPERSEDED, see below
+   of those, 87 corners are inside the JOINT likelihood region (chi2 <= chi2_min + n = 12.41); the other 82 are combinations the data EXCLUDES
+   over the JOINT region: saturation survives on 33 of 87 (37.9% ) <- THE NUMBER THE VERDICT RESTS ON
+   survival by a(u*), jointly admissible corners only, so it is visible
+   WHICH parameter the verdict turns on:
+      a0.880:2/2  a0.887:2/2  a0.895:3/3  a0.902:2/4  a0.910:2/5  a0.917:2/6  a0.925:2/6
+      a0.932:2/7  a0.940:3/9  a0.947:3/10  a0.955:4/12  a0.962:3/11  a0.970:3/10
    -> the U3 verdict is NOT RESOLVED -- it turns on where inside its own interval a(u*) sits
    ** So the GRADED gate fails at the point estimate, as registered, but
       the scientific statement is UNDETERMINED, not REFUTED: the measured
@@ -199,6 +218,13 @@
          statement in units of PHI_SCALE, not of the seed error. It therefore does not
          tighten with seeds or with the number of compositions -- demonstrated in
          out/diag_uident.txt section 3 -- and a PASS is not a claim about precision.
+   C-v  ADDED after the referee pass, and NOT in the blind file: every number
+        here rests on `beta`, which comes from mm.measured() -- and that loader
+        prints a standing NON-DETERMINISM warning (15 of 82 duplicated keys
+        disagree, worst |dphi| = 5.03e-03, i.e. 2.4x PHI_SCALE, resolved by
+        FILENAME SORT ORDER). It is tracked in PREREG_DST_WINDOW_2026-09-09.md
+        and is not introduced by this block, but beta's own precision carries
+        that exposure and neither the prereg nor the first claims draft said so.
 
-NOT INFORMATIVE: ['U3 not resolved over the measured interval: survives on 110/169 corners (65%)']
+NOT INFORMATIVE: ['U3 not resolved over the measured interval: survives on 33/87 corners (38%)']
 FAILURES: ['U1c: arm B came back UNDETERMINED', 'U3: 1/3 and 0/3 levels <= 0']

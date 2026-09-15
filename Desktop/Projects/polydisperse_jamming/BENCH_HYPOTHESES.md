@@ -39,9 +39,11 @@ what makes E's qualification 2 a measurement rather than a flag.**
    **+3.13 / +1.47 / +0.30** at N = 3000 — ≤ 0 on **1 of 3** and **0 of 3**, against the
    pre-registered bar of ≥ 2 of 3 at both, so **the registered gate U3 FAILS**. But swept
    over the new knot's **own profile interval** the saturation verdict survives on
-   **110 of 169 corners (65 %)**, declining monotonically with `a(u*)`. So the honest
-   verdict is **undetermined**: it is no longer quotable as established, and it is not
-   refuted either. K = 2, 3, 4 pairs all sit at `u` ≤ 0.630, so **the K3→K4 rise is
+   **33 of 87 jointly admissible corners (37.9 %)**. So the honest verdict is
+   **undetermined, leaning against saturation**: it is no longer quotable as established,
+   and it is not refuted either. (A referee corrected a first version that swept the
+   MARGINAL box and reported 110/169 = 65 %; 82 of those corners are (a, b) pairs the
+   joint likelihood excludes. Both numbers stay printed.) K = 2, 3, 4 pairs all sit at `u` ≤ 0.630, so **the K3→K4 rise is
    unaffected** except through interpolant leakage (`out/grade_ugap.txt`, prereg C-iii).
 3. **A step in ADD across K is not by itself a filling statement.** `packing_density` is a
    minimum over branches, and the argmin reassigns somewhere on the K axis at **3 of 3**

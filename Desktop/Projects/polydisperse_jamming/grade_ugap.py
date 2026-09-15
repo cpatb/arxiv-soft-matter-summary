@@ -216,7 +216,11 @@ def main() -> int:
     say()
 
     # the escape diagnostic, which is what explains a NO
-    say("   the escape model (a = 1 or b = 1 -> phi = beta identically) against the bar:")
+    say("   the escape model (a = 1 or b = 1 -> phi = beta identically) against the bar.")
+    say("   The bar is the SAME one the profile uses, chi2_min + n, not n -- an earlier")
+    say("   draft of the claims quoted a bar of 10.41 that no artifact printed (referee,")
+    say("   2026-09-16). Both chi2_min and the bar are printed here so it cannot recur.")
+    say(f"      {'arm':>5}{'chi2_min':>10}{'n':>4}{'bar':>9}{'chi2 escape':>13}  verdict")
     for arm in ("A", "B", "C"):
         if arm not in res:
             continue
@@ -224,10 +228,17 @@ def main() -> int:
         xv = np.array([p[1] for p in pts])
         yv = np.array([p[2] for p in pts])
         grid = np.linspace(1e-4, 1 - 1e-4, 201)
+        chi2d = (((ug.phi_fast(grid[:, None, None], grid[None, :, None],
+                               xv[None, None, :], beta) - yv[None, None, :])
+                  / SCALE) ** 2).sum(axis=2)
+        cmin = float(chi2d.min())
+        bar = cmin + len(pts)
         esc = float(min((((ug.phi_fast(gv, 1.0, xv, beta) - yv) / SCALE) ** 2).sum()
                         for gv in grid))
-        say(f"      arm {arm}: chi2 at the escape = {esc:8.2f}  bar = n = {len(pts)}  "
-            f"{'OPEN -- unidentifiable by construction' if esc <= len(pts) else 'closed'}")
+        res[arm]["chi2_min"] = cmin
+        res[arm]["bar"] = bar
+        say(f"      {arm:>5}{cmin:10.2f}{len(pts):4d}{bar:9.2f}{esc:13.2f}  "
+            f"{'OPEN -- unidentifiable by construction' if esc <= bar else 'closed'}")
     say()
 
     # U1b, the attribution control: arm C against the existing mixr value
@@ -241,17 +252,37 @@ def main() -> int:
         ia_o = ug.profile_fast(old_pts, beta, 0)
         ib_o = ug.profile_fast(old_pts, beta, 1)
         ia_n, ib_n = res["C"]["ia"], res["C"]["ib"]
-        ua = (min(ia_o[0], ia_n[0]), max(ia_o[1], ia_n[1]))
-        ub = (min(ib_o[0], ib_n[0]), max(ib_o[1], ib_n[1]))
-        a_in = ua[0] <= res["C"]["a"] <= ua[1] and ua[0] <= a_old <= ua[1]
-        b_in = ub[0] <= res["C"]["b"] <= ub[1] and ub[0] <= b_old <= ub[1]
-        u1b_ok = bool(res["C"]["ok"] and a_in and b_in)
         say(f"      old grid: a {a_old:.4f} [{ia_o[0]:.4f}, {ia_o[1]:.4f}]   "
             f"b {b_old:.4f} [{ib_o[0]:.4f}, {ib_o[1]:.4f}]")
         say(f"      new grid: a {res['C']['a']:.4f} [{ia_n[0]:.4f}, {ia_n[1]:.4f}]   "
             f"b {res['C']['b']:.4f} [{ib_n[0]:.4f}, {ib_n[1]:.4f}]")
-        say(f"      both values inside the UNION of the two intervals: a {a_in}, b {b_in}")
         say(f"      da = {res['C']['a'] - a_old:+.4f}, db = {res['C']['b'] - b_old:+.4f}")
+        # The registered wording said "within the UNION of the two profile intervals".
+        # A REFEREE (2026-09-16) showed that test CANNOT FAIL: `identifiable()` already
+        # guarantees each best fit lies inside its OWN interval, and each interval is a
+        # subset of the union -- so any two individually-identifiable fits pass it, even
+        # with DISJOINT intervals an order of magnitude further apart than these. It was
+        # a gate that could not fire. The vacuous number stays printed beside the
+        # replacement, which is stricter in KIND: the intervals must actually OVERLAP.
+        ua = (min(ia_o[0], ia_n[0]), max(ia_o[1], ia_n[1]))
+        ub = (min(ib_o[0], ib_n[0]), max(ib_o[1], ib_n[1]))
+        a_in = ua[0] <= res["C"]["a"] <= ua[1] and ua[0] <= a_old <= ua[1]
+        b_in = ub[0] <= res["C"]["b"] <= ub[1] and ub[0] <= b_old <= ub[1]
+        say(f"      [registered wording] both values inside the UNION: a {a_in}, "
+            f"b {b_in} -- VACUOUS, true for any two identifiable fits")
+        a_ov = min(ia_o[1], ia_n[1]) - max(ia_o[0], ia_n[0])
+        b_ov = min(ib_o[1], ib_n[1]) - max(ib_o[0], ib_n[0])
+        a_nar = min(ia_o[1] - ia_o[0], ia_n[1] - ia_n[0])
+        b_nar = min(ib_o[1] - ib_o[0], ib_n[1] - ib_n[0])
+        say(f"      [replacement] the two INTERSECTIONS must be non-empty: "
+            f"a overlap {a_ov:+.4f} (narrower interval {a_nar:.4f}), "
+            f"b overlap {b_ov:+.4f} ({b_nar:.4f})")
+        say(f"      and |da| must not exceed the narrower interval's width: "
+            f"|da| {abs(res['C']['a'] - a_old):.4f} vs {a_nar:.4f}; "
+            f"|db| {abs(res['C']['b'] - b_old):.4f} vs {b_nar:.4f}")
+        u1b_ok = bool(res["C"]["ok"] and a_ov > 0 and b_ov > 0
+                      and abs(res["C"]["a"] - a_old) <= a_nar
+                      and abs(res["C"]["b"] - b_old) <= b_nar)
     say(f"   -> U1b {'PASS' if u1b_ok else 'FAIL'}")
     if not u1b_ok:
         failures.append("U1b: the composition grid moved the answer at a fixed ratio")
@@ -362,6 +393,32 @@ def main() -> int:
         say("       a(u*) comes out above 0.9398' -- is true of the point estimate and")
         say("       NOT RESOLVED by the interval. The direction is a trend, not a")
         say("       measured disagreement.")
+        # A referee (2026-09-16) asked whether 9 compositions sharing 3 seed values are
+        # independent trials. Measured rather than argued: the per-seed residual columns
+        # are correlated across compositions for one seed pair.
+        cols = {}
+        for s in ug.SEEDS:
+            v = []
+            for x in ug.X_GRID:
+                rec = [c for c in adm15.get((float(rr), round(float(x), 6)), [])
+                       if int(c["key"].split("_s")[1].split("_")[0]) == s]
+                if rec:
+                    v.append((float(rec[0]["phi"]) - float(mc.packing_density_ab(
+                        np.array([rr, 1.0]), np.array([1 - x, x]), beta, av, bv))) / SCALE)
+            cols[s] = np.array(v)
+        say("   (3) The 9 compositions share the SAME 3 seed values, so the sign test's")
+        say("       independence assumption is not free. Per-seed residual correlation")
+        say("       across compositions:")
+        ss = list(ug.SEEDS)
+        for i in range(len(ss)):
+            for j in range(i + 1, len(ss)):
+                if cols[ss[i]].size == cols[ss[j]].size == len(ug.X_GRID):
+                    r_ = float(np.corrcoef(cols[ss[i]], cols[ss[j]])[0, 1])
+                    say(f"          seed {ss[i]} vs {ss[j]}: r = {r_:+.3f}")
+        say("       One pair is strongly correlated, so the binomial p-values above are")
+        say("       optimistic. It changes no verdict -- U2 is already reported as")
+        say("       marginal on three other grounds -- but the count is not 9 independent")
+        say("       trials and must not be quoted as if it were.")
         if not u2_ok:
             failures.append(f"U2: {nneg}/{n} negative, bar >= {U2_MIN_NEG}")
     say()
@@ -498,12 +555,25 @@ def main() -> int:
         ia_, ib_ = res["A"]["ia"], res["A"]["ib"]
         ga = np.linspace(ia_[0], ia_[1], 13)
         gb = np.linspace(ib_[0], ib_[1], 13)
+        # A REFEREE (2026-09-16) caught the first version sweeping the MARGINAL box.
+        # Two wide marginals can enclose corners the JOINT likelihood excludes -- the
+        # very point section 7 of out/diag_uident.txt makes about arm B -- and here 84
+        # of 169 marginal corners score chi2 far above the bar. Both fractions are
+        # reported; the JOINT one is the number the verdict rests on.
+        xvA = np.array([p[1] for p in res["A"]["pts"]])
+        yvA = np.array([p[2] for p in res["A"]["pts"]])
+        barA = res["A"].get("bar")
+        joint_ok = (((ug.phi_fast(ga[:, None, None], gb[None, :, None],
+                                  xvA[None, None, :], beta) - yvA[None, None, :])
+                     / SCALE) ** 2).sum(axis=2) <= barA
         surv = 0
+        surv_j = 0
+        n_joint = int(joint_ok.sum())
         tot = 0
         edge_a = []
-        for av_ in ga:
+        for i_a, av_ in enumerate(ga):
             n_surv_row = 0
-            for bv_ in gb:
+            for j_b, bv_ in enumerate(gb):
                 t2 = dict(tab)
                 t2[ug.U_STAR] = (float(av_), float(bv_))
                 u2_ = [0.0, 1.0] + sorted(t2)
@@ -530,15 +600,24 @@ def main() -> int:
                             cnt[n] += int(Rq(n, l5) - Rq(n, l4) <= 0)
                 ok_here = all(cnt[n] >= U3_MIN_LEVELS for n in (1500, 3000))
                 surv += int(ok_here)
-                n_surv_row += int(ok_here)
+                n_surv_row += int(ok_here and bool(joint_ok[i_a, j_b]))
+                surv_j += int(ok_here and bool(joint_ok[i_a, j_b]))
                 tot += 1
-            edge_a.append((float(av_), n_surv_row, len(gb)))
+            edge_a.append((float(av_), n_surv_row, int(joint_ok[i_a].sum())))
         say(f"   a swept over [{ia_[0]:.4f}, {ia_[1]:.4f}], b over "
             f"[{ib_[0]:.4f}, {ib_[1]:.4f}], {len(ga)}x{len(gb)} = {tot} corners")
-        say(f"   saturation SURVIVES on {surv} of {tot} corners ({surv/tot:.1%})")
-        say("   survival by a(u*), so it is visible WHICH parameter the verdict turns on:")
+        say(f"   over the MARGINAL box:  saturation survives on {surv} of {tot} "
+            f"({surv/tot:.1%}) -- SUPERSEDED, see below")
+        say(f"   of those, {n_joint} corners are inside the JOINT likelihood region "
+            f"(chi2 <= chi2_min + n = {barA:.2f}); the other {tot - n_joint} are "
+            f"combinations the data EXCLUDES")
+        say(f"   over the JOINT region: saturation survives on {surv_j} of {n_joint} "
+            f"({surv_j/n_joint:.1%} ) <- THE NUMBER THE VERDICT RESTS ON")
+        say("   survival by a(u*), jointly admissible corners only, so it is visible")
+        say("   WHICH parameter the verdict turns on:")
         say("      " + "  ".join(f"a{a_:.3f}:{k}/{m}" for a_, k, m in edge_a[:7]))
         say("      " + "  ".join(f"a{a_:.3f}:{k}/{m}" for a_, k, m in edge_a[7:]))
+        surv, tot = surv_j, n_joint
         say(f"   -> the U3 verdict is "
             f"{'NOT RESOLVED -- it turns on where inside its own interval a(u*) sits' if 0 < surv < tot else 'ROBUST over the whole measured interval'}")
         if 0 < surv < tot:
@@ -653,6 +732,13 @@ def main() -> int:
     import predict_ugap as pu
     for c in pu.CAVEATS:
         say("   " + c)
+    say("   C-v  ADDED after the referee pass, and NOT in the blind file: every number")
+    say("        here rests on `beta`, which comes from mm.measured() -- and that loader")
+    say("        prints a standing NON-DETERMINISM warning (15 of 82 duplicated keys")
+    say("        disagree, worst |dphi| = 5.03e-03, i.e. 2.4x PHI_SCALE, resolved by")
+    say("        FILENAME SORT ORDER). It is tracked in PREREG_DST_WINDOW_2026-09-09.md")
+    say("        and is not introduced by this block, but beta's own precision carries")
+    say("        that exposure and neither the prereg nor the first claims draft said so.")
     say()
 
     # ------------------------------------------------------------------- artifact

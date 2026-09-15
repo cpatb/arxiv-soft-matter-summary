@@ -210,11 +210,54 @@ def test_C6_keeps_the_gate_and_the_science_as_SEPARATE_sentences():
     is refuted' must break a test, because the corner sweep says UNDETERMINED."""
     txt = open(GRADE, encoding="utf-8").read()
     assert "NOT RESOLVED" in txt
-    assert "saturation SURVIVES on 110 of 169 corners" in txt
+    # the JOINT-region figure is the one the verdict rests on; the marginal one must
+    # stay printed beside it so the correction remains visible (referee, 2026-09-16)
+    assert "over the JOINT region: saturation survives on 33 of 87" in txt
+    assert "over the MARGINAL box:  saturation survives on 110 of 169" in txt
+    assert "SUPERSEDED" in txt
     claims = open(os.path.join(HERE, "CLAIMS_UGAP_2026-09-16.md"), encoding="utf-8").read()
     assert "UNDETERMINED, NOT CONFIRMED" in claims
-    assert "110 of 169 corners" in claims
+    assert "33 of 87" in claims and "110 of 169" in claims
     assert "not that it is" in claims and "refuted" in claims
+
+
+@pytest.mark.skipif(not os.path.exists(GRADE), reason="block not graded yet")
+def test_U1b_is_no_longer_a_gate_that_cannot_fire():
+    """A referee showed the REGISTERED union test passes for any two individually
+    identifiable fits, however far apart. The replacement must be able to fail, so it is
+    fed a DISCRIMINATING negative: two identifiable fits with disjoint intervals."""
+    import mixture_closure as mc
+    beta = 0.5946865273380492
+
+    def fit(a, b):
+        pts = [(1.5, x, float(mc.packing_density_ab(np.array([1.5, 1.0]),
+                                                    np.array([1 - x, x]), beta, a, b)))
+               for x in ug.X_GRID]
+        ok, ia, ib, ah, bh = ug.identifiable(pts, beta)
+        assert ok, f"the control needs both fits identifiable; (a={a}, b={b}) was not"
+        return ia, ib, ah, bh
+
+    ia_o, ib_o, a_o, _ = fit(0.85, 0.80)
+    ia_n, ib_n, a_n, _ = fit(0.97, 0.94)
+    # the REGISTERED test: both values inside the union -- passes, which is the defect
+    ua = (min(ia_o[0], ia_n[0]), max(ia_o[1], ia_n[1]))
+    assert ua[0] <= a_o <= ua[1] and ua[0] <= a_n <= ua[1]
+    # the REPLACEMENT: the intervals must intersect -- correctly fails here
+    assert min(ia_o[1], ia_n[1]) - max(ia_o[0], ia_n[0]) <= 0, (
+        "the replacement control cannot fail either; it is still vacuous")
+    txt = open(GRADE, encoding="utf-8").read()
+    assert "VACUOUS, true for any two identifiable fits" in txt
+    assert "the two INTERSECTIONS must be non-empty" in txt
+
+
+@pytest.mark.skipif(not os.path.exists(GRADE), reason="block not graded yet")
+def test_every_bar_quoted_in_the_claims_is_printed_by_the_grader():
+    """The 10.41 escape bar was quoted in the claims and printed by nothing. Pin the
+    row that now prints it, so a future refactor cannot make it untraceable again."""
+    txt = open(GRADE, encoding="utf-8").read()
+    assert "chi2_min" in txt and "bar" in txt
+    assert "10.41" in txt, "arm B's escape bar must be PRINTED, not just quoted"
+    assert "12.41" in txt, "arm A's bar feeds the joint-region sweep and must print"
 
 
 @pytest.mark.skipif(not os.path.exists(GRADE), reason="block not graded yet")

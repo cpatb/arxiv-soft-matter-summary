@@ -46,9 +46,20 @@ identical number. Not "close": exactly zero, three seeds each.
 ## C3 — **the attribution control holds: the grid did not move the answer**
 
 **U1b PASS.** Arm C re-measures the *existing* u = 0.6667 knot on the *new* grid:
-a **0.9249 → 0.9336** (Δ +0.0087), b **0.8985 → 0.8972** (Δ −0.0013), both values inside
-the union of the two profile intervals. So arm A's number can be attributed to the
-**ratio**, not to the composition grid. Without arm C, C1 would not be attributable.
+a **0.9249 → 0.9336** (Δ +0.0087), b **0.8985 → 0.8972** (Δ −0.0013).
+
+🔴 ⚠ **The registered wording for this gate was VACUOUS and has been replaced** (referee,
+2026-09-16). It asked whether both values lie "within the **union** of the two profile
+intervals" — but `identifiable()` already guarantees each best fit lies inside its *own*
+interval, and each interval is a subset of the union, so **any two individually
+identifiable fits pass, even with disjoint intervals an order of magnitude further apart
+than these.** It was a gate that could not fire. The vacuous result stays printed beside a
+replacement that is stricter in kind: the two intervals must actually **intersect**, and
+|Δ| must not exceed the narrower interval's width. Measured: a overlap **+0.0300**
+(narrower interval 0.0400), b overlap **+0.0650** (0.0650); |Δa| 0.0087 vs 0.0400, |Δb|
+0.0013 vs 0.0650. **PASS on the replacement**, so the conclusion is unchanged — arm A's
+number is attributable to the **ratio**, not to the composition grid — but it is now
+supported by a test that could have failed.
 
 ## C4 — 🔴 **u = 0.8 is NOT measurable on this protocol, and the reason is not the one the prereg gave**
 
@@ -60,9 +71,14 @@ direction that flatters it.**
 
 1. The prereg predicted the mechanism would be the *escape branch* (a = 1 or b = 1, where
    the closure collapses to the constant φ = β). **It is not.** The new grid **closed**
-   that escape at arm B: χ² = **14.12 against a bar of 10.41**, where the old grid had it
-   open at 7.09 against 8. The registered sentence was right about the verdict and wrong
-   about the reason — and the reason is what the bound rests on.
+   that escape at arm B: χ² = **14.12 against a bar of 10.41** (= χ²_min 1.41 + n 9, the
+   same bar the profile itself uses), where the old grid had it open at 7.09 against 8.
+   The registered sentence was right about the verdict and wrong about the reason — and
+   the reason is what the bound rests on.
+   ⚠ That 10.41 was **numerically right but traceable to nothing**: the grader printed
+   only "bar = n = 9" and the first claims draft quoted a bar no artifact contained
+   (referee, 2026-09-16). `grade_ugap.py` now prints χ²_min, n and the bar in one row for
+   every arm, so the figure traces.
 2. The prereg's "evidence that a(0.8) > 0.98" took the 0.98 from **arm A's** robustness
    table, which is the wrong arm.
 
@@ -99,6 +115,12 @@ a(u\*) = 0.9481 against the shipped 0.9398 (**+0.0083**); b 0.9376 vs 0.9177 (**
 3. **The interval contains the shipped value.** [0.8799, 0.9699] ∋ 0.9398, so U2's second
    half — "the fitted a(u\*) comes out above 0.9398" — is true of the point estimate and
    **not resolved**. This is a trend, not a measured disagreement.
+4. **The 9 compositions are not 9 independent trials** (referee, 2026-09-16). They share
+   the same three seed values; measured, the per-seed residual columns correlate at
+   r = **+0.726** (seeds 1, 2), −0.225 (1, 3) and −0.003 (2, 3) across compositions. One
+   pair is strongly correlated, so the binomial p-values above are **optimistic**. No
+   verdict changes — U2 was already marginal on three other grounds — but the count must
+   not be quoted as if it were nine independent draws.
 
 The blind direction prediction came from held-out data: r = 1.25 failed identifiability, so
 `tabulated_closure` never put a knot there, and the shipped closure over-predicts it on
@@ -128,18 +150,32 @@ between the two arms because caveat C-iii says both move: ΔR5 = **+0.99 to +1.6
 ΔR4 = **−0.52 to −0.84**, i.e. the new knot pushes the two arms in **opposite** directions
 and roughly two thirds of the swing is K = 5's own.
 
-**The scientific statement: UNDETERMINED.** Sweeping a and b over arm A's **own profile
-intervals** — the verdict read with its error bar rather than at a point — saturation
-**survives on 110 of 169 corners (65.1 %)**, declining monotonically with a:
+**The scientific statement: UNDETERMINED.** The verdict read with its error bar rather
+than at a point — sweeping a and b over arm A's own intervals on a 13 × 13 grid.
+
+🔴 ⚠ **The first version of this swept the MARGINAL box and the number was wrong**
+(referee, 2026-09-16). Two wide marginals enclose corners the **joint** likelihood
+excludes — the very point `out/diag_uident.txt` §7 makes about arm B, not applied here
+until the referee asked. Of the 169 marginal corners only **87** satisfy
+χ² ≤ χ²_min + n = 12.41; the other 82 are combinations the data actively excludes.
+
+| sweep | saturation survives | status |
+|---|---|---|
+| marginal box (first version) | 110 of 169 — **65.1 %** | **SUPERSEDED**, printed so the correction is visible |
+| **joint likelihood region** | **33 of 87 — 37.9 %** | **the number the verdict rests on** |
+
+Survival by a(u\*), jointly admissible corners only:
 
 ```
-a0.880:13/13  a0.887:12/13  a0.895:12/13  a0.902:11/13  a0.910:10/13  a0.917:9/13  a0.925:9/13
-a0.932:8/13   a0.940:7/13   a0.947:6/13   a0.955:5/13   a0.962:4/13   a0.970:4/13
+a0.880:2/2  a0.887:2/2  a0.895:3/3  a0.902:2/4  a0.910:2/5  a0.917:2/6  a0.925:2/6
+a0.932:2/7  a0.940:3/9  a0.947:3/10  a0.955:4/12  a0.962:3/11  a0.970:3/10
 ```
 
 So the measured knot **is not precise enough to decide saturation either way**. The
 supportable claim is that C1a's "and then SATURATES" is **undetermined**, not that it is
-refuted — and, equally, it can no longer be quoted as established.
+refuted — and, equally, it can no longer be quoted as established. ⚠ At 37.9 % rather than
+65 % the balance leans **toward** the graded FAIL, and the honest reading is "undetermined,
+leaning against saturation", not "a coin flip".
 
 ⚠ **Not an artefact of arm C.** Recomputed with **arm A's knot only**, keeping the existing
 u = 0.6667 knot rather than replacing it with arm C's re-measurement, the verdict is
@@ -173,9 +209,7 @@ figure on the identical cell list is **+1.51 scale**, against the K-ladder's +1.
 ## C9 — **U6, POST-HOC: a knot above u = 0.667 does NOT rescue the transfer, and makes it worse**
 
 Declared post-hoc in the prereg and searched before the block ran
-(`out/diag_transfer_ugap.txt`). The continuous families do put most of their pair weight in
-the gap — lognormal 0.45–1.00 and uniform 0.80–1.00 of it above u = 0.6667 — so the knot
-*could* have mattered. It does not help:
+(`out/diag_transfer_ugap.txt`). It does not help:
 
 * held-out family χ²: J **34.9**, ADDtab **108.1 → 147.1** with the measured knot — **worse**;
 * nested rule with the measured knot: d10 316.8, d21 108.3, d32 **14.9**, d43 430.1 —
@@ -187,6 +221,26 @@ the gap — lognormal 0.45–1.00 and uniform 0.80–1.00 of it above u = 0.6667
 **The spread narrowing while every member degrades is not a collapse**, and both the ratio
 and the best member are printed so it cannot read as one. **G8 stays unsettled**, and the
 reason is now ruled out explicitly rather than by argument.
+
+🔑 **And the mechanism is legible, which makes this the block's most consequential
+by-product.** A knot at u\* = 0.70711 sits at the **bottom** of the gap; the continuous
+families put their weight at the **top** of it. `mm.psd_classes` discretises each family
+into **160 equal-count classes**, and adjacent classes of a continuous PSD are nearly the
+same size, so:
+
+| family | CV | w(u > 0.6667) | w(u > 0.70711) | **w(u > 0.90)** | w(u > 0.95) |
+|---|---|---|---|---|---|
+| lognormal | 0.1 | 0.9965 | 0.9865 | **0.5428** | 0.2797 |
+| lognormal | 0.5 | 0.4456 | 0.3809 | **0.1075** | 0.0445 |
+| uniform | 0.1 | 1.0000 | 0.9999 | **0.5471** | 0.2973 |
+| uniform | 0.5 | 0.7990 | 0.7466 | **0.3346** | 0.1757 |
+
+**Over half the lognormal and uniform pair weight at CV = 0.1 sits above u = 0.90.** The
+new knot therefore does not *cover* that weight — it only changes how PCHIP **guesses** on
+[u\*, 1], which is why the transfer moved and moved the wrong way. **The continuous-family
+transfer needs a(u) at u > 0.9 — exactly where this block proved a binary composition
+curve has no signal left to fit.** That is a structural statement about the whole
+calibration route, not a defect of this block.
 
 ---
 
@@ -201,6 +255,12 @@ reason is now ruled out explicitly rather than by argument.
   recomputed after this block is **not** independent of it.
 * **C-iv** The identifiability bar is in units of `PHI_SCALE`, not of the seed error, so a
   PASS is **not** a claim about precision.
+* **C-v** ⚠ **ADDED after the referee pass — it is not in the blind file.** Every number
+  here rests on `beta`, and `mm.measured()` prints a standing **non-determinism** warning:
+  15 of 82 duplicated keys disagree, worst |Δφ| = **5.03e−3 = 2.4 × PHI_SCALE**, resolved
+  by **filename sort order**. It is tracked in `PREREG_DST_WINDOW_2026-09-09.md` and is not
+  introduced by this block — but `beta`'s own precision carries that exposure, and neither
+  the prereg nor the first claims draft said so.
 
 ## What is NOT established
 
