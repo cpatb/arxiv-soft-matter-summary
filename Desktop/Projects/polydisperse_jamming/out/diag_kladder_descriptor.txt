@@ -1,0 +1,66 @@
+=== diag_kladder_descriptor.py -- POST-HOC, NOT A PRE-REGISTERED GATE ===
+   Ranking descriptors on the cells that motivated the ranking is a SEARCH.
+   Anything that wins here is a hypothesis for the next block, not a result.
+
+=== N = 1500: 18 cells (arms K and SPLIT) ===
+         descriptor   spearman        p   pearson   note
+                 CV    -0.8824   0.0000   -0.8117   
+        fill_weight    +0.8782   0.0000   +0.7832   
+        pair_weight    +0.8741   0.0000   +0.8303   
+      triple_weight    +0.8728   0.0000   +0.7893   
+              n_min    -0.7021   0.0012   -0.5506   <-- NULL: a sample-size variable
+                  K    +0.6802   0.0019   +0.6446   
+            n_pairs    +0.6802   0.0019   +0.5959   
+          n_triples    +0.6802   0.0019   +0.5174   
+       d_max_over_L    +0.3705   0.1302   +0.4148   <-- NULL: a sample-size variable
+       d43_over_d32    +0.2941   0.2361   +0.2440   
+                y_S    +0.1728   0.4929   +0.0732   
+   best NULL |spearman| = 0.7021; any descriptor below that has explained nothing the sample size does not.
+
+=== N = 3000: 18 cells (arms K and SPLIT) ===
+         descriptor   spearman        p   pearson   note
+        fill_weight    +0.8885   0.0000   +0.8313   
+                 CV    -0.8865   0.0000   -0.8173   
+        pair_weight    +0.8782   0.0000   +0.8523   
+      triple_weight    +0.8687   0.0000   +0.8010   
+              n_min    -0.7255   0.0007   -0.6306   <-- NULL: a sample-size variable
+                  K    +0.6589   0.0029   +0.6297   
+            n_pairs    +0.6589   0.0029   +0.5865   
+          n_triples    +0.6589   0.0029   +0.5159   
+       d_max_over_L    +0.4035   0.0968   +0.5179   <-- NULL: a sample-size variable
+       d43_over_d32    +0.3292   0.1822   +0.3506   
+                y_S    +0.2069   0.4100   +0.1758   
+   best NULL |spearman| = 0.7255; any descriptor below that has explained nothing the sample size does not.
+
+=== pooled over both N (36 cells) -- the split that breaks the sample-size nulls ===
+   spearman(R, n_min) pooled = -0.4541 (p 0.0054)
+   spearman(R, d_max_over_L) pooled = +0.1277 (p 0.4581)
+   Each cell appears at BOTH N with identical composition, so a descriptor
+   that survives pooling is not reading the grain count.
+
+   per-cell N sensitivity (R at N = 3000 minus R at N = 1500):
+           K2_yS0.03    -0.85 ->   +0.70     +1.55
+           K2_yS0.05    +0.18 ->   +1.72     +1.53
+           K2_yS0.08    -0.40 ->   +0.63     +1.03
+           K2_yS0.13    -2.97 ->   +0.87     +3.84
+           K2_yS0.18    -2.06 ->   +0.07     +2.12
+           K3_yS0.03    +1.68 ->   +1.81     +0.14
+           K3_yS0.05    -0.39 ->   +1.79     +2.17
+           K3_yS0.08    +1.24 ->   +3.44     +2.20
+           K3_yS0.13    +7.68 ->   +9.73     +2.06
+           K3_yS0.18   +10.17 ->  +12.76     +2.59
+           K4_yS0.03    +5.09 ->   +6.35     +1.26
+           K4_yS0.05    +7.34 ->   +9.23     +1.89
+           K4_yS0.08    +9.27 ->  +10.45     +1.18
+           K5_yS0.03    +5.29 ->   +6.98     +1.69
+           K5_yS0.05    +5.76 ->   +8.43     +2.67
+           K5_yS0.08    +7.50 ->   +9.24     +1.74
+        SPLIT_yS0.05    +0.44 ->   +1.48     +1.03
+        SPLIT_yS0.08    +2.69 ->   +5.67     +2.98
+   mean shift +1.87, rms 2.04 scale over 18 cells
+
+=== what this is worth ===
+   A descriptor that orders the residual here has NOT been tested; it has been
+   selected. The test is a block designed on it, with cells placed where the
+   descriptor and its rivals DISAGREE -- which is the same move that turned the
+   bidisperse 'no descriptor works' negative into the filling functional.

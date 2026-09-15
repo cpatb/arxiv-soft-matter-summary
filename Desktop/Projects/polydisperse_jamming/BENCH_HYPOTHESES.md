@@ -1,6 +1,8 @@
 # BENCH_HYPOTHESES — what the jamming model now says to expect at the bench
 
-Written 2026-09-14, **from the graded verdicts**, not alongside them. Every number below
+Written 2026-09-14 and extended 2026-09-15 with the K-ladder block (row E, and the
+four items it closed in sections 4 and 5), **from the graded verdicts**, not
+alongside them. Every number below
 is printed by a script named beside it; nothing here is quoted from a plan or a status
 card. Where a statement is an inference rather than a measurement, it says so.
 
@@ -9,7 +11,7 @@ Scale convention throughout: `PHI_SCALE` = **2.1e−3**, the protocol's own repr
 
 ---
 
-## 1. The four things that are measured
+## 1. The five things that are measured
 
 | # | Statement | Evidence | Artifact |
 |---|---|---|---|
@@ -17,8 +19,17 @@ Scale convention throughout: `PHI_SCALE` = **2.1e−3**, the protocol's own repr
 | B | **The composition effect is friction-independent.** It survives at `mu_p` = 0 and at two pressures, so the interaction functions are geometric and `beta` carries the friction. | F1–F3 | `out/mixture_mu0.txt` |
 | C | **The closure is calibrated at `u` ≥ 1/3 and is not a predictor below it.** Blind at ratios 4 and 5 it under-predicts 9 of 9 compositions, rms 7.50 against a bar of 4.0. | X1 FAIL, 39 cells | `out/grade_mixture_ext.txt` |
 | D | 🔑 **The functional is NOT ADDITIVE beyond two classes.** Six ternaries at `d` = 1, 2, 4 — whose three pairs sit at `u` = 1/2, 1/2, 1/4, *inside* the calibration range — are under-predicted **6 of 6**, mean **+7.53**, rms **7.83** against a pre-registered bar of 2.8. **Confirmed at doubled N**: 6/6 positive again, mean **+8.67**. | T1 FAIL + NA1 NON-ADDITIVE, 42 cells, 0 errors | `out/grade_ternary.txt`, `out/grade_ternary_N.txt` |
+| E | 🔑 **The miss does NOT accumulate with the number of classes, and the closure's SIGN in K is wrong.** On a geometric ladder of fixed span 4 filled in at K = 2, 3, 4, 5 at matched fines fraction, measured φ **rises** with K on 3 of 3 levels while the additive closure says it **falls** (3 of 3). The residual steps once between three and four classes and then stops: `R4−R3` = +3.4/+7.7/+8.0, `R5−R4` = +0.2/−1.6/−1.8, i.e. increment ratios −0.22 to +0.14 against the 1.00 / 1.33 / 2.00 that per-class, per-pair and per-triple growth predict. **All three growth laws refuted, and no-K-dependence refuted too.** | G1, G7; 135 runs at two N, 135 admitted, 0 errors | `out/grade_kladder.txt` |
 
-**D is the new one and it is the reason this document exists.**
+**D and E are the new ones. E is the reason §5's first two items are now closed.**
+
+⚠ **E must always be quoted with its decomposition** (`out/grade_kladder.txt`, section
+G1). `R = (φ − ADD)/scale`, so a step in R has a measurement part and a model part, and
+at `y_S` = 0.05 and 0.08 **79–93 % of the K3→K4 step is the additive closure's own
+prediction dropping by ~6.4 scale**, not the packing rising (φ moves only +0.5 to +1.6).
+Only at `y_S` = 0.03 is the step mostly a real rise in φ (+2.5 and +3.6 against se 1.2
+and 0.4). **The decomposition-free half of E is the sign test**, which needs no residual
+bookkeeping: measured φ rises with K, the closure says it falls, on every level at both N.
 
 ### D survived the confound that would have killed it
 
@@ -190,28 +201,52 @@ pre-registered gate — both datasets were on disk before it was written.)
 
 ## 4. What is NOT established, and would be quoted wrongly if it were
 
-* **How the non-additivity grows past K = 3.** One ladder, one friction, one pressure.
-  The size of the miss at K = 3 is measured; nothing here says it accumulates.
-* ⚠ **The design is 2-LEVEL in the fines fraction.** `y_S` takes only **two** values
-  (0.10 and 0.15) across the six admitted compositions, inside a corner with
-  `y_L` ∈ [0.55, 0.70]. The residual tracks `y_S` and the whole headline therefore rests
-  on a two-level contrast in the one variable that survives NA3. More fines giving
-  proportionally more extra filling is what a genuine three-body synergy predicts, so
-  this does not contradict the finding — but "the functional is not additive" is stated
-  more generally than a two-level design in a narrow corner supports, and the next block
-  should widen `y_S` before the claim is generalised. (Raised by the physics-referee
-  pass, 2026-09-14.)
-* **That the sequential rule is correct.** It wins under one of its two conventions and
-  loses informativeness under the other. It is the better of two named candidates on six
-  points, which is not a calibrated closure.
+* ~~**How the non-additivity grows past K = 3.**~~ **CLOSED 2026-09-15 by E**: it does not
+  grow. It steps once between three and four classes and then saturates, refuting
+  per-class, per-pair and per-triple growth alike. Still one friction and one pressure,
+  and still only measured out to K = 5 — a continuous PSD is K → ∞ and nothing here
+  bounds K = 8 or 20.
+* ~~⚠ **The design is 2-LEVEL in the fines fraction.**~~ **CLOSED 2026-09-15 by G2**:
+  widened to **five** levels spanning **6.0×** (`y_S` 0.03 → 0.18, reaching above the old
+  maximum of 0.15 and 3.3× below its minimum). The trend survives at K = 3 —
+  spearman +0.700 (p 0.188) at N = 1500 and **+0.900 (p 0.037)** at N = 3000, span +8.5
+  and +11.0 scale — and it is **absent and of the opposite sign at K = 2**
+  (−0.600, −0.500), where the closure is in-sample. The N = 1500 correlation lands
+  *exactly* on its own 0.70 bar, so the claim rests on the N = 3000 replicate and must be
+  quoted that way.
+* **That the sequential rule is correct** — and 2026-09-15 put a number on how far from
+  correct it is. With its diameter convention **swept** over all four moment ratios
+  rather than chosen, the best nested rule beats the additive one by **1.93×** on the
+  K-ladder, against a **1.96× spread across the conventions themselves**: the undeclared
+  choice is worth as much as the result. On the held-out continuous families the spread
+  is **11.9×** (χ² 42.8 to 509.3), the best convention closes +0.89 of the additive-to-J
+  gap and the worst opens it by 5.48×. **The comparison does not settle.** And the
+  registered BRACKET sub-clause FAILED at 74 %/74 % against ≥ 80 %.
 * **Anything at `u` < 1/4.** A `d` = 1, 2, 8 ternary would reach there and would
   re-confound additivity with extrapolation, which is why it was deliberately not run.
 * **Ratio 5 vs ratio 4**, still unresolved at n = 3 (X4): the predicted separation sits
   inside the three-seed standard error at two of three points.
 * **Any rheological consequence.** See H4. The project measures packing, not flow.
-* **A residual N-dependence on one composition.** NA1 excludes finite size as *the*
-  explanation, but NA2 finds (0.55, 0.35, 0.10) moved +1.81 between the two N against an
-  se of 0.48. Five of six agree; that one does not, and it is not explained.
+* ~~**A residual N-dependence on one composition.**~~ **CLOSED 2026-09-15 by G5, and it
+  closes the opposite way round from how it was posed.** Re-run at **six** seeds at both
+  N, (0.55, 0.35, 0.10) shifts +2.19 scale with a standard error *of the difference* of
+  0.29 — **7.6 se**, Welch t = 7.64, p = 0.0001 — so the registered prediction that six
+  seeds would show it as seed noise **FAILED; the shift is real.** But it is **not
+  anomalous**: its own shift is **+1.89 against a block-wide mean of +1.87 over 18 cells**
+  (rms 2.04, range +0.14 to +3.84). **Every cell in this campaign moves by about +1.9
+  scale when N doubles**, so the quantity that needed the second N was the block-wide
+  offset, not that composition. Seeds 1–3 reproduced the closed ternary block
+  **bit-identically** (6/6 including the monodisperse control, `diff = +0.000e+00`), so
+  it is the same packing and not a near one.
+* **The residual's absolute level at any single N**, precisely because of the previous
+  point: R shifts by ~+1.9 scale on 18 of 18 cells between N = 1500 and 3000. Increments
+  and contrasts at fixed N are the robust quantities; a single R is not. (An artefact
+  would *shrink* with N, which is why the direction is reassuring rather than alarming.)
+* **The grain-count null is below its bar but not at zero.** Pooled over both N,
+  spearman(R, `n_min`) = **−0.4694 (p 0.0067)** against the registered 0.6 bar, while
+  spearman(R, `d_max/L`) = +0.1400 (p 0.445) is dead. Below the bar is not the same as
+  excluded, and the honest reason to believe the effect anyway is the direction of the
+  N-shift, not the correlation.
 * **The `d_max/L` margin**, though it is no longer the open question it looked like. The
   solver's own record gives 0.1997–0.2256 at N = 1500 and 0.1586–0.1791 at N = 3000, all
   below the 0.25 flag, with no cell carrying a note in either block — and the residual
@@ -222,13 +257,30 @@ pre-registered gate — both datasets were on disk before it was written.)
 
 ## 5. The cheapest next experiments, in the order that buys the most
 
-1. **A four-class pack on the same ladder** (`d` = 1, 2, 4 plus one more inside
-   `u` ≥ 1/4). If the miss grows with the number of classes, the combination rule is
-   wrong in a way that matters for real powders; if it saturates at the K = 3 value, the
-   correction is a constant and can be absorbed.
-2. **Calibrate the sequential rule properly**, with its diameter convention swept rather
-   than chosen, and re-run the continuous-family transfer. That is the direct test of
-   whether D explains the χ² 108 vs 35 that started this.
-3. **A continuous PSD at a composition the filling model puts far from the families'
+~~1.~~ **DONE 2026-09-15** — the K-ladder block (K = 2–5 at fixed span 4, `y_S` widened
+   6×, 135 runs at two N). Answer: the miss **saturates** after the step to four classes.
+   See E and `CLAIMS_KLADDER_2026-09-15.md`.
+~~2.~~ **DONE 2026-09-15** — the sequential rule's convention swept, and the transfer
+   re-run: **it does not settle**, because the convention spread (11.9×) exceeds the
+   effect. See `out/transfer_kladder.txt`.
+
+1. **Push K past 5 on the same span-4 ladder.** The saturation in E is measured at
+   K = 4 → 5 only, and a continuous PSD is K → ∞; K = 8 and K = 12 extend the ladder
+   without changing a single design constraint (every pair stays at `u` ≥ 1/4 by
+   construction) and the grain budget is comfortable at N = 3000. **This is the one
+   experiment that decides whether the K-step correction transfers to real powders.**
+2. **A continuous PSD at a composition the filling model puts far from the families'
    locus** — the existing lognormal/uniform/bidisperse ladders all run through the
-   fines-poor corner, which is what hid the mechanism for a month.
+   fines-poor corner, which is what hid the mechanism for a month. (Unchanged, and now
+   the highest-value item that is not a ladder extension.)
+3. **A block designed to separate the descriptors the post-hoc scan could not.**
+   `out/diag_kladder_descriptor.txt` ranks CV (−0.88), `fill_weight` (+0.88),
+   `pair_weight` (+0.87) and `triple_weight` (+0.87) above the sample-size null
+   (0.70–0.73), while K, `n_pairs` and `n_triples` score *below* it. But
+   Σ_{i<j} y_i y_j = (1 − Σ y_i²)/2 exactly, so the top four are **one quantity — how
+   evenly the volume is spread across classes — seen four ways**, and this grid cannot
+   tell them apart. That is a hypothesis selected on the cells that motivated it, not a
+   result; the test places cells where the candidates disagree, which is exactly the move
+   that turned the bidisperse negative into the filling functional.
+4. **The closure's wrong sign in K is the actionable defect** (E). Any repair should be
+   graded on the sign test first, because it needs no residual bookkeeping and no bar.

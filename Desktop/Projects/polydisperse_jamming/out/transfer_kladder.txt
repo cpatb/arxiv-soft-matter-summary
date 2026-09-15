@@ -1,0 +1,57 @@
+=== transfer_kladder.py -- G8, DECLARED POST-HOC, NOT A PRE-REGISTERED GATE ===
+   beta = 0.594687; TAB knots at u = 0.250, 0.333, 0.500, 0.667; J PA 0.9614 PB 2.2144
+   160 equal-count classes per family, as every other transfer in this project uses.
+
+=== the held-out family points, ADDITIVE vs the RECURSIVE NESTED rule ===
+   family        CV      phi    ADDj  ADDtab  SEQd10  SEQd21  SEQd32  SEQd43  w(u<.25)   K
+   lognormal    0.1   0.5974  0.5997  0.5977  0.5993  0.5997  0.6001  0.6006     0.000 160
+   lognormal    0.2   0.6091  0.6096  0.6042  0.6071  0.6091  0.6115  0.6143     0.000 160
+   lognormal    0.3   0.6194  0.6212  0.6130  0.6145  0.6194  0.6255  0.6330     0.000 160
+   lognormal    0.4   0.6336  0.6333  0.6236  0.6208  0.6293  0.6408  0.6574     0.008 160
+   lognormal    0.5   0.6489  0.6444  0.6345  0.6257  0.6381  0.6575  0.6865     0.028 160
+   uniform      0.1   0.5973  0.6000  0.5978  0.5993  0.5995  0.5998  0.6001     0.000 160
+   uniform      0.2   0.6048  0.6094  0.6031  0.6051  0.6060  0.6069  0.6078     0.000 160
+   uniform      0.3   0.6119  0.6152  0.6077  0.6089  0.6106  0.6123  0.6138     0.000 160
+   uniform      0.4   0.6160  0.6171  0.6101  0.6107  0.6128  0.6148  0.6165     0.002 160
+   uniform      0.5   0.6157  0.6175  0.6106  0.6112  0.6133  0.6153  0.6171     0.004 160
+   bidisperse   0.1   0.5971  0.5983  0.6001  0.6001  0.6001  0.6001  0.6001     0.000   2
+   bidisperse   0.2   0.6054  0.6115  0.6051  0.6051  0.6051  0.6051  0.6051     0.000   2
+   bidisperse   0.3   0.6112  0.6177  0.6089  0.6089  0.6089  0.6089  0.6089     0.000   2
+   bidisperse   0.4   0.6113  0.6105  0.6084  0.6084  0.6084  0.6084  0.6084     0.000   2
+   bidisperse   0.5   0.6042  0.6040  0.6050  0.6050  0.6050  0.6050  0.6050     0.000   2
+
+=== held-out chi2 over 15 family points (lower is better) ===
+        model      chi2     rms  mean signed  above  below
+         ADDj      34.9    1.52        +0.82     11      4
+       ADDtab     108.1    2.68        -1.69      4     11
+       SEQd10     186.3    3.52        -1.70      5     10
+       SEQd21      42.8    1.69        -0.57      6      9
+       SEQd32      48.0    1.79        +0.91     10      5
+       SEQd43     509.3    5.83        +2.89     12      3
+   'above' counts points where the MODEL sits above the measurement.
+   record, grade_mixture_ext.txt: J 34.9, tabulated 108.1.
+
+=== the convention is SWEPT, not chosen -- and this is what decides how much the answer is worth ===
+   SEQ chi2 across the four composite-diameter conventions: d10 186.3, d21 42.8, d32 48.0, d43 509.3
+   best d21 at 42.8; spread 42.8 to 509.3, a factor 11.90
+   ADDtab 108.1 -> best SEQ 42.8: does NOT close the gap to J (34.9).
+   fraction of the ADDtab - J gap closed by the best convention: +0.89
+   fraction closed by the WORST convention: -5.48
+   If those two fractions straddle zero, the convention decides the verdict and
+   the honest statement is that this comparison does not settle the question.
+
+=== the lognormal's monotone under-prediction with CV -- the specific symptom ===
+      CV      phi  ADDtab res   SEQd10   SEQd21   SEQd32   SEQd43
+     0.1   0.5974       +0.13    +0.87    +1.06    +1.27    +1.49
+     0.2   0.6091       -2.34    -0.96    +0.02    +1.15    +2.45
+     0.3   0.6194       -3.05    -2.32    -0.00    +2.90    +6.46
+     0.4   0.6336       -4.76    -6.11    -2.07    +3.42   +11.32
+     0.5   0.6489       -6.85   -11.06    -5.16    +4.09   +17.91
+   (negative = the model sits BELOW the measurement, i.e. under-predicts)
+
+=== what this can and cannot decide ===
+   CAN: whether swapping the SUM for a nested rule, with the same measured
+   interactions and no new parameter, moves the held-out chi2 toward J's.
+   CANNOT: which nesting is right -- the convention spread above is the honest
+   width -- and nothing about u < 0.25, where the interactions are interpolated
+   toward a proved limit rather than measured, at the pair weights printed above.
