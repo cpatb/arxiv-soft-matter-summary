@@ -222,11 +222,15 @@ pre-registered gate — both datasets were on disk before it was written.)
 
 ## 4. What is NOT established, and would be quoted wrongly if it were
 
-* ~~**How the non-additivity grows past K = 3.**~~ **CLOSED 2026-09-15 by E**: it does not
-  grow. It steps once between three and four classes and then saturates, refuting
-  per-class, per-pair and per-triple growth alike. Still one friction and one pressure,
-  and still only measured out to K = 5 — a continuous PSD is K → ∞ and nothing here
-  bounds K = 8 or 20.
+* **How the non-additivity grows past K = 3.** **HALF closed by E**: it does not grow in
+  the way any of the three registered laws predicts — per-class, per-pair and per-triple
+  growth are all refuted, and so is no-K-dependence. ⚠ **Whether it then SATURATES is
+  UNDETERMINED and stays open** (E qualification 2): with the U-GAP knot in hand the
+  registered gate U3 FAILS, while the same knot's own profile interval leaves saturation
+  standing on 65 % of its corners. Still one friction and one pressure, still only
+  measured to K = 5 — and **K = 8 or 20 is now known to be out of reach on a span-4
+  ladder**, because those rungs read the closure at `u` ≥ 0.82 where §5 item 1 shows it
+  cannot be calibrated.
 * ~~⚠ **The design is 2-LEVEL in the fines fraction.**~~ **CLOSED 2026-09-15 by G2**:
   widened to **five** levels spanning **6.0×** (`y_S` 0.03 → 0.18, reaching above the old
   maximum of 0.15 and 3.3× below its minimum). The trend survives at K = 3 —

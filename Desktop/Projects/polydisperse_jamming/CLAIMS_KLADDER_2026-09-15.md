@@ -105,7 +105,17 @@ ratios at `u` = 0.250, 0.333, 0.500, 0.667 plus the *proved but unmeasured* limi
 the whole construction. The rung that decides "saturation" is therefore evaluated on
 interpolation, and at `y_S` = 0.05 the K4→K5 "recovery" in ADDtab (+2.17, no branch
 change) is a statement about how PCHIP guesses `a(0.707)`, not a measurement. **C1's
-"and then saturates" must be read as UNDETERMINED by this design.** What survives
+"and then saturates" must be read as UNDETERMINED by this design.**
+
+> **ADDENDUM 2026-09-16 — the gap has now been MEASURED, and this caveat was right.**
+> `CLAIMS_UGAP_2026-09-16.md` puts a knot at `a(0.70711) = 0.9481 [0.8799, 0.9699]`.
+> Re-running the comparison with it, the registered saturation gate **FAILS** (R5−R4 ≤ 0
+> on 1 of 3 levels at N = 1500 and 0 of 3 at N = 3000) — but swept over that knot's own
+> profile interval, saturation survives on **110 of 169 corners (65 %)**. So "and then
+> saturates" remains **UNDETERMINED**, now for a measured reason rather than a structural
+> one, and it is **not** refuted either. The K3→K4 rise and the sign test C4 are
+> unaffected, exactly as this paragraph predicted.
+ What survives
 untouched is the K3→K4 rise (every pair on both those rungs is inside the measured
 bracket) and the sign test C4, which compares data with model and does not care why the
 model does what it does. This is the symmetric twin of the caveat already in "What this
