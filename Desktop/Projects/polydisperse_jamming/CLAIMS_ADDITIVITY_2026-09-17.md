@@ -72,8 +72,10 @@ better ladder dataset.
 
 `d32` mixed reaches **11.6**, three times better than J — and it is **not quotable**,
 because it is the best of four undeclared conventions and the spread is larger than the
-effect. The undeclared composite-diameter choice has now been worth 11.9×, 28.95× (U6)
-and 15.38× on three separate occasions; it is the dominant term in every nested result
+effect. The undeclared composite-diameter choice has now been worth 11.9×, 28.95×
+(U6 — that one figure is from `CLAIMS_UGAP_2026-09-16.md`, outside this file's two
+artifacts, and is flagged rather than silently mixed in) and 15.38× on three separate
+occasions; it is the dominant term in every nested result
 this project has produced.
 
 ## D. Where the improvement actually is, per family
@@ -87,9 +89,12 @@ this project has produced.
 The mix essentially **solves the uniform family** and leaves the lognormal's monotone
 drift with CV intact (−0.82, −0.09, −1.77, −3.40, −5.70 across CV 0.1→0.5). A
 one-parameter mix **cannot** cure a monotone drift, because both endpoints of the bracket
-drift the same way. **J and MIX fail on complementary families** — J is three times worse
-than ADDtab on the bidisperse pack and seven times better on the lognormal — so "J wins"
-is a statement about the pooled χ², not about a family.
+drift the same way. **J and MIX fail on complementary families** — against **ADDtab** J is
+**3.4× worse** on the bidisperse pack (18.4 vs 5.4) and **12.6× better** on the lognormal
+(6.7 vs 84.4); against **MIX** it is 7.1× better on the lognormal (6.7 vs 47.8). ⚠ An
+earlier draft wrote "three times worse than ADDtab and seven times better" in one parallel
+clause, **silently switching the comparator between the halves** (referee). So "J wins" is a
+statement about the pooled χ², not about a family.
 
 ## E. P0 failed on the sentence that was registered, and it stays failed
 
@@ -103,8 +108,9 @@ the loosening way, which is the direction to distrust:
 * |Δλ| = 0.0245 against the se of the **difference** 0.0357 → **t = 0.69**. The registered
   sentence compares a point to the *other* arm's interval, which is a stricter and less
   standard test than the two-sample one.
-* χ²_cal = **50.3 on 24 dof**, i.e. χ²_red = **2.10**: the fit is dominated by **model
-  misfit, not seed noise**, so a Δχ² = 1 interval in `PHI_SCALE` units is "one scale unit
+* χ²_cal = **50.3 on 24 dof**, i.e. χ²_red = **2.10**: model misfit is **at least
+  comparable to** seed noise (χ²_red ≈ 2 means the two variances are roughly **equal**,
+  not that misfit dominates — referee), so a Δχ² = 1 interval in `PHI_SCALE` units is "one scale unit
   of misfit", **not a confidence interval**. Inflated by √χ²_red = 1.45× the two arms are
   [+0.4817, +0.5611] and [+0.4639, +0.5299] and overlap comfortably.
 
@@ -183,43 +189,69 @@ vanishes. That constraint is free and is not a fitted parameter.
 
 ### H2. A second referee pass found an INDEPENDENT second defect, and it changes the answer
 
-**(i) The exact anchor falsifies most of the forms outright.** At u = 1 the classes are
-identical, the mixture **is** monodisperse and the signal is exactly 0. That is not
-algebra: `packing_density_ab(..., a = 1, b = 1) − β` is **0.00e+00** over five ratios ×
+**(i) The exact anchor is real — and using it as a FILTER is WITHDRAWN.** At u = 1 the
+classes are identical, the mixture **is** monodisperse and the signal is exactly 0. That is
+not algebra: `packing_density_ab(..., a = 1, b = 1) − β` is **0.00e+00** over five ratios ×
 nine compositions in the *shipped* closure. Evaluated at u → 1 the seven forms give
-**0.626, −2.58, 15.4, 1.62, 5.04e−21, 6.07e−25, inf** — so **four of seven are wrong**,
-and the linear one is **negative**, which `max(φ − β)` cannot be (at x = 0 the mixture is
-the coarse pack, so the max is ≥ 0). That is stronger than "under-determined": those forms
-are demonstrably wrong outside a narrow neighbourhood, which is a reason to distrust them
-inside it. **Restricted to the 2 anchor-admissible forms, the K = 6 signal is 3.128 to
-3.253** — above the borrowed bar on both, not straddling it.
+**0.626, −2.58, 15.4, 1.62, 5.04e−21, 6.07e−25, inf** — four do not vanish, and the linear
+one is **negative**, which `max(φ − β)` cannot be.
+
+🔴 **I then used that to discard those four, which would have put the K = 6 signal at
+3.128–3.253 and made the answer look settled. A referee refuted it and the filter is
+withdrawn.** Three reasons, all from this file's own tables:
+
+1. **u = 1 is 0.200 from the nearest datum, larger than the whole fitted span (0.133)**,
+   so it tests **extrapolation** — while both knots of interest (0.758, 0.794) lie
+   **inside** [0.667, 0.800], where every form is being used as an interpolant.
+2. **The in-domain cross-validation ranks the forms the opposite way.** On the held-out
+   middle point the *discarded* log-log form misses by **9.4 %** and the *kept*
+   power law by **18.6 %**. The filter throws away the best interpolant and keeps a worse
+   one.
+3. The kept family is **self-inconsistent on the data**: its own pairwise exponents predict
+   the third point wrong by up to **−49.0 %**.
+
+`s(u = 1) = 0` is a true statement about the physics that is **not a valid selection rule
+for an interpolant** — it selects for a property anti-correlated with fitting the
+measurements. ⚠ And it happened to favour the answer I wanted, which is the direction to
+distrust. The filtered number stays printed beside the reason it is not used. **The
+unfiltered spread, 2.558–3.253, is what is used.**
 
 **(ii) The 2.57 bar is not a constant, and it was borrowed from a different ratio.**
 `grade_ugap.py` computes that ceiling **at arm B's ratio r = 1.25**, over truths clustered
 near (a, b) = (0.975, 0.960). Using it at u = 0.75786 is the **"φ span" units trap
 relocated**: a signal interpolated to one ratio graded against a bar measured at another.
-Recomputed here at **r = 4^(1/5) = 1.31951** over 14 assumed truths bracketing the region
-(a(0.70711) = 0.9481 is measured, a(0.8) ≥ 0.975 is inferred, a(u) increasing), the design
-**fails up to 2.55 and resolves from 2.97**, so the bar is **bracketed in [2.55, 2.97]** —
-0.99× to **1.16×** the borrowed value.
+Recomputed here at **r = 4^(1/5) = 1.31951** over 14 assumed truths, the design **fails up
+to 2.55 and resolves from 2.97**, so the bar is **bracketed in [2.55, 2.97]** — 0.99× to
+**1.16×** the borrowed value. The construction is **identical** to `grade_ugap.py`'s own
+(`min` over resolved, `max` over unresolved), confirmed line by line by the referee, so
+this is a like-for-like recomputation and not a second units error.
 
-**(iii) The two defects push OPPOSITE ways and partly cancel.**
+⚠ **The identifiability boundary is NON-MONOTONE in `a`, and the grid is safe only by an
+argument that was not being stated.** Scanning below the grid: at b = 0.9376, `a` = 0.85
+is **non-identifiable** while 0.90 and 0.92 are identifiable — a genuine island, with a
+low-`a` unresolved region carrying signal up to **6.97**, far above anything in the grid.
+Had the grid reached it, `max(unresolved)` would have exceeded `min(resolved)` and the
+"bracket" would have been meaningless. What makes the grid legitimate is that
+**`a(0.75786) ≥ a(0.70711) = 0.9481`** by the measured monotonicity of `a(u)` — an
+argument, now stated and scanned rather than assumed.
+
+**(iii) Both defects corrected, the margin STRADDLES 1.**
 
 | | the document | corrected |
 |---|---|---|
-| signal at u = 0.75786 | 2.99 (one form, 2 pts) | **3.128 – 3.253** (anchor-admissible only) |
+| signal at u = 0.75786 | 2.99 (one form, 2 pts) | **2.558 – 3.253** (all 7 declared forms) |
 | bar | 2.57 (borrowed from r = 1.25) | **2.55 – 2.97** (this ratio, bracketed) |
-| **margin** | **1.16×** | **1.05× – 1.28×** |
+| **margin** | **1.16×** | **0.86× – 1.28×** |
 
-**K = 6 stays attemptable on every corner of that box, at 1.05× at its worst** — thinner
-than the document's 1.16×, resting on a bar that is **bracketed rather than measured**, and
-arriving there for reasons that have nothing to do with the document's own argument. The
-document's *reasoning* does not support its conclusion; the conclusion survives a corrected
-analysis, narrowly.
+🔴 **K = 6 is UNRESOLVED: the corrected box contains the answer "no".** The document's
+1.16× was a point estimate of a quantity whose honest width covers **both** verdicts. (With
+the withdrawn anchor filter the box would have read 1.05×–1.28× and excluded "no" — that
+is precisely what the filter was buying, and why it is not used.)
 
 * **K = 7 (u = 0.79370): CLOSED, robustly.** Span **2.189 to 2.356** over all seven forms
-  (2.297–2.334 on the admissible two), factor 1.08, **0 of 7** reach even the borrowed
-  2.57, let alone the corrected bracket. The recorded 2.31 is safe.
+  factor 1.08, **0 of 7** reach even the borrowed 2.57, let alone the
+  corrected bracket, and the widest defensible interval the referee could build across
+  both passes is **[1.26, 2.37]** against a bar of ≥ 2.5. The recorded 2.31 is safe.
 
 **Nothing here moves a bar and nothing here can decide K = 6.** What can is unchanged and
 is what the document already asks for: recompute the noise-free identifiability ceiling at

@@ -83,11 +83,26 @@
       wrong outside a narrow neighbourhood, which is a reason to distrust them
       inside it too.
 
-=== RESTRICTED TO THE 2 ANCHOR-ADMISSIBLE FORMS ===
-   K = 6 signal 3.128 to 3.253 (all ABOVE the borrowed bar 2.57); K = 7 2.297 to 2.334.
-   So on the forms that are not falsified, K = 6 clears the BORROWED bar on
-   every one of them -- which is exactly why the bar itself now has to be
-   checked rather than borrowed.
+=== 🔴 USING THE ANCHOR AS A *FILTER* IS WITHDRAWN (referee, pass 3) ===
+   Restricting to the 2 anchor-admissible forms would give a K = 6
+   signal of 3.128 to 3.253 (K = 7 2.297 to 2.334) -- i.e. it would REMOVE the
+   low end of the spread and make K = 6 look settled. That number is printed and
+   NOT USED, for three reasons the file's own tables supply:
+
+   (1) u = 1 is 0.200 from the nearest datum (u = 0.800), which is LARGER than the
+       whole fitted span (0.133). Judging an INTERPOLANT by its behaviour that far
+       outside its data tests extrapolation, and every form here is used STRICTLY
+       INSIDE the data range (u6 = 0.758, u7 = 0.794 both lie in [0.667, 0.800]).
+   (2) The IN-DOMAIN cross-validation two sections above ranks the forms the
+       OPPOSITE way. Held-out middle point: the document's log-log form misses by
+       9.4 %, the anchor-admissible power law by 18.6 %. The filter DISCARDS the
+       best in-domain interpolant and KEEPS a worse one.
+   (3) The admissible family is itself self-inconsistent on the data: its own
+       pairwise exponents predict the third point wrong by up to -49.0 %.
+   So s(u=1) = 0 is a true statement about the PHYSICS that is not a valid
+   selection rule for an interpolant. It selects for a property ANTI-CORRELATED
+   with fitting the measurements, and it happened to favour the answer I wanted,
+   which is the direction to distrust. THE UNFILTERED SPREAD IS WHAT IS USED.
 
 === THE SECOND, INDEPENDENT DEFECT: THE 2.57 BAR IS NOT A CONSTANT ===
    grade_ugap.py computes that ceiling AT ARM B's RATIO (r = 1.25) over a
@@ -96,6 +111,28 @@
    the same units error as the 'phi span' trap, relocated: a signal
    interpolated to one ratio, graded against a bar computed at another.
    Recomputed here at r = 4^(1/5) = 1.31951, noise-free, over a grid of truths.
+   FIRST, the island check. The grid below starts at a = 0.94. That is only
+   legitimate if a(0.75786) >= a(0.70711) = 0.9481 -- which holds because a(u) is
+   MEASURED increasing (0.301, 0.521, 0.785, 0.934 at u = 0.25 ... 0.667, then
+   0.9481 at 0.70711) and u = 0.75786 > 0.70711. Scanning BELOW the floor to
+   show what the argument is buying:
+     a_true  b_true  ident  signal/scale   region
+     0.5000  0.9376     NO          6.97   BELOW the measured floor
+     0.5000  0.9600     NO          4.43   BELOW the measured floor
+     0.7000  0.9376     NO          6.45   BELOW the measured floor
+     0.7000  0.9600     NO          4.31   BELOW the measured floor
+     0.8500  0.9376     NO          5.85   BELOW the measured floor
+     0.8500  0.9600     NO          4.10   BELOW the measured floor
+     0.9000  0.9376    YES          5.78   BELOW the measured floor
+     0.9000  0.9600     NO          3.72   BELOW the measured floor
+     0.9200  0.9376    YES          5.25   BELOW the measured floor
+     0.9200  0.9600     NO          3.72   BELOW the measured floor
+   -> there IS a non-identifiable region at LOW a carrying signal up to 6.97,
+      far above anything in the grid below. Had the grid included it, max(no_sig)
+      would exceed min(ok_sig) and the bracket would be meaningless. The grid is
+      safe ONLY because monotonicity in u excludes that region -- which is an
+      ARGUMENT, now stated, not a property of the sampling.
+
      a_true  b_true    w(a)    w(b)  ident  signal/scale
      0.9400  0.9376   0.085   0.045    YES          4.84
      0.9400  0.9600   0.205   0.040    YES          3.44
@@ -118,17 +155,17 @@
       BRACKETED in [2.55, 2.97] -- it is NOT a single number, and the 2.57 the document used
       was computed at r = 1.25, a different ratio. The bracket's ends are 0.99x and 1.16x the borrowed value.
 
-   COMBINING THE TWO DEFECTS -- and they do NOT push the same way:
-      signal, anchor-admissible forms only : 3.128 to 3.253   (the document used 2.99)
+   COMBINING THE TWO DEFECTS, on the UNFILTERED form spread:
+      signal, all 7 declared forms          : 2.558 to 3.253   (the document used 2.99)
       bar, recomputed at this ratio        : 2.55 to 2.97         (the document used 2.57)
-      margin                               : 1.05x to 1.28x       (the document used 1.16x)
-      Falsifying the bad interpolants pushes the signal UP; correcting the
-      borrowed bar pushes the threshold UP too. They partly CANCEL, which is
-      why the corrected margin lands near the document's -- for reasons that
-      have nothing to do with the document's own argument.
-      -> K = 6 stays ATTEMPTABLE on every corner of this box, at a margin of 1.05x
-         at its worst. THINNER than it looks and resting on a bar that
-         is bracketed rather than measured, but it does not flip.
+      margin                               : 0.86x to 1.28x       (the document used 1.16x)
+      (For the record, the WITHDRAWN anchor-filtered signal would have given 1.05x
+      to 1.28x. That is the number the filter was buying, and it is why the
+      filter is not used: it moved the verdict.)
+      -> K = 6 is UNRESOLVED: the box STRADDLES 1 (0.86x to 1.28x).
+         Both defects are real, both are now corrected, and the corrected
+         box contains the answer 'no'. The document's 1.16x was a point
+         estimate of a quantity whose honest width covers both verdicts.
 
    What can decide K = 6 is unchanged and is what the document already asks
    for: recompute the noise-free identifiability ceiling at r = 4^(1/5) = 1.31951,

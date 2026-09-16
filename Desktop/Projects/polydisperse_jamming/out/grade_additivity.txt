@@ -54,8 +54,9 @@
        [beside it, not instead of it] |d lambda| = 0.0245 against the se of the DIFFERENCE 0.0357: t = 0.69. The registered
        sentence compares a point to the OTHER arm's interval, which is a stricter and
        less standard test; it misses by 0.0017.
-       [and the intervals are NOT statistical] chi2_cal = 50.3 on 24 dof, so the fit is
-       dominated by MODEL MISFIT, not seed noise: chi2_red = 2.10, inflation 1.45x. A
+       [and the intervals are NOT statistical] chi2_cal = 50.3 on 24 dof, so MODEL MISFIT is at
+       least COMPARABLE to seed noise: chi2_red = 2.10, i.e. misfit variance about EQUAL to
+       noise variance, not dominant over it (referee). Inflation 1.45x. A
        Delta chi2 = 1 interval in PHI_SCALE units is 'one scale unit of misfit', not a
        confidence interval. Inflated, the two arms are [+0.4817, +0.5611] and [+0.4639, +0.5299].
        P0 STAYS FAILED on the sentence that was registered.

@@ -285,7 +285,7 @@ CLAIMED = {
         "2.356", "1.08", "9.4", "26.0", "18.6", "2.994", "3.214", "2.858", "3.128",
         "2.758", "1.31951", "0.00e+00", "3.594", "2.274", "1.827", "0.626", "-2.58",
         "15.4", "1.62", "5.04e-21", "6.07e-25", "3.128", "3.253", "2.55", "2.97",
-        "2.297", "2.334", "1.05", "1.28", "1.16",
+        "1.05", "1.28", "1.16", "0.86", "6.97", "0.9481", "-49.0", "9.4", "18.6",
     ],
 }
 
@@ -314,6 +314,9 @@ def test_the_claims_file_records_the_failures_not_a_success(ga):
     claims = _txt(CLAIMS)
     assert "P2b FAIL" in claims and "P3 FAIL" in claims
     assert "UNRESOLVED, not established" in claims
+    assert "K = 6 is UNRESOLVED" in claims
+    # the withdrawn filter must be recorded as withdrawn, not quietly deleted
+    assert "the filter is\nwithdrawn" in claims or "is WITHDRAWN" in claims
     assert "TRANSFER failure" in claims
     # and it must not claim the mix beat J, whatever a later edit does to the numbers
     assert "beats J" not in claims
@@ -355,19 +358,38 @@ def test_the_bar_was_borrowed_from_another_ratio_and_is_recomputed(k6):
     assert "computed at r = 1.25, a different ratio" in k6
 
 
-def test_the_two_defects_are_reported_as_pushing_opposite_ways(k6):
-    """They partly cancel. Saying they 'push the same way' would contradict the table,
-    which is the failure mode this project keeps hitting."""
-    assert "do NOT push the same way" in k6
-    assert "partly CANCEL" in k6
+def test_the_anchor_FILTER_is_withdrawn_and_its_number_stays_printed(k6):
+    """s(u=1) = 0 is true physics and NOT a valid way to choose an interpolant: u = 1 is
+    further from the data than the whole fitted span, and the in-domain cross-validation
+    ranks the discarded form BEST. The filter happened to favour the wanted answer, which
+    is why it must stay visible rather than be deleted."""
+    assert "USING THE ANCHOR AS A *FILTER* IS WITHDRAWN" in k6
+    assert "THE UNFILTERED SPREAD IS WHAT IS USED." in k6
+    assert "3.128 to 3.253" in k6, "the withdrawn number must stay printed"
+    assert "ANTI-CORRELATED" in k6
+    # and the three reasons must each carry their number
+    assert "9.4 %" in k6 and "18.6 %" in k6 and "-49.0 %" in k6
 
 
-def test_the_corrected_margin_is_thinner_and_the_verdict_is_generated(k6):
+def test_the_margin_uses_the_UNFILTERED_spread_and_straddles_one(k6):
+    """The whole point of the withdrawal: with all seven forms the box contains 'no'."""
     m_lo = _num(k6, r"margin\s+: (\d+\.\d+)x to \d+\.\d+x")
     m_hi = _num(k6, r"margin\s+: \d+\.\d+x to (\d+\.\d+)x")
-    assert m_lo < 1.16 < m_hi, (m_lo, m_hi)
-    assert "K = 6 stays ATTEMPTABLE on every corner" in k6
-    assert "does not flip" in k6
+    assert m_lo < 1.0 < m_hi, (m_lo, m_hi)
+    assert "signal, all 7 declared forms" in k6
+    assert "K = 6 is UNRESOLVED: the box STRADDLES 1" in k6
+    assert "K = 6 stays ATTEMPTABLE on every corner" not in k6
+
+
+def test_the_identifiability_island_is_scanned_not_assumed(k6):
+    """A bracket read off a grid that never reached the island is not a bracket. The
+    floor argument (a(0.75786) >= measured a(0.70711) = 0.9481) has to be STATED."""
+    assert "FIRST, the island check" in k6
+    assert "BELOW the measured floor" in k6
+    hi = _num(k6, r"non-identifiable region at LOW a carrying signal up to (\d+\.\d+)")
+    bar_hi = _num(k6, r"BRACKETED in \[\d+\.\d+, (\d+\.\d+)\]")
+    assert hi > bar_hi, (hi, bar_hi)
+    assert "which is an" in k6 and "ARGUMENT, now stated" in k6
 
 
 def test_the_interim_verdict_cannot_be_read_as_the_conclusion(k6):
@@ -375,4 +397,4 @@ def test_the_interim_verdict_cannot_be_read_as_the_conclusion(k6):
     a later reader quotes the superseded half."""
     assert "INTERIM VERDICT ON THE DOCUMENT'S OWN BASIS" in k6
     assert "Read the final section, not this one" in k6
-    assert k6.index("INTERIM VERDICT") < k6.index("do NOT push the same way")
+    assert k6.index("INTERIM VERDICT") < k6.index("COMBINING THE TWO DEFECTS")

@@ -57,15 +57,30 @@ top of it.
    fails up to **2.55** and resolves from **2.97**, so the bar is **bracketed in
    [2.55, 2.97]**. This is the "φ span" units trap relocated.
 
-**What survives, and it is not what was written.** Using the one piece of exact physics
-available — `s(u = 1) = 0`, verified in the shipped closure at **0.00e+00**, since
-identical classes make the mixture monodisperse — **four of the seven forms are
-falsified outright** (they return 0.626, −2.58, 15.4, 1.62 at `u → 1`, and the
-linear one is **negative**, which `max(φ−β)` cannot be). On the two
-admissible forms the signal is **3.128–3.253**, and against the corrected bar the
-margin is **1.05× to 1.28×** where 1.16× was quoted. **The two defects push
-OPPOSITE ways and partly cancel, so K = 6 does not flip** — but it now rests on a
-bar that is **bracketed rather than measured**, at **1.05× at its worst**.
+**Corrected on both defects, the margin is 0.86× to 1.28× and K = 6 is
+UNRESOLVED** — the box contains the answer "no", and the document's 1.16× was a
+point estimate of a quantity whose honest width covers both verdicts.
+
+⚠ **A third thing, and it is mine rather than the document's.** The one piece of exact
+physics — `s(u = 1) = 0`, verified in the shipped closure at **0.00e+00** — does
+falsify four of the seven forms at `u → 1` (0.626, −2.58, 15.4, 1.62; the linear
+one is **negative**, which `max(φ−β)` cannot be). I used that as a FILTER,
+which lifted the signal to 3.128–3.253 and gave "attemptable at 1.05×". **The
+referee refuted it and it is WITHDRAWN**, on three counts from the same file's own tables:
+`u = 1` is **0.200** from the nearest datum, larger than the whole fitted span (**0.133**),
+so it tests EXTRAPOLATION while both knots of interest sit INSIDE the data; the **in-domain
+cross-validation ranks the forms the opposite way** (the discarded log-log form misses the
+held-out middle point by **9.4 %**, the kept power law by **18.6 %**); and the kept family
+is self-inconsistent on the data at **−49.0 %**. **A true statement about the physics
+is not a valid selection rule for an interpolant**, and this one happened to favour the
+answer I wanted. The filtered number stays printed beside the reason it is not used.
+
+⚠ **And the identifiability boundary is NON-MONOTONE in `a`** — an island,
+confirmed at this ratio: at `b` = 0.9376, `a` = 0.85 is non-identifiable while 0.90 and
+0.92 are, with a low-`a` unresolved region carrying signal up to **6.97**. Had the ceiling
+grid reached it the "bracket" would have been meaningless. It is legitimate **only**
+because `a(0.75786) ≥ a(0.70711) = 0.9481` by measured monotonicity — an argument
+that was not stated and is now scanned.
 
 ✅ **K ≥ 7 is closed, and robustly**: 2.189–2.356 across all seven forms
 (2.297–2.334 on the admissible two), a factor 1.08, **0 of 7** reaching even the
@@ -379,9 +394,10 @@ pre-registered gate — both datasets were on disk before it was written.)
    Both the 2.99 and the 2.57 above are defective: the first is one undeclared
    interpolation form among seven that span 2.558–3.253, the second is a bar computed
    at arm B's ratio and borrowed. Corrected — four forms falsified by the exact
-   `s(u=1) = 0` anchor, bar recomputed at `r = 1.31951` and bracketed in [2.55, 2.97]
-   — the margin is **1.05× to 1.28×**, so K = 6 does **not** flip, but it is
-   thinner than quoted and rests on a bracketed bar. **K ≥ 7 stays closed robustly**
+   bar recomputed at `r = 1.31951` and bracketed in [2.55, 2.97] — the margin is
+   **0.86× to 1.28×**, which **STRADDLES 1**, so **K = 6 is UNRESOLVED**. (An
+   anchor-based filter of mine would have given 1.05×–1.28× and excluded
+   "no"; a referee refuted it and it is withdrawn.) **K ≥ 7 stays closed robustly**
    (0 of 7 forms). A real design must still recompute the ceiling at
    `r = 4^(1/5) = 1.31951` **before any cell**, which fixes both defects at once.
    See `out/diag_k6_interp.txt` and `CLAIMS_ADDITIVITY_2026-09-17.md` §H2.

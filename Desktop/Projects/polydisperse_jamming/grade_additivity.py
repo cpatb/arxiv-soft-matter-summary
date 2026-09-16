@@ -352,9 +352,10 @@ def main() -> int:
     ndof = max(len(cal) - 1, 1)
     infl = math.sqrt(f["chi2_cal"] / ndof)
     say(f"       [and the intervals are NOT statistical] chi2_cal = {f['chi2_cal']:.1f} "
-        f"on {ndof} dof, so the fit is")
-    say(f"       dominated by MODEL MISFIT, not seed noise: chi2_red = "
-        f"{f['chi2_cal'] / ndof:.2f}, inflation {infl:.2f}x. A")
+        f"on {ndof} dof, so MODEL MISFIT is at")
+    say(f"       least COMPARABLE to seed noise: chi2_red = "
+        f"{f['chi2_cal'] / ndof:.2f}, i.e. misfit variance about EQUAL to")
+    say(f"       noise variance, not dominant over it (referee). Inflation {infl:.2f}x. A")
     say("       Delta chi2 = 1 interval in PHI_SCALE units is 'one scale unit of "
         "misfit', not a")
     say(f"       confidence interval. Inflated, the two arms are "

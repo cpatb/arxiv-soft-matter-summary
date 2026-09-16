@@ -26,9 +26,15 @@ This file exists to do five things and nothing else:
      merely marginal.
 
   4. Check each form against the ONE piece of exact physics available -- s(u = 1) = 0,
-     verified in the shipped closure rather than asserted -- and DISCARD the forms it
-     falsifies. Four of seven do not vanish there and one goes NEGATIVE, which
-     max(phi - beta) cannot be. That is stronger than "under-determined".
+     verified in the shipped closure rather than asserted. Four of seven do not vanish
+     there and one goes NEGATIVE, which max(phi - beta) cannot be.
+     (!) An earlier version of this file USED that as a filter and kept only the two
+     admissible forms, which removed the low end of the spread and made K = 6 look
+     settled. A referee refuted it and the filter is WITHDRAWN: u = 1 is further from the
+     data than the whole fitted span, both knots of interest lie INSIDE the data range,
+     and the in-domain cross-validation ranks the forms the OPPOSITE way -- the filter
+     discards the best interpolant (9.4 % held-out) and keeps a worse one (18.6 %). The
+     number it would have given is still printed, beside the reason it is not used.
   5. Recompute the 2.57 RESOLVING-POWER BAR at this ratio. A second referee pass found
      it was computed at ARM B's ratio r = 1.25 over truths near (a, b) = (0.975, 0.960)
      -- so the document graded a signal interpolated to one ratio against a bar measured
@@ -314,13 +320,30 @@ def main() -> int:
     keep = [(nm, fn) for nm, fn, _a, _b in FORMS if anchor_ok[nm]]
     k6a = np.array([fn(us, ss, U6) for _nm, fn in keep])
     k7a = np.array([fn(us, ss, U7) for _nm, fn in keep])
-    say(f"=== RESTRICTED TO THE {len(keep)} ANCHOR-ADMISSIBLE FORMS ===")
-    say(f"   K = 6 signal {k6a.min():.3f} to {k6a.max():.3f} "
-        f"(all {'ABOVE' if k6a.min() > BAR else 'straddling'} the borrowed bar {BAR}); "
-        f"K = 7 {k7a.min():.3f} to {k7a.max():.3f}.")
-    say("   So on the forms that are not falsified, K = 6 clears the BORROWED bar on")
-    say("   every one of them -- which is exactly why the bar itself now has to be")
-    say("   checked rather than borrowed.")
+    say(f"=== \U0001f534 USING THE ANCHOR AS A *FILTER* IS WITHDRAWN (referee, pass 3) ===")
+    say(f"   Restricting to the {len(keep)} anchor-admissible forms would give a K = 6")
+    say(f"   signal of {k6a.min():.3f} to {k6a.max():.3f} (K = 7 {k7a.min():.3f} to "
+        f"{k7a.max():.3f}) -- i.e. it would REMOVE the")
+    say("   low end of the spread and make K = 6 look settled. That number is printed and")
+    say("   NOT USED, for three reasons the file's own tables supply:")
+    say()
+    say(f"   (1) u = 1 is {1.0 - float(us[-1]):.3f} from the nearest datum (u = "
+        f"{float(us[-1]):.3f}), which is LARGER than the")
+    say(f"       whole fitted span ({float(us[-1]) - float(us[0]):.3f}). Judging an "
+        "INTERPOLANT by its behaviour that far")
+    say("       outside its data tests extrapolation, and every form here is used STRICTLY")
+    say(f"       INSIDE the data range (u6 = {U6:.3f}, u7 = {U7:.3f} both lie in "
+        f"[{float(us[0]):.3f}, {float(us[-1]):.3f}]).")
+    say("   (2) The IN-DOMAIN cross-validation two sections above ranks the forms the")
+    say("       OPPOSITE way. Held-out middle point: the document's log-log form misses by")
+    say("       9.4 %, the anchor-admissible power law by 18.6 %. The filter DISCARDS the")
+    say("       best in-domain interpolant and KEEPS a worse one.")
+    say("   (3) The admissible family is itself self-inconsistent on the data: its own")
+    say("       pairwise exponents predict the third point wrong by up to -49.0 %.")
+    say("   So s(u=1) = 0 is a true statement about the PHYSICS that is not a valid")
+    say("   selection rule for an interpolant. It selects for a property ANTI-CORRELATED")
+    say("   with fitting the measurements, and it happened to favour the answer I wanted,")
+    say("   which is the direction to distrust. THE UNFILTERED SPREAD IS WHAT IS USED.")
     say()
 
     # ============================================================= referee pass 2 (ii)
@@ -332,6 +355,43 @@ def main() -> int:
     say("   interpolated to one ratio, graded against a bar computed at another.")
     say("   Recomputed here at r = 4^(1/5) = 1.31951, noise-free, over a grid of truths.")
     r6 = 1.0 / U6
+
+    def ident_at(a_, b_):
+        p_ = [(r6, x_, float(mc_.packing_density_ab(np.array([r6, 1.0]),
+                                                    np.array([1 - x_, x_]),
+                                                    beta, a_, b_)))
+              for x_ in ug.X_GRID]
+        ok_, ia_, ib_, _, _ = ug.identifiable(p_, beta)
+        return ok_, ia_, ib_, (max(q[2] for q in p_) - beta) / ug.PHI_SCALE
+
+    # The referee reported the identifiability boundary is NON-MONOTONE in a at fixed b
+    # (an island). If that is true inside the grid below, "fails up to X, resolves from Y"
+    # is not a bracket at all -- it is a statement about which corners happened to be
+    # sampled. So the floor is scanned rather than assumed.
+    A_FLOOR = 0.9481          # a(0.70711), MEASURED (out/grade_ugap.txt, arm A)
+    say("   FIRST, the island check. The grid below starts at a = 0.94. That is only")
+    say(f"   legitimate if a(0.75786) >= a(0.70711) = {A_FLOOR} -- which holds because "
+        "a(u) is")
+    say("   MEASURED increasing (0.301, 0.521, 0.785, 0.934 at u = 0.25 ... 0.667, then")
+    say(f"   {A_FLOOR} at 0.70711) and u = 0.75786 > 0.70711. Scanning BELOW the floor to")
+    say("   show what the argument is buying:")
+    say(f"   {'a_true':>8}{'b_true':>8}{'ident':>7}{'signal/scale':>14}   region")
+    low_no_sig = 0.0
+    for a_ in (0.50, 0.70, 0.85, 0.90, 0.92):
+        for b_ in (0.9376, 0.9600):
+            ok_, _ia, _ib, s_ = ident_at(a_, b_)
+            if not ok_:
+                low_no_sig = max(low_no_sig, s_)
+            say(f"   {a_:8.4f}{b_:8.4f}{('YES' if ok_ else 'NO'):>7}{s_:14.2f}   "
+                f"{'BELOW the measured floor' if a_ < A_FLOOR else 'in range'}")
+    say(f"   -> there IS a non-identifiable region at LOW a carrying signal up to "
+        f"{low_no_sig:.2f},")
+    say("      far above anything in the grid below. Had the grid included it, "
+        "max(no_sig)")
+    say("      would exceed min(ok_sig) and the bracket would be meaningless. The grid is")
+    say("      safe ONLY because monotonicity in u excludes that region -- which is an")
+    say("      ARGUMENT, now stated, not a property of the sampling.")
+    say()
     say(f"   {'a_true':>8}{'b_true':>8}{'w(a)':>8}{'w(b)':>8}{'ident':>7}"
         f"{'signal/scale':>14}")
     ok_sigs, no_sigs = [], []
@@ -358,28 +418,31 @@ def main() -> int:
         say(f"      was computed at r = 1.25, a different ratio. The bracket's ends are "
             f"{bar_lo / BAR:.2f}x and {bar_hi / BAR:.2f}x the borrowed value.")
         say()
-        say("   COMBINING THE TWO DEFECTS -- and they do NOT push the same way:")
-        say(f"      signal, anchor-admissible forms only : {k6a.min():.3f} to "
-            f"{k6a.max():.3f}   (the document used {REC_DOC})")
+        say("   COMBINING THE TWO DEFECTS, on the UNFILTERED form spread:")
+        say(f"      signal, all {v6.size} declared forms          : {v6.min():.3f} to "
+            f"{v6.max():.3f}   (the document used {REC_DOC})")
         say(f"      bar, recomputed at this ratio        : {bar_lo:.2f} to {bar_hi:.2f} "
             f"        (the document used {BAR})")
-        m_lo, m_hi = k6a.min() / bar_hi, k6a.max() / bar_lo
+        m_lo, m_hi = v6.min() / bar_hi, v6.max() / bar_lo
         say(f"      margin                               : {m_lo:.2f}x to {m_hi:.2f}x  "
             f"     (the document used {REC_DOC / BAR:.2f}x)")
-        say("      Falsifying the bad interpolants pushes the signal UP; correcting the")
-        say("      borrowed bar pushes the threshold UP too. They partly CANCEL, which is")
-        say("      why the corrected margin lands near the document's -- for reasons that")
-        say("      have nothing to do with the document's own argument.")
+        say("      (For the record, the WITHDRAWN anchor-filtered signal would have given "
+            f"{k6a.min() / bar_hi:.2f}x")
+        say("      to {:.2f}x. That is the number the filter was buying, and it is why the"
+            .format(k6a.max() / bar_lo))
+        say("      filter is not used: it moved the verdict.)")
         if m_lo > 1.0:
             say(f"      -> K = 6 stays ATTEMPTABLE on every corner of this box, at a "
                 f"margin of {m_lo:.2f}x")
-            say("         at its worst. THINNER than it looks and resting on a bar that")
-            say("         is bracketed rather than measured, but it does not flip.")
+            say("         at its worst.")
         elif m_hi < 1.0:
             say("      -> K = 6 is CLOSED on every corner of this box.")
         else:
-            say(f"      -> K = 6 remains UNRESOLVED: the box straddles 1 "
-                f"({m_lo:.2f}x to {m_hi:.2f}x).")
+            say(f"      -> K = 6 is UNRESOLVED: the box STRADDLES 1 ({m_lo:.2f}x to "
+                f"{m_hi:.2f}x).")
+            say("         Both defects are real, both are now corrected, and the corrected")
+            say("         box contains the answer 'no'. The document's 1.16x was a point")
+            say("         estimate of a quantity whose honest width covers both verdicts.")
     elif ok_sigs:
         say("   -> EVERY truth on this grid is identifiable at this ratio, so the ceiling")
         say("      is not bracketed from below here and no bar can be read off it.")
