@@ -23,8 +23,31 @@ Scale convention throughout: `PHI_SCALE` = **2.1e−3**, the protocol's own repr
 
 | F | 🔑 **The filling interaction `a(u)` IS measurable in the gap the K-ladder reads — at `u` = 0.70711, and NOT at `u` = 0.8.** `a(0.70711) = 0.9481 [0.8799, 0.9699]`, `b = 0.9376 [0.8849, 0.9599]`, against an identifiability bar of 0.25 quoted verbatim from the closed block. What made it work is **where in composition the block samples**, not how many seeds: the profile bar is Δχ² = 1 *per point*, so the same point set at n = 8, 16, 32 returns w(a) = 0.0400 three times identically. At `u` = 0.8 the filling signal (max(φ−β) = **2.21 scale**) falls below what this design can resolve (**2.57**), so **no experiment at this design could determine `a(0.8)`** — an inference from a null, putting `a(0.8) ≳ 0.975`. | U0 12/12 bit-identical, U1/U1b/U4/U5 PASS, U1c/U3 FAIL; 108 runs at two N, 108 admitted, 0 errors | `out/grade_ugap.txt` |
 
-**D, E and F are the new ones. E closed §5's first two items; F closes the third and is
-what makes E's qualification 2 a measurement rather than a flag.**
+| G | **The K axis of a CALIBRATED ladder is closed by arithmetic, not by budget.** On any ladder sorted by size the adjacent ratios multiply to the extreme ratio, so requiring every pair inside `[u_lo, u_hi]` forces **K − 1 ≤ ln(u_lo)/ln(u_hi)**, with the bound attained by the geometric ladder. On ADDtab's window `[0.25, 0.70711]` that is **exactly 4.0000, so K ≤ 5**; and because the bound is met with integer equality, the span is **forced** to 4 and the K = 5 ladder is **unique** — the shipped one's zero slack at both edges is a theorem, not a coincidence. ⚠ **NOT YET REFEREED.** | SymPy + 2000-ladder exact check + brute-force feasibility 96/96 + the shipped `kladder.ladder` as an outside anchor; `FAILURES: []` | `derivations/k_axis_bound.md`, `derivations/k_axis_bound_check.txt` |
+
+**D, E, F and G are the new ones. E closed §5's first two items; F closes the third and
+is what makes E's qualification 2 a measurement rather than a flag. G retires the "push
+K past 5" item as a budget question and replaces it with an arithmetic one.**
+
+⚠ **G must be quoted with the window it is read on, because the window is a
+CONVENTION and it moves the answer.** Three readings, all printed by the check script:
+
+| Window | Referent | κ | K_max |
+|---|---|---|---|
+| `[0.25, 0.66667]` | ADDtab's knots **before** the U-GAP block | 3.41902 | 4 |
+| `[0.25, 0.70711]` | **ADDtab now** — the closure the K-ladder actually reads | **4.00000** | **5** |
+| `[0.33333, 0.70711]` | the *parametric* closure `J`/`EXT`, i.e. **row C's window** | 3.16993 | 4 |
+
+`u = 0.25` is a **fitted, identifiable knot** of ADDtab (`r = 4`, 6 points,
+`w(a) = 0.045`), so the K-ladder's ADDtab-graded gates (G1, G1c, G7, U3) are inside their
+window. Row C's failure is a failure of the *parametric* form extrapolating there. But
+`kladder.py`'s docstring says "`u ≥ 1/4` by construction … unconfounded with
+extrapolation" **without saying which closure it means** — true of ADDtab, false of `J`.
+🔴 **Any K = 5 statement graded against `J` or `EXT` is outside its honest window.**
+
+**A consistency check G passes that it was not built to pass:** on the *pre-*U-GAP window
+the bound gives K_max = 4, so the K-ladder's K = 5 rung was already outside the window
+when it ran — which is exactly the defect G1c found independently, from the knot table.
 
 ⚠ **E must always be quoted with three qualifications**, all printed by
 `out/grade_kladder.txt` (sections G1 and G1c) rather than argued:
@@ -305,16 +328,38 @@ pre-registered gate — both datasets were on disk before it was written.)
    `u` = 0.70711 only**, which is exactly what K = 5 needs — and **not** what K = 8 or 12
    would need.
 
-1. 🔴 **THE K AXIS IS UNBLOCKED AT K = 5 AND STILL BLOCKED ABOVE IT.** A span-4 ladder's
-   adjacent-pair ratio goes 4^(−1/7) = **0.82** at K = 8 and 4^(−1/11) = **0.88** at
-   K = 12, and the U-GAP block shows the closure cannot be calibrated at `u` ≳ 0.8 by this
-   method — the signal is gone. So **extending K on a span-4 ladder walks into a region
-   that is now known to be unmeasurable**, and item 2's old plan is not available as
-   written. The two ways out, in cost order: **(a) widen the SPAN** so that K = 8 keeps
-   its adjacent pair near 0.7 (span 4^(7/4) ≈ 11 puts it at 0.707, at the price of
-   breaking the `u` ≥ 1/4 constraint row C says the closure needs — so span and K trade
-   against each other and that trade is the design question); **(b) a different observable
-   at `u` → 1** with more signal than φ − β, which is what fails there.
+1. 🟡 **SUPERSEDED 2026-09-17 BY ROW G, AND QUALIFIED.** The statement above ("extending
+   K walks into an unmeasurable region") is **right about K = 8 and K = 12 and was never
+   checked at K = 6 or K = 7**, which is the only place it mattered. Row G's bound says
+   K = 6 needs a knot at `u = 0.25^(1/5) = 0.75786`, and the U-GAP block's own measured
+   filling signal, log-interpolated between its two bracketing arms, puts **2.99 scale
+   there against the design's 2.57 resolving power — a margin of 1.16×**. K = 7 needs
+   `u = 0.79370` and comes out at **2.31, margin 0.90 — below the bar**. K ≥ 8 needs
+   `u > 0.80`, where the signal is bounded above by arm B's **measured 2.21, which
+   FAILED** (monotone in `u`, so this is not an extrapolation).
+   **So the K axis closes at 6, not at 5 — one more rung is available, and only one.**
+   ⚠ Status: an **ESTIMATE** from a three-point log interpolation, using a
+   resolving-power figure computed at arm B's ratio rather than at `u = 0.7579`. A real
+   design must recompute the ceiling at `r = 4^(1/5) = 1.31951` **before any cell**.
+   The two old escape routes (widen the span; find a different observable) are unchanged
+   and are what K ≥ 7 would still need.
+1b. 🔴 **DO NOT RUN A BLOCK TO NARROW `a(u*)` IN ORDER TO DECIDE U3 — the gate was run
+   BEFORE any cell and says it cannot decide.** `out/diag_u3decide.txt`, whose CONTROL
+   reproduces `grade_ugap.py`'s own 33 of 87 exactly. Contracting the joint region about
+   the current best fit drives saturation's survival 33/87 → 17/87 (f = 0.70) → **8/87
+   (f = 0.60)**, so **f ≤ 0.60 is what deciding requires**. The best composition grid
+   found reaches only **f_real = 0.67**, where survival is **16.1 % — still middling**,
+   i.e. the block would return the verdict it was run to replace. Over every candidate
+   truth the current data admits, P(decisive) at that f is **40.2 %**.
+   🔴 **And the obvious design premise is REFUTED by the same file.** Clustering
+   compositions where `|dφ/da|` is largest (just below the branch crossover, measured at
+   `x* = 0.3277` at the new knot, not the 0.356 of the shipped extrapolation) does **not**
+   narrow `a` — it **destroys identifiability**, because over a narrow window of `x` the
+   FINE branch alone can mimic the coarse one and the `a = 1` escape reopens. Three
+   clustered designs return `w(a) = 0.96`. What narrows `a` is the **x-SPAN of the
+   coarse-branch points**, not their density at the peak: at matched n = 9 the spread grid
+   gives 0.0550 against the shipped 0.0750, and the tight one fails outright.
+
 2. **Settle `a(u)` between 0.70711 and 1 by a means that is NOT a binary composition
    curve**, or accept that the closure is an extrapolation there and quote it as one.
    `out/diag_ugap.txt` shows that region still moves the **K = 5** prediction by up to

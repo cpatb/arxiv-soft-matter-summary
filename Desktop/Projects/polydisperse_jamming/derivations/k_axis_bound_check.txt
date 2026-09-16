@@ -1,0 +1,75 @@
+=== derivations/k_axis_bound_check.py ===
+
+--- (3) SYMBOLIC ---
+   LEMMA 1  u_ij = prod_(k=i)^(j-1) v_k, all 15 pairs at K=6: PASS
+   LEMMA 2  max pair = max adjacent AND min pair = d_1/d_K, EXACTLY, on 2000 random ladders of K = 2..8: PASS (0 violations)
+   LEMMA 1b u_1K = prod of ALL adjacent ratios, symbolically at K = 6: PASS
+   BOUND    u_lo = u_hi^n  =>  n = log(u_lo)/log(u_hi)  (so K-1 <= ln u_lo / ln u_hi)  PASS
+
+--- (4) LIMITS ---
+   u_hi -> u_lo+   (window is one point) kappa =            1  K_max = 2      PASS   (only a binary at that exact ratio fits)
+   u_hi -> 1-      (no upper constraint) kappa =    1.386e+09  K_max = 1386294400 PASS   (K unbounded: the ladder can be subdivided arbitrarily finely)
+   u_lo -> 0+      (no lower constraint) kappa =        79.73  K_max = 80     PASS   (K unbounded: an arbitrarily long ladder fits inside one adjacent step)
+   K = 2           (a binary)         kappa =            4  K_max = 5      PASS   (any u in the window works)
+
+--- (5) DIMENSIONS / INVARIANCE ---
+   rescaling every diameter by 1e-6, 1, 1e6 leaves every pair ratio unchanged: PASS (the bound is a statement about ratios only)
+   convention u = small/large gives kappa = 4.0000000000; u = large/small gives 4.0000000000: PASS
+
+--- (6) NUMERIC: brute-force feasibility vs the formula ---
+   Feasibility decided by random search + a geometric sweep, NOT by the
+   formula. Disagreement on any cell fails the check.
+       u_lo      u_hi   K    kappa  formula   brute  
+   96 of 96 cells agree
+
+--- ANCHOR: the SHIPPED kladder.ladder(K), which the derivation never saw ---
+     K    span      min pair      max pair  in [0.25, 0.70711]?
+     2  4.0000  0.2500000000  0.2500000000  YES
+     3  4.0000  0.2500000000  0.5000000000  YES
+     4  4.0000  0.2500000000  0.6299605249  YES
+     5  4.0000  0.2500000000  0.7071067812  YES
+     6  4.0000  0.2500000000  0.7578582833  NO
+   bound says K_max = 5 on [0.25, 0.70711]
+
+--- THE TWO WINDOWS, and what each governs ---
+   ADDtab knots, before the U-GAP block  [0.25, 0.66667]:  kappa = 3.41902  K_max = 4  span(K_max) in [3.37500, 4.00000]
+   ADDtab knots, after  the U-GAP block  [0.25, 0.70711]:  kappa = 4.00000  K_max = 5  span(K_max) in [4.00000, 4.00000]  <-- FORCED, a single ladder
+   row C's honest window for the FORM    [0.33333, 0.70711]:  kappa = 3.16993  K_max = 4  span(K_max) in [2.82843, 3.00000]
+   for K = 6 on u_lo = 0.25 the window must reach u_hi >= 0.25**(1/5) = 0.757858
+
+--- IS THE K = 6 KNOT REACHABLE? the U-GAP block's own measured signal ---
+   The bound says WHERE a knot must be, not whether one can be measured there.
+   `out/grade_ugap.txt` measured the filling signal max(phi - beta) at three
+   ratios and measured the design's resolving power (2.57 scale, read off arm
+   B's ceiling table, which fails at 2.55). Log-interpolating the MEASURED
+   signal between the two arms that bracket u = 0.7579 is what decides it.
+loaded 717 lines from 158 shard files -> 635 unique cells (82 duplicates dropped)
+   🔴 NON-DETERMINISM: 15 of 82 duplicated keys return a DIFFERENT phi. worst |dphi| = 5.03e-03 (cv0.000_mu0.000_s1_p3.000e-04_N1500), median 2.10e-03. Affected cv values: ['cv0.000'].
+      Which record survives is set by the filename sort order. See PREREG_DST_WINDOW_2026-09-09.md §3(c); the run-to-run spread this puts on W(cv 0) is 0.0032 against a quoted se of 0.00028.
+            u  max(phi-beta)/scale   source
+      0.66667                 7.05   computed here from the `ug` shards
+      0.70711                 4.43   computed here from the `ug` shards
+      0.80000                 2.21   computed here from the `ug` shards
+   resolving power of this design: 2.57 scale (fails at 2.55), quoted from
+      out/grade_ugap.txt arm B's ceiling table, not invented here.
+   CONTROL: arm B (u = 0.80000) is recorded there at 2.21 -- computed here 2.21
+
+   the whole remaining K axis on a span-4 ladder, one row per rung:
+     K  u_hi needed  signal est  margin  attemptable?
+     5      0.70711        4.43    1.72  MEASURED already
+     6      0.75786        2.99    1.16  yes
+     7      0.79370        2.31    0.90  no
+     8      0.82034      < 2.21  < 0.86  no (below arm B's measured 2.21, which FAILED)
+    10      0.85724      < 2.21  < 0.86  no (below arm B's measured 2.21, which FAILED)
+    12      0.88159      < 2.21  < 0.86  no (below arm B's measured 2.21, which FAILED)
+   -> K = 6 needs a knot at u = 0.75786 carrying about 2.99 scale against a bar of 2.57, margin 1.16x.
+      the largest K whose required knot still clears the bar is K = 6, at margin 1.16x.
+      🔴 This QUALIFIES the Status card's item 2 ('do not push K past 5'),
+      which reached its conclusion from the adjacent ratios at K = 8 and
+      K = 12 (0.82, 0.88) without evaluating K = 6. Those two rungs
+      are indeed excluded -- by a MEASUREMENT (arm B's 2.21 failed) rather
+      than by the argument given -- but K = 6 is not.
+      This is an ESTIMATE from a 3-point log interpolation, not a
+      measurement, and the margin is thin.
+
+FAILURES: []

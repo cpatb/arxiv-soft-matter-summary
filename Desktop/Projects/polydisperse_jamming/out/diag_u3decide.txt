@@ -1,0 +1,136 @@
+=== diag_u3decide.py -- can a NARROWER a(u*) decide U3? Asked BEFORE any cell ===
+C:\Users\compl\Desktop\Projects\polydisperse_jamming\mixture_closure.py:126: RuntimeWarning: overflow encountered in exp
+  a_, b_ = 1.0 / (1.0 + np.exp(-theta))
+loaded 717 lines from 158 shard files -> 635 unique cells (82 duplicates dropped)
+   🔴 NON-DETERMINISM: 15 of 82 duplicated keys return a DIFFERENT phi. worst |dphi| = 5.03e-03 (cv0.000_mu0.000_s1_p3.000e-04_N1500), median 2.10e-03. Affected cv values: ['cv0.000'].
+      Which record survives is set by the filename sort order. See PREREG_DST_WINDOW_2026-09-09.md §3(c); the run-to-run spread this puts on W(cv 0) is 0.0032 against a quoted se of 0.00028.
+   beta = 0.594687 (measured, mu_p 0.3); SCALE = 2.1e-03; u* = 0.70711
+   ANCHOR: ugap.phi_fast vs mixture_closure.packing_density_ab, 300 random points, worst |diff| = 1.110e-16
+   arm A points: 81 raw records from 20 files, 0 refused block-wide -> N before/after the arm-A filter: 27 compositions / 9 used
+   arm A: a = 0.9481 [0.8799, 0.9699] (w 0.0900), b = 0.9376 [0.8849, 0.9599] (w 0.0750), identifiable = True
+   K-ladder cells on disk: 43 (N, label) rows
+
+=== 1. CONTROL -- reproduce grade_ugap.py's 33 of 87 from the same inputs ===
+   Same 13x13 grid over the two marginal intervals, same joint rule
+   (chi2 <= chi2_min + n). A diagnostic that cannot reproduce the number it
+   audits has not audited it.
+   chi2_min = 3.4143, n = 9, bar = 12.4143
+   marginal box: 110 of 169 (65.1%)   [grade_ugap records 110 of 169, 65.1%]
+   JOINT region: 33 of 87 (37.9%)   [grade_ugap records 33 of 87, 37.9%]
+   -> CONTROL PASS -- exact match
+
+=== 2. WHERE THE BOUNDARY IS, on a fine grid, in units of the CURRENT width ===
+   The survival set is what a narrower interval has to fall inside or outside.
+   Its distance from the best fit, measured in current widths, is what decides
+   whether halving the width is enough.
+   fine grid 81x81 over a box padded by 0.60 current widths each side
+   survival fraction over the padded box: 64.0%
+   at the best fit (a 0.9481, b 0.9376): saturation survives = False   [consistent with U3 FAIL at the point estimate: True]
+   along a at b = b_hat: boundary at a = 0.9227, i.e. 0.28 current a-widths from the best fit
+   along b at a = a_hat: boundary at b = 0.9189, i.e. 0.25 current b-widths from the best fit
+
+=== 3. THE GATE -- survival fraction as the interval CONTRACTS ===
+   Model: a sharper block's joint region is the CURRENT joint region contracted
+   by f about that block's own best fit. Exact for a quadratic chi2 whose
+   curvature is scaled by 1/f^2. The 87 jointly admissible corners of section 1
+   supply the SHAPE; f scales their offsets from the current best fit.
+   shape template: 87 offsets, a in [-0.0682, +0.0218], b in [-0.0465, +0.0223]
+   LOOKUP ANCHOR: nearest-node lookup vs a direct recomputation on 40 random (a, b): agree 40/40
+
+   (a) IF the future block's best fit lands where the current one is:
+           f    w(a)    w(b)    survives         verdict
+        1.00  0.0900  0.0750     33/87      undetermined
+        0.85  0.0765  0.0637     25/87      undetermined
+        0.70  0.0630  0.0525     17/87      undetermined
+        0.60  0.0540  0.0450      8/87   DECIDED against
+        0.50  0.0450  0.0375      2/87   DECIDED against
+        0.40  0.0360  0.0300      0/87   DECIDED against
+        0.30  0.0270  0.0225      0/87   DECIDED against
+        0.20  0.0180  0.0150      0/87   DECIDED against
+        0.10  0.0090  0.0075      0/87   DECIDED against
+
+   (b) BUT the future block's centre is NOT known now. Over every candidate
+      truth the current joint region admits, how often is the answer DECISIVE,
+      and which way? This is the number the go/no-go rests on: a block that
+      decides only for some centres is still worth running -- one that is
+      middling for most centres is not.
+           f  decided AGAINST  decided FOR  undetermined  P(decisive)
+        1.00        12/87         4/87         71/87            18.4%
+        0.85        15/87         9/87         63/87            27.6%
+        0.70        21/87        12/87         54/87            37.9%
+        0.60        25/87        14/87         48/87            44.8%
+        0.50        30/87        17/87         40/87            54.0%
+        0.40        34/87        21/87         32/87            63.2%
+        0.30        40/87        24/87         23/87            73.6%
+        0.20        44/87        25/87         18/87            79.3%
+        0.10        49/87        30/87          8/87            90.8%
+
+=== 4. WHAT WIDTH IS ACHIEVABLE -- the noise-free identifiability ceiling ===
+   phi is generated from the closure at the MEASURED knot with no noise, so
+   chi2_min = 0 and the width returned is the narrowest ANY block at that
+   composition grid could get. diag_uident.py had to compute this at the
+   SHIPPED extrapolation; the knot is now measured, so the truth is known.
+   truth: a(u*) = 0.9481, b(u*) = 0.9376, r = 1.41421
+   branch crossover at the measured knot: x* = 0.3277
+   ⚠ The registered bar is delta chi2 = n, so a design with MORE points is also
+      graded against a LOOSER bar. Designs of 9 and of 16 points are therefore
+      not a like-for-like statistical comparison; both are listed and the
+      MATCHED-n (9-point) rows are what isolate WHERE from HOW MANY.
+                                     design  n_req  aff  n_c  n_f    w(a)    w(b)   f(a)  ident?
+       SHIPPED   the 9-point grid arm A ran      9    9    4    5  0.0750  0.0550   0.83  YES
+    n9 SPAN   9 pts, 5 below x* spread wide      9    9    5    4  0.0550  0.0600   0.61  YES
+       n9 TIGHT  9 pts packed just below x*      9    9    6    3  0.9598  0.0600  10.67  NO
+      n9 SPLIT  9 pts straddling x* closely      9    9    5    4  0.9598  0.9498  10.67  NO
+       n16 SPAN  16 pts, 12 spread below x*     16   16   12    4  0.0500  0.0750   0.56  YES
+       n16 CLUST 16 pts, 12 packed below x*     16   16   12    4  0.9598  0.0700  10.67  NO
+       n16 TIGHT 16 pts inside [0.25, 0.36]     16   16    9    7  0.9598  0.0800  10.67  NO
+          WIDE      9 pts over [0.05, 0.95]      9    8    3    5  0.0750  0.0500   0.83  YES
+   f(a) is the CONTRACTION FACTOR that design predicts, w(a)_ceiling / w(a)
+      measured now. The measured w(a) = 0.0900 is itself ABOVE the shipped
+      grid's own ceiling, so every f above is optimistic by that margin too.
+   CONTROL: the shipped grid's ceiling w(a) = 0.0750 against the 0.0900
+      the real block returned -- ratio 1.20x. A ceiling BELOW the
+      realised width is the expected direction; above it would be a bug.
+
+   🔴 THE BRIEF'S PREMISE IS REFUTED BY THIS TABLE. Concentrating compositions
+      where |d phi / d a| is largest (just below x*) does NOT narrow a -- it
+      DESTROYS identifiability. The mechanism is the branch swap: over a narrow
+      window of x the FINE branch alone can mimic the coarse branch's shape, so
+      the a = 1 escape reopens. What narrows a is the x-SPAN of the coarse-branch
+      points, not their density at the peak.
+
+   ROBUSTNESS -- the ceiling is computed at ONE assumed truth, and the truth is
+   only known to within the interval this block exists to shrink. Rows are the
+   assumed true a(u*) across its own profile interval, at b = b_hat.
+   best design by w(a): n16 SPAN  16 pts, 12 spread below x*
+   The SHIPPED grid is re-run at each assumed truth beside it, because a width
+   that changes with the truth is a property of the OBSERVABLE, not of the
+   design: the design gain is the RATIO of the two ceilings, and the realistic
+   width is that ratio times the width the shipped grid actually returned.
+        a_true  new w(a)  ship w(a)  ratio  f_real  ident?
+        0.8799    0.1250     0.2100   0.60    0.60  YES
+        0.8949    0.1100     0.1700   0.65    0.65  YES
+        0.9099    0.0900     0.1150   0.78    0.78  YES
+        0.9249    0.0700     0.1000   0.70    0.70  YES
+        0.9399    0.0550     0.0850   0.65    0.65  YES
+        0.9549    0.0450     0.0500   0.90    0.90  YES
+        0.9699    0.0450     0.0400   1.12    1.12  YES
+   f_real = ratio, i.e. the predicted contraction of the width the block would
+      ACTUALLY return, which already absorbs the 1.20x realised/ceiling gap.
+   -> design gain over the truth's own interval: best 0.60, WORST 1.12. The WORST is what the gate must be read at.
+
+=== VERDICT ===
+   best achievable contraction, at the assumed truth: f = 0.56 (w(a) 0.0500 from 0.0900); over the truth's own interval the WORST is f = 1.12.
+   the shipped grid realised 1.20x its own ceiling; the f_real column above already absorbs that, so f_real is the number to read.
+   design gain AT the current best estimate a = 0.9481: f_real = 0.67 (0.0500 / 0.0750)
+   at f = 0.67 (f_real AT the current best estimate): survival at the current best fit = 16.1%; P(decisive) over admitted centres = 40.2%
+   at f = 0.60 (f_real at the most favourable truth): survival at the current best fit = 8.9%; P(decisive) over admitted centres = 45.3%
+   at f = 1.12 (f_real at the WORST truth): survival at the current best fit = 37.9%; P(decisive) over admitted centres = 18.4%
+   at f = 0.56 (the noise-free ceiling ratio, an unreachable bound): survival at the current best fit = 6.1%; P(decisive) over admitted centres = 48.9%
+   decisive means < 10% or > 90%, stated in section 3 before the numbers.
+
+   DECISION: a narrowing block at the best composition grid found here is NOT WORTH cells for the purpose of deciding U3.
+   At the realistic contraction f = 0.67 the survival fraction is 16.1% -- inside [10%, 90%], i.e. still
+   MIDDLING, so the block would return the same verdict it was run to
+   replace: UNDETERMINED, leaning against saturation.
+   To decide, f <= 0.60 is needed and the best design found reaches only 0.67.
