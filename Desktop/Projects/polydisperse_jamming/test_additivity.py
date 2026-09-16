@@ -283,7 +283,9 @@ CLAIMED = {
     "diag_k6_interp.txt": [
         "7.0470", "4.4273", "2.2056", "2.9937", "2.558", "3.253", "1.27", "2.189",
         "2.356", "1.08", "9.4", "26.0", "18.6", "2.994", "3.214", "2.858", "3.128",
-        "2.758", "1.31951",
+        "2.758", "1.31951", "0.00e+00", "3.594", "2.274", "1.827", "0.626", "-2.58",
+        "15.4", "1.62", "5.04e-21", "6.07e-25", "3.128", "3.253", "2.55", "2.97",
+        "2.297", "2.334", "1.05", "1.28", "1.16",
     ],
 }
 
@@ -316,3 +318,61 @@ def test_the_claims_file_records_the_failures_not_a_success(ga):
     # and it must not claim the mix beat J, whatever a later edit does to the numbers
     assert "beats J" not in claims
     assert ga.strip().splitlines()[-1].count("'") == 6, "FAILURES no longer has 3 entries"
+
+
+# ================================ the two referee findings, pinned to their corrections
+def test_the_exact_anchor_is_verified_in_code_not_asserted(k6):
+    """s(u = 1) = 0 is the only piece of exact physics available, and the claim that the
+    SHIPPED closure has it must be checked rather than argued."""
+    assert "worst |diff| = 0.00e+00" in k6
+    assert "EXACT in the shipped closure" in k6
+
+
+def test_four_of_seven_forms_are_falsified_by_the_anchor(k6):
+    """A form that does not vanish at u = 1, or that goes negative, is wrong -- which is
+    a stronger statement than 'the interpolation is under-determined'."""
+    block = k6.split("FALSIFIES THE FORMS")[1].split("RESTRICTED TO")[0]
+    adm = block.count("ADMISSIBLE")
+    no = len([ln for ln in block.splitlines() if ln.rstrip().endswith("NO")])
+    assert (adm, no) == (2, 5), (adm, no)
+    assert "goes NEGATIVE" in k6
+
+
+def test_no_single_power_law_fits_the_three_points(k6):
+    """The pairwise exponents disagree by ~2x, so the anchor certifies the FAMILY and
+    not the parameters."""
+    ps = [float(m) for m in re.findall(r"u=0\.\d+ & u=0\.\d+\s+(\d+\.\d+)", k6)]
+    assert len(ps) == 3, ps
+    assert max(ps) / min(ps) > 1.8, ps
+
+
+def test_the_bar_was_borrowed_from_another_ratio_and_is_recomputed(k6):
+    """The second, independent defect: 2.57 is r = 1.25's resolving power, used at
+    r = 1.31951. A bar is a property of the design AT A RATIO."""
+    lo = _num(k6, r"bar is\s*\n?\s*BRACKETED in \[(\d+\.\d+), \d+\.\d+\]")
+    hi = _num(k6, r"BRACKETED in \[\d+\.\d+, (\d+\.\d+)\]")
+    assert lo < hi and hi > 2.57, (lo, hi)
+    assert "computed at r = 1.25, a different ratio" in k6
+
+
+def test_the_two_defects_are_reported_as_pushing_opposite_ways(k6):
+    """They partly cancel. Saying they 'push the same way' would contradict the table,
+    which is the failure mode this project keeps hitting."""
+    assert "do NOT push the same way" in k6
+    assert "partly CANCEL" in k6
+
+
+def test_the_corrected_margin_is_thinner_and_the_verdict_is_generated(k6):
+    m_lo = _num(k6, r"margin\s+: (\d+\.\d+)x to \d+\.\d+x")
+    m_hi = _num(k6, r"margin\s+: \d+\.\d+x to (\d+\.\d+)x")
+    assert m_lo < 1.16 < m_hi, (m_lo, m_hi)
+    assert "K = 6 stays ATTEMPTABLE on every corner" in k6
+    assert "does not flip" in k6
+
+
+def test_the_interim_verdict_cannot_be_read_as_the_conclusion(k6):
+    """The artifact carries two verdicts at two stages. The earlier one must say so, or
+    a later reader quotes the superseded half."""
+    assert "INTERIM VERDICT ON THE DOCUMENT'S OWN BASIS" in k6
+    assert "Read the final section, not this one" in k6
+    assert k6.index("INTERIM VERDICT") < k6.index("do NOT push the same way")

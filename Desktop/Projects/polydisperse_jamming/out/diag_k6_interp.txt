@@ -41,11 +41,94 @@
    K = 7 (u = 0.79370): signal spans 2.189 to 2.356, a factor 1.08; the bar 2.57 is OUTSIDE that span.
            verdict 'attemptable' on 0 of 7 forms.
 
-=== VERDICT (generated from the table above, not typed) ===
-   K = 6: UNRESOLVED. The estimate flips with the interpolation form (6/7 say yes),
+=== INTERIM VERDICT ON THE DOCUMENT'S OWN BASIS (generated, not typed) ===
+   (!) This grades the document's estimate against the document's own bar and
+   over ALL seven forms. Two corrections below supersede it: four of the forms
+   are FALSIFIED by the exact anchor, and the 2.57 bar was borrowed from
+   another ratio. Read the final section, not this one, for the verdict on
+   whether K = 6 is attemptable.
+   K = 6: UNRESOLVED on this basis. The estimate flips with the interpolation form (6/7 say yes),
    and the document's 2.99 is one draw from a 2.56-3.25 range that straddles the bar.
    'The K axis closes at 6' is therefore NOT established by this estimate.
    K = 7: CLOSED, and robustly -- no form in the declared set reaches 2.57 (max 2.36).
+
+=== IS THE (u = 1, s = 0) ANCHOR EXACT IN CODE, OR ONLY IN MY ALGEBRA? ===
+   packing_density_ab(..., a = 1, b = 1) - beta over 5 ratios x 9 compositions: worst |diff| = 0.00e+00
+   -> the anchor is EXACT in the shipped closure, not just in the algebra: at
+      a = b = 1 both filling branches vanish identically and phi = beta.
+
+=== BUT THE ANCHOR DOES NOT NARROW ANYTHING -- IT FALSIFIES THE FORMS ===
+   A two-parameter power law s = c(1-u)^p satisfies s(1) = 0 for ANY (c, p), so
+   the anchor constrains the FAMILY and not the PARAMETERS. And the three
+   pairwise exponents disagree by 2x, so there is no single power law:
+   pair                          p   predicts the third pt    error
+   u=0.667 & u=0.707         3.594                   1.124   -49.0%
+   u=0.667 & u=0.800         2.274                   5.251   +18.6%
+   u=0.707 & u=0.800         1.827                   5.607   -20.4%
+
+   And the SMOOTH forms are falsified outright by the same anchor. Evaluate
+   each at u = 1, where the answer is exactly 0:
+   form                                           s(u -> 1)  should be      verdict
+   log-log, 2 bracketing pts  [THE DOCUMENT'S]           0.626        0.0           NO
+   linear in (u, s), 2 pts                            -2.58        0.0           NO
+   quadratic in (u, s), 3 pts                          15.4        0.0           NO
+   quadratic in (ln u, ln s), 3 pts                    1.62        0.0           NO
+   power law in (1-u), 2 pts                       5.04e-21        0.0   ADMISSIBLE
+   power law in (1-u), 3 pts LSQ                   6.07e-25        0.0   ADMISSIBLE
+   quadratic in (ln(1-u), ln s), 3 pts                  inf        0.0           NO
+   -> a form that does not vanish at u = 1 contradicts the one piece of EXACT
+      physics available, and one of them goes NEGATIVE, which max(phi - beta)
+      cannot be (at x = 0 the mixture IS the coarse pack, so the max is >= 0).
+      That is stronger than 'under-determined': those forms are demonstrably
+      wrong outside a narrow neighbourhood, which is a reason to distrust them
+      inside it too.
+
+=== RESTRICTED TO THE 2 ANCHOR-ADMISSIBLE FORMS ===
+   K = 6 signal 3.128 to 3.253 (all ABOVE the borrowed bar 2.57); K = 7 2.297 to 2.334.
+   So on the forms that are not falsified, K = 6 clears the BORROWED bar on
+   every one of them -- which is exactly why the bar itself now has to be
+   checked rather than borrowed.
+
+=== THE SECOND, INDEPENDENT DEFECT: THE 2.57 BAR IS NOT A CONSTANT ===
+   grade_ugap.py computes that ceiling AT ARM B's RATIO (r = 1.25) over a
+   handful of assumed truths clustered near (a, b) = (0.975, 0.960). It is the
+   smallest signal that design could RESOLVE THERE. Using it at u = 0.75786 is
+   the same units error as the 'phi span' trap, relocated: a signal
+   interpolated to one ratio, graded against a bar computed at another.
+   Recomputed here at r = 4^(1/5) = 1.31951, noise-free, over a grid of truths.
+     a_true  b_true    w(a)    w(b)  ident  signal/scale
+     0.9400  0.9376   0.085   0.045    YES          4.84
+     0.9400  0.9600   0.205   0.040    YES          3.44
+     0.9481  0.9376   0.075   0.055    YES          4.66
+     0.9481  0.9600   0.190   0.045    YES          3.34
+     0.9600  0.9376   0.050   0.080    YES          4.14
+     0.9600  0.9600   0.155   0.060    YES          3.21
+     0.9700  0.9376   0.040   0.125    YES          3.88
+     0.9700  0.9600   0.135   0.100    YES          2.97
+     0.9800  0.9376   0.035   0.225    YES          3.15
+     0.9800  0.9600   0.990   0.985     NO          2.55
+     0.9850  0.9376   0.075   0.985     NO          2.36
+     0.9850  0.9600   0.995   0.990     NO          2.08
+     0.9900  0.9376   0.995   0.995     NO          2.00
+     0.9900  0.9600   1.000   1.000     NO          1.57
+   a(0.70711) is MEASURED at 0.9481 and a(0.8) is inferred >= 0.975, and a(u)
+   is increasing, so the truth at u = 0.75786 lies between them -- the rows
+   above bracket it.
+   -> at THIS ratio the design FAILS up to 2.55 scale and RESOLVES from 2.97, so the bar is
+      BRACKETED in [2.55, 2.97] -- it is NOT a single number, and the 2.57 the document used
+      was computed at r = 1.25, a different ratio. The bracket's ends are 0.99x and 1.16x the borrowed value.
+
+   COMBINING THE TWO DEFECTS -- and they do NOT push the same way:
+      signal, anchor-admissible forms only : 3.128 to 3.253   (the document used 2.99)
+      bar, recomputed at this ratio        : 2.55 to 2.97         (the document used 2.57)
+      margin                               : 1.05x to 1.28x       (the document used 1.16x)
+      Falsifying the bad interpolants pushes the signal UP; correcting the
+      borrowed bar pushes the threshold UP too. They partly CANCEL, which is
+      why the corrected margin lands near the document's -- for reasons that
+      have nothing to do with the document's own argument.
+      -> K = 6 stays ATTEMPTABLE on every corner of this box, at a margin of 1.05x
+         at its worst. THINNER than it looks and resting on a bar that
+         is bracketed rather than measured, but it does not flip.
 
    What can decide K = 6 is unchanged and is what the document already asks
    for: recompute the noise-free identifiability ceiling at r = 4^(1/5) = 1.31951,

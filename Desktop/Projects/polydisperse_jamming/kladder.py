@@ -35,8 +35,22 @@ A GEOMETRIC diameter ladder of FIXED SPAN 4, filled in with more classes:
 
 EVERY pair on EVERY rung has u >= 1/4 BY CONSTRUCTION, because the span is 4 and no two
 classes are further apart than the extremes. That is the constraint that refused
-d = 1, 2, 8 for the ternary block, and here it is satisfied identically at every K, so
-additivity stays unconfounded with extrapolation on the whole ladder. The extremes
+d = 1, 2, 8 for the ternary block, and here it is satisfied identically at every K.
+
+(!) THAT BUYS "UNCONFOUNDED WITH EXTRAPOLATION" FOR **ADDtab AND NOTHING ELSE**, AND THE
+CLOSURE HAS TO BE NAMED WHENEVER A K-LADDER NUMBER IS QUOTED. `u >= 1/4` is the
+measured-knot floor of the TABULATED closure, whose knots are u = 0.250, 0.333, 0.500,
+0.667 (and 0.707 since the U-GAP block). It is NOT the honest window of the PARAMETRIC
+closures: BENCH row C records that `J` / `EXT` fail blind at size ratios 4 and 5, so
+their window starts at u = 1/3, and on [1/3, 0.70711] the K-axis bound
+(`derivations/k_axis_bound.md`) gives K_max = 4 rather than 5. So **a K = 5 statement
+graded against `J` or `EXT` is outside its own window**, and the earlier wording of this
+paragraph -- which said "additivity stays unconfounded with extrapolation on the whole
+ladder" without naming a closure -- would have let a later reader quote a K = 5 number
+against the wrong one. The ADDtab-graded gates (G1, G1c, G7, U3) are inside their window
+and stand.
+
+The extremes
 d_min and d_max are the SAME on every rung, so the K axis adds classes without widening
 the distribution -- `d_max/L`, the size ratio and the span are all held fixed.
 
