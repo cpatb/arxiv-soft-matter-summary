@@ -57,6 +57,39 @@ def P(s=""):
     L.append(s)
 
 
+def tcrit(n: int, alpha: float = 0.05) -> float:
+    """Two-sided t critical value at n-1 dof.
+
+    NOT 2. Every change in this file comes from 3 seeds, so its se carries 2 dof and the
+    95 % value is 4.303; P(|T| > 2, df = 2) = 0.184, i.e. a flat 2*se bar is an 18 %
+    test. The first version of this script used 2*se and it admitted exactly the change
+    that sets the denominator of the headline ratio (referee, 2026-09-18).
+    """
+    from scipy import stats
+    return float(stats.t.ppf(1.0 - alpha / 2.0, max(1, n - 1)))
+
+
+def cochran_q(means, ses):
+    """Cochran's Q heterogeneity test across groups, and its p-value.
+
+    The question "are the three families' changes the same?" has a standard test and
+    this file previously answered it by eye. Q treats the reported se's as EXACTLY
+    known, which they are not (2 dof each), so it is the LIBERAL end of the range; the
+    conservative end is a t-based comparison. Both are printed, because they disagree
+    and the disagreement is the honest state (referee, 2026-09-18).
+    """
+    from scipy import stats
+    m = np.asarray(means, float)
+    s = np.asarray(ses, float)
+    ok = np.isfinite(m) & np.isfinite(s) & (s > 0)
+    if ok.sum() < 2:
+        return float("nan"), float("nan")
+    w = 1.0 / s[ok] ** 2
+    mbar = float(np.sum(w * m[ok]) / np.sum(w))
+    q = float(np.sum(w * (m[ok] - mbar) ** 2))
+    return q, float(stats.chi2.sf(q, int(ok.sum()) - 1))
+
+
 def mean_se(v):
     v = np.asarray([x for x in v if x == x], float)
     if len(v) == 0:
@@ -225,9 +258,15 @@ def main() -> int:
     P("   Changes are PAIRED PER SEED, never a difference of two means: the two ends")
     P("   share the seed, so the paired form cancels the shared draw exactly rather than")
     P("   statistically (lessons.md 2026-08-30). Each change is printed with its own se,")
-    P("   and a ratio whose SMALLEST change is within 2 se of zero is reported")
-    P("   UNDETERMINED rather than quoted -- a relative measure whose denominator is")
-    P("   shrinking measures the shrinkage.")
+    P("   and a ratio whose SMALLEST change is not significantly non-zero is reported")
+    P("   UNDETERMINED -- a relative measure whose denominator is shrinking measures the")
+    P("   shrinkage.")
+    P("")
+    P("   ⚠ THE GUARD IS t(df = n-1), NOT 2*se (referee, 2026-09-18). Every change here")
+    P("   comes from 3 seeds, so its se carries 2 dof and the two-sided 95 % critical")
+    P(f"   value is t = {tcrit(3):.3f}, not 2. P(|T| > 2, df = 2) = 0.184, so a flat")
+    P("   2*se bar is an 18 % test. The first version of this script used 2*se and it")
+    P("   admitted exactly the change that carries the headline.")
     P("")
     P("   observable              lognormal         uniform        bidisperse"
       "      across-family")
@@ -244,13 +283,41 @@ def main() -> int:
             diffs = [hi[s] - lo[s] for s in common]
             out[fam] = mean_se(diffs)
         return out
+    def peak_chg(getter, p=1e-3):
+        """The change from CV = 0 to whichever rung is FURTHEST from it.
+
+        The endpoint definition assumes monotonicity, and the bidisperse family is
+        NON-MONOTONE in CV -- a pathology this project already flags for phi_J. Reported
+        beside the endpoint definition so the reader can see how much of the headline is
+        the definition (referee, 2026-09-18).
+        """
+        out = {}
+        for fam in FAMILIES:
+            best = (0.0, float("nan"), 0.0)
+            for cv in CVS[1:]:
+                lo = {r["seed"]: getter(r) for r in sel
+                      if (r.get("family") or "lognormal") == fam and r["cv"] == 0.0
+                      and r["p_hat_target"] == p}
+                hi = {r["seed"]: getter(r) for r in sel
+                      if (r.get("family") or "lognormal") == fam and r["cv"] == cv
+                      and r["p_hat_target"] == p}
+                common = sorted(set(lo) & set(hi))
+                if not common:
+                    continue
+                m, se, n = mean_se([hi[s] - lo[s] for s in common])
+                if abs(m) > abs(best[0]):
+                    best = (m, se, cv)
+            out[fam] = best
+        return out
+
+    CHANNELS = (("phi_J", None),
+                ("Z_all", lambda r: r["z_all"]),
+                ("Z_nr (k=2)", lambda r: r["z_nr"]),
+                ("rattler fraction", lambda r: r["rattler_frac"]),
+                ("contact force mean", lambda r: r["force"].get("mean", float("nan"))),
+                ("contact force CV", lambda r: r["force"].get("cv", float("nan"))))
     rows_out = []
-    for nm, g in (("phi_J", None),
-                  ("Z_all", lambda r: r["z_all"]),
-                  ("Z_nr (k=2)", lambda r: r["z_nr"]),
-                  ("rattler fraction", lambda r: r["rattler_frac"]),
-                  ("contact force mean", lambda r: r["force"].get("mean", float("nan"))),
-                  ("contact force CV", lambda r: r["force"].get("cv", float("nan")))):
+    for nm, g in CHANNELS:
         if g is None:
             ch = {}
             for f in FAMILIES:
@@ -260,17 +327,98 @@ def main() -> int:
             ch = chg(g)
         vals = [abs(ch[f][0]) for f in FAMILIES if ch[f][0] == ch[f][0]]
         ses = [ch[f][1] for f in FAMILIES if ch[f][0] == ch[f][0]]
+        ns = [ch[f][2] for f in FAMILIES if ch[f][0] == ch[f][0]]
         if len(vals) != len(FAMILIES) or min(vals) == 0:
             ratio, note = float("nan"), "n/a"
         else:
             ratio = max(vals) / min(vals)
             j = int(np.argmin(vals))
-            note = (f"{ratio:.2f}x" if vals[j] > 2 * ses[j]
-                    else f"UNDETERMINED (smallest change {vals[j]:.4f} is within "
-                         f"2 se = {2*ses[j]:.4f} of zero)")
+            tc = tcrit(ns[j])
+            note = (f"{ratio:.2f}x" if vals[j] > tc * ses[j]
+                    else f"UNDETERMINED (smallest change {vals[j]:.4f} does not clear "
+                         f"t={tc:.2f} x se={ses[j]:.4f} = {tc*ses[j]:.4f})")
         rows_out.append((nm, ch, ratio, note))
         P(f"   {nm:22s} " + " ".join(f"{ch[f][0]:+8.4f}+-{ch[f][1]:.4f}"
                                      for f in FAMILIES) + f"   {note}")
+
+    # --- the test the eyeball judgement was standing in for -------------------------
+    P("")
+    P("   DO THE FAMILIES ACTUALLY DIFFER? Cochran's Q across the three changes, which")
+    P("   is the standard test the earlier version of this file answered by eye. Q")
+    P("   treats the se's as exactly known (they carry 2 dof), so it is the LIBERAL end;")
+    P("   the conservative end is that with 3 seeds almost nothing is resolvable. Both")
+    P("   are reported because they disagree, and the disagreement is the honest state.")
+    P("     observable               Q      p(Q)    families differ at 5 % (liberal)?")
+    qres = {}
+    for nm, ch, ratio, note in rows_out:
+        q, p_ = cochran_q([ch[f][0] for f in FAMILIES], [ch[f][1] for f in FAMILIES])
+        qres[nm] = (q, p_)
+        P(f"     {nm:22s} {q:7.2f}  {p_:7.4f}   {'YES' if p_ < 0.05 else 'no'}")
+
+    # --- how much of the ratio is the endpoint definition? --------------------------
+    P("")
+    P("   ENDPOINT vs PEAK. The CV 0 -> 0.5 definition assumes monotonicity in CV, and")
+    P("   the bidisperse family is not monotone. Recomputed against whichever rung is")
+    P("   furthest from CV = 0:")
+    P("     observable             endpoint ratio   peak ratio   peak rung per family")
+    peak_rows = {}
+    for nm, g in CHANNELS:
+        if g is None:
+            continue
+        pk = peak_chg(g)
+        vals = [abs(pk[f][0]) for f in FAMILIES]
+        pr = max(vals) / min(vals) if min(vals) > 0 else float("nan")
+        peak_rows[nm] = pr
+        ep = dict((r[0], r[2]) for r in rows_out)[nm]
+        P(f"     {nm:22s} {ep:12.2f}x  {pr:10.2f}x   "
+          + " ".join(f"{f[:4]}@{pk[f][2]:.1f}" for f in FAMILIES))
+
+    # --- is the ORDERING itself stable? ---------------------------------------------
+    P("")
+    P("   IS THE ORDERING STABLE? Each family change is resampled as t(df = n-1) around")
+    P("   its own mean and se, the six ratios recomputed, and the exact ordering counted.")
+    rng = np.random.default_rng(20260918)
+    order0 = [r[0] for r in sorted(rows_out, key=lambda r: -r[2])]
+    hits = 0
+    pair_hits = {i: 0 for i in range(len(order0) - 1)}
+    REPS = 20000
+    for _ in range(REPS):
+        draw = {}
+        for nm, ch, ratio, note in rows_out:
+            vals = []
+            for f in FAMILIES:
+                m, se, n = ch[f]
+                vals.append(abs(m + se * rng.standard_t(max(1, n - 1))))
+            draw[nm] = max(vals) / min(vals) if min(vals) > 0 else float("inf")
+        o = [k for k in sorted(draw, key=lambda k: -draw[k])]
+        if o == order0:
+            hits += 1
+        for i in range(len(order0) - 1):
+            if draw[order0[i]] > draw[order0[i + 1]]:
+                pair_hits[i] += 1
+    P(f"     the exact six-way ordering survives {100*hits/REPS:.0f} % of {REPS} draws")
+    for i in range(len(order0) - 1):
+        P(f"       {order0[i]:22s} > {order0[i+1]:22s}  {100*pair_hits[i]/REPS:5.1f} %")
+    order_frac = hits / REPS
+
+    # --- the channels are not independent -------------------------------------------
+    P("")
+    P("   ⚠ Z_all IS NOT AN INDEPENDENT CHANNEL. Z_all = (1 - rattler_frac) * Z_nr to")
+    P("   within the numbers already in this file, so its near-family-independence is")
+    P("   INHERITED from the rattler fraction's and is not a second confirmation:")
+    P("     family        CV    Z_all    (1-rat)*Z_nr    difference")
+    worst_id = 0.0
+    for fam in FAMILIES:
+        for cv in (0.0, 0.3, 0.5):
+            sub = [r for r in sel if (r.get("family") or "lognormal") == fam
+                   and r["cv"] == cv and r["p_hat_target"] == 1e-3]
+            if not sub:
+                continue
+            za = float(np.mean([r["z_all"] for r in sub]))
+            zz = float(np.mean([(1 - r["rattler_frac"]) * r["z_nr"] for r in sub]))
+            worst_id = max(worst_id, abs(za - zz))
+            P(f"     {fam:12s} {cv:.1f}  {za:7.4f}   {zz:11.4f}   {za-zz:+10.4f}")
+    P(f"     worst |difference| over the rows printed: {worst_id:.4f}")
 
     P("")
     P("   READ THIS WITH THE FOLLOWING RESTRICTIONS, none of which is optional:")
@@ -285,11 +433,11 @@ def main() -> int:
     P("   - Z, the rattler fraction and the force moments are read AT a pressure and")
     P("     move with the rung; phi_J alone is extrapolated to p_hat -> 0.")
     write()
-    md(rows_out, phiJ, health, sel)
+    md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, REPS)
     return 0
 
 
-def md(rows_out, phiJ, health, sel):
+def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, reps):
     """The report is GENERATED from the verdicts, never written alongside them."""
     # The narrative is generated FROM the verdicts: `lead` is whichever channel actually
     # has the largest RESOLVED across-family spread, not one chosen in advance (this
@@ -317,9 +465,13 @@ def md(rows_out, phiJ, health, sel):
          f"paired CV 0 → 0.5 change spans a factor **{lead[2]:.2f}×** between the three "
          "families ("
          + ", ".join(f"{f} {lead[1][f][0]:+.4f}±{lead[1][f][1]:.4f}" for f in FAMILIES)
-         + ")." if lead is not None else
-         "No across-family contrast was resolved: on every channel the smallest change "
-         "sits within 2 se of zero, so no ratio is quotable."),
+         + "). Every family change here rests on 3 seeds, so read the ordering section "
+           "below before carrying any of it."
+         if lead is not None else
+         "**No across-family contrast is resolved.** On every channel the smallest of "
+         "the three family changes fails a two-sided 95% test at its own degrees of "
+         "freedom, so no ratio is quotable — which is itself the finding, and it is a "
+         "statement about 3 seeds, not about the packings."),
         "",
         "| observable | lognormal | uniform | bidisperse | across-family spread |",
         "|---|---|---|---|---|",
@@ -334,21 +486,49 @@ def md(rows_out, phiJ, health, sel):
         "(CV 0 → 0.5 change, at `p_hat` = 1e-3 for the per-cell channels and "
         "extrapolated to `p_hat` → 0 for `phi_J`.)",
         "",
-        "### The ordering, which is the part worth carrying",
+        "### How far the ordering can be pushed — and it is not far",
         "",
-        "Ranked by resolved across-family spread: "
+        "Ranked by across-family spread, with the ones whose denominator fails a "
+        "two-sided 95% test marked — they are ranked but **not quotable**: "
         + " > ".join(f"**{r[0]}** {r[2]:.2f}×"
-                     for r in sorted(resolved, key=lambda r: -r[2])) + ".",
+                     + ("" if r[3].endswith("x") else " *(UNDETERMINED)*")
+                     for r in sorted(rows_out, key=lambda r: -r[2])) + ".",
         "",
-        ("The two channels at the bottom of that list — "
-         + " and ".join(f"`{r[0]}` ({r[2]:.2f}×)"
-                        for r in sorted(resolved, key=lambda r: r[2])[:2])
-         + " — are the **depopulation** channels, and they are very nearly "
-           "family-independent: all three shapes strip the load-bearing network by the "
-           "same amount across the CV ladder. What the shape of the distribution changes "
-           "is `phi_J` and the **width of the contact-force distribution**, not how many "
-           "grains fall out of the network. That is a partition of the effect, and it is "
-           "read off the ordering above rather than assumed."),
+        (f"**That six-way ordering survives only {100*order_frac:.0f}% of "
+         f"{reps:,} resamples** in which each family change is redrawn as "
+         "*t*(df = n−1) around its own mean and se. It is not a result. The links that "
+         "do hold are the individual ones: "
+         + "; ".join(f"`{order0[i]}` > `{order0[i+1]}` {100*pair_hits[i]/reps:.0f}%"
+                     for i in range(len(order0) - 1)) + "."),
+        "",
+        "Three separate reasons the headline has to be stated weakly, all raised by an "
+        "adversarial referee against an earlier draft of this page:",
+        "",
+        "1. **The significance guard was wrong.** Each change comes from 3 seeds, so its "
+        "se carries 2 degrees of freedom and the 95% critical value is *t* = 4.303, not "
+        "2. A flat 2·se bar is an 18% test, and it admitted exactly the change that set "
+        "the denominator of the largest ratio. The guard is now *t*(df = n−1) and the "
+        "table above says which ratios survive it.",
+        "2. **The endpoint definition does real work.** CV 0 → 0.5 assumes monotonicity "
+        "and the bidisperse family is not monotone. Against the furthest rung instead: "
+        + ", ".join(f"`{k}` {v:.2f}×" for k, v in peak_rows.items()) + ".",
+        "3. **`Z_all` is not an independent channel.** It equals "
+        "`(1 − rattler_frac)·Z_nr` to better than 0.5% on every row checked, so its "
+        "near-family-independence is *inherited* from the rattler fraction's and is not "
+        "a second confirmation of anything.",
+        "",
+        "### Do the families differ at all? The test, not the eyeball",
+        "",
+        "| observable | Cochran Q | p | differ at 5% (liberal)? |",
+        "|---|---|---|---|",
+    ] + [f"| {k} | {v[0]:.2f} | {v[1]:.4f} | {'yes' if v[1] < 0.05 else 'no'} |"
+         for k, v in qres.items()] + [
+        "",
+        "Q treats the printed se's as exactly known, which they are not — each has 2 "
+        "dof — so this is the **liberal** end. On a conservative *t* comparison almost "
+        "nothing here is resolvable at 3 seeds. Both ends are reported because they "
+        "disagree, and an earlier draft of this page called the bottom two channels "
+        "\"family-independent\" on neither test but on inspection.",
         "",
         "## What it does not say",
         "",

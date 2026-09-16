@@ -10,7 +10,7 @@ Three size-distribution families — lognormal, uniform, bidisperse — over CV 
 
 ## The result
 
-The largest **resolved** across-family contrast is **contact force CV**, whose paired CV 0 → 0.5 change spans a factor **8.34×** between the three families (lognormal +0.3621±0.0078, uniform +0.1231±0.0114, bidisperse +0.0434±0.0133).
+The largest **resolved** across-family contrast is **phi_J**, whose paired CV 0 → 0.5 change spans a factor **4.47×** between the three families (lognormal +0.0621±0.0026, uniform +0.0242±0.0008, bidisperse +0.0139±0.0025). Every family change here rests on 3 seeds, so read the ordering section below before carrying any of it.
 
 | observable | lognormal | uniform | bidisperse | across-family spread |
 |---|---|---|---|---|
@@ -19,15 +19,34 @@ The largest **resolved** across-family contrast is **contact force CV**, whose p
 | Z_nr (k=2) | -0.1891±0.0284 | -0.0812±0.0162 | -0.1172±0.0393 | 2.33x |
 | rattler fraction | +0.4082±0.0125 | +0.3827±0.0119 | +0.4171±0.0033 | 1.09x |
 | contact force mean | +0.0009±0.0001 | +0.0011±0.0001 | +0.0012±0.0000 | 1.32x |
-| contact force CV | +0.3621±0.0078 | +0.1231±0.0114 | +0.0434±0.0133 | 8.34x |
+| contact force CV | +0.3621±0.0078 | +0.1231±0.0114 | +0.0434±0.0133 | UNDETERMINED (smallest change 0.0434 does not clear t=4.30 x se=0.0133 = 0.0573) |
 
 (CV 0 → 0.5 change, at `p_hat` = 1e-3 for the per-cell channels and extrapolated to `p_hat` → 0 for `phi_J`.)
 
-### The ordering, which is the part worth carrying
+### How far the ordering can be pushed — and it is not far
 
-Ranked by resolved across-family spread: **contact force CV** 8.34× > **phi_J** 4.47× > **Z_nr (k=2)** 2.33× > **contact force mean** 1.32× > **Z_all** 1.10× > **rattler fraction** 1.09×.
+Ranked by across-family spread, with the ones whose denominator fails a two-sided 95% test marked — they are ranked but **not quotable**: **contact force CV** 8.34× *(UNDETERMINED)* > **phi_J** 4.47× > **Z_nr (k=2)** 2.33× > **contact force mean** 1.32× > **Z_all** 1.10× > **rattler fraction** 1.09×.
 
-The two channels at the bottom of that list — `rattler fraction` (1.09×) and `Z_all` (1.10×) — are the **depopulation** channels, and they are very nearly family-independent: all three shapes strip the load-bearing network by the same amount across the CV ladder. What the shape of the distribution changes is `phi_J` and the **width of the contact-force distribution**, not how many grains fall out of the network. That is a partition of the effect, and it is read off the ordering above rather than assumed.
+**That six-way ordering survives only 32% of 20,000 resamples** in which each family change is redrawn as *t*(df = n−1) around its own mean and se. It is not a result. The links that do hold are the individual ones: `contact force CV` > `phi_J` 88%; `phi_J` > `Z_nr (k=2)` 81%; `Z_nr (k=2)` > `contact force mean` 95%; `contact force mean` > `Z_all` 90%; `Z_all` > `rattler fraction` 58%.
+
+Three separate reasons the headline has to be stated weakly, all raised by an adversarial referee against an earlier draft of this page:
+
+1. **The significance guard was wrong.** Each change comes from 3 seeds, so its se carries 2 degrees of freedom and the 95% critical value is *t* = 4.303, not 2. A flat 2·se bar is an 18% test, and it admitted exactly the change that set the denominator of the largest ratio. The guard is now *t*(df = n−1) and the table above says which ratios survive it.
+2. **The endpoint definition does real work.** CV 0 → 0.5 assumes monotonicity and the bidisperse family is not monotone. Against the furthest rung instead: `Z_all` 1.10×, `Z_nr (k=2)` 2.06×, `rattler fraction` 1.09×, `contact force mean` 1.32×, `contact force CV` 3.77×.
+3. **`Z_all` is not an independent channel.** It equals `(1 − rattler_frac)·Z_nr` to better than 0.5% on every row checked, so its near-family-independence is *inherited* from the rattler fraction's and is not a second confirmation of anything.
+
+### Do the families differ at all? The test, not the eyeball
+
+| observable | Cochran Q | p | differ at 5% (liberal)? |
+|---|---|---|---|
+| phi_J | 227.78 | 0.0000 | yes |
+| Z_all | 6.56 | 0.0376 | yes |
+| Z_nr (k=2) | 10.95 | 0.0042 | yes |
+| rattler fraction | 8.07 | 0.0177 | yes |
+| contact force mean | 18.59 | 0.0001 | yes |
+| contact force CV | 568.76 | 0.0000 | yes |
+
+Q treats the printed se's as exactly known, which they are not — each has 2 dof — so this is the **liberal** end. On a conservative *t* comparison almost nothing here is resolvable at 3 seeds. Both ends are reported because they disagree, and an earlier draft of this page called the bottom two channels "family-independent" on neither test but on inspection.
 
 ## What it does not say
 

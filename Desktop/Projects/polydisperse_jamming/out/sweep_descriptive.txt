@@ -133,9 +133,15 @@ sweep_descriptive.py -- the descriptive sweep, from existing shards. No new cell
    Changes are PAIRED PER SEED, never a difference of two means: the two ends
    share the seed, so the paired form cancels the shared draw exactly rather than
    statistically (lessons.md 2026-08-30). Each change is printed with its own se,
-   and a ratio whose SMALLEST change is within 2 se of zero is reported
-   UNDETERMINED rather than quoted -- a relative measure whose denominator is
-   shrinking measures the shrinkage.
+   and a ratio whose SMALLEST change is not significantly non-zero is reported
+   UNDETERMINED -- a relative measure whose denominator is shrinking measures the
+   shrinkage.
+
+   ⚠ THE GUARD IS t(df = n-1), NOT 2*se (referee, 2026-09-18). Every change here
+   comes from 3 seeds, so its se carries 2 dof and the two-sided 95 % critical
+   value is t = 4.303, not 2. P(|T| > 2, df = 2) = 0.184, so a flat
+   2*se bar is an 18 % test. The first version of this script used 2*se and it
+   admitted exactly the change that carries the headline.
 
    observable              lognormal         uniform        bidisperse      across-family
    phi_J                   +0.0621+-0.0026  +0.0242+-0.0008  +0.0139+-0.0025   4.47x
@@ -143,7 +149,54 @@ sweep_descriptive.py -- the descriptive sweep, from existing shards. No new cell
    Z_nr (k=2)              -0.1891+-0.0284  -0.0812+-0.0162  -0.1172+-0.0393   2.33x
    rattler fraction        +0.4082+-0.0125  +0.3827+-0.0119  +0.4171+-0.0033   1.09x
    contact force mean      +0.0009+-0.0001  +0.0011+-0.0001  +0.0012+-0.0000   1.32x
-   contact force CV        +0.3621+-0.0078  +0.1231+-0.0114  +0.0434+-0.0133   8.34x
+   contact force CV        +0.3621+-0.0078  +0.1231+-0.0114  +0.0434+-0.0133   UNDETERMINED (smallest change 0.0434 does not clear t=4.30 x se=0.0133 = 0.0573)
+
+   DO THE FAMILIES ACTUALLY DIFFER? Cochran's Q across the three changes, which
+   is the standard test the earlier version of this file answered by eye. Q
+   treats the se's as exactly known (they carry 2 dof), so it is the LIBERAL end;
+   the conservative end is that with 3 seeds almost nothing is resolvable. Both
+   are reported because they disagree, and the disagreement is the honest state.
+     observable               Q      p(Q)    families differ at 5 % (liberal)?
+     phi_J                   227.78   0.0000   YES
+     Z_all                     6.56   0.0376   YES
+     Z_nr (k=2)               10.95   0.0042   YES
+     rattler fraction          8.07   0.0177   YES
+     contact force mean       18.59   0.0001   YES
+     contact force CV        568.76   0.0000   YES
+
+   ENDPOINT vs PEAK. The CV 0 -> 0.5 definition assumes monotonicity in CV, and
+   the bidisperse family is not monotone. Recomputed against whichever rung is
+   furthest from CV = 0:
+     observable             endpoint ratio   peak ratio   peak rung per family
+     Z_all                          1.10x        1.10x   logn@0.5 unif@0.5 bidi@0.5
+     Z_nr (k=2)                     2.33x        2.06x   logn@0.5 unif@0.4 bidi@0.4
+     rattler fraction               1.09x        1.09x   logn@0.5 unif@0.5 bidi@0.5
+     contact force mean             1.32x        1.32x   logn@0.5 unif@0.5 bidi@0.5
+     contact force CV               8.34x        3.77x   logn@0.5 unif@0.5 bidi@0.3
+
+   IS THE ORDERING STABLE? Each family change is resampled as t(df = n-1) around
+   its own mean and se, the six ratios recomputed, and the exact ordering counted.
+     the exact six-way ordering survives 32 % of 20000 draws
+       contact force CV       > phi_J                    87.6 %
+       phi_J                  > Z_nr (k=2)               81.0 %
+       Z_nr (k=2)             > contact force mean       95.5 %
+       contact force mean     > Z_all                    89.9 %
+       Z_all                  > rattler fraction         58.4 %
+
+   ⚠ Z_all IS NOT AN INDEPENDENT CHANNEL. Z_all = (1 - rattler_frac) * Z_nr to
+   within the numbers already in this file, so its near-family-independence is
+   INHERITED from the rattler fraction's and is not a second confirmation:
+     family        CV    Z_all    (1-rat)*Z_nr    difference
+     lognormal    0.0   4.9107        4.9102      +0.0004
+     lognormal    0.3   3.9182        3.9169      +0.0013
+     lognormal    0.5   2.7338        2.7191      +0.0147
+     uniform      0.0   4.9120        4.9116      +0.0004
+     uniform      0.3   3.8658        3.8569      +0.0089
+     uniform      0.5   2.9120        2.9062      +0.0058
+     bidisperse   0.0   4.9120        4.9116      +0.0004
+     bidisperse   0.3   3.6538        3.6502      +0.0036
+     bidisperse   0.5   2.7182        2.7129      +0.0053
+     worst |difference| over the rows printed: 0.0147
 
    READ THIS WITH THE FOLLOWING RESTRICTIONS, none of which is optional:
    - bidisperse is 50:50 BY NUMBER, so its fines carry 0.500 -> 0.036 of the

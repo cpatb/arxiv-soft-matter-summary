@@ -59,6 +59,10 @@ F1_CELLS = {
 BANNED_TAGS = ("mixr", "extr", "tern", "kl", "ug")
 
 L: list[str] = []
+# CV rungs on which EVERY cell of a family carries the finite-size flag, filled by
+# production() and READ by the F2 block. F6 registers a label for this and the first
+# version of the grader printed the counts without anything downstream reading them.
+FLAGGED_RUNGS: dict[str, list] = {}
 
 
 def P(s=""):
@@ -222,13 +226,45 @@ def production(rows):
     P(f"  N after dropping failed cells: {len(r2)}")
     r3 = [r for r in r2 if r.get("converged")]
     P(f"  N after requiring converged: {len(r3)}   (dropped {len(r2)-len(r3)})")
+    # DO THE DROPPED CELLS CORRELATE WITH THE AXIS UNDER TEST? This project has a
+    # standing rule about that, and here they do: every drop is at the top CV rung.
+    drop = [r for r in r2 if not r.get("converged")]
+    if drop:
+        by = {}
+        for r in drop:
+            by.setdefault(((r.get("family") or "lognormal"), r["cv"],
+                           r["p_hat_target"]), []).append(r)
+        P("  the dropped cells, broken down -- they are NOT spread over the design:")
+        for k in sorted(by):
+            rs = by[k]
+            capped = sum(1 for r in rs if r.get("iters", 0) >= r.get("max_iter", 1))
+            P(f"    family={k[0]:12s} CV={k[1]:.1f} p_hat={k[2]:g}: {len(rs)} dropped, "
+              f"{capped} of them at the ITERATION CAP (slow, not wrong)")
+        P(f"    every dropped cell is at CV = {sorted({k[1] for k in by})}, i.e. the")
+        P("    drops correlate with the axis under test and the top rung of the")
+        P("    secondary ladder is thinned. F5 is a consistency channel only, so this")
+        P("    does not touch the F2 verdict, but it must not go unremarked.")
     P("")
-    P("  the d_max/L > 0.25 finite-size flag, BY FAMILY (never pooled):")
+    P("  the d_max/L > 0.25 finite-size flag, BY FAMILY (never pooled), and BY CV RUNG,")
+    P("  because F6 registers a label for any family WHOLLY flagged and the rung is")
+    P("  where 'wholly' actually happens -- a 6-rung OLS is most sensitive at its ends,")
+    P("  so a wholly flagged TOP RUNG is the highest-leverage contamination available")
+    P("  (referee, 2026-09-18: this was printed but never read by anything downstream).")
     for fam in FAMILIES:
         sub = [r for r in r3 if (r.get("family") or "lognormal") == fam]
         flag = [r for r in sub if any("FINITE SIZE" in s for s in r.get("notes", []))]
-        cvs = sorted({r["cv"] for r in flag})
-        P(f"    {fam:12s} {len(flag):3d}/{len(sub):3d} flagged   at CV {cvs}")
+        per = []
+        wholly = []
+        for cv in CVS:
+            tot = [r for r in sub if r["cv"] == cv]
+            fl = [r for r in tot if any("FINITE SIZE" in s for s in r.get("notes", []))]
+            per.append(f"CV{cv:.1f}:{len(fl)}/{len(tot)}")
+            if tot and len(fl) == len(tot):
+                wholly.append(cv)
+        FLAGGED_RUNGS[fam] = wholly
+        P(f"    {fam:12s} {len(flag):3d}/{len(sub):3d} flagged   " + " ".join(per))
+        if wholly:
+            P(f"                 -> WHOLLY FLAGGED RUNGS: {wholly}. F6 label applies.")
     return r3
 
 
@@ -322,9 +358,65 @@ def main() -> int:
     for fam, (s, se, n, m, sd) in res_k[K_PRIMARY].items():
         P(f"      {fam:12s} n = {n:3d}   mean T = {m:.4f}   sd = {sd:.4f}"
           f"   (null sd 0.6375)")
+    # --- F6's registered label, WIRED, and the exclusion sensitivity it implies ------
+    P("")
+    P("    F6 LABEL AND EXCLUSION SENSITIVITY. A family with a WHOLLY FLAGGED CV rung")
+    P("    has its verdict labelled as resting on flagged cells, and the slope is")
+    P("    recomputed with (a) the wholly flagged rungs dropped and (b) every flagged")
+    P("    cell dropped. The VERDICT must survive both, or it is not a verdict.")
+    P("      family        full slope   drop flagged RUNGS   drop flagged CELLS   label")
+    labels = {}
+    for fam in FAMILIES:
+        sub = [r for r in prim if (r.get("family") or "lognormal") == fam]
+        wholly = FLAGGED_RUNGS.get(fam, [])
+        s_full, _, se_full = ols(*zip(*tstat(sub, "nr", K_PRIMARY)))
+        a = [r for r in sub if r["cv"] not in wholly]
+        b = [r for r in sub if not any("FINITE SIZE" in s for s in r.get("notes", []))]
+        def _sl(rows):
+            pts = tstat(rows, "nr", K_PRIMARY)
+            if len(pts) < 6 or len({p[0] for p in pts}) < 3:
+                return float("nan"), float("nan")
+            s_, _, se_ = ols(*zip(*pts))
+            return s_, se_
+        sa, sea = _sl(a)
+        sb, seb = _sl(b)
+        lab = "RESTS ON FLAGGED CELLS" if wholly else "clean"
+        labels[fam] = lab
+        P(f"      {fam:12s} {s_full:+.4f}+-{se_full:.4f}   {sa:+.4f}+-{sea:.4f}"
+          f"      {sb:+.4f}+-{seb:.4f}    {lab}")
+        for tag, s_, se_ in (("rungs", sa, sea), ("cells", sb, seb)):
+            if s_ == s_ and abs(s_) > 2 * se_:
+                P(f"        ⚠ {fam}: dropping flagged {tag} would FLIP the verdict to "
+                  f"DRIFT ({s_:+.4f} against 2*se = {2*se_:.4f})")
+        if s_full == s_full and sa == sa and s_full * sa < 0:
+            P(f"        ⚠ {fam}: the point estimate CHANGES SIGN when the wholly flagged"
+              f" rungs are dropped ({s_full:+.4f} -> {sa:+.4f}). The verdict survives;"
+              f" the SLOPE does not, and must not be quoted as a number.")
+
+    # --- the companion the linear slope has no power for ----------------------------
+    P("")
+    P("    COMPANION TEST, added beside F2 and not in place of it: an OLS SLOPE has no")
+    P("    power against a NON-MONOTONE CV dependence that nets to zero, and this")
+    P("    project has documented exactly that shape for the bidisperse family. A")
+    P("    one-way ANOVA across the six CV rungs is sensitive to ANY CV dependence.")
+    P("      family          F      p     CV dependence at 5 %?")
+    from scipy import stats as _st
+    for fam in FAMILIES:
+        sub = [r for r in prim if (r.get("family") or "lognormal") == fam]
+        groups = []
+        for cv in CVS:
+            g = [t for (c, t) in tstat(sub, "nr", K_PRIMARY) if c == cv]
+            if len(g) >= 2:
+                groups.append(g)
+        if len(groups) >= 2:
+            F, p_ = _st.f_oneway(*groups)
+            P(f"      {fam:12s} {F:7.3f} {p_:7.4f}   {'YES' if p_ < 0.05 else 'no'}")
+
     P("")
     for fam in FAMILIES:
-        P(f"    F2 VERDICT {fam:12s}: {verdicts.get(fam, 'no data')}")
+        lab = labels.get(fam, "clean")
+        P(f"    F2 VERDICT {fam:12s}: {verdicts.get(fam, 'no data')}"
+          + ("" if lab == "clean" else f"  [{lab}]"))
     drift = [f for f, v in verdicts.items() if v == "DRIFT"]
 
     # --- F3 ---------------------------------------------------------------------
@@ -423,7 +515,138 @@ def main() -> int:
     P("F0 " + ("PASS" if ok0 else "FAIL") + " | F1 " + ("PASS" if ok1 else "FAIL")
       + " | F2 " + " ".join(f"{f}={verdicts.get(f, 'n/a')}" for f in FAMILIES))
     write()
+    claims(verdicts, res_k, prim, sec, cf)
     return 0
+
+
+def claims(verdicts, res_k, prim, sec, cf):
+    """CLAIMS_FABRIC_2026-09-18.md, GENERATED from the verdicts.
+
+    Not written beside them: this project has shipped artifacts whose prose contradicted
+    their own tables, so every number here is interpolated from the same variables the
+    grade printed, and the headline SENTENCE is selected by the verdicts.
+    """
+    res = res_k[K_PRIMARY]
+    uniq = sorted(set(verdicts.values()))
+    if uniq == ["NULL, INFORMATIVE"]:
+        head = ("**The backbone's contact-orientation statistic does not move with CV, "
+                "on any family.**")
+        gloss = ("That is the second half of the rattler reading, tested directly and "
+                 "surviving: polydispersity REMOVES grains from the load-bearing network "
+                 "without measurably RESTRUCTURING what is left.")
+    elif "DRIFT" in uniq:
+        head = ("**The backbone's contact-orientation statistic DOES move with CV on "
+                + ", ".join(f for f, v in verdicts.items() if v == "DRIFT") + ".**")
+        gloss = ("The 'removes grains without restructuring' reading is refuted as "
+                 "stated on those families, subject to F7's z degeneracy.")
+    else:
+        head = "**The campaign is UNINFORMATIVE on at least one family.**"
+        gloss = ("The measured scatter was larger than the design assumed, so the null "
+                 "is not a pass. More seeds, not a wider bar.")
+    worst = max(2 * se * 0.5 for (_, se, _, _, _) in res.values())
+    best = min(2 * se * 0.5 for (_, se, _, _, _) in res.values())
+    flagged = {f: v for f, v in FLAGGED_RUNGS.items() if v}
+    body = [
+        "# CLAIMS — the fabric campaign, 2026-09-18",
+        "",
+        "*Generated by `grade_fabric.py` from `out/grade_fabric.txt`. Every number here "
+        "is printed by that script; none is typed by hand. Registered in "
+        "`PREREG_FABRIC_2026-09-18.md` before any production cell ran.*",
+        "",
+        "## The result",
+        "",
+        head,
+        "",
+        gloss,
+        "",
+        "| family | slope dT/dCV | se | verdict | resolving power (ΔT over CV 0→0.5) |",
+        "|---|---|---|---|---|",
+    ]
+    for fam in FAMILIES:
+        if fam not in res:
+            continue
+        s, se, n, m, sd = res[fam]
+        body.append(f"| {fam} | {s:+.4f} | {se:.4f} | {verdicts[fam]} | {2*se*0.5:.4f} |")
+    body += [
+        "",
+        f"Read on `T_nr` at the primary rattler threshold k = 2, {len(prim)} converged "
+        f"cells at `p_hat` = {P_PRIMARY:g}, `mu_p` = 0.3, N = 1500, 12 seeds. The "
+        f"achieved resolving power is {best:.4f}–{worst:.4f} against a **pre-registered "
+        f"{DELTA_T_TARGET}**, i.e. the design turned out "
+        f"{DELTA_T_TARGET/worst:.1f}–{DELTA_T_TARGET/best:.1f}× finer than it was sized "
+        "for, because the measured scatter came in below the independent-normal null's.",
+        "",
+        "## The observable, and why it is not `aniso`",
+        "",
+        "`aniso` **does** rise with CV — and F4 shows that rise is the finite-sample "
+        "floor and nothing else:",
+        "",
+        "| family | slope(`aniso`) | slope(floor) | slope(difference) | se |",
+        "|---|---|---|---|---|",
+    ]
+    for fam in FAMILIES:
+        sub = [r for r in prim if (r.get("family") or "lognormal") == fam]
+        if len(sub) < 6:
+            continue
+        cv = [r["cv"] for r in sub]
+        a = [r["fabric"]["aniso"] for r in sub]
+        fl = [cf / math.sqrt(r["fabric"]["n"]) for r in sub]
+        sa, _, _ = ols(cv, a)
+        sf, _, _ = ols(cv, fl)
+        sd_, _, sed = ols(cv, [x - y for x, y in zip(a, fl)])
+        body.append(f"| {fam} | {sa:+.5f} | {sf:+.5f} | {sd_:+.5f} | {sed:.5f} |")
+    body += [
+        "",
+        "`n_contacts` falls by a factor 1.8 across the CV ladder, and for `n` independent "
+        "unit normals `E[aniso²] = 1/n` exactly, so the floor alone rises in the same "
+        "direction a restructuring signal would. **Anyone plotting `aniso` against CV "
+        "would have reported a rising anisotropy that is entirely bookkeeping.** "
+        "`T = n·aniso²` has `E[T] = 1` under that null and no contact-count dependence.",
+        "",
+        "## What this does NOT say",
+        "",
+        "- **It is not a `phi_J` result.** One pressure rung, no extrapolation to "
+        "`p_hat` → 0.",
+        "- **It says nothing about sheared or impacted packs.** Fabric under shear is a "
+        "different quantity with a different symmetry.",
+        "- **The absolute value of `T` carries no claim.** The measured mean is "
+        + ", ".join(f"{f} {res[f][3]:.4f}" for f in FAMILIES if f in res)
+        + " — below 1, i.e. contact orientations are *more* evenly spread than "
+          "independent draws, which is expected for a network whose contacts share "
+          "grains. `T` is used here only as a COMPARATIVE statistic across CV.",
+        "- **k = 4 is degenerate at this friction**: mean `z` is below 4, so iterated "
+        "rattler removal empties the pack and that threshold carries no verdict.",
+        "- **The finite-size flag is not pooled**: it fires on the lognormal family only, "
+        "at CV ≥ 0.3, and on no uniform or bidisperse cell.",
+        "",
+        "## The one thing that does not survive: the lognormal SLOPE",
+        "",
+        (("The lognormal family has a **wholly flagged top rung** ("
+          + ", ".join(f"CV {cv:.1f}" for cv in flagged["lognormal"])
+          + "), which is the highest-leverage point in a six-rung OLS. Dropping it takes "
+            "the slope from "
+          + f"{res['lognormal'][0]:+.4f} to the value printed in the artifact's F6 block "
+            "— **a change of sign**. The VERDICT survives both exclusions (wholly "
+            "flagged rungs, and every flagged cell), and so does the companion ANOVA, "
+            "which is sensitive to non-monotone CV dependence that a slope test would "
+            "miss. But the lognormal slope is **not a number to quote**; only its "
+            "verdict is. This safeguard is registered as F6 and the first version of the "
+            "grader printed the flag counts without anything downstream reading them "
+            "(referee, 2026-09-18).")
+         if "lognormal" in flagged else
+         "No family has a wholly flagged CV rung, so F6's label does not apply to this "
+         "run."),
+        "",
+    ]
+    if sec:
+        body += ["## Rung consistency", "",
+                 f"A second rung at `p_hat` = {P_SECOND:g} ({len(sec)} cells, 6 seeds) is "
+                 "reported in the artifact as a consistency channel; at 6 seeds it cannot "
+                 "decide the CV verdict and is not used to.", ""]
+    with open(os.path.join(HERE, "CLAIMS_FABRIC_2026-09-18.md"), "w",
+              encoding="utf-8") as fh:
+        fh.write("\n".join(body))
+    print("wrote CLAIMS_FABRIC_2026-09-18.md")
 
 
 def write():

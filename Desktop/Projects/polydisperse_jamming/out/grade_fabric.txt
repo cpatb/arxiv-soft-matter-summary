@@ -1,0 +1,209 @@
+grade_fabric.py -- PREREG_FABRIC_2026-09-18.md
+==============================================================================
+TAG GUARD (structural, not by eye)
+  files matching out/fabric/phase2_fab*.jsonl : 63
+    phase2_fab_bidisperse_shard00of20.jsonl
+    phase2_fab_bidisperse_shard01of20.jsonl
+    phase2_fab_bidisperse_shard02of20.jsonl
+    phase2_fab_bidisperse_shard03of20.jsonl
+    phase2_fab_bidisperse_shard04of20.jsonl
+    phase2_fab_bidisperse_shard05of20.jsonl
+    phase2_fab_bidisperse_shard06of20.jsonl
+    phase2_fab_bidisperse_shard07of20.jsonl
+    phase2_fab_bidisperse_shard08of20.jsonl
+    phase2_fab_bidisperse_shard09of20.jsonl
+    phase2_fab_bidisperse_shard10of20.jsonl
+    phase2_fab_bidisperse_shard11of20.jsonl
+    phase2_fab_bidisperse_shard12of20.jsonl
+    phase2_fab_bidisperse_shard13of20.jsonl
+    phase2_fab_bidisperse_shard14of20.jsonl
+    phase2_fab_bidisperse_shard15of20.jsonl
+    phase2_fab_bidisperse_shard16of20.jsonl
+    phase2_fab_bidisperse_shard17of20.jsonl
+    phase2_fab_bidisperse_shard18of20.jsonl
+    phase2_fab_bidisperse_shard19of20.jsonl
+    phase2_fab_shard00of20.jsonl
+    phase2_fab_shard01of20.jsonl
+    phase2_fab_shard02of20.jsonl
+    phase2_fab_shard03of20.jsonl
+    phase2_fab_shard04of20.jsonl
+    phase2_fab_shard05of20.jsonl
+    phase2_fab_shard06of20.jsonl
+    phase2_fab_shard07of20.jsonl
+    phase2_fab_shard08of20.jsonl
+    phase2_fab_shard09of20.jsonl
+    phase2_fab_shard10of20.jsonl
+    phase2_fab_shard11of20.jsonl
+    phase2_fab_shard12of20.jsonl
+    phase2_fab_shard13of20.jsonl
+    phase2_fab_shard14of20.jsonl
+    phase2_fab_shard15of20.jsonl
+    phase2_fab_shard16of20.jsonl
+    phase2_fab_shard17of20.jsonl
+    phase2_fab_shard18of20.jsonl
+    phase2_fab_shard19of20.jsonl
+    phase2_fab_uniform_shard00of20.jsonl
+    phase2_fab_uniform_shard01of20.jsonl
+    phase2_fab_uniform_shard02of20.jsonl
+    phase2_fab_uniform_shard03of20.jsonl
+    phase2_fab_uniform_shard04of20.jsonl
+    phase2_fab_uniform_shard05of20.jsonl
+    phase2_fab_uniform_shard06of20.jsonl
+    phase2_fab_uniform_shard07of20.jsonl
+    phase2_fab_uniform_shard08of20.jsonl
+    phase2_fab_uniform_shard09of20.jsonl
+    phase2_fab_uniform_shard10of20.jsonl
+    phase2_fab_uniform_shard11of20.jsonl
+    phase2_fab_uniform_shard12of20.jsonl
+    phase2_fab_uniform_shard13of20.jsonl
+    phase2_fab_uniform_shard14of20.jsonl
+    phase2_fab_uniform_shard15of20.jsonl
+    phase2_fab_uniform_shard16of20.jsonl
+    phase2_fab_uniform_shard17of20.jsonl
+    phase2_fab_uniform_shard18of20.jsonl
+    phase2_fab_uniform_shard19of20.jsonl
+    phase2_fabgate.jsonl
+    phase2_fabgate_bidisperse.jsonl
+    phase2_fabgate_uniform.jsonl
+  N records read: 327
+  every record carries a non-empty `fabric` AND `fabric_nr`: PASS
+
+F0  REPRODUCTION -- runs FIRST, exits non-zero on mismatch.
+    SENTENCE: every record's fabric['n'] equals its own n_contacts, and at each
+    k its fabric_nr['n_k{k}'] equals z_nr_k{k}*(1-rattler_frac_k{k})*n_placed/2,
+    to within 0.5 of an integer; where the backbone is EMPTY both sides must be
+    empty together.
+    records checked: 327;  worst |n_k - identity|: 0.0000
+    empty-backbone cells by k: k2=0, k3=0, k4=327   (k=4 is registered DEGENERATE at mu_p = 0.3)
+    VERDICT: PASS
+
+F1  BIT IDENTITY -- the fabric read must not move the solver.
+    SENTENCE: three cells that already exist on disk return `phi` BIT-IDENTICAL
+    under the fabric code. `phi` is the gate because it is the CONTINUOUS
+    channel; z_all, z_nr and rattler_frac are grid-quantized and are printed.
+    cv0.300_mu0.300_s1_p1.000e-03_N1500_bidisperse
+      phi  new 0.6120403164804106   ref 0.6120403164804106   BIT-IDENTICAL True
+      quantized channels, printed not read: z_all True  z_nr True  rattler_frac True
+    cv0.300_mu0.300_s1_p1.000e-03_N1500_uniform
+      phi  new 0.6101301588958694   ref 0.6101301588958694   BIT-IDENTICAL True
+      quantized channels, printed not read: z_all True  z_nr True  rattler_frac True
+    cv0.400_mu0.300_s1_p1.000e-03_N1500
+      phi  new 0.6339122825028567   ref 0.6339122825028567   BIT-IDENTICAL True
+      quantized channels, printed not read: z_all True  z_nr True  rattler_frac True
+    cells checked: 3/3
+    VERDICT: PASS
+
+PRODUCTION SET -- N printed before and after every filter.
+  N all records: 327
+  N after dropping the F1 gate cells: 324
+  N after dropping failed cells: 324
+  N after requiring converged: 317   (dropped 7)
+  the dropped cells, broken down -- they are NOT spread over the design:
+    family=lognormal    CV=0.5 p_hat=0.0001: 2 dropped, 2 of them at the ITERATION CAP (slow, not wrong)
+    family=uniform      CV=0.5 p_hat=0.0001: 5 dropped, 5 of them at the ITERATION CAP (slow, not wrong)
+    every dropped cell is at CV = [0.5], i.e. the
+    drops correlate with the axis under test and the top rung of the
+    secondary ladder is thinned. F5 is a consistency channel only, so this
+    does not touch the F2 verdict, but it must not go unremarked.
+
+  the d_max/L > 0.25 finite-size flag, BY FAMILY (never pooled), and BY CV RUNG,
+  because F6 registers a label for any family WHOLLY flagged and the rung is
+  where 'wholly' actually happens -- a 6-rung OLS is most sensitive at its ends,
+  so a wholly flagged TOP RUNG is the highest-leverage contamination available
+  (referee, 2026-09-18: this was printed but never read by anything downstream).
+    lognormal     34/106 flagged   CV0.0:0/18 CV0.1:0/18 CV0.2:0/18 CV0.3:3/18 CV0.4:15/18 CV0.5:16/16
+                 -> WHOLLY FLAGGED RUNGS: [0.5]. F6 label applies.
+    uniform        0/103 flagged   CV0.0:0/18 CV0.1:0/18 CV0.2:0/18 CV0.3:0/18 CV0.4:0/18 CV0.5:0/13
+    bidisperse     0/108 flagged   CV0.0:0/18 CV0.1:0/18 CV0.2:0/18 CV0.3:0/18 CV0.4:0/18 CV0.5:0/18
+
+  N at the primary rung p_hat = 0.001: 216
+  N at the secondary rung p_hat = 0.0001: 101
+
+F2  PRIMARY -- the registered prediction is the NULL.
+    SENTENCE: if polydispersity only depopulates the load-bearing network, the
+    orientational correlation of the surviving backbone does not change with CV:
+    the per-family OLS slope of T_nr against CV is consistent with zero at 2*se,
+    on all three families.
+    registered effect size: DELTA_T = 0.5 across CV 0 -> 0.5.
+    VERDICT GRAMMAR, registered in advance:
+      |slope| > 2*se            -> DRIFT (the null is refuted on that family)
+      |slope| <= 2*se and achieved 2*se*0.5 <= 0.5 -> NULL, INFORMATIVE
+      |slope| <= 2*se and achieved 2*se*0.5 >  0.5 -> UNINFORMATIVE, not a pass
+
+  T_nr at k = 2  (PRIMARY)
+    family        slope dT/dCV      se     2*se    achieved DELTA_T over range   |slope|>2se?
+    lognormal         +0.1967   0.2253   0.4507                      0.2253             no
+    uniform           -0.0460   0.1913   0.3825                      0.1913             no
+    bidisperse        +0.1167   0.1940   0.3879                      0.1940             no
+
+  T_nr at k = 3  (reported)
+    family        slope dT/dCV      se     2*se    achieved DELTA_T over range   |slope|>2se?
+    lognormal         +0.1819   0.2028   0.4057                      0.2028             no
+    uniform           -0.1892   0.2020   0.4041                      0.2020             no
+    bidisperse        -0.0183   0.1932   0.3864                      0.1932             no
+
+    mean T_nr (k = 2) and its scatter -- T = 1 is the independent-normal null,
+    and the ABSOLUTE value carries no claim (a contact network is not
+    independent; see the prereg's honest limit).
+      lognormal    n =  72   mean T = 0.4410   sd = 0.3260   (null sd 0.6375)
+      uniform      n =  72   mean T = 0.4218   sd = 0.2753   (null sd 0.6375)
+      bidisperse   n =  72   mean T = 0.4595   sd = 0.2798   (null sd 0.6375)
+
+    F6 LABEL AND EXCLUSION SENSITIVITY. A family with a WHOLLY FLAGGED CV rung
+    has its verdict labelled as resting on flagged cells, and the slope is
+    recomputed with (a) the wholly flagged rungs dropped and (b) every flagged
+    cell dropped. The VERDICT must survive both, or it is not a verdict.
+      family        full slope   drop flagged RUNGS   drop flagged CELLS   label
+      lognormal    +0.1967+-0.2253   -0.0695+-0.2654      -0.0316+-0.3627    RESTS ON FLAGGED CELLS
+        ⚠ lognormal: the point estimate CHANGES SIGN when the wholly flagged rungs are dropped (+0.1967 -> -0.0695). The verdict survives; the SLOPE does not, and must not be quoted as a number.
+      uniform      -0.0460+-0.1913   -0.0460+-0.1913      -0.0460+-0.1913    clean
+      bidisperse   +0.1167+-0.1940   +0.1167+-0.1940      +0.1167+-0.1940    clean
+
+    COMPANION TEST, added beside F2 and not in place of it: an OLS SLOPE has no
+    power against a NON-MONOTONE CV dependence that nets to zero, and this
+    project has documented exactly that shape for the bidisperse family. A
+    one-way ANOVA across the six CV rungs is sensitive to ANY CV dependence.
+      family          F      p     CV dependence at 5 %?
+      lognormal      1.135  0.3506   no
+      uniform        0.092  0.9932   no
+      bidisperse     0.421  0.8328   no
+
+    F2 VERDICT lognormal   : NULL, INFORMATIVE  [RESTS ON FLAGGED CELLS]
+    F2 VERDICT uniform     : NULL, INFORMATIVE
+    F2 VERDICT bidisperse  : NULL, INFORMATIVE
+
+F3  THE ALL-CONTACT CHANNEL, reported beside it. No prediction registered.
+
+  T_all (every real contact)
+    family        slope dT/dCV      se     2*se    achieved DELTA_T over range   |slope|>2se?
+    lognormal         +0.2429   0.2236   0.4471                      0.2236             no
+    uniform           -0.0393   0.1904   0.3809                      0.1904             no
+    bidisperse        +0.0983   0.1929   0.3859                      0.1929             no
+
+    paired per-cell contrast T_all - T_nr(k=2), by CV -- the size of the
+    conflation the split exists to avoid:
+      lognormal    -0.0021 +0.0031 -0.0002 -0.0040 +0.0033 +0.0309
+      uniform      -0.0021 +0.0005 +0.0024 +0.0020 +0.0046 +0.0003
+      bidisperse   -0.0021 +0.0006 +0.0025 -0.0126 -0.0080 -0.0068
+
+F4  THE CONFOUND MUST BE DEMONSTRATED, NOT ASSERTED.
+    SENTENCE: the raw slope of `aniso` against CV is statistically
+    indistinguishable from the slope the finite-sample floor produces on its own,
+    on all three families, at 2*se of the PAIRED difference.
+    floor model E[aniso] = C/sqrt(n), C measured by Monte Carlo (seed 20260918, 2000 reps): C = 0.9462 +- 0.0070
+
+    family        slope(aniso)   slope(floor)   slope(aniso-floor)      se    consistent?
+    lognormal        +0.01078       +0.01056             +0.00022  0.00288    YES
+    uniform          +0.00646       +0.00967             -0.00322  0.00265    YES
+    bidisperse       +0.00971       +0.01148             -0.00177  0.00283    YES
+    F4 VERDICT: the raw channel is a readout of the contact count
+
+F5  RUNG CONSISTENCY -- registered as a CONSISTENCY CHANNEL ONLY; at 6 seeds
+    2*se*0.5 = 0.622 > 0.5, so it cannot decide F2.
+    paired T_nr(1e-3) - T_nr(1e-4) on 101 shared cells: -0.0339 +- 0.0417
+
+F7  CONDITIONAL -- readable only if F2 finds a drift.
+    NOT READ: F2 found no drift, so there is nothing to attribute.
+
+==============================================================================
+F0 PASS | F1 PASS | F2 lognormal=NULL, INFORMATIVE uniform=NULL, INFORMATIVE bidisperse=NULL, INFORMATIVE
