@@ -2,7 +2,7 @@
 
 Graded against `PREREG_ADDITIVITY_2026-09-17.md`, committed at `1c90457` **before
 `grade_additivity.py` existed**. **No new cells were run.** Every number below is printed
-by `out/grade_additivity.txt` or `out/diag_k6_interp.txt`; `test_additivity.py` (34 tests)
+by `out/grade_additivity.txt` or `out/diag_k6_interp.txt`; `test_additivity.py` (36 tests)
 asserts that none of them can drift from its artifact.
 
 `FAILURES: ['P0 calibration arms disagree (0.5214 vs 0.4969)', 'P2b mix 56.5 does not
@@ -31,9 +31,22 @@ This is the whole item in one table, at the registered primary convention `d43`:
 Two datasets built on different principles — a three-class composition simplex and a
 geometric size ladder at four class counts — want the **same** amount of nesting. The
 cleanest form of that, with no interval convention in it at all: **pooling the two arms
-costs χ² 50.333 − (6.429 + 43.433) = 0.471 on 1 dof.** One λ for both ladders is bought for
-essentially nothing — a stronger statement than P0's point-in-interval sentence, and it does
-not depend on whether a Δχ² = 1 width is a confidence interval.
+costs χ² 50.333 − (6.429 + 43.433) = 0.471 on 1 dof**, or **0.270** on the
+heteroscedasticity-aware version that re-weights each arm by 1/χ²_red (pooled λ = 0.5107) —
+**the more rigorous form makes the conclusion stronger, not weaker**, the same direction as
+every other correction in this file. One λ for both ladders is bought for essentially
+nothing — a stronger statement than P0's point-in-interval sentence, and it does not depend
+on whether a Δχ² = 1 width is a confidence interval.
+
+⚠ **READ THAT AS "the two arms' best-fit λ are INDISTINGUISHABLE", NOT as "one λ FITS the
+ladder data well" — they are different claims and only the first is supported** (referee).
+The K-ladder arm's **own** χ²_red is **2.41**: its 19 cells carry real cell-to-cell
+structure that no single λ absorbs. That is **not this block's finding and not news** — it
+is most likely **G7, the closure's wrong sign in K**, which predates this work and is still
+unrepaired. The ternary arm does not have the problem (χ²_red 1.29). The excess-χ² test
+above is about *agreement between the arms*; it says nothing about either arm's goodness of
+fit, and the number was printed in the dispersion table for two passes before anyone
+connected it to the narrative.
 
 🔴 **THE SECOND HALF IS WEAKER THAN AN EARLIER DRAFT SAID, because the pooled oracle hides a
 disagreement BETWEEN the continuous families.** The same reasoning this file already applies
@@ -41,11 +54,15 @@ to the weight correlation — within a family both axes are monotone in CV alone
 are not 15 independent measurements — applies to the oracle's own dof, and was not carried
 over (referee). Fitted per family:
 
-| family | n | leverage | λ | ±1 | interval |
-|---|---|---|---|---|---|
-| lognormal | 5 | 5 | **0.2900** | 0.0318 | [0.258, 0.322] |
-| uniform | 5 | 5 | **0.6989** | 0.1735 | [0.525, 0.872] |
-| bidisperse | 5 | **0** | **undefined** | — | `S ≡ A`, no leverage |
+| family | n | leverage | λ | ±1 | χ²_red | interval |
+|---|---|---|---|---|---|---|
+| lognormal | 5 | 5 | **0.2900** | 0.0318 | 0.347 | [0.258, 0.322] |
+| uniform | 5 | 5 | **0.6989** | 0.1735 | 0.514 | [0.525, 0.872] |
+| bidisperse | 5 | **0** | **undefined** | — | — | `S ≡ A`, no leverage |
+
+Both per-family χ²_red are **below 1**, so these two intervals are if anything
+**generously wide** rather than falsely narrow — which strengthens the disagreement rather
+than explaining it away.
 
 **The two continuous families disagree with each other by 0.4089 — 2.01× the
 ladders-vs-pooled-oracle gap of 0.2036 — and they straddle the ladders' 0.5069 from OPPOSITE
@@ -55,7 +72,9 @@ Uniform's interval excludes the ladders' value by only **0.0185, 11 % of its own
 marginal, and not to be read as a result; the family-vs-family disagreement is the larger and
 better-determined effect.
 
-**The supportable statement, and the one to quote:** *one λ describes both discrete ladders.
+**The supportable statement, and the one to quote:** *the two discrete ladders' best-fit λ
+are indistinguishable from each other (pooling costs 0.471 χ², or 0.270 weighted, on 1 dof)
+— though a single λ does not fit the K-ladder arm well, χ²_red 2.41, most likely G7.
 Whether it carries to a continuous PSD is **family-dependent and cannot be reduced to one
 number** — lognormal, tightly constrained, wants markedly **less** nesting (0.290) than the
 ladders (0.507); uniform, loosely constrained, leans toward **more** (0.699).* That is weaker

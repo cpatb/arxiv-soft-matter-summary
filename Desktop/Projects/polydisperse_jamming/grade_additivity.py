@@ -502,9 +502,45 @@ def main() -> int:
     say("   THE CLEANEST FORM OF THE SAME QUESTION, with no interval convention in it:")
     say(f"   pooling the arms costs chi2 {fp['chi2_cal']:.3f} - ({fp['chi2_t']:.3f} + "
         f"{fp['chi2_k']:.3f}) = {excess:.3f} on 1 dof.")
+    # The two arms have very different dispersion (chi2_red 1.29 vs 2.41), so the
+    # unweighted excess is not the heteroscedasticity-aware statistic. Re-weight each
+    # arm's points by 1/chi2_red_arm -- which by construction reproduces each arm's own
+    # chi2_min, an internal check -- and recompute the cost of pooling on that scale.
+    def _wexcess():
+        dof_t, dof_k = max(len(tern) - 1, 1), max(len(klad) - 1, 1)
+        wt = dof_t / fp["chi2_t"] if fp["chi2_t"] > 0 else 1.0
+        wk = dof_k / fp["chi2_k"] if fp["chi2_k"] > 0 else 1.0
+        dm, ds, w = [], [], []
+        for arr, ww in ((tern, wt), (klad, wk)):
+            for x in arr:
+                dm.append((x["phi"] - x["models"]["ADDtab"]) / SCALE)
+                ds.append((x["models"][f"SEQ{PRIMARY}"] - x["models"]["ADDtab"]) / SCALE)
+                w.append(ww)
+        dm, ds, w = np.array(dm), np.array(ds), np.array(w)
+        den = float(np.sum(w * ds * ds))
+        lam_w = float(np.sum(w * dm * ds) / den) if den > 0 else float("nan")
+        pooled = float(np.sum(w * (dm - lam_w * ds) ** 2))
+        sep = fp["chi2_t"] * wt + fp["chi2_k"] * wk
+        return pooled - sep, lam_w
+    wex, lam_w = _wexcess()
+    say(f"   variance-weighted (1/chi2_red per arm, which reproduces each arm's own "
+        f"chi2_min): {wex:.3f} on 1 dof,")
+    say(f"   at a pooled lambda of {lam_w:.4f}. The more rigorous form makes the "
+        "conclusion STRONGER,")
+    say("   not weaker -- the same direction as every other correction in this file.")
     say("   One lambda for both ladders is bought for essentially nothing, which is a")
     say("   stronger statement than P0's point-in-interval sentence and does not depend")
     say("   on whether a Delta chi2 = 1 width is a confidence interval.")
+    say()
+    say("   \u26a0 READ THAT AS 'THE TWO ARMS' BEST-FIT LAMBDA ARE INDISTINGUISHABLE',")
+    say("   NOT AS 'ONE LAMBDA FITS THE LADDER DATA WELL'. They are different claims and")
+    say(f"   only the first is supported: the K-ladder arm's OWN chi2_red is "
+        f"{fp['chi2_k'] / max(len(klad) - 1, 1):.2f}, i.e. its")
+    say("   19 cells carry real cell-to-cell structure that no single lambda absorbs. That")
+    say("   is not news and is not this block's finding -- it is most likely G7, the")
+    say("   closure's WRONG SIGN IN K, which predates this work and is still unrepaired.")
+    say(f"   The ternary arm does not have the problem (chi2_red "
+        f"{fp['chi2_t'] / max(len(tern) - 1, 1):.2f}).")
     say()
 
     # ---------------------------------------------------------------- pass-6 (b)/(c)
@@ -517,7 +553,8 @@ def main() -> int:
         "within a")
     say("   family both axes are monotone in CV alone, so 15 points are not 15 independent")
     say("   measurements -- applies to the oracle's own dof. Fitted per family:")
-    say(f"   {'family':<14}{'n':>4}{'leverage':>10}{'lambda':>10}{'+-1':>9}{'interval':>22}")
+    say(f"   {'family':<14}{'n':>4}{'leverage':>10}{'lambda':>10}{'+-1':>9}"
+        f"{'chi2_red':>10}{'interval':>22}")
     fam_lam = {}
     for fam in mm.FAMILIES:
         sub_ = [h for h in held if h["fam"] == fam]
@@ -528,10 +565,11 @@ def main() -> int:
             [h["models"][f"SEQ{PRIMARY}"] for h in sub_])
         if nlev_ == 0 or not math.isfinite(lf):
             say(f"   {fam:<14}{len(sub_):>4}{nlev_:>10}{'UNDEFINED':>10}{'--':>9}"
-                f"{'S == A, no leverage':>22}")
+                f"{'--':>10}{'S == A, no leverage':>22}")
             continue
+        red_ = _cf / max(len(sub_) - 1, 1)
         fam_lam[fam] = (lf, hf)
-        say(f"   {fam:<14}{len(sub_):>4}{nlev_:>10}{lf:>10.4f}{hf:>9.4f}"
+        say(f"   {fam:<14}{len(sub_):>4}{nlev_:>10}{lf:>10.4f}{hf:>9.4f}{red_:>10.3f}"
             f"{f'[{lf - hf:.3f}, {lf + hf:.3f}]':>22}")
     if len(fam_lam) >= 2:
         (f1, (l1, h1)), (f2, (l2, h2)) = sorted(fam_lam.items())
@@ -546,6 +584,9 @@ def main() -> int:
             f"{f2}'s {h2:.4f}),")
         say("   NOT a number describing continuous PSDs. The supportable statement is")
         say("   family-specific and is printed as such below.")
+        say("   Both per-family chi2_red are BELOW 1, so these two intervals are if")
+        say("   anything GENEROUSLY WIDE rather than falsely narrow -- which strengthens")
+        say("   the disagreement rather than explaining it away.")
         say(f"   -> {f1}: wants markedly {'LESS' if l1 < fp['lam'] else 'MORE'} nesting "
             f"than the ladders ({l1:.3f} vs {fp['lam']:.3f}), tightly constrained.")
         marg = abs(l2 - fp["lam"]) - h2

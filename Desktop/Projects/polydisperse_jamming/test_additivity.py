@@ -192,10 +192,35 @@ def test_the_pooled_oracle_is_not_quotable_without_the_per_family_split(ga):
 
 def test_pooling_the_ladder_arms_costs_essentially_nothing(ga):
     """The cleanest form of "the two ladders agree": a nested-model excess chi2 on 1 dof,
-    with no interval convention to argue about -- which is why it sits beside P0."""
+    with no interval convention to argue about -- which is why it sits beside P0. The
+    heteroscedasticity-aware version must be printed too, and must not be WORSE, since
+    the two arms differ in dispersion by nearly 2x."""
     ex = _num(ga, r"= (\d+\.\d+) on 1 dof")
-    assert ex < 2.0, ex
+    wex = _num(ga, r"reproduces each arm's own chi2_min\): (\d+\.\d+) on 1 dof")
+    assert ex < 2.0 and wex < ex, (ex, wex)
     assert "does not depend" in ga
+
+
+def test_arm_agreement_is_not_claimed_as_goodness_of_fit(ga):
+    """Pass 7: "one lambda describes both ladders" would conflate the two. The K-ladder's
+    own chi2_red is 2.41 -- real structure inside that arm, most likely the already
+    documented G7 wrong-sign result -- and the narrative must say so rather than leaving
+    the number sitting in a table nobody reads against the headline."""
+    assert "INDISTINGUISHABLE" in ga
+    assert "NOT AS 'ONE LAMBDA FITS THE LADDER DATA WELL'" in ga
+    assert "G7" in ga
+    red_k = _num(ga, r"K-ladder alone\s+19\s+[\d.]+\s+18\s+(\d+\.\d+)")
+    red_t = _num(ga, r"ternary alone\s+6\s+[\d.]+\s+5\s+(\d+\.\d+)")
+    assert red_k > 2.0 > red_t, (red_k, red_t)
+
+
+def test_per_family_chi2_red_is_printed_and_below_one(ga):
+    """If those intervals were falsely narrow the family disagreement would be an
+    artefact. Both chi2_red < 1 means the opposite: the intervals are generously wide."""
+    ln = _num(ga, r"lognormal\s+5\s+5\s+[\d.]+\s+[\d.]+\s+(\d+\.\d+)")
+    un = _num(ga, r"uniform\s+5\s+5\s+[\d.]+\s+[\d.]+\s+(\d+\.\d+)")
+    assert ln < 1.0 and un < 1.0, (ln, un)
+    assert "GENEROUSLY WIDE" in ga
 
 
 def test_the_two_ladder_arms_agree_far_better_than_they_agree_with_the_families(ga):
@@ -316,7 +341,8 @@ CLAIMED = {
         "34.8649", "7.5292", "3.3931", "-3.2955", "-0.939", "-1.000", "-0.900",
         "-0.636", "84.4", "47.8", "18.3", "6.7", "9.8", "18.4", "3.3", "-2.35", "2.64",
         "5.80", "0.926", "0.898", "0.671", "0.507",
-        "5.03", "0.52", "9.7", "8.3", "8.0", "0.471", "0.2900", "0.6989", "0.0318",
+        "5.03", "0.52", "9.7", "8.3", "8.0", "0.471", "0.270", "0.5107", "2.41",
+        "1.29", "0.347", "0.514", "0.2900", "0.6989", "0.0318",
         "0.1735", "0.4089", "2.01", "0.0185", "1.286", "2.413", "2.097", "1.016",
         "0.0311", "0.0354", "0.0254", "0.0316", "6.429", "43.433", "14.224",
     ],
