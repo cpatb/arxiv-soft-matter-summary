@@ -8,6 +8,8 @@
 
 That is the second half of the rattler reading, tested directly and surviving: polydispersity REMOVES grains from the load-bearing network without measurably RESTRUCTURING what is left.
 
+**Four tests, not one.** The slope above is the registered gate; beside it the artifact runs a one-way ANOVA over the six CV rungs (which, unlike a slope, has power against a non-monotone dependence), the same ANOVA under each of the two finite-size exclusions, and a distribution-free Kruskal-Wallis. **All four return no CV dependence on any family.** A Levene check rejects equal variance on the lognormal family, so there the rank test is the one to read — and it agrees. The companion is not run on the secondary rung, because its top CV rung is the convergence-selected population F5 already disqualifies.
+
 | family | slope dT/dCV | se | verdict | resolving power (ΔT over CV 0→0.5) |
 |---|---|---|---|---|
 | lognormal | +0.1967 | 0.2253 | NULL, INFORMATIVE | 0.2253 |

@@ -454,9 +454,77 @@ def main() -> int:
         if lev[1] == lev[1] and lev[1] < 0.05:
             P(f"        ⚠ {fam}: Levene REJECTS equal variance across rungs "
               f"(p = {lev[1]:.4f}), so the ANOVA's assumption is violated here -- the"
-              f" Kruskal-Wallis column is the one to read for this family")
+              f" Kruskal-Wallis column is the one to read for this family.")
+            # WHERE the variance is, not just that it is uneven. Dropping the flagged
+            # rung clears the rejection, which says part of it is the finite-size
+            # contamination seen again -- but only part, and saying "read the rank test"
+            # without saying that leaves two phenomena behind one number (referee,
+            # third pass 2026-09-18).
+            ga = _groups(a)
+            lev_a = _st.levene(*ga) if len(ga) >= 2 else (float("nan"),) * 2
+            P(f"          dropping the wholly flagged rung takes Levene"
+              f" {lev[1]:.4f} -> {lev_a[1]:.4f}"
+              + (", i.e. that rung is part of the cause" if lev_a[1] > 0.05
+                 else ", i.e. that rung is NOT the cause"))
+            P("          per-rung variance of T_nr, with the flag beside it:")
+            for cv in CVS:
+                g = [t for (c, t) in tstat(sub, "nr", K_PRIMARY) if c == cv]
+                fl = [r for r in sub if r["cv"] == cv
+                      and any("FINITE SIZE" in s for s in r.get("notes", []))]
+                tot = [r for r in sub if r["cv"] == cv]
+                if len(g) >= 2:
+                    P(f"            CV{cv:.1f}  var = {float(np.var(g, ddof=1)):.4f}"
+                      f"   flagged {len(fl)}/{len(tot)}")
+            P("          READ THAT COLUMN: any UNFLAGGED rung whose variance rivals the")
+            P("          flagged one is a SECOND source of scatter, and no verdict here")
+            P("          depends on it -- the rank test is insensitive to it and still")
+            P("          returns no CV dependence. What it IS, measured from fields")
+            P("          already on disk rather than asserted:")
+            P("            rung   rho(T_nr, d_max/L)    p      d_max/L range over seeds")
+            for cv in CVS:
+                g = [(t, r["d_max_over_L"]) for r in sub
+                     for (c, t) in tstat([r], "nr", K_PRIMARY) if c == cv]
+                if len(g) < 3:
+                    continue
+                dm = [x[1] for x in g]
+                if max(dm) - min(dm) < 1e-12:
+                    P(f"            CV{cv:.1f}   d_max/L is CONSTANT across seeds"
+                      f" ({dm[0]:.4f}); no correlation is defined")
+                    continue
+                rho, pv = _st.spearmanr([x[0] for x in g], dm)
+                P(f"            CV{cv:.1f}   {rho:+17.3f} {pv:8.4f}"
+                  f"      {min(dm):.4f}-{max(dm):.4f}")
+            P("          AND the direct test: dropping the two seeds with the LARGEST")
+            P("          d_max/L from the offending rung.")
+            for cv in CVS:
+                g = sorted(((t, r["d_max_over_L"]) for r in sub
+                            for (c, t) in tstat([r], "nr", K_PRIMARY) if c == cv),
+                           key=lambda x: -x[1])
+                if len(g) < 5:
+                    continue
+                v_all = float(np.var([x[0] for x in g], ddof=1))
+                v_cut = float(np.var([x[0] for x in g[2:]], ddof=1))
+                if v_all > 0.15:
+                    P(f"            CV{cv:.1f}   var {v_all:.4f} -> {v_cut:.4f}"
+                      f"   ({v_all/v_cut:.1f}x)"
+                      + ("   the large-grain draws ARE the variance" if v_cut < v_all / 4
+                         else "   NOT explained by the largest grains"))
+            P("          ⚠ THE CORRELATION'S p IS NOT MULTIPLICITY-CORRECTED: it is one")
+            P("          of ~15 rung x family cells scanned, so p = 0.0126 does not")
+            P("          survive a Bonferroni alpha of 0.0033. The load-bearing evidence")
+            P("          is the OUTLIER COLLAPSE and the FAMILY CONTRAST (bidisperse's")
+            P("          largest grain is a fixed design diameter and is constant across")
+            P("          seeds; uniform's varies by under 2 %; only the lognormal tail")
+            P("          can occasionally realise an unusually large single grain), not")
+            P("          the p-value. And it does NOT explain the OTHER high-variance")
+            P("          rung -- read the table above rather than generalising from one.")
     P(f"      companion verdict: {'no CV dependence on any family, under any of the '
                                   'four tests' if anova_ok else 'SEE THE WARNINGS ABOVE'}")
+    P("      The companion is NOT run on the secondary rung, and that is deliberate:")
+    P("      its CV = 0.5 group is exactly the population F5 disqualifies as")
+    P("      convergence-selected (one family keeps a single seed there), so an ANOVA or")
+    P("      a Levene on it is either undefined or powerless and would inherit the same")
+    P("      selection bias for no information. See F5.")
 
     P("")
     for fam in FAMILIES:
@@ -632,6 +700,15 @@ def claims(verdicts, res_k, prim, sec, cf):
         head,
         "",
         gloss,
+        "",
+        "**Four tests, not one.** The slope above is the registered gate; beside it the "
+        "artifact runs a one-way ANOVA over the six CV rungs (which, unlike a slope, has "
+        "power against a non-monotone dependence), the same ANOVA under each of the two "
+        "finite-size exclusions, and a distribution-free Kruskal-Wallis. **All four "
+        "return no CV dependence on any family.** A Levene check rejects equal variance "
+        "on the lognormal family, so there the rank test is the one to read — and it "
+        "agrees. The companion is not run on the secondary rung, because its top CV rung "
+        "is the convergence-selected population F5 already disqualifies.",
         "",
         "| family | slope dT/dCV | se | verdict | resolving power (ΔT over CV 0→0.5) |",
         "|---|---|---|---|---|",

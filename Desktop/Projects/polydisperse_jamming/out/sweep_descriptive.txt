@@ -144,12 +144,12 @@ sweep_descriptive.py -- the descriptive sweep, from existing shards. No new cell
    admitted exactly the change that carries the headline.
 
    observable              lognormal         uniform        bidisperse      across-family
-   phi_J                   +0.0621+-0.0026  +0.0242+-0.0008  +0.0139+-0.0025   4.47x
-   Z_all                   -2.1769+-0.0827  -2.0000+-0.0670  -2.1938+-0.0362   1.10x
-   Z_nr (k=2)              -0.1891+-0.0284  -0.0812+-0.0162  -0.1172+-0.0393   2.33x
-   rattler fraction        +0.4082+-0.0125  +0.3827+-0.0119  +0.4171+-0.0033   1.09x
-   contact force mean      +0.0009+-0.0001  +0.0011+-0.0001  +0.0012+-0.0000   1.32x
-   contact force CV        +0.3621+-0.0078  +0.1231+-0.0114  +0.0434+-0.0133   UNDETERMINED (smallest change 0.0434 does not clear t=4.30 x se=0.0133 = 0.0573)
+   phi_J                  +0.0620718+-0.002555 +0.0242013+-0.0008047 +0.0138885+-0.002485  n=3/3/3   4.47x
+   Z_all                  -2.17689+-0.08271 -2+-0.06703 -2.19378+-0.03619  n=3/3/3   1.10x
+   Z_nr (k=2)             -0.189131+-0.02838 -0.0812017+-0.01622 -0.117196+-0.03932  n=3/3/3   2.33x
+   rattler fraction       +0.408222+-0.01247 +0.382667+-0.01186 +0.417111+-0.003318  n=3/3/3   1.09x
+   contact force mean     +0.000916541+-6.851e-05 +0.00106165+-5.799e-05 +0.0012091+-2.738e-05  n=3/3/3   1.32x
+   contact force CV       +0.362127+-0.007794 +0.123075+-0.0114 +0.0433994+-0.01332  n=3/3/3   UNDETERMINED (smallest change 0.0434 does not clear t=4.30 x se=0.0133 = 0.0573)
 
    DO THE FAMILIES ACTUALLY DIFFER? Two tests, BOTH COMPUTED. Cochran's Q treats
    the se's as exactly known and at 2 dof per family it is measurably
@@ -173,14 +173,47 @@ sweep_descriptive.py -- the descriptive sweep, from existing shards. No new cell
    replaces, and it is what demotes Z_nr, whose denominator clears its own
    threshold by 1.17x while its heterogeneity F does not reach 5 %.
 
-   FINAL STATUS PER CHANNEL, after both gates:
-     observable             denominator   heterogeneity(F)   ratio
-     phi_J                         PASS               PASS   4.47x  RESOLVED
-     Z_all                         PASS               FAIL   1.10x  NOT RESOLVED (the families are not shown to differ: F p = 0.1433)
-     Z_nr (k=2)                    PASS               FAIL   2.33x  NOT RESOLVED (the families are not shown to differ: F p = 0.0999)
-     rattler fraction              PASS               FAIL   1.09x  NOT RESOLVED (the families are not shown to differ: F p = 0.1176)
-     contact force mean            PASS               PASS   1.32x  RESOLVED
-     contact force CV              FAIL               PASS   UNDETERMINED (denominator)
+   A SIGNIFICANT OMNIBUS F SAYS SOME PAIR DIFFERS, NOT THAT THE QUOTED PAIR DOES.
+   The ratio is max/min, so the contrast actually being quoted is that ONE pair,
+   and it gets its own Welch t (referee, third pass). Not live on today's data --
+   but a channel with three clustered means and one outlier could pass the
+   omnibus and fail this.
+   ⚠ AND THE PAIR IS SELECTED FROM THE DATA, so a nominal two-sample t_crit
+   UNDER-corrects -- the same defect as using 2*se on 3 seeds, one level up. The
+   threshold is therefore CALIBRATED by Monte Carlo: simulate each channel's own
+   (mean, se, n) under the null that all three families share the pooled value,
+   apply the SAME argmax/argmin selection rule, and take the 95th percentile of
+   the resulting Welch t. The nominal gate's true false-positive rate is printed
+   beside it (referee, fourth pass 2026-09-18).
+     observable            max fam      min fam    Welch t  t_nom  t_cal  FPR_nom  ok?
+     phi_J                 lognormal   bidisperse    13.521  2.777  5.873    21.4%  YES
+     Z_all                 bidisperse  uniform        2.544  3.139  6.034    18.2%  no
+     Z_nr (k=2)            lognormal   uniform        3.302  3.082  5.554    17.6%  no
+     rattler fraction      bidisperse  uniform        2.797  3.792  5.868    12.0%  no
+     contact force mean    bidisperse  lognormal      3.965  3.458  5.952    14.9%  no
+     contact force CV      lognormal   bidisperse    20.656  3.060  6.101    19.7%  YES
+
+   FINAL STATUS PER CHANNEL, after ALL THREE gates:
+     observable             denominator  heterogeneity(F)  quoted pair   ratio
+     phi_J                         PASS              PASS         PASS   4.47x  RESOLVED
+     Z_all                         PASS              FAIL         FAIL   1.10x  NOT RESOLVED (the families are not shown to differ: F p = 0.1433)
+     Z_nr (k=2)                    PASS              FAIL         FAIL   2.33x  NOT RESOLVED (the families are not shown to differ: F p = 0.0999)
+     rattler fraction              PASS              FAIL         FAIL   1.09x  NOT RESOLVED (the families are not shown to differ: F p = 0.1176)
+     contact force mean            PASS              PASS         FAIL   1.32x  NOT RESOLVED (the QUOTED pair is not separated: Welch t = 3.97 against a selection-calibrated 5.95; the nominal 3.46 would have passed it)
+     contact force CV              FAIL              PASS         PASS   UNDETERMINED (denominator)
+
+   phi_J IS NOW THE ONLY RESOLVED CHANNEL, so its own arbitrary choices are
+   worth printing. Each seed's phi_J is a four-rung fit with its OWN uncertainty
+   (`phi_J_lin_se`), and the paired change above weights the three seeds EQUALLY.
+   The inverse-variance alternative is equally defensible (referee, fourth pass):
+     family        equal-weight change      inverse-variance change   ratio of the two
+     lognormal            +0.0620718               +0.0628458            1.012
+     uniform              +0.0242013               +0.0242461            1.002
+     bidisperse           +0.0138885               +0.0113962            0.821
+   headline ratio: 4.47x equal-weight, 5.51x inverse-variance.
+   The VERDICT does not turn on it -- the heterogeneity F is larger on the
+   weighted version, not smaller -- but the QUOTED NUMBER moves, and that
+   belongs beside it the same way the endpoint-vs-peak bracket does.
 
    ENDPOINT vs PEAK, ON EVERY CHANNEL INCLUDING phi_J. The CV 0 -> 0.5 definition
    assumes monotonicity in CV and the bidisperse family is not monotone. The

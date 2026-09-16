@@ -244,12 +244,34 @@ def test_the_companion_is_run_under_the_SAME_exclusions_as_the_slope(gf):
 
 
 def test_a_violated_equal_variance_assumption_is_flagged_not_swallowed(gf):
-    """Where Levene rejects, the artifact must say which column to read instead."""
+    """Where Levene rejects, the artifact must say which column to read instead AND
+    localise the variance by rung. 'Read the rank test' alone reads as test-selection
+    housekeeping, when part of the heteroscedasticity is the finite-size contamination
+    seen again and part of it is not (referee, third pass)."""
     blk = re.search(r"COMPANION TEST.*?F2 VERDICT", gf, flags=re.S).group(0)
     rows = re.findall(r"^\s{6}(\w+)\s+.*\|\s+([0-9.]+)\s*$", blk, flags=re.M)
     for fam, p_lev in rows:
         if float(p_lev) < 0.05:
             assert f"⚠ {fam}: Levene REJECTS" in blk, fam
+            assert "per-rung variance of T_nr" in blk, fam
+            var_rows = re.findall(
+                r"^\s{12}CV([0-9.]+)\s+var = ([0-9.]+)\s+flagged (\d+)/(\d+)\s*$",
+                blk, flags=re.M)
+            assert len(var_rows) >= 5, var_rows
+            # The claim the note rests on: an UNFLAGGED rung whose variance rivals the
+            # flagged one, i.e. the contamination is not the whole story. If that ever
+            # stops being true the note is wrong and must be rewritten, not kept.
+            flagged = [float(v) for _, v, f_, t in var_rows if int(f_) == int(t)]
+            clean = [float(v) for _, v, f_, t in var_rows if int(f_) == 0]
+            assert flagged and clean, var_rows
+            assert max(clean) > 0.5 * max(flagged), (clean, flagged)
+
+
+def test_the_secondary_rung_is_excluded_from_the_companion_on_purpose(gf):
+    """A test that looks thorough must say why it stopped where it did."""
+    blk = re.search(r"COMPANION TEST.*?F2 VERDICT", gf, flags=re.S).group(0)
+    assert "NOT run on the secondary rung" in blk
+    assert "convergence-selected" in blk
 
 
 def test_the_flag_fraction_is_read_on_the_primary_rung(gf):

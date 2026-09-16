@@ -91,16 +91,85 @@ def test_BOTH_gates_are_applied_not_just_the_denominator(sw):
     ordering claim needs whether the families DIFFER FROM EACH OTHER. A channel that
     passes one and fails the other must not be quoted."""
     blk = re.search(r"FINAL STATUS PER CHANNEL.*?\n\n", sw, flags=re.S)
-    assert blk, "the two-gate status block is missing"
-    rows = re.findall(r"^\s{5}(\S[\w ()=]*?)\s{2,}(PASS|FAIL)\s+(PASS|FAIL)\s+(.*)$",
+    assert blk, "the gate status block is missing"
+    rows = re.findall(
+        r"^\s{5}(\S[\w ()=]*?)\s{2,}(PASS|FAIL)\s+(PASS|FAIL)\s+(PASS|FAIL)\s+(.*)$",
+        blk.group(0), flags=re.M)
+    assert len(rows) == 6, rows
+    for nm, denom, het, pair, verdict in rows:
+        resolved = "RESOLVED" in verdict and "NOT RESOLVED" not in verdict
+        assert resolved == (denom == "PASS" and het == "PASS" and pair == "PASS"), \
+            (nm, denom, het, pair, verdict)
+    # and each gate must actually bite somewhere: a run where one of them never fails
+    # is a gate that has stopped discriminating.
+    for j, gate in ((1, "denominator"), (2, "heterogeneity"), (3, "quoted pair")):
+        assert any(r[j] == "FAIL" for r in rows), (gate, rows)
+
+
+def test_the_quoted_pair_is_tested_against_a_SELECTION_CALIBRATED_threshold(sw):
+    """An omnibus F says SOME pair differs; the ratio quotes ONE pair. And that pair is
+    the argmax/argmin OF THE DATA, so a nominal two-sample t_crit under-corrects -- the
+    same defect as 2*se on 3 seeds, one level up. The measured false-positive rate of
+    the nominal gate must be printed, and the verdict must be read off the CALIBRATED
+    threshold (referee, fourth pass)."""
+    blk = re.search(r"A SIGNIFICANT OMNIBUS F.*?FINAL STATUS", sw, flags=re.S)
+    assert blk, "the pairwise block is missing"
+    rows = re.findall(r"^\s{5}(\S[\w ()=]*?)\s{2,}(\w+)\s+(\w+)\s+([0-9.]+)\s+"
+                      r"([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)%\s+(YES|no)\s*$",
                       blk.group(0), flags=re.M)
     assert len(rows) == 6, rows
-    for nm, denom, het, verdict in rows:
-        resolved = "RESOLVED" in verdict and "NOT RESOLVED" not in verdict
-        assert resolved == (denom == "PASS" and het == "PASS"), (nm, denom, het, verdict)
-    # and the gates must actually bite: a run where everything passes both would mean
-    # the guards had stopped discriminating.
-    assert any(d == "FAIL" or h == "FAIL" for _, d, h, _ in rows), rows
+    for nm, fmax, fmin, t, tnom, tcal, fpr, ok in rows:
+        assert fmax != fmin, nm
+        # the verdict is read off the CALIBRATED threshold, not the nominal one
+        assert (float(t) > float(tcal)) == (ok == "YES"), (nm, t, tcal, ok)
+        # the calibration must actually be doing something
+        assert float(tcal) > float(tnom), (nm, tnom, tcal)
+        assert float(fpr) > 5.0, (nm, "the nominal gate's FPR should exceed 5 %", fpr)
+    # and it must bite: at least one channel whose nominal verdict the calibration flips
+    assert any(float(t) > float(tnom) and float(t) <= float(tcal)
+               for _, _, _, t, tnom, tcal, _, _ in rows), rows
+
+
+def test_the_heterogeneity_F_is_recomputable_from_the_printed_digits(sw):
+    """The property that actually matters, tested the way the referee tested it.
+
+    `contact force mean` is O(1e-3). At four decimals its between-family differences sat
+    inside the rounding quantum, so reconstructing its heterogeneity F from the printed
+    table gave p = 0.118 where the full-precision value is 0.0248 -- opposite sides of
+    5 %, on a row the report calls RESOLVED. A claims table must be recomputable from
+    what it prints. The ANOVA is re-implemented here from scratch; nothing is imported.
+    """
+    chg = re.findall(
+        r"^\s{3}(\S[\w ()=]*?)\s{2,}([-+0-9.eE]+)\+-([0-9.eE+-]+)\s+"
+        r"([-+0-9.eE]+)\+-([0-9.eE+-]+)\s+([-+0-9.eE]+)\+-([0-9.eE+-]+)\s+n=(\d+)/(\d+)/(\d+)",
+        sw, flags=re.M)
+    assert len(chg) == 6, chg
+    printed = dict(re.findall(
+        r"^\s{5}(\S[\w ()=]*?)\s+-?[0-9.]+\s+[0-9.]+\s+(-?[0-9.]+)\s+[0-9.]+\s+"
+        r"(?:YES|no) / (?:YES|no)\s*$", sw, flags=re.M))
+    assert len(printed) == 6, printed
+
+    def f_from(ms, ses, ns):
+        sd = [s * (n ** 0.5) for s, n in zip(ses, ns)]
+        ssw = sum((n - 1) * d * d for n, d in zip(ns, sd))
+        dfw = sum(n - 1 for n in ns)
+        mbar = sum(n * m for n, m in zip(ns, ms)) / sum(ns)
+        ssb = sum(n * (m - mbar) ** 2 for n, m in zip(ns, ms))
+        return (ssb / (len(ms) - 1)) / (ssw / dfw)
+
+    for nm, m1, s1, m2, s2, m3, s3, n1, n2, n3 in chg:
+        nm = nm.strip()
+        f_hat = f_from([float(m1), float(m2), float(m3)],
+                       [float(s1), float(s2), float(s3)],
+                       [int(n1), int(n2), int(n3)])
+        f_ref = float(printed[nm])
+        assert abs(f_hat - f_ref) <= 0.05 * f_ref, (nm, f_hat, f_ref)
+        # A 5 % band in F is a PROXY for "the verdict does not change", and near the
+        # F-critical value it is not a safe one. Require the same side of it too: a
+        # future borderline channel could pass the band and flip its verdict silently
+        # (referee, fourth pass). F_crit(2, 6) at 5 % = 5.1433.
+        fcrit = 5.1433
+        assert (f_hat > fcrit) == (f_ref > fcrit), (nm, f_hat, f_ref, fcrit)
 
 
 def test_the_conservative_heterogeneity_test_is_COMPUTED_not_described(sw, rep):

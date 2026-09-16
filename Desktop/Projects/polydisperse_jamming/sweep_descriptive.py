@@ -49,6 +49,10 @@ MU_REF = 0.3
 N_MATCH = 1500
 RUNGS = (1e-3, 3e-4, 1e-4, 3e-5)
 R2_MIN = 0.85
+# The max-vs-min pair is SELECTED from the data, so its threshold is calibrated under the
+# global null with the same selection rule rather than read off a t table.
+PAIR_MC_SEED = 20260918
+PAIR_MC_REPS = 200_000
 
 L: list[str] = []
 
@@ -390,8 +394,15 @@ def main() -> int:
                     else f"UNDETERMINED (smallest change {vals[j]:.4f} does not clear "
                          f"t={tc:.2f} x se={ses[j]:.4f} = {tc*ses[j]:.4f})")
         rows_out.append((nm, ch, ratio, note))
-        P(f"   {nm:22s} " + " ".join(f"{ch[f][0]:+8.4f}+-{ch[f][1]:.4f}"
-                                     for f in FAMILIES) + f"   {note}")
+        # %.6g, not %.4f. `contact force mean` is O(1e-3) and its between-family
+        # differences are the same size as a 4-decimal rounding quantum, so a reader
+        # reconstructing its heterogeneity F from the printed digits got p = 0.118 where
+        # the full-precision value is 0.0248 -- opposite sides of 5 %, on a row the
+        # report calls RESOLVED. A number in a claims table that cannot be recomputed
+        # from what is printed is not published (referee, third pass 2026-09-18).
+        P(f"   {nm:22s} " + " ".join(f"{ch[f][0]:+.6g}+-{ch[f][1]:.4g}"
+                                     for f in FAMILIES)
+          + "  n=" + "/".join(str(ch[f][2]) for f in FAMILIES) + f"   {note}")
 
     # --- the test the eyeball judgement was standing in for -------------------------
     P("")
@@ -419,21 +430,110 @@ def main() -> int:
     P("   replaces, and it is what demotes Z_nr, whose denominator clears its own")
     P("   threshold by 1.17x while its heterogeneity F does not reach 5 %.")
     P("")
-    P("   FINAL STATUS PER CHANNEL, after both gates:")
-    P("     observable             denominator   heterogeneity(F)   ratio")
+    P("   A SIGNIFICANT OMNIBUS F SAYS SOME PAIR DIFFERS, NOT THAT THE QUOTED PAIR DOES.")
+    P("   The ratio is max/min, so the contrast actually being quoted is that ONE pair,")
+    P("   and it gets its own Welch t (referee, third pass). Not live on today's data --")
+    P("   but a channel with three clustered means and one outlier could pass the")
+    P("   omnibus and fail this.")
+    P("   ⚠ AND THE PAIR IS SELECTED FROM THE DATA, so a nominal two-sample t_crit")
+    P("   UNDER-corrects -- the same defect as using 2*se on 3 seeds, one level up. The")
+    P("   threshold is therefore CALIBRATED by Monte Carlo: simulate each channel's own")
+    P("   (mean, se, n) under the null that all three families share the pooled value,")
+    P("   apply the SAME argmax/argmin selection rule, and take the 95th percentile of")
+    P("   the resulting Welch t. The nominal gate's true false-positive rate is printed")
+    P("   beside it (referee, fourth pass 2026-09-18).")
+    P("     observable            max fam      min fam    Welch t  t_nom  t_cal  FPR_nom  ok?")
+    pairres = {}
+    _rng = np.random.default_rng(PAIR_MC_SEED)
+    from scipy import stats as _s
+    for nm, ch, ratio, note in rows_out:
+        vals = {f: abs(ch[f][0]) for f in FAMILIES if ch[f][0] == ch[f][0]}
+        if len(vals) < len(FAMILIES):
+            continue
+        fmax = max(vals, key=lambda f: vals[f])
+        fmin = min(vals, key=lambda f: vals[f])
+        ma, sa, na = ch[fmax]
+        mb, sb, nb = ch[fmin]
+        denom = math.sqrt(sa ** 2 + sb ** 2)
+        if denom == 0:
+            pairres[nm] = (float("inf"), 0.0, 0.0, 0.0, True)
+            continue
+        t = abs(ma - mb) / denom
+        dfw = (sa ** 2 + sb ** 2) ** 2 / (sa ** 4 / max(1, na - 1)
+                                          + sb ** 4 / max(1, nb - 1))
+        tc_nom = float(_s.t.ppf(0.975, max(1.0, dfw)))
+        ms = np.array([ch[f][0] for f in FAMILIES], float)
+        ses = np.array([ch[f][1] for f in FAMILIES], float)
+        ns = np.array([ch[f][2] for f in FAMILIES], int)
+        pooled = float(np.sum(ms / ses ** 2) / np.sum(1.0 / ses ** 2))
+        draws = pooled + ses * _rng.standard_t(ns - 1, size=(PAIR_MC_REPS, 3))
+        ab = np.abs(draws)
+        ii = np.argmax(ab, axis=1)
+        jj = np.argmin(ab, axis=1)
+        idx = np.arange(PAIR_MC_REPS)
+        tt = (np.abs(draws[idx, ii] - draws[idx, jj])
+              / np.sqrt(ses[ii] ** 2 + ses[jj] ** 2))
+        tc_cal = float(np.percentile(tt, 95))
+        fpr = float(np.mean(tt > tc_nom))
+        pairres[nm] = (t, tc_nom, tc_cal, fpr, t > tc_cal)
+        P(f"     {nm:22s}{fmax:11s} {fmin:11s} {t:8.3f} {tc_nom:6.3f} {tc_cal:6.3f}"
+          f"  {100*fpr:6.1f}%  {'YES' if t > tc_cal else 'no'}")
+
+    P("")
+    P("   FINAL STATUS PER CHANNEL, after ALL THREE gates:")
+    P("     observable             denominator  heterogeneity(F)  quoted pair   ratio")
     for i, (nm, ch, ratio, note) in enumerate(rows_out):
         denom_ok = note.endswith("x")
         het_ok = qres[nm][3] == qres[nm][3] and qres[nm][3] < 0.05
-        if denom_ok and het_ok:
+        pair_ok = pairres.get(nm, (0, 1, 1, 0, False))[4]
+        if denom_ok and het_ok and pair_ok:
             final = f"{ratio:.2f}x  RESOLVED"
         elif not denom_ok:
             final = "UNDETERMINED (denominator)"
-        else:
+        elif not het_ok:
             final = (f"{ratio:.2f}x  NOT RESOLVED (the families are not shown to differ:"
                      f" F p = {qres[nm][3]:.4f})")
+        else:
+            final = (f"{ratio:.2f}x  NOT RESOLVED (the QUOTED pair is not separated:"
+                     f" Welch t = {pairres[nm][0]:.2f} against a selection-calibrated"
+                     f" {pairres[nm][2]:.2f}; the nominal {pairres[nm][1]:.2f} would"
+                     f" have passed it)")
         rows_out[i] = (nm, ch, ratio, final)
-        P(f"     {nm:22s} {'PASS' if denom_ok else 'FAIL':>11s}   "
-          f"{'PASS' if het_ok else 'FAIL':>16s}   {final}")
+        P(f"     {nm:22s} {'PASS' if denom_ok else 'FAIL':>11s}  "
+          f"{'PASS' if het_ok else 'FAIL':>16s}  {'PASS' if pair_ok else 'FAIL':>11s}"
+          f"   {final}")
+
+    # --- the headline's own weighting choice ----------------------------------------
+    P("")
+    P("   phi_J IS NOW THE ONLY RESOLVED CHANNEL, so its own arbitrary choices are")
+    P("   worth printing. Each seed's phi_J is a four-rung fit with its OWN uncertainty")
+    P("   (`phi_J_lin_se`), and the paired change above weights the three seeds EQUALLY.")
+    P("   The inverse-variance alternative is equally defensible (referee, fourth pass):")
+    P("     family        equal-weight change      inverse-variance change   ratio of the two")
+    wshift = {}
+    for fam in FAMILIES:
+        g = d[(d.family == fam) & (d.mu_p == MU_REF)]
+        lo = g[g.cv_nom == 0.0].set_index("seed")
+        hi = g[g.cv_nom == 0.5].set_index("seed")
+        common = sorted(set(lo.index) & set(hi.index))
+        if len(common) < 2:
+            continue
+        diff = np.array([hi.phi_J_lin[s] - lo.phi_J_lin[s] for s in common])
+        var = np.array([hi.phi_J_lin_se[s] ** 2 + lo.phi_J_lin_se[s] ** 2
+                        for s in common])
+        w = 1.0 / var
+        wm = float(np.sum(w * diff) / np.sum(w))
+        em = float(diff.mean())
+        wshift[fam] = (em, wm)
+        P(f"     {fam:12s} {em:+18.6g}   {wm:+22.6g}   {wm/em:14.3f}")
+    if len(wshift) == len(FAMILIES):
+        ev = [abs(v[0]) for v in wshift.values()]
+        wv = [abs(v[1]) for v in wshift.values()]
+        P(f"   headline ratio: {max(ev)/min(ev):.2f}x equal-weight,"
+          f" {max(wv)/min(wv):.2f}x inverse-variance.")
+        P("   The VERDICT does not turn on it -- the heterogeneity F is larger on the")
+        P("   weighted version, not smaller -- but the QUOTED NUMBER moves, and that")
+        P("   belongs beside it the same way the endpoint-vs-peak bracket does.")
 
     # --- how much of the ratio is the endpoint definition? --------------------------
     P("")
@@ -518,11 +618,13 @@ def main() -> int:
     P("   - Z, the rattler fraction and the force moments are read AT a pressure and")
     P("     move with the rung; phi_J alone is extrapolated to p_hat -> 0.")
     write()
-    md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, REPS)
+    md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits,
+       REPS, wshift)
     return 0
 
 
-def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, reps):
+def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, reps,
+       wshift):
     """The report is GENERATED from the verdicts, never written alongside them."""
     # The narrative is generated FROM the verdicts: `lead` is whichever channel actually
     # has the largest RESOLVED across-family spread, not one chosen in advance (this
@@ -530,6 +632,11 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
     def _is_resolved(r):
         return r[2] == r[2] and "RESOLVED" in r[3] and "NOT RESOLVED" not in r[3]
     resolved = [r for r in rows_out if _is_resolved(r)]
+    if len(wshift) == len(FAMILIES):
+        wv = [abs(v[1]) for v in wshift.values()]
+        wratio = max(wv) / min(wv)
+    else:
+        wratio = float('nan')
     lead = max(resolved, key=lambda r: r[2]) if resolved else None
     n_cells = len(sel)
     body = [
@@ -552,9 +659,11 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
          f"paired CV 0 → 0.5 change spans a factor **{lead[2]:.2f}×** between the three "
          "families ("
          + ", ".join(f"{f} {lead[1][f][0]:+.4f}±{lead[1][f][1]:.4f}" for f in FAMILIES)
-         + f"). Against the furthest CV rung instead of the endpoint it is "
-           f"**{peak_rows.get(lead[0], float('nan')):.2f}×**, so read it as a bracket. "
-           "Every family change here rests on 3 seeds."
+         + f"). It is the **only** channel that survives all three gates. Read the "
+           f"number as a bracket, not a point: against the furthest CV rung instead of "
+           f"the endpoint it is **{peak_rows.get(lead[0], float('nan')):.2f}×**, and "
+           f"weighting each seed by its own fit uncertainty instead of equally it is "
+           f"**{wratio:.2f}×**. Every family change here rests on 3 seeds."
          if lead is not None else
          "**No across-family contrast is resolved.** On every channel the smallest of "
          "the three family changes fails a two-sided 95% test at its own degrees of "
@@ -566,15 +675,33 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
     ]
     for nm, ch, ratio, note in rows_out:
         body.append(
-            f"| {nm} | {ch['lognormal'][0]:+.4f}±{ch['lognormal'][1]:.4f} "
-            f"| {ch['uniform'][0]:+.4f}±{ch['uniform'][1]:.4f} "
-            f"| {ch['bidisperse'][0]:+.4f}±{ch['bidisperse'][1]:.4f} | {note} |")
+            f"| {nm} | {ch['lognormal'][0]:+.6g}±{ch['lognormal'][1]:.4g} "
+            f"| {ch['uniform'][0]:+.6g}±{ch['uniform'][1]:.4g} "
+            f"| {ch['bidisperse'][0]:+.6g}±{ch['bidisperse'][1]:.4g} | {note} |")
     body += [
         "",
-        "A ratio is **RESOLVED** only if its smallest family change is non-zero at 95% "
-        "*and* a conservative heterogeneity test says the three families differ at all. "
-        "Both gates, not one — an earlier draft applied only the first, which is a test "
-        "of the denominator and not of the claim.",
+        "A ratio is **RESOLVED** only if all three hold: its smallest family change is "
+        "non-zero at *t*(df), a conservative heterogeneity test says the three families "
+        "differ at all, **and** the specific max-vs-min pair the ratio quotes is "
+        "separated on its own Welch *t* against a **selection-calibrated** threshold. An "
+        "omnibus *F* says *some* pair differs, which is not the same claim; and because "
+        "the pair is the argmax/argmin *of the data*, a nominal *t* critical value "
+        "under-corrects — its measured false-positive rate under the global null is "
+        "12–21%, not 5%. Earlier drafts applied one gate, then two, then three with the "
+        "wrong threshold on the third.",
+        "",
+        "**\"NOT RESOLVED\" here means undetermined at three seeds, not shown to be "
+        "absent.** With n = 3 per family the heterogeneity and pairwise gates both have "
+        "limited power, so a real moderate effect has two chances to miss significance "
+        "for reasons that are about the replication and not about the effect. `Z_nr`'s "
+        "F = 3.47, p = 0.0999 is exactly the shape of a true-but-underpowered result.",
+        "",
+        "Printed to six significant figures, not four decimals: `contact force mean` is "
+        "O(1e−3) and its between-family differences are the size of a 4-decimal rounding "
+        "quantum, so a reader reconstructing its heterogeneity *F* from the rounded "
+        "digits got *p* = 0.118 where the full-precision value is 0.0248 — opposite "
+        "sides of 5%, on a row this table calls RESOLVED. **A number in a claims table "
+        "that cannot be recomputed from what is printed is not published.**",
     ]
     body += [
         "",
@@ -654,6 +781,13 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
         "- **Only `phi_J` is extrapolated.** `Z`, the rattler fraction and the force "
         "moments are read *at* a pressure and move with the rung; the artifact prints all "
         "four rungs so the rung dependence is visible rather than chosen.",
+        "- **Provenance footnote on the replicate counts.** The per-cell tables show "
+        "`(3)` for most cells and `(6)` for lognormal and uniform at CV 0.4–0.5, left "
+        "over from an earlier campaign. Nothing here is affected: every change is paired "
+        "on seed ID and CV = 0 has 3 seeds for every family, so it is always the "
+        "limiting side and the extra replicates are never blended in. A reader "
+        "differencing two per-cell table entries by hand instead of using the paired "
+        "table would get an unpaired, seed-mismatched number.",
         "",
         "## Ladder health",
         "",

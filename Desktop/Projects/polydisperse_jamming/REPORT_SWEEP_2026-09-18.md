@@ -10,24 +10,28 @@ Three size-distribution families — lognormal, uniform, bidisperse — over CV 
 
 ## The result
 
-The largest **resolved** across-family contrast is **phi_J**, whose paired CV 0 → 0.5 change spans a factor **4.47×** between the three families (lognormal +0.0621±0.0026, uniform +0.0242±0.0008, bidisperse +0.0139±0.0025). Against the furthest CV rung instead of the endpoint it is **2.89×**, so read it as a bracket. Every family change here rests on 3 seeds.
+The largest **resolved** across-family contrast is **phi_J**, whose paired CV 0 → 0.5 change spans a factor **4.47×** between the three families (lognormal +0.0621±0.0026, uniform +0.0242±0.0008, bidisperse +0.0139±0.0025). It is the **only** channel that survives all three gates. Read the number as a bracket, not a point: against the furthest CV rung instead of the endpoint it is **2.89×**, and weighting each seed by its own fit uncertainty instead of equally it is **5.51×**. Every family change here rests on 3 seeds.
 
 | observable | lognormal | uniform | bidisperse | across-family spread |
 |---|---|---|---|---|
-| phi_J | +0.0621±0.0026 | +0.0242±0.0008 | +0.0139±0.0025 | 4.47x  RESOLVED |
-| Z_all | -2.1769±0.0827 | -2.0000±0.0670 | -2.1938±0.0362 | 1.10x  NOT RESOLVED (the families are not shown to differ: F p = 0.1433) |
-| Z_nr (k=2) | -0.1891±0.0284 | -0.0812±0.0162 | -0.1172±0.0393 | 2.33x  NOT RESOLVED (the families are not shown to differ: F p = 0.0999) |
-| rattler fraction | +0.4082±0.0125 | +0.3827±0.0119 | +0.4171±0.0033 | 1.09x  NOT RESOLVED (the families are not shown to differ: F p = 0.1176) |
-| contact force mean | +0.0009±0.0001 | +0.0011±0.0001 | +0.0012±0.0000 | 1.32x  RESOLVED |
-| contact force CV | +0.3621±0.0078 | +0.1231±0.0114 | +0.0434±0.0133 | UNDETERMINED (denominator) |
+| phi_J | +0.0620718±0.002555 | +0.0242013±0.0008047 | +0.0138885±0.002485 | 4.47x  RESOLVED |
+| Z_all | -2.17689±0.08271 | -2±0.06703 | -2.19378±0.03619 | 1.10x  NOT RESOLVED (the families are not shown to differ: F p = 0.1433) |
+| Z_nr (k=2) | -0.189131±0.02838 | -0.0812017±0.01622 | -0.117196±0.03932 | 2.33x  NOT RESOLVED (the families are not shown to differ: F p = 0.0999) |
+| rattler fraction | +0.408222±0.01247 | +0.382667±0.01186 | +0.417111±0.003318 | 1.09x  NOT RESOLVED (the families are not shown to differ: F p = 0.1176) |
+| contact force mean | +0.000916541±6.851e-05 | +0.00106165±5.799e-05 | +0.0012091±2.738e-05 | 1.32x  NOT RESOLVED (the QUOTED pair is not separated: Welch t = 3.97 against a selection-calibrated 5.95; the nominal 3.46 would have passed it) |
+| contact force CV | +0.362127±0.007794 | +0.123075±0.0114 | +0.0433994±0.01332 | UNDETERMINED (denominator) |
 
-A ratio is **RESOLVED** only if its smallest family change is non-zero at 95% *and* a conservative heterogeneity test says the three families differ at all. Both gates, not one — an earlier draft applied only the first, which is a test of the denominator and not of the claim.
+A ratio is **RESOLVED** only if all three hold: its smallest family change is non-zero at *t*(df), a conservative heterogeneity test says the three families differ at all, **and** the specific max-vs-min pair the ratio quotes is separated on its own Welch *t* against a **selection-calibrated** threshold. An omnibus *F* says *some* pair differs, which is not the same claim; and because the pair is the argmax/argmin *of the data*, a nominal *t* critical value under-corrects — its measured false-positive rate under the global null is 12–21%, not 5%. Earlier drafts applied one gate, then two, then three with the wrong threshold on the third.
+
+**"NOT RESOLVED" here means undetermined at three seeds, not shown to be absent.** With n = 3 per family the heterogeneity and pairwise gates both have limited power, so a real moderate effect has two chances to miss significance for reasons that are about the replication and not about the effect. `Z_nr`'s F = 3.47, p = 0.0999 is exactly the shape of a true-but-underpowered result.
+
+Printed to six significant figures, not four decimals: `contact force mean` is O(1e−3) and its between-family differences are the size of a 4-decimal rounding quantum, so a reader reconstructing its heterogeneity *F* from the rounded digits got *p* = 0.118 where the full-precision value is 0.0248 — opposite sides of 5%, on a row this table calls RESOLVED. **A number in a claims table that cannot be recomputed from what is printed is not published.**
 
 (CV 0 → 0.5 change, at `p_hat` = 1e-3 for the per-cell channels and extrapolated to `p_hat` → 0 for `phi_J`.)
 
 ### How far the ordering can be pushed — and it is not far
 
-Ranked by across-family spread, each marked with whether it survives **both** gates — a denominator that is non-zero at 95% *and* a heterogeneity test that says the families differ at all. Only the marked-RESOLVED ones are quotable: **contact force CV** 8.34× *(not resolved)* > **phi_J** 4.47× *(resolved)* > **Z_nr (k=2)** 2.33× *(not resolved)* > **contact force mean** 1.32× *(resolved)* > **Z_all** 1.10× *(not resolved)* > **rattler fraction** 1.09× *(not resolved)*.
+Ranked by across-family spread, each marked with whether it survives **both** gates — a denominator that is non-zero at 95% *and* a heterogeneity test that says the families differ at all. Only the marked-RESOLVED ones are quotable: **contact force CV** 8.34× *(not resolved)* > **phi_J** 4.47× *(resolved)* > **Z_nr (k=2)** 2.33× *(not resolved)* > **contact force mean** 1.32× *(not resolved)* > **Z_all** 1.10× *(not resolved)* > **rattler fraction** 1.09× *(not resolved)*.
 
 **That six-way ordering survives only 32% of 20,000 resamples** in which each family change is redrawn as *t*(df = n−1) around its own mean and se. It is not a result. The links that do hold are the individual ones: `contact force CV` > `phi_J` 88%; `phi_J` > `Z_nr (k=2)` 81%; `Z_nr (k=2)` > `contact force mean` 95%; `contact force mean` > `Z_all` 90%; `Z_all` > `rattler fraction` 58%.
 
@@ -55,6 +59,7 @@ Q treats the printed se's as exactly known, which they are not — each has 2 do
 - **The bidisperse column is a path, not a family.** It is 50:50 *by number*, so its fines carry 0.500 → 0.036 of the volume across this ladder: it never visits the composition where interstitial filling peaks. Matched binaries that differ only in which atom carries the volume pack 0.0635 apart.
 - **A spread is not a pairwise separation.** These ratios say the families differ; they do not say two of them can be told apart at a given CV.
 - **Only `phi_J` is extrapolated.** `Z`, the rattler fraction and the force moments are read *at* a pressure and move with the rung; the artifact prints all four rungs so the rung dependence is visible rather than chosen.
+- **Provenance footnote on the replicate counts.** The per-cell tables show `(3)` for most cells and `(6)` for lognormal and uniform at CV 0.4–0.5, left over from an earlier campaign. Nothing here is affected: every change is paired on seed ID and CV = 0 has 3 seeds for every family, so it is always the limiting side and the extra replicates are never blended in. A reader differencing two per-cell table entries by hand instead of using the paired table would get an unpaired, seed-mismatched number.
 
 ## Ladder health
 
