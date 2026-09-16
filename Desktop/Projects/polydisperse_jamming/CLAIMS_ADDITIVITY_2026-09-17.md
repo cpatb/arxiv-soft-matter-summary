@@ -26,12 +26,33 @@ This is the whole item in one table, at the registered primary convention `d43`:
 | continuous families (**HELD OUT**, oracle) | **0.3033** | 0.0313 | 15 | 10 |
 
 * ternary vs K-ladder: |Δ| = 0.0245, **t = 0.69**
-* ladders vs families: |Δ| = 0.2036, **t = 5.67** — **8× the between-ladder gap**
+* ladders vs families: |Δ| = 0.2036, **t = 5.67** — **8.3× the between-ladder gap**
 
 Two datasets built on different principles — a three-class composition simplex and a
 geometric size ladder at four class counts — want the **same** amount of nesting. The
-continuous PSDs want a **different** one, by eight times the disagreement between the two
-that agree. That is the supportable statement, and it does not depend on any χ² bar.
+continuous PSDs want a **different** one, by **roughly an order of magnitude more** than the
+disagreement between the two that agree. That is the supportable statement, and it does not
+depend on any χ² bar.
+
+⚠ **These are "one scale unit of misfit" ratios, NOT σ-equivalents — the same caveat §E
+carries for P0, applied here because the statistic is the same kind of object.** The four
+fits are not equally dispersed, so each half-width is inflated by **its own** √χ²_red:
+
+| fit | n | χ²_min | dof | χ²_red | half | inflated |
+|---|---|---|---|---|---|---|
+| ternary alone | 6 | 6.429 | 5 | 1.286 | 0.0274 | 0.0311 |
+| K-ladder alone | 19 | 43.433 | 18 | 2.413 | 0.0228 | 0.0354 |
+| both ladders (primary) | 25 | 50.333 | 24 | 2.097 | 0.0175 | 0.0254 |
+| families (**held out**, oracle) | 15 | 14.224 | 14 | **1.016** | 0.0313 | 0.0316 |
+
+Inflated: ternary vs K-ladder **t = 0.52** (was 0.69); ladders vs families **t = 5.03**
+(was 5.67), i.e. **9.7× the between-ladder gap** (was 8.3×). **The held-out oracle fit is
+the only nominally dispersed one**, which is why the two sides move by different amounts —
+and **the ratio GROWS rather than shrinking**, so the conclusion is robust to the
+correction. Both forms are printed; neither is a σ. ⚠ An earlier draft quoted 5.67 and 11.6
+uncaveated while applying this very caveat to the P0 statistic that **failed** — i.e. the
+project's own rigour applied to the losing number and not the headline one (referee).
+
 
 ⚠ **Read the table only with the leverage column.** At K = 2 the nested rule reduces
 **exactly** to the additive binary closure, so `S − A ≡ 0` and λ has literally no leverage
@@ -58,7 +79,8 @@ The **oracle** λ — the value that minimises χ² **on the held-out points**, 
 result* and must never be quoted as one — reaches **14.2** at `d43`, comfortably below J's
 34.9. So no property of the functional form stops this rule from beating J. What stops it
 is **where the calibration puts λ**: the ladders want 0.5069 ± 0.0175 and the families
-want 0.3033, a gap of **11.6 half-widths**. Refitting is not the answer, and neither is a
+want 0.3033, a gap of **11.6 half-widths — or 8.0 once that half-width is inflated by
+√χ²_red as §A requires**. Neither is a σ; both are printed. Refitting is not the answer, and neither is a
 better ladder dataset.
 
 ## C. Mixing made the composite-diameter convention WORSE, not better

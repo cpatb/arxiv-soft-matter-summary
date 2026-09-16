@@ -284,17 +284,18 @@ def main() -> int:
         A = [x["models"]["ADDtab"] for x in cal]
         S = [x["models"][f"SEQ{c}"] for x in cal]
         lam, c2, half = lambda_closed_form(m, A, S)
-        lt, _, ht = lambda_closed_form([x["phi"] for x in tern],
-                                       [x["models"]["ADDtab"] for x in tern],
-                                       [x["models"][f"SEQ{c}"] for x in tern])
-        lk, _, hk = lambda_closed_form([x["phi"] for x in klad],
-                                       [x["models"]["ADDtab"] for x in klad],
-                                       [x["models"][f"SEQ{c}"] for x in klad])
+        lt, c2t, ht = lambda_closed_form([x["phi"] for x in tern],
+                                         [x["models"]["ADDtab"] for x in tern],
+                                         [x["models"][f"SEQ{c}"] for x in tern])
+        lk, c2k, hk = lambda_closed_form([x["phi"] for x in klad],
+                                         [x["models"]["ADDtab"] for x in klad],
+                                         [x["models"][f"SEQ{c}"] for x in klad])
         ch = chi2_at(lam, [h["phi"] for h in held],
                      [h["models"]["ADDtab"] for h in held],
                      [h["models"][f"SEQ{c}"] for h in held])
         fit[c] = {"lam": lam, "half": half, "chi2_cal": c2, "chi2_held": ch,
-                  "lam_t": lt, "half_t": ht, "lam_k": lk, "half_k": hk}
+                  "lam_t": lt, "half_t": ht, "chi2_t": c2t,
+                  "lam_k": lk, "half_k": hk, "chi2_k": c2k}
         say(f"   {c:>6}{lam:>10.4f}{half:>9.4f}{c2:>10.1f}{lt:>11.4f}{ht:>8.4f}"
             f"{lk:>11.4f}{hk:>8.4f}{ch:>11.1f}")
     say("   lam = 0 is pure ADDITIVE, lam = 1 is the pure nested rule; fitted UNBOUNDED")
@@ -456,8 +457,13 @@ def main() -> int:
         say(f"      the calibration puts lambda: the ladders want "
             f"{fp['lam']:.4f} +- {fp['half']:.4f} and the families want "
             f"{fp['lam_oracle']:.4f},")
+        _dof = max(len(cal) - 1, 1)
+        _hi = fp["half"] * math.sqrt(fp["chi2_cal"] / _dof)
         say(f"      a gap of {abs(fp['lam'] - fp['lam_oracle']) / fp['half']:.1f} "
-            "half-widths. That is a TRANSFER failure, not a form failure.")
+            f"half-widths, or {abs(fp['lam'] - fp['lam_oracle']) / _hi:.1f} once that")
+        say("      half-width is inflated by sqrt(chi2_red) as P0's caveat requires. Both")
+        say("      are printed; neither is a sigma.")
+        say("      This is a TRANSFER failure, not a form failure.")
     say()
 
     # ============================== the three-way lambda comparison: the actual result
@@ -471,9 +477,9 @@ def main() -> int:
                                klad if "K-ladder" in nm else cal)
                    if abs(c["models"][f"SEQ{PRIMARY}"] - c["models"]["ADDtab"]) > 1e-12)
         say(f"   {nm:<26}{lv:>10.4f}{hv:>9.4f}{nn:>9d}{nlev:>10d}")
-    lo_h, _, half_h = lambda_closed_form([h["phi"] for h in held],
-                                         [h["models"]["ADDtab"] for h in held],
-                                         [h["models"][f"SEQ{PRIMARY}"] for h in held])
+    lo_h, c2_h, half_h = lambda_closed_form([h["phi"] for h in held],
+                                            [h["models"]["ADDtab"] for h in held],
+                                            [h["models"][f"SEQ{PRIMARY}"] for h in held])
     nlev_h = sum(1 for h in held
                  if abs(h["models"][f"SEQ{PRIMARY}"] - h["models"]["ADDtab"]) > 1e-12)
     say(f"   {'families (HELD OUT, oracle)':<26}{lo_h:>10.4f}{half_h:>9.4f}"
@@ -483,9 +489,47 @@ def main() -> int:
     say(f"   ternary vs K-ladder : |d| = {abs(fp['lam_t'] - fp['lam_k']):.4f}, "
         f"t = {t_arms:.2f}")
     say(f"   ladders vs families : |d| = {abs(fp['lam'] - lo_h):.4f}, t = {t_fam:.2f}  "
-        f"({t_fam / max(t_arms, 1e-9):.0f}x the between-ladder gap)")
+        f"({t_fam / max(t_arms, 1e-9):.1f}x the between-ladder gap)")
     say("   Read this comparison ONLY with the leverage column: at K = 2 the nested rule")
     say("   IS the additive one, so the 5 bidisperse points constrain nothing.")
+    say()
+    # ---- the SAME caveat P0 gets, carried to the structurally identical statistic ----
+    # A Delta chi2 = 1 half-width in PHI_SCALE units is "one scale unit of misfit". P0
+    # already says so; quoting t = 5.67 without saying so would apply the project's own
+    # rigour to the statistic that FAILED and not to the one that carries the headline.
+    # The four fits have DIFFERENT reduced chi2, so each is inflated by its own.
+    say("   \u26a0 THESE ARE 'ONE SCALE UNIT OF MISFIT' RATIOS, NOT SIGMA-EQUIVALENTS --")
+    say("   the same caveat P0 carries, applied here because the statistic is the same")
+    say("   kind of object. The four fits are NOT equally dispersed, so each half-width")
+    say("   is inflated by ITS OWN sqrt(chi2_red):")
+    say(f"   {'fit':<28}{'n':>4}{'chi2_min':>10}{'dof':>5}{'chi2_red':>10}"
+        f"{'half':>9}{'inflated':>10}")
+    rows2 = [("ternary alone", len(tern), fp["chi2_t"], fp["half_t"]),
+             ("K-ladder alone", len(klad), fp["chi2_k"], fp["half_k"]),
+             ("both ladders (primary)", len(cal), fp["chi2_cal"], fp["half"]),
+             ("families (HELD OUT, oracle)", len(held), c2_h, half_h)]
+    infl_half = {}
+    for nm, nn, c2_, h_ in rows2:
+        dof_ = max(nn - 1, 1)
+        red_ = c2_ / dof_
+        hi_ = h_ * math.sqrt(red_)
+        infl_half[nm] = hi_
+        say(f"   {nm:<28}{nn:>4}{c2_:>10.3f}{dof_:>5}{red_:>10.3f}{h_:>9.4f}"
+            f"{hi_:>10.4f}")
+    ta2 = abs(fp["lam_t"] - fp["lam_k"]) / math.hypot(infl_half["ternary alone"],
+                                                      infl_half["K-ladder alone"])
+    tf2 = abs(fp["lam"] - lo_h) / math.hypot(infl_half["both ladders (primary)"],
+                                             infl_half["families (HELD OUT, oracle)"])
+    say(f"   INFLATED: ternary vs K-ladder t = {ta2:.2f} (was {t_arms:.2f}); "
+        f"ladders vs families t = {tf2:.2f} (was {t_fam:.2f}),")
+    say(f"   i.e. {tf2 / max(ta2, 1e-9):.1f}x the between-ladder gap (was "
+        f"{t_fam / max(t_arms, 1e-9):.1f}x).")
+    say("   The held-out oracle fit is the only nominally dispersed one "
+        f"(chi2_red {c2_h / max(len(held) - 1, 1):.2f}); the")
+    say("   calibration fits are not, which is WHY the inflation changes the two sides by")
+    say("   different amounts. The RATIO GROWS rather than shrinking, so the conclusion is")
+    say("   robust to the correction -- but the uninflated 5.67 and 11.6 are not derived")
+    say("   with the rigour this file demands of P0, and both forms are printed.")
     say()
 
     # ============================================================ per-family

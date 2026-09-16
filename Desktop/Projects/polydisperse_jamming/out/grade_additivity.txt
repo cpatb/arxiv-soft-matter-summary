@@ -87,7 +87,10 @@
    At the PRIMARY d43: fitted lambda reaches 56.5, the oracle 14.2, against J's 34.9; the lambda-independent floor is 5.4.
    -> The oracle CAN beat J, so P3 does NOT fail on the form. It fails on WHERE
       the calibration puts lambda: the ladders want 0.5069 +- 0.0175 and the families want 0.3033,
-      a gap of 11.6 half-widths. That is a TRANSFER failure, not a form failure.
+      a gap of 11.6 half-widths, or 8.0 once that
+      half-width is inflated by sqrt(chi2_red) as P0's caveat requires. Both
+      are printed; neither is a sigma.
+      This is a TRANSFER failure, not a form failure.
 
 === THE THREE-WAY lambda COMPARISON -- what this item actually measured ===
    set                           lambda      +-1  n cells  leverage
@@ -96,9 +99,26 @@
    both ladders (primary fit)    0.5069   0.0175       25        20
    families (HELD OUT, oracle)    0.3033   0.0313       15        10
    ternary vs K-ladder : |d| = 0.0245, t = 0.69
-   ladders vs families : |d| = 0.2036, t = 5.67  (8x the between-ladder gap)
+   ladders vs families : |d| = 0.2036, t = 5.67  (8.3x the between-ladder gap)
    Read this comparison ONLY with the leverage column: at K = 2 the nested rule
    IS the additive one, so the 5 bidisperse points constrain nothing.
+
+   ⚠ THESE ARE 'ONE SCALE UNIT OF MISFIT' RATIOS, NOT SIGMA-EQUIVALENTS --
+   the same caveat P0 carries, applied here because the statistic is the same
+   kind of object. The four fits are NOT equally dispersed, so each half-width
+   is inflated by ITS OWN sqrt(chi2_red):
+   fit                            n  chi2_min  dof  chi2_red     half  inflated
+   ternary alone                  6     6.429    5     1.286   0.0274    0.0311
+   K-ladder alone                19    43.433   18     2.413   0.0228    0.0354
+   both ladders (primary)        25    50.333   24     2.097   0.0175    0.0254
+   families (HELD OUT, oracle)   15    14.224   14     1.016   0.0313    0.0316
+   INFLATED: ternary vs K-ladder t = 0.52 (was 0.69); ladders vs families t = 5.03 (was 5.67),
+   i.e. 9.7x the between-ladder gap (was 8.3x).
+   The held-out oracle fit is the only nominally dispersed one (chi2_red 1.02); the
+   calibration fits are not, which is WHY the inflation changes the two sides by
+   different amounts. The RATIO GROWS rather than shrinking, so the conclusion is
+   robust to the correction -- but the uninflated 5.67 and 11.6 are not derived
+   with the rigour this file demands of P0, and both forms are printed.
 
 === HELD-OUT, PER FAMILY -- a win concentrated in one family is not a general one ===
    family        n   ADDtab        J      MIX    SEQd21  MIX mean res

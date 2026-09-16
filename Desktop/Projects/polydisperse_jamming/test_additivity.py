@@ -175,10 +175,19 @@ def test_the_oracle_separates_form_failure_from_transfer_failure(ga):
 
 def test_the_two_ladder_arms_agree_far_better_than_they_agree_with_the_families(ga):
     """The actual result of the item, in one inequality."""
-    t_arms = _num(ga, r"ternary vs K-ladder : \|d\| = [\d.]+, t = ([\d.]+)")
-    t_fam = _num(ga, r"ladders vs families : \|d\| = [\d.]+, t = ([\d.]+)")
+    t_arms = _num(ga, r"ternary vs K-ladder : \|d\| = [\d.]+, t = (\d+\.\d+)")
+    t_fam = _num(ga, r"ladders vs families : \|d\| = [\d.]+, t = (\d+\.\d+)")
     assert t_arms < 1.0 < t_fam
     assert t_fam / t_arms > 4
+    # The SAME chi2_red caveat P0 carries must be applied here -- the statistic is the
+    # same kind of object, and quoting it only on the gate that FAILED would apply the
+    # project's own rigour to the losing number alone.
+    a2 = _num(ga, r"INFLATED: ternary vs K-ladder t = (\d+\.\d+)")
+    f2 = _num(ga, r"ladders vs families t = (\d+\.\d+) \(was")
+    assert a2 < t_arms and f2 < t_fam, "inflation must WIDEN both intervals"
+    assert a2 < 1.0 < f2
+    assert f2 / a2 > t_fam / t_arms, "the ratio must GROW; that is why it is robust"
+    assert "NOT SIGMA-EQUIVALENTS" in ga
 
 
 def test_the_convention_spread_is_reported_and_did_not_shrink(ga):
@@ -282,6 +291,8 @@ CLAIMED = {
         "34.8649", "7.5292", "3.3931", "-3.2955", "-0.939", "-1.000", "-0.900",
         "-0.636", "84.4", "47.8", "18.3", "6.7", "9.8", "18.4", "3.3", "-2.35", "2.64",
         "5.80", "0.926", "0.898", "0.671", "0.507",
+        "5.03", "0.52", "9.7", "8.3", "8.0", "1.286", "2.413", "2.097", "1.016",
+        "0.0311", "0.0354", "0.0254", "0.0316", "6.429", "43.433", "14.224",
     ],
     "diag_k6_interp.txt": [
         "7.0470", "4.4273", "2.2056", "2.9937", "2.558", "3.253", "1.27", "2.123",
