@@ -23,11 +23,15 @@ Scale convention throughout: `PHI_SCALE` = **2.1e−3**, the protocol's own repr
 
 | F | 🔑 **The filling interaction `a(u)` IS measurable in the gap the K-ladder reads — at `u` = 0.70711, and NOT at `u` = 0.8.** `a(0.70711) = 0.9481 [0.8799, 0.9699]`, `b = 0.9376 [0.8849, 0.9599]`, against an identifiability bar of 0.25 quoted verbatim from the closed block. What made it work is **where in composition the block samples**, not how many seeds: the profile bar is Δχ² = 1 *per point*, so the same point set at n = 8, 16, 32 returns w(a) = 0.0400 three times identically. At `u` = 0.8 the filling signal (max(φ−β) = **2.21 scale**) falls below what this design can resolve (**2.57**), so **no experiment at this design could determine `a(0.8)`** — an inference from a null, putting `a(0.8) ≳ 0.975`. | U0 12/12 bit-identical, U1/U1b/U4/U5 PASS, U1c/U3 FAIL; 108 runs at two N, 108 admitted, 0 errors | `out/grade_ugap.txt` |
 
-| G | **The K axis of a CALIBRATED ladder is closed by arithmetic, not by budget.** On any ladder sorted by size the adjacent ratios multiply to the extreme ratio, so requiring every pair inside `[u_lo, u_hi]` forces **K − 1 ≤ ln(u_lo)/ln(u_hi)**, with the bound attained by the geometric ladder. On ADDtab's window `[0.25, 0.70711]` that is **exactly 4.0000, so K ≤ 5**; and because the bound is met with integer equality, the span is **forced** to 4 and the K = 5 ladder is **unique** — the shipped one's zero slack at both edges is a theorem, not a coincidence. ⚠ **NOT YET REFEREED.** | SymPy + 2000-ladder exact check + brute-force feasibility 96/96 + the shipped `kladder.ladder` as an outside anchor; `FAILURES: []` | `derivations/k_axis_bound.md`, `derivations/k_axis_bound_check.txt` |
+| G | **The K axis of a CALIBRATED ladder is closed by arithmetic, not by budget.** On any ladder sorted by size the adjacent ratios multiply to the extreme ratio, so requiring every pair inside `[u_lo, u_hi]` forces **K − 1 ≤ ln(u_lo)/ln(u_hi)**, with the bound attained by the geometric ladder. On ADDtab's window `[0.25, 0.70711]` that is **exactly 4.0000, so K ≤ 5**; and because the bound is met with integer equality, the span is **forced** to 4 and the K = 5 ladder is **unique** — the shipped one's zero slack at both edges is a theorem, not a coincidence. ✅ **REFEREED 2026-09-17, three passes.** The theorem, both directions of the inequality (including the flip when dividing by `ln(u_hi) < 0`), the uniqueness at integer κ, the non-circularity of the brute-force search, the `u_hi = u_lo^(1/4)` tautology flag and the units of the forward-content signal all **stand**. ⚠ **But the FORWARD CONTENT does not** — see the note below row G's window table. | SymPy + 2000-ladder exact check + brute-force feasibility 96/96 + the shipped `kladder.ladder` as an outside anchor; `FAILURES: []` | `derivations/k_axis_bound.md`, `derivations/k_axis_bound_check.txt` |
 
-**D, E, F and G are the new ones. E closed §5's first two items; F closes the third and
+| H | 🔑 **The amount of NON-ADDITIVITY is a property of the discrete-ladder protocol and does NOT transfer to continuous PSDs.** The additive sum under-fills and the fully nested rule over-fills, so one parameter `λ` mixes them: `φ = (1−λ)·ADD + λ·SEQd43`. Calibrated **separately** on the ternary and on the K-ladder it returns **0.5214 ± 0.0274** and **0.4969 ± 0.0228** — two datasets built on different principles, agreeing at **t = 0.69**. The 15 held-out continuous-family points want **0.3033**, at **t = 5.67**, **8× the disagreement between the two that agree**. The held-out χ² is **56.5**: better than ADDtab's 108.1, **worse than J's 34.9**, and worse than the 42.8 of the nesting convention picked on the calibration set alone. ⚠ The ORACLE λ reaches **14.2**, so this is a **TRANSFER failure, not a failure of the form**. ⚠ And mixing made the undeclared composite-diameter convention **worse**, 15.38× against the unmixed 11.90×. | P1/P2/P4 PASS, P0/P2b/P3 FAIL; 25 calibration cells, 15 held out, **no new cells**; reproduction gate 14/14 | `out/grade_additivity.txt`, `CLAIMS_ADDITIVITY_2026-09-17.md` |
+
+**D, E, F, G and H are the new ones. E closed §5's first two items; F closes the third and
 is what makes E's qualification 2 a measurement rather than a flag. G retires the "push
-K past 5" item as a budget question and replaces it with an arithmetic one.**
+K past 5" item as a budget question and replaces it with an arithmetic one. **H is the useful half
+of the WITHDRAWN G8 claim**: it needed no new cells, and it says the ternary and the K-ladder
+are measuring the same thing as each other and a different thing from a continuous PSD.**
 
 ⚠ **G must be quoted with the window it is read on, because the window is a
 CONVENTION and it moves the answer.** Three readings, all printed by the check script:
@@ -37,6 +41,40 @@ CONVENTION and it moves the answer.** Three readings, all printed by the check s
 | `[0.25, 0.66667]` | ADDtab's knots **before** the U-GAP block | 3.41902 | 4 |
 | `[0.25, 0.70711]` | **ADDtab now** — the closure the K-ladder actually reads | **4.00000** | **5** |
 | `[0.33333, 0.70711]` | the *parametric* closure `J`/`EXT`, i.e. **row C's window** | 3.16993 | 4 |
+
+🔴 **THE FORWARD CONTENT ("K = 6 is attemptable, margin 1.16×") IS RETRACTED AS
+STATED, on two independent defects found by the referee and reproduced in
+`out/diag_k6_interp.txt`.** The **theorem** is untouched — only the estimate built on
+top of it.
+
+1. **The interpolation form was undeclared and decides the verdict.** The 2.99 came from
+   a two-point log-log fit that discards the third measured point; over seven declared
+   forms the K = 6 signal spans **2.558 to 3.253** and the bar sits inside that span.
+   No two-parameter form even fits the three measured points (worst held-out miss
+   **26.0 %**; pairwise power-law exponents **3.594 / 2.274 / 1.827**).
+2. **The 2.57 bar was borrowed from a different ratio.** `grade_ugap.py` computes it at
+   arm B's `r = 1.25`. Recomputed at `r = 1.31951` over 14 assumed truths the design
+   fails up to **2.55** and resolves from **2.97**, so the bar is **bracketed in
+   [2.55, 2.97]**. This is the "φ span" units trap relocated.
+
+**What survives, and it is not what was written.** Using the one piece of exact physics
+available — `s(u = 1) = 0`, verified in the shipped closure at **0.00e+00**, since
+identical classes make the mixture monodisperse — **four of the seven forms are
+falsified outright** (they return 0.626, −2.58, 15.4, 1.62 at `u → 1`, and the
+linear one is **negative**, which `max(φ−β)` cannot be). On the two
+admissible forms the signal is **3.128–3.253**, and against the corrected bar the
+margin is **1.05× to 1.28×** where 1.16× was quoted. **The two defects push
+OPPOSITE ways and partly cancel, so K = 6 does not flip** — but it now rests on a
+bar that is **bracketed rather than measured**, at **1.05× at its worst**.
+
+✅ **K ≥ 7 is closed, and robustly**: 2.189–2.356 across all seven forms
+(2.297–2.334 on the admissible two), a factor 1.08, **0 of 7** reaching even the
+borrowed bar. The old "do not push K past 5" item was right about K = 8 and K = 12.
+
+**Nothing above can decide K = 6.** Only the ceiling recomputation at
+`r = 4^(1/5) = 1.31951` from a real block at that ratio can, because it fixes **both**
+defects at once — it measures the signal instead of interpolating it, and computes
+the bar at that ratio's own truth instead of borrowing one.
 
 `u = 0.25` is a **fitted, identifiable knot** of ADDtab (`r = 4`, 6 points,
 `w(a) = 0.045`), so the K-ladder's ADDtab-graded gates (G1, G1c, G7, U3) are inside their
@@ -337,10 +375,16 @@ pre-registered gate — both datasets were on disk before it was written.)
    `u = 0.79370` and comes out at **2.31, margin 0.90 — below the bar**. K ≥ 8 needs
    `u > 0.80`, where the signal is bounded above by arm B's **measured 2.21, which
    FAILED** (monotone in `u`, so this is not an extrapolation).
-   **So the K axis closes at 6, not at 5 — one more rung is available, and only one.**
-   ⚠ Status: an **ESTIMATE** from a three-point log interpolation, using a
-   resolving-power figure computed at arm B's ratio rather than at `u = 0.7579`. A real
-   design must recompute the ceiling at `r = 4^(1/5) = 1.31951` **before any cell**.
+   🔴 **"So the K axis closes at 6" IS RETRACTED AS STATED (referee, 2026-09-17).**
+   Both the 2.99 and the 2.57 above are defective: the first is one undeclared
+   interpolation form among seven that span 2.558–3.253, the second is a bar computed
+   at arm B's ratio and borrowed. Corrected — four forms falsified by the exact
+   `s(u=1) = 0` anchor, bar recomputed at `r = 1.31951` and bracketed in [2.55, 2.97]
+   — the margin is **1.05× to 1.28×**, so K = 6 does **not** flip, but it is
+   thinner than quoted and rests on a bracketed bar. **K ≥ 7 stays closed robustly**
+   (0 of 7 forms). A real design must still recompute the ceiling at
+   `r = 4^(1/5) = 1.31951` **before any cell**, which fixes both defects at once.
+   See `out/diag_k6_interp.txt` and `CLAIMS_ADDITIVITY_2026-09-17.md` §H2.
    The two old escape routes (widen the span; find a different observable) are unchanged
    and are what K ≥ 7 would still need.
 1b. 🔴 **DO NOT RUN A BLOCK TO NARROW `a(u*)` IN ORDER TO DECIDE U3 — the gate was run
