@@ -78,6 +78,13 @@ from measure import (
     rattler_report,
 )
 from psd import make_psd
+from shape import (
+    clump_centres,
+    corrugation,
+    random_axes,
+    span_factor,
+    sub_sphere_diameter,
+)
 
 # --- protocol constants, with their origin ---------------------------------------
 UNBALANCED_TOL = 0.02     # Yade quasi-static criterion. Swept in test_packing.py;
@@ -120,6 +127,31 @@ class PackingState:
     p_hat_target: float
     seed: int
     family: str = "lognormal"
+    # --- the SHAPE axis, added 2026-09-18. alpha = 1.0 on every record written before
+    # that date and on every sphere run since, so a reader can filter on it safely.
+    #
+    # alpha = 1.0 builds a SINGLE SPHERE, not a clump of two coincident spheres, and
+    # that is a correction to PREREG_SHAPE_2026-09-18.md forced by a measurement:
+    # scripts/probe_clump_s0.sh Q2 found that two clumps of coincident members produce
+    # FOUR interactions per grain pair (25 distinct pairs behind 100 interactions), so
+    # the naive alpha = 1 clump is not the sphere this project has run -- it is a body
+    # with every contact quadrupled. The union of two coincident spheres IS one sphere,
+    # so the single sphere is the correct construction at u = 0, and the alpha ladder
+    # has a SEAM there rather than a limit: dup_contact_frac jumps from 0 to 0.75 the
+    # moment two members exist. That seam is registered, not smoothed over.
+    alpha: float = 1.0
+    eps_corrugation: float = 0.0      # shape.corrugation; the INTERLOCKING half
+    span_over_deq: float = 1.0        # shape.span_factor; what S2's clearance uses
+    density_scale: float = 1.0        # 1/(2*(ds/d_eq)^3) for clumps, 1.0 for spheres
+    # Total body mass read back from YADE divided by the analytic union volume. With the
+    # density correction applied this must be 1.0 for both spheres and clumps, and it is
+    # the only channel on which a wrong `ds`, a wrong `g(u)` or a wrong density is
+    # visible without another simulation -- gate S0c reads it. Read from the scene, not
+    # recomputed from the same formula that set it (which would be a tautology): the
+    # density goes IN as 1/(2*(ds/d_eq)^3) and the mass comes OUT of Yade's own clump
+    # assembly, so agreement tests that assembly.
+    mass_over_vol_solid: float = float("nan")
+    dt: float = float("nan")          # DT_SAFETY*PWaveTimeStep(); moves with density
     # realised PSD -- NEVER assume the analytic moments survive truncation
     n_placed: int = 0
     d10_realised: float = float("nan")
@@ -130,12 +162,41 @@ class PackingState:
     d_max_over_L: float = float("nan")   # finite-size diagnostic; >0.25 is a risk
     # state
     phi: float = float("nan")
+    # phi is ALWAYS the analytic union volume over the cell volume -- one estimator
+    # across the whole (CV, alpha) grid, so there is no seam at alpha = 1 to explain.
+    # `utils.porosity()` is recorded beside it and NEVER used as phi: probe_clump.sh
+    # measured it DOUBLE-COUNTING the member overlap by 2*(ds/d_eq)^3, which runs 2.000
+    # at alpha = 1 to 1.000 at alpha = 2 -- an uncorrected campaign would have reported
+    # phi falling by a factor of two along the aspect ladder out of pure bookkeeping.
+    phi_union: float = float("nan")      # analytic; == phi, kept so the pair is visible
+    phi_porosity: float = float("nan")   # 1 - utils.porosity(); the DEFECTIVE channel
+    vol_solid: float = float("nan")      # sum (pi/6) d_eq^3 over grains
+    # For SPHERES the two agree to the last ulp and not exactly: probe_clump_s0.sh Q4
+    # measured |analytic - utils.porosity()| = 5.55e-17 at phi = 0.171 (1 ulp), because
+    # Yade sums body volumes in its own order. That is why gate S0a reads bit identity
+    # on `phi_porosity` and not on `phi`.
     p_hat: float = float("nan")             # realised p/E, positive in compression
     stress_dev_hat: float = float("nan")    # von Mises deviator / E
     z_all: float = float("nan")
     z_nr: float = float("nan")              # over NON-RATTLERS only
     rattler_frac: float = float("nan")
     n_contacts: int = 0
+    # THE CONTACT-MULTIPLICITY CONFOUND, found by scripts/probe_clump_s0.sh and absent
+    # from PREREG_SHAPE_2026-09-18.md, which asked only whether clump members contact
+    # EACH OTHER (they do not). The mirror question is whether an EXTERNAL neighbour
+    # contacts BOTH members of one clump, and it does: two clumps in contact can raise
+    # up to FOUR member-member interactions. `n_contacts` is therefore the count of
+    # DISTINCT GRAIN PAIRS -- which is the physical contact number and is what z_all,
+    # the rattler set and the backbone are built from -- and the raw interaction count
+    # is recorded beside it so the artefact has a number rather than a caveat.
+    #
+    # It cannot be removed: two overlapping members in contact with the same neighbour
+    # are two springs in parallel, so the MECHANICS carry it even though the counting
+    # does not. It is a third member of this axis's confound list, beside elongation
+    # and corrugation, and S4's label says so.
+    n_contacts_raw: int = 0           # real interactions, before grain-pair dedup
+    n_contacts_internal: int = 0      # member-member within one clump; measured 0
+    dup_contact_frac: float = 0.0     # (raw - internal - distinct)/(raw - internal)
     unbalanced: float = float("nan")
     converged: bool = False
     iters: int = 0
@@ -163,23 +224,66 @@ class PackingState:
         return json.dumps(asdict(self), sort_keys=True)
 
 
-def contact_graph(O):  # noqa: E741
-    """(counts, neighbours, forces) over the REAL interactions of a Yade scene."""
-    counts: dict[int, int] = {b.id: 0 for b in O.bodies if b is not None}
-    neigh: dict[int, set[int]] = {b.id: set() for b in O.bodies if b is not None}
+def contact_graph(O, grain_of=None, stats=None):  # noqa: E741
+    """(counts, neighbours, forces) over the REAL interactions of a Yade scene.
+
+    `grain_of` maps a BODY id to the id of the GRAIN it belongs to. For a sphere pack it
+    is the identity and this function does exactly what it did before the shape axis
+    existed; for a clump pack the bodies are the two member spheres and the grain is the
+    clump, so the graph has to be built at the grain level or `z_all`'s denominator
+    counts clumps AND members and is wrong by more than a factor of two.
+
+    The graph is built over DISTINCT GRAIN PAIRS. For spheres that changes nothing --
+    two spheres raise exactly one interaction, so the deduplicated counts equal the old
+    per-interaction counts body for body, which is what gate S0a checks rather than
+    assumes. For clumps it is the whole point: probe_clump_s0.sh Q2 measured 100 real
+    interactions behind 25 distinct clump pairs at alpha = 1, i.e. every contact
+    appearing four times, and a `z_all` built from the raw count would have been that
+    factor wrong.
+
+    `stats`, if given, is a dict filled IN PLACE with the raw and internal interaction
+    counts and the duplicate fraction. It is an out-parameter rather than a fourth
+    return value because six call sites unpack this as a 3-tuple and widening it would
+    break every one of them for a diagnostic none of them wants.
+    """
+    if grain_of is None:
+        grain_of = {b.id: b.id for b in O.bodies if b is not None}
+    grains = sorted(set(grain_of.values()))
+    counts: dict[int, int] = {g: 0 for g in grains}
+    neigh: dict[int, set[int]] = {g: set() for g in grains}
     forces: list[float] = []
+    n_raw = 0
+    n_internal = 0
+    seen: set[tuple[int, int]] = set()
     for i in O.interactions:
         if not i.isReal:
             continue
-        counts[i.id1] += 1
-        counts[i.id2] += 1
-        neigh[i.id1].add(i.id2)
-        neigh[i.id2].add(i.id1)
+        g1 = grain_of.get(i.id1)
+        g2 = grain_of.get(i.id2)
+        if g1 is None or g2 is None:
+            continue
+        if g1 == g2:
+            n_internal += 1
+            continue
+        n_raw += 1
         try:
             fn = float(i.phys.normalForce.norm())
         except Exception:
             fn = float("nan")
         forces.append(fn)
+        key = (g1, g2) if g1 < g2 else (g2, g1)
+        if key in seen:
+            continue
+        seen.add(key)
+        counts[g1] += 1
+        counts[g2] += 1
+        neigh[g1].add(g2)
+        neigh[g2].add(g1)
+    if stats is not None:
+        stats["n_raw"] = n_raw
+        stats["n_internal"] = n_internal
+        stats["n_distinct"] = len(seen)
+        stats["dup_frac"] = (n_raw - len(seen)) / n_raw if n_raw else 0.0
     return counts, neigh, np.asarray(forces, dtype=float)
 
 
@@ -235,9 +339,20 @@ def backbone_mask(ids, backbone) -> np.ndarray:
     return np.array([(int(a) in bb) and (int(b) in bb) for a, b in ids], dtype=bool)
 
 
-def measure(O, utils, st: PackingState, young: float) -> PackingState:  # noqa: E741
-    """Read every observable off a relaxed Yade scene into `st`."""
-    counts, neigh, forces = contact_graph(O)
+def measure(O, utils, st: PackingState, young: float,  # noqa: E741
+            grain_of=None) -> PackingState:
+    """Read every observable off a relaxed Yade scene into `st`.
+
+    `grain_of` is None for a sphere pack (the identity map) and maps member body id ->
+    clump id for a clump pack. Everything downstream -- z, the rattler set, the
+    backbone, the fabric -- is then built over GRAINS, which is the only level at which
+    those observables mean what their names say.
+    """
+    cstats: dict[str, float] = {}
+    counts, neigh, forces = contact_graph(O, grain_of=grain_of, stats=cstats)
+    st.n_contacts_raw = int(cstats["n_raw"])
+    st.n_contacts_internal = int(cstats["n_internal"])
+    st.dup_contact_frac = float(cstats["dup_frac"])
     n_all = len(counts)
     nreal = sum(counts.values()) // 2
     st.n_contacts = nreal
@@ -271,6 +386,13 @@ def measure(O, utils, st: PackingState, young: float) -> PackingState:  # noqa: 
     #     all-contact one, and the conflation this split exists to avoid is negligible
     #     THERE and real at k = 4.
     normals, cids = contact_normals(O, with_ids=True)
+    if grain_of is not None:
+        # The backbone mask is keyed on GRAIN ids, so the contact ids have to be lifted
+        # from members to clumps before the mask is applied. Mapping in place keeps the
+        # normals and the ids paired row for row (lessons.md 2026-09-05: filtering two
+        # columns independently misaligns them the moment one has a gap).
+        cids = np.array([[grain_of.get(int(a), int(a)), grain_of.get(int(b), int(b))]
+                         for a, b in cids], dtype=int).reshape(-1, 2)
     st.fabric = fabric_tensor(normals)
     fnr: dict[str, float] = {}
     for k in RATTLER_THRESHOLDS:
@@ -290,7 +412,13 @@ def measure(O, utils, st: PackingState, young: float) -> PackingState:  # noqa: 
     dev = s - np.eye(3) * (np.trace(s) / 3.0)
     st.stress_dev_hat = float(np.sqrt(1.5 * np.sum(dev * dev)) / young)
 
-    st.phi = float(1.0 - utils.porosity())
+    # phi from the ANALYTIC UNION VOLUME, always. `utils.porosity()` is recorded beside
+    # it and never used: it double-counts the member overlap by 2*(ds/d_eq)^3, which is
+    # alpha-dependent (2.000 -> 1.000 along this ladder). The ratio is a PREDICTION with
+    # a value, so gate S0c can fail on it rather than merely observing it.
+    st.phi_union = float(st.vol_solid / O.cell.volume)
+    st.phi_porosity = float(1.0 - utils.porosity())
+    st.phi = st.phi_union
     st.unbalanced = float(utils.unbalancedForce())
     st.iters = int(O.iter)
     return st
@@ -361,7 +489,29 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
     st.d_span = m["span"]
 
     vol_solid = float(np.sum(4.0 / 3.0 * math.pi * radii**3))
+    st.vol_solid = vol_solid
     d_max = float(diam.max())
+
+    # --- the SHAPE axis ---------------------------------------------------------------
+    # `d_eq` is the volume-equivalent diameter and is drawn from the SAME psd.make_psd at
+    # every alpha, so `vol_solid` above IS the union volume of the clumps and every PSD
+    # descriptor is invariant along this axis by construction (gate S1 checks it anyway).
+    # What is NOT invariant is the LONGEST EXTENT: an elongated grain of the same volume
+    # is longer than the sphere by span_factor(alpha), and the periodic collider's
+    # clearance is set by the longest extent. So `d_span_max` -- not `d_max` -- is what
+    # the clearance check below must use.
+    alpha = float(st.alpha)
+    st.span_over_deq = span_factor(alpha)
+    st.eps_corrugation = corrugation(1.0, alpha)
+    ds_over_deq = sub_sphere_diameter(1.0, alpha)
+    is_clump = alpha > 1.0
+    # The mass correction. A clump's mass is the SUM of its member sphere masses, and at
+    # alpha < 2 the members overlap, so that sum exceeds the union mass by exactly
+    # 2*(ds/d_eq)^3 (probe_clump.sh measured 0.62056151 against 0.52359878 at alpha=1.5,
+    # ratio 1.185185). The ratio is independent of grain size, so ONE density per alpha
+    # fixes it for the whole polydisperse pack.
+    st.density_scale = 1.0 / (2.0 * ds_over_deq ** 3) if is_clump else 1.0
+    d_span_max = st.span_over_deq * d_max
 
     # Yade's periodic collider requires cell edge > 2.1 * maxBodySpan, and the cell
     # SHRINKS under compression, so the binding check is at the FINAL density, not the
@@ -373,18 +523,23 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
     # reported as one rather than worked around by clipping the PSD (clipping would
     # silently move d32, the one moment this project turns on).
     L_final_min = (vol_solid / PHI_DENSE_BOUND) ** (1.0 / 3.0)
-    if L_final_min < COLLIDER_CLEARANCE * d_max:
+    if L_final_min < COLLIDER_CLEARANCE * d_span_max:
         v_mean = vol_solid / len(radii)
-        n_min = math.ceil(PHI_DENSE_BOUND * (COLLIDER_CLEARANCE * d_max) ** 3 / v_mean)
+        n_min = math.ceil(PHI_DENSE_BOUND * (COLLIDER_CLEARANCE * d_span_max) ** 3
+                          / v_mean)
         raise ValueError(
             f"cell too small for the periodic collider at cv={st.cv}, N={st.n_requested}, "
-            f"truncate={truncate}: largest grain d_max={d_max:.3f} needs a final "
-            f"cell edge >= {COLLIDER_CLEARANCE * d_max:.3f} but phi={PHI_DENSE_BOUND} "
+            f"alpha={alpha}, truncate={truncate}: largest grain d_max={d_max:.3f} spans "
+            f"{d_span_max:.3f} at this alpha and needs a final cell edge >= "
+            f"{COLLIDER_CLEARANCE * d_span_max:.3f} but phi={PHI_DENSE_BOUND} "
             f"gives {L_final_min:.3f}. Use N >= {n_min}, or tighten `truncate`."
         )
 
     L = (vol_solid / PHI_INSERT) ** (1.0 / 3.0)
-    st.d_max_over_L = d_max / L_final_min      # worst case, at the densest state
+    # The finite-size diagnostic is read on the SPAN, not the equivalent diameter: what
+    # interacts with its own periodic image is the longest extent. At alpha = 1 the two
+    # coincide exactly, so every sphere record's flag is unchanged.
+    st.d_max_over_L = d_span_max / L_final_min      # worst case, at the densest state
     # A grain wider than ~1/4 of the cell interacts with its own periodic image through
     # very few intermediaries; flag it rather than trusting the number.
     if st.d_max_over_L > 0.25:
@@ -394,7 +549,7 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
 
     if st.eta_roll is None:
         mat = O.materials.append(
-            utils.FrictMat(young=young, poisson=POISSON, density=1.0,
+            utils.FrictMat(young=young, poisson=POISSON, density=st.density_scale,
                            frictionAngle=math.atan(st.mu_p), label="grain")
         )
     else:
@@ -418,17 +573,59 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
         )
     O.periodic = True
     O.cell.hSize = np.diag([L, L, L])
-    for r in radii:
+    # Orientations come from a SEPARATE, independently seeded stream, so drawing them
+    # cannot perturb the (radii, then one position per grain) order that every record on
+    # disk was written with. That is not a stylistic choice: gate S0a is a bit-identity
+    # reproduction of three committed sphere cells, and it can only fail on the RNG
+    # order if the RNG order is capable of moving. Drawn UNCONDITIONALLY, including at
+    # alpha = 1 where they are unused, so the alpha = 1 path executes the same lines.
+    axes = random_axes(len(radii), st.seed + 1_000_003)
+    for j, r in enumerate(radii):
         pos = rng.uniform(0, L, 3)
-        O.bodies.append(utils.sphere(tuple(pos), float(r), material=mat))
+        if not is_clump:
+            O.bodies.append(utils.sphere(tuple(pos), float(r), material=mat))
+            continue
+        # A clump of two sub-spheres of diameter `ds`, centres `u*ds` apart, whose UNION
+        # volume is exactly (pi/6)*d_eq^3. `clump_centres` returns the offsets about the
+        # centroid, so `pos` is the centroid and the grain occupies the same mean
+        # position the sphere would have.
+        d_eq = 2.0 * float(r)
+        ds = sub_sphere_diameter(d_eq, alpha)
+        off = clump_centres(d_eq, alpha, axes[j])
+        ids = [O.bodies.append(utils.sphere(tuple(pos + off[k]), ds / 2.0,
+                                            material=mat)) for k in (0, 1)]
+        O.bodies.clump(ids)
     return L, mat
+
+
+def grain_map(O):  # noqa: E741
+    """body id -> GRAIN id, for a scene that may contain clumps.
+
+    A clump member's grain is its clump; a standalone sphere is its own grain; the
+    clump body itself carries no shape and is NOT a graph node (including it would put
+    a zero-contact entry into the rattler count for every grain in the pack).
+
+    Returns None for a pure sphere scene, which is what `contact_graph` and `measure`
+    take to mean "the identity map" -- so the sphere path runs the code it always ran.
+    """
+    gm = {}
+    any_clump = False
+    for b in O.bodies:
+        if b is None:
+            continue
+        if b.isClump:
+            any_clump = True
+            continue
+        gm[b.id] = b.clumpId if b.isClumpMember else b.id
+    return gm if any_clump else None
 
 
 def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
                        truncate: tuple[float, float] | None = (0.2, 5.0),
                        young: float = 1.0, verbose: bool = True,
                        family: str = "lognormal",
-                       eta_roll: float | None = None) -> PackingState:
+                       eta_roll: float | None = None,
+                       alpha: float = 1.0) -> PackingState:
     """Compress a packing isotropically to reduced pressure `p_hat` = p/E.
 
     Dimensionless throughout: d10 = 1, rho = 1, E = `young` (default 1).
@@ -440,8 +637,15 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
     t0 = time.time()
     O.reset()
     st = PackingState(n_requested=n, cv=cv, mu_p=mu_p, p_hat_target=p_hat,
-                      seed=seed, family=family, eta_roll=eta_roll)
+                      seed=seed, family=family, eta_roll=eta_roll, alpha=float(alpha))
     insert_packing(st, truncate=truncate, young=young)
+    grain_of = grain_map(O)
+    # Read the mass back off the SCENE, before anything moves. Clump members carry
+    # `state.mass` = 0 once clumped (the clump body carries it), so summing over every
+    # body with a finite mass counts each grain exactly once either way.
+    st.mass_over_vol_solid = float(
+        sum(b.state.mass for b in O.bodies if b is not None and not b.isClumpMember)
+        / st.vol_solid)
 
     # Yade sign convention for the triax goal: compressive stress is NEGATIVE.
     goal = -abs(p_hat) * young
@@ -462,12 +666,22 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
         ),
         utils.NewtonIntegrator(damping=0.4),
     ]
+    # PWaveTimeStep reads the MEMBER radius and the MEMBER density, and the mass
+    # correction changes the density -- so the timestep moves along the alpha ladder.
+    # Measured (probe_clump_s0.sh Q3), as a ratio to the equal-volume sphere's:
+    # 0.7071 / 0.7449 / 0.7715 / 0.7879 / 0.7937 at alpha = 1 / 1.25 / 1.5 / 1.75 / 2.
+    # It moves in the SAFE direction (smaller dt) at every rung, and it is recorded on
+    # every cell rather than inferred. It is also why gate S0 as originally written --
+    # a bit-identity reproduction of the sphere through a CLUMP built at alpha = 1 --
+    # cannot be met by any correct implementation: the density that makes the mass right
+    # makes the timestep 0.7071x, which is a different trajectory.
     O.dt = DT_SAFETY * utils.PWaveTimeStep()
+    st.dt = float(O.dt)
     cap = max_iter()
     st.max_iter = cap
     O.run(cap, wait=True)
 
-    st = measure(O, utils, st, young)
+    st = measure(O, utils, st, young, grain_of=grain_of)
     st.wall_s = time.time() - t0
     st.converged = bool(st.unbalanced < UNBALANCED_TOL and O.iter < cap)
     # Recorded separately: `unbalanced` alone met the physical bar. 18 of the 82
@@ -485,7 +699,10 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
                         f"(realised {st.p_hat:.3e} vs {p_hat:.3e})")
     if verbose:
         r = st.rattler
-        print(f"[{family[:4]}] cv={cv:.2f} mu={mu_p:.2f} phat_t={p_hat:.1e} N={n} s={seed} -> "
+        print(f"[{family[:4]}] a={st.alpha:.2f} eps={st.eps_corrugation:.3f} "
+              f"dup={st.dup_contact_frac:.3f} nraw={st.n_contacts_raw} "
+              f"phi_por={st.phi_porosity:.6f} "
+              f"cv={cv:.2f} mu={mu_p:.2f} phat_t={p_hat:.1e} N={n} s={seed} -> "
               f"phi={st.phi:.4f} phat={st.p_hat:.3e} Zall={st.z_all:.3f} "
               f"rat(k2/3/4)={r['rattler_frac_k2']:.3f}/{r['rattler_frac_k3']:.3f}/"
               f"{r['rattler_frac_k4']:.3f} Znr(k2/3/4)={r['z_nr_k2']:.2f}/"
