@@ -69,6 +69,40 @@ def tcrit(n: int, alpha: float = 0.05) -> float:
     return float(stats.t.ppf(1.0 - alpha / 2.0, max(1, n - 1)))
 
 
+def anova_f(means, ses, ns):
+    """One-way ANOVA F across groups, reconstructed from (mean, se, n) triplets.
+
+    THE CONSERVATIVE COUNTERPART TO `cochran_q`, and it has to be COMPUTED rather than
+    described: Q treats the se's as exactly known and at 2 dof per group it is measurably
+    anti-conservative. Describing the conservative end in prose and printing only the
+    liberal one is how "differ at 5 %? YES" ended up reading as six unanimous rejections
+    when a properly-dof'd test rejects two of six (referee, second pass 2026-09-18).
+
+        sd_i    = se_i * sqrt(n_i)
+        SS_w    = sum (n_i - 1) sd_i^2 ,      df_w = sum (n_i - 1)
+        SS_b    = sum n_i (m_i - mbar)^2 ,    df_b = k - 1,  mbar = sum n_i m_i / sum n_i
+        F       = (SS_b/df_b) / (SS_w/df_w)
+    """
+    from scipy import stats
+    m = np.asarray(means, float)
+    s = np.asarray(ses, float)
+    n = np.asarray(ns, float)
+    ok = np.isfinite(m) & np.isfinite(s) & (n > 1)
+    if ok.sum() < 2:
+        return float("nan"), float("nan")
+    m, s, n = m[ok], s[ok], n[ok]
+    sd = s * np.sqrt(n)
+    ssw = float(np.sum((n - 1) * sd ** 2))
+    dfw = float(np.sum(n - 1))
+    mbar = float(np.sum(n * m) / np.sum(n))
+    ssb = float(np.sum(n * (m - mbar) ** 2))
+    dfb = float(len(m) - 1)
+    if ssw <= 0 or dfw <= 0:
+        return float("inf"), 0.0
+    f = (ssb / dfb) / (ssw / dfw)
+    return float(f), float(stats.f.sf(f, dfb, dfw))
+
+
 def cochran_q(means, ses):
     """Cochran's Q heterogeneity test across groups, and its p-value.
 
@@ -287,24 +321,39 @@ def main() -> int:
         """The change from CV = 0 to whichever rung is FURTHEST from it.
 
         The endpoint definition assumes monotonicity, and the bidisperse family is
-        NON-MONOTONE in CV -- a pathology this project already flags for phi_J. Reported
-        beside the endpoint definition so the reader can see how much of the headline is
-        the definition (referee, 2026-09-18).
+        NON-MONOTONE in CV -- a pathology this project already flags for phi_J.
+
+        ⚠ IT RUNS ON phi_J TOO. The first version took a shard `getter` and skipped the
+        `g is None` channel, so the ONE channel now carrying the headline was the only one
+        that never got this check (referee, second pass 2026-09-18). phi_J has no shard
+        getter -- it is a ladder extrapolation -- so it goes through `paired_shift`.
+
+        ⚠ AND THE RESULT IS BIASED HIGH. It is a maximum over 5 noisy estimates, so it is
+        a winner's-curse UPPER BOUND on the true peak effect, in the opposite direction
+        from the endpoint bias it exists to expose; and each family is evaluated at ITS
+        OWN best rung, so the ratio is not a matched-condition comparison. Both are stated
+        wherever the number is printed.
         """
         out = {}
         for fam in FAMILIES:
             best = (0.0, float("nan"), 0.0)
             for cv in CVS[1:]:
-                lo = {r["seed"]: getter(r) for r in sel
-                      if (r.get("family") or "lognormal") == fam and r["cv"] == 0.0
-                      and r["p_hat_target"] == p}
-                hi = {r["seed"]: getter(r) for r in sel
-                      if (r.get("family") or "lognormal") == fam and r["cv"] == cv
-                      and r["p_hat_target"] == p}
-                common = sorted(set(lo) & set(hi))
-                if not common:
-                    continue
-                m, se, n = mean_se([hi[s] - lo[s] for s in common])
+                if getter is None:
+                    ps = paired_shift(d, fam, cv_lo=0.0, cv_hi=cv)
+                    if ps is None:
+                        continue
+                    m, se, _n = ps
+                else:
+                    lo = {r["seed"]: getter(r) for r in sel
+                          if (r.get("family") or "lognormal") == fam and r["cv"] == 0.0
+                          and r["p_hat_target"] == p}
+                    hi = {r["seed"]: getter(r) for r in sel
+                          if (r.get("family") or "lognormal") == fam and r["cv"] == cv
+                          and r["p_hat_target"] == p}
+                    common = sorted(set(lo) & set(hi))
+                    if not common:
+                        continue
+                    m, se, _n = mean_se([hi[s] - lo[s] for s in common])
                 if abs(m) > abs(best[0]):
                     best = (m, se, cv)
             out[fam] = best
@@ -334,7 +383,10 @@ def main() -> int:
             ratio = max(vals) / min(vals)
             j = int(np.argmin(vals))
             tc = tcrit(ns[j])
-            note = (f"{ratio:.2f}x" if vals[j] > tc * ses[j]
+            denom_ok = vals[j] > tc * ses[j]
+            # The heterogeneity gate is applied further down, once its own test has been
+            # computed; the note is finalised there. Both must pass.
+            note = (f"{ratio:.2f}x" if denom_ok
                     else f"UNDETERMINED (smallest change {vals[j]:.4f} does not clear "
                          f"t={tc:.2f} x se={ses[j]:.4f} = {tc*ses[j]:.4f})")
         rows_out.append((nm, ch, ratio, note))
@@ -343,28 +395,61 @@ def main() -> int:
 
     # --- the test the eyeball judgement was standing in for -------------------------
     P("")
-    P("   DO THE FAMILIES ACTUALLY DIFFER? Cochran's Q across the three changes, which")
-    P("   is the standard test the earlier version of this file answered by eye. Q")
-    P("   treats the se's as exactly known (they carry 2 dof), so it is the LIBERAL end;")
-    P("   the conservative end is that with 3 seeds almost nothing is resolvable. Both")
-    P("   are reported because they disagree, and the disagreement is the honest state.")
-    P("     observable               Q      p(Q)    families differ at 5 % (liberal)?")
+    P("   DO THE FAMILIES ACTUALLY DIFFER? Two tests, BOTH COMPUTED. Cochran's Q treats")
+    P("   the se's as exactly known and at 2 dof per family it is measurably")
+    P("   anti-conservative; the one-way ANOVA F reconstructed from the (mean, se, n)")
+    P("   triplets does not. An earlier version printed Q alone and DESCRIBED the")
+    P("   conservative end in prose -- so its 'differ at 5 %?' column read as six")
+    P("   unanimous rejections of family-independence (referee, second pass).")
+    P("     observable               Q     p(Q)        F(df)      p(F)   differ at 5 %?")
+    P("                                              conservative        Q / F")
     qres = {}
     for nm, ch, ratio, note in rows_out:
-        q, p_ = cochran_q([ch[f][0] for f in FAMILIES], [ch[f][1] for f in FAMILIES])
-        qres[nm] = (q, p_)
-        P(f"     {nm:22s} {q:7.2f}  {p_:7.4f}   {'YES' if p_ < 0.05 else 'no'}")
+        q, pq = cochran_q([ch[f][0] for f in FAMILIES], [ch[f][1] for f in FAMILIES])
+        fstat, pf = anova_f([ch[f][0] for f in FAMILIES], [ch[f][1] for f in FAMILIES],
+                            [ch[f][2] for f in FAMILIES])
+        qres[nm] = (q, pq, fstat, pf)
+        P(f"     {nm:22s} {q:7.2f} {pq:8.4f}  {fstat:9.2f} {pf:9.4f}   "
+          f"{'YES' if pq < 0.05 else 'no':>3s} / {'YES' if pf < 0.05 else 'no'}")
+    P("")
+    P("   ⚠ THE UNDETERMINED FLAG AND THIS TEST ASK DIFFERENT QUESTIONS. The flag asks")
+    P("   whether the SMALLEST family's change is non-zero; the ordering claim needs")
+    P("   whether the family changes DIFFER FROM EACH OTHER. A ratio is called RESOLVED")
+    P("   below only if it passes BOTH -- which is strictly stricter than the guard it")
+    P("   replaces, and it is what demotes Z_nr, whose denominator clears its own")
+    P("   threshold by 1.17x while its heterogeneity F does not reach 5 %.")
+    P("")
+    P("   FINAL STATUS PER CHANNEL, after both gates:")
+    P("     observable             denominator   heterogeneity(F)   ratio")
+    for i, (nm, ch, ratio, note) in enumerate(rows_out):
+        denom_ok = note.endswith("x")
+        het_ok = qres[nm][3] == qres[nm][3] and qres[nm][3] < 0.05
+        if denom_ok and het_ok:
+            final = f"{ratio:.2f}x  RESOLVED"
+        elif not denom_ok:
+            final = "UNDETERMINED (denominator)"
+        else:
+            final = (f"{ratio:.2f}x  NOT RESOLVED (the families are not shown to differ:"
+                     f" F p = {qres[nm][3]:.4f})")
+        rows_out[i] = (nm, ch, ratio, final)
+        P(f"     {nm:22s} {'PASS' if denom_ok else 'FAIL':>11s}   "
+          f"{'PASS' if het_ok else 'FAIL':>16s}   {final}")
 
     # --- how much of the ratio is the endpoint definition? --------------------------
     P("")
-    P("   ENDPOINT vs PEAK. The CV 0 -> 0.5 definition assumes monotonicity in CV, and")
-    P("   the bidisperse family is not monotone. Recomputed against whichever rung is")
-    P("   furthest from CV = 0:")
+    P("   ENDPOINT vs PEAK, ON EVERY CHANNEL INCLUDING phi_J. The CV 0 -> 0.5 definition")
+    P("   assumes monotonicity in CV and the bidisperse family is not monotone. The")
+    P("   first version of this block SKIPPED phi_J, because phi_J has no shard getter")
+    P("   -- so the one channel now carrying the headline was the only one never checked")
+    P("   (referee, second pass).")
+    P("   ⚠ The peak ratio is a MAXIMUM OVER FIVE NOISY ESTIMATES, so it is a")
+    P("   winner's-curse UPPER BOUND, biased the opposite way from the endpoint")
+    P("   definition; and each family is taken at ITS OWN best rung, so it is not a")
+    P("   matched-condition comparison. It brackets the endpoint number, it does not")
+    P("   replace it.")
     P("     observable             endpoint ratio   peak ratio   peak rung per family")
     peak_rows = {}
     for nm, g in CHANNELS:
-        if g is None:
-            continue
         pk = peak_chg(g)
         vals = [abs(pk[f][0]) for f in FAMILIES]
         pr = max(vals) / min(vals) if min(vals) > 0 else float("nan")
@@ -442,7 +527,9 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
     # The narrative is generated FROM the verdicts: `lead` is whichever channel actually
     # has the largest RESOLVED across-family spread, not one chosen in advance (this
     # project has shipped three artifacts whose prose contradicted their own tables).
-    resolved = [r for r in rows_out if r[2] == r[2] and r[3].endswith("x")]
+    def _is_resolved(r):
+        return r[2] == r[2] and "RESOLVED" in r[3] and "NOT RESOLVED" not in r[3]
+    resolved = [r for r in rows_out if _is_resolved(r)]
     lead = max(resolved, key=lambda r: r[2]) if resolved else None
     n_cells = len(sel)
     body = [
@@ -465,8 +552,9 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
          f"paired CV 0 → 0.5 change spans a factor **{lead[2]:.2f}×** between the three "
          "families ("
          + ", ".join(f"{f} {lead[1][f][0]:+.4f}±{lead[1][f][1]:.4f}" for f in FAMILIES)
-         + "). Every family change here rests on 3 seeds, so read the ordering section "
-           "below before carrying any of it."
+         + f"). Against the furthest CV rung instead of the endpoint it is "
+           f"**{peak_rows.get(lead[0], float('nan')):.2f}×**, so read it as a bracket. "
+           "Every family change here rests on 3 seeds."
          if lead is not None else
          "**No across-family contrast is resolved.** On every channel the smallest of "
          "the three family changes fails a two-sided 95% test at its own degrees of "
@@ -483,15 +571,24 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
             f"| {ch['bidisperse'][0]:+.4f}±{ch['bidisperse'][1]:.4f} | {note} |")
     body += [
         "",
+        "A ratio is **RESOLVED** only if its smallest family change is non-zero at 95% "
+        "*and* a conservative heterogeneity test says the three families differ at all. "
+        "Both gates, not one — an earlier draft applied only the first, which is a test "
+        "of the denominator and not of the claim.",
+    ]
+    body += [
+        "",
         "(CV 0 → 0.5 change, at `p_hat` = 1e-3 for the per-cell channels and "
         "extrapolated to `p_hat` → 0 for `phi_J`.)",
         "",
         "### How far the ordering can be pushed — and it is not far",
         "",
-        "Ranked by across-family spread, with the ones whose denominator fails a "
-        "two-sided 95% test marked — they are ranked but **not quotable**: "
+        "Ranked by across-family spread, each marked with whether it survives **both** "
+        "gates — a denominator that is non-zero at 95% *and* a heterogeneity test that "
+        "says the families differ at all. Only the marked-RESOLVED ones are quotable: "
         + " > ".join(f"**{r[0]}** {r[2]:.2f}×"
-                     + ("" if r[3].endswith("x") else " *(UNDETERMINED)*")
+                     + (" *(resolved)*" if _is_resolved(r)
+                        else " *(not resolved)*")
                      for r in sorted(rows_out, key=lambda r: -r[2])) + ".",
         "",
         (f"**That six-way ordering survives only {100*order_frac:.0f}% of "
@@ -507,28 +604,44 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
         "1. **The significance guard was wrong.** Each change comes from 3 seeds, so its "
         "se carries 2 degrees of freedom and the 95% critical value is *t* = 4.303, not "
         "2. A flat 2·se bar is an 18% test, and it admitted exactly the change that set "
-        "the denominator of the largest ratio. The guard is now *t*(df = n−1) and the "
-        "table above says which ratios survive it.",
-        "2. **The endpoint definition does real work.** CV 0 → 0.5 assumes monotonicity "
-        "and the bidisperse family is not monotone. Against the furthest rung instead: "
-        + ", ".join(f"`{k}` {v:.2f}×" for k, v in peak_rows.items()) + ".",
+        "the denominator of the largest ratio. The guard is now *t*(df = n−1), **and a "
+        "second gate was added beside it**: the denominator test asks whether the "
+        "smallest family's change is non-zero, which is not the question the ordering "
+        "needs — that question is whether the families differ *from each other*.",
+        "2. **The endpoint definition does real work, on every channel including the "
+        "one carrying the headline.** CV 0 → 0.5 assumes monotonicity and the bidisperse "
+        "family is not monotone. Against the furthest rung instead: "
+        + ", ".join(f"`{k}` {v:.2f}×" for k, v in peak_rows.items())
+        + ". The first version of this check silently **skipped `phi_J`**, which has no "
+          "shard getter — so the channel now carrying the headline was the only one "
+          "never checked. These peak ratios are maxima over five noisy estimates and "
+          "each family is taken at its own best rung, so they are **upper bounds biased "
+          "high**, not point estimates; they bracket the endpoint number rather than "
+          "replacing it.",
         "3. **`Z_all` is not an independent channel.** It equals "
         "`(1 − rattler_frac)·Z_nr` to better than 0.5% on every row checked, so its "
         "near-family-independence is *inherited* from the rattler fraction's and is not "
         "a second confirmation of anything.",
         "",
-        "### Do the families differ at all? The test, not the eyeball",
+        "### Do the families differ at all? Two tests, both computed",
         "",
-        "| observable | Cochran Q | p | differ at 5% (liberal)? |",
-        "|---|---|---|---|",
-    ] + [f"| {k} | {v[0]:.2f} | {v[1]:.4f} | {'yes' if v[1] < 0.05 else 'no'} |"
+        "| observable | Cochran Q | p(Q) | ANOVA F | p(F) | differ at 5%? Q / F |",
+        "|---|---|---|---|---|---|",
+    ] + [f"| {k} | {v[0]:.2f} | {v[1]:.4f} | {v[2]:.2f} | {v[3]:.4f} | "
+         f"{'yes' if v[1] < 0.05 else 'no'} / {'yes' if v[3] < 0.05 else 'no'} |"
          for k, v in qres.items()] + [
         "",
-        "Q treats the printed se's as exactly known, which they are not — each has 2 "
-        "dof — so this is the **liberal** end. On a conservative *t* comparison almost "
-        "nothing here is resolvable at 3 seeds. Both ends are reported because they "
-        "disagree, and an earlier draft of this page called the bottom two channels "
-        "\"family-independent\" on neither test but on inspection.",
+        "Q treats the printed se's as exactly known, which they are not — each has 2 dof "
+        "— so it is the **liberal** end and it is measurably anti-conservative here. The "
+        "one-way ANOVA *F*, reconstructed from the same (mean, se, n) triplets, is the "
+        "conservative counterpart, and **it had to be computed rather than described**: "
+        "an earlier draft printed Q alone and put the conservative end in prose, so its "
+        "\"differ at 5%?\" column read as six unanimous rejections of family-"
+        "independence. Conservatively it is "
+        + f"{sum(1 for v in qres.values() if v[3] == v[3] and v[3] < 0.05)} of "
+        + f"{len(qres)}: "
+        + ", ".join(f"`{k}`" for k, v in qres.items()
+                    if v[3] == v[3] and v[3] < 0.05) + ".",
         "",
         "## What it does not say",
         "",

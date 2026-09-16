@@ -111,10 +111,17 @@ PRODUCTION SET -- N printed before and after every filter.
   where 'wholly' actually happens -- a 6-rung OLS is most sensitive at its ends,
   so a wholly flagged TOP RUNG is the highest-leverage contamination available
   (referee, 2026-09-18: this was printed but never read by anything downstream).
-    lognormal     34/106 flagged   CV0.0:0/18 CV0.1:0/18 CV0.2:0/18 CV0.3:3/18 CV0.4:15/18 CV0.5:16/16
+  The flag fraction is read on the PRIMARY RUNG ONLY, which is the population the
+  F2 exclusion is computed over. Pooling both rungs cannot produce a false
+  positive (a union at 100 % forces every subset to 100 %) but it CAN produce a
+  false negative: a primary rung wholly flagged while one secondary cell is clean
+  would read below 100 % pooled and the label would silently fail to fire on the
+  channel F2 actually decides (referee, second pass 2026-09-18). Both fractions
+  are printed so the two can never diverge unnoticed.
+    lognormal     34/106 flagged   CV0.0:0/12[pooled 0/18] CV0.1:0/12[pooled 0/18] CV0.2:0/12[pooled 0/18] CV0.3:2/12[pooled 3/18] CV0.4:9/12[pooled 15/18] CV0.5:12/12[pooled 16/16]
                  -> WHOLLY FLAGGED RUNGS: [0.5]. F6 label applies.
-    uniform        0/103 flagged   CV0.0:0/18 CV0.1:0/18 CV0.2:0/18 CV0.3:0/18 CV0.4:0/18 CV0.5:0/13
-    bidisperse     0/108 flagged   CV0.0:0/18 CV0.1:0/18 CV0.2:0/18 CV0.3:0/18 CV0.4:0/18 CV0.5:0/18
+    uniform        0/103 flagged   CV0.0:0/12[pooled 0/18] CV0.1:0/12[pooled 0/18] CV0.2:0/12[pooled 0/18] CV0.3:0/12[pooled 0/18] CV0.4:0/12[pooled 0/18] CV0.5:0/12[pooled 0/13]
+    bidisperse     0/108 flagged   CV0.0:0/12[pooled 0/18] CV0.1:0/12[pooled 0/18] CV0.2:0/12[pooled 0/18] CV0.3:0/12[pooled 0/18] CV0.4:0/12[pooled 0/18] CV0.5:0/12[pooled 0/18]
 
   N at the primary rung p_hat = 0.001: 216
   N at the secondary rung p_hat = 0.0001: 101
@@ -163,10 +170,17 @@ F2  PRIMARY -- the registered prediction is the NULL.
     power against a NON-MONOTONE CV dependence that nets to zero, and this
     project has documented exactly that shape for the bidisperse family. A
     one-way ANOVA across the six CV rungs is sensitive to ANY CV dependence.
-      family          F      p     CV dependence at 5 %?
-      lognormal      1.135  0.3506   no
-      uniform        0.092  0.9932   no
-      bidisperse     0.421  0.8328   no
+    It is run under the SAME two exclusions as the slope, and beside a
+    distribution-free Kruskal-Wallis and a Levene equal-variance check, because
+    (i) a claim that 'the companion survives too' must be COMPUTED and not
+    asserted, and (ii) one-way ANOVA assumes homogeneous variance across rungs
+    (referee, second pass 2026-09-18).
+      family        ANOVA F     p      | drop RUNGS p | drop CELLS p |  KW p  | Levene p
+      lognormal      1.135  0.3506 |      0.4306 |      0.5305 | 0.7253 |  0.0481
+        ⚠ lognormal: Levene REJECTS equal variance across rungs (p = 0.0481), so the ANOVA's assumption is violated here -- the Kruskal-Wallis column is the one to read for this family
+      uniform        0.092  0.9932 |      0.9932 |      0.9932 | 0.9965 |  0.4048
+      bidisperse     0.421  0.8328 |      0.8328 |      0.8328 | 0.7766 |  0.6781
+      companion verdict: no CV dependence on any family, under any of the four tests
 
     F2 VERDICT lognormal   : NULL, INFORMATIVE  [RESTS ON FLAGGED CELLS]
     F2 VERDICT uniform     : NULL, INFORMATIVE
@@ -201,6 +215,17 @@ F4  THE CONFOUND MUST BE DEMONSTRATED, NOT ASSERTED.
 F5  RUNG CONSISTENCY -- registered as a CONSISTENCY CHANNEL ONLY; at 6 seeds
     2*se*0.5 = 0.622 > 0.5, so it cannot decide F2.
     paired T_nr(1e-3) - T_nr(1e-4) on 101 shared cells: -0.0339 +- 0.0417
+    ⚠ POOLED, and this file's own rule is that the finite-size channel is
+    read BY FAMILY and never pooled. The same discipline applies here
+    (referee, second pass 2026-09-18), and the breakdown is not flat:
+      family        pairs    mean diff       se     CV0.5 seeds kept
+      lognormal       34      -0.1064    0.0754     4/6
+      uniform         31      +0.0243    0.0645     1/6
+      bidisperse      36      -0.0154    0.0746     6/6
+    The survivors at CV = 0.5 are CONVERGENCE-SELECTED, not a random
+    subsample -- the dropped cells are exactly the ones that hit the
+    iteration cap -- so a thinned family's rung cannot be read as a
+    measurement of that rung. F5 decides nothing either way.
 
 F7  CONDITIONAL -- readable only if F2 finds a drift.
     NOT READ: F2 found no drift, so there is nothing to attribute.

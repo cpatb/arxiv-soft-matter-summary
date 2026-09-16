@@ -151,23 +151,49 @@ sweep_descriptive.py -- the descriptive sweep, from existing shards. No new cell
    contact force mean      +0.0009+-0.0001  +0.0011+-0.0001  +0.0012+-0.0000   1.32x
    contact force CV        +0.3621+-0.0078  +0.1231+-0.0114  +0.0434+-0.0133   UNDETERMINED (smallest change 0.0434 does not clear t=4.30 x se=0.0133 = 0.0573)
 
-   DO THE FAMILIES ACTUALLY DIFFER? Cochran's Q across the three changes, which
-   is the standard test the earlier version of this file answered by eye. Q
-   treats the se's as exactly known (they carry 2 dof), so it is the LIBERAL end;
-   the conservative end is that with 3 seeds almost nothing is resolvable. Both
-   are reported because they disagree, and the disagreement is the honest state.
-     observable               Q      p(Q)    families differ at 5 % (liberal)?
-     phi_J                   227.78   0.0000   YES
-     Z_all                     6.56   0.0376   YES
-     Z_nr (k=2)               10.95   0.0042   YES
-     rattler fraction          8.07   0.0177   YES
-     contact force mean       18.59   0.0001   YES
-     contact force CV        568.76   0.0000   YES
+   DO THE FAMILIES ACTUALLY DIFFER? Two tests, BOTH COMPUTED. Cochran's Q treats
+   the se's as exactly known and at 2 dof per family it is measurably
+   anti-conservative; the one-way ANOVA F reconstructed from the (mean, se, n)
+   triplets does not. An earlier version printed Q alone and DESCRIBED the
+   conservative end in prose -- so its 'differ at 5 %?' column read as six
+   unanimous rejections of family-independence (referee, second pass).
+     observable               Q     p(Q)        F(df)      p(F)   differ at 5 %?
+                                              conservative        Q / F
+     phi_J                   227.78   0.0000     144.68    0.0000   YES / YES
+     Z_all                     6.56   0.0376       2.73    0.1433   YES / no
+     Z_nr (k=2)               10.95   0.0042       3.47    0.0999   YES / no
+     rattler fraction          8.07   0.0177       3.12    0.1176   YES / no
+     contact force mean       18.59   0.0001       7.29    0.0248   YES / YES
+     contact force CV        568.76   0.0000     224.33    0.0000   YES / YES
 
-   ENDPOINT vs PEAK. The CV 0 -> 0.5 definition assumes monotonicity in CV, and
-   the bidisperse family is not monotone. Recomputed against whichever rung is
-   furthest from CV = 0:
+   ⚠ THE UNDETERMINED FLAG AND THIS TEST ASK DIFFERENT QUESTIONS. The flag asks
+   whether the SMALLEST family's change is non-zero; the ordering claim needs
+   whether the family changes DIFFER FROM EACH OTHER. A ratio is called RESOLVED
+   below only if it passes BOTH -- which is strictly stricter than the guard it
+   replaces, and it is what demotes Z_nr, whose denominator clears its own
+   threshold by 1.17x while its heterogeneity F does not reach 5 %.
+
+   FINAL STATUS PER CHANNEL, after both gates:
+     observable             denominator   heterogeneity(F)   ratio
+     phi_J                         PASS               PASS   4.47x  RESOLVED
+     Z_all                         PASS               FAIL   1.10x  NOT RESOLVED (the families are not shown to differ: F p = 0.1433)
+     Z_nr (k=2)                    PASS               FAIL   2.33x  NOT RESOLVED (the families are not shown to differ: F p = 0.0999)
+     rattler fraction              PASS               FAIL   1.09x  NOT RESOLVED (the families are not shown to differ: F p = 0.1176)
+     contact force mean            PASS               PASS   1.32x  RESOLVED
+     contact force CV              FAIL               PASS   UNDETERMINED (denominator)
+
+   ENDPOINT vs PEAK, ON EVERY CHANNEL INCLUDING phi_J. The CV 0 -> 0.5 definition
+   assumes monotonicity in CV and the bidisperse family is not monotone. The
+   first version of this block SKIPPED phi_J, because phi_J has no shard getter
+   -- so the one channel now carrying the headline was the only one never checked
+   (referee, second pass).
+   ⚠ The peak ratio is a MAXIMUM OVER FIVE NOISY ESTIMATES, so it is a
+   winner's-curse UPPER BOUND, biased the opposite way from the endpoint
+   definition; and each family is taken at ITS OWN best rung, so it is not a
+   matched-condition comparison. It brackets the endpoint number, it does not
+   replace it.
      observable             endpoint ratio   peak ratio   peak rung per family
+     phi_J                          4.47x        2.89x   logn@0.5 unif@0.5 bidi@0.3
      Z_all                          1.10x        1.10x   logn@0.5 unif@0.5 bidi@0.5
      Z_nr (k=2)                     2.33x        2.06x   logn@0.5 unif@0.4 bidi@0.4
      rattler fraction               1.09x        1.09x   logn@0.5 unif@0.5 bidi@0.5

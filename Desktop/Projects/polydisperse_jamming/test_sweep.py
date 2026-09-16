@@ -76,21 +76,46 @@ def test_the_significance_guard_is_a_t_value_not_two_se(sw):
         "no ratio was rejected by the corrected guard; the guard may have been loosened"
 
 
-def test_the_undetermined_ratio_is_marked_as_such_in_the_report(rep):
-    """The report ranks every channel, including the one whose denominator fails. It
-    must SAY so where it ranks them -- the prose-contradicts-its-own-table failure."""
+def test_every_ranked_channel_is_marked_resolved_or_not(rep):
+    """The report ranks every channel, including ones that fail a gate. It must SAY so
+    where it ranks them -- the prose-contradicts-its-own-table failure."""
     m = re.search(r"Ranked by across-family spread.*?\n", rep, flags=re.S)
     assert m, "no ordering line"
-    assert "UNDETERMINED" in m.group(0), m.group(0)
-    assert "not quotable" in m.group(0)
+    line = m.group(0)
+    assert line.count("*(resolved)*") + line.count("*(not resolved)*") == 6, line
+    assert "not resolved" in line
 
 
-def test_the_heterogeneity_test_is_reported_rather_than_eyeballed(sw, rep):
-    assert "Cochran's Q" in sw
-    assert "Cochran Q" in rep
-    rows = re.findall(r"^\s{5}(\S[\w ()=]*?)\s+(-?[0-9.]+)\s+([0-9.]+)\s+(YES|no)\s*$",
+def test_BOTH_gates_are_applied_not_just_the_denominator(sw):
+    """The denominator test asks whether the smallest family change is non-zero; the
+    ordering claim needs whether the families DIFFER FROM EACH OTHER. A channel that
+    passes one and fails the other must not be quoted."""
+    blk = re.search(r"FINAL STATUS PER CHANNEL.*?\n\n", sw, flags=re.S)
+    assert blk, "the two-gate status block is missing"
+    rows = re.findall(r"^\s{5}(\S[\w ()=]*?)\s{2,}(PASS|FAIL)\s+(PASS|FAIL)\s+(.*)$",
+                      blk.group(0), flags=re.M)
+    assert len(rows) == 6, rows
+    for nm, denom, het, verdict in rows:
+        resolved = "RESOLVED" in verdict and "NOT RESOLVED" not in verdict
+        assert resolved == (denom == "PASS" and het == "PASS"), (nm, denom, het, verdict)
+    # and the gates must actually bite: a run where everything passes both would mean
+    # the guards had stopped discriminating.
+    assert any(d == "FAIL" or h == "FAIL" for _, d, h, _ in rows), rows
+
+
+def test_the_conservative_heterogeneity_test_is_COMPUTED_not_described(sw, rep):
+    """Q treats the se's as exactly known and is anti-conservative at 2 dof. An earlier
+    version printed Q alone and put the conservative end in prose, so its column read as
+    six unanimous rejections of family-independence."""
+    assert "Cochran's Q" in sw and "ANOVA F" in sw
+    assert "p(F)" in rep and "ANOVA F" in rep
+    rows = re.findall(r"^\s{5}(\S[\w ()=]*?)\s+(-?[0-9.]+)\s+([0-9.]+)\s+"
+                      r"(-?[0-9.]+)\s+([0-9.]+)\s+(YES|no) / (YES|no)\s*$",
                       sw, flags=re.M)
-    assert len(rows) >= 6, rows
+    assert len(rows) == 6, rows
+    # The two tests must actually disagree somewhere, or the conservative one is not
+    # doing any work and the earlier prose would have been adequate after all.
+    assert any(q != f for *_, q, f in rows), rows
 
 
 def test_the_endpoint_definition_is_shown_to_do_work(sw):
@@ -98,10 +123,21 @@ def test_the_endpoint_definition_is_shown_to_do_work(sw):
     ratio must be printed beside the endpoint one, and must actually differ somewhere."""
     blk = re.search(r"ENDPOINT vs PEAK.*?IS THE ORDERING", sw, flags=re.S)
     assert blk, "the endpoint-vs-peak block is missing"
-    pairs = re.findall(r"([0-9.]+)x\s+([0-9.]+)x", blk.group(0))
-    assert pairs, pairs
-    assert any(abs(float(a) - float(b)) > 0.05 for a, b in pairs), \
+    rows = re.findall(r"^\s{5}(\S[\w ()=]*?)\s+([0-9.]+)x\s+([0-9.]+)x",
+                      blk.group(0), flags=re.M)
+    assert len(rows) == 6, ("every channel must be checked, including phi_J, which the "
+                            "first version skipped because it has no shard getter", rows)
+    assert any(r[0].strip() == "phi_J" for r in rows), rows
+    assert any(abs(float(a) - float(b)) > 0.05 for _, a, b in rows), \
         "endpoint and peak agree everywhere; the check has stopped discriminating"
+
+
+def test_the_peak_ratio_is_disclosed_as_biased_high(sw, rep):
+    """It is a maximum over five noisy estimates, each family at its own best rung --
+    an upper bound, biased the opposite way from the endpoint definition."""
+    assert "winner's-curse" in sw or "winner" in sw
+    assert "upper bound" in sw.lower()
+    assert "upper bounds biased" in rep or "biased" in rep
 
 
 def test_the_ordering_stability_is_measured_and_the_report_does_not_oversell_it(sw, rep):

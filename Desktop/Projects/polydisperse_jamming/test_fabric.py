@@ -223,16 +223,59 @@ def test_the_flagged_exclusion_does_not_flip_any_verdict(gf):
     assert "would FLIP the verdict to DRIFT" not in gf
 
 
-def test_the_companion_ANOVA_ran_and_agrees(gf):
-    """An OLS slope has no power against a non-monotone CV dependence. The companion is
-    reported BESIDE F2, never instead of it, and must agree with it here."""
+def test_the_companion_is_run_under_the_SAME_exclusions_as_the_slope(gf):
+    """An OLS slope has no power against a non-monotone CV dependence, so a companion is
+    reported BESIDE F2. It must be run under the same two exclusions and PRINTED -- an
+    earlier claims page asserted 'and so does the companion' when the artifact held one
+    ANOVA row on the unexcluded data (referee, second pass). And ANOVA assumes equal
+    variance across rungs, so Levene and a distribution-free Kruskal-Wallis sit beside
+    it."""
     blk = re.search(r"COMPANION TEST.*?F2 VERDICT", gf, flags=re.S)
-    assert blk, "the companion ANOVA is missing"
-    rows = re.findall(r"^\s{6}(\w+)\s+([0-9.]+)\s+([0-9.]+)\s+(YES|no)\s*$",
+    assert blk, "the companion block is missing"
+    rows = re.findall(
+        r"^\s{6}(\w+)\s+([0-9.]+)\s+([0-9.]+) \|\s+([0-9.]+) \|\s+([0-9.]+) \|"
+        r"\s+([0-9.]+) \|\s+([0-9.]+)\s*$", blk.group(0), flags=re.M)
+    assert len(rows) == 3, rows
+    for fam, f_, p_full, p_rungs, p_cells, p_kw, p_lev in rows:
+        for tag, p in (("full", p_full), ("drop-rungs", p_rungs),
+                       ("drop-cells", p_cells), ("KW", p_kw)):
+            assert float(p) >= 0.05, (fam, tag, p)
+    assert "companion verdict:" in blk.group(0)
+
+
+def test_a_violated_equal_variance_assumption_is_flagged_not_swallowed(gf):
+    """Where Levene rejects, the artifact must say which column to read instead."""
+    blk = re.search(r"COMPANION TEST.*?F2 VERDICT", gf, flags=re.S).group(0)
+    rows = re.findall(r"^\s{6}(\w+)\s+.*\|\s+([0-9.]+)\s*$", blk, flags=re.M)
+    for fam, p_lev in rows:
+        if float(p_lev) < 0.05:
+            assert f"⚠ {fam}: Levene REJECTS" in blk, fam
+
+
+def test_the_flag_fraction_is_read_on_the_primary_rung(gf):
+    """FLAGGED_RUNGS decides an exclusion computed over the PRIMARY rung only. Pooling
+    both rungs cannot give a false positive but can give a false NEGATIVE, and the
+    label would then silently fail to fire on the channel F2 decides (referee, second
+    pass)."""
+    assert "read on the PRIMARY RUNG ONLY" in gf
+    assert "false negative" in gf
+
+
+def test_F5_is_broken_down_by_family_not_only_pooled(gf):
+    """This file's own rule is that the finite-size channel is never pooled; F5 was."""
+    blk = re.search(r"F5  RUNG CONSISTENCY.*?F7", gf, flags=re.S)
+    assert blk, "F5 block missing"
+    if "no shared cells" in blk.group(0) or "has not been run" in blk.group(0):
+        pytest.skip("the secondary rung is not on disk in this checkout")
+    rows = re.findall(r"^\s{6}(\w+)\s+(\d+)\s+([+-][0-9.]+)\s+([0-9.]+)\s+(\d+)/(\d+)\s*$",
                       blk.group(0), flags=re.M)
     assert len(rows) == 3, rows
-    for fam, f_, p_, verdict in rows:
-        assert verdict == "no", (fam, p_)
+    assert "CONVERGENCE-SELECTED" in blk.group(0)
+    # the kept/attempted denominator must be the seeds ATTEMPTED, never the survivors
+    # divided by themselves -- that would print 1/1 for a rung where five cells died.
+    assert any(int(k) < int(t) for *_, k, t in rows), \
+        ("every rung reads as fully kept; the denominator may have been taken from the "
+         "already-filtered set", rows)
 
 
 def test_the_dropped_cells_are_reported_against_the_axis_under_test(gf):

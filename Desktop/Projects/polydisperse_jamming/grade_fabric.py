@@ -250,15 +250,28 @@ def production(rows):
     P("  where 'wholly' actually happens -- a 6-rung OLS is most sensitive at its ends,")
     P("  so a wholly flagged TOP RUNG is the highest-leverage contamination available")
     P("  (referee, 2026-09-18: this was printed but never read by anything downstream).")
+    P("  The flag fraction is read on the PRIMARY RUNG ONLY, which is the population the")
+    P("  F2 exclusion is computed over. Pooling both rungs cannot produce a false")
+    P("  positive (a union at 100 % forces every subset to 100 %) but it CAN produce a")
+    P("  false negative: a primary rung wholly flagged while one secondary cell is clean")
+    P("  would read below 100 % pooled and the label would silently fail to fire on the")
+    P("  channel F2 actually decides (referee, second pass 2026-09-18). Both fractions")
+    P("  are printed so the two can never diverge unnoticed.")
     for fam in FAMILIES:
         sub = [r for r in r3 if (r.get("family") or "lognormal") == fam]
+        prim_sub = [r for r in sub if r["p_hat_target"] == P_PRIMARY]
         flag = [r for r in sub if any("FINITE SIZE" in s for s in r.get("notes", []))]
         per = []
         wholly = []
         for cv in CVS:
-            tot = [r for r in sub if r["cv"] == cv]
+            tot = [r for r in prim_sub if r["cv"] == cv]
             fl = [r for r in tot if any("FINITE SIZE" in s for s in r.get("notes", []))]
-            per.append(f"CV{cv:.1f}:{len(fl)}/{len(tot)}")
+            alltot = [r for r in sub if r["cv"] == cv]
+            allfl = [r for r in alltot
+                     if any("FINITE SIZE" in s for s in r.get("notes", []))]
+            per.append(f"CV{cv:.1f}:{len(fl)}/{len(tot)}"
+                       + ("" if len(alltot) == len(tot)
+                          else f"[pooled {len(allfl)}/{len(alltot)}]"))
             if tot and len(fl) == len(tot):
                 wholly.append(cv)
         FLAGGED_RUNGS[fam] = wholly
@@ -399,18 +412,51 @@ def main() -> int:
     P("    power against a NON-MONOTONE CV dependence that nets to zero, and this")
     P("    project has documented exactly that shape for the bidisperse family. A")
     P("    one-way ANOVA across the six CV rungs is sensitive to ANY CV dependence.")
-    P("      family          F      p     CV dependence at 5 %?")
+    P("    It is run under the SAME two exclusions as the slope, and beside a")
+    P("    distribution-free Kruskal-Wallis and a Levene equal-variance check, because")
+    P("    (i) a claim that 'the companion survives too' must be COMPUTED and not")
+    P("    asserted, and (ii) one-way ANOVA assumes homogeneous variance across rungs")
+    P("    (referee, second pass 2026-09-18).")
+    P("      family        ANOVA F     p      | drop RUNGS p | drop CELLS p |  KW p  | Levene p")
     from scipy import stats as _st
+
+    def _groups(rows):
+        out = []
+        for cv in CVS:
+            g = [t for (c, t) in tstat(rows, "nr", K_PRIMARY) if c == cv]
+            if len(g) >= 2:
+                out.append(g)
+        return out
+
+    anova_ok = True
     for fam in FAMILIES:
         sub = [r for r in prim if (r.get("family") or "lognormal") == fam]
-        groups = []
-        for cv in CVS:
-            g = [t for (c, t) in tstat(sub, "nr", K_PRIMARY) if c == cv]
-            if len(g) >= 2:
-                groups.append(g)
-        if len(groups) >= 2:
-            F, p_ = _st.f_oneway(*groups)
-            P(f"      {fam:12s} {F:7.3f} {p_:7.4f}   {'YES' if p_ < 0.05 else 'no'}")
+        wholly = FLAGGED_RUNGS.get(fam, [])
+        a = [r for r in sub if r["cv"] not in wholly]
+        b = [r for r in sub if not any("FINITE SIZE" in s for s in r.get("notes", []))]
+        cells = []
+        # NOT `for rows in ...`: a for-loop variable leaks into the enclosing scope in
+        # Python, and `rows` is main's full record list -- shadowing it here left F5
+        # dividing by an empty set and printing "1/1" for a rung where five cells died.
+        for _rows in (sub, a, b):
+            g = _groups(_rows)
+            cells.append(_st.f_oneway(*g) if len(g) >= 2 else (float("nan"),) * 2)
+        g0 = _groups(sub)
+        kw = _st.kruskal(*g0) if len(g0) >= 2 else (float("nan"),) * 2
+        lev = _st.levene(*g0) if len(g0) >= 2 else (float("nan"),) * 2
+        P(f"      {fam:12s} {cells[0][0]:7.3f} {cells[0][1]:7.4f} |"
+          f" {cells[1][1]:11.4f} | {cells[2][1]:11.4f} | {kw[1]:6.4f} | {lev[1]:7.4f}")
+        for tag, pv in (("full", cells[0][1]), ("drop-rungs", cells[1][1]),
+                        ("drop-cells", cells[2][1]), ("KW", kw[1])):
+            if pv == pv and pv < 0.05:
+                anova_ok = False
+                P(f"        ⚠ {fam}: the {tag} test FINDS a CV dependence (p = {pv:.4f})")
+        if lev[1] == lev[1] and lev[1] < 0.05:
+            P(f"        ⚠ {fam}: Levene REJECTS equal variance across rungs "
+              f"(p = {lev[1]:.4f}), so the ANOVA's assumption is violated here -- the"
+              f" Kruskal-Wallis column is the one to read for this family")
+    P(f"      companion verdict: {'no CV dependence on any family, under any of the '
+                                  'four tests' if anova_ok else 'SEE THE WARNINGS ABOVE'}")
 
     P("")
     for fam in FAMILIES:
@@ -475,16 +521,44 @@ def main() -> int:
         idx = {(r.get("family") or "lognormal", r["cv"], r["seed"]):
                r["fabric_nr"]["n_k2"] * r["fabric_nr"]["aniso_k2"] ** 2
                for r in sec if r["fabric_nr"]["n_k2"]}
+        pair_by = []
         for r in prim:
             key = ((r.get("family") or "lognormal"), r["cv"], r["seed"])
             if key in idx and r["fabric_nr"]["n_k2"]:
-                pairs.append(r["fabric_nr"]["n_k2"] * r["fabric_nr"]["aniso_k2"] ** 2
-                             - idx[key])
+                dpair = (r["fabric_nr"]["n_k2"] * r["fabric_nr"]["aniso_k2"] ** 2
+                         - idx[key])
+                pairs.append(dpair)
+                pair_by.append((key, dpair))
         if pairs:
             m = float(np.mean(pairs))
             se = float(np.std(pairs, ddof=1) / math.sqrt(len(pairs)))
             P(f"    paired T_nr(1e-3) - T_nr(1e-4) on {len(pairs)} shared cells:"
               f" {m:+.4f} +- {se:.4f}")
+            P("    ⚠ POOLED, and this file's own rule is that the finite-size channel is")
+            P("    read BY FAMILY and never pooled. The same discipline applies here")
+            P("    (referee, second pass 2026-09-18), and the breakdown is not flat:")
+            P("      family        pairs    mean diff       se     CV0.5 seeds kept")
+            for fam in FAMILIES:
+                fp = [d_ for (f_, c_, s_), d_ in pair_by if f_ == fam]
+                if not fp:
+                    continue
+                kept = len([1 for (f_, c_, s_), _ in pair_by if f_ == fam and c_ == 0.5])
+                # The denominator is the seeds ATTEMPTED at that rung, read from the
+                # unfiltered records -- taking it from `sec` would divide the survivors
+                # by themselves and print 1/1 for a rung where five of six cells died.
+                tot5 = len({r["seed"] for r in rows
+                            if (r.get("family") or "lognormal") == fam
+                            and r["cv"] == 0.5 and r["p_hat_target"] == P_SECOND
+                            and "fabgate" not in r["_file"]})
+                fm = float(np.mean(fp))
+                fse = (float(np.std(fp, ddof=1) / math.sqrt(len(fp)))
+                       if len(fp) > 1 else float("nan"))
+                P(f"      {fam:12s} {len(fp):5d}   {fm:+10.4f}  {fse:8.4f}"
+                  f"     {kept}/{tot5}")
+            P("    The survivors at CV = 0.5 are CONVERGENCE-SELECTED, not a random")
+            P("    subsample -- the dropped cells are exactly the ones that hit the")
+            P("    iteration cap -- so a thinned family's rung cannot be read as a")
+            P("    measurement of that rung. F5 decides nothing either way.")
         else:
             P("    no shared cells")
     else:
@@ -618,6 +692,15 @@ def claims(verdicts, res_k, prim, sec, cf):
         "rattler removal empties the pack and that threshold carries no verdict.",
         "- **The finite-size flag is not pooled**: it fires on the lognormal family only, "
         "at CV ≥ 0.3, and on no uniform or bidisperse cell.",
+        "- **Only the MAGNITUDE of the anisotropy was checked, not its SHAPE.** `T` is "
+        "built from the deviator's second invariant. Its third invariant — the Lode "
+        "angle, prolate versus oblate local anisotropy — is also rotation-invariant and "
+        "does **not** vanish under the symmetry argument that pins the deviator's "
+        "direction, and `measure.fabric_tensor` does not compute it. A mechanism that "
+        "changed the *character* of local anisotropy without changing its magnitude "
+        "would be invisible to this campaign by construction. Reading this page alone, "
+        "\"without restructuring\" must be taken as \"without a change in the magnitude "
+        "of the orientational correlation\".",
         "",
         "## The one thing that does not survive: the lognormal SLOPE",
         "",
@@ -627,9 +710,11 @@ def claims(verdicts, res_k, prim, sec, cf):
             "the slope from "
           + f"{res['lognormal'][0]:+.4f} to the value printed in the artifact's F6 block "
             "— **a change of sign**. The VERDICT survives both exclusions (wholly "
-            "flagged rungs, and every flagged cell), and so does the companion ANOVA, "
-            "which is sensitive to non-monotone CV dependence that a slope test would "
-            "miss. But the lognormal slope is **not a number to quote**; only its "
+            "flagged rungs, and every flagged cell), and the companion tests are **re-run "
+            "under the same two exclusions and printed** — an earlier draft of this page "
+            "asserted that the companion survived too, when the artifact contained one "
+            "ANOVA row on the unexcluded data (referee, second pass). But the lognormal "
+            "slope is **not a number to quote**; only its "
             "verdict is. This safeguard is registered as F6 and the first version of the "
             "grader printed the flag counts without anything downstream reading them "
             "(referee, 2026-09-18).")
