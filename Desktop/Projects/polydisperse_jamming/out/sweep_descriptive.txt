@@ -1,0 +1,158 @@
+sweep_descriptive.py -- the descriptive sweep, from existing shards. No new cells.
+==============================================================================
+1. REPRODUCTION GATE -- runs first, exits non-zero on a mismatch.
+   The committed out/shape_control.txt quotes the paired CV 0 -> 0.5 shift in
+   phi_J per family. Recomputed here from phase2_fits.csv:
+     family       recomputed      se    n     committed   match
+     lognormal    +0.062072  0.002555  3    +0.0621    YES
+     uniform      +0.024201  0.000805  3    +0.0242    YES
+     bidisperse   +0.013889  0.002485  3    +0.0139    YES
+   REPRODUCTION: PASS
+
+2. LADDER HEALTH -- the gate that travels with phi_J.
+   family        n   neg slopes  r2 median   verdict
+   lognormal     18          0     0.9468   HEALTHY
+   uniform       18          0     0.9207   HEALTHY
+   bidisperse    18          0     0.9210   HEALTHY
+
+   phi_J (linear extrapolation to p_hat -> 0), mean +- se over seeds
+     family          CV0.0       CV0.1       CV0.2       CV0.3       CV0.4       CV0.5   
+     lognormal     0.5745(3)  0.5781(3)  0.5881(3)  0.6040(3)  0.6197(3)  0.6366(3)
+     uniform       0.5751(3)  0.5790(3)  0.5866(3)  0.5959(3)  0.5974(3)  0.5993(3)
+     bidisperse    0.5751(3)  0.5765(3)  0.5872(3)  0.5966(3)  0.5941(3)  0.5890(3)
+   (ladder health: lognormal=ok, uniform=ok, bidisperse=ok)
+
+3. THE PER-CELL OBSERVABLES -- N printed before and after every filter.
+   files globbed out/phase2*.jsonl: 158
+   N records: 717
+   N after dropping failed and deduplicating by key: 635
+   duplicate keys whose phi DISAGREED: 15
+   N after N=1500, mu_p=0.3, converged: 252
+
+   Z_all, mean +- se over seeds, by family and CV
+     p_hat      family          CV0.0       CV0.1       CV0.2       CV0.3       CV0.4       CV0.5   
+     1e-03  lognormal     4.9107(3)  4.7871(3)  4.5027(3)  3.9182(3)  3.2400(6)  2.7338(6)
+     1e-03  uniform       4.9120(3)  4.7827(3)  4.3818(3)  3.8658(3)  3.3311(6)  2.9120(6)
+     1e-03  bidisperse    4.9120(3)  4.8364(3)  4.3773(3)  3.6538(3)  3.0698(3)  2.7182(3)
+
+     3e-04  lognormal     4.5227(3)  4.3978(3)  4.0689(3)  3.5076(3)  2.9787(6)  2.4716(6)
+     3e-04  uniform       4.5227(3)  4.3631(3)  4.0182(3)  3.4582(3)  2.9516(6)  2.6058(6)
+     3e-04  bidisperse    4.5227(3)  4.3907(3)  4.0271(3)  3.3324(3)  2.7836(3)  2.5156(3)
+
+     1e-04  lognormal     4.3311(3)  4.2809(3)  3.9916(3)  3.3071(3)  2.7569(6)  2.1502(6)
+     1e-04  uniform       4.3404(3)  4.2102(3)  3.8644(3)  3.2924(3)  2.8858(6)  2.4773(3)
+     1e-04  bidisperse    4.3404(3)  4.2560(3)  3.8818(3)  3.2382(3)  2.6827(3)  2.3973(3)
+
+     3e-05  lognormal     4.2764(3)  4.1387(3)  3.8013(3)  3.2467(3)  2.7849(3)  2.1720(3)
+     3e-05  uniform       4.2764(3)  4.1671(3)  3.8133(3)  3.2058(3)  2.7696(5)  2.4547(3)
+     3e-05  bidisperse    4.2764(3)  4.1551(3)  3.7453(3)  3.1200(3)  2.6489(3)  2.3249(3)
+
+
+   Z_nr (non-rattler backbone, k = 2), mean +- se over seeds, by family and CV
+     p_hat      family          CV0.0       CV0.1       CV0.2       CV0.3       CV0.4       CV0.5   
+     1e-03  lognormal     5.1111(3)  5.0860(3)  5.0979(3)  5.0286(3)  4.9372(6)  4.9220(6)
+     1e-03  uniform       5.1185(3)  5.0942(3)  5.0365(3)  5.0367(3)  5.0264(6)  5.0373(6)
+     1e-03  bidisperse    5.1185(3)  5.1092(3)  5.0386(3)  5.0018(3)  4.9964(3)  5.0013(3)
+
+     3e-04  lognormal     4.8493(3)  4.8311(3)  4.8139(3)  4.7596(3)  4.7238(6)  4.6489(6)
+     3e-04  uniform       4.8493(3)  4.8097(3)  4.7899(3)  4.7776(3)  4.7709(6)  4.7590(6)
+     3e-04  bidisperse    4.8493(3)  4.8205(3)  4.8076(3)  4.7770(3)  4.7422(3)  4.8254(3)
+
+     1e-04  lognormal     4.7032(3)  4.7053(3)  4.6972(3)  4.6234(3)  4.5969(6)  4.5316(6)
+     1e-04  uniform       4.7001(3)  4.7065(3)  4.6750(3)  4.6216(3)  4.6370(6)  4.6180(3)
+     1e-04  bidisperse    4.7001(3)  4.7105(3)  4.6767(3)  4.6316(3)  4.6355(3)  4.7040(3)
+
+     3e-05  lognormal     4.6583(3)  4.6358(3)  4.6155(3)  4.5411(3)  4.5470(3)  4.5079(3)
+     3e-05  uniform       4.6583(3)  4.6589(3)  4.6225(3)  4.5851(3)  4.6000(5)  4.5878(3)
+     3e-05  bidisperse    4.6583(3)  4.6530(3)  4.6123(3)  4.5746(3)  4.5808(3)  4.6337(3)
+
+
+   rattler fraction (k = 2), mean +- se over seeds, by family and CV
+     p_hat      family          CV0.0       CV0.1       CV0.2       CV0.3       CV0.4       CV0.5   
+     1e-03  lognormal     0.0393(3)  0.0591(3)  0.1171(3)  0.2211(3)  0.3442(6)  0.4476(6)
+     1e-03  uniform       0.0404(3)  0.0613(3)  0.1309(3)  0.2342(3)  0.3384(6)  0.4231(6)
+     1e-03  bidisperse    0.0404(3)  0.0540(3)  0.1318(3)  0.2702(3)  0.3871(3)  0.4576(3)
+
+     3e-04  lognormal     0.0676(3)  0.0900(3)  0.1551(3)  0.2640(3)  0.3711(6)  0.4704(6)
+     3e-04  uniform       0.0676(3)  0.0931(3)  0.1622(3)  0.2776(3)  0.3824(6)  0.4536(6)
+     3e-04  bidisperse    0.0676(3)  0.0896(3)  0.1633(3)  0.3033(3)  0.4140(3)  0.4789(3)
+
+     1e-04  lognormal     0.0798(3)  0.0913(3)  0.1509(3)  0.2860(3)  0.4036(6)  0.5284(6)
+     1e-04  uniform       0.0771(3)  0.1058(3)  0.1742(3)  0.2880(3)  0.3789(6)  0.4642(3)
+     1e-04  bidisperse    0.0771(3)  0.0973(3)  0.1704(3)  0.3022(3)  0.4218(3)  0.4913(3)
+
+     3e-05  lognormal     0.0824(3)  0.1073(3)  0.1773(3)  0.2871(3)  0.3889(3)  0.5218(3)
+     3e-05  uniform       0.0824(3)  0.1062(3)  0.1753(3)  0.3022(3)  0.3983(5)  0.4653(3)
+     3e-05  bidisperse    0.0824(3)  0.1071(3)  0.1887(3)  0.3184(3)  0.4220(3)  0.4987(3)
+
+
+   contact force, mean, mean +- se over seeds, by family and CV
+     p_hat      family          CV0.0       CV0.1       CV0.2       CV0.3       CV0.4       CV0.5   
+     1e-03  lognormal     0.0011(3)  0.0011(3)  0.0012(3)  0.0014(3)  0.0017(6)  0.0020(6)
+     1e-03  uniform       0.0011(3)  0.0011(3)  0.0012(3)  0.0014(3)  0.0017(6)  0.0021(6)
+     1e-03  bidisperse    0.0011(3)  0.0011(3)  0.0012(3)  0.0015(3)  0.0019(3)  0.0023(3)
+
+     3e-04  lognormal     0.0004(3)  0.0004(3)  0.0004(3)  0.0005(3)  0.0005(6)  0.0007(6)
+     3e-04  uniform       0.0004(3)  0.0004(3)  0.0004(3)  0.0005(3)  0.0006(6)  0.0007(6)
+     3e-04  bidisperse    0.0004(3)  0.0004(3)  0.0004(3)  0.0005(3)  0.0006(3)  0.0008(3)
+
+     1e-04  lognormal     0.0001(3)  0.0001(3)  0.0001(3)  0.0002(3)  0.0002(6)  0.0003(6)
+     1e-04  uniform       0.0001(3)  0.0001(3)  0.0001(3)  0.0002(3)  0.0002(6)  0.0003(3)
+     1e-04  bidisperse    0.0001(3)  0.0001(3)  0.0001(3)  0.0002(3)  0.0002(3)  0.0003(3)
+
+     3e-05  lognormal     0.0000(3)  0.0000(3)  0.0000(3)  0.0001(3)  0.0001(3)  0.0001(3)
+     3e-05  uniform       0.0000(3)  0.0000(3)  0.0000(3)  0.0001(3)  0.0001(5)  0.0001(3)
+     3e-05  bidisperse    0.0000(3)  0.0000(3)  0.0000(3)  0.0001(3)  0.0001(3)  0.0001(3)
+
+
+   contact force, CV, mean +- se over seeds, by family and CV
+     p_hat      family          CV0.0       CV0.1       CV0.2       CV0.3       CV0.4       CV0.5   
+     1e-03  lognormal     0.5884(3)  0.6063(3)  0.6573(3)  0.7290(3)  0.8639(6)  0.9505(6)
+     1e-03  uniform       0.5853(3)  0.5984(3)  0.6503(3)  0.6910(3)  0.6838(6)  0.7084(6)
+     1e-03  bidisperse    0.5853(3)  0.6219(3)  0.6574(3)  0.6814(3)  0.6733(3)  0.6287(3)
+
+     3e-04  lognormal     0.6375(3)  0.6490(3)  0.6881(3)  0.8277(3)  0.9334(6)  1.0499(6)
+     3e-04  uniform       0.6375(3)  0.6531(3)  0.7391(3)  0.7733(3)  0.7520(6)  0.8185(6)
+     3e-04  bidisperse    0.6375(3)  0.6749(3)  0.7306(3)  0.7486(3)  0.7314(3)  0.6958(3)
+
+     1e-04  lognormal     0.6957(3)  0.7234(3)  0.8105(3)  0.8338(3)  0.9570(6)  1.0734(6)
+     1e-04  uniform       0.6974(3)  0.7321(3)  0.7734(3)  0.8281(3)  0.7816(6)  0.8247(3)
+     1e-04  bidisperse    0.6974(3)  0.7333(3)  0.7657(3)  0.7894(3)  0.7622(3)  0.7401(3)
+
+     3e-05  lognormal     0.7297(3)  0.7358(3)  0.7530(3)  0.8661(3)  0.8991(3)  1.0620(3)
+     3e-05  uniform       0.7297(3)  0.7289(3)  0.7727(3)  0.7914(3)  0.7969(5)  0.7798(3)
+     3e-05  bidisperse    0.7297(3)  0.7219(3)  0.7664(3)  0.7683(3)  0.7545(3)  0.7336(3)
+
+
+4. THE SHAPE-OVER-CV CONTRAST, on every channel, at p_hat = 1e-3.
+   For each observable: the CV 0 -> 0.5 change WITHIN a family, and the spread of
+   that change ACROSS families. A ratio > 1 in the last column means the shape of
+   the size distribution moves the observable more than a fourfold change in CV
+   does within any one family.
+
+   Changes are PAIRED PER SEED, never a difference of two means: the two ends
+   share the seed, so the paired form cancels the shared draw exactly rather than
+   statistically (lessons.md 2026-08-30). Each change is printed with its own se,
+   and a ratio whose SMALLEST change is within 2 se of zero is reported
+   UNDETERMINED rather than quoted -- a relative measure whose denominator is
+   shrinking measures the shrinkage.
+
+   observable              lognormal         uniform        bidisperse      across-family
+   phi_J                   +0.0621+-0.0026  +0.0242+-0.0008  +0.0139+-0.0025   4.47x
+   Z_all                   -2.1769+-0.0827  -2.0000+-0.0670  -2.1938+-0.0362   1.10x
+   Z_nr (k=2)              -0.1891+-0.0284  -0.0812+-0.0162  -0.1172+-0.0393   2.33x
+   rattler fraction        +0.4082+-0.0125  +0.3827+-0.0119  +0.4171+-0.0033   1.09x
+   contact force mean      +0.0009+-0.0001  +0.0011+-0.0001  +0.0012+-0.0000   1.32x
+   contact force CV        +0.3621+-0.0078  +0.1231+-0.0114  +0.0434+-0.0133   8.34x
+
+   READ THIS WITH THE FOLLOWING RESTRICTIONS, none of which is optional:
+   - bidisperse is 50:50 BY NUMBER, so its fines carry 0.500 -> 0.036 of the
+     VOLUME across this CV ladder. It is a PATH through the (ratio, composition)
+     plane and not a representative 'bidisperse family'; the 2026-09-13 block
+     found matched binaries 0.0635 apart in phi where every PSD descriptor
+     predicts 0.
+   - a ratio across families is a spread, not a pairwise separation. It says the
+     three families differ; it does not say any two of them are distinguishable
+     at a given CV.
+   - Z, the rattler fraction and the force moments are read AT a pressure and
+     move with the rung; phi_J alone is extrapolated to p_hat -> 0.
