@@ -71,6 +71,7 @@ import numpy as np
 
 from measure import (
     RATTLER_MIN_CONTACTS,
+    fabric_tensor,
     force_moments,
     rattler_report,
 )
@@ -142,6 +143,9 @@ class PackingState:
     wall_s: float = float("nan")
     rattler: dict = field(default_factory=dict)   # every threshold, see measure
     force: dict = field(default_factory=dict)     # contact-force moments
+    fabric: dict = field(default_factory=dict)    # contact-orientation anisotropy.
+    #                                               EMPTY on every record written before
+    #                                               2026-09-18, so read it with .get()
     protocol: str = "iso-stress-nondim-v2"
     notes: list[str] = field(default_factory=list)
 
@@ -169,6 +173,30 @@ def contact_graph(O):  # noqa: E741
     return counts, neigh, np.asarray(forces, dtype=float)
 
 
+def contact_normals(O):  # noqa: E741
+    """Unit contact normals over the REAL interactions, as an (n, 3) array.
+
+    A SEPARATE function rather than a fourth return from `contact_graph`, because six
+    call sites unpack that as a 3-tuple and widening it would break every one of them
+    for an observable none of them wants. The extra pass over `O.interactions` is free
+    beside the relaxation that produced the scene.
+
+    Read AFTER relaxation and used only by `fabric_tensor`, so it observes the solver
+    and cannot drive it -- the failure mode lessons.md records for MEASURE_NSAMP, where
+    an output probe became the binding constraint on dt.
+    """
+    out = []
+    for i in O.interactions:
+        if not i.isReal:
+            continue
+        try:
+            n = i.geom.normal
+            out.append([float(n[0]), float(n[1]), float(n[2])])
+        except Exception:
+            continue
+    return np.asarray(out, dtype=float).reshape(-1, 3)
+
+
 def measure(O, utils, st: PackingState, young: float) -> PackingState:  # noqa: E741
     """Read every observable off a relaxed Yade scene into `st`."""
     counts, neigh, forces = contact_graph(O)
@@ -183,6 +211,12 @@ def measure(O, utils, st: PackingState, young: float) -> PackingState:  # noqa: 
     st.rattler_frac = st.rattler[f"rattler_frac_k{RATTLER_MIN_CONTACTS}"]
     st.z_nr = st.rattler[f"z_nr_k{RATTLER_MIN_CONTACTS}"]
     st.force = force_moments(forces)
+    # Contact-orientation anisotropy. An isotropically compressed pack should sit near
+    # zero; a value that DRIFTS with CV would say polydispersity restructures the network
+    # rather than only re-populating it -- which is the open question the rattler result
+    # (0.040 -> 0.234 while backbone Z barely moves) could not answer. Recorded from
+    # 2026-09-18; absent on every earlier record.
+    st.fabric = fabric_tensor(contact_normals(O))
 
     s = np.array(utils.getStress())
     st.p_hat = float(-np.trace(s) / 3.0 / young)

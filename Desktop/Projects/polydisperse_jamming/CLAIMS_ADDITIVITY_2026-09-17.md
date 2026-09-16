@@ -14,7 +14,8 @@ after a flip (−1.6946 both ways).
 
 ---
 
-## A. The result: one λ describes both DISCRETE ladders and does not carry to continuous PSDs
+## A. The result: the two DISCRETE ladders' λ are indistinguishable, and whether λ
+##    carries to a continuous PSD is family-dependent
 
 This is the whole item in one table, at the registered primary convention `d43`:
 
