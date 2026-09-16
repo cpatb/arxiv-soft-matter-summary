@@ -1,0 +1,53 @@
+=== diag_k6_interp.py -- POST-HOC, NOT A GATE ===
+   Does 'K = 6 is attemptable' measure the SIGNAL or the INTERPOLATION FORM?
+   beta = 0.594687; PHI_SCALE = 2.1e-03; bar = 2.57 scale (quoted verbatim, NOT MOVABLE)
+   ug shards: 20 files, 81 records; 81 -> 81 admitted
+
+=== REPRODUCTION CONTROL (exit 1 if this fails) ===
+            u   ratio  max(phi-beta)/scale
+      0.66667   1.500               7.0470
+      0.70711   1.414               4.4273
+      0.80000   1.250               2.2056
+   arm B (u = 0.80000) recorded in out/grade_ugap.txt at 2.21; computed here 2.2056 -> OK
+   the DOCUMENT's own K = 6 number, recomputed by its own form: 2.9937 vs printed 2.99 -> OK
+
+=== IS A SINGLE SMOOTH TWO-PARAMETER FORM EVEN CONSISTENT WITH THE THREE POINTS? ===
+   Fit each two-parameter form to the two OUTER points and predict the MIDDLE
+   one. A form that cannot hit the point it was not given is not a basis for
+   extrapolating between them.
+   form                                      predicts mid  measured    error
+   log-log, 2 bracketing pts  [THE DOCUMENT'S]         4.842     4.427    9.4%
+   linear in (u, s), 2 pts                          5.579     4.427   26.0%
+   power law in (1-u), 2 pts                        5.251     4.427   18.6%
+   -> worst miss on the held-out middle point: 26.0%. The three points
+      are NOT collinear under any of these transforms, so the form is genuinely
+      under-determined by the data and no choice among them is privileged.
+
+=== THE SPREAD OVER A DECLARED SET OF FORMS ===
+   'anchored' = the form is forced through the EXACT physical point (u = 1,
+   s = 0): at u = 1 the classes are identical, the mixture is monodisperse,
+   phi = beta and the filling signal vanishes. That costs no fitted parameter.
+   form                                     pars  anch   s(K=6)  margin   K6?   s(K=7)  margin   K7?
+   log-log, 2 bracketing pts  [THE DOCUMENT'S]    2    no    2.994   1.165   yes    2.306   0.897    no
+   linear in (u, s), 2 pts                     2    no    3.214   1.250   yes    2.356   0.917    no
+   quadratic in (u, s), 3 pts                  3    no    2.558   0.995    no    2.189   0.852    no
+   quadratic in (ln u, ln s), 3 pts            3    no    2.858   1.112   yes    2.280   0.887    no
+   power law in (1-u), 2 pts                   2   YES    3.128   1.217   yes    2.334   0.908    no
+   power law in (1-u), 3 pts LSQ               3   YES    3.253   1.266   yes    2.297   0.894    no
+   quadratic in (ln(1-u), ln s), 3 pts         3   YES    2.758   1.073   yes    2.248   0.875    no
+
+   K = 6 (u = 0.75786): signal spans 2.558 to 3.253, a factor 1.27; the bar 2.57 is INSIDE that span.
+           verdict 'attemptable' on 6 of 7 forms.
+   K = 7 (u = 0.79370): signal spans 2.189 to 2.356, a factor 1.08; the bar 2.57 is OUTSIDE that span.
+           verdict 'attemptable' on 0 of 7 forms.
+
+=== VERDICT (generated from the table above, not typed) ===
+   K = 6: UNRESOLVED. The estimate flips with the interpolation form (6/7 say yes),
+   and the document's 2.99 is one draw from a 2.56-3.25 range that straddles the bar.
+   'The K axis closes at 6' is therefore NOT established by this estimate.
+   K = 7: CLOSED, and robustly -- no form in the declared set reaches 2.57 (max 2.36).
+
+   What can decide K = 6 is unchanged and is what the document already asks
+   for: recompute the noise-free identifiability ceiling at r = 4^(1/5) = 1.31951,
+   at several assumed truths, BEFORE any prereg. None of the numbers above is
+   a substitute for that, and none of them moves a bar.
