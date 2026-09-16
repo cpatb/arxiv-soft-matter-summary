@@ -282,3 +282,65 @@ def test_com_vel_is_mass_weighted_not_number_averaged():
                       for i in [0, 1]]).mean(axis=0)[2]
     assert abs(naive) < 1e-12
     assert abs(got - naive) > 0.9
+# --------------------------------------------------------------- backbone-resolved fabric
+# Added 2026-09-18 with PREREG_FABRIC_2026-09-18.md. `packing` is engine-independent at
+# import time (it imports yade only inside build_and_compress), so these run on Windows.
+
+def test_backbone_mask_requires_BOTH_ends_in_the_backbone():
+    """The discriminating case: a contact with one end rattling must be excluded.
+
+    An `or` instead of an `and` passes every other test one would write.
+    """
+    from packing import backbone_mask
+    ids = [[0, 1], [1, 2], [2, 3], [3, 0]]
+    m = backbone_mask(ids, backbone={0, 1, 2})
+    assert list(m) == [True, True, False, False]
+
+
+def test_backbone_mask_is_aligned_with_its_normals_row_for_row():
+    from packing import backbone_mask
+    ids = [[5, 6], [7, 8], [6, 7]]
+    m = backbone_mask(ids, backbone={5, 6, 7})
+    assert m.shape == (3,)
+    assert list(m) == [True, False, True]
+
+
+def test_backbone_mask_on_an_empty_contact_list():
+    from packing import backbone_mask
+    m = backbone_mask([], backbone={1, 2})
+    assert m.shape == (0,) and m.dtype == bool
+
+
+def test_backbone_mask_with_an_empty_backbone_selects_nothing():
+    from packing import backbone_mask
+    m = backbone_mask([[0, 1], [1, 2]], backbone=set())
+    assert not m.any()
+
+
+def test_fabric_null_reproduces_the_closed_form_n_times_aniso_squared_is_one():
+    """E[A^2] = 1/n EXACTLY for n independent uniform normals.
+
+    The derivation is in `diag_fabric_null.py`; this is the anchor that does not pass
+    through the campaign code, and it is what licenses T = n*A^2 as the observable that
+    removes the contact-count confound. PREREG_FABRIC_2026-09-18.md sec. 0(a).
+    """
+    rng = np.random.default_rng(4242)
+    for n in (400, 1600):
+        v = rng.normal(size=(600, n, 3))
+        v /= np.linalg.norm(v, axis=2, keepdims=True)
+        t = np.array([n * fabric_tensor(v[r])["aniso"] ** 2 for r in range(v.shape[0])])
+        assert abs(t.mean() - 1.0) < 0.08, (n, t.mean())
+        # and the scatter is the chi2_5/5 one, sqrt(2/5) = 0.632 -- a routine returning a
+        # constant would pass the mean test and fail this one.
+        assert 0.45 < t.std(ddof=1) < 0.85, (n, t.std(ddof=1))
+
+
+def test_the_isotropic_floor_falls_as_one_over_sqrt_n():
+    """Quadrupling n must halve `aniso`. This is the confound the campaign divides out."""
+    rng = np.random.default_rng(99)
+    def floor(n):
+        v = rng.normal(size=(300, n, 3))
+        v /= np.linalg.norm(v, axis=2, keepdims=True)
+        return float(np.mean([fabric_tensor(v[r])["aniso"] for r in range(v.shape[0])]))
+    a1, a4 = floor(500), floor(2000)
+    assert 1.8 < a1 / a4 < 2.2, (a1, a4, a1 / a4)

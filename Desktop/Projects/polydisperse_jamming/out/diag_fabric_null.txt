@@ -1,0 +1,58 @@
+diag_fabric_null.py -- sizing the fabric campaign. No DEM cells.
+==============================================================================
+
+1. THE FINITE-SAMPLE FLOOR.  Closed form E[A^2] = 1/n (derivation in the
+   docstring), checked by Monte Carlo, 4000 reps, seed 20260918+n.
+
+     n     MC mean A    MC sd A    0.95/sqrt(n)    MC mean T = n*E[A^2]   MC sd T
+     500    0.043039   0.013543      0.042485            1.0179          0.6304
+    1000    0.030242   0.009652      0.030042            1.0077          0.6338
+    2000    0.021274   0.006866      0.021243            0.9994          0.6266
+    3000    0.017528   0.005729      0.017345            1.0201          0.6539
+    4000    0.015049   0.004895      0.015021            1.0017          0.6321
+    6000    0.012381   0.004016      0.012264            1.0164          0.6452
+
+   worst |MC E[T] - 1| over the table: 0.0201
+   PASS: the Monte Carlo reproduces E[T] = 1 to better than 5 %.
+   sd(T) under the null, averaged over n = 2000/3000/4000: 0.6375
+   (T is a quadratic form in the 5 independent deviator components, so it is
+    chi2_5/5-like: predicted sd = sqrt(2/5) = 0.6325.)
+
+2. THE CONTACT-COUNT CONFOUND, from committed shards.
+   N before any filter: 717 records in out/phase2_*.jsonl
+   N after dropping failed cells: 717
+   N after N=1500, mu_p=0.3: 270
+   N after p_hat=0.001: 69
+   mean n_contacts and the floor it implies, p_hat = 0.001:
+     family        CV0.0  CV0.1  CV0.2  CV0.3  CV0.4  CV0.5     floor CV0 -> CV0.5    slope/CV
+     lognormal      3683   3590   3377   2939   2430   2050     0.0157 -> 0.0210     +0.0107
+     uniform        3684   3587   3286   2899   2498   2184     0.0157 -> 0.0203     +0.0094
+     bidisperse     3684   3627   3283   2740   2302   2039     0.0157 -> 0.0210     +0.0108
+   N after p_hat=0.0001: 68
+   mean n_contacts and the floor it implies, p_hat = 0.0001:
+     family        CV0.0  CV0.1  CV0.2  CV0.3  CV0.4  CV0.5     floor CV0 -> CV0.5    slope/CV
+     lognormal      3262   3211   2994   2480   2068   1613     0.0166 -> 0.0237     +0.0140
+     uniform        3255   3158   2898   2469   2164   1851     0.0167 -> 0.0221     +0.0109
+     bidisperse     3255   3192   2911   2429   2012   1798     0.0167 -> 0.0224     +0.0115
+
+   READ THIS BEFORE READING ANY `aniso` vs CV PLOT: the floor alone rises by
+   roughly a third across the CV ladder, in the SAME direction a restructuring
+   signal would. T = n*A^2 removes it by construction; `aniso` does not.
+
+3. RESOLVING POWER of the slope of T against CV.
+   6 CV rungs (0.0, 0.1, 0.2, 0.3, 0.4, 0.5), sd(CV) = 0.1708, sd(T) = 0.6375
+   pre-registered effect size: DELTA_T over CV 0 -> 0.5 of 0.5
+
+     seeds   points   se(slope)   2*se(slope)   2*se as DELTA_T over the range   resolves?
+         3       18      0.8799        1.7597                          0.8799   no
+         6       36      0.6222        1.2443                          0.6222   no
+         9       54      0.5080        1.0160                          0.5080   no
+        12       72      0.4399        0.8799                          0.4399   YES
+        15       90      0.3935        0.7870                          0.3935   YES
+
+   SMALLEST SEED COUNT THAT RESOLVES THE REGISTERED EFFECT: 12
+   This is the number the prereg registers, and it assumes the measured sd(T)
+   equals the null's. It will NOT, in general: if the packs carry real
+   orientational structure the scatter is larger. The grader therefore
+   RECOMPUTES the achieved resolving power from the measured sd and reports the
+   verdict against that, so a null can come back UNINFORMATIVE rather than pass.

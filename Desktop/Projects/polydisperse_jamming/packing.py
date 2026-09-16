@@ -71,8 +71,10 @@ import numpy as np
 
 from measure import (
     RATTLER_MIN_CONTACTS,
+    RATTLER_THRESHOLDS,
     fabric_tensor,
     force_moments,
+    iterated_rattlers,
     rattler_report,
 )
 from psd import make_psd
@@ -146,6 +148,14 @@ class PackingState:
     fabric: dict = field(default_factory=dict)    # contact-orientation anisotropy.
     #                                               EMPTY on every record written before
     #                                               2026-09-18, so read it with .get()
+    fabric_nr: dict = field(default_factory=dict)  # the same, over the NON-RATTLER
+    #                                                BACKBONE only. Separate because the
+    #                                                rattler fraction runs 0.040 -> 0.234
+    #                                                across CV, so an all-contact fabric
+    #                                                mixes a change in the rattler
+    #                                                POPULATION with a change in the
+    #                                                backbone's STRUCTURE. EMPTY on every
+    #                                                record written before 2026-09-18.
     protocol: str = "iso-stress-nondim-v2"
     notes: list[str] = field(default_factory=list)
 
@@ -173,7 +183,7 @@ def contact_graph(O):  # noqa: E741
     return counts, neigh, np.asarray(forces, dtype=float)
 
 
-def contact_normals(O):  # noqa: E741
+def contact_normals(O, with_ids: bool = False):  # noqa: E741
     """Unit contact normals over the REAL interactions, as an (n, 3) array.
 
     A SEPARATE function rather than a fourth return from `contact_graph`, because six
@@ -184,17 +194,45 @@ def contact_normals(O):  # noqa: E741
     Read AFTER relaxation and used only by `fabric_tensor`, so it observes the solver
     and cannot drive it -- the failure mode lessons.md records for MEASURE_NSAMP, where
     an output probe became the binding constraint on dt.
+
+    With `with_ids` it also returns the (n, 2) array of the two body ids behind each
+    normal, which is what lets `measure` read the fabric over the NON-RATTLER BACKBONE
+    as well as over every contact. That split is the whole point of recording this: the
+    rattler fraction runs 0.040 -> 0.234 across CV, so an all-contact fabric mixes a
+    change in the rattler POPULATION with a change in the backbone's STRUCTURE, and only
+    the second one answers the question the rattler result left open. The two lists are
+    appended in the SAME iteration behind the SAME guard, never filtered independently
+    (lessons.md 2026-09-05: pairing two columns by filtering each one separately
+    misaligns them the moment one has a gap).
     """
     out = []
+    ids = []
     for i in O.interactions:
         if not i.isReal:
             continue
         try:
             n = i.geom.normal
-            out.append([float(n[0]), float(n[1]), float(n[2])])
+            row = [float(n[0]), float(n[1]), float(n[2])]
         except Exception:
             continue
-    return np.asarray(out, dtype=float).reshape(-1, 3)
+        out.append(row)
+        ids.append([int(i.id1), int(i.id2)])
+    arr = np.asarray(out, dtype=float).reshape(-1, 3)
+    if with_ids:
+        return arr, np.asarray(ids, dtype=int).reshape(-1, 2)
+    return arr
+
+
+def backbone_mask(ids, backbone) -> np.ndarray:
+    """Boolean mask over contacts whose BOTH ends are in `backbone`.
+
+    Pure and id-based, so it is testable without a Yade scene.
+    """
+    ids = np.asarray(ids, dtype=int).reshape(-1, 2)
+    if ids.shape[0] == 0:
+        return np.zeros(0, dtype=bool)
+    bb = set(int(b) for b in backbone)
+    return np.array([(int(a) in bb) and (int(b) in bb) for a, b in ids], dtype=bool)
 
 
 def measure(O, utils, st: PackingState, young: float) -> PackingState:  # noqa: E741
@@ -211,12 +249,41 @@ def measure(O, utils, st: PackingState, young: float) -> PackingState:  # noqa: 
     st.rattler_frac = st.rattler[f"rattler_frac_k{RATTLER_MIN_CONTACTS}"]
     st.z_nr = st.rattler[f"z_nr_k{RATTLER_MIN_CONTACTS}"]
     st.force = force_moments(forces)
-    # Contact-orientation anisotropy. An isotropically compressed pack should sit near
-    # zero; a value that DRIFTS with CV would say polydispersity restructures the network
-    # rather than only re-populating it -- which is the open question the rattler result
-    # (0.040 -> 0.234 while backbone Z barely moves) could not answer. Recorded from
-    # 2026-09-18; absent on every earlier record.
-    st.fabric = fabric_tensor(contact_normals(O))
+    # Contact-orientation anisotropy, over ALL real contacts and over the NON-RATTLER
+    # BACKBONE. Recorded from 2026-09-18; absent on every earlier record.
+    #
+    # Two things about how to read it, both registered in PREREG_FABRIC_2026-09-18.md.
+    # (1) `aniso` is the von Mises norm of the deviator, and under isotropic compression
+    #     the ENSEMBLE-mean deviator is zero by symmetry at every CV -- so the deviator
+    #     itself carries no CV signal that symmetry permits. What does carry one is its
+    #     MAGNITUDE relative to the finite-sample floor: for n INDEPENDENT unit normals
+    #     E[aniso^2] = 1/n exactly, so T = n * aniso^2 has E[T] = 1 and is free of the
+    #     contact-count confound. T > 1 is orientational CORRELATION in the network.
+    # (2) n_contacts falls 3682 -> 2050 across CV here, so a raw `aniso` vs CV trend is
+    #     manufactured by the floor alone (0.0157 -> 0.0210). Never read `aniso` against
+    #     CV without dividing the floor out.
+    # (3) The backbone fabric is recorded at EVERY rattler threshold, not only the
+    #     primary one, because `rattler_report` already establishes that convention for
+    #     this project: a conclusion that holds at one k is a statement about the
+    #     definition. It matters more here than it looks. At k = 2 a rattler is a grain
+    #     with <= 1 contact, so removing 404 of 1500 grains removed TWO of 2762 contacts
+    #     in the gate cell -- the k = 2 backbone fabric is all but identical to the
+    #     all-contact one, and the conflation this split exists to avoid is negligible
+    #     THERE and real at k = 4.
+    normals, cids = contact_normals(O, with_ids=True)
+    st.fabric = fabric_tensor(normals)
+    fnr: dict[str, float] = {}
+    for k in RATTLER_THRESHOLDS:
+        bb_k = set(counts) - iterated_rattlers(counts, neigh, min_contacts=k)
+        f_k = fabric_tensor(normals[backbone_mask(cids, bb_k)])
+        fnr[f"aniso_k{k}"] = f_k["aniso"]
+        fnr[f"n_k{k}"] = f_k["n"]
+    # The primary threshold is aliased to the bare keys so a reader who does not know
+    # about the threshold ladder still gets the PRIMARY definition and not an arbitrary
+    # one -- the same choice `rattler_frac` and `z_nr` already make.
+    fnr["aniso"] = fnr[f"aniso_k{RATTLER_MIN_CONTACTS}"]
+    fnr["n"] = fnr[f"n_k{RATTLER_MIN_CONTACTS}"]
+    st.fabric_nr = fnr
 
     s = np.array(utils.getStress())
     st.p_hat = float(-np.trace(s) / 3.0 / young)

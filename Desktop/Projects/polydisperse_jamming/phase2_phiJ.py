@@ -161,6 +161,12 @@ def main() -> int:
                     help="comma-separated CV values, overriding CV_LADDER")
     ap.add_argument("--seeds", default="",
                     help="comma-separated seeds, overriding SEEDS")
+    ap.add_argument("--phats", default="",
+                    help="comma-separated p_hat rungs, overriding P_HAT_LADDER. A "
+                         "SINGLE rung is not a phi_J measurement -- phi_J is always "
+                         "extrapolated from the ladder -- so any campaign that passes "
+                         "this must say in its prereg that it is reading an observable "
+                         "AT a pressure, not a jamming point.")
     args = ap.parse_args()
 
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -171,10 +177,16 @@ def main() -> int:
         mus = tuple(float(x) for x in args.mus.split(','))
     if args.cvs:
         cvs = tuple(float(x) for x in args.cvs.split(','))
+    # --seeds AFTER the default, not before: until 2026-09-18 these two lines were the
+    # other way round, so the flag was accepted and silently overwritten. Every campaign
+    # that passed it passed `1,2,3`, which is SEEDS, so no record on disk is affected --
+    # but a 6-seed run would have quietly been a 3-seed one.
+    seeds = (1,) if args.quick else SEEDS
     if args.seeds:
         seeds = tuple(int(x) for x in args.seeds.split(','))
-    seeds = (1,) if args.quick else SEEDS
     ladder = (1e-3, 3e-4, 1e-4) if args.quick else P_HAT_LADDER
+    if args.phats:
+        ladder = tuple(float(x) for x in args.phats.split(','))
 
     suffix = ("_quick" if args.quick else "") + (f"_{args.tag}" if args.tag else "")
     if args.family != "lognormal":
