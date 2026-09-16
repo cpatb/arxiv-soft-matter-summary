@@ -180,8 +180,8 @@ vanishes. That constraint is free and is not a fitted parameter.
   2.57 bar is inside that span**; "attemptable" on **6 of 7**. The document's 2.99 is one
   draw from that range. ⚠ **This is superseded by H2 below** — four of the seven forms
   turn out to be falsifiable outright, and the 2.57 is the wrong bar.
-* **K = 7 (u = 0.79370): CLOSED, robustly.** Span **2.189 to 2.356**, factor 1.08, bar
-  **outside** it, **0 of 7** forms reach it. The recorded 2.31 is safe.
+* **K = 7 (u = 0.79370): CLOSED, robustly.** Span **2.123 to 2.356**, factor 1.11, bar
+  **outside** it, **0 of 8** forms reach it. The recorded 2.31 is safe.
 * **No two-parameter form fits the three points.** Fit each to the two outer points and
   predict the middle one: log-log misses by **9.4 %**, linear by **26.0 %**, power-law in
   (1−u) by **18.6 %**. The three pairwise power-law exponents are **3.594 / 2.274 /
@@ -192,7 +192,7 @@ vanishes. That constraint is free and is not a fitted parameter.
 **(i) The exact anchor is real — and using it as a FILTER is WITHDRAWN.** At u = 1 the
 classes are identical, the mixture **is** monodisperse and the signal is exactly 0. That is
 not algebra: `packing_density_ab(..., a = 1, b = 1) − β` is **0.00e+00** over five ratios ×
-nine compositions in the *shipped* closure. Evaluated at u → 1 the seven forms give
+nine compositions in the *shipped* closure. Evaluated at u → 1 the seven ORIGINALLY declared forms give
 **0.626, −2.58, 15.4, 1.62, 5.04e−21, 6.07e−25, inf** — four do not vanish, and the linear
 one is **negative**, which `max(φ − β)` cannot be.
 
@@ -216,6 +216,14 @@ measurements. ⚠ And it happened to favour the answer I wanted, which is the di
 distrust. The filtered number stays printed beside the reason it is not used. **The
 unfiltered spread, 2.558–3.253, is what is used.**
 
+✅ **The anchor DOES have an honest use, and it changes nothing** — which is the point. Add
+it as a **constraint inside a fit** rather than a gate over families: `s(u) = A(1−u²) +
+Bu(1−u)` vanishes at u = 1 by construction and **costs a degree of freedom** (2 parameters
+on 3 points against the others' 3). Fitted, it gives **3.164** at K = 6 and **2.123** at
+K = 7 — squarely **mid-pack** in the existing spread. It is now the **eighth** declared
+form. That a properly anchored fit lands in the middle is further evidence that **no form
+is privileged**, which is what the withdrawal claimed.
+
 **(ii) The 2.57 bar is not a constant, and it was borrowed from a different ratio.**
 `grade_ugap.py` computes that ceiling **at arm B's ratio r = 1.25**, over truths clustered
 near (a, b) = (0.975, 0.960). Using it at u = 0.75786 is the **"φ span" units trap
@@ -235,21 +243,49 @@ Had the grid reached it, `max(unresolved)` would have exceeded `min(resolved)` a
 **`a(0.75786) ≥ a(0.70711) = 0.9481`** by the measured monotonicity of `a(u)` — an
 argument, now stated and scanned rather than assumed.
 
+🔴 **AND ON A DENSER GRID IT IS NOT A BRACKET AT ALL (referee, pass 4).** "Fails up to X,
+resolves from Y" presumes identifiability is **ordered by the signal**, which two `b` values
+cannot test. Over the full floor-respecting box (`a ≥ 0.9481`, `b ≥ 0.9376`, both measured
+at u = 0.70711 and carried up by the same monotonicity argument), 7 × 7 = **49** truths give
+**21 identifiable and 28 not** — and the largest signal among the **non**-identifiable ones
+is **3.125** (a = 0.9550, b = 0.9626) while the smallest among the identifiable ones is
+**2.541** (a = 0.9760, b = 0.9601). **The order is INVERTED.** The flip is sharp rather than
+numerical: at a = 0.9481, `b` = 0.9601 resolves (signal 3.34, w(a) = 0.19) and `b` = 0.9626
+does not (signal 3.12, w(a) = **0.98**) — a flip on Δb = 0.0025, with the `a`-interval
+blowing up as the `a` = 1 escape branch reopens.
+
+**So a scalar "resolving power" threshold on `max(φ − β)` is not well posed in this
+neighbourhood.** `[2.55, 2.97]` is kept only as the like-for-like reproduction of
+`grade_ugap.py`'s own construction; it is **not a bound**, and the margin below is therefore
+a **LOWER bound on how unresolved K = 6 is**. (The `b` floor 0.9376 is `b(0.70711)`,
+measured — a **floor**, never validated as central, which is a second reason the box
+understates the uncertainty.)
+
+
 **(iii) Both defects corrected, the margin STRADDLES 1.**
 
 | | the document | corrected |
 |---|---|---|
-| signal at u = 0.75786 | 2.99 (one form, 2 pts) | **2.558 – 3.253** (all 7 declared forms) |
+| signal at u = 0.75786 | 2.99 (one form, 2 pts) | **2.558 – 3.253** (all 8 declared forms) |
 | bar | 2.57 (borrowed from r = 1.25) | **2.55 – 2.97** (this ratio, bracketed) |
 | **margin** | **1.16×** | **0.86× – 1.28×** |
 
-🔴 **K = 6 is UNRESOLVED: the corrected box contains the answer "no".** The document's
-1.16× was a point estimate of a quantity whose honest width covers **both** verdicts. (With
-the withdrawn anchor filter the box would have read 1.05×–1.28× and excluded "no" — that
-is precisely what the filter was buying, and why it is not used.)
+🔴 **K = 6 is UNRESOLVED: the corrected box contains the answer "no", and that box is a
+LOWER BOUND on the uncertainty**, because its bar side is not a valid bracket. The
+document's 1.16× was a point estimate of a quantity whose honest width covers **both**
+verdicts. (With the withdrawn anchor filter the box would have read 1.05×–1.28× and
+excluded "no" — precisely what the filter was buying, and why it is not used.)
 
-* **K = 7 (u = 0.79370): CLOSED, robustly.** Span **2.189 to 2.356** over all seven forms
-  factor 1.08, **0 of 7** reach even the borrowed 2.57, let alone the
+**What can decide K = 6, and why it is not a denser grid.** Recomputing the ceiling at
+`r = 1.31951` is **necessary and not sufficient**: identifiability here is a genuinely
+**two-dimensional, non-monotone** criterion in (a, b) and cannot be collapsed into a
+one-dimensional threshold on the signal at all. **No assumed-truth grid, however dense,
+produces a bar.** Only a **real block at that ratio** can — it measures the signal instead
+of interpolating it *and* evaluates identifiability at the truth that actually obtains
+instead of scanning for one. That is one experiment fixing all three defects.
+
+* **K = 7 (u = 0.79370): CLOSED, robustly.** Span **2.123 to 2.356** over all EIGHT declared forms,
+  factor **1.11**, **0 of 8** reach even the borrowed 2.57, let alone the
   corrected bracket, and the widest defensible interval the referee could build across
   both passes is **[1.26, 2.37]** against a bar of ≥ 2.5. The recorded 2.31 is safe.
 

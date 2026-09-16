@@ -130,6 +130,22 @@ def f_quad_1mu(us, ss, u):
     return float(math.exp(np.polyval(c, math.log(1 - u))))
 
 
+def f_anchor_quad(us, ss, u):
+    """s(u) = A(1-u^2) + B u(1-u), least-squares on all three points.
+
+    The anchor enters as a CONSTRAINT inside a fit -- both basis functions vanish at
+    u = 1, so s(1) = 0 is imposed rather than tested, and it COSTS a degree of freedom
+    (two parameters for three points) instead of being a pass/fail gate over whole
+    families. Suggested by the referee on pass 4 as the honest way to use the anchor
+    after the FILTER was withdrawn. It is an EIGHTH member of the declared set, not a
+    replacement for any of them.
+    """
+    u_ = np.asarray(us, float)
+    M = np.column_stack([1 - u_**2, u_ * (1 - u_)])
+    coef, *_ = np.linalg.lstsq(M, np.asarray(ss, float), rcond=None)
+    return float(coef[0] * (1 - u * u) + coef[1] * u * (1 - u))
+
+
 FORMS = (
     ("log-log, 2 bracketing pts  [THE DOCUMENT'S]", f_loglog2, 2, "no"),
     ("linear in (u, s), 2 pts", f_lin2, 2, "no"),
@@ -138,6 +154,7 @@ FORMS = (
     ("power law in (1-u), 2 pts", f_pow1mu_2, 2, "YES"),
     ("power law in (1-u), 3 pts LSQ", f_pow1mu_3, 3, "YES"),
     ("quadratic in (ln(1-u), ln s), 3 pts", f_quad_1mu, 3, "YES"),
+    ("A(1-u^2) + Bu(1-u), CONSTRAINED fit", f_anchor_quad, 2, "YES"),
 )
 
 
@@ -209,9 +226,13 @@ def main() -> int:
     say()
 
     say("=== THE SPREAD OVER A DECLARED SET OF FORMS ===")
-    say("   'anchored' = the form is forced through the EXACT physical point (u = 1,")
-    say("   s = 0): at u = 1 the classes are identical, the mixture is monodisperse,")
-    say("   phi = beta and the filling signal vanishes. That costs no fitted parameter.")
+    say("   'anchored' = the form vanishes at the EXACT physical point (u = 1, s = 0):")
+    say("   at u = 1 the classes are identical, the mixture is monodisperse, phi = beta")
+    say("   and the filling signal vanishes. For the power laws that is FREE (any (c, p)")
+    say("   satisfies it, so the anchor certifies the FAMILY and not the parameters); for")
+    say("   the last form it is IMPOSED and COSTS a degree of freedom -- 2 parameters on")
+    say("   3 points against the others' 3. That last one is the honest way to use the")
+    say("   anchor, and it lands mid-pack, which is itself evidence no form is privileged.")
     say(f"   {'form':<40}{'pars':>5}{'anch':>6}{'s(K=6)':>9}{'margin':>8}{'K6?':>6}"
         f"{'s(K=7)':>9}{'margin':>8}{'K7?':>6}")
     v6, v7 = [], []
@@ -409,6 +430,62 @@ def main() -> int:
     say("   a(0.70711) is MEASURED at 0.9481 and a(0.8) is inferred >= 0.975, and a(u)")
     say("   is increasing, so the truth at u = 0.75786 lies between them -- the rows")
     say("   above bracket it.")
+    # ---------------------------------------------------------------------------
+    # PASS-4 CHECK: is "fails up to X, resolves from Y" a BRACKET at all? It only is if
+    # identifiability is ORDERED by the signal. Two b values cannot test that. Sweep the
+    # whole floor-respecting box -- a >= a(0.70711) = 0.9481 and b >= b(0.70711) = 0.9376,
+    # both measured, both by the same monotonicity argument.
+    say()
+    say("   IS IT A BRACKET AT ALL? The reading 'fails up to X, resolves from Y' assumes")
+    say("   identifiability is ORDERED BY THE SIGNAL. Two b values cannot test that, so")
+    say("   here is the whole floor-respecting box (a >= 0.9481, b >= 0.9376, both")
+    say("   MEASURED at u = 0.70711 and carried up by the same monotonicity argument):")
+    B_FLOOR = 0.9376
+    grid_ok, grid_no = [], []
+    agrid = [0.9481, 0.9550, 0.9620, 0.9690, 0.9760, 0.9830, 0.9900]
+    bgrid = [0.9376, 0.9450, 0.9520, 0.9601, 0.9626, 0.9700, 0.9800]
+    for a_ in agrid:
+        for b_ in bgrid:
+            ok_, _ia, _ib, s_ = ident_at(a_, b_)
+            (grid_ok if ok_ else grid_no).append((s_, a_, b_))
+    say(f"   {len(agrid)} x {len(bgrid)} = {len(agrid) * len(bgrid)} truths; "
+        f"{len(grid_ok)} identifiable, {len(grid_no)} not.")
+    if grid_ok and grid_no:
+        hi_no = max(grid_no)
+        lo_ok = min(grid_ok)
+        say(f"   largest signal among NON-identifiable truths: {hi_no[0]:.3f} at "
+            f"(a = {hi_no[1]:.4f}, b = {hi_no[2]:.4f})")
+        say(f"   smallest signal among IDENTIFIABLE truths   : {lo_ok[0]:.3f} at "
+            f"(a = {lo_ok[1]:.4f}, b = {lo_ok[2]:.4f})")
+        if hi_no[0] > lo_ok[0]:
+            say("   \U0001f534 **THE ORDER IS INVERTED**: there are truths this design "
+                "CANNOT resolve whose")
+            say(f"      signal is LARGER ({hi_no[0]:.3f}) than truths it CAN resolve "
+                f"({lo_ok[0]:.3f}). So a scalar")
+            say("      'resolving power' threshold on max(phi - beta) is NOT WELL POSED in")
+            say("      this neighbourhood, and 'fails up to X, resolves from Y' is not a")
+            say("      bracket -- it is an artefact of which corners were sampled. The")
+            say("      two-b reading below is kept ONLY as the like-for-like reproduction")
+            say("      of grade_ugap.py's own construction, and it is NOT a bound.")
+            # the sharp feature, located rather than asserted
+            for a_ in (0.9481,):
+                for b1, b2 in ((0.9601, 0.9626),):
+                    o1, ia1, _, s1 = ident_at(a_, b1)
+                    o2, ia2, _, s2 = ident_at(a_, b2)
+                    say(f"      the flip is SHARP, not noise: at a = {a_:.4f}, "
+                        f"b = {b1:.4f} -> {'YES' if o1 else 'NO'} (sig {s1:.2f}, "
+                        f"w(a) {ia1[1] - ia1[0]:.2f})")
+                    say(f"      and b = {b2:.4f} -> {'YES' if o2 else 'NO'} (sig "
+                        f"{s2:.2f}, w(a) {ia2[1] - ia2[0]:.2f}) -- a flip on "
+                        f"db = {b2 - b1:.4f}, with the")
+                    say("      a-interval blowing up as the a = 1 escape branch reopens.")
+        else:
+            say("   the order HOLDS on this box, so the bracket below is a bracket.")
+    say(f"   (b floor {B_FLOOR} is b(0.70711), MEASURED. It is a FLOOR and was never")
+    say("   validated as CENTRAL, which is the second reason the box is a lower bound on")
+    say("   the uncertainty rather than a description of it.)")
+    say()
+
     if ok_sigs and no_sigs:
         bar_lo, bar_hi = max(no_sigs), min(ok_sigs)
         say(f"   -> at THIS ratio the design FAILS up to {bar_lo:.2f} scale and RESOLVES "
@@ -421,8 +498,13 @@ def main() -> int:
         say("   COMBINING THE TWO DEFECTS, on the UNFILTERED form spread:")
         say(f"      signal, all {v6.size} declared forms          : {v6.min():.3f} to "
             f"{v6.max():.3f}   (the document used {REC_DOC})")
-        say(f"      bar, recomputed at this ratio        : {bar_lo:.2f} to {bar_hi:.2f} "
+        say(f"      bar, two-b reading at this ratio     : {bar_lo:.2f} to {bar_hi:.2f} "
             f"        (the document used {BAR})")
+        say("         \u26a0 NOT A BOUND -- the box above shows the signal does not "
+            "ORDER identifiability,")
+        say("         so the true bar uncertainty is WIDER than this and the margin below "
+            "is a")
+        say("         LOWER bound on how unresolved K = 6 is.")
         m_lo, m_hi = v6.min() / bar_hi, v6.max() / bar_lo
         say(f"      margin                               : {m_lo:.2f}x to {m_hi:.2f}x  "
             f"     (the document used {REC_DOC / BAR:.2f}x)")
@@ -439,10 +521,11 @@ def main() -> int:
             say("      -> K = 6 is CLOSED on every corner of this box.")
         else:
             say(f"      -> K = 6 is UNRESOLVED: the box STRADDLES 1 ({m_lo:.2f}x to "
-                f"{m_hi:.2f}x).")
-            say("         Both defects are real, both are now corrected, and the corrected")
-            say("         box contains the answer 'no'. The document's 1.16x was a point")
-            say("         estimate of a quantity whose honest width covers both verdicts.")
+                f"{m_hi:.2f}x), and that box is a")
+            say("         LOWER BOUND on the uncertainty, because its bar side is not even")
+            say("         a valid bracket (the order inverts above). The document's 1.16x")
+            say("         was a point estimate of a quantity whose honest width covers both")
+            say("         verdicts.")
     elif ok_sigs:
         say("   -> EVERY truth on this grid is identifiable at this ratio, so the ceiling")
         say("      is not bracketed from below here and no bar can be read off it.")
@@ -451,11 +534,18 @@ def main() -> int:
         say("      the answer: the design cannot resolve a(0.75786) at any of them.")
     say()
 
-    say("   What can decide K = 6 is unchanged and is what the document already asks")
-    say(f"   for: recompute the noise-free identifiability ceiling at r = 4^(1/5) = "
-        f"{1.0 / U6:.5f},")
-    say("   at several assumed truths, BEFORE any prereg. None of the numbers above is")
-    say("   a substitute for that, and none of them moves a bar.")
+    say("=== WHAT CAN DECIDE K = 6, AND WHY IT IS NOT A DENSER GRID ===")
+    say("   The document asks for the ceiling to be recomputed at r = 4^(1/5) = "
+        f"{1.0 / U6:.5f}")
+    say("   at several assumed truths before any prereg. That is necessary and NOT")
+    say("   SUFFICIENT: identifiability here is a genuinely TWO-DIMENSIONAL, NON-MONOTONE")
+    say("   criterion in (a, b), and the section above shows it cannot be collapsed into a")
+    say("   one-dimensional threshold on the signal at all -- a non-resolvable truth can")
+    say("   carry a LARGER signal than a resolvable one. So no assumed-truth grid, however")
+    say("   dense, produces a bar. Only a REAL BLOCK at that ratio can, because it")
+    say("   MEASURES the signal instead of interpolating it AND evaluates identifiability")
+    say("   at the truth that actually obtains instead of scanning for one. Nothing above")
+    say("   is a substitute for that, and nothing above moves a bar.")
     _write()
     return 0
 

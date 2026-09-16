@@ -80,10 +80,17 @@ confirmed at this ratio: at `b` = 0.9376, `a` = 0.85 is non-identifiable while 0
 0.92 are, with a low-`a` unresolved region carrying signal up to **6.97**. Had the ceiling
 grid reached it the "bracket" would have been meaningless. It is legitimate **only**
 because `a(0.75786) ≥ a(0.70711) = 0.9481` by measured monotonicity — an argument
-that was not stated and is now scanned.
+that was not stated and is now scanned. 🔴 **And on a 7 × 7 sweep of the whole
+floor-respecting box the bracket INVERTS**: the largest signal among NON-identifiable
+truths is **3.125** and the smallest among identifiable ones is **2.541**, with a sharp flip
+on Δb = 0.0025 as the `a` = 1 escape branch reopens. **A scalar resolving-power
+threshold on `max(φ−β)` is not well posed here**, so `[2.55, 2.97]` is a
+reproduction of `grade_ugap.py`'s construction and **not a bound**, and the margin is a
+LOWER bound on how unresolved K = 6 is. **No assumed-truth grid, however dense, produces a
+bar** — only a real block at `r = 1.31951`, which fixes all three defects at once.
 
-✅ **K ≥ 7 is closed, and robustly**: 2.189–2.356 across all seven forms
-(2.297–2.334 on the admissible two), a factor 1.08, **0 of 7** reaching even the
+✅ **K ≥ 7 is closed, and robustly**: 2.123–2.356 across all EIGHT declared forms
+a factor 1.11, **0 of 8** reaching even the
 borrowed bar. The old "do not push K past 5" item was right about K = 8 and K = 12.
 
 **Nothing above can decide K = 6.** Only the ceiling recomputation at

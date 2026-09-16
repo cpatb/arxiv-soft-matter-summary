@@ -246,7 +246,7 @@ def test_k7_stays_closed_and_robustly(k6):
     """K >= 7 is the half of the forward content that survives; it must not drift."""
     hi = _num(k6, r"K = 7 \(u = [\d.]+\): signal spans [\d.]+ to ([\d.]+)")
     assert hi < 2.57, hi
-    assert "verdict 'attemptable' on 0 of 7 forms" in k6
+    assert "verdict 'attemptable' on 0 of 8 forms" in k6
     assert "K = 7: CLOSED, and robustly" in k6
 
 
@@ -258,10 +258,13 @@ def test_no_two_parameter_form_fits_the_three_points(k6):
     assert worst > 10.0, worst
 
 
-def test_the_anchored_forms_use_a_free_constraint_not_a_fitted_one(k6):
-    """s(u = 1) = 0 is exact: identical classes, monodisperse pack, phi = beta. If this
-    ever reads as a fitted parameter the spread below is being understated."""
-    assert "costs no fitted parameter" in k6
+def test_the_anchor_legend_distinguishes_free_from_constrained(k6):
+    """For the power laws s(1) = 0 is FREE -- any (c, p) satisfies it, so the anchor
+    certifies the FAMILY and not the parameters. For the constrained quadratic it is
+    IMPOSED and costs a degree of freedom. Calling both "anchored" without saying which
+    is how the withdrawn filter looked reasonable in the first place."""
+    assert "that is FREE" in k6
+    assert "COSTS a degree of freedom" in k6
     assert k6.count("YES") >= 3
 
 
@@ -281,11 +284,13 @@ CLAIMED = {
         "5.80", "0.926", "0.898", "0.671", "0.507",
     ],
     "diag_k6_interp.txt": [
-        "7.0470", "4.4273", "2.2056", "2.9937", "2.558", "3.253", "1.27", "2.189",
-        "2.356", "1.08", "9.4", "26.0", "18.6", "2.994", "3.214", "2.858", "3.128",
+        "7.0470", "4.4273", "2.2056", "2.9937", "2.558", "3.253", "1.27", "2.123",
+        "2.356", "1.11", "9.4", "26.0", "18.6", "2.994", "3.214", "2.858", "3.128",
         "2.758", "1.31951", "0.00e+00", "3.594", "2.274", "1.827", "0.626", "-2.58",
         "15.4", "1.62", "5.04e-21", "6.07e-25", "3.128", "3.253", "2.55", "2.97",
         "1.05", "1.28", "1.16", "0.86", "6.97", "0.9481", "-49.0", "9.4", "18.6",
+        "3.125", "2.541", "0.9550", "0.9626", "0.9760", "0.9601", "0.98", "3.164",
+        "2.123", "0.9376",
     ],
 }
 
@@ -331,13 +336,14 @@ def test_the_exact_anchor_is_verified_in_code_not_asserted(k6):
     assert "EXACT in the shipped closure" in k6
 
 
-def test_four_of_seven_forms_are_falsified_by_the_anchor(k6):
+def test_four_of_the_original_seven_forms_are_falsified_by_the_anchor(k6):
     """A form that does not vanish at u = 1, or that goes negative, is wrong -- which is
     a stronger statement than 'the interpolation is under-determined'."""
-    block = k6.split("FALSIFIES THE FORMS")[1].split("RESTRICTED TO")[0]
+    block = k6.split("FALSIFIES THE FORMS")[1].split("IS WITHDRAWN")[0]
     adm = block.count("ADMISSIBLE")
     no = len([ln for ln in block.splitlines() if ln.rstrip().endswith("NO")])
-    assert (adm, no) == (2, 5), (adm, no)
+    # 8 declared forms: 4 of the original 7 fail; the constrained quadratic passes.
+    assert (adm, no) == (3, 5), (adm, no)
     assert "goes NEGATIVE" in k6
 
 
@@ -376,9 +382,32 @@ def test_the_margin_uses_the_UNFILTERED_spread_and_straddles_one(k6):
     m_lo = _num(k6, r"margin\s+: (\d+\.\d+)x to \d+\.\d+x")
     m_hi = _num(k6, r"margin\s+: \d+\.\d+x to (\d+\.\d+)x")
     assert m_lo < 1.0 < m_hi, (m_lo, m_hi)
-    assert "signal, all 7 declared forms" in k6
+    assert "signal, all 8 declared forms" in k6
     assert "K = 6 is UNRESOLVED: the box STRADDLES 1" in k6
     assert "K = 6 stays ATTEMPTABLE on every corner" not in k6
+
+
+def test_the_bar_is_reported_as_NOT_a_bracket(k6):
+    """Pass 4: on a denser (a, b) grid a NON-identifiable truth carries a LARGER signal
+    than an identifiable one, so a scalar threshold on max(phi-beta) is not well posed.
+    [2.55, 2.97] must never be quoted as a bound."""
+    assert "THE ORDER IS INVERTED" in k6
+    hi_no = _num(k6, r"NON-identifiable truths: (\d+\.\d+) at")
+    lo_ok = _num(k6, r"IDENTIFIABLE truths   : (\d+\.\d+) at")
+    assert hi_no > lo_ok, (hi_no, lo_ok)
+    assert "NOT A BOUND" in k6
+    assert "LOWER bound on how unresolved" in k6
+    assert "no assumed-truth grid, however" in k6.lower()
+
+
+def test_the_anchor_has_an_honest_use_that_changes_nothing(k6):
+    """The withdrawal must not read as 'the anchor is worthless'. Imposed as a CONSTRAINT
+    inside a fit -- costing a degree of freedom -- it lands mid-pack."""
+    v = _num(k6, r"A\(1-u\^2\) \+ Bu\(1-u\), CONSTRAINED fit\s+2\s+YES\s+(\d+\.\d+)")
+    lo = _num(k6, r"K = 6 \(u = [\d.]+\): signal spans ([\d.]+) to")
+    hi = _num(k6, r"K = 6 \(u = [\d.]+\): signal spans [\d.]+ to ([\d.]+)")
+    assert lo < v < hi, (lo, v, hi)
+    assert "COSTS a degree of freedom" in k6
 
 
 def test_the_identifiability_island_is_scanned_not_assumed(k6):

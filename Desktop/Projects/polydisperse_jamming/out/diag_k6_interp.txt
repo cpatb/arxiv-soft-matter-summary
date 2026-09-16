@@ -19,14 +19,19 @@
    log-log, 2 bracketing pts  [THE DOCUMENT'S]         4.842     4.427    9.4%
    linear in (u, s), 2 pts                          5.579     4.427   26.0%
    power law in (1-u), 2 pts                        5.251     4.427   18.6%
+   A(1-u^2) + Bu(1-u), CONSTRAINED fit              5.294     4.427   19.6%
    -> worst miss on the held-out middle point: 26.0%. The three points
       are NOT collinear under any of these transforms, so the form is genuinely
       under-determined by the data and no choice among them is privileged.
 
 === THE SPREAD OVER A DECLARED SET OF FORMS ===
-   'anchored' = the form is forced through the EXACT physical point (u = 1,
-   s = 0): at u = 1 the classes are identical, the mixture is monodisperse,
-   phi = beta and the filling signal vanishes. That costs no fitted parameter.
+   'anchored' = the form vanishes at the EXACT physical point (u = 1, s = 0):
+   at u = 1 the classes are identical, the mixture is monodisperse, phi = beta
+   and the filling signal vanishes. For the power laws that is FREE (any (c, p)
+   satisfies it, so the anchor certifies the FAMILY and not the parameters); for
+   the last form it is IMPOSED and COSTS a degree of freedom -- 2 parameters on
+   3 points against the others' 3. That last one is the honest way to use the
+   anchor, and it lands mid-pack, which is itself evidence no form is privileged.
    form                                     pars  anch   s(K=6)  margin   K6?   s(K=7)  margin   K7?
    log-log, 2 bracketing pts  [THE DOCUMENT'S]    2    no    2.994   1.165   yes    2.306   0.897    no
    linear in (u, s), 2 pts                     2    no    3.214   1.250   yes    2.356   0.917    no
@@ -35,11 +40,12 @@
    power law in (1-u), 2 pts                   2   YES    3.128   1.217   yes    2.334   0.908    no
    power law in (1-u), 3 pts LSQ               3   YES    3.253   1.266   yes    2.297   0.894    no
    quadratic in (ln(1-u), ln s), 3 pts         3   YES    2.758   1.073   yes    2.248   0.875    no
+   A(1-u^2) + Bu(1-u), CONSTRAINED fit         2   YES    3.164   1.231   yes    2.123   0.826    no
 
    K = 6 (u = 0.75786): signal spans 2.558 to 3.253, a factor 1.27; the bar 2.57 is INSIDE that span.
-           verdict 'attemptable' on 6 of 7 forms.
-   K = 7 (u = 0.79370): signal spans 2.189 to 2.356, a factor 1.08; the bar 2.57 is OUTSIDE that span.
-           verdict 'attemptable' on 0 of 7 forms.
+           verdict 'attemptable' on 7 of 8 forms.
+   K = 7 (u = 0.79370): signal spans 2.123 to 2.356, a factor 1.11; the bar 2.57 is OUTSIDE that span.
+           verdict 'attemptable' on 0 of 8 forms.
 
 === INTERIM VERDICT ON THE DOCUMENT'S OWN BASIS (generated, not typed) ===
    (!) This grades the document's estimate against the document's own bar and
@@ -47,7 +53,7 @@
    are FALSIFIED by the exact anchor, and the 2.57 bar was borrowed from
    another ratio. Read the final section, not this one, for the verdict on
    whether K = 6 is attemptable.
-   K = 6: UNRESOLVED on this basis. The estimate flips with the interpolation form (6/7 say yes),
+   K = 6: UNRESOLVED on this basis. The estimate flips with the interpolation form (7/8 say yes),
    and the document's 2.99 is one draw from a 2.56-3.25 range that straddles the bar.
    'The K axis closes at 6' is therefore NOT established by this estimate.
    K = 7: CLOSED, and robustly -- no form in the declared set reaches 2.57 (max 2.36).
@@ -76,6 +82,7 @@
    power law in (1-u), 2 pts                       5.04e-21        0.0   ADMISSIBLE
    power law in (1-u), 3 pts LSQ                   6.07e-25        0.0   ADMISSIBLE
    quadratic in (ln(1-u), ln s), 3 pts                  inf        0.0           NO
+   A(1-u^2) + Bu(1-u), CONSTRAINED fit            -5.68e-12        0.0   ADMISSIBLE
    -> a form that does not vanish at u = 1 contradicts the one piece of EXACT
       physics available, and one of them goes NEGATIVE, which max(phi - beta)
       cannot be (at x = 0 the mixture IS the coarse pack, so the max is >= 0).
@@ -84,8 +91,8 @@
       inside it too.
 
 === 🔴 USING THE ANCHOR AS A *FILTER* IS WITHDRAWN (referee, pass 3) ===
-   Restricting to the 2 anchor-admissible forms would give a K = 6
-   signal of 3.128 to 3.253 (K = 7 2.297 to 2.334) -- i.e. it would REMOVE the
+   Restricting to the 3 anchor-admissible forms would give a K = 6
+   signal of 3.128 to 3.253 (K = 7 2.123 to 2.334) -- i.e. it would REMOVE the
    low end of the spread and make K = 6 look settled. That number is printed and
    NOT USED, for three reasons the file's own tables supply:
 
@@ -151,23 +158,56 @@
    a(0.70711) is MEASURED at 0.9481 and a(0.8) is inferred >= 0.975, and a(u)
    is increasing, so the truth at u = 0.75786 lies between them -- the rows
    above bracket it.
+
+   IS IT A BRACKET AT ALL? The reading 'fails up to X, resolves from Y' assumes
+   identifiability is ORDERED BY THE SIGNAL. Two b values cannot test that, so
+   here is the whole floor-respecting box (a >= 0.9481, b >= 0.9376, both
+   MEASURED at u = 0.70711 and carried up by the same monotonicity argument):
+   7 x 7 = 49 truths; 21 identifiable, 28 not.
+   largest signal among NON-identifiable truths: 3.125 at (a = 0.9550, b = 0.9626)
+   smallest signal among IDENTIFIABLE truths   : 2.541 at (a = 0.9760, b = 0.9601)
+   🔴 **THE ORDER IS INVERTED**: there are truths this design CANNOT resolve whose
+      signal is LARGER (3.125) than truths it CAN resolve (2.541). So a scalar
+      'resolving power' threshold on max(phi - beta) is NOT WELL POSED in
+      this neighbourhood, and 'fails up to X, resolves from Y' is not a
+      bracket -- it is an artefact of which corners were sampled. The
+      two-b reading below is kept ONLY as the like-for-like reproduction
+      of grade_ugap.py's own construction, and it is NOT a bound.
+      the flip is SHARP, not noise: at a = 0.9481, b = 0.9601 -> YES (sig 3.34, w(a) 0.19)
+      and b = 0.9626 -> NO (sig 3.12, w(a) 0.98) -- a flip on db = 0.0025, with the
+      a-interval blowing up as the a = 1 escape branch reopens.
+   (b floor 0.9376 is b(0.70711), MEASURED. It is a FLOOR and was never
+   validated as CENTRAL, which is the second reason the box is a lower bound on
+   the uncertainty rather than a description of it.)
+
    -> at THIS ratio the design FAILS up to 2.55 scale and RESOLVES from 2.97, so the bar is
       BRACKETED in [2.55, 2.97] -- it is NOT a single number, and the 2.57 the document used
       was computed at r = 1.25, a different ratio. The bracket's ends are 0.99x and 1.16x the borrowed value.
 
    COMBINING THE TWO DEFECTS, on the UNFILTERED form spread:
-      signal, all 7 declared forms          : 2.558 to 3.253   (the document used 2.99)
-      bar, recomputed at this ratio        : 2.55 to 2.97         (the document used 2.57)
+      signal, all 8 declared forms          : 2.558 to 3.253   (the document used 2.99)
+      bar, two-b reading at this ratio     : 2.55 to 2.97         (the document used 2.57)
+         ⚠ NOT A BOUND -- the box above shows the signal does not ORDER identifiability,
+         so the true bar uncertainty is WIDER than this and the margin below is a
+         LOWER bound on how unresolved K = 6 is.
       margin                               : 0.86x to 1.28x       (the document used 1.16x)
       (For the record, the WITHDRAWN anchor-filtered signal would have given 1.05x
       to 1.28x. That is the number the filter was buying, and it is why the
       filter is not used: it moved the verdict.)
-      -> K = 6 is UNRESOLVED: the box STRADDLES 1 (0.86x to 1.28x).
-         Both defects are real, both are now corrected, and the corrected
-         box contains the answer 'no'. The document's 1.16x was a point
-         estimate of a quantity whose honest width covers both verdicts.
+      -> K = 6 is UNRESOLVED: the box STRADDLES 1 (0.86x to 1.28x), and that box is a
+         LOWER BOUND on the uncertainty, because its bar side is not even
+         a valid bracket (the order inverts above). The document's 1.16x
+         was a point estimate of a quantity whose honest width covers both
+         verdicts.
 
-   What can decide K = 6 is unchanged and is what the document already asks
-   for: recompute the noise-free identifiability ceiling at r = 4^(1/5) = 1.31951,
-   at several assumed truths, BEFORE any prereg. None of the numbers above is
-   a substitute for that, and none of them moves a bar.
+=== WHAT CAN DECIDE K = 6, AND WHY IT IS NOT A DENSER GRID ===
+   The document asks for the ceiling to be recomputed at r = 4^(1/5) = 1.31951
+   at several assumed truths before any prereg. That is necessary and NOT
+   SUFFICIENT: identifiability here is a genuinely TWO-DIMENSIONAL, NON-MONOTONE
+   criterion in (a, b), and the section above shows it cannot be collapsed into a
+   one-dimensional threshold on the signal at all -- a non-resolvable truth can
+   carry a LARGER signal than a resolvable one. So no assumed-truth grid, however
+   dense, produces a bar. Only a REAL BLOCK at that ratio can, because it
+   MEASURES the signal instead of interpolating it AND evaluates identifiability
+   at the truth that actually obtains instead of scanning for one. Nothing above
+   is a substitute for that, and nothing above moves a bar.
