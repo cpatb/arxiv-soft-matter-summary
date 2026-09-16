@@ -173,6 +173,31 @@ def test_the_oracle_separates_form_failure_from_transfer_failure(ga):
     assert gap > 5, f"gap {gap}: the ladders and the families no longer disagree"
 
 
+def test_the_pooled_oracle_is_not_quotable_without_the_per_family_split(ga):
+    """Pass 6: the two continuous families disagree with EACH OTHER by more than either
+    disagrees with the ladders, and they straddle the ladders' value. A pooled oracle
+    quoted alone reads as "continuous PSDs want less nesting", which is lognormal
+    dominating a combined fit."""
+    ln = _num(ga, r"lognormal\s+5\s+5\s+(\d+\.\d+)")
+    un = _num(ga, r"uniform\s+5\s+5\s+(\d+\.\d+)")
+    lam = _num(ga, r"both ladders \(primary fit\)\s+(\d+\.\d+)")
+    orc = _num(ga, r"families \(HELD OUT, oracle\)\s+(\d+\.\d+)")
+    assert ln < lam < un, "the families must straddle the ladders"
+    assert abs(ln - un) > abs(lam - orc), "family-vs-family must exceed ladders-vs-oracle"
+    assert "UNDEFINED" in ga, "bidisperse has no leverage and must not get a lambda"
+    assert "HIDES A DISAGREEMENT BETWEEN THE FAMILIES" in ga
+    # the marginality of uniform's exclusion must be printed, not just the verdict
+    assert _num(ga, r"value by (\d+\.\d+), which is") < 0.05
+
+
+def test_pooling_the_ladder_arms_costs_essentially_nothing(ga):
+    """The cleanest form of "the two ladders agree": a nested-model excess chi2 on 1 dof,
+    with no interval convention to argue about -- which is why it sits beside P0."""
+    ex = _num(ga, r"= (\d+\.\d+) on 1 dof")
+    assert ex < 2.0, ex
+    assert "does not depend" in ga
+
+
 def test_the_two_ladder_arms_agree_far_better_than_they_agree_with_the_families(ga):
     """The actual result of the item, in one inequality."""
     t_arms = _num(ga, r"ternary vs K-ladder : \|d\| = [\d.]+, t = (\d+\.\d+)")
@@ -291,7 +316,8 @@ CLAIMED = {
         "34.8649", "7.5292", "3.3931", "-3.2955", "-0.939", "-1.000", "-0.900",
         "-0.636", "84.4", "47.8", "18.3", "6.7", "9.8", "18.4", "3.3", "-2.35", "2.64",
         "5.80", "0.926", "0.898", "0.671", "0.507",
-        "5.03", "0.52", "9.7", "8.3", "8.0", "1.286", "2.413", "2.097", "1.016",
+        "5.03", "0.52", "9.7", "8.3", "8.0", "0.471", "0.2900", "0.6989", "0.0318",
+        "0.1735", "0.4089", "2.01", "0.0185", "1.286", "2.413", "2.097", "1.016",
         "0.0311", "0.0354", "0.0254", "0.0316", "6.429", "43.433", "14.224",
     ],
     "diag_k6_interp.txt": [

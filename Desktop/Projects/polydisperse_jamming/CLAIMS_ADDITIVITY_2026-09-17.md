@@ -2,7 +2,7 @@
 
 Graded against `PREREG_ADDITIVITY_2026-09-17.md`, committed at `1c90457` **before
 `grade_additivity.py` existed**. **No new cells were run.** Every number below is printed
-by `out/grade_additivity.txt` or `out/diag_k6_interp.txt`; `test_additivity.py` (29 tests)
+by `out/grade_additivity.txt` or `out/diag_k6_interp.txt`; `test_additivity.py` (34 tests)
 asserts that none of them can drift from its artifact.
 
 `FAILURES: ['P0 calibration arms disagree (0.5214 vs 0.4969)', 'P2b mix 56.5 does not
@@ -30,9 +30,36 @@ This is the whole item in one table, at the registered primary convention `d43`:
 
 Two datasets built on different principles — a three-class composition simplex and a
 geometric size ladder at four class counts — want the **same** amount of nesting. The
-continuous PSDs want a **different** one, by **roughly an order of magnitude more** than the
-disagreement between the two that agree. That is the supportable statement, and it does not
-depend on any χ² bar.
+cleanest form of that, with no interval convention in it at all: **pooling the two arms
+costs χ² 50.333 − (6.429 + 43.433) = 0.471 on 1 dof.** One λ for both ladders is bought for
+essentially nothing — a stronger statement than P0's point-in-interval sentence, and it does
+not depend on whether a Δχ² = 1 width is a confidence interval.
+
+🔴 **THE SECOND HALF IS WEAKER THAN AN EARLIER DRAFT SAID, because the pooled oracle hides a
+disagreement BETWEEN the continuous families.** The same reasoning this file already applies
+to the weight correlation — within a family both axes are monotone in CV alone, so 15 points
+are not 15 independent measurements — applies to the oracle's own dof, and was not carried
+over (referee). Fitted per family:
+
+| family | n | leverage | λ | ±1 | interval |
+|---|---|---|---|---|---|
+| lognormal | 5 | 5 | **0.2900** | 0.0318 | [0.258, 0.322] |
+| uniform | 5 | 5 | **0.6989** | 0.1735 | [0.525, 0.872] |
+| bidisperse | 5 | **0** | **undefined** | — | `S ≡ A`, no leverage |
+
+**The two continuous families disagree with each other by 0.4089 — 2.01× the
+ladders-vs-pooled-oracle gap of 0.2036 — and they straddle the ladders' 0.5069 from OPPOSITE
+sides.** So the pooled oracle 0.3033 is **lognormal dominating a combined fit** (half-width
+0.0318 against uniform's 0.1735, 5.5× wider), not a number describing continuous PSDs.
+Uniform's interval excludes the ladders' value by only **0.0185, 11 % of its own width** —
+marginal, and not to be read as a result; the family-vs-family disagreement is the larger and
+better-determined effect.
+
+**The supportable statement, and the one to quote:** *one λ describes both discrete ladders.
+Whether it carries to a continuous PSD is **family-dependent and cannot be reduced to one
+number** — lognormal, tightly constrained, wants markedly **less** nesting (0.290) than the
+ladders (0.507); uniform, loosely constrained, leans toward **more** (0.699).* That is weaker
+than "it does not carry to a continuous PSD", and it is what the data supports.
 
 ⚠ **These are "one scale unit of misfit" ratios, NOT σ-equivalents — the same caveat §E
 carries for P0, applied here because the statistic is the same kind of object.** The four

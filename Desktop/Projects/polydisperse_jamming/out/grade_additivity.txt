@@ -103,6 +103,33 @@
    Read this comparison ONLY with the leverage column: at K = 2 the nested rule
    IS the additive one, so the 5 bidisperse points constrain nothing.
 
+   THE CLEANEST FORM OF THE SAME QUESTION, with no interval convention in it:
+   pooling the arms costs chi2 50.333 - (6.429 + 43.433) = 0.471 on 1 dof.
+   One lambda for both ladders is bought for essentially nothing, which is a
+   stronger statement than P0's point-in-interval sentence and does not depend
+   on whether a Delta chi2 = 1 width is a confidence interval.
+
+   🔴 AND THE POOLED ORACLE HIDES A DISAGREEMENT BETWEEN THE FAMILIES.
+   The same reasoning this file already applies to the weight correlation -- within a
+   family both axes are monotone in CV alone, so 15 points are not 15 independent
+   measurements -- applies to the oracle's own dof. Fitted per family:
+   family           n  leverage    lambda      +-1              interval
+   lognormal        5         5    0.2900   0.0318        [0.258, 0.322]
+   uniform          5         5    0.6989   0.1735        [0.525, 0.872]
+   bidisperse       5         0 UNDEFINED       --   S == A, no leverage
+   the two continuous families disagree with EACH OTHER by |0.2900 - 0.6989| = 0.4089,
+   which is 2.01x the ladders-vs-pooled-oracle gap of 0.2036 -- and they straddle the
+   ladders' 0.5069 from OPPOSITE sides. So the pooled oracle 0.3033 is
+   lognormal dominating a combined fit (its half-width 0.0318 against uniform's 0.1735),
+   NOT a number describing continuous PSDs. The supportable statement is
+   family-specific and is printed as such below.
+   -> lognormal: wants markedly LESS nesting than the ladders (0.290 vs 0.507), tightly constrained.
+   -> uniform: half-width 0.1735 is 5.5x wider; its interval excludes the ladders'
+      value by 0.0185, which is 11% of its own width -- MARGINALLY, and on
+      the OPPOSITE side, leaning toward MORE nesting. Do NOT read that
+      exclusion as a result; the families' MUTUAL disagreement is the larger
+      and better-determined effect.
+
    ⚠ THESE ARE 'ONE SCALE UNIT OF MISFIT' RATIOS, NOT SIGMA-EQUIVALENTS --
    the same caveat P0 carries, applied here because the statistic is the same
    kind of object. The four fits are NOT equally dispersed, so each half-width

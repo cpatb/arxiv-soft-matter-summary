@@ -493,6 +493,71 @@ def main() -> int:
     say("   Read this comparison ONLY with the leverage column: at K = 2 the nested rule")
     say("   IS the additive one, so the 5 bidisperse points constrain nothing.")
     say()
+
+    # ---------------------------------------------------------------- pass-6 (a)
+    # A cleaner "do the two arms agree" statistic than P0's registered sentence: the
+    # combined fit is the two arms' fits with one parameter instead of two, so the excess
+    # chi2 is a nested-model test on 1 dof, with no interval convention to argue about.
+    excess = fp["chi2_cal"] - (fp["chi2_t"] + fp["chi2_k"])
+    say("   THE CLEANEST FORM OF THE SAME QUESTION, with no interval convention in it:")
+    say(f"   pooling the arms costs chi2 {fp['chi2_cal']:.3f} - ({fp['chi2_t']:.3f} + "
+        f"{fp['chi2_k']:.3f}) = {excess:.3f} on 1 dof.")
+    say("   One lambda for both ladders is bought for essentially nothing, which is a")
+    say("   stronger statement than P0's point-in-interval sentence and does not depend")
+    say("   on whether a Delta chi2 = 1 width is a confidence interval.")
+    say()
+
+    # ---------------------------------------------------------------- pass-6 (b)/(c)
+    # The pooled oracle is a fit over THREE families. This project has already ruled that
+    # within a family both axes are monotone in CV alone, so 15 points are not 15
+    # independent measurements -- the same argument that sets the effective N near 2 for
+    # the weight correlation. Fit each family on its own before believing the pooled one.
+    say("   \U0001f534 AND THE POOLED ORACLE HIDES A DISAGREEMENT BETWEEN THE FAMILIES.")
+    say("   The same reasoning this file already applies to the weight correlation -- "
+        "within a")
+    say("   family both axes are monotone in CV alone, so 15 points are not 15 independent")
+    say("   measurements -- applies to the oracle's own dof. Fitted per family:")
+    say(f"   {'family':<14}{'n':>4}{'leverage':>10}{'lambda':>10}{'+-1':>9}{'interval':>22}")
+    fam_lam = {}
+    for fam in mm.FAMILIES:
+        sub_ = [h for h in held if h["fam"] == fam]
+        nlev_ = sum(1 for h in sub_
+                    if abs(h["models"][f"SEQ{PRIMARY}"] - h["models"]["ADDtab"]) > 1e-12)
+        lf, _cf, hf = lambda_closed_form(
+            [h["phi"] for h in sub_], [h["models"]["ADDtab"] for h in sub_],
+            [h["models"][f"SEQ{PRIMARY}"] for h in sub_])
+        if nlev_ == 0 or not math.isfinite(lf):
+            say(f"   {fam:<14}{len(sub_):>4}{nlev_:>10}{'UNDEFINED':>10}{'--':>9}"
+                f"{'S == A, no leverage':>22}")
+            continue
+        fam_lam[fam] = (lf, hf)
+        say(f"   {fam:<14}{len(sub_):>4}{nlev_:>10}{lf:>10.4f}{hf:>9.4f}"
+            f"{f'[{lf - hf:.3f}, {lf + hf:.3f}]':>22}")
+    if len(fam_lam) >= 2:
+        (f1, (l1, h1)), (f2, (l2, h2)) = sorted(fam_lam.items())
+        say(f"   the two continuous families disagree with EACH OTHER by "
+            f"|{l1:.4f} - {l2:.4f}| = {abs(l1 - l2):.4f},")
+        say(f"   which is {abs(l1 - l2) / max(abs(fp['lam'] - lo_h), 1e-9):.2f}x the "
+            f"ladders-vs-pooled-oracle gap of {abs(fp['lam'] - lo_h):.4f} -- and they "
+            "straddle the")
+        say(f"   ladders' {fp['lam']:.4f} from OPPOSITE sides. So the pooled oracle "
+            f"{lo_h:.4f} is")
+        say(f"   {f1} dominating a combined fit (its half-width {h1:.4f} against "
+            f"{f2}'s {h2:.4f}),")
+        say("   NOT a number describing continuous PSDs. The supportable statement is")
+        say("   family-specific and is printed as such below.")
+        say(f"   -> {f1}: wants markedly {'LESS' if l1 < fp['lam'] else 'MORE'} nesting "
+            f"than the ladders ({l1:.3f} vs {fp['lam']:.3f}), tightly constrained.")
+        marg = abs(l2 - fp["lam"]) - h2
+        say(f"   -> {f2}: half-width {h2:.4f} is {h2 / h1:.1f}x wider; its interval "
+            f"{'CONTAINS' if marg <= 0 else 'excludes'} the ladders'")
+        say(f"      value by {abs(marg):.4f}, which is {abs(marg) / h2:.0%} of its own "
+            "width -- MARGINALLY, and on")
+        say(f"      the OPPOSITE side, leaning toward "
+            f"{'MORE' if l2 > fp['lam'] else 'LESS'} nesting. Do NOT read that")
+        say("      exclusion as a result; the families' MUTUAL disagreement is the larger")
+        say("      and better-determined effect.")
+    say()
     # ---- the SAME caveat P0 gets, carried to the structurally identical statistic ----
     # A Delta chi2 = 1 half-width in PHI_SCALE units is "one scale unit of misfit". P0
     # already says so; quoting t = 5.67 without saying so would apply the project's own
