@@ -10,3 +10,16 @@ out/diag_*.log
 out/phase4_impact.log
 shear_pre_refactor_src.txt
 shear_pre_refactor.py
+
+# LaTeX build artifacts of the manuscript under paper/. main.pdf is rebuilt by
+# `latexmk -pdf main` from committed sources; the figure PDFs under paper/figures ARE committed.
+paper/main.aux
+paper/main.bbl
+paper/main.blg
+paper/main.fdb_latexmk
+paper/main.fls
+paper/main.log
+paper/main.out
+paper/main.pdf
+paper/mainNotes.bib
+paper/build.log

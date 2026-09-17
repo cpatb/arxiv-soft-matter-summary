@@ -26,7 +26,7 @@ sweep_descriptive.py -- the descriptive sweep, from existing shards. No new cell
    files globbed out/phase2*.jsonl: 158
    N records: 717
    N after dropping failed and deduplicating by key: 635
-   duplicate keys whose phi DISAGREED: 15
+   duplicate keys whose phi DISAGREED: 14 (15 disagreeing records)
    N after N=1500, mu_p=0.3, converged: 252
 
    Z_all, mean +- se over seeds, by family and CV

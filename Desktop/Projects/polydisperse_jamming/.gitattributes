@@ -1,0 +1,3 @@
+# matplotlib PDFs have no NUL bytes, so autocrlf=true would rewrite their line ends on checkout
+*.pdf binary
+*.png binary

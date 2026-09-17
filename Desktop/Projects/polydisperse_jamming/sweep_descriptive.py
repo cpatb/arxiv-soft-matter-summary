@@ -217,7 +217,8 @@ def load_shards():
     # Duplicates that DISAGREE are counted and printed rather than silently resolved
     # (lessons.md 2026-09-09: which record survives was set by the filename sort order).
     by = {}
-    conflicts = 0
+    conflicts = 0          # disagreeing RECORDS (a key with three records can count twice)
+    conflict_keys = set()  # keys with any disagreement
     for r in rows:
         if r.get("failed"):
             continue
@@ -225,11 +226,12 @@ def load_shards():
         if k in by:
             if abs(by[k]["phi"] - r["phi"]) > 1e-12:
                 conflicts += 1
+                conflict_keys.add(k)
             if r.get("max_iter", 0) <= by[k].get("max_iter", 0):
                 continue
         by[k] = r
     P(f"   N after dropping failed and deduplicating by key: {len(by)}")
-    P(f"   duplicate keys whose phi DISAGREED: {conflicts}")
+    P(f"   duplicate keys whose phi DISAGREED: {len(conflict_keys)} ({conflicts} disagreeing records)")
     sel = [r for r in by.values()
            if r.get("n_requested") == N_MATCH and r.get("mu_p") == MU_REF
            and r.get("converged")]
