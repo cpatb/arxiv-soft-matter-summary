@@ -6,7 +6,7 @@ none of them is typed here by hand.*
 
 ## What was run
 
-Three size-distribution families — lognormal, uniform, bidisperse — over CV 0.0–0.5, at matched friction `mu_p` = 0.3, N = 1500, on a four-rung reduced-pressure ladder. 252 converged cells survive the matched-condition filter; the counts before and after every filter are in the artifact.
+Three size-distribution families — lognormal, uniform, bidisperse — over CV 0.0–0.5, at matched friction `mu_p` = 0.3, N = 1500, on a four-rung reduced-pressure ladder. 217 converged cells survive the matched-condition filter; the counts before and after every filter are in the artifact.
 
 ## The result
 
@@ -39,7 +39,7 @@ Three separate reasons the headline has to be stated weakly, all raised by an ad
 
 1. **The significance guard was wrong.** Each change comes from 3 seeds, so its se carries 2 degrees of freedom and the 95% critical value is *t* = 4.303, not 2. A flat 2·se bar is an 18% test, and it admitted exactly the change that set the denominator of the largest ratio. The guard is now *t*(df = n−1), **and a second gate was added beside it**: the denominator test asks whether the smallest family's change is non-zero, which is not the question the ordering needs — that question is whether the families differ *from each other*.
 2. **The endpoint definition does real work, on every channel including the one carrying the headline.** CV 0 → 0.5 assumes monotonicity and the bidisperse family is not monotone. Against the furthest rung instead: `phi_J` 2.89×, `Z_all` 1.10×, `Z_nr (k=2)` 2.06×, `rattler fraction` 1.09×, `contact force mean` 1.32×, `contact force CV` 3.77×. The first version of this check silently **skipped `phi_J`**, which has no shard getter — so the channel now carrying the headline was the only one never checked. These peak ratios are maxima over five noisy estimates and each family is taken at its own best rung, so they are **upper bounds biased high**, not point estimates; they bracket the endpoint number rather than replacing it.
-3. **`Z_all` is not an independent channel.** It equals `(1 − rattler_frac)·Z_nr` to better than 0.5% on every row checked, so its near-family-independence is *inherited* from the rattler fraction's and is not a second confirmation of anything.
+3. **`Z_all` is not an independent channel.** It equals `(1 − rattler_frac)·Z_nr` to within 0.0347 on every one of the 217 cells (the worst over the printed ROWS, which are means over seeds at one rung, is 0.0147 — a row max cannot bound a cell), so its near-family-independence is *inherited* from the rattler fraction's and is not a second confirmation of anything.
 
 ### Do the families differ at all? Two tests, both computed
 
@@ -59,7 +59,7 @@ Q treats the printed se's as exactly known, which they are not — each has 2 do
 - **The bidisperse column is a path, not a family.** It is 50:50 *by number*, so its fines carry 0.500 → 0.036 of the volume across this ladder: it never visits the composition where interstitial filling peaks. Matched binaries that differ only in which atom carries the volume pack 0.0635 apart.
 - **A spread is not a pairwise separation.** These ratios say the families differ; they do not say two of them can be told apart at a given CV.
 - **Only `phi_J` is extrapolated.** `Z`, the rattler fraction and the force moments are read *at* a pressure and move with the rung; the artifact prints all four rungs so the rung dependence is visible rather than chosen.
-- **Provenance footnote on the replicate counts.** The per-cell tables show `(3)` for most cells and `(6)` for lognormal and uniform at CV 0.4–0.5, left over from an earlier campaign. Nothing here is affected: every change is paired on seed ID and CV = 0 has 3 seeds for every family, so it is always the limiting side and the extra replicates are never blended in. A reader differencing two per-cell table entries by hand instead of using the paired table would get an unpaired, seed-mismatched number.
+- **RETRACTED 2026-09-17: the replicate-count footnote.** Earlier versions of this report explained the `(6)` in the lognormal and uniform CV 0.4–0.5 cells as replicates "left over from an earlier campaign" and said nothing was affected. That diagnosis was wrong on both halves. They were not extra seeds: the record key carries the iteration cap, so a cell re-run at the raised cap survived the key dedup twice, and the six-record cells are three seeds counted twice each. And something was affected — the standard errors of exactly those cells, by a factor `sqrt(2.5)` = 1.581, because the duplicated records are bit-identical and shrink the spread without adding information. `load_shards` now collapses one physical cell per (family, CV, seed, `p_hat`) with the higher cap kept, which is the rule `load_fits` has used since 2026-09-08; every count in the tables above is a seed count again. The paired shifts and `phi_J` never went through this path and did not move.
 
 ## Ladder health
 

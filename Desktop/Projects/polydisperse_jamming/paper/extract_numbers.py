@@ -60,6 +60,11 @@ def one(pattern: str, text: str, where: str, flags=re.M) -> tuple[str, ...]:
 def put(name: str, value, fmt: str = "{:.4f}") -> None:
     if name in N:
         raise SystemExit(f"duplicate macro {name}")
+    # A NaN reaching numbers.tex renders as the word "nan" in the PDF, which is a wrong
+    # number that looks like a typo rather than an error. Refuse it here (a single-seed
+    # cell gives std(ddof=1) = nan, and nothing downstream would notice).
+    if isinstance(value, float) and not math.isfinite(value):
+        raise SystemExit(f"macro {name} is {value!r}; a non-finite macro must not ship")
     N[name] = value
     FMT[name] = fmt
 
@@ -143,25 +148,39 @@ put("ratioZnr", float(ratio_znr), "{:.2f}")
 order_pct, order_n = one(r"the exact six-way ordering survives (\d+) % of (\d+) draws", sweep, "ordering")
 put("orderSurvivePct", int(order_pct), "{:d}")
 put("orderDraws", int(order_n), "{:d}")
-worst_zall, = one(r"worst \|difference\| over the rows printed: (\d\.\d+)", sweep, "Z_all identity")
-put("zallIdentityWorst", float(worst_zall), "{:.4f}")
+worst_zall_rows, = one(r"worst \|difference\| over the rows printed: (\d\.\d+)", sweep,
+                       "Z_all identity")
+# 🔴 2026-09-17. The artifact's number is a max over the ROWS PRINTED -- 3 families x 3 CVs
+# at the 1e-3 rung, each row already a MEAN over seeds -- and main.tex quoted it as a bound
+# "on every cell". It is not one: averaging over seeds and rungs can only shrink the worst
+# case. The per-CELL max is computed below from the shards and is what main.tex now uses;
+# the row-level figure is kept as its own macro so the two cannot be confused again.
+put("zallIdentityWorstRows", float(worst_zall_rows), "{:.4f}")
 
 # ---------------------------------------------------------------------------------
 # 2. The per-rung observables at p_hat = 1e-3, recomputed from the shards.
 # ---------------------------------------------------------------------------------
 sd.L.clear()
 sel = sd.load_shards()
-n_files, n_rec, n_dedup, n_conf, n_conf_rec, n_sel = one(
+n_files, n_rec, n_dedup, n_conf, n_conf_rec, n_sel, n_cells = one(
     r"files globbed out/phase2\*\.jsonl: (\d+)\n\s+N records: (\d+)\n\s+N after dropping failed and "
     r"deduplicating by key: (\d+)\n\s+duplicate keys whose phi DISAGREED: (\d+) \((\d+) disagreeing records\)\n\s+N after N=1500, "
-    r"mu_p=0\.3, converged: (\d+)", sweep, "N counts", flags=re.NOFLAG)
-assert len(sel) == int(n_sel), (len(sel), n_sel)
+    r"mu_p=0\.3, converged: (\d+)\n\s+N after collapsing one physical cell per "
+    r"\(family, cv, seed, p_hat\), highest MAX_ITER winning: (\d+)",
+    sweep, "N counts", flags=re.NOFLAG)
+# `n_sel` counts RECORDS at the selected N/mu/converged; `n_cells` counts physical CELLS.
+# They differ because the record key carries the iteration cap (phase2_phiJ.py:130), so a
+# cell re-run at a raised cap appears twice. Everything downstream reads CELLS.
+assert len(sel) == int(n_cells), (len(sel), n_cells)
+assert int(n_cells) <= int(n_sel), (n_cells, n_sel)
 put("nShardFiles", int(n_files), "{:d}")
 put("nRecords", int(n_rec), "{:d}")
 put("nDedup", int(n_dedup), "{:d}")
 put("nConflicts", int(n_conf), "{:d}")
 put("nConflictRecords", int(n_conf_rec), "{:d}")
-put("nSelected", int(n_sel), "{:d}")
+put("nSelectedRecords", int(n_sel), "{:d}")
+put("nSelected", int(n_cells), "{:d}")
+put("nRecappedCells", int(n_sel) - int(n_cells), "{:d}")
 # how much the 15 disagreeing duplicates could move anything the paper reads at a rung:
 # re-glob the shards, and for every conflicting key that lands in the SELECTED set report
 # the largest |delta phi| between its records, against PHI_SCALE (referee, pass 1)
@@ -201,6 +220,17 @@ def artifact_cell(block: str, p: str, fam: str, col: int) -> float:
     cells = re.findall(r"(\d\.\d{4})\((\d)\)", line)
     return float(cells[col][0])
 
+
+# The Z_all identity, per CELL (see the note beside zallIdentityWorstRows above).
+_zall_dev = [abs(r["z_all"] - (1 - r["rattler"]["rattler_frac_k2"]) * r["rattler"]["z_nr_k2"])
+             for r in sel]
+put("zallIdentityWorst", float(max(_zall_dev)), "{:.4f}")
+put("zallIdentityWorstN", len(_zall_dev), "{:d}")
+# ⚠ a GUARD, not a gate: a per-cell max is mathematically >= a max over means of subsets
+# of those cells, so no correct implementation can fail it. What it catches is an
+# INCORRECT one -- a wrong field, a wrong subset, a getter that silently returns zeros.
+assert max(_zall_dev) >= float(N["zallIdentityWorstRows"]), (  # type: ignore[arg-type]
+    "a per-cell max below a max over means of those cells is impossible")
 
 GET = {
     "rat": (lambda r: r["rattler"]["rattler_frac_k2"], "rattler fraction (k = 2)"),
@@ -309,6 +339,19 @@ for fam, tag in (("lognormal", "Logn"), ("uniform", "Unif"), ("bidisperse", "Bid
     put(f"fabN{tag}", int(n_c), "{:d}")
 put("fabRegisteredResolve", 0.5, "{:.1f}")
 one(r"achieved 2\*se\*0\.5 <= 0\.5 -> NULL, INFORMATIVE", fab, "registered 0.5")
+# That grep confirms the VERDICT GRAMMAR is in the artifact; it does not confirm that any
+# family met it, and main.tex claims the null is "informative on all three". Enforce the
+# claim here rather than at read time, both halves of it. Note also that the achieved
+# resolving power is 2*se*(CV range) and the range is exactly 0.5, so it equals the slope's
+# own standard error; main.tex now says so rather than printing the two as if independent.
+for _tag in ("Logn", "Unif", "Bidi"):
+    _res, _se, _sl = (float(N[f"fabResolve{_tag}"]), float(N[f"fabSlope{_tag}Se"]),  # type: ignore[arg-type]
+                      abs(float(N[f"fabSlope{_tag}"])))                              # type: ignore[arg-type]
+    assert _res <= float(N["fabRegisteredResolve"]), (  # type: ignore[arg-type]
+        f"{_tag}: achieved resolving power {_res} exceeds the registered "
+        f"{N['fabRegisteredResolve']}; the null is NOT informative and main.tex says it is")
+    assert _sl <= 2 * _se, f"{_tag}: |slope| {_sl} > 2 se {2 * _se}; that is a DRIFT, not a null"
+    close(_res, _se, 6e-3, f"fabResolve{_tag} against its own se (range 0.5)")
 n_fab_cells, n_fab_seeds = one(r"(\d+) converged cells at `p_hat` = 0\.001, `mu_p` = 0\.3, N = 1500, (\d+) seeds",
                                read(os.path.join(ROOT, "CLAIMS_FABRIC_2026-09-18.md")), "fabric N")
 put("fabCells", int(n_fab_cells), "{:d}"); put("fabSeeds", int(n_fab_seeds), "{:d}")
@@ -387,8 +430,22 @@ g0 = fits[(fits.mu_p == 0.0) & (fits.cv_nom == 0.0) & (fits.family == "lognormal
 put("phiJFrictionless", float(g0.mean()), "{:.4f}")
 put("phiJFrictionlessSe", float(g0.std(ddof=1) / math.sqrt(len(g0))), "{:.4f}")
 put("nFrictionless", int(len(g0)), "{:d}")
-g3 = fits[(fits.mu_p == 0.3) & (fits.cv_nom == 0.0)].phi_J_lin
+# 🔴 2026-09-17. The same "second label" caveat applies at mu_p = 0.3 and the filter was
+# missing, so this mean was a 2:1 blend: `uniform` and `bidisperse` are BIT-IDENTICAL at
+# CV = 0 (the shared monodisperse cells) while `lognormal` has its own draw. There are two
+# distinct samples of 3 seeds, not three of 3, and they are pooled here ONCE each, with the
+# n and the s.e. printed rather than left implicit.
+_g3 = fits[(fits.mu_p == 0.3) & (fits.cv_nom == 0.0)]
+_logn3 = _g3[_g3.family == "lognormal"].set_index("seed").phi_J_lin
+_shared3 = _g3[_g3.family == "uniform"].set_index("seed").phi_J_lin
+_bidi3 = _g3[_g3.family == "bidisperse"].set_index("seed").phi_J_lin
+assert len(_logn3) == len(_shared3) == len(_bidi3) == 3, "expected 3 seeds per label"
+assert (_shared3.round(12) == _bidi3.round(12)).all(), (
+    "uniform and bidisperse CV=0 are no longer the same cells; re-derive the pooling rule")
+g3 = np.concatenate([_logn3.to_numpy(), _shared3.to_numpy()])
 put("phiJMonoMuThree", float(g3.mean()), "{:.4f}")
+put("phiJMonoMuThreeSe", float(g3.std(ddof=1) / math.sqrt(len(g3))), "{:.4f}")
+put("nMonoMuThree", int(len(g3)), "{:d}")
 put("rcpLiterature", 0.64, "{:.2f}")   # Silbert 2010 / Desmond & Weeks 2014, cited in main.tex
 
 # the linear-packing-model interaction exponents used for the matched-pair prediction

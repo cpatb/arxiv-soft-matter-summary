@@ -92,20 +92,33 @@ def fig1(fits):
     for ax, lab in ((a, "(a)"), (b, "(b)")):
         ax.text(0.03, 0.95, lab, transform=ax.transAxes, va="top")
     fig.tight_layout(w_pad=1.0)
-    save(fig, "fig1_phiJ", rows, r"""
+    # every number in the note is computed here, not typed (repo rule). The caption used to
+    # say the family spread was "about 5 %" of phi_J; that is the MEAN shift, not a spread.
+    _shifts = [r["phi_J"] for r in rows if r["panel"] == "b"]
+    _phij_half = [r["phi_J"] for r in rows if r["panel"] == "a" and r["cv"] == 0.5]
+    _ref = float(np.mean(_phij_half))
+    _spread_pct = 100.0 * (max(_shifts) - min(_shifts)) / _ref
+    _largest_pct = 100.0 * max(_shifts) / _ref
+    _bidi_ratio = (1 + 0.5) / (1 - 0.5)
+    _bidi_fines = 100.0 * 0.5 ** 3 / (0.5 ** 3 + 1.5 ** 3)
+    _ns = {r["n"] for r in rows if r["panel"] == "a"}
+    assert len(_ns) == 1, f"panel (a) cells do not share a seed count: {sorted(_ns)}"
+    _nseeds = _ns.pop()
+    save(fig, "fig1_phiJ", rows, f"""
 # fig1_phiJ — the jamming fraction against the width of the size distribution
 
 (a) `φ_J` extrapolated to `p̂ → 0` from a four-rung pressure ladder, mean ± se over
-three seeds, at `μ_p = 0.3`, N = 1500, for three size-distribution families at matched
-number mean and matched CV: lognormal (circles), uniform (squares, zero skewness), and
-number-symmetric bidisperse (triangles, zero skewness, all weight at the two extremes).
+{_nseeds} seeds, at `μ_p = {sd.MU_REF}`, N = {sd.N_MATCH}, for three size-distribution families at
+matched number mean and matched CV: lognormal (circles), uniform (squares, zero skewness),
+and number-symmetric bidisperse (triangles, zero skewness, all weight at the two extremes).
 (b) The paired CV 0 → 0.5 change per family; the two ends share a seed and the
 difference is taken per seed before averaging.
 
-Y axes start at zero by house rule so the eye reads the size of the effect: the family
-spread in (b) is about 5 % of `φ_J` itself. The bidisperse point at CV 0.5 is a size-ratio-3
-mixture with 3.6 % of its volume in fines, i.e. that family is a path through the
-(ratio, composition) plane, not a representative bidisperse packing.
+Y axes start at zero by house rule so the eye reads the size of the effect: the three
+shifts in (b) span {_spread_pct:.1f} % of `φ_J` itself, and the largest is {_largest_pct:.1f} % of it.
+The bidisperse point at CV 0.5 is a size-ratio-{_bidi_ratio:.0f} mixture with {_bidi_fines:.1f} % of its volume
+in fines, i.e. that family is a path through the (ratio, composition) plane, not a
+representative bidisperse packing.
 """)
 
 
@@ -140,22 +153,34 @@ def fig2(sel, fab_rows):
         ax[k].text(0.03, 0.95, f"({'abc'[k]})", transform=ax[k].transAxes, va="top")
     ax[2].axhline(1.0, color="0.5", lw=0.6, ls=":")
     fig.tight_layout(w_pad=1.0)
-    save(fig, "fig2_backbone", rows, r"""
+    # every number in the note is computed here, not typed (repo rule). Two of them used to
+    # be typed and one was wrong: the Z_all identity bound was quoted at the value it takes
+    # over per-family MEANS, not over cells, which is a factor 2.4 tighter than the truth.
+    _rise = [max(r["mean"] for r in rows if r["panel"] == "a" and r["family"] == f)
+             / min(r["mean"] for r in rows if r["panel"] == "a" and r["family"] == f)
+             for f in FAM]
+    _zall_dev = max(abs(r["z_all"] - (1 - r["rattler"]["rattler_frac_k2"])
+                        * r["rattler"]["z_nr_k2"]) for r in sel)
+    _tbar = [np.mean([r["mean"] for r in rows if r["panel"] == "c" and r["family"] == f])
+             for f in FAM]
+    _n_c = sorted({r["n"] for r in rows if r["panel"] == "c"})
+    _fab_n = f"{_n_c[0]}" if len(_n_c) == 1 else f"{_n_c[0]}–{_n_c[-1]}"
+    save(fig, "fig2_backbone", rows, f"""
 # fig2_backbone — polydispersity removes grains from the network; it does not restructure it
 
-All panels at `p̂ = 10⁻³`, `μ_p = 0.3`, N = 1500, mean ± se over seeds; same family symbols
-as Fig. 1. (a) The rattler fraction `f_r` at the primary threshold k = 2 (a grain with fewer
-than two load-bearing contacts, removed iteratively). (b) The mean coordination of the
-surviving backbone, `Z_nr`. (c) The backbone contact-orientation statistic
-`T_nr = n·A²`, where `A` is the deviatoric fabric anisotropy and `n` the number of backbone
-contacts, so that `E[T] = 1` for `n` independent unit normals (dotted line) with no
-contact-count dependence; from the fabric campaign (12 seeds).
+All panels at `p̂ = {sd.RUNGS[0]:.0e}`, `μ_p = {sd.MU_REF}`, N = {sd.N_MATCH}, mean ± se over seeds; same
+family symbols as Fig. 1. (a) The rattler fraction `f_r` at the primary threshold k = 2 (a
+grain with fewer than two load-bearing contacts, removed iteratively). (b) The mean
+coordination of the surviving backbone, `Z_nr`. (c) The backbone contact-orientation
+statistic `T_nr = n·A²`, where `A` is the deviatoric fabric anisotropy and `n` the number of
+backbone contacts, so that `E[T] = 1` for `n` independent unit normals (dotted line) with no
+contact-count dependence; from the fabric campaign ({_fab_n} cells per point).
 
-Panel (a) rises by a factor of about eleven; panels (b) and (c) are flat within their
-uncertainty. `Z_all`
-is not shown because `Z_all = (1 − f_r)·Z_nr` to within 0.015 on every cell, so it carries
-no information beyond (a) and (b). The absolute value of `T_nr` (≈ 0.45, below 1) carries
-no claim: contacts sharing a grain are not independent draws.
+Panel (a) rises by a factor of {min(_rise):.1f}–{max(_rise):.1f} across the three families; panels (b) and (c)
+are flat within their uncertainty. `Z_all` is not shown because `Z_all = (1 − f_r)·Z_nr` to
+within {_zall_dev:.4f} on every one of the {len(sel)} cells, so it carries no information beyond (a)
+and (b). The absolute value of `T_nr` ({min(_tbar):.2f}–{max(_tbar):.2f}, below 1) carries no claim: contacts
+sharing a grain are not independent draws.
 """)
 
 
@@ -284,7 +309,16 @@ if __name__ == "__main__":
         before = {p: md5(p) for p in sorted(glob.glob(os.path.join(FIG, "*.pdf")))}
         build()
         after = {p: md5(p) for p in sorted(glob.glob(os.path.join(FIG, "*.pdf")))}
-        bad = [p for p in before if before[p] != after[p]]
-        print("byte-identity:", "PASS" if not bad else f"FAIL {bad}")
-        sys.exit(1 if bad else 0)
+        # A gate over an empty set passes. Name the figures this script is supposed to
+        # produce and require all of them, and compare the SETS both ways, so a figure
+        # that appears or disappears between the two builds is a failure rather than
+        # something the `for p in before` loop cannot see.
+        expect = {"fig1_phiJ.pdf", "fig2_backbone.pdf", "fig3_binaries.pdf"}
+        missing = expect - {os.path.basename(p) for p in after}
+        appeared = sorted(set(after) - set(before))
+        bad = [p for p in before if p not in after or before[p] != after[p]]
+        ok = not bad and not missing and not appeared
+        print("byte-identity:", "PASS" if ok else
+              f"FAIL changed={bad} missing={sorted(missing)} appeared={appeared}")
+        sys.exit(0 if ok else 1)
     print("wrote", sorted(os.path.basename(p) for p in glob.glob(os.path.join(FIG, "*.pdf"))))

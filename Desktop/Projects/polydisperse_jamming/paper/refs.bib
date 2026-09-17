@@ -133,7 +133,19 @@
   publisher = {CRC Press},
   year      = {1999},
   doi       = {10.1201/9781482272055},
-  annote    = {verified 2026-09-16 (Crossref): the book RESOLVES. PARTIAL / [UNVERIFIED attribution] -- the Crossref record carries no abstract, so that the linear-packing-model interaction exponents 1.02 and 1.50 used in mixture_model.py come from this source rests on the analysis script's own documentation ("textbook values"), not on a check of the book; main.tex says so beside the citation. The exponents ARE printed as de Larrard's CPM functions in diaz2021packing (checked 2026-09-16)}
+  annote    = {verified 2026-09-16 (Crossref): the book RESOLVES. PARTIAL / [UNVERIFIED attribution] -- the Crossref record carries no abstract, so that the linear-packing-model interaction exponents 1.02 and 1.50 used in mixture_model.py come from this source rests on the analysis script's own documentation ("textbook values"), not on a check of the book; main.tex says so beside the citation. The exponents ARE printed as de Larrard's CPM functions in diaz2021packing (checked 2026-09-16). RE-CHECKED 2026-09-17 and STILL UNRESOLVED, with the reason now recorded: there are TWO de Larrard 1999 publications -- this CRC Press book and an LCPC monograph, Structures Granulaires et Formulation des Betons -- and it is the LCPC one that diaz2021packing cites. Attempts that failed: Internet Archive (lending-restricted, full-text search unavailable), Google Books (no accessible snippet), Roquier 2016 and the CPM parameter-determination literature (403). ONE independently checked source, diaz2021packing, corroborates that the CPM uses exactly these two functions, so the values are not invented; what is unconfirmed is that they appear on a named page or equation of THIS book rather than its French sibling or an earlier LPC report. The list of failed lookup routes above is a procedural record from the 2026-09-17 first pass and was not re-run on the second}
+}
+
+@article{bi2011jamming,
+  author  = {Bi, Dapeng and Zhang, Jie and Chakraborty, Bulbul and Behringer, Robert P.},
+  title   = {Jamming by shear},
+  journal = {Nature},
+  volume  = {480},
+  number  = {7377},
+  pages   = {355--358},
+  year    = {2011},
+  doi     = {10.1038/nature10667},
+  annote  = {verified 2026-09-17 (Crossref 10.1038/nature10667: title, four-author list, Nature 480(7377) 355-358, issued 2011-12 -- all match this entry exactly). SUPPORTS -- cited in main.tex only to name the origin of SHEAR jamming as a protocol distinct from isotropic compression, which is the whole of what the sentence claims. This paper's own results (fragile states, anisotropic jammed states reached by shear below the isotropic jamming fraction) are 2D and frictional; NO quantitative comparison is made to them here, and none would be licensed by this manuscript's isotropic protocol}
 }
 
 @article{diaz2021packing,
@@ -145,5 +157,5 @@
   pages   = {1414},
   year    = {2021},
   doi     = {10.3390/nano11061414},
-  annote  = {verified 2026-09-16 (Crossref + PMC8227337 full text; author list re-fetched from Crossref 2026-09-17): SUPPORTS -- prints the compressible-packing-model loosening function a(x) = 1 - (1 - x)^1.02 (its eq. 33) and wall function b(x) = 1 - (1 - x)^1.5 (its eq. 26) and attributes them to de Larrard; whether these are de Larrard's 1999 values or a later revision is NOT settled here}
+  annote  = {verified 2026-09-16 (Crossref + PMC8227337 full text; author list re-fetched from Crossref 2026-09-17; equations re-read from the Europe PMC MathML 2026-09-17): SUPPORTS -- prints the compressible-packing-model wall function b(x) = 1 - (1 - x)^1.5 (its eq. 26) and loosening function a(x) = sqrt(1 - (1 - x)^1.02) (its eq. 33), and attributes them to de Larrard. CORRECTION 2026-09-17: this annote previously recorded eq. 33 as a(x) = 1 - (1 - x)^1.02, WITHOUT the square root. The exponent 1.02 was right and the functional form was not. mixture_model.py has always implemented the square-root form (its module docstring and a_loosening() both carry it), so no shipped number is affected; the error was in this note. What main.tex cites this reference for is the two EXPONENTS, 1.02 and 1.50, and those are correct. ATTRIBUTION, still open: at these equations diaz2021packing does not cite the CRC Press book; its de Larrard references are a 1999 LCPC monograph (Structures Granulaires et Formulation des Betons) and a 1988 LPC report, and it gives no inline citation number at eq. 33 itself -- so even this source does not pin the loosening exponent to a year}
 }

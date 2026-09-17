@@ -1,6 +1,6 @@
 """test_paper_numbers.py -- the manuscript quotes nothing it did not print.
 
-Four checks, each of which can fail:
+Five checks, each of which can fail:
 
   1. `extract_numbers.py` regenerates `numbers.tex` and `numbers.json` BYTE-IDENTICALLY
      (the committed macros are what the script prints today, not a stale copy). The
@@ -14,6 +14,8 @@ Four checks, each of which can fail:
      independent regex (not the one in extract_numbers.py).
   4. The figures regenerate byte-identically (`make_paper_figures.py --check`), so the
      PDFs the manuscript includes are what the scripts draw from the committed shards.
+  5. An analysed "cell" is a cell and not a record, and every `*N` macro is a seed count.
+     Added 2026-09-17 after a raised-cap re-run was found being counted as an extra seed.
 
 Run from anywhere:  python -m pytest paper/test_paper_numbers.py -q
 """
@@ -265,3 +267,72 @@ def test_figures_regenerate_byte_identically():
     assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-2000:]
     assert "byte-identity: PASS" in r.stdout
     assert after == before, "the committed figure PDFs are not what make_paper_figures.py draws today"
+
+
+# ---------------------------------------------------------------------------------
+# 5. REGRESSION, 2026-09-17: an analysed "cell" is a cell, not a record
+# ---------------------------------------------------------------------------------
+# The shard record key carries the iteration cap (`phase2_phiJ.py` appends `_it{cap}` at
+# any non-default MAX_ITER, deliberately, so a raised-cap run can never POOL with a
+# default-cap one). `sweep_descriptive.load_shards` deduplicated on that key, so a cell
+# run under both caps survived TWICE and every standard error over it was sqrt(n_dup)
+# too small -- 35 of 252 records were one cell counted twice, and six published standard
+# errors were 1.581x too small while six `*N` macros read 6 for 3 seeds.
+#
+# These two tests fail if that regresses. Note WHY the old suite could not catch it: the
+# duplicated records are bit-identical, so no MEAN moved and every mean-based assertion
+# stayed green. A defect in the second moment needs a test on the second moment.
+
+def _selected_cells():
+    sys.path.insert(0, ROOT)
+    import sweep_descriptive as sd
+    sd.L.clear()
+    return sd.load_shards()
+
+
+def test_load_shards_returns_one_record_per_physical_cell():
+    import collections
+    sel = _selected_cells()
+    assert sel, "load_shards returned nothing; the test below would pass vacuously"
+    counts = collections.Counter(
+        ((r.get("family") or "lognormal"), r["cv"], r["seed"], r["p_hat_target"],
+         r.get("n_requested"), r.get("mu_p"))
+        for r in sel)
+    dup = {k: n for k, n in counts.items() if n > 1}
+    assert not dup, (
+        f"{len(dup)} physical cells appear more than once in load_shards' output; a mean "
+        f"or standard error over these is not a mean over seeds. Examples: "
+        f"{sorted(dup.items())[:3]}")
+    # and the collapse must have had something to do -- if this ever becomes an equality
+    # the raised-cap records have left the tree and the guard above is no longer testing
+    # the thing it was written for.
+    m = re.search(r"N after N=1500, mu_p=0\.3, converged: (\d+)",
+                  open(os.path.join(OUT, "sweep_descriptive.txt"), encoding="utf-8").read())
+    assert m is not None, "the record-count line is no longer in out/sweep_descriptive.txt"
+    n_raw = int(m.group(1))
+    assert n_raw > len(sel), (
+        f"no record was collapsed ({n_raw} == {len(sel)}); either the raised-cap records "
+        f"are gone, in which case delete this guard, or the collapse stopped running")
+
+
+def test_every_seed_count_macro_is_a_seed_count():
+    """No `*N` macro may exceed the number of distinct seeds behind it."""
+    sel = _selected_cells()
+    numbers = json.load(open(NUMBERS_JSON, encoding="utf-8"))
+    fams = {"Logn": "lognormal", "Unif": "uniform", "Bidi": "bidisperse"}
+    cvs = {"Zero": 0.0, "Three": 0.3, "Half": 0.5}
+    checked = 0
+    for key in ("rat", "znr", "zall"):
+        for tag, fam in fams.items():
+            for ctag, cv in cvs.items():
+                name = f"{key}{tag}{ctag}N"
+                if name not in numbers:
+                    continue
+                seeds = {r["seed"] for r in sel
+                         if (r.get("family") or "lognormal") == fam and r["cv"] == cv
+                         and r["p_hat_target"] == 1e-3}
+                assert int(numbers[name]) == len(seeds), (
+                    f"{name} = {numbers[name]} but only {len(seeds)} distinct seeds "
+                    f"({sorted(seeds)}) stand behind it")
+                checked += 1
+    assert checked == 27, f"expected 27 seed-count macros, checked {checked}"

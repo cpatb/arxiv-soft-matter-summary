@@ -236,7 +236,26 @@ def load_shards():
            if r.get("n_requested") == N_MATCH and r.get("mu_p") == MU_REF
            and r.get("converged")]
     P(f"   N after N={N_MATCH}, mu_p={MU_REF}, converged: {len(sel)}")
-    return sel
+    # 🔴 2026-09-17. The dedup above is by the record KEY, and `phase2_phiJ.py` appends
+    # `_it{cap}` to that key at any non-default MAX_ITER -- deliberately, so a raised-cap
+    # run can never POOL with a default-cap one. The consequence for THIS loader is that
+    # one physical cell run under both caps survives as TWO records, and every mean and
+    # standard error below then treats a protocol variant as an extra seed: 35 of the 252
+    # records were one cell counted twice, which made six published standard errors a
+    # factor sqrt(2.5) = 1.581 too small and printed n = 6 where there are 3 seeds.
+    # The means were unharmed only because the duplicated records are bit-identical.
+    # `load_fits` has had the right rule since 2026-09-09 (highest cap wins, cell by
+    # cell); this applies the SAME rule to the shard channel rather than inventing one.
+    cap_pick: dict[tuple, dict] = {}
+    for r in sorted(sel, key=lambda x: x.get("key", "")):
+        pk = ((r.get("family") or "lognormal"), r["cv"], r["seed"],
+              r["p_hat_target"], r.get("n_requested"), r.get("mu_p"))
+        cur = cap_pick.get(pk)
+        if cur is None or r.get("max_iter", 0) > cur.get("max_iter", 0):
+            cap_pick[pk] = r
+    P(f"   N after collapsing one physical cell per (family, cv, seed, p_hat), "
+      f"highest MAX_ITER winning: {len(cap_pick)}")
+    return list(cap_pick.values())
 
 
 def table(sel, getter, name, unit=""):
@@ -641,6 +660,21 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
         wratio = float('nan')
     lead = max(resolved, key=lambda r: r[2]) if resolved else None
     n_cells = len(sel)
+    # The Z_all identity, both ways. Until 2026-09-17 the report quoted "better than 0.5%
+    # on every row checked" as a hand-typed constant, in a document whose own header says
+    # nothing in it is typed by hand; it was also false at the row level (0.0147/2.7338 =
+    # 0.538%) and 2.4x optimistic at the cell level, which is the bound the sentence means.
+    zall_dev_cell = max(abs(r["z_all"] - (1 - r["rattler_frac"]) * r["z_nr"]) for r in sel)
+    zall_dev_row = 0.0
+    for _fam in FAMILIES:
+        for _cv in (0.0, 0.3, 0.5):
+            _sub = [r for r in sel if (r.get("family") or "lognormal") == _fam
+                    and r["cv"] == _cv and r["p_hat_target"] == 1e-3]
+            if not _sub:
+                continue
+            zall_dev_row = max(zall_dev_row, abs(
+                float(np.mean([r["z_all"] for r in _sub]))
+                - float(np.mean([(1 - r["rattler_frac"]) * r["z_nr"] for r in _sub]))))
     body = [
         "# The descriptive sweep — three size-distribution families, one axis each",
         "",
@@ -748,7 +782,9 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
           "high**, not point estimates; they bracket the endpoint number rather than "
           "replacing it.",
         "3. **`Z_all` is not an independent channel.** It equals "
-        "`(1 − rattler_frac)·Z_nr` to better than 0.5% on every row checked, so its "
+        f"`(1 − rattler_frac)·Z_nr` to within {zall_dev_cell:.4f} on every one of the "
+        f"{len(sel)} cells (the worst over the printed ROWS, which are means over seeds "
+        f"at one rung, is {zall_dev_row:.4f} — a row max cannot bound a cell), so its "
         "near-family-independence is *inherited* from the rattler fraction's and is not "
         "a second confirmation of anything.",
         "",
@@ -783,13 +819,19 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
         "- **Only `phi_J` is extrapolated.** `Z`, the rattler fraction and the force "
         "moments are read *at* a pressure and move with the rung; the artifact prints all "
         "four rungs so the rung dependence is visible rather than chosen.",
-        "- **Provenance footnote on the replicate counts.** The per-cell tables show "
-        "`(3)` for most cells and `(6)` for lognormal and uniform at CV 0.4–0.5, left "
-        "over from an earlier campaign. Nothing here is affected: every change is paired "
-        "on seed ID and CV = 0 has 3 seeds for every family, so it is always the "
-        "limiting side and the extra replicates are never blended in. A reader "
-        "differencing two per-cell table entries by hand instead of using the paired "
-        "table would get an unpaired, seed-mismatched number.",
+        "- **RETRACTED 2026-09-17: the replicate-count footnote.** Earlier versions of "
+        "this report explained the `(6)` in the lognormal and uniform CV 0.4–0.5 cells "
+        "as replicates \"left over from an earlier campaign\" and said nothing was "
+        "affected. That diagnosis was wrong on both halves. They were not extra seeds: "
+        "the record key carries the iteration cap, so a cell re-run at the raised cap "
+        "survived the key dedup twice, and the six-record cells are three seeds counted "
+        "twice each. And something was affected — the standard errors of exactly those "
+        "cells, by a factor `sqrt(2.5)` = 1.581, because the duplicated records are "
+        "bit-identical and shrink the spread without adding information. `load_shards` "
+        "now collapses one physical cell per (family, CV, seed, `p_hat`) with the higher "
+        "cap kept, which is the rule `load_fits` has used since 2026-09-08; every count "
+        "in the tables above is a seed count again. The paired shifts and `phi_J` never "
+        "went through this path and did not move.",
         "",
         "## Ladder health",
         "",

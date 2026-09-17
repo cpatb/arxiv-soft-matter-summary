@@ -35,10 +35,12 @@
 
 \begin{abstract}
 We compress periodic packings of $N=\nGrains$ frictional spheres ($\mup=\muP$) to jamming under isotropic stress control for three families of particle-size distribution held at the same number-mean diameter and the same number coefficient of variation $\CV$: lognormal, uniform, and a number-symmetric bidisperse mixture.
-Extrapolating the packing fraction to zero pressure, the jamming fraction $\phiJ$ rises with $\CV$ in every family, but by amounts that differ across families by a factor of three to five over $\CV=0\to0.5$, depending on how the endpoint is defined ($\dPhiJLogn\pm\dPhiJLognSe$ lognormal, $\dPhiJUnif\pm\dPhiJUnifSe$ uniform, $\dPhiJBidi\pm\dPhiJBidiSe$ bidisperse; seed-paired means $\pm$ s.e.).
+With the packing fraction extrapolated to zero pressure, the jamming fraction $\phiJ$ rises with $\CV$ in every family, but by amounts that differ across families by a factor of three to five over $\CV=0\to0.5$, depending on how the endpoint is defined ($\dPhiJLogn\pm\dPhiJLognSe$ lognormal, $\dPhiJUnif\pm\dPhiJUnifSe$ uniform, $\dPhiJBidi\pm\dPhiJBidiSe$ bidisperse; seed-paired means $\pm$ s.e.).
 The shape of the distribution therefore moves $\phiJ$ more than a fourfold change of its width does within any one family, so the width alone is not the control parameter.
-Above jamming, at fixed pressure, the picture is the opposite: polydispersity removes grains from the load-bearing network---the rattler fraction rises about elevenfold in every family---while the coordination number and contact-orientation statistic of the surviving backbone are family-independent within uncertainty, and a pre-registered test for a change in backbone orientational order returns the null at its registered resolving power.
-A composition sweep over binary mixtures shows why the width fails: two mixtures with the same two diameters, the same size ratio and identical number $\CV$, differing in which species carries the volume, jam $\pairDPhi\pm\pairDPhiSe$ apart, $\pairScale$ times the protocol's run-to-run scatter, and a Furnas-type interstitial-filling model with interaction exponents fixed in advance predicts $\pairFillingPred$ for the same pair without a fitted parameter.
+Above jamming, at fixed pressure, the picture is the opposite.
+Polydispersity removes grains from the load-bearing network, with the rattler fraction rising about elevenfold in every family, while the coordination number and contact-orientation statistic of the surviving backbone are family-independent within uncertainty; a pre-registered test for a change in backbone orientational order returns the null at its registered resolving power.
+A composition sweep over binary mixtures shows why the width fails.
+Two mixtures with the same two diameters, the same size ratio and identical number $\CV$, differing in which species carries the volume, jam $\pairDPhi\pm\pairDPhiSe$ apart, $\pairScale$ times the protocol's run-to-run scatter; a Furnas-type interstitial-filling model with interaction exponents fixed in advance predicts $\pairFillingPred$ for that pair without a fitted parameter.
 The jamming shift tracks how volume is distributed across size pairs, which no width descriptor of the number distribution records.
 \end{abstract}
 
@@ -48,16 +50,18 @@ The jamming shift tracks how volume is distributed across size pairs, which no w
 
 The packing fraction at which a dense suspension of frictional particles jams, $\phiJ$, is the quantity a stress-dependent constitutive model needs before it can predict a viscosity: in the Wyart--Cates picture the viscosity diverges at a jamming fraction that interpolates, with stress, between a frictionless and a frictional value \cite{wyart2014discontinuous}.
 For monodisperse spheres both limits are well characterised \cite{ohern2003jamming,silbert2010jamming,vanhecke2010jamming}.
-Real suspensions are polydisperse, and the usual practice is to summarise the size distribution by a single number---its width, as a coefficient of variation---and to treat $\phiJ$ as a function of it.
+Real suspensions are polydisperse.
+The usual practice is to summarise the size distribution by one number, its width as a coefficient of variation, and to treat $\phiJ$ as a function of that.
 
-That this cannot be sufficient has been known for the frictionless random-close-packing problem for some time.
+For the frictionless random-close-packing problem, one number has been known to be insufficient for some time.
 Desmond and Weeks showed that the skewness of the size distribution moves the close-packed fraction independently of its width \cite{desmond2014influence}; Farr and Groot built a predictive model that takes the whole distribution as input \cite{farr2009close}; Hopkins, Stillinger and Torquato showed that binary sphere packings attain an anomalously wide range of densities as ratio and composition vary \cite{hopkins2013disordered}; and the interstitial-filling account of maximum-density gradings goes back to Furnas \cite{furnas1931grading}.
 What is missing for the frictional case relevant to suspension rheology is a controlled comparison in which the width is held fixed and only the shape is changed, together with a look at what the change in $\phiJ$ does to the contact network.
 
 This paper reports that comparison.
 It is a descriptive sweep, not a test of a theory: the design holds the number mean and number $\CV$ of the size distribution fixed across three families that differ in skewness and support, compresses each to jamming under one protocol, and reports $\phiJ$, the rattler fraction, the backbone coordination number and the backbone contact-orientation statistic as functions of $\CV$ for each family.
 It then adds a composition sweep over binary mixtures, which is where the interpretation comes from.
-Every number in the text is printed by the analysis scripts from the committed simulation output, every statistical threshold is stated with the test that sets it, and each figure regenerates byte-identically from one command.
+Every number in the text is printed by the analysis scripts from the committed simulation output, and every statistical threshold is stated with the test that sets it.
+Each figure regenerates byte-identically from one command.
 
 \section{Methods}
 
@@ -70,6 +74,8 @@ The size distribution is truncated at $\truncLo\,\dten$ and $\truncHi\,\dten$.
 A cell whose largest grain exceeds $\dMaxOverLFlag$ of the periodic box length is flagged as a finite-size risk; the flag is carried through every analysis and reported where it fires (Sec.~\ref{sec:fabric}).
 The campaign's $\nShardFiles$ output shards hold $\nRecords$ records, $\nDedup$ after dropping failed runs and collapsing repeated cell keys; $\nConflicts$ keys ($\nConflictRecords$ records) were run more than once and returned different packing fractions from the same seed, all of them monodisperse cells, where the packing is most degenerate.
 The rule is to keep the record with the higher iteration cap and otherwise the first in file order; $\nConflictsSelected$ of the affected keys enter the analysed set, and the largest disagreement among them is $\conflictWorstDphi$ in $\phi$, $\conflictWorstDphiScale$ times the run-to-run scatter, in a single seed at $\CV=0$.
+That cell key carries the iteration cap, so a cell re-run at the raised cap survives the collapse twice: the $\nSelectedRecords$ records at $N=\nGrains$, $\mup=\muP$ that converged are $\nSelected$ distinct cells, $\nRecappedCells$ of them re-run under both caps.
+The per-rung means, standard errors and seed counts reported below are taken over the $\nSelected$ cells, with the higher cap kept, so that a change of cap is never counted as an extra seed.
 
 \subsection{Size-distribution families}
 
@@ -164,6 +170,7 @@ The strong shape dependence of $\phiJ$ is thus not visible in what happens to th
 The fabric campaign tests the remaining possibility, that the surviving backbone reorganises its contact orientations.
 The pre-registered primary statistic is the per-family OLS slope of $\Tnr$ against $\CV$, with the null predicted; the registered verdict grammar calls a slope a drift if it exceeds twice its standard error and calls the null informative only if the achieved resolving power over the $\CV$ range is at or below the registered effect size $\fabRegisteredResolve$.
 The slopes are $\fabSlopeLogn\pm\fabSlopeLognSe$ (lognormal, $n=\fabNLogn$ cells), $\fabSlopeUnif\pm\fabSlopeUnifSe$ (uniform, $n=\fabNUnif$) and $\fabSlopeBidi\pm\fabSlopeBidiSe$ (bidisperse, $n=\fabNBidi$), with achieved resolving powers $\fabResolveLogn$, $\fabResolveUnif$ and $\fabResolveBidi$: the null holds on all three families and is informative on all three.
+The resolving power is twice the standard error of the slope multiplied by the $\CV$ range, which is $0.5$ here, so it is numerically the standard error already quoted and not a second, independent measurement.
 A distribution-free Kruskal--Wallis test across the six $\CV$ rungs, which has power against a non-monotone dependence that an OLS slope would miss, gives $p=\fabKwPLogn$, $\fabKwPUnif$ and $\fabKwPBidi$.
 
 Two caveats travel with the lognormal result.
@@ -199,14 +206,14 @@ They jam at
 \end{equation}
 a difference $\Delta\phi=\pairDPhi\pm\pairDPhiSe$, which is $\pairScale$ times the protocol's own run-to-run scatter of $\phiScale$ measured on repeated monodisperse cells.
 Any account of the jamming shift built from the width of the number distribution predicts exactly zero here; an account built on its skewness does not, and this pair cannot exclude one.
-A linear packing model of the Furnas type, in which each size class packs at the measured monodisperse fraction and the interaction between classes is set by two size-ratio functions with exponents fixed in advance of the composition campaign at $\fillPa$ and $\fillPb$, the loosening- and wall-effect exponents of the compressible packing model as tabulated in Ref.~\cite{diaz2021packing}, predicts $\pairFillingPred$ for this pair with no parameter fitted to it.
+A linear packing model of the Furnas type, in which each size class packs at the measured monodisperse fraction and the interaction between classes is set by two size-ratio functions with exponents fixed in advance of the composition campaign at $\fillPa$ and $\fillPb$, the loosening- and wall-effect exponents of the compressible packing model as given in Ref.~\cite{diaz2021packing}, predicts $\pairFillingPred$ for this pair with no parameter fitted to it.
 % [UNVERIFIED attribution] the two exponent values are printed in diaz2021packing (verified against the open full text, eqs. 26 and 33); whether they are de Larrard's own 1999 values or a later revision of the model has not been checked against the book (refs.bib annote).
-(Ref.~\cite{diaz2021packing} presents them as the functions of de Larrard's model \cite{delarrard1999concrete}; we have not checked the original, and what matters here is that the two values were held fixed before the pair was measured.)
+% Re-checked 2026-09-17: still unresolved, and the reason is now in the annote -- there are two de Larrard 1999 publications (this CRC Press book and an LCPC monograph) and diaz2021packing cites the latter. The forms themselves: eq. 26 is b(x) = 1 - (1-x)^1.5 and eq. 33 is a(x) = sqrt(1 - (1-x)^1.02); the annote had the square root missing and is corrected. mixture_model.py always had it, so no number moves.
+(Ref.~\cite{diaz2021packing} attributes these functions to de Larrard's compressible packing model, citing two earlier de Larrard sources, neither of which is Ref.~\cite{delarrard1999concrete}; we have checked neither de Larrard source, and what matters here is that the two values were held fixed before the pair was measured.)
 The same pair at $\mup=0$ gives $\pairDPhiMuZero\pm\pairDPhiMuZeroSe$, $\pairScaleMuZero$ times the scatter, so the separation is not a frictional effect.
 
 \section{Discussion}
 
-The three results fit together.
 The width of the size distribution is not the control parameter for $\phiJ$: at fixed width, three shapes give shifts spanning a factor of $\ratioPhiJ$ (between $\ratioPhiJPeak$ and $\ratioPhiJInvVar$ under the other two definitions of Sec.~\ref{sec:phij}), and the shift is not even monotone in width for one of them.
 The contact network above jamming does not distinguish the shapes either: every family loses about the same fraction of its grains to the rattler population, keeps the same backbone coordination, and shows no change in backbone contact orientation at the registered resolving power.
 What distinguishes them is how volume is apportioned across size pairs, which the binary sweep isolates: at identical width descriptors, moving a quarter of the volume into the fines changes $\phi$ by $\pairDPhi$, and a filling model with its exponents fixed in advance predicts the size of that change.
@@ -214,13 +221,12 @@ The pair does not hold the skewness fixed, so it separates composition from widt
 Skewness is therefore not excluded as a control parameter by this sweep: the only test that could exclude it is the two zero-skewness families against each other ($\dPhiJUnif$ against $\dPhiJBidi$), and that pair has not been tested at the calibrated threshold.
 What the pair does show is that the filling account, which uses the volume composition and not the skewness, predicts the separation.
 
-This is consistent with the frictionless literature.
-Desmond and Weeks found skewness to matter as much as width \cite{desmond2014influence}, and Farr and Groot's predictive model takes the entire distribution as input for the same reason \cite{farr2009close}.
+This agrees with the frictionless literature: Desmond and Weeks found skewness to matter as much as width \cite{desmond2014influence}, and Farr and Groot's predictive model takes the entire distribution as input for the same reason \cite{farr2009close}.
 It also removes an apparent conflict with a recent two-dimensional study whose abstract reports the shear-jamming point varying non-monotonically with polydispersity \cite{singh2025rigidity}: that study's distributions are normal, i.e.\ of zero skewness, and the zero-skewness families here also show the weakest and, for the bidisperse case, non-monotone response.
-The comparison across dimensions, protocols (shear against isotropic compression) and jamming points is qualitative.
+Shear jamming is a distinct route to rigidity from isotropic compression \cite{bi2011jamming}, so the comparison across dimensions, protocols and jamming points is qualitative.
 
-Several limits of the sweep should be stated.
-The bidisperse family is a path through the (ratio, composition) plane, and its $\CV=0.5$ member is a fines-poor mixture; the family's small $\Delta\phiJ$ is a property of that path, not of bidisperse packings in general, as Fig.~\ref{fig:binaries} makes plain.
+The limits of the sweep are worth naming, and the bidisperse family is the first of them.
+It is a path through the (ratio, composition) plane, and its $\CV=0.5$ member is a fines-poor mixture; the family's small $\Delta\phiJ$ is a property of that path, not of bidisperse packings in general, as Fig.~\ref{fig:binaries} makes plain.
 The across-family spread is a range over three families, not a pairwise statement about any two: only the lognormal--bidisperse pair has been tested against the selection-calibrated threshold.
 $\Znr$, $\fr$ and $\Tnr$ are read at a pressure, $\pHat=\pHatTop$, and the flat backbone coordination is a statement at that pressure; the zero-pressure isostatic limit is not resolved here.
 The lognormal family at $\CV\ge0.3$ carries the finite-size flag at $N=\nGrains$, which touches the fabric slope (Sec.~\ref{sec:fabric}) and, through the same tail, may touch its $\phiJ$; a larger-$N$ repeat of that family is the obvious next cell to spend.
@@ -230,8 +236,10 @@ And the filling model's prediction is a single-pair comparison at exponents fixe
 
 For frictional spheres compressed to jamming under one protocol, the jamming fraction responds to the shape of the size distribution at fixed width by a factor of three to five more than to a fourfold change of width within a zero-skewness family, and the response is not monotone in width for a number-symmetric bidisperse mixture.
 Above jamming, polydispersity depopulates the load-bearing network without restructuring what remains: the rattler fraction rises about elevenfold in every family while the backbone coordination and contact orientation are family-independent and $\CV$-independent within the resolving power of the tests.
-Two binary mixtures with identical width descriptors jam $\pairDPhi$ apart, thirty times the protocol scatter, and a parameter-free filling model predicts the separation; the pair leaves the skewness free, so it rules out the width, not every moment.
-A rheological model that summarises polydispersity by a coefficient of variation is therefore using a variable that does not determine $\phiJ$; the volume distribution across size pairs, which the filling model reads, accounts for the one separation it was tested on, and whether a lower-order descriptor such as the skewness could do the same is left open by the untested zero-skewness pair.
+Two binary mixtures with identical width descriptors jam $\pairDPhi$ apart, $\pairScale$ times the protocol scatter, and a parameter-free filling model predicts the separation; the pair leaves the skewness free, so it rules out the width, not every moment.
+A rheological model that summarises polydispersity by a coefficient of variation is therefore using a variable that does not determine $\phiJ$.
+The volume distribution across size pairs, which the filling model reads, accounts for the one separation it was tested on.
+Whether a lower-order descriptor such as the skewness could do the same is left open by the untested zero-skewness pair.
 
 \begin{acknowledgments}
 The simulation output, the analysis scripts that print every number in this paper, the figure scripts and their data tables, and the pre-registration documents for the fabric and composition campaigns are archived with the manuscript.
