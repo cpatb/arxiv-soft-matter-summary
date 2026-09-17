@@ -504,3 +504,184 @@ Two readings follow.
   are wider than the data supports, and the exact size depends on the formula behind that
   particular statistic, which this prereg has not read. Recorded as a question for the
   sweep's own artifact, not settled here.
+
+### 5.9 THE CAMPAIGN'S OWN RESULT: `MAX_ITER` IS AN N-DEPENDENT CRITERION WEARING A CONSTANT'S CLOTHES
+
+The referee's finding (iv) was right, and the production run settled it: the ladder
+shortened in 5.6 has **the same defect it was introduced to remove.** Measured over every
+cell that has run, `converged / attempted` by (CV, alpha, rung):
+
+| CV | alpha | `p_hat` | converged / attempted |
+|---|---|---|---|
+| 0.0 | 1.00 | 1e-3 | 7/7 |
+| 0.0 | 1.00 | 3e-4 | 6/6 |
+| 0.0 | 1.00 | 1e-4 | 6/6 |
+| 0.0 | 2.00 | 1e-3 | 4/4 |
+| 0.0 | 2.00 | 3e-4 | 3/3 |
+| 0.0 | 2.00 | 1e-4 | 3/3 |
+| 0.5 | 1.00 | 1e-3 | 3/3 |
+| 0.5 | 1.00 | 3e-4 | 3/3 |
+| **0.5** | **1.00** | **1e-4** | **0/6** |
+| **0.5** | **2.00** | **3e-4** | **0/1** |
+| **0.5** | **2.00** | **1e-4** | **0/2** |
+
+**Every failure is at CV = 0.5 and none is at CV = 0.0** -- the censoring is exactly
+aligned with the axis under test, which is what 5.6 was written to prevent.
+
+**WHICH OF TWO VERY DIFFERENT THINGS IS HAPPENING, measured rather than assumed.**
+`converged = False` cannot distinguish "the pack never jammed" from "the run was cut
+off", and the two call for opposite responses. `PackingState.tol_met` records whether the
+unbalanced-force bar was met IGNORING the iteration cap, and that is the discriminator.
+Over the 11 non-converged cells (`diag_shape_cap.py`):
+
+- **11 of 11 stopped AT THE CAP** (`iters` = 200000 exactly).
+- **4 of 11 MET THE PHYSICAL CRITERION ANYWAY** and were rejected on the iteration count
+  alone -- three lognormal CV 0.5 / alpha 1 / 1e-4 cells at `unbalanced` =
+  8.0e-3 / 3.7e-3 / 5.6e-3 against a bar of 2e-2, with `z_all` = 2.27 / 2.27 / 2.18 and
+  `phi` = 0.6381 / 0.6371 / 0.6343. **Those are packings, not gases.**
+- **2 of 11 never jammed at all**: the two `p_hat` = 3e-5 cells, `z_all` = 0.023. No
+  iteration budget fixes those, and 5.6 was right to drop that rung.
+- the remaining 5 are between: `z_all` 1.09-2.92, `unbalanced` 3.0e-2 to 1.5e-1.
+
+**AND THE CONTROL SETTLES THE CAUSE.** At CV = 0.0 the same rungs use only a fraction of
+the same cap: median iterations 19 556 / 28 266 / 33 786 / 63 423 at
+`p_hat` = 1e-3 / 3e-4 / 1e-4 / 3e-5, i.e. **10 %, 14 %, 18 % and 37 % of 200 000**, with
+the alpha = 2 rungs at 17 %, 28 % and 42 %. The cap is nowhere near binding at CV = 0 and
+is hit every time at CV = 0.5.
+
+**THE FINDING, stated as a property of the protocol and not of this campaign.**
+`packing.MAX_ITER = 200000` was calibrated when this project ran **N = 1500**. It is a
+RESOURCE limit, not a physics bar -- the physics bar is `UNBALANCED_TOL` -- but it enters
+the `converged` flag on equal terms with the physics, so at a larger N it silently becomes
+the binding criterion, and it becomes binding SOONER at high CV and low pressure. **At
+N = 5400 it is the binding criterion over most of the CV = 0.5 arm of the pressure
+ladder.** That is not a fact about clumps; it applies to any future campaign in this
+project that raises N, and the drop rate it produces is correlated with CV by
+construction.
+
+**CONSEQUENCE FOR S3: THE PRIMARY NUMBER IS NOT READABLE FROM THIS GRID.** The paired
+interaction needs all four (CV, alpha) corners, and the CV = 0.5 corners cannot supply a
+three-rung ladder at this cap. **This is not "the campaign ran out of time" -- no amount
+of wall clock at `MAX_ITER = 200000` produces the measurement.** S3 is recorded as
+**BLOCKED**, with the block named.
+
+**WHAT WOULD UNBLOCK IT, and why it is not a widened bar.** `PJ_MAX_ITER` already exists
+and is already recorded on every record, and `phase2_phiJ.cell_key` already appends
+`_it{cap}` to the key when the cap is non-default -- so a capped and an uncapped run can
+never pool silently. Raising it for the CV = 0.5 arm is raising a RESOURCE allowance, not
+loosening `UNBALANCED_TOL`. **The check that makes it safe is cheap and is registered
+here**: because the cap is not binding at CV = 0 (10-42 % used), a re-run there at the
+higher cap must return **bit-identical** `phi` -- the run stops at its own `doneHook`
+before the cap in either case. If it does not, the cap was doing something else and the
+whole re-run is void. Cost at the measured rate: the CV = 0.5 cells are 2000-5000 s each
+at N = 5400 and would take at least 3x that at a 3x cap, so this is an overnight job and
+not an in-session one.
+
+### 5.10 THE CAP, RE-REGISTERED -- written BEFORE the re-run, from a prediction that reproduced the converged rung
+
+Amendment 5.9 named the block and the unblocking move but not the NUMBER. `diag_shape_iters.py`
+supplies it, and was made to reproduce something known before its prediction was believed.
+
+**The hypothesis.** The cap counts iterations; `PWaveTimeStep` reads the SMALLEST member
+radius, so `dt` is a property of the PSD's minimum and not of anything being measured. If
+the cell's dynamics are set by the controller, the PHYSICAL time to converge,
+`t_conv = iters * dt`, should be roughly CV-independent at fixed (alpha, p_hat), and the
+iterations a CV = 0.5 cell needs are `t_conv(CV = 0) / dt(CV = 0.5)`.
+
+**Measured `dt` (median over cells, N = 5400):** CV = 0: 0.2500 (alpha 1), 0.1984 (alpha 2)
+-- identical across families, as 5.8 requires. CV = 0.5 lognormal: 0.05199 / 0.04049
+(ratio 4.81 / 4.90 to CV = 0); CV = 0.5 uniform: 0.03354 / 0.02662 (ratio 7.45). The
+uniform family's ratio is larger because its minimum is `d_mean(1 - sqrt(3) CV)` = 0.134
+against the lognormal's truncation at 0.2.
+
+**The check (section 3 of the diagnostic).** Predicting the iteration count of the NINE
+CV = 0.5 cells that DID converge (lognormal alpha 1 at 1e-3 and 3e-4, uniform alpha 1 at
+1e-3) from the CV = 0 `t_conv` and their own `dt`: all nine land within 25 %, and the
+miss is SYSTEMATIC -- the prediction is LOW by 15.1-23.4 % on every cell, i.e. `t_conv`
+itself rises about a fifth from CV = 0 to CV = 0.5. The 1/dt law carries the effect
+(a 4.8-7.5x ratio) and the residual is a 1.2x correction in one direction. The
+prediction is therefore used with that bias corrected: `iters_needed ~ 1.25 * t_conv(0)/dt`.
+
+**Predicted iterations (raw / bias-corrected) for the unconverged rungs.** lognormal
+alpha 2: 158581 / 198k (1e-3), 268202 / 335k (3e-4), 406123 / 508k (1e-4); lognormal
+alpha 1 at 1e-4: 162469 / 203k (which is why that rung sat at 0/6 at a cap of 200000:
+it needs 1.5 % more than the cap). uniform alpha 1: 210719 / 263k (3e-4), 251869 / 315k
+(1e-4); uniform alpha 2: 241246 / 302k, 408011 / 510k, 617828 / 772k. The bidisperse
+family has no CV = 0.5 record on disk and so no measured `dt`; its 50:50-by-number
+construction at CV = 0.5 has `d_min = d_mean/2`, so a ratio of 2 and a worst raw
+prediction of ~131k -- under the default cap -- but it is run under the same cap as the
+rest so that the arm is one protocol.
+
+**THE CAP IS SET TO `PJ_MAX_ITER = 1000000`.** That is the smallest value in the
+diagnostic's table that covers 12/12 predicted (family, alpha, rung) cells with a 30 %
+margin over the RAW prediction, and it is 1.29x the bias-corrected worst (772k). It is a
+resource allowance and `UNBALANCED_TOL` is untouched.
+
+**Cost, measured not guessed.** Wall seconds per iteration at N = 5400, CV = 0.5:
+median 0.0181 (alpha 1) and 0.0239 (alpha 2). The worst cell (uniform alpha 2, 1e-4) is
+then ~5.1 h if it converges where predicted and 6.6 h if it runs to the cap; the
+lognormal worst is ~3.4 h. **The records are written only at cell completion**, and
+nothing spawned from an agent session survives it, so cells that do not finish inside
+this session leave nothing and are re-launched by the same script next time (the runner
+resumes by key). The launch order puts the longest cells first for that reason.
+
+**What is re-run (the CV = 0.5 arm only, every cell that is non-converged or missing):**
+lognormal alpha 1 at 1e-4 (3 seeds) and alpha 2 at all three rungs (3 seeds, seed 3
+never ran); uniform alpha 1 at 3e-4 and 1e-4 and alpha 2 at all three rungs; bidisperse
+alpha 1 and 2 at all three rungs (never ran). Cells that CONVERGED at the default cap are
+NOT re-run: a cell that reached its `doneHook` at iteration k < 200000 stops at k under
+any larger cap, so re-running it can only reproduce it.
+
+**The registered identity check** (5.9): two CV = 0 cells (lognormal, seed 1, 1e-3, at
+alpha 1 and alpha 2) run under the new cap. Their `phi`, `iters`, `z_all` and `p_hat`
+must be BIT-IDENTICAL to the default-cap records already on disk. If either differs the
+re-run is void, and the grader says so rather than pooling.
+
+**The grader's rule for a ladder that mixes caps**, registered before any such ladder
+exists: for one physical cell, when a default-cap and a raised-cap record both exist,
+the raised-cap record is used and the fact printed; a ladder is graded only if every rung
+of it is converged, exactly as before; the identity check above is a gate (**S6**) that
+FAILS on any non-identical field and is VACUOUS -- reported as such, S3 stays BLOCKED --
+if no cell exists at both caps. The caps present in every fitted ladder are printed.
+
+### 5.11 ONE CELL NEVER LANDS -- lognormal (alpha 2, CV 0.5, seed 3), recorded after the fact, changing no rule
+
+**What happened.** That cell aborted at all three rungs in three separate launches
+(2026-09-16: the default-cap launch, the re-run under 5.10, and the re-run's own retry;
+workers "Aborted" with the C++ assertion in `InsertionSortCollider::spatialOverlapPeri`,
+`maxima - minima < .99*dim`). An abort is not a Python exception: the runner cannot catch
+it, no `failed` record is written, and the cell is simply missing. 44 of the 47 registered
+re-run cells landed; these three are the missing ones.
+
+**What the probe found** (`scripts/probe_seed3_crash.sh`, output at
+`out/shape/probe_seed3_crash.txt`; the script builds the configuration through the
+shipped `insert_packing` and steps it one iteration at a time). The insertion protocol
+places grains at random with no overlap check at `PHI_INSERT`, so every cell starts with
+deep overlaps; this one has 535 cross-grain pairs with a centre inside the other body
+and 9533 overlapping pairs. From iteration 28 one body of `r = 0.0903` (near the
+truncation floor) doubles its speed every step -- max|v| 4.82 at iter 28, 294.4 at
+iter 35, at which point it would cross 0.47 of the cell in one step -- and the collider's
+periodic-span assertion fires on the next.
+
+**The controls** (`scripts/probe_seed3_controls.sh`, output at
+`out/shape/probe_seed3_controls.txt`): the same lines on the seven neighbouring cells
+that DID run -- lognormal alpha 1 seed 3, lognormal alpha 2 seeds 1-2, uniform alpha 2
+seed 3, bidisperse alpha 2 seeds 1-3. Centre-inside pairs 306-595,
+overlapping pairs 4790-10168, and max|v| at iteration 60 between
+1.16 and 5.15 on all seven: every control is bounded through the window in
+which the crash case has already diverged. The overlap counts of the crash case sit
+INSIDE the control range, so the initial overlap census does not discriminate; what
+kills the cell is one specific small-body configuration, not the protocol, not the
+alpha-2 clump, and not seed 3 (which runs at alpha 1 and in the other two families).
+
+**Consequence for the grading, stated rather than repaired.** The lognormal
+(alpha 2, CV 0.5) rung has TWO seeds, so the lognormal paired interaction test in S3
+runs on n = 2 with t_crit = 12.706 at 1 dof, against the n = 3 / 4.303 the design
+registered. The grader prints n and t_crit per family; the result is read at that
+strength and no stronger.
+
+**What is NOT done here.** No replacement seed is added. A replacement would need the
+matching alpha 1 CV 0 / CV 0.5 and alpha 2 CV 0 cells at the same seed to keep the
+pairing paired, and choosing a seed after seeing which one fails is a selection the author
+makes, not the grader. That decision is recorded on the Status card as an open item. No
+bar, rung, cap or tolerance in 5.1-5.10 changes.

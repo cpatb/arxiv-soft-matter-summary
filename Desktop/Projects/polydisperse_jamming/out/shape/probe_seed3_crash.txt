@@ -1,0 +1,40 @@
+﻿--- lognormal alpha=2.0 CV=0.5 seed=3: N_bodies=10800 L=26.228 r_min=0.0837 r_max=1.9170
+    deepest cross-grain overlap: pen=2.7046 between r=1.5566 and r=1.9170 (pen / r_small = 1.737; > 2 means one body's centre lies INSIDE the other)
+    N: 535 cross-grain pairs with a centre inside the other body; 9533 overlapping pairs of 769757 candidate pairs
+    dt=4.1851e-02
+    iter   1: max|v|=1.707e+00 (body r=0.0903) max|v|*dt/L=2.723e-03
+    iter   2: max|v|=3.305e+00 (body r=0.0903) max|v|*dt/L=5.274e-03
+    iter   3: max|v|=4.746e+00 (body r=0.0903) max|v|*dt/L=7.573e-03
+    iter   4: max|v|=5.883e+00 (body r=0.0903) max|v|*dt/L=9.387e-03
+    iter   5: max|v|=6.637e+00 (body r=0.0903) max|v|*dt/L=1.059e-02
+    iter   6: max|v|=6.937e+00 (body r=0.0903) max|v|*dt/L=1.107e-02
+    iter   7: max|v|=6.884e+00 (body r=0.0903) max|v|*dt/L=1.098e-02
+    iter   8: max|v|=6.826e+00 (body r=0.0903) max|v|*dt/L=1.089e-02
+    iter   9: max|v|=6.758e+00 (body r=0.0903) max|v|*dt/L=1.078e-02
+    iter  10: max|v|=6.682e+00 (body r=0.0903) max|v|*dt/L=1.066e-02
+    iter  11: max|v|=6.602e+00 (body r=0.0903) max|v|*dt/L=1.054e-02
+    iter  12: max|v|=6.672e+00 (body r=0.0903) max|v|*dt/L=1.065e-02
+    iter  13: max|v|=6.649e+00 (body r=0.0903) max|v|*dt/L=1.061e-02
+    iter  14: max|v|=6.668e+00 (body r=0.0903) max|v|*dt/L=1.064e-02
+    iter  15: max|v|=6.715e+00 (body r=0.0903) max|v|*dt/L=1.072e-02
+    iter  16: max|v|=6.757e+00 (body r=0.0903) max|v|*dt/L=1.078e-02
+    iter  17: max|v|=6.791e+00 (body r=0.0903) max|v|*dt/L=1.084e-02
+    iter  18: max|v|=6.817e+00 (body r=0.0903) max|v|*dt/L=1.088e-02
+    iter  19: max|v|=6.835e+00 (body r=0.0903) max|v|*dt/L=1.091e-02
+    iter  20: max|v|=6.844e+00 (body r=0.0903) max|v|*dt/L=1.092e-02
+    iter  21: max|v|=6.487e+00 (body r=0.0903) max|v|*dt/L=1.035e-02
+    iter  22: max|v|=5.247e+00 (body r=0.0903) max|v|*dt/L=8.373e-03
+    iter  23: max|v|=4.290e+00 (body r=0.1348) max|v|*dt/L=6.846e-03
+    iter  24: max|v|=4.290e+00 (body r=0.1348) max|v|*dt/L=6.845e-03
+    iter  25: max|v|=4.167e+00 (body r=0.1348) max|v|*dt/L=6.650e-03
+    iter  26: max|v|=4.085e+00 (body r=0.1414) max|v|*dt/L=6.519e-03
+    iter  27: max|v|=4.106e+00 (body r=0.1414) max|v|*dt/L=6.551e-03
+    iter  28: max|v|=4.819e+00 (body r=0.0903) max|v|*dt/L=7.689e-03
+    iter  29: max|v|=6.109e+00 (body r=0.0903) max|v|*dt/L=9.748e-03
+    iter  30: max|v|=1.104e+01 (body r=0.0903) max|v|*dt/L=1.762e-02
+    iter  31: max|v|=1.882e+01 (body r=0.0903) max|v|*dt/L=3.004e-02
+    iter  32: max|v|=3.601e+01 (body r=0.0903) max|v|*dt/L=5.746e-02
+    iter  33: max|v|=7.110e+01 (body r=0.0903) max|v|*dt/L=1.135e-01
+    iter  34: max|v|=1.436e+02 (body r=0.0903) max|v|*dt/L=2.291e-01
+    iter  35: max|v|=2.944e+02 (body r=0.0903) max|v|*dt/L=4.697e-01
+    >>> a body would cross a third of the cell in one step; this is the collider abort in the making

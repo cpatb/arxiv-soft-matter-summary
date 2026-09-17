@@ -152,6 +152,103 @@ def dedup(recs: list[dict], report) -> list[dict]:
     return list(by_key.values())
 
 
+# Amendment 5.10: the four fields the identity check compares, and the cap that the
+# default-cap records carry. A physical cell is the key with its `_it{cap}` suffix
+# removed (phase2_shape.cell_key appends it only when the cap is non-default).
+S6_FIELDS = ("phi", "iters", "z_all", "p_hat")
+DEFAULT_CAP = 200000
+
+
+def physical_key(r: dict) -> str:
+    k = r["key"]
+    suffix = f"_it{int(r['max_iter'])}"
+    return k[:-len(suffix)] if k.endswith(suffix) else k
+
+
+def prefer_raised_cap(prod: list[dict], report) -> tuple[list[dict], dict]:
+    """Amendment 5.10's rule for a ladder that mixes caps: for one physical cell, when
+    a default-cap and a raised-cap record both exist, the raised-cap record is used and
+    the fact printed. Returns the reduced list and {physical_key: {cap: record}} for
+    every cell that exists at more than one cap (the input to S6)."""
+    by_cell: dict[str, dict[int, dict]] = defaultdict(dict)
+    for r in prod:
+        cap = int(r["max_iter"])
+        if cap in by_cell[physical_key(r)]:
+            raise SystemExit(f"two records for {physical_key(r)} at cap {cap}")
+        by_cell[physical_key(r)][cap] = r
+    multi = {k: v for k, v in by_cell.items() if len(v) > 1}
+    out = [v[max(v)] for v in by_cell.values()]
+    report(f"N: -> {len(out)} physical cells after preferring the raised-cap record on "
+           f"{len(multi)} cell(s) that exist at more than one cap (amendment 5.10)")
+    for k in sorted(multi):
+        caps = sorted(multi[k])
+        report(f"       {k}: caps {caps} -> using {max(caps)}")
+    by_cap = defaultdict(int)
+    for r in out:
+        by_cap[int(r["max_iter"])] += 1
+    report("     records used, by cap: " + ", ".join(f"{c}: {n}" for c, n in sorted(by_cap.items())))
+    return out, multi
+
+
+def g_s6(multi: dict) -> Gate:
+    g = Gate("S6", "Amendment 5.10 identity check: every physical cell that CONVERGED at "
+                   "the default cap and exists again at the raised cap must be "
+                   f"BIT-IDENTICAL on {S6_FIELDS}. FAILS on any non-identical field; "
+                   "VACUOUS (and S3 stays BLOCKED) if no converged cell exists at both "
+                   "caps. A cell that was CUT at the default cap carries no identity "
+                   "claim -- for those the raised-cap record must instead have run PAST "
+                   "the old cap, which is the check that the cap acted at all.")
+    g.say(f"N: {len(multi)} physical cell(s) present at more than one cap")
+    ident = {k: v for k, v in multi.items() if v[min(v)].get("converged")}
+    cut = {k: v for k, v in multi.items() if not v[min(v)].get("converged")}
+    g.say(f"N: -> {len(ident)} converged at the default cap (identity REQUIRED); "
+          f"{len(cut)} cap-cut at the default cap (identity NOT expected; the raised-cap "
+          f"record must show iters > {DEFAULT_CAP})")
+    if not ident:
+        g.say("VACUOUS: no converged cell exists at both caps, so the raised-cap records "
+              "cannot be shown to be the same protocol. S3 is BLOCKED.")
+        g.verdict(False, informative=False)
+        return g
+    all_same = True
+    for k in sorted(ident):
+        recs = ident[k]
+        caps = sorted(recs)
+        base = recs[caps[0]]
+        for cap in caps[1:]:
+            r = recs[cap]
+            diffs = [f for f in S6_FIELDS if base[f] != r[f]]
+            same = not diffs
+            all_same &= same
+            g.say(f"- `{k}` caps {caps[0]} vs {cap}: phi {base['phi']!r} vs {r['phi']!r}, "
+                  f"iters {base['iters']} vs {r['iters']}, z_all {base['z_all']!r} vs "
+                  f"{r['z_all']!r}, p_hat {base['p_hat']!r} vs {r['p_hat']!r} -> "
+                  f"{'BIT-IDENTICAL' if same else 'DIFFER on ' + ', '.join(diffs)}")
+    n_past = 0
+    n_conv = 0
+    for k in sorted(cut):
+        recs = cut[k]
+        r = recs[max(recs)]
+        past = int(r["iters"]) > int(recs[min(recs)]["max_iter"])
+        n_past += past
+        n_conv += bool(r.get("converged"))
+    if cut:
+        g.say(f"- cap-cut cells re-run: {n_past}/{len(cut)} ran past the old cap of "
+              f"{DEFAULT_CAP}; {n_conv}/{len(cut)} converged under the raised cap")
+        if n_past != len(cut):
+            g.say("  a cap-cut cell that did NOT run past the old cap means the raised "
+                  "cap was not in force for it -- the re-run is not what 5.10 registered")
+            all_same = False
+    if all_same:
+        g.say(f"All {len(ident)} identity pair(s) bit-identical on every field: a cell "
+              f"that reaches its doneHook at k < {DEFAULT_CAP} stops at k under any "
+              f"larger cap, so the raised-cap records are the same protocol with a "
+              f"larger resource allowance.")
+    else:
+        g.say("The re-run is VOID and nothing from it is pooled (amendment 5.10).")
+    g.verdict(all_same)
+    return g
+
+
 def g_s0a(gate_recs, report) -> Gate:
     g = Gate("S0a", "The three PREREG_FABRIC F1 cells, re-run at alpha = 1 through the "
                     "shape runner, return `phi_porosity` BIT-IDENTICAL to the committed "
@@ -341,7 +438,9 @@ def g_s2(raw_files, prod) -> Gate:
                    "alpha: no cell raised the clearance error, and the required N was "
                    "computed per alpha rather than inherited from the sphere run.")
     n_fail = 0
+    n_probe_fail = 0
     msgs = []
+    probe_msgs = []
     for f in raw_files:
         with open(f, encoding="utf-8") as fh:
             for line in fh:
@@ -349,14 +448,35 @@ def g_s2(raw_files, prod) -> Gate:
                 if not line:
                     continue
                 r = json.loads(line)
-                if r.get("failed") and "periodic collider" in str(r.get("error", "")):
+                if not (r.get("failed")
+                        and "periodic collider" in str(r.get("error", ""))):
+                    continue
+                # A clearance failure on a GATE/PROBE cell is not a production defect --
+                # it is the guard doing its job on a deliberately undersized cell, and
+                # it is the only evidence available that this guard can fire at all.
+                # Counting it against S2 reported a working guard as a failed gate.
+                if r.get("tag") in GATE_TAGS:
+                    n_probe_fail += 1
+                    if len(probe_msgs) < 2:
+                        probe_msgs.append(str(r.get("error"))[:200])
+                else:
                     n_fail += 1
                     if len(msgs) < 5:
                         msgs.append(str(r.get("error"))[:240])
-    g.say(f"N: {n_fail} cells raised the clearance error out of "
+    g.say(f"N: {n_fail} PRODUCTION cells raised the clearance error out of "
           f"{n_fail + len(prod)} requested")
     for m in msgs:
         g.say(f"- `{m}`")
+    g.say("")
+    g.say(f"N: {n_probe_fail} GATE/PROBE cell(s) raised it, which is the guard working "
+          f"and is **the only evidence that this check can fire at all** -- the timing "
+          f"probe ran at N = 1700, where the clearance genuinely is insufficient at "
+          f"alpha = 2:")
+    for m in probe_msgs:
+        g.say(f"- `{m}`")
+    if n_probe_fail == 0:
+        g.say("- (none -- so S2 has never been seen to fire, and a check that has never "
+              "fired is untested code)")
     ns = sorted({int(r["n_requested"]) for r in prod})
     spans = sorted({round(float(r.get("span_over_deq", 1.0)), 6) for r in prod})
     g.say("")
@@ -443,18 +563,32 @@ def phi_j_table(prod, report):
         p = np.array([float(r["p_hat"]) for r in rows])
         f = np.array([float(r["phi"]) for r in rows])
         fit = fit_phi_J(p, f)
+        caps = tuple(sorted({int(r["max_iter"]) if "max_iter" in r else -1 for r in rows}))
         out[(fam, cv, a)][seed] = (fit["phi_J_lin"], fit["phi_J_lin_se"],
-                                   fit["b_free"], fit["n_points"], fit["slope_lin"])
+                                   fit["b_free"], fit["n_points"], fit["slope_lin"],
+                                   caps)
     report(f"N: -> {sum(len(v) for v in out.values())} (family, CV, alpha, seed) "
            f"ladders fitted; {n_short} dropped for not carrying EXACTLY the registered "
            f"{len(P_HAT_LADDER_SHAPE)} rungs inside p_hat <= {P_HAT_FIT_MAX:g}")
+    # Amendment 5.10: the caps present in every fitted ladder are printed.
+    cap_sets = defaultdict(int)
+    for (fam, cv, a), seeds in out.items():
+        for seed, v in seeds.items():
+            cap_sets[(fam, cv, a, v[5])] += 1
+    report("     caps present in the fitted ladders (family, CV, alpha) -> caps: n_seeds "
+           "(amendment 5.10; -1 = record carries no max_iter field)")
+    for (fam, cv, a, caps) in sorted(cap_sets):
+        report(f"       {fam:<11} CV={cv:.1f} alpha={a:.2f} -> {list(caps)}: "
+               f"{cap_sets[(fam, cv, a, caps)]}")
     report("     `b_free` is NaN on every cell by design: the free-exponent fit needs "
            "four points and the registered ladder has three (amendment 5.6). Every "
            "phi_J here is a LINEAR extrapolation with no independent exponent check.")
     return out
 
 
-def g_s3(tab, report) -> tuple[Gate, dict]:
+def g_s3(tab, report, mult=None) -> tuple[Gate, dict]:
+    """`mult`: {alpha: mean n_contacts_raw/n_contacts over production cells at that alpha},
+    used only to print the multiplicity-corrected stiffness prediction; None prints n/a."""
     g = Gate("S3", "PRIMARY. Per family, the paired CV 0 -> CV_max shift in phi_J at "
                    "each alpha. The registered question is whether the "
                    "shape-of-the-distribution effect SURVIVES, GROWS or VANISHES as "
@@ -517,6 +651,23 @@ def g_s3(tab, report) -> tuple[Gate, dict]:
             else:
                 cells.append("--")
         g.say(f"| {fam} | " + " | ".join(cells) + " |")
+    # The RATIO D(alpha_hi)/D(alpha_lo) per family, printed because it is the number a
+    # reader would form by hand from the table above; its error bar is first-order in
+    # the two D standard errors (independent across alpha only approximately -- the
+    # seeds are paired across alpha, so this bar is an over-estimate and the paired
+    # test below is the one that decides).
+    a_lo, a_hi = alphas[0], alphas[-1]
+    ratios = []
+    for fam in fams:
+        if (fam, a_lo) in D and (fam, a_hi) in D and D[(fam, a_lo)] != 0:
+            q = D[(fam, a_hi)] / D[(fam, a_lo)]
+            qse = abs(q) * math.sqrt((Dse[(fam, a_hi)] / D[(fam, a_hi)]) ** 2
+                                     + (Dse[(fam, a_lo)] / D[(fam, a_lo)]) ** 2)
+            ratios.append(f"{fam} {q:.3f} +- {qse:.3f}")
+    if ratios:
+        g.say("")
+        g.say(f"D(alpha {a_hi:.2f}) / D(alpha {a_lo:.2f}) per family (unpaired first-order "
+              f"bar; the paired test below decides): " + "; ".join(ratios))
 
     g.say("")
     g.say("#### THE INTERACTION -- does D depend on alpha? PAIRED ON THE SEED")
@@ -579,7 +730,8 @@ def g_s3(tab, report) -> tuple[Gate, dict]:
           "zero by this design.")
     g.say("")
     g.say("| family | resolving power `t_crit*se` | |D| at alpha_lo | "
-          "|D| at alpha_hi | is the design finer than the effect it is chasing? |")
+          "|D| at alpha_hi | resolving power < |D| (the CV shift itself; NOT the "
+          "interaction test, which is the `resolved?` column above) |")
     g.say("|---|---|---|---|---|")
     for fam in fams:
         if fam not in inter:
@@ -636,9 +788,20 @@ def g_s3(tab, report) -> tuple[Gate, dict]:
           "the highest.")
     g.say("")
     pred_ratio = (sub_sphere_diameter(1.0, a_lo) / sub_sphere_diameter(1.0, a_hi))
+    # Second, sharper prediction (referee, 2026-09-16): a grain pair carrying m member
+    # interactions is m springs in parallel, so its stiffness is m times a single
+    # contact's and the slope c ~ 1/k falls by m. With m = mean n_contacts_raw/n_contacts
+    # (S4; 1 at the sphere rung by construction) the two known stiffness effects
+    # together predict slope(a_hi)/slope(a_lo) = (d_eq/ds) * m(a_lo)/m(a_hi). First
+    # order: it assumes the m interactions share one normal and one overlap.
+    m_lo = mult.get(a_lo, float("nan")) if mult else float("nan")
+    m_hi = mult.get(a_hi, float("nan")) if mult else float("nan")
+    pred_mult = pred_ratio * m_lo / m_hi if np.isfinite(m_lo * m_hi) and m_hi else float("nan")
     g.say(f"| family | mean slope at alpha {a_lo:.2f} | at alpha {a_hi:.2f} | measured "
-          f"ratio | predicted `d_eq/ds` | ratio/prediction |")
-    g.say("|---|---|---|---|---|---|")
+          f"ratio | predicted `d_eq/ds` | ratio/prediction | predicted with contact "
+          f"multiplicity `(d_eq/ds)*m_lo/m_hi` | ratio/that |")
+    g.say("|---|---|---|---|---|---|---|---|")
+    ratios = {}
     for fam in fams:
         s_lo = [v[4] for v in tab.get((fam, cv_lo, a_lo), {}).values()
                 if np.isfinite(v[4])] + [v[4] for v in
@@ -649,12 +812,18 @@ def g_s3(tab, report) -> tuple[Gate, dict]:
                                          tab.get((fam, cv_hi, a_hi), {}).values()
                                          if np.isfinite(v[4])]
         if not s_lo or not s_hi:
-            g.say(f"| {fam} | -- | -- | -- | {pred_ratio:.4f} | no cells |")
+            g.say(f"| {fam} | -- | -- | -- | {pred_ratio:.4f} | no cells | "
+                  f"{pred_mult:.4f} | no cells |")
             continue
-        m_lo, m_hi = float(np.mean(s_lo)), float(np.mean(s_hi))
-        r = m_hi / m_lo if m_lo else float("nan")
-        g.say(f"| {fam} | {m_lo:.4f} | {m_hi:.4f} | {r:.4f} | {pred_ratio:.4f} | "
-              f"{r/pred_ratio if pred_ratio else float('nan'):.3f} |")
+        sl_lo, sl_hi = float(np.mean(s_lo)), float(np.mean(s_hi))
+        r = sl_hi / sl_lo if sl_lo else float("nan")
+        ratios[fam] = r
+        g.say(f"| {fam} | {sl_lo:.4f} | {sl_hi:.4f} | {r:.4f} | {pred_ratio:.4f} | "
+              f"{r/pred_ratio if pred_ratio else float('nan'):.3f} | {pred_mult:.4f} | "
+              f"{r/pred_mult if np.isfinite(pred_mult) and pred_mult else float('nan'):.3f} |")
+    g.say("")
+    g.say(f"Contact multiplicity `m` = mean `n_contacts_raw/n_contacts` per rung (S4): "
+          f"alpha {a_lo:.2f} -> {m_lo:.4f}, alpha {a_hi:.2f} -> {m_hi:.4f}.")
     g.say("")
     g.say("A measured ratio near the prediction says the stiffness change is a pure "
           "rescaling and the intercept is safe. **A ratio far from it does NOT "
@@ -662,6 +831,20 @@ def g_s3(tab, report) -> tuple[Gate, dict]:
           "compressibility, so the slope carries physics as well as the artefact, and "
           "this test cannot separate them. It is a NECESSARY condition for the "
           "rescaling argument, not a sufficient one, and it is reported as such.")
+    if ratios and np.isfinite(pred_mult):
+        below_1 = sum(1 for r in ratios.values() if r < 1.0)
+        below_m = sum(1 for r in ratios.values() if r < pred_mult)
+        g.say("")
+        g.say(f"**The SIGN of the miss** (referee, 2026-09-16): the member-radius argument "
+              f"predicts the slope RISES ({pred_ratio:.4f}); it falls in {below_1} of "
+              f"{len(ratios)} families. Contact multiplicity pushes the other way (parallel "
+              f"springs stiffen the pair), and the two together predict {pred_mult:.4f} -- "
+              f"the measured ratio is below THAT too in {below_m} of {len(ratios)} families, "
+              f"by a factor of {min(ratios.values())/pred_mult:.3f}-"
+              f"{max(ratios.values())/pred_mult:.3f}. So the multiplicity confound has the "
+              f"right sign and the wrong size, and the remainder is either the compressibility "
+              f"of an elongated packing or a contact effect this bookkeeping does not model; "
+              f"neither is separated here, and the rescaling argument stays uncertified.")
     g.say("")
     g.say("#### THE SEAM, restated where the number is")
     g.say("")
@@ -853,9 +1036,11 @@ def main() -> int:
     report("=" * 78)
     prod, gate_recs, files = load_records(report)
     prod = dedup(prod, report)
+    prod, multi = prefer_raised_cap(prod, report)
+    g6 = g_s6(multi)
 
     gates = [g_s0a(gate_recs, report), g_s0b(gate_recs), g_s0c(prod, report),
-             g_s1(prod), g_s2(files, prod)]
+             g_s1(prod), g_s2(files, prod), g6]
     report("")
     report("--- phi_J ladder fits ---")
     tab = phi_j_table(prod, report) if prod else {}
@@ -866,9 +1051,25 @@ def main() -> int:
     if not prod:
         g5.say("NO PRODUCTION RECORDS.")
         g5.verdict(False)
-    g3, s3 = g_s3(tab, report) if tab else (Gate("S3", "PRIMARY."), {})
+    # the same per-alpha contact multiplicity S4 tabulates, fed to S3's stiffness prediction
+    mult = {}
+    for a in sorted({float(r["alpha"]) for r in prod}):
+        rows = [float(r["n_contacts_raw"]) / float(r["n_contacts"]) for r in prod
+                if abs(float(r["alpha"]) - a) < 1e-9 and "n_contacts_raw" in r
+                and float(r["n_contacts"]) > 0]
+        if rows:
+            mult[a] = float(np.mean(rows))
+    g3, s3 = g_s3(tab, report, mult) if tab else (Gate("S3", "PRIMARY."), {})
     if not tab:
         g3.say("NO PRODUCTION LADDERS -- S3 cannot be read.")
+        g3.verdict(False)
+    # Amendment 5.10: S3 is read only if S6 PASSES. The numbers above are still printed
+    # so a reader can see what a void re-run would have said, but the verdict is BLOCKED.
+    if g6.passed is not True:
+        g3.say("")
+        g3.say(f"**S3 BLOCKED by S6 ({'VACUOUS' if not g6.informative else 'FAIL'}): "
+               f"the raised-cap records are not shown to be the same protocol as the "
+               f"default-cap ones, so the ladders that mix caps are not read.**")
         g3.verdict(False)
     gates += [g5, g3, g_s4(prod)] if prod else [g5, g3]
 

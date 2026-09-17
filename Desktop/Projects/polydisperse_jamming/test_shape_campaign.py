@@ -570,6 +570,27 @@ def test_s3_recovers_a_known_interaction():
         assert res is True or se == 0.0
 
 
+def test_s3_multiplicity_corrected_stiffness_prediction_is_the_product_it_names():
+    """The second stiffness prediction is (d_eq/ds) * m_lo/m_hi, hand-computed here; the
+    synthetic slopes satisfy the FIRST prediction exactly, so with m_hi = 1.1719 the
+    measured ratio must sit at 1.1719x the corrected one -- and without `mult` the column
+    must say nan rather than silently assume m = 1."""
+    lines = []
+    g, _ = grade_shape.g_s3(_tab(0.0), lambda *a, **k: None, mult={1.0: 1.0, 2.0: 1.1719})
+    lines = [ln for ln in g.lines if ln.startswith("| lognormal | ")]
+    row = [c.strip() for c in lines[-1].strip("|").split("|")]
+    pred = 1.0 / grade_shape.sub_sphere_diameter(1.0, 2.0)
+    assert abs(float(row[4]) - round(pred, 4)) < 1e-4
+    assert abs(float(row[6]) - round(pred / 1.1719, 4)) < 1e-4, row
+    assert abs(float(row[7]) - round(1.1719, 3)) < 2e-3, row
+    assert any("right sign and the wrong size" in ln or "SIGN of the miss" in ln for ln in g.lines)
+    g0, _ = grade_shape.g_s3(_tab(0.0), lambda *a, **k: None)
+    row0 = [c.strip() for c in [ln for ln in g0.lines if ln.startswith("| lognormal | ")][-1]
+            .strip("|").split("|")]
+    assert row0[6] == "nan" and row0[7] == "nan", row0
+    assert not any("SIGN of the miss" in ln for ln in g0.lines)
+
+
 def test_s3_reports_not_resolved_when_the_interaction_is_zero_plus_noise():
     """The discriminating negative: a design that called everything resolved would pass
     the test above and fail this one."""
@@ -746,6 +767,39 @@ def test_s5_alias_does_not_overwrite_a_family_that_ran_its_own():
     assert tab[("uniform", 0.0, 1.0)] == before
 
 
+def _clearance_failure(tag):
+    return {"failed": True, "tag": tag, "alpha": 2.0, "cv": 0.5, "seed": 1,
+            "p_hat_target": 1e-3, "n_requested": 1700, "family": "lognormal",
+            "error": ("ValueError('cell too small for the periodic collider at cv=0.5, "
+                      "N=1700, alpha=2.0 ... Use N >= 3017')")}
+
+
+def test_s2_does_not_count_a_probe_cell_as_a_production_failure(tmp_path):
+    """The clearance guard firing on a deliberately undersized PROBE cell is the guard
+    working. Counting it against S2 reported a working guard as a failed gate, which is
+    what the first version of this file did."""
+    f = tmp_path / "phase2_shp_x.jsonl"
+    rows = [_clearance_failure("shptime"), _prod_record(2.0)]
+    f.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
+    g = grade_shape.g_s2([str(f)], [_prod_record(2.0)])
+    assert g.passed is True
+
+
+def test_s2_still_fails_on_a_real_production_clearance_error(tmp_path):
+    f = tmp_path / "phase2_shp_y.jsonl"
+    rows = [_clearance_failure("shp"), _prod_record(2.0)]
+    f.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
+    g = grade_shape.g_s2([str(f)], [_prod_record(2.0)])
+    assert g.passed is False
+
+
+def test_s2_fails_when_N_is_not_constant_across_the_grid():
+    """phi_J drifts with N, so an N that moved with alpha would wear alpha's label."""
+    recs = [_prod_record(1.0), dict(_prod_record(2.0), n_requested=1700)]
+    g = grade_shape.g_s2([], recs)
+    assert g.passed is False
+
+
 def test_the_shared_reference_makes_a_cross_family_difference_CONSERVATIVE():
     """The sign of the CV = 0 correlation, DERIVED rather than asserted.
 
@@ -854,3 +908,174 @@ def test_runner_and_grader_are_importable_without_yade():
     import phase2_shape
     assert phase2_shape.SHAPE_TAG == "shp"
     assert runpy is not None
+
+
+# ---------------------------------------------------------------------------------
+# Amendment 5.10: a ladder that mixes caps, and gate S6
+# ---------------------------------------------------------------------------------
+
+def _cap_record(cap, converged, iters, phi=0.5977, cv=0.0, seed=1, alpha=1.0,
+                fam="lognormal", p_hat=1e-3):
+    r = _prod_record(alpha, fam=fam, cv=cv, seed=seed, p_hat=p_hat, phi=phi)
+    base = f"cv{cv:.3f}_mu0.300_s{seed}_p{p_hat:.3e}_N5400_a{alpha:.3f}"
+    if fam != "lognormal":
+        base += f"_{fam}"
+    r["key"] = base if cap == grade_shape.DEFAULT_CAP else f"{base}_it{cap}"
+    r["max_iter"] = cap
+    r["converged"] = converged
+    r["iters"] = iters
+    r["tol_met"] = converged
+    return r
+
+
+def test_physical_key_strips_only_the_cap_suffix():
+    d = _cap_record(200000, True, 19396)
+    c = _cap_record(1000000, True, 19396)
+    assert d["key"] != c["key"]
+    assert grade_shape.physical_key(d) == grade_shape.physical_key(c)
+    u = _cap_record(1000000, True, 19396, fam="uniform")
+    assert grade_shape.physical_key(u).endswith("_uniform")
+
+
+def test_prefer_raised_cap_uses_the_raised_record_and_prints_it():
+    d = _cap_record(200000, False, 200000, phi=0.6212, cv=0.5)
+    c = _cap_record(1000000, True, 237746, phi=0.6185, cv=0.5)
+    lines = []
+    out, multi = grade_shape.prefer_raised_cap([d, c], lines.append)
+    assert len(out) == 1 and out[0]["max_iter"] == 1000000 and out[0]["phi"] == 0.6185
+    assert len(multi) == 1
+    assert any("using 1000000" in s for s in lines)
+
+
+def test_prefer_raised_cap_leaves_a_single_cap_cell_alone():
+    d = _cap_record(200000, True, 19396)
+    out, multi = grade_shape.prefer_raised_cap([d], lambda *a, **k: None)
+    assert out == [d] and multi == {}
+
+
+def test_prefer_raised_cap_refuses_two_records_at_one_cap():
+    with pytest.raises(SystemExit):
+        grade_shape.prefer_raised_cap([_cap_record(200000, True, 1),
+                                       _cap_record(200000, True, 1)],
+                                      lambda *a, **k: None)
+
+
+def _pair(phi_d=0.5977, phi_c=0.5977, iters_d=19396, iters_c=19396, z_c=4.0,
+          conv_d=True):
+    d = _cap_record(200000, conv_d, iters_d, phi=phi_d)
+    c = _cap_record(1000000, True, iters_c, phi=phi_c)
+    c["z_all"] = z_c
+    return {grade_shape.physical_key(d): {200000: d, 1000000: c}}
+
+
+def test_s6_passes_on_a_bit_identical_converged_pair():
+    g = grade_shape.g_s6(_pair())
+    assert g.passed is True and g.informative
+
+
+def test_s6_fails_on_one_ulp_in_phi():
+    g = grade_shape.g_s6(_pair(phi_c=np.nextafter(0.5977, 1.0)))
+    assert g.passed is False and g.informative
+    assert any("DIFFER on phi" in s for s in g.lines)
+
+
+def test_s6_fails_on_iters_alone():
+    g = grade_shape.g_s6(_pair(iters_c=19397))
+    assert g.passed is False
+
+
+def test_s6_fails_on_z_all_alone():
+    g = grade_shape.g_s6(_pair(z_c=4.0000001))
+    assert g.passed is False
+
+
+def test_s6_is_vacuous_with_no_pair_and_vacuous_is_not_a_pass():
+    g = grade_shape.g_s6({})
+    assert g.passed is False and not g.informative
+    assert "NOT INFORMATIVE" in g.render()[0]
+
+
+def test_s6_is_vacuous_when_the_only_pairs_are_cap_cut():
+    """A cap-cut cell carries no identity claim, so a re-run with no converged pair
+    cannot show the protocol is the same -- VACUOUS, not PASS."""
+    m = _pair(phi_d=0.6212, phi_c=0.6185, iters_d=200000, iters_c=237746, conv_d=False)
+    g = grade_shape.g_s6(m)
+    assert g.passed is False and not g.informative
+
+
+def test_s6_cap_cut_pair_is_not_required_to_be_identical_but_must_run_past_the_cap():
+    m = _pair()
+    cut = _pair(phi_d=0.6212, phi_c=0.6185, iters_d=200000, iters_c=237746, conv_d=False)
+    for k, v in cut.items():
+        for r in v.values():
+            r["cv"] = 0.5
+        m[k + "_cut"] = v
+    g = grade_shape.g_s6(m)
+    assert g.passed is True
+    assert any("1/1 ran past the old cap" in s for s in g.lines)
+    # and the discriminating half: a 'raised-cap' record that stopped AT the old cap
+    # means the cap was never in force for it
+    bad = _pair(phi_d=0.6212, phi_c=0.6212, iters_d=200000, iters_c=200000, conv_d=False)
+    for k, v in bad.items():
+        m[k + "_bad"] = v
+    g = grade_shape.g_s6(m)
+    assert g.passed is False
+
+
+def test_s6_sentence_names_the_registered_fields():
+    g = grade_shape.g_s6(_pair())
+    for f in ("phi", "iters", "z_all", "p_hat"):
+        assert f in g.sentence
+    assert grade_shape.S6_FIELDS == ("phi", "iters", "z_all", "p_hat")
+
+
+def test_prereg_5_10_registers_the_cap_the_launcher_uses():
+    with open(os.path.join(HERE, "PREREG_SHAPE_2026-09-18.md"), encoding="utf-8") as fh:
+        text = fh.read()
+    assert "### 5.10" in text
+    assert "`PJ_MAX_ITER = 1000000`" in text
+    assert "must be BIT-IDENTICAL to the default-cap records" in text
+    assert "the raised-cap record is used and the fact printed" in text
+    with open(os.path.join(HERE, "scripts", "shape_rerun.sh"), encoding="utf-8") as fh:
+        sh = fh.read()
+    assert "export PJ_MAX_ITER=1000000" in sh
+    assert "TAG=shpcap" in sh
+    assert "shpcap" not in grade_shape.GATE_TAGS, "shpcap is PRODUCTION, not a probe"
+
+
+def test_prereg_5_11_records_the_seed3_abort_from_the_probe_files():
+    """5.11 quotes the crash probe and its controls; every number it quotes must be the one
+    on disk, and the missing cell must really be missing from the production records."""
+    with open(os.path.join(HERE, "PREREG_SHAPE_2026-09-18.md"), encoding="utf-8") as fh:
+        text = fh.read()
+    assert text.count("### 5.11") == 1
+    assert "No replacement seed is added" in text
+    assert "t_crit = 12.706" in text
+    crash = open(os.path.join(HERE, "out", "shape", "probe_seed3_crash.txt"), encoding="utf-8-sig").read()
+    ctrl = open(os.path.join(HERE, "out", "shape", "probe_seed3_controls.txt"), encoding="utf-8").read()
+    n_inside = re.search(r"N: (\d+) cross-grain pairs with a centre inside", crash).group(1)
+    assert f"this one has {n_inside} cross-grain pairs" in text
+    assert "a body would cross a third of the cell" in crash, "the probe must reach the abort"
+    ctrl_inside = [int(x) for x in re.findall(r"N: (\d+) cross-grain pairs with a centre inside", ctrl)]
+    assert len(ctrl_inside) == 7
+    assert f"Centre-inside pairs {min(ctrl_inside)}-{max(ctrl_inside)}" in text
+    assert min(ctrl_inside) <= int(n_inside) <= max(ctrl_inside), "5.11 says the census does not discriminate"
+    assert "a body would cross" not in ctrl, "a control that aborted would refute 5.11"
+    # the cell 5.11 says is missing IS missing, and only that one, in the lognormal alpha-2 CV-0.5 rung
+    prod, _, _ = grade_shape.load_records(report=lambda *a, **k: None)
+    seeds = sorted({r["seed"] for r in prod if r["family"] == "lognormal"
+                    and abs(r["alpha"] - 2.0) < 1e-9 and abs(r["cv"] - 0.5) < 1e-9})
+    assert seeds == [1, 2], seeds
+
+
+def test_phi_j_table_records_the_caps_of_every_fitted_ladder():
+    recs = []
+    for p in grade_shape.P_HAT_LADDER_SHAPE:
+        cap = 1000000 if p < 1e-3 else 200000
+        r = _cap_record(cap, True, 1000, phi=0.62 - 5.0 * p, cv=0.5, p_hat=p)
+        recs.append(r)
+    lines = []
+    tab = grade_shape.phi_j_table(recs, lines.append)
+    (seeds,) = tab.values()
+    assert seeds[1][5] == (200000, 1000000)
+    assert any("[200000, 1000000]: 1" in s for s in lines)
