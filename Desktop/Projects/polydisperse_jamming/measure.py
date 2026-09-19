@@ -173,17 +173,37 @@ def fabric_tensor(normals: np.ndarray) -> dict[str, float]:
 
 
 def rattler_report(counts: dict[int, int], neigh: dict[int, set[int]],
-                   thresholds=RATTLER_THRESHOLDS) -> dict[str, float]:
+                   thresholds=RATTLER_THRESHOLDS,
+                   volumes: dict[int, float] | None = None) -> dict[str, float]:
     """Rattler fraction and non-rattler Z at EVERY threshold, in one dict.
 
     Reporting all of them is the point: a conclusion that only holds at one k is a
     statement about the definition, not about the material.
+
+    `volumes` (grain id -> volume) is OPTIONAL and added 2026-09-19. When given, the
+    VOLUME fraction of the rattler set is reported beside its COUNT fraction.
+
+    Why it matters: the exact decomposition of the packing fraction into a backbone and
+    the grains that fell out of it is `phi = phi_B / (1 - psi)` with `psi` the rattler
+    VOLUME fraction, and until now **every rattler field on disk was a COUNT**. Rattlers
+    are preferentially small, so the two differ by a factor that depends on the size
+    distribution -- which is precisely the dependence the project is trying to measure.
+
+    ⚠ Passing nothing changes nothing: with `volumes = None` the output dict is
+    byte-identical to what this function returned before, so every existing record and
+    every existing caller is unaffected by construction. That is the bit-identity
+    argument, and `test_measure.py` asserts it rather than trusting it.
     """
     out: dict[str, float] = {}
+    v_tot = None
+    if volumes:
+        v_tot = sum(volumes.get(g, 0.0) for g in counts)
     for k in thresholds:
         rat = iterated_rattlers(counts, neigh, min_contacts=k)
         bb = set(counts) - rat
         out[f"rattler_frac_k{k}"] = len(rat) / len(counts) if counts else float("nan")
+        if v_tot:
+            out[f"rattler_vol_frac_k{k}"] = sum(volumes.get(g, 0.0) for g in rat) / v_tot
         if bb:
             inner = sum(1 for b in bb for nb in neigh.get(b, ()) if nb in bb)
             out[f"z_nr_k{k}"] = inner / len(bb)      # each contact counted twice

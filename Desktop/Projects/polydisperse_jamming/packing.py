@@ -360,7 +360,21 @@ def measure(O, utils, st: PackingState, young: float,  # noqa: E741
 
     # The rattler threshold is a definition that changes the answer, so all three are
     # recorded and none is privileged in the data. See measure.RATTLER_THRESHOLDS.
-    st.rattler = rattler_report(counts, neigh)
+    # Per-GRAIN volume, for the rattler VOLUME fraction (added 2026-09-19). Only for a
+    # sphere pack: for a clump pack the grain volume is the analytic union
+    # (`shape.clump_volume`), and `utils.porosity()` double-counts the member overlap by
+    # 2(ds/d_eq)^3 -- a trap this project has already been caught by once. Rather than
+    # risk repeating it, clump packs get NO volume field at all and say so by its absence.
+    _vols = None
+    if grain_of is None:
+        _vols = {}
+        for b in O.bodies:
+            if b is None:
+                continue
+            r = getattr(getattr(b, "shape", None), "radius", None)
+            if r is not None:
+                _vols[b.id] = 4.0 / 3.0 * math.pi * float(r) ** 3
+    st.rattler = rattler_report(counts, neigh, volumes=_vols)
     st.rattler_frac = st.rattler[f"rattler_frac_k{RATTLER_MIN_CONTACTS}"]
     st.z_nr = st.rattler[f"z_nr_k{RATTLER_MIN_CONTACTS}"]
     st.force = force_moments(forces)

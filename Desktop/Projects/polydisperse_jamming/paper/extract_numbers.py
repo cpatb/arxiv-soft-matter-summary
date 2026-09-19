@@ -34,6 +34,7 @@ sys.path.insert(0, ROOT)
 
 import sweep_descriptive as sd  # noqa: E402
 import grade_mixture as gm  # noqa: E402
+import mixture_model as mm  # noqa: E402  (for PHI_SCALE, the protocol's own grading scale)
 
 SWEEP_TXT = os.path.join(OUT, "sweep_descriptive.txt")
 MIX_TXT = os.path.join(OUT, "mixture.txt")
@@ -150,8 +151,31 @@ for _cv in (0.1, 0.2, 0.3, 0.4, 0.5):
     _cs = sorted(set(_d["uniform"]) & set(_d["bidisperse"]))
     _arr = np.array([_d["uniform"][s] - _d["bidisperse"][s] for s in _cs])
     _se = float(_arr.std(ddof=1) / math.sqrt(len(_arr)))
-    _zs[_cv] = (float(_arr.mean()), _se, abs(float(_arr.mean())) / _se, len(_cs))
+    # 🔴 2026-09-19: THE SEED-PAIRED s.e. IS NOT THE RIGHT BAR ON ITS OWN. This repo's own
+    # `mixture_model.py` says so in the artifact it prints: "grading scale PHI_SCALE =
+    # 2.1e-3: the protocol's own run-to-run non-determinism, NOT the seed sem (~2e-04),
+    # which is 10x smaller than the reproducibility of the thing being modelled" -- and
+    # `test_mixture.py` ENFORCES that bar for a structurally identical claim. The first
+    # version of this block used the seed s.e. alone and reported 3 of 5 CV levels
+    # resolved; that overstated the robustness the project's own declared reproducibility
+    # supports.
+    #
+    # THE PROPAGATION, stated because it changes the answer. The statistic is
+    #    [phi_u(cv) - phi_u(0)] - [phi_b(cv) - phi_b(0)]
+    # and the two CV = 0 terms are THE SAME CELL (uniform and bidisperse share it,
+    # bit-identically), so they cancel EXACTLY. Two independent legs remain, not four, so
+    # the protocol floor is sqrt(2) * PHI_SCALE / sqrt(n), not 2 * PHI_SCALE / sqrt(n).
+    # Using the wrong one here moves the verdict, so it is derived rather than guessed.
+    _se_proto = math.sqrt(2.0) * mm.PHI_SCALE / math.sqrt(len(_arr))
+    _se_use = max(_se, _se_proto)
+    _zs[_cv] = (float(_arr.mean()), _se_use, abs(float(_arr.mean())) / _se_use, len(_cs),
+                _se, _se_proto)
 _nres = sum(1 for v in _zs.values() if v[2] > 4.303)
+_nres_seed = sum(1 for v in _zs.values() if abs(v[0]) / v[4] > 4.303)
+put("zeroSkewNResolvedSeedOnly", _nres_seed, "{:d}")
+put("zeroSkewSeProto", _zs[0.5][5], "{:.4f}")
+# ⚠ \phiScale already exists in this file -- the manuscript ALREADY declares this scale,
+# which is what makes grading against the seed s.e. alone an error rather than an omission.
 put("zeroSkewDiffHalf", _zs[0.5][0], "{:+.4f}")
 put("zeroSkewSeHalf", _zs[0.5][1], "{:.4f}")
 put("zeroSkewTHalf", _zs[0.5][2], "{:.2f}")

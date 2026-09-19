@@ -7,6 +7,8 @@ fabric tensor, and an analytically-known distribution for the force tail. No tes
 inverts the function it validates.
 """
 
+import math
+
 import numpy as np
 import pytest
 
@@ -344,3 +346,84 @@ def test_the_isotropic_floor_falls_as_one_over_sqrt_n():
         return float(np.mean([fabric_tensor(v[r])["aniso"] for r in range(v.shape[0])]))
     a1, a4 = floor(500), floor(2000)
     assert 1.8 < a1 / a4 < 2.2, (a1, a4, a1 / a4)
+
+
+# ---------------------------------------------------------------------------------
+# The rattler VOLUME fraction, added 2026-09-19.
+#
+# Every rattler field on disk was a COUNT. The exact decomposition of the packing
+# fraction into a backbone plus the grains that fell out of it is `phi = phi_B/(1-psi)`
+# with `psi` the rattler VOLUME fraction, so a count cannot close it. Adding an output
+# field is a CHANGE OF PROTOCOL until a bit-identity gate says otherwise (standing rule
+# S6), and these two tests are that gate.
+# ---------------------------------------------------------------------------------
+
+def _tiny_pack():
+    """A 4-clique backbone {0,1,2,3} plus two danglers (4, 5) and one isolated grain (6).
+
+    ⚠ The first version of this fixture was a 5-grain CHAIN, on which the k = 2 iterated
+    rattler set eats everything: both fractions came out 1.0 and the discriminating
+    assertion `v_frac < n_frac` failed at `1.0 < 1.0`. A fixture where every grain rattles
+    cannot exercise a backbone-vs-rattler contrast. This one keeps a 4-clique, which
+    survives k = 2 and k = 3.
+    """
+    neigh = {
+        0: {1, 2, 3}, 1: {0, 2, 3}, 2: {0, 1, 3}, 3: {0, 1, 2},
+        4: {0}, 5: {1}, 6: set(),
+    }
+    counts = {g: len(v) for g, v in neigh.items()}
+    return counts, neigh
+
+
+def test_rattler_report_is_bit_identical_without_volumes():
+    """Passing no volumes must leave the output EXACTLY as it was before the field
+    existed -- same keys, same values. This is what licenses reading old records and new
+    ones together."""
+    from measure import rattler_report
+    counts, neigh = _tiny_pack()
+
+    def same(a, b):
+        # NaN != NaN, and this report legitimately contains NaN (an empty backbone has no
+        # z_nr). A plain `a == b` fails on those and would report a defect that is not
+        # there -- which it did on the first run of this test.
+        if set(a) != set(b):
+            return False
+        for k in a:
+            x, y = a[k], b[k]
+            if isinstance(x, float) and math.isnan(x):
+                if not (isinstance(y, float) and math.isnan(y)):
+                    return False
+            elif x != y:
+                return False
+        return True
+
+    base = rattler_report(counts, neigh)
+    assert same(base, rattler_report(counts, neigh, volumes=None))
+    assert not any(k.startswith("rattler_vol_frac") for k in base), sorted(base)
+    # and an empty dict must behave like None, not like "all volumes zero"
+    assert same(base, rattler_report(counts, neigh, volumes={}))
+    # non-vacuity: the fixture must actually exercise the NaN branch, or `same` is
+    # doing nothing and this test would pass with a plain ==
+    assert any(isinstance(v, float) and math.isnan(v) for v in base.values()), sorted(base)
+
+
+def test_rattler_volume_fraction_differs_from_the_count_when_rattlers_are_small():
+    """The whole point of the field: with size-biased rattlers the volume fraction and the
+    count fraction are DIFFERENT numbers. A test that only checked they both exist would
+    pass on an implementation that returned the count twice."""
+    from measure import iterated_rattlers, rattler_report
+    counts, neigh = _tiny_pack()
+    rat = iterated_rattlers(counts, neigh, min_contacts=2)
+    assert rat, "the fixture must have rattlers or this test is vacuous"
+    # make every rattler SMALL and every backbone grain LARGE
+    vols = {g: (1.0 if g in rat else 8.0) for g in counts}
+    out = rattler_report(counts, neigh, thresholds=(2,), volumes=vols)
+    n_frac = out["rattler_frac_k2"]
+    v_frac = out["rattler_vol_frac_k2"]
+    exp = len(rat) * 1.0 / (len(rat) * 1.0 + (len(counts) - len(rat)) * 8.0)
+    assert math.isclose(v_frac, exp, rel_tol=1e-12), (v_frac, exp)
+    assert v_frac < n_frac, (v_frac, n_frac)
+    # the discriminating negative: with EQUAL volumes the two must coincide exactly
+    eq = rattler_report(counts, neigh, thresholds=(2,),
+                        volumes={g: 3.0 for g in counts})
+    assert math.isclose(eq["rattler_vol_frac_k2"], eq["rattler_frac_k2"], rel_tol=1e-12)
