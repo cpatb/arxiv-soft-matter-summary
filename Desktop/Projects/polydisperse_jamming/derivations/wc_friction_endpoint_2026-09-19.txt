@@ -1,0 +1,143 @@
+========================================================================================
+Is mu_p = 0.3 the frictional endpoint, and is the Wyart-Cates window flat?
+========================================================================================
+
+=== S0  THE FRICTION GRID ON DISK ===
+    mu_p family                       CV levels  seeds/cell
+     0.0 lognormal   [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]         [3]
+     0.0 uniform     [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]         [3]
+     0.3 bidisperse  [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]         [3]
+     0.3 lognormal   [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]         [3]
+     0.3 uniform     [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]         [3]
+     1.0 lognormal              [0.0, 0.2, 0.5]         [3]
+     3.0 lognormal                        [0.0]         [3]
+   [PASS] the lognormal family has four friction levels, so convergence in mu_p is testable  --  mu_p = [0.0, 0.3, 1.0, 3.0]
+
+=== S1  Q1: IS mu_p = 0.3 THE FRICTIONAL ENDPOINT? (lognormal, CV = 0) ===
+   phi_J(mu_p), mean +- se over 3 seeds:
+      mu_p =  0.0 : 0.63237 +- 0.00042  (n = 3)
+      mu_p =  0.3 : 0.57453 +- 0.00038  (n = 3)
+      mu_p =  1.0 : 0.55904 +- 0.00067  (n = 3)
+      mu_p =  3.0 : 0.55742 +- 0.00097  (n = 3)
+
+   total drop mu_p 0 -> 3.0        : +0.07495
+   captured by 0 -> 0.3            : +0.05784  = 77.2 %
+   REMAINING above 0.3             : +0.01711  = 22.8 %
+
+   paired on seed, against the mu_p = 3.0 reference:
+   comparison                    difference        se     |t|  verdict
+   phi_J(0.3) - phi_J(3.0)          +0.01711   0.00120   14.29  RESOLVED -- not converged
+   phi_J(1.0) - phi_J(3.0)          +0.00161   0.00058    2.78  not resolved -- converged
+   [PASS] 🔴 mu_p = 0.3 is RESOLVED away from the frictional limit, so it is NOT phi_m  --  |t| = 14.29 vs 4.303
+   [PASS] mu_p = 1.0 is NOT resolved away from mu_p = 3.0, so it is the best available phi_m on disk  --  |t| = 2.78 vs 4.303
+   ⚠ 'not resolved' at n = 3 is a BOUND: the design could only have resolved a
+     difference above 0.00250, which is 3.3 % of the
+     total friction drop. mu_p = 1.0 is converged TO THAT PRECISION, not exactly.
+
+=== S2  THE CV SHIFT ACROSS FRICTION (lognormal, paired CV 0 -> 0.5) ===
+    mu_p    d(phi_J)        se   n
+     0.0    +0.05803   0.00268   3
+     0.3    +0.06207   0.00255   3
+     1.0    +0.05621   0.00332   3
+
+   spread across friction: 0.00586, against a typical s.e. of 0.00285
+   i.e. 2.06 s.e. -- while phi_J ITSELF moves 0.07333 over the same range, 13x larger.
+      mu 0.0 vs 0.3: diff -0.00404 +- 0.00370, |t| = 1.09
+      mu 0.0 vs 1.0: diff +0.00182 +- 0.00427, |t| = 0.43
+      mu 0.3 vs 1.0: diff +0.00586 +- 0.00419, |t| = 1.40
+   [PASS] no pair of friction levels has a resolvably different CV shift  --  worst |t| = 1.40 vs 4.303
+   ⚠ BOUND, not equality: the resolving power on the worst pair is 0.01835, 30 % of the shift.
+
+=== S2b  IS THE SEPARATION ADDITIVE OR MULTIPLICATIVE? ===
+   additive  : phi_J(CV, mu) = F(CV) + G(mu)  ->  the ABSOLUTE shift is mu-free
+   multiplic.: phi_J(CV, mu) = F(CV) * G(mu)  ->  the RELATIVE shift is mu-free
+    mu_p  absolute d  relative d/phi_J(0)
+     0.0    +0.05803              0.09177
+     0.3    +0.06207              0.10804
+     1.0    +0.05621              0.10055
+
+   fractional spread of the ABSOLUTE shift :  10.0 %
+   fractional spread of the RELATIVE shift :  16.3 %
+   [PASS] the ADDITIVE form is the better separation (the absolute shift varies less across friction than the relative one)  --  10.0 % vs 16.3 %
+   ⚠ This is a RANKING of two one-parameter forms on three points, not a test
+     that either is right. Neither is rejected; the additive one fits better.
+
+=== S3  Q2: THE WINDOW W = phi_0 - phi_m, ON THE PER-RUNG PAIRED STATISTIC ===
+   ⚠ wc_endpoints_move_together tested the RANGE of W over six rungs against
+     2x a TWO-POINT propagated s.e. That yardstick does not cancel the shared
+     seed draw. The per-rung PAIRED difference W(CV) - W(0) does, and its s.e.
+     is far smaller, so it is a much stricter test.
+
+   --- phi_m taken at mu_p = 0.3  (what the published page used) ---
+      CV          W        se
+     0.0    0.05784   0.00029
+     0.1    0.05938   0.00080
+     0.2    0.05734   0.00065
+     0.3    0.05433   0.00071
+     0.4    0.05292   0.00115
+     0.5    0.05380   0.00044
+         range over the rungs: 0.00646
+   per-rung PAIRED W(CV) - W(0):
+      W(0.1) - W(0) = +0.00154 +- 0.00069   |t| =   2.24   not resolved
+      W(0.2) - W(0) = -0.00050 +- 0.00037   |t| =   1.35   not resolved
+      W(0.3) - W(0) = -0.00350 +- 0.00089   |t| =   3.94   not resolved
+      W(0.4) - W(0) = -0.00491 +- 0.00143   |t| =   3.44   not resolved
+      W(0.5) - W(0) = -0.00404 +- 0.00015   |t| =  27.70   RESOLVED -- the window MOVES
+   TREND, dW/dCV fitted per seed over 6 rungs, then averaged:
+      dW/dCV = -0.01217 +- 0.00155 per unit CV   |t| = 7.87   (RESOLVED)
+      over the full CV 0 -> 0.5 ladder that is -0.00608 in W, against W(0) = 0.05784, i.e. 10.5 %
+   [PASS] 🔴 RETRACTION: with phi_m at mu_p = 0.3 the window is RESOLVABLY NOT FLAT -- on the per-seed TREND over the whole ladder, not just one rung  --  |t| on dW/dCV = 7.87 vs 4.303
+   [PASS] ...and the per-rung signs agree with that trend rather than being one lucky rung: every rung above CV = 0.1 moves the window DOWN  --  see the W(CV) - W(0) rows above
+
+   --- phi_m taken at mu_p = 1.0  (the CONVERGED endpoint, S1) ---
+      CV          W        se
+     0.0    0.07333   0.00045
+     0.2    0.07276   0.00127
+     0.5    0.07515   0.00107
+         range over the rungs: 0.00240
+   per-rung PAIRED W(CV) - W(0):
+      W(0.2) - W(0) = -0.00058 +- 0.00172   |t| =   0.34   not resolved
+      W(0.5) - W(0) = +0.00182 +- 0.00065   |t| =   2.78   not resolved
+   TREND, dW/dCV fitted per seed over 3 rungs, then averaged:
+      dW/dCV = +0.00398 +- 0.00178 per unit CV   |t| = 2.24   (not resolved)
+      over the full CV 0 -> 0.5 ladder that is +0.00199 in W, against W(0) = 0.07333, i.e. 2.7 %
+   [PASS] with the CONVERGED endpoint mu_p = 1.0 the window IS flat on both the per-rung statistic and the trend  --  worst rung |t| = 2.78, trend |t| = 2.24, both vs 4.303
+
+=== S3b  THE MECHANISM: the residual friction gap above mu_p = 0.3 GROWS WITH CV ===
+   W(0.3-based) = W(1.0-based) - [phi_J(0.3) - phi_J(1.0)], identically. So if the
+   0.3-based window drifts while the 1.0-based one does not, the drift must live
+   in that residual gap. Measured, paired on seed:
+      CV  phi_J(0.3) - phi_J(1.0)        se
+     0.0                 +0.01550   0.00073
+     0.2                 +0.01542   0.00068
+     0.5                 +0.02136   0.00146
+
+   growth of the gap, CV 0 -> 0.5, paired: +0.00586 +- 0.00077   |t| = 7.65 vs 4.303
+   [PASS] the residual friction gap above mu_p = 0.3 GROWS with CV, which is what makes the 0.3-based window appear to deform  --  |t| = 7.65
+   READING: a wider size distribution takes MORE friction to reach its frictional
+   limit. That is a statement about the approach to the limit, not about the
+   limit itself -- and it is why a campaign that stopped at mu_p = 0.3 sees a
+   CV-dependent window where the converged one does not.
+   ⚠ THREE CV RUNGS, ONE FAMILY. This identifies the mechanism; it does not
+     measure its shape. A mu_p ladder at fixed CV would.
+   ⚠ And the sign FLIPS between the two endpoint choices: dW/dCV is negative
+     on the 0.3-based window and positive (unresolved) on the 1.0-based one.
+
+   THE POINT: two errors were CANCELLING. The un-converged endpoint created a
+   deformation in the window, and the over-lenient range yardstick hid it. Fix
+   either one alone and the published page's conclusion changes; fix both and it
+   comes back, for a better reason than it was first given.
+
+=== S4  WHAT THIS CANNOT DECIDE ===
+   (a) mu_p = 1.0 has only THREE CV rungs (0, 0.2, 0.5), so the window's
+       flatness there rests on two paired comparisons, not five.
+   (b) Only the LOGNORMAL family has any friction level above 0.3. The uniform
+       and bidisperse families cannot be checked at all.
+   (c) mu_p = 3.0 exists at CV = 0 ONLY, so 'mu_p = 1.0 is converged' is
+       established at zero width and ASSUMED at finite width.
+   (d) paper/main.tex: the frictionless ladders are not monotone in p_hat at
+       this seed count. That caveat attaches to every phi_0 above.
+   [PASS] no family except lognormal has a friction level above 0.3, so (b) is a real limit and not a rhetorical one  --  lognormal 12 cells above mu_p = 0.3, others 0
+
+========================================================================================
+ALL CHECKS PASSED

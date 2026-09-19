@@ -1,5 +1,36 @@
 # Polydispersity translates the Wyart-Cates φ-axis; it does not change the frictional window
 
+> ## 🔴 CORRECTED THE SAME DAY. Read `wc_friction_endpoint_2026-09-19.md` with this page.
+>
+> Two independent errors below were **cancelling**, and correcting either alone would have
+> changed the conclusion. Both are arithmetic on data already committed, verified before
+> being written down.
+>
+> 1. **`φ_J(μ_p = 0.3)` is NOT Wyart-Cates's `φ_m`.** The `μ_p = 1.0` and `μ_p = 3.0` blocks
+>    have been on disk since before this session and no analysis had read them.
+>    `μ_p = 0.3` captures only **77.2 %** of the `μ_p = 0 → 3.0` drop; the remaining
+>    **22.8 %** is resolved at **\|t\| = 14.29**. `μ_p = 1.0` is converged (\|t\| = 2.78).
+>    Everything below that says "`φ_m`" means "`φ_J` at `μ_p = 0.3`".
+> 2. **The flatness test below used the wrong yardstick**, as referee pass 3 suspected. A
+>    RANGE over six rungs against twice a TWO-POINT propagated s.e. does not cancel the
+>    shared seed draw. On the per-seed **trend**, the `μ_p = 0.3` window is
+>    `dW/dCV = −0.01217 ± 0.00155`, **\|t\| = 7.87 — RESOLVED, it is not flat** (10.5 % of
+>    `W(0)` over the ladder). **The "range 0.00646 = 1.75 s.e." line in the table below is
+>    therefore withdrawn as a test**, though the numbers in it are correct.
+> 3. **With the converged endpoint the conclusion returns**: `dW/dCV = +0.00398 ± 0.00178`,
+>    \|t\| = 2.24, not resolved — flat, at 2.7 % over the ladder.
+> 4. **And the mechanism of the apparent deformation is identified**: the residual friction
+>    gap above `μ_p = 0.3` **grows with CV** (+0.01550 → +0.02136 from CV 0 to 0.5, growth
+>    +0.00586 ± 0.00077, \|t\| = 7.65). A wider size distribution needs more friction to
+>    reach its frictional limit.
+>
+> **What survives unchanged, and it is the load-bearing claim: the CV shift is
+> friction-independent** across `μ_p` = 0 / 0.3 / 1.0 (worst pairwise \|t\| = 1.40 against
+> 4.303), while `φ_J` itself moves 13× the spread in the shift over the same range.
+>
+> ⚠ Everything below is left as written, with these corrections at the top rather than
+> edited in, so the two versions can be compared.
+
 **2026-09-19.** Every number is printed by `wc_endpoints_move_together_2026-09-19.py` into
 `wc_endpoints_move_together_2026-09-19.txt` (rc 0, ALL CHECKS PASSED). No new cells: this
 runs entirely on `out/phase2_fits.csv`, which has held both friction endpoints at matched CV
