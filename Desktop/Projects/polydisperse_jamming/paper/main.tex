@@ -126,7 +126,7 @@ The nominal Welch critical value is reported beside the calibrated one together 
 \end{figure}
 
 Figure~\ref{fig:phiJ}(a) shows $\phiJ(\CV)$ for the three families.
-All three start from monodisperse values that agree within seed scatter ($\phiJLognZero\pm\phiJLognZeroSe$ and $\phiJUnifZero\pm\phiJUnifZeroSe$; mean $\phiJMonoMuThree$ at $\mup=\muP$), and all rise with $\CV$; but the lognormal family rises to $\phiJLognHalf\pm\phiJLognHalfSe$ at $\CV=0.5$, the uniform family to $\phiJUnifHalf\pm\phiJUnifHalfSe$, and the bidisperse family reaches $\phiJBidiHalf\pm\phiJBidiHalfSe$ after passing through a maximum near $\CV=0.3$.
+All three start from the same monodisperse cells---$\phiJMonoMuThree\pm\phiJMonoMuThreeSe$ over $n=\nMonoMuThree$ seeds at $\mup=\muP$, one measurement rather than three agreeing ones (Sec.~\ref{sec:phij}, last paragraph)---and all rise with $\CV$; but the lognormal family rises to $\phiJLognHalf\pm\phiJLognHalfSe$ at $\CV=0.5$, the uniform family to $\phiJUnifHalf\pm\phiJUnifHalfSe$, and the bidisperse family reaches $\phiJBidiHalf\pm\phiJBidiHalfSe$ after passing through a maximum near $\CV=0.3$.
 The paired $\CV=0\to0.5$ changes, Fig.~\ref{fig:phiJ}(b), are
 \begin{align}
 \Delta\phiJ^{\mathrm{logn}} &= \dPhiJLogn \pm \dPhiJLognSe, \nonumber\\
@@ -146,8 +146,9 @@ The supportable statement is that the family spread is a factor of three to five
 Two design-level checks anchor the protocol.
 The monodisperse frictionless jamming fraction obtained by the same ladder extrapolation is $\phiJFrictionless\pm\phiJFrictionlessSe$ ($n=\nFrictionless$), to be compared with the random-close-packing value near $\rcpLiterature$ from the literature \cite{ohern2003jamming,silbert2010jamming}; the frictional value $\phiJMonoMuThree$ at $\mup=\muP$ sits below it, in the direction reported for frictional packs \cite{silbert2010jamming}.
 The frictionless ladders are not monotone in $\pHat$ at this seed count, so this anchor is a check of the protocol's scale and not a result of the paper.
-The uniform and bidisperse families share their $\CV=0$ cells, which is why their $\CV=0$ entries coincide in every table; their two paired changes therefore share a subtrahend, and a test that treats them as independent overstates the variance of their difference by twice the variance of the shared cell, i.e.\ errs on the conservative side.
-The pair that carries the ratio, lognormal against bidisperse, shares no cell.
+All three families share their $\CV=0$ cells: at zero width the generator draws the same monodisperse packing whatever the family label, which is why the $\CV=0$ entries coincide in every table.
+All three paired changes therefore share a subtrahend, including the lognormal--bidisperse pair that carries the ratio, and a test that treats any two of them as independent overstates the variance of their difference by twice the variance of the shared cell, i.e.\ errs on the conservative side.
+The lognormal and uniform labels return the same value on $3-\nMonoTieBreakSeeds$ of the three seeds and differ by at most $\phiJMonoTieBreak$ on the other $\nMonoTieBreakSeeds$; those two seeds are in the conflicting-duplicate set disclosed in the methods, where the tie-break selects a different record, so that spread measures the tie-break and not seed scatter.
 
 \subsection{Polydispersity removes grains; it does not restructure the backbone}
 \label{sec:fabric}

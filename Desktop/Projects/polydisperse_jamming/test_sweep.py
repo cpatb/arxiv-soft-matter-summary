@@ -222,13 +222,28 @@ def test_the_ordering_stability_is_measured_and_the_report_does_not_oversell_it(
 
 
 def test_Z_all_is_disclosed_as_not_independent(sw, rep):
-    """Z_all = (1 - rattler_frac) * Z_nr to better than 0.5 %, so it is not a second
-    confirmation of the rattler channel."""
+    """`Z_all = (1 - rattler_frac) * Z_nr`, so it is not a second confirmation of the
+    rattler channel.
+
+    ⚠ 2026-09-19: this docstring said "to better than 0.5 %" and the assertion bounded
+    only the max over printed ROWS (means over seeds at one rung). A row max cannot bound
+    a cell: per CELL the residual is ~2.4x larger, and it is the per-cell figure that
+    `main.tex` asserts "on every cell". Both are checked now, each against its own bound.
+    """
     assert "Z_all IS NOT AN INDEPENDENT CHANNEL" in sw
     m = re.search(r"worst \|difference\| over the rows printed: ([0-9.]+)", sw)
     assert m, "the identity check printed no residual"
     assert float(m.group(1)) < 0.05, m.group(1)
     assert "not an independent channel" in rep.lower()
+    # the per-CELL bound, which is the one the manuscript quotes
+    mc = re.search(r"to within ([0-9.]+) on every one of the (\d+) cells", rep)
+    assert mc, "REPORT_SWEEP no longer prints the per-cell identity bound"
+    cell_dev, n_cells = float(mc.group(1)), int(mc.group(2))
+    assert cell_dev < 0.05, cell_dev
+    # and it must be at least the row max -- a per-cell max below a max over means of
+    # those same cells is impossible, so this catches a wrong field or a wrong subset.
+    assert cell_dev >= float(m.group(1)), (cell_dev, m.group(1))
+    assert n_cells > 100, n_cells
 
 
 def test_every_filter_prints_its_N_and_the_duplicate_conflicts_are_surfaced(sw):

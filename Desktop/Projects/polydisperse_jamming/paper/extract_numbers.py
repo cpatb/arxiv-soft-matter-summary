@@ -63,6 +63,9 @@ def put(name: str, value, fmt: str = "{:.4f}") -> None:
     # A NaN reaching numbers.tex renders as the word "nan" in the PDF, which is a wrong
     # number that looks like a typo rather than an error. Refuse it here (a single-seed
     # cell gives std(ddof=1) = nan, and nothing downstream would notice).
+    # ⚠ UNTESTED BRANCH: it CAN fire -- several `put` calls route through std(ddof=1) --
+    # but every cell in the tree has n >= 3, so this body has never run. Recorded as
+    # untested rather than counted as verified.
     if isinstance(value, float) and not math.isfinite(value):
         raise SystemExit(f"macro {name} is {value!r}; a non-finite macro must not ship")
     N[name] = value
@@ -180,7 +183,18 @@ put("nConflicts", int(n_conf), "{:d}")
 put("nConflictRecords", int(n_conf_rec), "{:d}")
 put("nSelectedRecords", int(n_sel), "{:d}")
 put("nSelected", int(n_cells), "{:d}")
-put("nRecappedCells", int(n_sel) - int(n_cells), "{:d}")
+# ⚠ 2026-09-19: `n_sel - n_cells` counts extra RECORDS, not cells. The two coincide only
+# while every duplicated cell has exactly two records; a cell run under three caps would
+# make this overcount, and main.tex's "re-run under BOTH caps" carries the same assumption.
+# Asserted rather than assumed, from the multiplicity histogram of the live load.
+assert sd.LAST_LOAD["max_multiplicity"] == 2, (
+    f"a physical cell appears {sd.LAST_LOAD['max_multiplicity']} times, not at most "
+    'twice; nRecappedCells is a record count and main.tex\'s "re-run under both caps" '
+    "is no longer true")
+assert sd.LAST_LOAD["n_duplicated_cells"] == int(n_sel) - int(n_cells), (
+    sd.LAST_LOAD["n_duplicated_cells"], int(n_sel) - int(n_cells))
+put("nRecappedCells", int(sd.LAST_LOAD["n_duplicated_cells"]), "{:d}")
+put("nRecappedMaxMult", int(sd.LAST_LOAD["max_multiplicity"]), "{:d}")
 # how much the 15 disagreeing duplicates could move anything the paper reads at a rung:
 # re-glob the shards, and for every conflicting key that lands in the SELECTED set report
 # the largest |delta phi| between its records, against PHI_SCALE (referee, pass 1)
@@ -231,6 +245,11 @@ put("zallIdentityWorstN", len(_zall_dev), "{:d}")
 # INCORRECT one -- a wrong field, a wrong subset, a getter that silently returns zeros.
 assert max(_zall_dev) >= float(N["zallIdentityWorstRows"]), (  # type: ignore[arg-type]
     "a per-cell max below a max over means of those cells is impossible")
+# ⚠ 2026-09-19: sweep_descriptive.zall_dev_cell computes this SAME quantity by separate
+# code and feeds REPORT_SWEEP. Two implementations that are never compared will eventually
+# disagree, and this module's own header rule is two sources per number where two exist.
+close(float(max(_zall_dev)), float(sd.zall_dev_cell(sel)), 1e-12,
+      "per-cell Z_all identity bound, extractor vs sweep_descriptive")
 
 GET = {
     "rat": (lambda r: r["rattler"]["rattler_frac_k2"], "rattler fraction (k = 2)"),
@@ -430,22 +449,56 @@ g0 = fits[(fits.mu_p == 0.0) & (fits.cv_nom == 0.0) & (fits.family == "lognormal
 put("phiJFrictionless", float(g0.mean()), "{:.4f}")
 put("phiJFrictionlessSe", float(g0.std(ddof=1) / math.sqrt(len(g0))), "{:.4f}")
 put("nFrictionless", int(len(g0)), "{:d}")
-# 🔴 2026-09-17. The same "second label" caveat applies at mu_p = 0.3 and the filter was
-# missing, so this mean was a 2:1 blend: `uniform` and `bidisperse` are BIT-IDENTICAL at
-# CV = 0 (the shared monodisperse cells) while `lognormal` has its own draw. There are two
-# distinct samples of 3 seeds, not three of 3, and they are pooled here ONCE each, with the
-# n and the s.e. printed rather than left implicit.
+# 🔴 2026-09-19. THE 2026-09-17 COMMENT HERE WAS WRONG AND IS RETRACTED. It said "uniform
+# and bidisperse are BIT-IDENTICAL at CV = 0 ... while `lognormal` has its own draw. There
+# are two distinct samples of 3 seeds, not three of 3." There is ONE sample of 3 seeds.
+# At CV = 0 the generator ignores the family label -- all three labels are the same
+# monodisperse packing -- and the old pool of 6 counted three physical cells twice, which
+# is the unit error of the 09-17 FATAL committed one function away from it.
+#
+# Evidence, read off out/phase2*.jsonl at (cv = 0, mu_p = 0.3, N = 1500): every rung that
+# carries a SINGLE record is bit-identical across the three labels, and seed 2 agrees to
+# all printed digits in phi_J_lin in all three (0.573821). The lognormal path differs on
+# seeds 1 and 3 ONLY because those keys are in the CONFLICTING-DUPLICATE set disclosed in
+# the Methods (\conflictWorstDphi); the tie-break picks a different record there. That
+# disagreement is therefore a measurement of the tie-break, not of seed scatter, and it is
+# now printed as its own macro rather than being averaged into an s.e.
+#
+# The label used is `lognormal`, for consistency with the frictionless anchor above, which
+# has had the filter and the reason since it was written.
 _g3 = fits[(fits.mu_p == 0.3) & (fits.cv_nom == 0.0)]
-_logn3 = _g3[_g3.family == "lognormal"].set_index("seed").phi_J_lin
-_shared3 = _g3[_g3.family == "uniform"].set_index("seed").phi_J_lin
-_bidi3 = _g3[_g3.family == "bidisperse"].set_index("seed").phi_J_lin
+_logn3 = _g3[_g3.family == "lognormal"].set_index("seed").phi_J_lin.sort_index()
+_shared3 = _g3[_g3.family == "uniform"].set_index("seed").phi_J_lin.sort_index()
+_bidi3 = _g3[_g3.family == "bidisperse"].set_index("seed").phi_J_lin.sort_index()
 assert len(_logn3) == len(_shared3) == len(_bidi3) == 3, "expected 3 seeds per label"
+assert list(_logn3.index) == list(_shared3.index) == list(_bidi3.index), "seed sets differ"
 assert (_shared3.round(12) == _bidi3.round(12)).all(), (
     "uniform and bidisperse CV=0 are no longer the same cells; re-derive the pooling rule")
-g3 = np.concatenate([_logn3.to_numpy(), _shared3.to_numpy()])
-put("phiJMonoMuThree", float(g3.mean()), "{:.4f}")
-put("phiJMonoMuThreeSe", float(g3.std(ddof=1) / math.sqrt(len(g3))), "{:.4f}")
-put("nMonoMuThree", int(len(g3)), "{:d}")
+# The three labels are the SAME packings. Two guards, both able to fail:
+#   (i) at least one seed must agree EXACTLY between lognormal and the shared label --
+#       if none does, the labels are drawing different packings and the pooling rule below
+#       is wrong;
+#  (ii) where they disagree, the disagreement must be no larger than the documented
+#       conflicting-duplicate spread -- otherwise it is not the tie-break.
+_tie = (_logn3 - _shared3).abs()
+assert (_tie < 1e-12).any(), (
+    "no CV=0 seed is bit-identical between the lognormal and uniform labels; the families "
+    "are no longer sharing the monodisperse cell and phiJMonoMuThree needs re-deriving")
+#       ⚠ the bar is the SMALLEST published family shift, not the conflict spread: the tie
+#       is a difference of extrapolated phi_J_lin and \conflictWorstDphi is a difference of
+#       phi at a rung, so comparing them would be a comparison of two different quantities.
+#       What must be true for the paper is that this artefact cannot be confused with the
+#       effect, and the smallest effect published is Delta phi_J^bidi.
+_smallest_shift = abs(float(N["dPhiJBidi"]))  # type: ignore[arg-type]
+assert float(_tie.max()) < _smallest_shift, (
+    f"CV=0 label disagreement {float(_tie.max()):.6f} is not smaller than the smallest "
+    f"published family shift {_smallest_shift:.6f}; the tie-break is confusable with the "
+    "effect and phiJMonoMuThree cannot be quoted")
+put("phiJMonoMuThree", float(_logn3.mean()), "{:.4f}")
+put("phiJMonoMuThreeSe", float(_logn3.std(ddof=1) / math.sqrt(len(_logn3))), "{:.4f}")
+put("nMonoMuThree", int(len(_logn3)), "{:d}")
+put("phiJMonoTieBreak", float(_tie.max()), "{:.4f}")
+put("nMonoTieBreakSeeds", int((_tie >= 1e-12).sum()), "{:d}")
 put("rcpLiterature", 0.64, "{:.2f}")   # Silbert 2010 / Desmond & Weeks 2014, cited in main.tex
 
 # the linear-packing-model interaction exponents used for the matched-pair prediction

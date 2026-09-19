@@ -250,23 +250,33 @@ def test_dropped_mixture_cell_macros_match_the_gate():
 # ---------------------------------------------------------------------------------
 
 def test_figures_regenerate_byte_identically():
-    pdfs = sorted(p for p in os.listdir(FIG) if p.endswith(".pdf"))
-    assert pdfs == ["fig1_phiJ.pdf", "fig2_backbone.pdf", "fig3_binaries.pdf"], pdfs
-    before = {p: _md5(os.path.join(FIG, p)) for p in pdfs}
+    """⚠ 2026-09-19: this used to save/restore and compare only the PDFs, so a stale
+    committed `.md` caption sidecar or `.csv` passed and was then silently overwritten by
+    this very test -- leaving a dirty working tree as the only signal. `save()` writes
+    four files per figure and all four are now saved, compared and restored."""
+    exts = (".pdf", ".png", ".csv", ".md")
+    arts = sorted(p for p in os.listdir(FIG) if p.endswith(exts))
+    expect = sorted(f"{s}{e}" for s in ("fig1_phiJ", "fig2_backbone", "fig3_binaries")
+                    for e in exts)
+    assert arts == expect, arts
+    before = {p: _md5(os.path.join(FIG, p)) for p in arts}
     keep = tempfile.mkdtemp()
-    for p in pdfs:
+    for p in arts:
         shutil.copy2(os.path.join(FIG, p), os.path.join(keep, p))
     try:
         r = subprocess.run([sys.executable, os.path.join(HERE, "make_paper_figures.py"), "--check"],
                            capture_output=True, text=True, cwd=ROOT)
-        after = {p: _md5(os.path.join(FIG, p)) for p in pdfs}
+        after = {p: _md5(os.path.join(FIG, p)) for p in arts}
     finally:
-        for p in pdfs:
+        for p in arts:
             shutil.copy2(os.path.join(keep, p), os.path.join(FIG, p))
         shutil.rmtree(keep, ignore_errors=True)
     assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-2000:]
     assert "byte-identity: PASS" in r.stdout
-    assert after == before, "the committed figure PDFs are not what make_paper_figures.py draws today"
+    changed = sorted(p for p in arts if after[p] != before[p])
+    assert not changed, (
+        f"the committed figure artifacts are not what make_paper_figures.py draws today: "
+        f"{changed}")
 
 
 # ---------------------------------------------------------------------------------
@@ -280,8 +290,14 @@ def test_figures_regenerate_byte_identically():
 # errors were 1.581x too small while six `*N` macros read 6 for 3 seeds.
 #
 # These two tests fail if that regresses. Note WHY the old suite could not catch it: the
-# duplicated records are bit-identical, so no MEAN moved and every mean-based assertion
-# stayed green. A defect in the second moment needs a test on the second moment.
+# duplicated records are bit-identical, so a mean-based assertion stayed green. ⚠ But
+# "no MEAN moved", which stood here until 2026-09-19, is wrong as stated: the duplication
+# is balanced (2:2:2) in 11 of the 12 affected groups and UNBALANCED in
+# `(uniform, CV 0.4, p_hat = 3e-05)`, 5 records over 3 seeds, where four means did move
+# (`out/sweep_descriptive.txt` prints them). No published macro reads that group, because
+# every published mean is at the p_hat = 1e-3 rung. So the general lesson stands -- a
+# defect in the second moment needs a test on the second moment -- but a mean-based test
+# on THAT group could have caught this one.
 
 def _selected_cells():
     sys.path.insert(0, ROOT)
@@ -306,17 +322,35 @@ def test_load_shards_returns_one_record_per_physical_cell():
     # and the collapse must have had something to do -- if this ever becomes an equality
     # the raised-cap records have left the tree and the guard above is no longer testing
     # the thing it was written for.
-    m = re.search(r"N after N=1500, mu_p=0\.3, converged: (\d+)",
-                  open(os.path.join(OUT, "sweep_descriptive.txt"), encoding="utf-8").read())
-    assert m is not None, "the record-count line is no longer in out/sweep_descriptive.txt"
-    n_raw = int(m.group(1))
+    # ⚠ 2026-09-19: this used to parse n_raw out of the COMMITTED out/sweep_descriptive.txt
+    # and compare it with a LIVE load. Add or remove a shard without regenerating the
+    # artifact and the two sides describe different populations, so the guard could fire
+    # (or pass) for a reason unrelated to the collapse. Both sides now come from the same
+    # in-process load; the artifact is checked separately, as an artifact.
+    import sweep_descriptive as sd
+    n_raw = sd.LAST_LOAD["n_records"]
+    assert sd.LAST_LOAD["n_cells"] == len(sel), "LAST_LOAD disagrees with the returned list"
     assert n_raw > len(sel), (
         f"no record was collapsed ({n_raw} == {len(sel)}); either the raised-cap records "
         f"are gone, in which case delete this guard, or the collapse stopped running")
+    m = re.search(r"N after N=1500, mu_p=0\.3, converged: (\d+)",
+                  open(os.path.join(OUT, "sweep_descriptive.txt"), encoding="utf-8").read())
+    assert m is not None, "the record-count line is no longer in out/sweep_descriptive.txt"
+    assert int(m.group(1)) == n_raw, (
+        f"the committed artifact says {m.group(1)} records and this load sees {n_raw}; "
+        "out/sweep_descriptive.txt is stale -- regenerate it")
 
 
 def test_every_seed_count_macro_is_a_seed_count():
-    """No `*N` macro may exceed the number of distinct seeds behind it."""
+    """Every `*N` macro equals the number of distinct seeds behind it, AND the group it
+    reads holds one record per seed.
+
+    ⚠ 2026-09-19. The first half alone could not detect the regression it names: `seeds`
+    is a SET taken from the already-collapsed `_selected_cells()`, so it is invariant
+    under duplication and re-introducing the `load_shards` defect would leave this test
+    comparing `3 == 3`. The discriminating quantity is the RECORD count in the group
+    against the seed-set size, which is checked below on the same in-process load.
+    """
     sel = _selected_cells()
     numbers = json.load(open(NUMBERS_JSON, encoding="utf-8"))
     fams = {"Logn": "lognormal", "Unif": "uniform", "Bidi": "bidisperse"}
@@ -328,11 +362,17 @@ def test_every_seed_count_macro_is_a_seed_count():
                 name = f"{key}{tag}{ctag}N"
                 if name not in numbers:
                     continue
-                seeds = {r["seed"] for r in sel
+                group = [r for r in sel
                          if (r.get("family") or "lognormal") == fam and r["cv"] == cv
-                         and r["p_hat_target"] == 1e-3}
+                         and r["p_hat_target"] == 1e-3]
+                seeds = {r["seed"] for r in group}
                 assert int(numbers[name]) == len(seeds), (
                     f"{name} = {numbers[name]} but only {len(seeds)} distinct seeds "
                     f"({sorted(seeds)}) stand behind it")
+                # the half that can actually fail: one record per seed in the group
+                assert len(group) == len(seeds), (
+                    f"{name}'s group holds {len(group)} records over {len(seeds)} seeds; "
+                    f"a mean over it weights seed {sorted(s for s in seeds if sum(1 for r in group if r['seed'] == s) > 1)} "
+                    "more than the others")
                 checked += 1
     assert checked == 27, f"expected 27 seed-count macros, checked {checked}"

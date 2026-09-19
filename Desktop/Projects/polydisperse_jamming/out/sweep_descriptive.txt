@@ -29,6 +29,9 @@ sweep_descriptive.py -- the descriptive sweep, from existing shards. No new cell
    duplicate keys whose phi DISAGREED: 14 (15 disagreeing records)
    N after N=1500, mu_p=0.3, converged: 252
    N after collapsing one physical cell per (family, cv, seed, p_hat), highest MAX_ITER winning: 217
+   groups with an UNBALANCED duplication (pre-collapse mean != mean over seeds): 1 of 73
+     ('uniform', 0.4, 3e-05): 5 records over 3 seeds; means before -> after: rattler_frac 0.3983->0.3951, z_all 2.7696->2.7849, z_nr 4.6000->4.6017, phi 0.5981->0.5990
+   cell multiplicity: max 2, cells appearing more than once 35
 
    Z_all, mean +- se over seeds, by family and CV
      p_hat      family          CV0.0       CV0.1       CV0.2       CV0.3       CV0.4       CV0.5   

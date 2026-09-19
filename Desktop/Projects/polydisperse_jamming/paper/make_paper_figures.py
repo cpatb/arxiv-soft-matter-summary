@@ -306,14 +306,29 @@ if __name__ == "__main__":
     a = ap.parse_args()
     build()
     if a.check:
-        before = {p: md5(p) for p in sorted(glob.glob(os.path.join(FIG, "*.pdf")))}
+        # ⚠ 2026-09-19: this hashed only *.pdf, while save() writes .pdf, .png, .csv AND
+        # .md. The captions' numbers moved out of literals and into computed f-strings in
+        # the .md sidecars, which makes those the artifact most likely to go stale -- and
+        # a stale one passed here and was then silently overwritten by the test suite,
+        # leaving a dirty tree as the only signal. All four extensions are hashed now.
+        EXTS = ("pdf", "png", "csv", "md")
+        STEMS = ("fig1_phiJ", "fig2_backbone", "fig3_binaries")
+
+        def _snapshot():
+            out = {}
+            for e in EXTS:
+                for p in sorted(glob.glob(os.path.join(FIG, f"*.{e}"))):
+                    out[p] = md5(p)
+            return out
+
+        before = _snapshot()
         build()
-        after = {p: md5(p) for p in sorted(glob.glob(os.path.join(FIG, "*.pdf")))}
+        after = _snapshot()
         # A gate over an empty set passes. Name the figures this script is supposed to
         # produce and require all of them, and compare the SETS both ways, so a figure
         # that appears or disappears between the two builds is a failure rather than
         # something the `for p in before` loop cannot see.
-        expect = {"fig1_phiJ.pdf", "fig2_backbone.pdf", "fig3_binaries.pdf"}
+        expect = {f"{s}.{e}" for s in STEMS for e in EXTS}
         missing = expect - {os.path.basename(p) for p in after}
         appeared = sorted(set(after) - set(before))
         bad = [p for p in before if p not in after or before[p] != after[p]]

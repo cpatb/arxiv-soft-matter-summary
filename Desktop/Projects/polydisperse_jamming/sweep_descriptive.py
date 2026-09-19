@@ -196,6 +196,12 @@ def ladder_health(d) -> dict:
 
 
 # ---------------------------------------------------------------- 2. the shard channel
+# Counts from the most recent load_shards() call, so a caller (a test, the extractor)
+# can compare pre- and post-collapse populations against the SAME in-process load rather
+# than parsing them out of a committed artifact that may describe a different tree.
+LAST_LOAD: dict[str, int] = {}
+
+
 def load_shards():
     rows = []
     files = sorted(glob.glob(os.path.join(OUT, "phase2*.jsonl")))
@@ -243,7 +249,17 @@ def load_shards():
     # standard error below then treats a protocol variant as an extra seed: 35 of the 252
     # records were one cell counted twice, which made six published standard errors a
     # factor sqrt(2.5) = 1.581 too small and printed n = 6 where there are 3 seeds.
-    # The means were unharmed only because the duplicated records are bit-identical.
+    # ⚠ 2026-09-19 CORRECTION. The line that stood here -- "the means were unharmed only
+    # because the duplicated records are bit-identical" -- is TRUE of the records and
+    # FALSE as stated of the means. The duplication is BALANCED in 11 of the 12 affected
+    # groups (2:2:2, so an unweighted mean over 6 records equals the mean over 3 cells),
+    # but in `(uniform, CV 0.4, p_hat = 3e-05)` seeds 2 and 3 are doubled and seed 1 is
+    # not: 5 records for 3 seeds, i.e. a 2:2:1 weighting. Four means in that ONE group
+    # moved under the collapse. The unbalanced groups are printed below rather than
+    # described, so this cannot go stale. No macro in the manuscript reads that group
+    # (every published mean is at the p_hat = 1e-3 rung, where the duplication is
+    # balanced), but the claim that a mean-based test COULD NOT have caught the defect is
+    # wrong: on that one group it could.
     # `load_fits` has had the right rule since 2026-09-09 (highest cap wins, cell by
     # cell); this applies the SAME rule to the shard channel rather than inventing one.
     cap_pick: dict[tuple, dict] = {}
@@ -255,7 +271,54 @@ def load_shards():
             cap_pick[pk] = r
     P(f"   N after collapsing one physical cell per (family, cv, seed, p_hat), "
       f"highest MAX_ITER winning: {len(cap_pick)}")
+    # Which (family, cv, p_hat) groups had an UNBALANCED duplication, i.e. where the
+    # pre-collapse unweighted mean was not the mean over seeds. A balanced 2:2:2 leaves
+    # every mean untouched; an unbalanced 2:2:1 does not. Printed, never described.
+    _pre: dict[tuple, list] = {}
+    for r in sel:
+        _pre.setdefault(((r.get("family") or "lognormal"), r["cv"], r["p_hat_target"]),
+                        []).append(r)
+    _unb = []
+    for gk, recs in sorted(_pre.items()):
+        n_seed = len({r["seed"] for r in recs})
+        if len(recs) != n_seed and len(recs) % n_seed != 0:
+            _unb.append((gk, len(recs), n_seed))
+    P(f"   groups with an UNBALANCED duplication (pre-collapse mean != mean over seeds): "
+      f"{len(_unb)} of {len(_pre)}")
+    for gk, nrec, nseed in _unb:
+        _d = {f: (sum(r[f] for r in _pre[gk]) / nrec,
+                  sum(r[f] for r in cap_pick.values()
+                      if ((r.get("family") or "lognormal"), r["cv"], r["p_hat_target"]) == gk)
+                  / nseed)
+              for f in ("rattler_frac", "z_all", "z_nr", "phi")}
+        P(f"     {gk}: {nrec} records over {nseed} seeds; means before -> after: "
+          + ", ".join(f"{f} {a:.4f}->{b:.4f}" for f, (a, b) in _d.items()))
+    # multiplicity of the physical cell, so a caller never has to infer a CELL count from
+    # a RECORD difference (n_records - n_cells is a record count and equals the number of
+    # duplicated cells only while the maximum multiplicity is 2).
+    _cellmult: dict[tuple, int] = {}
+    for r in sel:
+        pk = ((r.get("family") or "lognormal"), r["cv"], r["seed"],
+              r["p_hat_target"], r.get("n_requested"), r.get("mu_p"))
+        _cellmult[pk] = _cellmult.get(pk, 0) + 1
+    _maxmult = max(_cellmult.values()) if _cellmult else 0
+    _ndup = sum(1 for v in _cellmult.values() if v > 1)
+    P(f"   cell multiplicity: max {_maxmult}, cells appearing more than once {_ndup}")
+    LAST_LOAD.update(n_records=len(sel), n_cells=len(cap_pick), n_unbalanced=len(_unb),
+                     max_multiplicity=_maxmult, n_duplicated_cells=_ndup)
     return list(cap_pick.values())
+
+
+def zall_dev_cell(sel) -> float:
+    """Worst per-CELL deviation from the identity ``Z_all = (1 - rattler_frac) Z_nr``.
+
+    A function rather than a local so that `paper/extract_numbers.py` can cross-check its
+    own implementation against this one (2026-09-19: they had computed the same bound by
+    separate code, from DIFFERENT record fields -- this one reads the top-level
+    ``rattler_frac``/``z_nr``, the extractor reads ``rattler.rattler_frac_k2``/
+    ``rattler.z_nr_k2`` -- and had never been compared).
+    """
+    return max(abs(r["z_all"] - (1 - r["rattler_frac"]) * r["z_nr"]) for r in sel)
 
 
 def table(sel, getter, name, unit=""):
@@ -664,7 +727,7 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
     # on every row checked" as a hand-typed constant, in a document whose own header says
     # nothing in it is typed by hand; it was also false at the row level (0.0147/2.7338 =
     # 0.538%) and 2.4x optimistic at the cell level, which is the bound the sentence means.
-    zall_dev_cell = max(abs(r["z_all"] - (1 - r["rattler_frac"]) * r["z_nr"]) for r in sel)
+    zall_dev_cell_v = zall_dev_cell(sel)
     zall_dev_row = 0.0
     for _fam in FAMILIES:
         for _cv in (0.0, 0.3, 0.5):
@@ -782,7 +845,7 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
           "high**, not point estimates; they bracket the endpoint number rather than "
           "replacing it.",
         "3. **`Z_all` is not an independent channel.** It equals "
-        f"`(1 − rattler_frac)·Z_nr` to within {zall_dev_cell:.4f} on every one of the "
+        f"`(1 − rattler_frac)·Z_nr` to within {zall_dev_cell_v:.4f} on every one of the "
         f"{len(sel)} cells (the worst over the printed ROWS, which are means over seeds "
         f"at one rung, is {zall_dev_row:.4f} — a row max cannot bound a cell), so its "
         "near-family-independence is *inherited* from the rattler fraction's and is not "
@@ -832,6 +895,16 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
         "cap kept, which is the rule `load_fits` has used since 2026-09-08; every count "
         "in the tables above is a seed count again. The paired shifts and `phi_J` never "
         "went through this path and did not move.",
+        "",
+        "- **AMENDED 2026-09-19: \"no mean moved\" was too strong.** The duplication is "
+        f"BALANCED in all but {LAST_LOAD.get('n_unbalanced', 0)} of the affected groups "
+        "— where an unweighted mean over the records equals the mean over cells — and "
+        "UNBALANCED in the rest. The unbalanced groups, with the means before and after "
+        "the collapse, are printed in §3 of `out/sweep_descriptive.txt`; none of them is "
+        "read by any table above, because every published mean is at the "
+        f"`p_hat` = {RUNGS[0]:g} rung. The general point stands — a defect in the second "
+        "moment needs a test on the second moment — but on those groups a mean-based "
+        "test could have caught this one.",
         "",
         "## Ladder health",
         "",
