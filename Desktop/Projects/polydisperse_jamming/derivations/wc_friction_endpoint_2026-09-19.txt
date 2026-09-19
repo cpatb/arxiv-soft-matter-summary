@@ -128,6 +128,44 @@ Is mu_p = 0.3 the frictional endpoint, and is the Wyart-Cates window flat?
    either one alone and the published page's conclusion changes; fix both and it
    comes back, for a better reason than it was first given.
 
+=== S3c  🔴 CHANNEL CORRECTION: phi_J_lin is invalid at mu_p >= 1.0 ===
+   ladder_dynamic_range_2026-09-19 measures that the p_hat ladder's dynamic range
+   collapses at high friction: 9/9 of the mu_p = 1.0 ladders and 3/3 of the
+   mu_p = 3.0 ladders are NON-MONOTONE, r^2 down to 0.003, and TWO groups have a
+   physically INADMISSIBLE NEGATIVE span. An extrapolated intercept from a ladder
+   that runs backwards is meaningless, not merely imprecise.
+   Everything above is therefore redone here on phi at the matched lowest rung
+   p_hat = 3e-5, which is FIT-FREE and needs no ladder at all.
+
+   phi(p_hat = 3e-5), mean over 3 seeds:
+      CV          0.0         0.3         1.0         3.0
+     0.0      0.63182     0.57535     0.56148     0.56054
+     0.2      0.64202     0.58755     0.57316          --
+     0.5      0.69084     0.63667     0.61486          --
+
+   Q1 REDONE, fit-free, paired on seed at CV = 0:
+      phi(0.3) - phi(3.0) = +0.01481 +- 0.00293   |t| =   5.05  RESOLVED -- not converged
+      phi(1.0) - phi(3.0) = +0.00093 +- 0.00308   |t| =   0.30  not resolved -- converged
+      mu_p = 0.3 captures 79.2 % of the friction drop (vs 77.2 % on the discredited phi_J_lin channel)
+   [PASS] 🔴 Q1 SURVIVES THE CHANNEL CHANGE: mu_p = 0.3 is resolved away from the frictional limit on the FIT-FREE matched rung too  --  |t| = 5.05
+
+   Q2 REDONE, fit-free: the window W = phi(mu=0) - phi(mu=m), per-rung paired
+      phi_m at mu_p = 0.3: W(0.2)-W(0) = -0.00199+-0.00076 |t|= 2.63   W(0.5)-W(0) = -0.00230+-0.00119 |t|= 1.94   
+      phi_m at mu_p = 1.0: W(0.2)-W(0) = -0.00148+-0.00247 |t|= 0.60   W(0.5)-W(0) = +0.00563+-0.00280 |t|= 2.01   
+   ⚠ On the fit-free channel BOTH endpoints give an unresolved window at 2 dof,
+     so the 'the 0.3-based window deforms' result is a property of the
+     EXTRAPOLATED channel and does NOT survive on the raw rung. Reported, not
+     hidden: the mechanism in S3b stands (the gap grows with CV, fit-free too),
+     but the window statement is channel-dependent and is withdrawn as a result.
+
+   S3b REDONE, fit-free: gap growth CV 0 -> 0.5 = +0.00793 +- 0.00219, |t| = 3.62
+   🔴 REGISTERED CHECK FAILED: 'the mechanism survives fit-free' wanted |t| > 4.303, got 3.62. Not loosened.
+      extrapolated channel |t| = 7.65 (resolved); fit-free |t| = 3.62 (not resolved)
+      the SIGN agrees and is LARGER fit-free (+0.00793 vs +0.00586);
+      the SIGNIFICANCE does not. Verdict: UNDETERMINED, channel-dependent.
+   [PASS] the gap-growth mechanism is CHANNEL-DEPENDENT -- resolved on the extrapolated channel and not on the fit-free one -- so it is UNDETERMINED, not established  --  extrapolated 7.65 vs fit-free 3.62, bar 4.303
+   [PASS] but the SIGN of the gap growth is the same on both channels, so the direction is not an artefact of the fit  --  +0.00586 and +0.00793
+
 === S4  WHAT THIS CANNOT DECIDE ===
    (a) mu_p = 1.0 has only THREE CV rungs (0, 0.2, 0.5), so the window's
        flatness there rests on two paired comparisons, not five.

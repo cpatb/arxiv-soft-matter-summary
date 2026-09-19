@@ -28,8 +28,67 @@
 > friction-independent** across `μ_p` = 0 / 0.3 / 1.0 (worst pairwise \|t\| = 1.40 against
 > 4.303), while `φ_J` itself moves 13× the spread in the shift over the same range.
 >
+> ### 🔴 AND A SECOND REFEREE PASS FOUND A STATISTICS ERROR THAT REVERSES THE HEADLINE
+>
+> 5. **The deciding statistic discards the pairing this script computes elsewhere.**
+>    `paired_shift` is correctly paired *within* each friction arm. One level up, §2
+>    combines the two arms with `math.hypot(s0, s3)` — the formula for **independent**
+>    arms. They are not independent: `packing.py` seeds the radius draw with
+>    `default_rng(st.seed)` regardless of `μ_p`, so seed *s* is the **same size draw** at
+>    both frictions. Measured correlation of seed deviations across the arms: **r = +0.798**.
+>
+>    Per-seed difference of differences, which is the right statistic:
+>
+>    | family | per-seed values | mean ± s.e. | \|t\| |
+>    |---|---|---|---|
+>    | lognormal | −0.00390, −0.00389, −0.00433 | **−0.00404 ± 0.00015** | **27.70** |
+>    | uniform | +0.00069, −0.00287, +0.00111 | −0.00035 ± 0.00126 | 0.28 |
+>
+>    My s.e. was inflated **25.4×** for lognormal. **The "not resolved apart" verdict in the
+>    result box passes only because of an error in its own denominator**, on the family that
+>    supplies the quoted 0.124/CV rate.
+>
+>    ⚠ **But the honest verdict is UNDETERMINED, not "H1 rejected".** The significance is
+>    error-model dependent, and a seed-paired s.e. of 0.00015 is **fourteen times smaller
+>    than the protocol's own declared re-run scatter** (`\phiScale` = 2.1e-3). An error bar
+>    below the protocol's reproducibility is not a bound on a claim about the material:
+>
+>    | error model | s.e. | \|t\| |
+>    |---|---|---|
+>    | this page (hypot of unpaired arms) | 0.00370 | 1.09 |
+>    | seed-paired | 0.00015 | 27.70 |
+>    | ladder-fit `phi_J_lin_se`, propagated | 0.00149 | 2.71 |
+>    | the paper's own protocol re-run scatter | 0.00242 | 1.67 |
+>
+>    The supportable sentence is: **`φ_m` moves 6.5 % more than `φ_0` for the lognormal
+>    family; the sign is robust to every record choice; the significance is between 1.7σ and
+>    27σ and this design does not pin which.**
+>
+> 6. **"σ\* is untouched" is refuted on the group's own convention.**
+>    `impact_stress/dilatancy.py` defines `σ* = F*/(6πa²)`, so a polydisperse pack has a
+>    **distribution** of onset stresses. Sampled on this project's own `psd.make_psd` at
+>    fixed number mean, CV = 0.5: the mean `σ*` moves **1.93×** (lognormal), **3.99×**
+>    (uniform), **2.22×** (bidisperse), and the p10–p90 spread is **9–30×**. Spreading `σ*`
+>    over a decade **broadens** `f(σ/σ*)` — which is exactly the width of the thickening
+>    transition §1(a) claims does not change. And these are dry DEM packings with no
+>    repulsive force: **nothing in this campaign measures `σ*` at all.** §1(b) is an
+>    assumption promoted to a result, and the project's own scaling contradicts it.
+>
+> 7. **"0.124 per unit CV" is a chord, not a rate.** Per-0.1-CV increments: lognormal
+>    +0.0036, +0.0099, +0.0159, +0.0157, +0.0169 (**accelerating**); uniform +0.0038,
+>    +0.0077, +0.0093, +0.0015, +0.0019 (**saturating** — the local rate over CV 0.4–0.5 is
+>    2.5× below the quoted 0.048); bidisperse +0.0014, +0.0106, +0.0094, −0.0025, −0.0051
+>    (**turns over**, falsifying the direction of §1(b) above CV ≈ 0.3).
+>
+> 8. **It contradicts the manuscript's own Conclusions.** `main.tex`: *"A rheological model
+>    that summarises polydispersity by a coefficient of variation is therefore using a
+>    variable that does not determine `φ_J`."* This page's deliverable is a per-unit-CV rate
+>    for exactly such a model. And it omits `main.tex`'s finite-size flag, which sits on the
+>    lognormal CV ≥ 0.3 cells that carry the rate.
+>
 > ⚠ Everything below is left as written, with these corrections at the top rather than
-> edited in, so the two versions can be compared.
+> edited in, so the two versions can be compared. **On the current state of the evidence the
+> page's headline is UNDETERMINED for the lognormal family and holds for the uniform one.**
 
 **2026-09-19.** Every number is printed by `wc_endpoints_move_together_2026-09-19.py` into
 `wc_endpoints_move_together_2026-09-19.txt` (rc 0, ALL CHECKS PASSED). No new cells: this

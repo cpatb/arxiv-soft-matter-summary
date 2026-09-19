@@ -1,0 +1,119 @@
+============================================================================================
+How much does the p_hat ladder actually MOVE? A readability diagnostic
+============================================================================================
+
+=== S0  LOADING ===
+   files globbed (wcbidi EXCLUDED, it is mid-flight): 158
+   N records                                        : 717
+   N after dropping failed                          : 717
+   N after N = 1500                                 : 607
+   N after collapsing to one record per (cell, rung) : 412 in 102 cells
+
+=== S1  SPAN/SD FOR EVERY CELL GROUP ===
+   span = phi(1e-3) - phi(3e-5) per seed, averaged; sd = seed scatter of
+   phi(3e-5). A group needs span >> sd for its extrapolated intercept to mean
+   anything.
+
+   family       mu_p    cv  n      span        sd  SPAN/SD   mono  readable?
+   bidisperse    0.3   0.0  3   0.01863   0.00125     14.9 2/3     yes
+   bidisperse    0.3   0.1  3   0.01978   0.00081     24.3 1/3     yes
+   bidisperse    0.3   0.2  3   0.01704   0.00434      3.9 1/3     yes
+   bidisperse    0.3   0.3  3   0.01516   0.00348      4.4 1/3     yes
+   bidisperse    0.3   0.4  3   0.01578   0.00385      4.1 1/3     yes
+   bidisperse    0.3   0.5  3   0.01539   0.00227      6.8 0/3     yes
+   lognormal     0.0   0.0  3   0.00941   0.00124      7.6 2/3     yes
+   lognormal     0.0   0.1  3   0.00962   0.00077     12.5 2/3     yes
+   lognormal     0.0   0.2  3   0.01187   0.00152      7.8 2/3     yes
+   lognormal     0.0   0.3  3   0.00893   0.00284      3.1 2/3     yes
+   lognormal     0.0   0.4  3   0.00908   0.00390      2.3 2/3     yes
+   lognormal     0.0   0.5  3   0.00577   0.00468      1.2 1/3     🔴 NO
+   lognormal     0.3   0.0  3   0.01800   0.00125     14.4 1/3     yes
+   lognormal     0.3   0.1  3   0.01962   0.00153     12.8 2/3     yes
+   lognormal     0.3   0.2  3   0.02156   0.00044     48.7 3/3     yes
+   lognormal     0.3   0.3  3   0.01425   0.00403      3.5 1/3     yes
+   lognormal     0.3   0.4  3   0.01336   0.00572      2.3 2/3     yes
+   lognormal     0.3   0.5  3   0.01227   0.00323      3.8 2/3     yes
+   lognormal     1.0   0.0  3   0.00543   0.00150      3.6 0/3     yes
+   lognormal     1.0   0.2  3   0.00360   0.00427      0.8 0/3     🔴 NO
+   lognormal     1.0   0.5  3  -0.00090   0.00498     -0.2 0/3     🔴 NO
+   lognormal     3.0   0.0  3  -0.00058   0.00384     -0.1 0/3     🔴 NO
+   uniform       0.0   0.0  3   0.00941   0.00124      7.6 2/3     yes
+   uniform       0.0   0.1  3   0.00814   0.00164      5.0 1/3     yes
+   uniform       0.0   0.2  3   0.01146   0.00051     22.6 2/3     yes
+   uniform       0.0   0.3  3   0.00747   0.00068     10.9 1/3     yes
+   uniform       0.0   0.4  3   0.00581   0.00038     15.2 0/3     yes
+   uniform       0.0   0.5  3   0.01241   0.00180      6.9 2/3     yes
+   uniform       0.3   0.0  3   0.01863   0.00125     14.9 2/3     yes
+   uniform       0.3   0.1  3   0.01948   0.00427      4.6 2/3     yes
+   uniform       0.3   0.2  3   0.01789   0.00194      9.2 1/3     yes
+   uniform       0.3   0.3  3   0.01554   0.00182      8.5 1/3     yes
+   uniform       0.3   0.4  3   0.01699   0.00415      4.1 2/3     yes
+   uniform       0.3   0.5  3   0.01451   0.00181      8.0 1/3     yes
+
+   groups below SPAN/SD = 2.0: 4 of 34
+   [PASS] the diagnostic is not vacuous -- some groups pass and some fail  --  4 of 34 fail
+
+=== S2  WHAT DRIVES THE COLLAPSE: friction and width, separately ===
+   SPAN/SD averaged over families, by (mu_p, cv):
+     mu_p      0.0      0.1      0.2      0.3      0.4      0.5
+      0.0      7.6      8.7     15.2      7.0      8.8      4.1
+      0.3     14.7     13.9     20.6      5.5      3.5      6.2
+      1.0      3.6       --      0.8       --       --     -0.2
+      3.0     -0.1       --       --       --       --       --
+
+   mean SPAN/SD at mu_p <= 0.3 :    9.9   at mu_p >= 1.0 :    1.0
+   mean SPAN/SD at CV   <= 0.2 :   11.9   at CV   >= 0.4 :    5.0
+   [PASS] BOTH axes degrade the ladder: high friction and high CV each lower SPAN/SD  --  friction 9.9->1.0, width 11.9->5.0
+   MECHANISM, and it is the same one twice: both friction and polydispersity
+   RAISE phi_J, so at a fixed pressure ladder the packing sits further above its
+   own jamming point and is stiffer. A stiffer packing compresses less between
+   1e-3 and 3e-5, so the ladder has less to say.
+
+=== S3  A CHECK THAT COULD FAIL: does SPAN/SD predict non-monotonicity? ===
+   If SPAN/SD is measuring what it claims, groups with a low value should be the
+   ones whose ladders are non-monotone. This is an independent symptom.
+   Spearman(SPAN/SD, monotone fraction) = +0.274 over 34 groups
+   ⚠ REGISTERED BAR rho > 0.3 FAILED at 0.274. Not loosened. It is the wrong
+     statistic: the effect is a FLOOR, not a gradient, so a rank correlation over
+     the whole range dilutes it. The split at the bar is reported instead.
+   monotone LADDERS below the bar: 1/12 = 0.08
+   monotone LADDERS above the bar: 44/90 = 0.49
+   [PASS] ladders in groups below the bar are monotone far less often than those above it  --  0.08 vs 0.49
+
+   🔑 AND THE DATA SUPPLIES A BAR THAT NEEDS NO CONVENTION AT ALL:
+      a NEGATIVE span is physically inadmissible. Compressing a packing harder
+      cannot lower its packing fraction, so span < 0 is not 'small', it is wrong.
+      groups with a NEGATIVE mean span: 2 of 34
+        lognormal   mu_p=1.0 cv=0.5   span = -0.00090
+        lognormal   mu_p=3.0 cv=0.0   span = -0.00058
+   [PASS] every group with an inadmissible negative span is also below the SPAN/SD bar, so the convention and the inadmissibility agree where both apply  --  2 negative-span groups, all below the bar
+      ⚠ These groups are not merely unreadable -- their ladders run BACKWARDS.
+        Any extrapolated phi_J from them is meaningless, not just imprecise,
+        and this needs no threshold to assert.
+
+=== S4  WHICH PUBLISHED NUMBERS REST ON GROUPS THAT FAIL THE DIAGNOSTIC ===
+   quantity                                      worst SPAN/SD  verdict
+   paper: \dPhiJLogn, the headline shift                   3.8  ok
+   paper: \dPhiJUnif                                       8.0  ok
+   paper: \dPhiJBidi                                       6.8  ok
+   paper: \phiJFrictionless (CV = 0 only)                  7.6  ok
+   paper: \phiJMonoMuThree (CV = 0 only)                  14.4  ok
+   wc_endpoints: the frictionless CV shift                 1.2  🔴 rests on an unreadable group
+   wc_friction: the mu_p = 1.0 window                     -0.2  🔴 rests on an unreadable group
+   wc_friction: the mu_p = 3.0 endpoint                   -0.1  🔴 rests on an unreadable group
+   [PASS] the paper's three headline family shifts are all on READABLE groups  --  affected: none
+   [PASS] this diagnostic DOES catch something -- at least one committed quantity rests on an unreadable group  --  3: ['wc_endpoints: the frictionless CV shift', 'wc_friction: the mu_p = 1.0 window', 'wc_friction: the mu_p = 3.0 endpoint']
+
+=== S5  WHAT THIS DIAGNOSTIC CANNOT DO ===
+   (a) SPAN/SD = 2 is a CONVENTION. Every group's value is printed above so a
+       different bar can be applied; the ORDERING does not depend on it.
+   (b) The sd is a 3-seed estimate, so it carries 2 dof and is itself noisy by
+       roughly 40 %. A group at 1.5 and a group at 2.5 are not reliably apart.
+   (c) It says an extrapolation is UNRELIABLE, not that phi_J is WRONG. A
+       degenerate ladder whose four points happen to agree still brackets the
+       jamming point; it just cannot locate it better than that bracket.
+   (d) It does not replace the fit-quality gate the module already has. A ladder
+       can have good span and still be non-monotone from a single bad rung.
+
+============================================================================================
+ALL CHECKS PASSED

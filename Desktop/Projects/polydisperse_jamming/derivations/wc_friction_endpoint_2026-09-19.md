@@ -5,7 +5,35 @@
 `out/phase2_fits.csv`, which has held the `μ_p = 1.0` and `μ_p = 3.0` blocks since before
 this session. **No analysis in this repository had ever read them.**
 
-> ## RESULT
+> # 🔴 CHANNEL CORRECTION, same day: two of the three results below do NOT survive it
+>
+> `ladder_dynamic_range_2026-09-19.md` measures that **`phi_J_lin` is invalid at
+> `μ_p ≥ 1.0`**: 9/9 of the `μ_p = 1.0` ladders and 3/3 of the `μ_p = 3.0` ladders are
+> non-monotone, `r²` down to 0.003, and **two groups have a physically inadmissible NEGATIVE
+> span** — their ladders run backwards. Everything below used that channel. Redone fit-free
+> on `φ` at the matched lowest rung `p̂ = 3e-5` (§S3c of the script):
+>
+> | result | extrapolated channel | fit-free channel | verdict |
+> |---|---|---|---|
+> | **`μ_p = 0.3` is not the frictional endpoint** | 22.8 % remains, \|t\| = 14.29 | **20.8 % remains, \|t\| = 5.05** | ✅ **SURVIVES** |
+> | the `μ_p = 0.3` window deforms with CV | \|t\| = 7.87 (trend), 27.70 (rung) | **\|t\| = 2.63 and 1.94 — not resolved** | 🔴 **WITHDRAWN as channel-dependent** |
+> | the residual gap grows with CV | +0.00586 ± 0.00077, \|t\| = 7.65 | **+0.00793 ± 0.00219, \|t\| = 3.62** | ⚠ **UNDETERMINED** — sign agrees and is *larger* fit-free, significance does not |
+>
+> ⚠ **A check registered in the script FAILED and is not loosened**: "the gap-growth
+> mechanism survives on the fit-free channel" wanted \|t\| > 4.303 and got **3.62**. The
+> mechanism in §3 of the box below is therefore a *direction*, not an established result.
+>
+> **What stands after the correction is §1 and §4: `μ_p = 0.3` is not `φ_m`, on either
+> channel, and the CV shift is friction-independent to within 30 %.** Silbert, *Soft Matter*
+> (2010), doi:10.1039/c001973a independently supports the first — its monodisperse ladder
+> gives `φ_c` = 0.639 / 0.595 / 0.556 / 0.544 at `μ` = 0 / 0.2 / 1.0 / 10 with the explicit
+> statement that these "saturate at about `φ_c(μ=∞) ≈ 0.55`" for `μ ≳ 1`.
+>
+> Everything below is left as written so the two channels can be compared.
+
+---
+
+> ## RESULT (as first written — read the correction above first)
 >
 > **Two independent errors in `wc_endpoints_move_together_2026-09-19.md` were cancelling.**
 > Correcting either one alone changes its conclusion; correcting both brings the conclusion

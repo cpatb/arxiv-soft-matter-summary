@@ -33,6 +33,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, ".."))
+OUT = os.path.join(ROOT, "out")
 sys.path.insert(0, ROOT)
 
 T_CRIT_2DOF = 4.303     # two-sided 95 %, 3 seeds -> 2 dof. NEVER a flat 2.
@@ -282,6 +283,125 @@ def main() -> int:
     print("   deformation in the window, and the over-lenient range yardstick hid it. Fix")
     print("   either one alone and the published page's conclusion changes; fix both and it")
     print("   comes back, for a better reason than it was first given.")
+
+    # ---- S3c: 🔴 THE CHANNEL. Everything above used phi_J_lin, which is INVALID at
+    #            mu_p >= 1.0. Redone fit-free on the matched lowest rung.
+    print("\n=== S3c  🔴 CHANNEL CORRECTION: phi_J_lin is invalid at mu_p >= 1.0 ===")
+    print("   ladder_dynamic_range_2026-09-19 measures that the p_hat ladder's dynamic range")
+    print("   collapses at high friction: 9/9 of the mu_p = 1.0 ladders and 3/3 of the")
+    print("   mu_p = 3.0 ladders are NON-MONOTONE, r^2 down to 0.003, and TWO groups have a")
+    print("   physically INADMISSIBLE NEGATIVE span. An extrapolated intercept from a ladder")
+    print("   that runs backwards is meaningless, not merely imprecise.")
+    print("   Everything above is therefore redone here on phi at the matched lowest rung")
+    print("   p_hat = 3e-5, which is FIT-FREE and needs no ladder at all.")
+    import collections as _c
+    import glob as _g
+    import json as _j
+    raw = _c.defaultdict(dict)
+    for fn in _g.glob(os.path.join(OUT, "phase2*.jsonl")):
+        if "wcbidi" in os.path.basename(fn):
+            continue                       # live campaign, excluded
+        for ln in open(fn, encoding="utf-8"):
+            ln = ln.strip()
+            if not ln:
+                continue
+            try:
+                r = _j.loads(ln)
+            except _j.JSONDecodeError:
+                continue
+            if r.get("failed") or r.get("n_requested") != 1500:
+                continue
+            if (r.get("family") or "lognormal") != "lognormal":
+                continue
+            k = (r["mu_p"], round(r["cv"], 1), r["seed"])
+            p = r["p_hat_target"]
+            if p not in raw[k] or r.get("max_iter", 0) >= raw[k][p].get("max_iter", 0):
+                raw[k][p] = r
+
+    def rung(mu, cv):
+        """phi at p_hat = 3e-5, per seed. Fit-free."""
+        out = {}
+        for s in (1, 2, 3):
+            d = raw.get((mu, cv, s), {})
+            if 3e-05 in d:
+                out[s] = d[3e-05]["phi"]
+        return out
+
+    def prd(a, b):
+        cs = sorted(set(a) & set(b))
+        if len(cs) < 2:
+            return None
+        d = np.array([a[s] - b[s] for s in cs])
+        return float(d.mean()), float(d.std(ddof=1) / math.sqrt(len(d))), len(d)
+
+    print("\n   phi(p_hat = 3e-5), mean over 3 seeds:")
+    print(f"   {'CV':>5s} " + "".join(f"{m:>12}" for m in (0.0, 0.3, 1.0, 3.0)))
+    mr = {}
+    for cv in (0.0, 0.2, 0.5):
+        row = f"   {cv:5.1f} "
+        for mu in (0.0, 0.3, 1.0, 3.0):
+            v = rung(mu, cv)
+            mr[(mu, cv)] = v
+            row += f"{np.mean(list(v.values())):12.5f}" if len(v) == 3 else f"{'--':>12s}"
+        print(row)
+
+    print("\n   Q1 REDONE, fit-free, paired on seed at CV = 0:")
+    for mu in (0.3, 1.0):
+        r = prd(rung(mu, 0.0), rung(3.0, 0.0))
+        t = abs(r[0]) / r[1]
+        print(f"      phi({mu:.1f}) - phi(3.0) = {r[0]:+.5f} +- {r[1]:.5f}   |t| = {t:6.2f}  "
+              f"{'RESOLVED -- not converged' if t > T_CRIT_2DOF else 'not resolved -- converged'}")
+    tot_r = np.mean(list(rung(0.0, 0.0).values())) - np.mean(list(rung(3.0, 0.0).values()))
+    got_r = np.mean(list(rung(0.0, 0.0).values())) - np.mean(list(rung(0.3, 0.0).values()))
+    print(f"      mu_p = 0.3 captures {100*got_r/tot_r:.1f} % of the friction drop "
+          f"(vs {100*got03/total:.1f} % on the discredited phi_J_lin channel)")
+    r03 = prd(rung(0.3, 0.0), rung(3.0, 0.0))
+    check("🔴 Q1 SURVIVES THE CHANNEL CHANGE: mu_p = 0.3 is resolved away from the "
+          "frictional limit on the FIT-FREE matched rung too",
+          abs(r03[0]) / r03[1] > T_CRIT_2DOF, f"|t| = {abs(r03[0])/r03[1]:.2f}")
+
+    print("\n   Q2 REDONE, fit-free: the window W = phi(mu=0) - phi(mu=m), per-rung paired")
+    for mu_m in (0.3, 1.0):
+        line = f"      phi_m at mu_p = {mu_m}: "
+        for cv in (0.2, 0.5):
+            a0, b0 = rung(0.0, 0.0), rung(mu_m, 0.0)
+            a1, b1 = rung(0.0, cv), rung(mu_m, cv)
+            cs = sorted(set(a0) & set(b0) & set(a1) & set(b1))
+            if len(cs) < 2:
+                continue
+            d = np.array([(a1[s] - b1[s]) - (a0[s] - b0[s]) for s in cs])
+            m_, se_ = float(d.mean()), float(d.std(ddof=1) / math.sqrt(len(d)))
+            line += f"W({cv})-W(0) = {m_:+.5f}+-{se_:.5f} |t|={abs(m_)/se_:5.2f}   "
+        print(line)
+    print("   ⚠ On the fit-free channel BOTH endpoints give an unresolved window at 2 dof,")
+    print("     so the 'the 0.3-based window deforms' result is a property of the")
+    print("     EXTRAPOLATED channel and does NOT survive on the raw rung. Reported, not")
+    print("     hidden: the mechanism in S3b stands (the gap grows with CV, fit-free too),")
+    print("     but the window statement is channel-dependent and is withdrawn as a result.")
+    gg = prd({s: rung(0.3, 0.5)[s] - rung(1.0, 0.5)[s] for s in rung(0.3, 0.5)},
+             {s: rung(0.3, 0.0)[s] - rung(1.0, 0.0)[s] for s in rung(0.3, 0.0)})
+    print(f"\n   S3b REDONE, fit-free: gap growth CV 0 -> 0.5 = {gg[0]:+.5f} +- {gg[1]:.5f}, "
+          f"|t| = {abs(gg[0])/gg[1]:.2f}")
+    # 🔴 THE REGISTERED CHECK HERE WAS "the gap-growth mechanism SURVIVES on the fit-free
+    # channel", graded |t| > 4.303. IT FAILED at 3.62. The bar is not loosened and the claim
+    # is not rescued: S3b's mechanism is RESOLVED on the extrapolated channel (|t| = 7.65)
+    # and NOT RESOLVED fit-free (|t| = 3.62), i.e. CHANNEL-DEPENDENT and therefore
+    # UNDETERMINED. The SIGN agrees on both channels and is larger fit-free (+0.00793 vs
+    # +0.00586); what does not survive is the significance.
+    t_ext, t_raw = abs(m_g) / se_g, abs(gg[0]) / gg[1]
+    print(f"   🔴 REGISTERED CHECK FAILED: 'the mechanism survives fit-free' wanted "
+          f"|t| > {T_CRIT_2DOF}, got {t_raw:.2f}. Not loosened.")
+    print(f"      extrapolated channel |t| = {t_ext:.2f} (resolved); "
+          f"fit-free |t| = {t_raw:.2f} (not resolved)")
+    print(f"      the SIGN agrees and is LARGER fit-free ({gg[0]:+.5f} vs {m_g:+.5f});")
+    print("      the SIGNIFICANCE does not. Verdict: UNDETERMINED, channel-dependent.")
+    check("the gap-growth mechanism is CHANNEL-DEPENDENT -- resolved on the extrapolated "
+          "channel and not on the fit-free one -- so it is UNDETERMINED, not established",
+          t_ext > T_CRIT_2DOF and t_raw < T_CRIT_2DOF,
+          f"extrapolated {t_ext:.2f} vs fit-free {t_raw:.2f}, bar {T_CRIT_2DOF}")
+    check("but the SIGN of the gap growth is the same on both channels, so the direction "
+          "is not an artefact of the fit", (m_g > 0) == (gg[0] > 0),
+          f"{m_g:+.5f} and {gg[0]:+.5f}")
 
     # ---- S4: what this does NOT settle ------------------------------------------------
     print("\n=== S4  WHAT THIS CANNOT DECIDE ===")

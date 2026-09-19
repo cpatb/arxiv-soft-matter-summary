@@ -198,6 +198,42 @@ hid it. See that page's own §0 for the full correction.
 
 ---
 
+## 3c. AMENDMENT 2, written while the campaign is running and BEFORE any of its records were read
+
+A referee pass on `wc_endpoints_move_together` found, and I verified, that **the `p̂` ladder's
+dynamic range collapses at high CV as well as at high friction.** `φ` span across the four
+rungs divided by the seed scatter at the bottom rung, lognormal:
+
+| `μ_p` \ CV | 0.0 | 0.2 | 0.5 |
+|---|---|---|---|
+| **0.0** | 16.8 | 7.8 | **1.3** |
+| 0.3 | 17.7 | 48.7 | 4.0 |
+| 1.0 | 6.3 | 1.7 | 1.5 |
+
+🔴 **The frictionless CV = 0.5 cells — which is where this campaign's primary gate lives —
+have span/sd = 1.3.** The extrapolated `phi_J_lin` there is a fit to a ladder whose whole
+range is about one seed scatter. `paper/main.tex` already says the frictionless ladders are
+not monotone in `p̂` at this seed count; this is that caveat given a number.
+
+**What changes, before any `wcbidi` record is read:**
+
+1. **A NEW GATE, W2, is added**: report span/sd for every `(CV)` group of the new block.
+   Any group below **2.0** is declared **not readable on the extrapolated channel**.
+2. **G3, the primary gate, is graded on BOTH channels**: the extrapolated `phi_J_lin` as
+   registered, **and** `φ` at the matched lowest rung `p̂ = 3e-5`, fit-free. G3 asks for an
+   **argmax over CV**, which is a shape statement and survives a noisy level far better than
+   a difference does — but if the two channels disagree on the argmax, **G3 returns
+   UNDETERMINED** and that is the registered outcome.
+3. **G4 and G5 are graded on the matched rung** if W2 fails at CV = 0.5, and the
+   `phi_J_lin` values are reported beside them either way.
+
+⚠ This does not rescue the campaign if the physics is unreadable; it makes the campaign
+report *which* channel it is readable on. The honest possible outcome remains that the
+frictionless bidisperse block cannot resolve an argmax at three seeds, which closes the
+question at "not decidable on this protocol" rather than at a verdict.
+
+---
+
 ## 4. What is NOT being run, and why
 
 - **No raised iteration cap.** If cells fail G1 they are reported, not rescued.
