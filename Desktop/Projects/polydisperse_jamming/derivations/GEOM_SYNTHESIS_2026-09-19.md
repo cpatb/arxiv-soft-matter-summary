@@ -1,5 +1,33 @@
 # The geometry of the polydispersity shift — synthesis, 2026-09-19
 
+> # 🔴 CORRECTED 2026-09-19 by a physics-referee pass — read `geom_protocol_floor_2026-09-19.md` with this page
+>
+> Every significance on this page was computed from the **seed-paired standard error
+> alone**, and this repository documents in its own artifact that that is the wrong bar.
+> `mixture_model.py` prints: *"grading scale PHI_SCALE = 2.1e-3: the protocol's own
+> run-to-run non-determinism, NOT the seed sem (~2e-04), which is 10x smaller than the
+> reproducibility of the thing being modelled"*, and `test_mixture.py` enforces it for a
+> structurally identical claim. `\phiScale` is already a macro in the manuscript.
+>
+> Re-graded against `max(seed s.e., sqrt(L)·PHI_SCALE/sqrt(n))`, with `L` the number of
+> cells that do **not** cancel:
+>
+> | statistic | t on the seed s.e. | t on the protocol floor | verdict |
+> |---|---|---|---|
+> | item A, additive (lognormal) | 27.70 | **1.67** | 🔴 REFUTED → **UNDETERMINED** |
+> | item A, multiplicative (lognormal) | 56.97 | **4.03** | 🔴 REFUTED → **UNDETERMINED** |
+> | item C2, zero-skewness pair | resolved 3 of 5 CV | resolved **1 of 5** | conclusion holds, robustness does not |
+>
+> **What survives:** the additive form fits *better* than the multiplicative one on every
+> family — an ordering of two one-parameter forms, which needs no significance test. What
+> does not survive is "REFUTED", i.e. the claim that either form is excluded.
+>
+> ⚠ This is a **stronger** correction than the referee proposed: it computed no separate
+> floor for the multiplicative (ratio) statistic and left that one resolved at t = 4.45.
+>
+> Numbers printed by `geom_protocol_floor_2026-09-19.py`.
+
+
 Five derivations, each with its own `.md` + `.py` + `.txt` in this directory. Every number
 below is printed by one of those scripts; nothing is transcribed. Shared loader:
 `geom_common_20260919.py` (excludes `out/phase2_wcbidi*.jsonl` by name — that campaign is

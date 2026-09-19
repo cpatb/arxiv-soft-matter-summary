@@ -1,0 +1,58 @@
+============================================================================================
+Re-grading the geometry batch against the protocol's own scale
+============================================================================================
+
+   PHI_SCALE = 0.0021   (mixture_model.py, printed in its own artifact)
+   t_crit at 2 dof = 4.303
+
+=== ITEM A  SEPARABILITY, re-graded ===
+   The statistic combines FOUR cells -- (mu, cv) = (0,0), (0,0.5), (0.3,0),
+   (0.3,0.5) -- none of which is shared, so L = 4.
+   family     form            value   se_seed   t_seed  se_proto  t_proto  verdict
+   lognormal  additive     -0.00404   0.00015    27.70   0.00242     1.67  NOT resolved
+   lognormal  multiplic    -0.01628   0.00029    56.97   0.00383     4.24  NOT resolved
+   uniform    additive     -0.00035   0.00126     0.28   0.00242     0.15  NOT resolved
+   uniform    multiplic    -0.00437   0.00201     2.17   0.00383     1.14  NOT resolved
+
+   🔴 CORRECTION TO ITEM A'S VERDICT. It reported BOTH forms REFUTED, on
+      t = 27.70 (additive) and 65.43 (multiplicative) from the seed s.e. alone.
+      On the protocol floor NEITHER is resolved on the lognormal family, so the
+      verdict for both is UNDETERMINED, not REFUTED.
+   [PASS] 🔴 item A's additive verdict moves from REFUTED to UNDETERMINED  --  not resolved against the protocol floor
+   [PASS] 🔴 item A's MULTIPLICATIVE verdict also moves to UNDETERMINED -- a stronger correction than the referee proposed, because it computed no separate floor for a ratio  --  not resolved against the relative protocol floor
+
+   ⚠ WHAT SURVIVES: the additive form fits BETTER than the multiplicative one
+     (smaller residual, on every family). That ORDERING is a descriptive fact
+     about two one-parameter forms and does not need a significance test. What
+     does not survive is 'REFUTED', i.e. the claim that either is excluded.
+
+=== ITEM C2  THE ZERO-SKEWNESS PAIR, re-graded ===
+   Here uniform and bidisperse SHARE their CV = 0 cell bit-identically, so that
+   term cancels exactly and L = 2, NOT 4. Using L = 4 would flip CV = 0.5.
+      CV       diff   se_seed   t_seed  se_proto  t_proto  verdict
+     0.1   +0.00242   0.00049     4.90   0.00171     1.41  not resolved
+     0.2   -0.00053   0.00239     0.22   0.00171     0.22  not resolved
+     0.3   -0.00070   0.00080     0.87   0.00171     0.41  not resolved
+     0.4   +0.00335   0.00042     7.94   0.00171     1.95  not resolved
+     0.5   +0.01031   0.00171     6.02   0.00171     6.01  RESOLVED
+
+   resolved on the seed s.e. alone: 3 of 5
+   resolved on the protocol floor  : 1 of 5
+   [PASS] 🔴 the zero-skewness pair's robustness drops on the protocol floor  --  3 -> 1 of 5
+   [PASS] but it SURVIVES at the widest CV, so the conclusion (skewness alone does not control phi_J) still stands  --  1 of 5
+   ⚠ paper/main.tex and paper/extract_numbers.py were corrected to this bar on
+     2026-09-19 and now print BOTH counts.
+
+=== WHAT THIS CORRECTION DOES NOT TOUCH ===
+   Items C1, B, D's z_iso derivation and E's Furnas identity are ALGEBRA. They
+   cannot fail on data and carry no t-test, so the protocol floor is irrelevant
+   to them. The referee re-derived all four independently and they held.
+   Item B's verdict (UNDETERMINED) leans toward 'not resolved' already, and
+   under-counting noise cannot manufacture that, so it is unaffected.
+   ⚠ Item D's isostatic drift (t = -7.25) uses the same machinery but there is
+     NO z_iso analogue of PHI_SCALE on record, so it CANNOT be re-graded here.
+     Flagged as a risk, not corrected -- and the honest statement is that its
+     significance is unaudited rather than wrong.
+
+============================================================================================
+ALL CHECKS PASSED
