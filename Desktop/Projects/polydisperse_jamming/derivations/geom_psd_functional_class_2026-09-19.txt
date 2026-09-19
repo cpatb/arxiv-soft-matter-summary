@@ -1,0 +1,174 @@
+
+==============================================================================
+1. THE LEVEL SET {mean, CV, size ratio} ON TWO-POINT PSDs IS A QUADRATIC
+==============================================================================
+   Atoms d_s = s and d_l = r s, r > 1; q = NUMBER fraction of the LARGE atom.
+   <d>   = s*(q*r - q + 1)
+   <d^2> = s**2*(q*r**2 - q + 1)
+   Fix <d> = 1  ->  s = 1/(q*r - q + 1)
+   CV^2 = <d^2>/<d>^2 - 1 = -q*(q - 1)*(r - 1)**2/(q*r - q + 1)**2
+
+   Setting CV^2 = c^2 and clearing denominators gives a polynomial in q of
+   degree 2 :
+      -c**2*q**2*r**2 + 2*c**2*q**2*r - c**2*q**2 - 2*c**2*q*r + 2*c**2*q - c**2 - q**2*r**2 + 2*q**2*r - q**2 + q*r**2 - 2*q*r + q  = 0
+
+   Canonical form, asserted equal up to the leading coefficient:
+       (1+c^2)(r-1)^2 q^2 + (r-1)(2(1+c^2) - r - 1) q + c^2 = 0
+   SymPy difference from the cleared polynomial: 0
+
+   Vieta (exact):
+     q1 q2   = c**2/(c**2*r**2 - 2*c**2*r + c**2 + r**2 - 2*r + 1)   = c^2 / ((1+c^2)(r-1)^2)
+     q1 + q2 = (-2*c**2 + r - 1)/((c**2 + 1)*(r - 1))
+   -> TWO compositions realise any admissible (mean, CV, ratio).  They are
+      the manuscript's mixtures A and B.  The level set is a PAIR, not a
+      continuum, so the pair exhausts what can be matched this way.
+
+   Discriminant = (r - 1)**2*(-4*c**2*r + r**2 - 2*r + 1)
+   Real distinct roots require it > 0; equal roots are the tangency where the
+   pair degenerates to one mixture and the experiment is impossible.
+
+==============================================================================
+2. SKEWNESS OF A TWO-POINT PSD DEPENDS ONLY ON THE COMPOSITION
+==============================================================================
+   General two atoms a < b with P(b) = q:
+     variance    = -q*(a - b)**2*(q - 1)
+     mu_3        = -q*(a - b)**3*(q - 1)*(2*q - 1)
+     skewness    = (2*a*q - a - 2*b*q + b)/(sqrt(q)*sqrt(-a**2*q + a**2 + 2*a*b*q - 2*a*b - b**2*q + b**2))
+
+   Claim: skewness = (1 - 2q)/sqrt(q(1-q)), FREE of a and b.
+   SymPy difference (with b > a assumed): 0 at (a,b)=(1,3); 0 at (a,b)=(0.7,5.3)
+
+   Numeric verification over a grid of (a, b, q) -- worst |difference|:
+     worst |skew_numeric - (1-2q)/sqrt(q(1-q))| over 72 points = 4.441e-15
+
+   CONSEQUENCE.  gamma_1(q) = (1-2q)/sqrt(q(1-q)) has
+     d gamma_1/dq = -sqrt(1 - q)/(2*q**(3/2)*(q - 1)**2)   < 0 on (0,1), so gamma_1 is STRICTLY
+     DECREASING and therefore INJECTIVE in q.
+   Two distinct compositions => two distinct skewnesses.  A two-point PSD
+   CANNOT hold CV and skewness fixed at two compositions.  QED.
+   (Corollary: it also cannot hold ANY standardized moment fixed -- every
+    standardized moment of a two-point law is a function of q alone, because
+    the law is an affine image of Bernoulli(q) and standardized moments are
+    affine-invariant.  Verified for the 4th below.)
+     symbolic kurtosis = (-3*q**2 + 3*q - 1)/(q*(q - 1))
+     claimed form      = (-3*q*(q - 1) - 1)/(q*(q - 1))
+     kurtosis: worst |k4 - (1-3q(1-q))/(q(1-q))| over 24 points = 1.599e-14  -> also q-only
+
+==============================================================================
+3. THE MANUSCRIPT'S MATCHED PAIR, REPRODUCED FROM THE CLOSED FORM
+==============================================================================
+   paper/main.tex sec:binaries: ratio 3, CV 0.500, X_s = 1/28 and 0.25,
+   n_small = 0.500 and 0.900, skewness 0.00 and +2.67, phi gap +0.0635.
+   Those are INPUTS to the manuscript.  Here they are OUTPUTS of the
+   quadratic, which is the check that the level set is what I claim.
+
+   Quadratic at r = 3, CV = 1/2:  5*q**2 - 3*q + 1/4 = 0
+   Roots (q = number fraction of the LARGE atom): [1/10, 1/2]
+
+     q_large = 0.1000  ->  n_small = 0.9000,  d_s = 0.833333, d_l = 2.500000
+       realised mean = 1.0000000000   CV = 0.5000000000   skewness = +2.666667
+       closed-form skewness (1-2q)/sqrt(q(1-q)) = +2.666667   |diff| = 0.00e+00
+       fines VOLUME fraction X_s = 0.250000  (= 1/4.0000)
+
+     q_large = 0.5000  ->  n_small = 0.5000,  d_s = 0.500000, d_l = 1.500000
+       realised mean = 1.0000000000   CV = 0.5000000000   skewness = +0.000000
+       closed-form skewness (1-2q)/sqrt(q(1-q)) = +0.000000   |diff| = 0.00e+00
+       fines VOLUME fraction X_s = 0.035714  (= 1/28.0000)
+
+   Against the manuscript: n_small 0.500 / 0.900, X_s 0.0357 / 0.25,
+   skewness 0.00 / +2.67.  Reproduced above to the printed precision.
+   NOTE the sign convention: the manuscript's +2.67 is the mixture with
+   n_small = 0.900, i.e. q_large = 0.1 -- many small grains and a few large,
+   which is right-skewed.  (1-2*0.1)/sqrt(0.1*0.9) = +2.6667.
+
+==============================================================================
+4. WHICH CLASS OF FUNCTIONALS THE PAIR EXCLUDES -- stated precisely
+==============================================================================
+   Let P be the set of probability measures on (0, inf) (number-weighted
+   diameter laws).  The manuscript's pair is {P_A, P_B} subset P with
+       <d>_A = <d>_B,  CV_A = CV_B,  supp(P_A) = supp(P_B) = {d_s, d_l},
+   hence also equal size ratio, equal span, equal min and max, equal atom
+   count (2), and equal N.  Measured phi_A != phi_B by 0.0635 +- 0.0032.
+
+   EXCLUDED: every functional Phi[P] that is constant on the level set
+       L = { P in P : <d> = 1, CV = 1/2, supp(P) = {d_s, d_l} }.
+   That set contains, in particular:
+     * any function of the first two moments alone -- <d>, CV, variance,
+       d32/d10 IS NOT in this list (see below), sigma/mu, span;
+     * any function of the SUPPORT alone -- size ratio r, d_max/d_min,
+       d_max - d_min, the number of species K;
+     * any function of (moments 1-2) and (support) jointly;
+     * therefore every closure of the form phi_J = f(CV) or f(CV, r) or
+       f(span), which is what 'width is not the descriptor' means.
+
+   NOT EXCLUDED -- and this is the part the phrase 'no descriptor of the
+   size distribution' overstates:
+     * anything reading the THIRD or higher moment.  Skewness differs by
+       2.6667 across the pair, so a skewness-dependent closure is untouched.
+     * anything reading a VOLUME-weighted moment.  Check, numerically:
+       q_large=0.50: d32/d10 = 1.400000, d43/d10 = 1.464286, X_s = 0.035714, volume-weighted CV = 0.126735
+       q_large=0.10: d32/d10 = 1.666667, d43/d10 = 2.083333, X_s = 0.250000, volume-weighted CV = 0.346410
+       -> d32/d10, d43/d10, X_s and the volume-weighted CV ALL DIFFER across
+          the pair, so none of them is excluded by it.  The pair matches the
+          NUMBER-weighted first two moments; volume-weighted moments are
+          functions of moments 3 and 4 and are free to move.
+
+   SO THE PRECISE STATEMENT IS:
+     The pair excludes every closure that is a function of the NUMBER-
+     weighted mean, the NUMBER-weighted CV, and the SUPPORT.  It does not
+     exclude a closure reading any higher number moment, nor any volume-
+     weighted moment, nor the composition itself.  'No descriptor of the size
+     distribution works' is too strong; 'no descriptor of its WIDTH works'
+     is exact.
+
+   AND THE LIMIT OF THE PAIR AS EVIDENCE:  because a two-point law is an
+   affine image of a Bernoulli, EVERY standardized moment of it is a function
+   of q alone (section 2).  So within two-point PSDs, matching (mean, CV,
+   support) and varying composition necessarily varies EVERY higher
+   standardized moment simultaneously.  The pair therefore cannot attribute
+   the 0.0635 to the third moment rather than the fourth, or to any single
+   moment at all.  It is a proof of insufficiency of width, not an
+   identification of the sufficient descriptor.
+
+==============================================================================
+5. THE MEASUREMENT THAT WOULD IDENTIFY THE MOMENT -- a three-atom PSD
+==============================================================================
+   A K-atom PSD on a fixed support has K-1 free composition parameters.
+   Fixing <d> and CV leaves K-3 free.  So:
+     K = 2: 0 free  -> the level set is the two Vieta roots (section 1).
+     K = 3: 1 free  -> a CURVE of PSDs matched in mean, CV and support,
+                       along which the skewness VARIES CONTINUOUSLY.
+     K = 4: 2 free  -> a surface; skewness AND kurtosis can be varied
+                       INDEPENDENTLY, which is what separates the moments.
+   So a three-atom PSD already gives a skewness AXIS at fixed width, and a
+   four-atom one gives the first genuine skewness-vs-kurtosis discriminator.
+
+   Constructed here: three atoms at d = {1, u, u^2} scaled to <d> = 1, with
+   number fractions (n1, n2, n3) solving <d> = 1 and CV = 1/2, one parameter
+   free.  The realised skewness range along that curve is printed.
+     support {1, 2.0, 4.0}, CV = 0.500 +- 0.002: 4067 solutions, skewness spans +2.900 to +4.565 (range 1.665)
+     support {1, 3.0, 9.0}, CV = 0.500 +- 0.002: 4005 solutions, skewness spans +0.010 to +15.334 (range 15.325)
+
+   For comparison the two-point pair offers exactly two skewnesses,
+   0.000 and +2.667.  A three-atom family at the same CV sweeps a
+   continuum, so the skewness coefficient becomes estimable rather than
+   merely bounded.
+
+   COST NOTE: the project already has a DiscretePSD spec
+   ('discrete:d1/2/4:y.../...' in psd.make_psd), so this needs no new
+   machinery -- only a composition grid at fixed number-CV.
+
+==============================================================================
+VERDICT
+==============================================================================
+   The closed form is exact and reproduces the manuscript's own pair.
+   VERDICT: SUPPORTED -- the two-point level set is the pair of Vieta roots,
+   and a two-point PSD cannot hold CV and ANY standardized moment fixed at
+   two compositions, because every standardized moment of a two-point law is
+   a function of the composition alone.
+
+   ANCHOR SCOPE.  This is pure moment algebra, so it can decide exactly
+   which class of closures the matched pair excludes, and it does so with no
+   reference to any packing measurement.  It CANNOT say which functional is
+   the right one -- it shows the pair is insufficient to identify one, which
+   is a statement about the design, not about packing.

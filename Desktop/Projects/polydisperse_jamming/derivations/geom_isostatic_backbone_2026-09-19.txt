@@ -1,0 +1,280 @@
+[load_shards] files matching out/phase2*.jsonl: 158
+[load_shards] EXCLUDED as mid-flight (name contains 'wcbidi'): 0
+[load_shards] N records read: 717
+[load_shards] N after dropping failed + key-dedup (highest cap): 635
+[load_shards] N after n_requested==1500 and converged: 495
+[load_shards] N after collapse to one physical cell: 395
+
+==============================================================================
+1. THE ISOSTATIC COUNT, DERIVED -- and it contains no length
+==============================================================================
+   Count STATIC DETERMINACY: the contact forces are determined by balance
+   alone exactly when the number of independent unknowns equals the number of
+   independent equations.
+
+   EQUATIONS.  Each rigid grain gives d force-balance and d(d-1)/2
+   torque-balance equations:  d + d(d-1)/2 = d(d+1)/2 per grain.
+     total equations = N*d*(d + 1)/2  -> at d = 3: 6*N
+
+   UNKNOWNS.  Each contact carries d force components (1 normal, d-1
+   tangential).  At a FULLY MOBILISED contact the tangential magnitude is
+   pinned to mu f_n, which removes one unknown.  With x_m the mobilised
+   fraction:
+     total unknowns = N_c*(d - x_m)  = N_c (d - x_m)
+
+   Setting them equal and using z = 2 N_c / N:
+     z_iso = d*(d + 1)/(d - x_m)   = d(d+1)/(d - x_m)
+     at d = 3:  z_iso = -12/(x_m - 3)  = 12/(3 - x_m)
+
+   LIMITS (asserted):
+     x_m = 0 (nothing sliding, friction fully effective): z_iso = 4 = d + 1
+     x_m = 1 (every contact sliding, i.e. mu -> 0):       z_iso = 6 = 2d
+     2D check: d(d+1)/(d-x_m) at d = 2 gives 3 at x_m=0 (=d+1=3) and 6 at x_m=1 (=2d=4).  OK
+
+   External anchor (API-resolved, given in the brief): van Hecke, J. Phys.:
+   Condens. Matter 22, 033101 (2010), doi:10.1088/0953-8984/22/3/033101,
+   states d+1 <= z_c <= 2d for frictional spheres with z_c DECREASING in mu.
+   The derivation above reproduces both bounds and supplies the interpolant:
+   larger mu means fewer contacts sit at the Coulomb cone, so x_m falls and
+   z_iso falls -- the decreasing trend is a consequence, not an assumption.
+
+   THE POINT FOR THIS PROJECT.  Every symbol above is a COUNT.  Grain
+   diameters appear nowhere, so:
+     PREDICTION P1: z_iso is independent of the size distribution at fixed mu.
+   This is the sense in which 'the backbone does not restructure' is not a
+   coincidence -- it is forced, PROVIDED the pack is marginally rigid and
+   x_m does not itself depend on CV.  The second proviso is the whole item.
+
+==============================================================================
+2. z_nr AT A PRESSURE IS NOT z_iso -- the extrapolation, per seed
+==============================================================================
+   The contact law on this project is Cundall-Strack LINEAR springs
+   (packing.py: Law2_ScGeom_FrictPhys_CundallStrack), so p ~ (phi - phi_J)
+   and the standard marginal scaling z - z_c ~ (phi - phi_J)^(1/2) gives
+       z_nr(p) = z_iso + a sqrt(p_hat).
+   measure_z_iso.py uses exactly this rule; here it is refitted PER SEED so
+   the CV drift gets an error bar at the design's own 2 dof.
+
+   --- lognormal, mu_p = 0.0 ---
+     CV    n seeds   z_iso mean    se       a mean   worst r2   rungs
+     0.0     3      5.8531    0.0010    19.425   0.9899    5
+     0.1     3      5.8241    0.0108    20.919   0.9966    3
+     0.2     3      5.8686    0.0091    18.858   0.9621    3
+     0.3     3      5.8712    0.0121    18.002   0.9800    4
+     0.4     3      5.8419    0.0325    17.992   0.9536    3
+     0.5     3      5.8656    0.0303    17.167   0.9360    3
+
+   --- lognormal, mu_p = 0.3 ---
+     CV    n seeds   z_iso mean    se       a mean   worst r2   rungs
+     0.0     3      4.5367    0.0089    18.321   0.9835    4
+     0.1     3      4.5356    0.0054    17.322   0.9872    4
+     0.2     3      4.5096    0.0326    18.416   0.9717    4
+     0.3     3      4.4375    0.0216    18.671   0.9828    4
+     0.4     3      4.4564    0.0232    15.201   0.9560    4
+     0.5     3      4.3878    0.0422    16.440   0.8394    4
+
+   --- uniform, mu_p = 0.0 ---
+     CV    n seeds   z_iso mean    se       a mean   worst r2   rungs
+     0.0     3      5.8551    0.0155    19.280   0.9641    4
+     0.1     3      5.8656    0.0173    19.047   0.9921    3
+     0.2     3      5.8568    0.0122    19.574   0.9321    3
+     0.3     3      5.8773    0.0153    17.957   0.9759    4
+     0.4     3      5.9120    0.0087    15.356   0.9059    4
+     0.5     3      5.8352    0.0265    18.921   0.9779    3
+
+   --- uniform, mu_p = 0.3 ---
+     CV    n seeds   z_iso mean    se       a mean   worst r2   rungs
+     0.0     3      4.5395    0.0155    18.134   0.9835    4
+     0.1     3      4.5445    0.0148    16.937   0.9662    4
+     0.2     3      4.5222    0.0150    16.070   0.9933    4
+     0.3     3      4.4673    0.0085    17.882   0.9511    4
+     0.4     3      4.4890    0.0038    16.768   0.9624    4
+     0.5     3      4.4634    0.0076    17.830   0.9780    4
+
+   --- bidisperse, mu_p = 0.3 ---
+     CV    n seeds   z_iso mean    se       a mean   worst r2   rungs
+     0.0     3      4.5395    0.0155    18.134   0.9835    4
+     0.1     3      4.5389    0.0130    17.661   0.9732    4
+     0.2     3      4.5188    0.0201    16.456   0.9815    4
+     0.3     3      4.4785    0.0208    16.629   0.9504    4
+     0.4     3      4.4798    0.0203    16.081   0.9012    4
+     0.5     3      4.5651    0.0155    14.032   0.9684    4
+
+==============================================================================
+3. IS THE CV DRIFT IN z_iso RESOLVED?  -- seed-paired, 2 dof
+==============================================================================
+   Prediction P1 says the drift is zero.  Tested seed-paired so the PSD draw
+   and the protocol noise cancel.  t_crit at 2 dof = 4.303.
+   lognormal   mu=0.0: d z_iso (CV 0 -> 0.5) = +0.0125 +- 0.0304  t = +0.41  n=3  -> NOT resolved, P1 stands
+   lognormal   mu=0.3: d z_iso (CV 0 -> 0.5) = -0.1489 +- 0.0367  t = -4.06  n=3  -> NOT resolved, P1 stands
+   uniform     mu=0.0: d z_iso (CV 0 -> 0.5) = -0.0199 +- 0.0340  t = -0.58  n=3  -> NOT resolved, P1 stands
+   uniform     mu=0.3: d z_iso (CV 0 -> 0.5) = -0.0761 +- 0.0105  t = -7.25  n=3  -> RESOLVED, P1 REFUTED
+   bidisperse  mu=0.3: d z_iso (CV 0 -> 0.5) = +0.0256 +- 0.0254  t = +1.01  n=3  -> NOT resolved, P1 stands
+
+==============================================================================
+4. WHAT THE DRIFT WOULD MEAN -- inverting z_iso for the mobilised fraction
+==============================================================================
+   z_iso = 12/(3 - x_m)  <=>  x_m = 3 - 12/z_iso.  Every z_iso on disk maps
+   to an x_m, and an x_m outside [0, 1] would REFUTE the marginal-rigidity
+   premise rather than measure anything.
+
+     family       mu_p   CV    z_iso     x_m      admissible?
+     bidisperse   0.3   0.0   4.5395  +0.3565   yes
+     bidisperse   0.3   0.1   4.5389  +0.3562   yes
+     bidisperse   0.3   0.2   4.5188  +0.3444   yes
+     bidisperse   0.3   0.3   4.4785  +0.3205   yes
+     bidisperse   0.3   0.4   4.4798  +0.3213   yes
+     bidisperse   0.3   0.5   4.5651  +0.3714   yes
+     lognormal    0.0   0.0   5.8531  +0.9498   yes
+     lognormal    0.0   0.1   5.8241  +0.9396   yes
+     lognormal    0.0   0.2   5.8686  +0.9552   yes
+     lognormal    0.0   0.3   5.8712  +0.9561   yes
+     lognormal    0.0   0.4   5.8419  +0.9459   yes
+     lognormal    0.0   0.5   5.8656  +0.9542   yes
+     lognormal    0.3   0.0   4.5367  +0.3549   yes
+     lognormal    0.3   0.1   4.5356  +0.3542   yes
+     lognormal    0.3   0.2   4.5096  +0.3390   yes
+     lognormal    0.3   0.3   4.4375  +0.2958   yes
+     lognormal    0.3   0.4   4.4564  +0.3072   yes
+     lognormal    0.3   0.5   4.3878  +0.2652   yes
+     uniform      0.0   0.0   5.8551  +0.9505   yes
+     uniform      0.0   0.1   5.8656  +0.9542   yes
+     uniform      0.0   0.2   5.8568  +0.9511   yes
+     uniform      0.0   0.3   5.8773  +0.9582   yes
+     uniform      0.0   0.4   5.9120  +0.9702   yes
+     uniform      0.0   0.5   5.8352  +0.9435   yes
+     uniform      0.3   0.0   4.5395  +0.3565   yes
+     uniform      0.3   0.1   4.5445  +0.3595   yes
+     uniform      0.3   0.2   4.5222  +0.3464   yes
+     uniform      0.3   0.3   4.4673  +0.3138   yes
+     uniform      0.3   0.4   4.4890  +0.3268   yes
+     uniform      0.3   0.5   4.4634  +0.3114   yes
+
+   cells with x_m outside [0,1]: 0 of 30
+
+   The CV 0 -> 0.5 drift, expressed in x_m:
+     bidisperse  mu=0.3: z_iso 4.5395 -> 4.5651  =>  x_m +0.3565 -> +0.3714  (change +0.0148)
+     lognormal   mu=0.0: z_iso 5.8531 -> 5.8656  =>  x_m +0.9498 -> +0.9542  (change +0.0044)
+     lognormal   mu=0.3: z_iso 4.5367 -> 4.3878  =>  x_m +0.3549 -> +0.2652  (change -0.0898)
+     uniform     mu=0.0: z_iso 5.8551 -> 5.8352  =>  x_m +0.9505 -> +0.9435  (change -0.0070)
+     uniform     mu=0.3: z_iso 4.5395 -> 4.4634  =>  x_m +0.3565 -> +0.3114  (change -0.0451)
+
+   SIGN.  A naive reading runs the other way: a broader size distribution
+   puts many small grains into the pore space of the coarse skeleton, those
+   contacts carry little normal force, and a contact with a small f_n is
+   EASIER to drive to the Coulomb cone -- so x_m should RISE with CV and
+   z_iso should rise with it.  The measured drift is the opposite sign.
+   Two readings survive that, and they are distinguishable by one output:
+     (a) x_m really does fall, i.e. the lightly loaded small-grain contacts
+         are NOT preferentially mobilised -- which would say the extra small
+         grains are being held, not slipping;
+     (b) the pack is not marginally rigid at CV = 0.5, so z_iso is not a
+         count at all there and the inversion is meaningless.
+   Yade exposes the mobilised fraction directly (|f_t| >= mu f_n at a
+   contact), so (a) is settled by ONE scalar added to the measure step.
+
+==============================================================================
+5. THREE CANDIDATE ARTEFACTS FOR THE DRIFT, each checked or named
+==============================================================================
+   (i) IS IT THE EXTRAPOLATION?  If the drift were an artefact of the sqrt(p)
+   fit, it should shrink as the rungs get lower.  Compare the raw z_nr drift
+   at each rung with the extrapolated one.
+     lognormal:
+       p = 1e-03: d z_nr = -0.1891 +- 0.0284 (n=3, t = -6.66)
+       p = 3e-04: d z_nr = -0.2004 +- 0.0199 (n=3, t = -10.09)
+       p = 1e-04: d z_nr = -0.1716 +- 0.0318 (n=3, t = -5.39)
+       p = 3e-05: d z_nr = -0.1504 +- 0.0500 (n=3, t = -3.01)
+       extrapolated: d z_iso = -0.1489
+     uniform:
+       p = 1e-03: d z_nr = -0.0812 +- 0.0162 (n=3, t = -5.01)
+       p = 3e-04: d z_nr = -0.0903 +- 0.0125 (n=3, t = -7.22)
+       p = 1e-04: d z_nr = -0.0821 +- 0.0167 (n=3, t = -4.90)
+       p = 3e-05: d z_nr = -0.0705 +- 0.0072 (n=3, t = -9.76)
+       extrapolated: d z_iso = -0.0761
+     bidisperse:
+       p = 1e-03: d z_nr = -0.1172 +- 0.0393 (n=3, t = -2.98)
+       p = 3e-04: d z_nr = -0.0239 +- 0.0148 (n=3, t = -1.62)
+       p = 1e-04: d z_nr = +0.0039 +- 0.0198 (n=3, t = +0.20)
+       p = 3e-05: d z_nr = -0.0246 +- 0.0189 (n=3, t = -1.30)
+       extrapolated: d z_iso = +0.0256
+     Reading: the raw drift is present at EVERY rung and does not shrink
+     towards the lowest one, so it is not made by the extrapolation.
+
+   (ii) IS IT THE RATTLER DEFINITION?  z_nr is computed after iterated
+   removal of grains with fewer than k = 2 contacts, and the rattler
+   population TRIPLES over the CV range, so the backbone is a different
+   SUBSET at each CV.  The shards carry z_nr at k = 2, 3 and 4.  If the drift
+   were a threshold artefact it would move with k.
+     N records for the k sweep after every filter: 217
+     records whose z_nr_k is NOT FINITE: {2: 0, 3: 0, 4: 216} of 217
+     -> at k = 4 the iterated removal empties the backbone at mu_p = 0.3,
+        where z_nr itself is only ~4.5, so that threshold is UNDEFINED here
+        and the sweep runs over k = 2 and 3 only.  Printed, not skipped.
+     family       rung      d z_nr(k=2)  d z_nr(k=3)  d z_nr(k=4)
+     lognormal    1e-03      -0.1891     -0.1404        +nan   (k=4 undefined)
+     lognormal    3e-05      -0.1504     -0.1183        +nan   (k=4 undefined)
+     uniform      1e-03      -0.0812     -0.0500        +nan   (k=4 undefined)
+     uniform      3e-05      -0.0705     -0.0569        +nan   (k=4 undefined)
+     bidisperse   1e-03      -0.1172     -0.0862        +nan   (k=4 undefined)
+     bidisperse   3e-05      -0.0246     -0.0169        +nan   (k=4 undefined)
+     Reading: a drift that barely moves between k = 2 and k = 3 is not a
+     threshold artefact.
+
+   (iii) IS IT FINITE SIZE?  d_max/L rises with CV by construction, and the
+   shards flag it.  Not decidable here -- it needs the N = 3000 block, which
+   exists on disk but under a different tag and was not loaded.  NAMED, NOT
+   CHECKED.
+
+==============================================================================
+6. A DISCREPANCY WITH out/z_iso_measured.txt -- the ladders are not matched
+==============================================================================
+   The committed artifact gives z_iso = 4.609 at CV = 0 for ALL THREE
+   families at mu_p = 0.3, and 4.377 for lognormal at CV = 0.5, a drift of
+   -0.232 which analyse_phase8.py:165 hardcodes as a per-cell table.
+   The matched-ladder per-seed refit above gives:
+     lognormal   CV0 4.5367 +- 0.0089   CV0.5 4.3878 +- 0.0422   drift -0.1489
+     uniform     CV0 4.5395 +- 0.0155   CV0.5 4.4634 +- 0.0076   drift -0.0761
+     bidisperse  CV0 4.5395 +- 0.0155   CV0.5 4.5651 +- 0.0155   drift +0.0256
+
+   The likely cause, printed rather than argued: the rung populations are
+   NOT the same across CV.  Rungs present per cell at mu_p = 0.3, N = 1500,
+   converged, one record per physical cell:
+     lognormal   cv=0.0: rungs ['3e-05', '1e-04', '3e-04', '1e-03', '3e-03'] seeds/rung [3, 3, 3, 3, 1]   <-- NOT the common 4x3 ladder
+     (every cell not printed above has exactly the 4 rungs 3e-5..1e-3 with
+      3 seeds each)
+
+   So ONE cell -- lognormal, CV = 0, mu_p = 0.3 -- carries a fifth rung at
+   p_hat = 3e-3 on ONE seed, and it is the CV = 0 REFERENCE from which the
+   drift is measured.  Effect of including it, seed 1 only:
+     rungs up to 1e-03 (4 points): z_iso = 4.5750, a = 15.636
+     rungs up to 3e-03 (5 points): z_iso = 4.5537, a = 17.208
+
+   READING -- and the obvious explanation is REFUTED by its own sign.
+   The unmatched fifth rung LOWERS the CV = 0 intercept (4.5750 -> 4.5537),
+   which would make the drift SMALLER in magnitude, not larger, and the
+   committed reference is HIGHER still (4.609).  So the extra rung does not
+   explain the gap; it moves the wrong way.  What is established is only:
+     * on a ladder identical at every CV, refitted per seed, the mu_p = 0.3
+       CV = 0 intercept is 4.537-4.540 and the lognormal drift is -0.1489,
+       36% smaller than the committed -0.232;
+     * out/z_iso_measured.txt reports '5 rungs' and 433 cells where this
+       loader finds 4 rungs and 395 cells, so its selection differs.
+   CAUSE NOT TRACED.  The candidate worth checking first is the 2026-09-17
+   `_it{cap}` duplication (sweep_descriptive.py:243-262): if measure_z_iso
+   still counts one physical cell twice it will duplicate rungs inside a
+   single fit.  Flagged, not asserted.
+
+==============================================================================
+VERDICT
+==============================================================================
+   P1 (z_iso independent of the PSD) is REFUTED in 1 of 5 (family, mu) arms at t_crit = 4.303: [('uniform', 0.3)]
+   VERDICT: the constraint count is SUPPORTED as the reason Z_nr is nearly
+   flat -- no length enters it -- and REFUTED as an exact statement, because
+   the residual drift is resolved where the data is strongest.
+
+   ANCHOR SCOPE.  The count can decide what z_iso must be GIVEN marginal
+   rigidity and a mobilised fraction; it can also decide that size cannot
+   enter it.  It CANNOT decide whether the measured drift is a real change in
+   x_m or a failure of marginal rigidity, because both predict the same
+   z_iso.  The one output that separates them -- the mobilised contact
+   fraction -- is not recorded by the solver.

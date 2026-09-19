@@ -125,6 +125,43 @@ wt, tnom, tcal, fpr = one(
 put("welchTPhiJ", float(wt), "{:.1f}")
 put("welchTNomPhiJ", float(tnom), "{:.2f}")
 put("welchTCalPhiJ", float(tcal), "{:.2f}")
+
+# ---------------------------------------------------------------------------------
+# 1b. THE ZERO-SKEWNESS PAIR, seed-paired. 2026-09-19.
+#     main.tex said this pair "has not been tested at the calibrated threshold". It can be,
+#     and it must be tested PAIRED: `packing.py` seeds the radius draw with
+#     `default_rng(st.seed)`, so seed s is the same draw in both families and an unpaired
+#     s.e. carries the shared variance twice.
+#     ⚠ The selection-calibrated threshold applies to a max-vs-min pair SELECTED from the
+#     data. This pair is named IN ADVANCE by the hypothesis (the two zero-number-skewness
+#     families), so the nominal t(2 dof) = 4.303 is the right bar and is used.
+#     ⚠ And this pair is the one the duplicate tie-break cannot touch: neither uniform nor
+#     bidisperse has a disagreeing duplicate in the selected set (all five sit under a
+#     lognormal key), so its shifts have ZERO tie-break sensitivity --
+#     derivations/duplicate_tiebreak_robustness_2026-09-19.md.
+_zs = {}
+for _cv in (0.1, 0.2, 0.3, 0.4, 0.5):
+    _d = {}
+    for _fam in ("uniform", "bidisperse"):
+        _g = fits[(fits.family == _fam) & (fits.mu_p == sd.MU_REF)]
+        _a = _g[_g.cv_nom == 0.0].set_index("seed").phi_J_lin
+        _b = _g[_g.cv_nom == _cv].set_index("seed").phi_J_lin
+        _d[_fam] = {s: _b[s] - _a[s] for s in sorted(set(_a.index) & set(_b.index))}
+    _cs = sorted(set(_d["uniform"]) & set(_d["bidisperse"]))
+    _arr = np.array([_d["uniform"][s] - _d["bidisperse"][s] for s in _cs])
+    _se = float(_arr.std(ddof=1) / math.sqrt(len(_arr)))
+    _zs[_cv] = (float(_arr.mean()), _se, abs(float(_arr.mean())) / _se, len(_cs))
+_nres = sum(1 for v in _zs.values() if v[2] > 4.303)
+put("zeroSkewDiffHalf", _zs[0.5][0], "{:+.4f}")
+put("zeroSkewSeHalf", _zs[0.5][1], "{:.4f}")
+put("zeroSkewTHalf", _zs[0.5][2], "{:.2f}")
+put("zeroSkewNResolved", _nres, "{:d}")
+put("zeroSkewNCv", len(_zs), "{:d}")   # \tCritTwoDof already exists; do not redefine it
+# a guard that can fail: if the pair ever stops separating anywhere, the manuscript
+# sentence built on it is wrong and this stops the build.
+assert _nres >= 1, (
+    "the zero-skewness pair no longer separates at ANY CV; main.tex's claim that skewness "
+    f"alone does not control phi_J must be re-derived. {_zs}")
 put("welchFprNomPhiJ", float(fpr), "{:.1f}")
 tc = sd.tcrit(3)
 put("tCritTwoDof", tc, "{:.3f}")

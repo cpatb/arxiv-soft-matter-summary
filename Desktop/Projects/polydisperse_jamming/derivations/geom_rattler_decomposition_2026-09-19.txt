@@ -1,0 +1,399 @@
+[load_shards] files matching out/phase2*.jsonl: 158
+[load_shards] EXCLUDED as mid-flight (name contains 'wcbidi'): 0
+[load_shards] N records read: 717
+[load_shards] N after dropping failed + key-dedup (highest cap): 635
+[load_shards] N after n_requested==1500 and converged: 495
+[load_shards] N after collapse to one physical cell: 395
+
+==============================================================================
+1. THE DECOMPOSITION IS AN IDENTITY, NOT A MODEL -- SymPy check
+==============================================================================
+   phi        = (V_B + V_R)/V
+   phi_B      = V_B/V
+   psi        = V_R/(V_B + V_R)
+   phi - phi_B/(1-psi) simplifies to: 0
+   -> phi = phi_B/(1-psi) is an IDENTITY.  [asserted zero]
+
+   Which PSD moment enters. With N grains, rattler set R, |R| = qN:
+       psi = sum_{i in R} d_i^3 / sum_i d_i^3 = q * <d^3>_R / <d^3>
+   so the functional of the PSD that the depopulation picture needs is the
+   THIRD moment CONDITIONED ON THE RATTLER SET, not <d^3>, not d32, not d43.
+   At CV = 0 every grain has the same d, so <d^3>_R = <d^3> and psi = q
+   EXACTLY.  That makes the monodisperse cell a zero-width anchor.
+
+   Bound (rearrangement inequality).  For fixed q, sum_{i in R} d_i^3 is
+   minimised by taking the q smallest grains and maximised by the q largest:
+       Psi(q) <= psi <= 1 - Psi(1-q),   Psi(q) = int_0^{F^-1(q)} d^3 f dd/<d^3>
+   Psi is closed form per family (geom_common_20260919.Psi).
+
+   Closed forms, derived not asserted:
+     lognormal  d = exp(mu + sigma Z):  E[d^3 1(Z<z)] = E[d^3] Phi(z - 3 sigma)
+                so Psi(q) = Phi(Phi^-1(q) - 3 sigma),  sigma^2 = ln(1+CV^2)
+     uniform    Psi(q) =  (-t**4 + (w - 1)**4)/((w - 1)**4 - (w + 1)**4)  with t = 1-w+2wq, w=CV*sqrt3
+     bidisperse small-grain volume share w_s = (c - 1)**3/((c - 1)**3 - (c + 1)**3)
+                Psi(q) = 2 q w_s               (q <= 1/2)
+                Psi(q) = w_s + (2q-1)(1 - w_s) (q >  1/2)
+
+   Limiting checks on Psi (asserted):
+     Psi(0)=0, Psi(1)=1 for all three families at CV=0.3: OK
+     Psi(q)=q at CV=0 for all three families: OK
+
+   Monte-Carlo spot check of Psi (10^6 draws, seed 20260919):
+     family      CV     q      Psi closed    Psi sampled    |diff|
+     lognormal   0.5  0.45     0.061439      0.061526   8.71e-05
+     lognormal   0.2  0.30     0.131671      0.131568   1.03e-04
+     uniform     0.5  0.45     0.057383      0.057185   1.98e-04
+     uniform     0.3  0.60     0.271219      0.271206   1.30e-05
+     bidisperse  0.5  0.45     0.032143      0.032143   1.19e-07
+     bidisperse  0.3  0.70     0.481024      0.481016   7.58e-06
+
+==============================================================================
+2. THE MEASURED INPUTS -- rattler NUMBER fraction and phi, per rung
+==============================================================================
+   All at mu_p = 0.3, N = 1500, 3 seeds, mean over seeds.
+   N cells at mu_p=0.3: 217
+
+   rattler number fraction q
+     p_hat     family        CV0.0    CV0.1    CV0.2    CV0.3    CV0.4    CV0.5  
+     1e-03  lognormal    0.0393  0.0591  0.1171  0.2211  0.3442  0.4476
+     1e-03  uniform      0.0404  0.0613  0.1309  0.2342  0.3384  0.4231
+     1e-03  bidisperse   0.0404  0.0540  0.1318  0.2702  0.3871  0.4576
+     3e-04  lognormal    0.0676  0.0900  0.1551  0.2640  0.3711  0.4704
+     3e-04  uniform      0.0676  0.0931  0.1622  0.2776  0.3824  0.4536
+     3e-04  bidisperse   0.0676  0.0896  0.1633  0.3033  0.4140  0.4789
+     1e-04  lognormal    0.0798  0.0913  0.1509  0.2860  0.4036  0.5284
+     1e-04  uniform      0.0771  0.1058  0.1742  0.2880  0.3789  0.4642
+     1e-04  bidisperse   0.0771  0.0973  0.1704  0.3022  0.4218  0.4913
+     3e-05  lognormal    0.0824  0.1073  0.1773  0.2871  0.3889  0.5218
+     3e-05  uniform      0.0824  0.1062  0.1753  0.3022  0.3951  0.4653
+     3e-05  bidisperse   0.0824  0.1071  0.1887  0.3184  0.4220  0.4987
+
+   phi
+     p_hat     family        CV0.0    CV0.1    CV0.2    CV0.3    CV0.4    CV0.5  
+     1e-03  lognormal    0.5947  0.5974  0.6091  0.6194  0.6336  0.6489
+     1e-03  uniform      0.5940  0.5973  0.6048  0.6119  0.6160  0.6157
+     1e-03  bidisperse   0.5940  0.5971  0.6054  0.6112  0.6113  0.6042
+     3e-04  lognormal    0.5833  0.5875  0.5956  0.6108  0.6239  0.6416
+     3e-04  uniform      0.5833  0.5893  0.5927  0.6021  0.6036  0.6033
+     3e-04  bidisperse   0.5833  0.5848  0.5945  0.6014  0.5994  0.5946
+     1e-04  lognormal    0.5744  0.5785  0.5905  0.6032  0.6209  0.6373
+     1e-04  uniform      0.5756  0.5792  0.5883  0.5966  0.5978  0.6001
+     1e-04  bidisperse   0.5756  0.5769  0.5870  0.5989  0.5947  0.5905
+     3e-05  lognormal    0.5754  0.5778  0.5875  0.6052  0.6203  0.6367
+     3e-05  uniform      0.5754  0.5779  0.5869  0.5964  0.5990  0.6012
+     3e-05  bidisperse   0.5754  0.5773  0.5883  0.5961  0.5955  0.5888
+
+   NOTE on a number quoted elsewhere in the project.  MECHANISM_2026-09-08.md
+   §M3 writes the rattler fraction as '0.040 -> 0.234'.  On this table the
+   pair (0.040, 0.234) is the p_hat = 1e-3 rung at CV = 0 and CV = 0.3, not
+   CV = 0 -> 0.5.  The CV 0 -> 0.5 range at that rung is printed above.
+
+==============================================================================
+3. H1 (BACKBONE INVARIANCE) -- a gate that can fail
+==============================================================================
+   H1: phi_B = phi (1 - psi) does not depend on the size distribution.
+   Test at each rung: the per-CV intervals [phi*Psi(1-q), phi*(1-Psi(q))]
+   must have a NON-EMPTY common intersection.  At CV = 0 the interval
+   collapses to the single point phi(1-q), so the intersection is pinned
+   there and the gate is one-sided and sharp:
+       REFUTED  iff  phi(CV)*(1 - Psi(q(CV)))  <  phi(0)*(1 - q(0))
+   i.e. iff even making every rattler one of the SMALLEST grains leaves the
+   backbone less dense than the monodisperse one.
+
+   --- rung p_hat = 1e-03 ---
+     lognormal: anchor CV=0  phi=0.5947  q=0.0393  phi_B(0)=0.5713  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5974  0.0591  0.0313  0.5787     0.5357     0.0438   0.7403          admits
+       0.2  0.6091  0.1171  0.0372  0.5864     0.4411     0.0621   0.5301          admits
+       0.3  0.6194  0.2211  0.0496  0.5887     0.2820     0.0777   0.3514          admits
+       0.4  0.6336  0.3442  0.0598  0.5958     0.1427     0.0984   0.2858          admits
+       0.5  0.6489  0.4476  0.0607  0.6096     0.0645     0.1196   0.2673          admits
+       -> H1 at this rung/family: NOT REFUTED
+     uniform: anchor CV=0  phi=0.5940  q=0.0404  phi_B(0)=0.5700  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5973  0.0613  0.0350  0.5765     0.5415     0.0458   0.7475          admits
+       0.2  0.6048  0.1309  0.0401  0.5806     0.4489     0.0576   0.4400          admits
+       0.3  0.6119  0.2342  0.0419  0.5863     0.3013     0.0686   0.2929          admits
+       0.4  0.6160  0.3384  0.0432  0.5894     0.1678     0.0747   0.2207          admits
+       0.5  0.6157  0.4231  0.0465  0.5871     0.0837     0.0743   0.1757          admits
+       -> H1 at this rung/family: NOT REFUTED
+     bidisperse: anchor CV=0  phi=0.5940  q=0.0404  phi_B(0)=0.5700  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5971  0.0540  0.0382  0.5742     0.5554     0.0454   0.8402          admits
+       0.2  0.6054  0.1318  0.0602  0.5689     0.4823     0.0585   0.4440          REFUTES
+       0.3  0.6112  0.2702  0.0730  0.5666     0.3255     0.0675   0.2498          REFUTES
+       0.4  0.6113  0.3871  0.0565  0.5768     0.1726     0.0676   0.1747          admits
+       0.5  0.6042  0.4576  0.0327  0.5844     0.0710     0.0567   0.1238          admits
+       -> H1 at this rung/family: REFUTED
+
+   --- rung p_hat = 3e-04 ---
+     lognormal: anchor CV=0  phi=0.5833  q=0.0676  phi_B(0)=0.5439  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5875  0.0900  0.0505  0.5578     0.5000     0.0741   0.8238          admits
+       0.2  0.5956  0.1551  0.0538  0.5636     0.3949     0.0868   0.5599          admits
+       0.3  0.6108  0.2640  0.0653  0.5709     0.2452     0.1095   0.4148          admits
+       0.4  0.6239  0.3711  0.0688  0.5810     0.1274     0.1282   0.3455          admits
+       0.5  0.6416  0.4704  0.0679  0.5980     0.0575     0.1523   0.3237          admits
+       -> H1 at this rung/family: NOT REFUTED
+     uniform: anchor CV=0  phi=0.5833  q=0.0676  phi_B(0)=0.5439  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5893  0.0931  0.0542  0.5574     0.5067     0.0770   0.8270          admits
+       0.2  0.5927  0.1622  0.0521  0.5618     0.4080     0.0824   0.5079          admits
+       0.3  0.6021  0.2776  0.0561  0.5683     0.2560     0.0966   0.3480          admits
+       0.4  0.6036  0.3824  0.0588  0.5681     0.1339     0.0988   0.2585          admits
+       0.5  0.6033  0.4536  0.0589  0.5677     0.0678     0.0984   0.2169          admits
+       -> H1 at this rung/family: NOT REFUTED
+     bidisperse: anchor CV=0  phi=0.5833  q=0.0676  phi_B(0)=0.5439  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5848  0.0896  0.0634  0.5478     0.5172     0.0700   0.7815          admits
+       0.2  0.5945  0.1633  0.0747  0.5502     0.4447     0.0852   0.5214          admits
+       0.3  0.6014  0.3033  0.0819  0.5521     0.2858     0.0956   0.3150          admits
+       0.4  0.5994  0.4140  0.0604  0.5632     0.1393     0.0927   0.2238          admits
+       0.5  0.5946  0.4789  0.0342  0.5743     0.0454     0.0853   0.1781          admits
+       -> H1 at this rung/family: NOT REFUTED
+
+   --- rung p_hat = 1e-04 ---
+     lognormal: anchor CV=0  phi=0.5744  q=0.0798  phi_B(0)=0.5286  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5785  0.0913  0.0514  0.5488     0.4913     0.0863   0.9452          admits
+       0.2  0.5905  0.1509  0.0519  0.5599     0.3954     0.1049   0.6953          admits
+       0.3  0.6032  0.2860  0.0741  0.5585     0.2269     0.1237   0.4326          admits
+       0.4  0.6209  0.4036  0.0808  0.5708     0.1124     0.1487   0.3685          admits
+       0.5  0.6373  0.5284  0.0892  0.5804     0.0435     0.1706   0.3228          admits
+       -> H1 at this rung/family: NOT REFUTED
+     uniform: anchor CV=0  phi=0.5756  q=0.0771  phi_B(0)=0.5312  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5792  0.1058  0.0620  0.5433     0.4876     0.0828   0.7832          admits
+       0.2  0.5883  0.1742  0.0570  0.5548     0.3932     0.0970   0.5569          admits
+       0.3  0.5966  0.2880  0.0599  0.5608     0.2446     0.1095   0.3801          admits
+       0.4  0.5978  0.3789  0.0574  0.5635     0.1349     0.1113   0.2938          admits
+       0.5  0.6001  0.4642  0.0638  0.5618     0.0629     0.1148   0.2472          admits
+       -> H1 at this rung/family: NOT REFUTED
+     bidisperse: anchor CV=0  phi=0.5756  q=0.0771  phi_B(0)=0.5312  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5769  0.0973  0.0689  0.5372     0.5044     0.0792   0.8137          admits
+       0.2  0.5870  0.1704  0.0779  0.5412     0.4326     0.0949   0.5569          admits
+       0.3  0.5989  0.3022  0.0816  0.5500     0.2858     0.1129   0.3737          admits
+       0.4  0.5947  0.4218  0.0616  0.5581     0.1296     0.1067   0.2529          admits
+       0.5  0.5905  0.4913  0.0351  0.5698     0.0310     0.1004   0.2043          admits
+       -> H1 at this rung/family: NOT REFUTED
+
+   --- rung p_hat = 3e-05 ---
+     lognormal: anchor CV=0  phi=0.5754  q=0.0824  phi_B(0)=0.5279  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5778  0.1073  0.0618  0.5421     0.4777     0.0864   0.8046          admits
+       0.2  0.5875  0.1773  0.0643  0.5498     0.3701     0.1015   0.5723          admits
+       0.3  0.6052  0.2871  0.0746  0.5600     0.2269     0.1277   0.4446          admits
+       0.4  0.6203  0.3889  0.0752  0.5736     0.1186     0.1489   0.3828          admits
+       0.5  0.6367  0.5218  0.0865  0.5816     0.0449     0.1708   0.3274          admits
+       -> H1 at this rung/family: NOT REFUTED
+     uniform: anchor CV=0  phi=0.5754  q=0.0824  phi_B(0)=0.5279  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5779  0.1062  0.0623  0.5419     0.4861     0.0864   0.8138          admits
+       0.2  0.5869  0.1753  0.0575  0.5532     0.3912     0.1005   0.5732          admits
+       0.3  0.5964  0.3022  0.0654  0.5574     0.2326     0.1148   0.3799          admits
+       0.4  0.5990  0.3951  0.0640  0.5607     0.1250     0.1186   0.3003          admits
+       0.5  0.6012  0.4653  0.0644  0.5625     0.0626     0.1219   0.2620          admits
+       -> H1 at this rung/family: NOT REFUTED
+     bidisperse: anchor CV=0  phi=0.5754  q=0.0824  phi_B(0)=0.5279  (exact, psi=q at CV=0)
+       CV     phi      q      Psi(q)  phi_B max  phi_B min   req psi  req <d3>_R/<d3>  verdict
+       0.1  0.5773  0.1071  0.0758  0.5335     0.4974     0.0855   0.7981          admits
+       0.2  0.5883  0.1887  0.0862  0.5376     0.4171     0.1027   0.5444          admits
+       0.3  0.5961  0.3184  0.0860  0.5448     0.2677     0.1143   0.3590          admits
+       0.4  0.5955  0.4220  0.0616  0.5588     0.1296     0.1135   0.2690          admits
+       0.5  0.5888  0.4987  0.0356  0.5678     0.0225     0.1034   0.2074          admits
+       -> H1 at this rung/family: NOT REFUTED
+
+   H1 refuted ON SEED MEANS in 1 of 12 (rung, family) blocks.
+
+==============================================================================
+3b. THE SAME GATE PER SEED -- a mean margin of 0.003 is not a refutation
+==============================================================================
+   Section 3 compares MEANS.  The margin where it fires is 0.0011-0.0034 in
+   phi, and this protocol's own monodisperse run-to-run scatter is 2.1e-3
+   (paper/numbers.tex \phiScale).  So the gate must be run seed-paired.
+   Statistic, per seed s:
+       M(cv,s) = phi(cv,s)(1 - Psi(q(cv,s))) - phi(0,s)(1 - q(0,s))
+   H1 requires M >= 0.  3 seeds -> 2 dof -> t_crit = 4.303 (two-sided 95%).
+     p=1e-03 bidisperse  CV=0.2: M = -0.00105 +- 0.00283  t = -0.37  n=3  negative but NOT resolved
+     p=1e-03 bidisperse  CV=0.3: M = -0.00335 +- 0.00321  t = -1.04  n=3  negative but NOT resolved
+
+   cells with a NEGATIVE mean margin: 2
+   cells where that margin is RESOLVED at t_crit = 4.303: 0
+
+==============================================================================
+4. CAN THE GATE FIRE?  -- a gate that cannot fail is not a gate
+==============================================================================
+   The gate fires when phi(CV)(1 - Psi(q)) < phi(0)(1 - q(0)).  Ask how far
+   the data is from that, in units of phi, and what phi(CV) WOULD have had
+   to be for the gate to fire.  Printed per rung for the widest family.
+     p=1e-03 lognormal   CV=0.5: measured phi=0.6489; the gate would have fired below phi=0.6082  (margin +0.0407)
+     p=1e-03 uniform     CV=0.5: measured phi=0.6157; the gate would have fired below phi=0.5978  (margin +0.0180)
+     p=1e-03 bidisperse  CV=0.5: measured phi=0.6042; the gate would have fired below phi=0.5892  (margin +0.0150)
+     p=3e-04 lognormal   CV=0.5: measured phi=0.6416; the gate would have fired below phi=0.5836  (margin +0.0581)
+     p=3e-04 uniform     CV=0.5: measured phi=0.6033; the gate would have fired below phi=0.5780  (margin +0.0253)
+     p=3e-04 bidisperse  CV=0.5: measured phi=0.5946; the gate would have fired below phi=0.5632  (margin +0.0315)
+     p=1e-04 lognormal   CV=0.5: measured phi=0.6373; the gate would have fired below phi=0.5803  (margin +0.0569)
+     p=1e-04 uniform     CV=0.5: measured phi=0.6001; the gate would have fired below phi=0.5675  (margin +0.0327)
+     p=1e-04 bidisperse  CV=0.5: measured phi=0.5905; the gate would have fired below phi=0.5506  (margin +0.0400)
+     p=3e-05 lognormal   CV=0.5: measured phi=0.6367; the gate would have fired below phi=0.5779  (margin +0.0588)
+     p=3e-05 uniform     CV=0.5: measured phi=0.6012; the gate would have fired below phi=0.5642  (margin +0.0370)
+     p=3e-05 bidisperse  CV=0.5: measured phi=0.5888; the gate would have fired below phi=0.5474  (margin +0.0414)
+
+   A margin that is negative anywhere is a REFUTATION; a margin that is
+   positive everywhere means the bracket Psi(q) is too loose to decide, and
+   the quantity that closes it is the rattler VOLUME fraction psi, which is
+   NOT recorded in any shard (only rattler_frac, a NUMBER fraction).
+
+==============================================================================
+5. WHAT H1 PREDICTS, IF IT IS TRUE -- the number a new run must hit
+==============================================================================
+   Required conditional volume ratio R = <d^3>_R/<d^3> = psi_req/q, and the
+   implied rattler composition.  For the bidisperse family the PSD has two
+   atoms, so R fixes the FRACTION of rattlers that are large grains exactly:
+       R = (1-f) v_s + f v_l,  v_s = 2(1-c)^3/((1-c)^3+(1+c)^3), v_l = 2-v_s
+
+   --- rung p_hat = 1e-03 ---
+     lognormal
+       CV    q      psi_req   R=psi/q   d_R/<d> (=R^1/3)   frac of rattlers that are LARGE (bidisperse only)
+       0.1  0.0591  0.0438   0.7403   0.9046            
+       0.2  0.1171  0.0621   0.5301   0.8093            
+       0.3  0.2211  0.0777   0.3514   0.7057            
+       0.4  0.3442  0.0984   0.2858   0.6587            
+       0.5  0.4476  0.1196   0.2673   0.6442            
+     uniform
+       CV    q      psi_req   R=psi/q   d_R/<d> (=R^1/3)   frac of rattlers that are LARGE (bidisperse only)
+       0.1  0.0613  0.0458   0.7475   0.9076            
+       0.2  0.1309  0.0576   0.4400   0.7606            
+       0.3  0.2342  0.0686   0.2929   0.6641            
+       0.4  0.3384  0.0747   0.2207   0.6043            
+       0.5  0.4231  0.0743   0.1757   0.5601            
+     bidisperse
+       CV    q      psi_req   R=psi/q   d_R/<d> (=R^1/3)   frac of rattlers that are LARGE (bidisperse only)
+       0.1  0.0540  0.0454   0.8402   0.9436            f=+0.2266  ->   8.4% of small grains rattle,   2.4% of large
+       0.2  0.1318  0.0585   0.4440   0.7629            f=-0.0121  ->  26.7% of small grains rattle,  -0.3% of large
+       0.3  0.2702  0.0675   0.2498   0.6298            f=-0.0139  ->  54.8% of small grains rattle,  -0.7% of large
+       0.4  0.3871  0.0676   0.1747   0.5590            f=+0.0168  ->  76.1% of small grains rattle,   1.3% of large
+       0.5  0.4576  0.0567   0.1238   0.4984            f=+0.0282  ->  88.9% of small grains rattle,   2.6% of large
+
+   --- rung p_hat = 3e-05 ---
+     lognormal
+       CV    q      psi_req   R=psi/q   d_R/<d> (=R^1/3)   frac of rattlers that are LARGE (bidisperse only)
+       0.1  0.1073  0.0864   0.8046   0.9301            
+       0.2  0.1773  0.1015   0.5723   0.8302            
+       0.3  0.2871  0.1277   0.4446   0.7632            
+       0.4  0.3889  0.1489   0.3828   0.7261            
+       0.5  0.5218  0.1708   0.3274   0.6892            
+     uniform
+       CV    q      psi_req   R=psi/q   d_R/<d> (=R^1/3)   frac of rattlers that are LARGE (bidisperse only)
+       0.1  0.1062  0.0864   0.8138   0.9336            
+       0.2  0.1753  0.1005   0.5732   0.8307            
+       0.3  0.3022  0.1148   0.3799   0.7243            
+       0.4  0.3951  0.1186   0.3003   0.6696            
+       0.5  0.4653  0.1219   0.2620   0.6399            
+     bidisperse
+       CV    q      psi_req   R=psi/q   d_R/<d> (=R^1/3)   frac of rattlers that are LARGE (bidisperse only)
+       0.1  0.1071  0.0855   0.7981   0.9276            f=+0.1546  ->  18.1% of small grains rattle,   3.3% of large
+       0.2  0.1887  0.1027   0.5444   0.8165            f=+0.0803  ->  34.7% of small grains rattle,   3.0% of large
+       0.3  0.3184  0.1143   0.3590   0.7107            f=+0.0609  ->  59.8% of small grains rattle,   3.9% of large
+       0.4  0.4220  0.1135   0.2690   0.6455            f=+0.0720  ->  78.3% of small grains rattle,   6.1% of large
+       0.5  0.4987  0.1034   0.2074   0.5919            f=+0.0732  ->  92.4% of small grains rattle,   7.3% of large
+
+   ADMISSIBILITY.  R must lie in [v_min, v_max], the relative volumes of the
+   smallest and largest grain in the family.  An R outside that, or an f
+   outside [0,1], would REFUTE H1 with no further measurement.
+
+==============================================================================
+5b. SIZE SELECTIVITY -- where the required rattler set sits between the two extreme models
+==============================================================================
+   Two limiting models for WHICH grains rattle:
+     S = 1  'size-ordered':  the rattlers are exactly the q smallest grains,
+            which is what a pure coordination threshold z(d) < 2 gives, since
+            the expected neighbour count of a grain grows monotonically with d
+            -> psi = Psi(q).
+     S = 0  'size-blind':    rattling is independent of size -> psi = q.
+   Define  S = (q - psi_req)/(q - Psi(q)),  so S in [0,1] interpolates and an
+   S outside [0,1] REFUTES H1 (S > 1 is section 3's refutation).
+
+     p_hat   family        CV0.1  CV0.2  CV0.3  CV0.4  CV0.5
+     1e-03 lognormal   0.553 0.689 0.836 0.864 0.848
+     1e-03 uniform     0.588 0.807 0.861 0.893 0.926
+     1e-03 bidisperse  0.547 1.024 1.028 0.966 0.944
+     3e-04 lognormal   0.401 0.674 0.778 0.803 0.790
+     3e-04 uniform     0.414 0.725 0.817 0.876 0.900
+     3e-04 bidisperse  0.748 0.882 0.938 0.909 0.885
+     1e-04 lognormal   0.125 0.464 0.766 0.790 0.815
+     1e-04 uniform     0.524 0.659 0.783 0.832 0.873
+     1e-04 bidisperse  0.638 0.816 0.858 0.875 0.857
+     3e-05 lognormal   0.460 0.671 0.750 0.765 0.806
+     3e-05 uniform     0.450 0.635 0.791 0.835 0.856
+     3e-05 bidisperse  0.691 0.839 0.878 0.856 0.854
+
+     N cells: 60; S range 0.125 to 1.028; median 0.811; mean 0.762; sd 0.170
+     S outside [0,1]: 2 cells
+
+   Reading: if H1 is right, rattling is STRONGLY but not perfectly
+   size-selective, and the degree of selectivity is close to a constant
+   across three families, five CVs and four pressure rungs.  That constancy
+   is a prediction, not a measurement -- it is what H1 REQUIRES, and the one
+   measurement that tests it is psi itself.
+
+==============================================================================
+6. THE BIDISPERSE NON-MONOTONICITY -- the sharpest available stress test
+==============================================================================
+   phi_J for the bidisperse family PEAKS near CV = 0.3 and falls, while its
+   rattler NUMBER fraction rises monotonically 0.04 -> 0.50.  Under H1,
+   psi = 1 - phi_B(0)/phi must therefore be NON-MONOTONE in CV even though q
+   is monotone: i.e. the mean rattler VOLUME must fall faster than the
+   rattler COUNT rises, then reverse.  Printed as R(CV) in section 5.
+     p=1e-03: q monotone in CV: True;  psi_req monotone: False;  psi_req peaks at CV = 0.4
+              CV0.1 psi=0.0454 R=0.8402  CV0.2 psi=0.0585 R=0.4440  CV0.3 psi=0.0675 R=0.2498  CV0.4 psi=0.0676 R=0.1747  CV0.5 psi=0.0567 R=0.1238
+     p=3e-04: q monotone in CV: True;  psi_req monotone: False;  psi_req peaks at CV = 0.3
+              CV0.1 psi=0.0700 R=0.7815  CV0.2 psi=0.0852 R=0.5214  CV0.3 psi=0.0956 R=0.3150  CV0.4 psi=0.0927 R=0.2238  CV0.5 psi=0.0853 R=0.1781
+     p=1e-04: q monotone in CV: True;  psi_req monotone: False;  psi_req peaks at CV = 0.3
+              CV0.1 psi=0.0792 R=0.8137  CV0.2 psi=0.0949 R=0.5569  CV0.3 psi=0.1129 R=0.3737  CV0.4 psi=0.1067 R=0.2529  CV0.5 psi=0.1004 R=0.2043
+     p=3e-05: q monotone in CV: True;  psi_req monotone: False;  psi_req peaks at CV = 0.3
+              CV0.1 psi=0.0855 R=0.7981  CV0.2 psi=0.1027 R=0.5444  CV0.3 psi=0.1143 R=0.3590  CV0.4 psi=0.1135 R=0.2690  CV0.5 psi=0.1034 R=0.2074
+
+   Reading: H1 does not merely tolerate the non-monotonicity, it REQUIRES a
+   non-monotone conditional rattler volume.  That is a strong, specific and
+   currently unmeasured statement.
+
+==============================================================================
+7. WHAT THIS ANCHOR CAN AND CANNOT DECIDE
+==============================================================================
+   CAN decide:  whether H1 is impossible, i.e. whether ANY assignment of
+                rattlers to grains makes the backbone density CV-independent.
+                That question is fully settled by q, phi and the PSD, all on
+                disk, with no free parameter.
+   CANNOT decide: whether H1 is TRUE.  Doing that needs psi, the rattler
+                VOLUME fraction, and no shard records it.  Every shard field
+                that touches rattlers is a COUNT: rattler_frac_k2/k3/k4,
+                largest_frac_k*, z_nr_k*.  Verified by field inventory below.
+   CANNOT decide: anything about WHY the backbone would be invariant.  Fact 3
+                (Z_nr and T flat) is consistent with H1 but does not imply it:
+                a structure can keep its contact number and its fabric while
+                changing its density (compress a random network affinely).
+
+   Field inventory of a shard record (phase2_ln0_shard00of06.jsonl):
+     top level: ['converged', 'cv', 'cv_realised', 'd10_realised', 'd32_realised', 'd43_realised', 'd_max_over_L', 'd_span', 'family', 'force', 'iters', 'key', 'mu_p', 'n_contacts', 'n_placed', 'n_requested', 'notes', 'p_hat', 'p_hat_target', 'phi', 'protocol', 'rattler', 'rattler_frac', 'seed', 'stress_dev_hat', 'unbalanced', 'wall_s', 'z_all', 'z_nr']
+     rattler:   ['largest_frac_k2', 'largest_frac_k3', 'largest_frac_k4', 'rattler_frac_k2', 'rattler_frac_k3', 'rattler_frac_k4', 'z_nr_k2', 'z_nr_k3', 'z_nr_k4']
+     any per-RATTLER size field?  fields mentioning a size: ['d10_realised', 'd32_realised', 'd43_realised']
+     -> all of those are WHOLE-PACK moments; none is conditioned on the
+        rattler set.  psi is not recoverable from these files.
+
+==============================================================================
+VERDICT
+==============================================================================
+   H1 refuted on seed MEANS in 1 of 12 (rung, family) blocks;
+   resolved at t_crit = 4.303 in 0 cells.
+   Required size selectivity S over 60 cells: 0.125 to 1.028, median 0.811.
+   VERDICT: UNDETERMINED
+   (No admissible-rattler-assignment contradiction survives the seed
+    test, so H1 is not impossible; and psi is not on disk, so it is not
+    confirmable either.)
+
+   ANCHOR SCOPE.  This can decide that H1 is IMPOSSIBLE (it did not); it
+   cannot decide that H1 is TRUE, because the rattler VOLUME fraction psi is
+   recorded nowhere.  It says nothing about WHY a backbone would be
+   size-distribution invariant.

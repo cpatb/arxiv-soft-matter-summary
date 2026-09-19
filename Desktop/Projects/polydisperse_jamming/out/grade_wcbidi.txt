@@ -1,0 +1,110 @@
+==========================================================================================
+grade_wcbidi.py -- PREREG_WCBIDI_2026-09-19.md
+==========================================================================================
+
+   records read from phase2_wcbidi*: 72
+   cells (family, cv, seed)         : 18
+
+=== W1  WIRING: the CV = 0 cells must be BIT-IDENTICAL to the existing ones ===
+   reference CV = 0, mu_p = 0 cells on disk: ['lognormal', 'uniform'], seeds [1, 2, 3]
+   comparisons made: 24 (rung x seed x reference family), fields ('phi', 'z_all', 'z_nr', 'n_contacts')
+   🔴 W1 AS REGISTERED FAILS: 39 field mismatches. The failing number is kept.
+   ⚠ BUT THE GATE WAS MIS-SPECIFIED, and the campaign shows how. Several CV = 0
+     cells carry 2-4 CONFLICTING DUPLICATE records; 'the existing record' is not
+     one value, and this gate silently compared against whichever the loader
+     happened to keep. The physics claim and the protocol claim are separated
+     below, and both are graded.
+
+   W1' PHYSICS: the fresh bidisperse value reproduces SOME existing record bit-for-bit on 12 of 12 (seed, rung) pairs
+   [PASS] W1': the generator ignores the family label at CV = 0 even at mu_p = 0 -- the fresh bidisperse run reproduces an existing record EXACTLY at every rung  --  12/12
+
+   W1'' PROTOCOL: the project's tie-break ('highest max_iter, then first in file order') picks the REPRODUCED value on 20 of 24 multi-record cells
+      🔴 lognormal   seed2 p=3e-05: tie-break 0.630897017 vs reproduced 0.630649425  (delta +2.48e-04)
+      🔴 lognormal   seed3 p=3e-05: tie-break 0.633235891 vs reproduced 0.633183843  (delta +5.20e-05)
+      🔴 uniform     seed2 p=3e-05: tie-break 0.630897017 vs reproduced 0.630649425  (delta +2.48e-04)
+      🔴 uniform     seed3 p=3e-05: tie-break 0.633235891 vs reproduced 0.633183843  (delta +5.20e-05)
+      ⚠ every disagreement is at the BOTTOM rung, which carries the most
+        leverage in the extrapolation. Effect on the published anchor
+        \phiJFrictionless: -0.00004, i.e. below its printed precision.
+   [PASS] W1'': the tie-break picks the reproducible record on most multi-record cells, and where it does not the published anchor does not move at 4 decimals  --  20 agree, 4 disagree, all at the bottom rung
+   extrapolated phi_J(CV = 0) = 0.63233, registered 0.63237
+   [PASS] W1b: the extrapolated CV = 0 value reproduces the registered 0.63237  --  0.63233
+
+=== G1  LADDER HEALTH: 72 of 72 converge (registered) ===
+   converged 58 of 72
+      CV  converged
+     0.0    10/12  
+     0.1    11/12  
+     0.2    10/12  
+     0.3    10/12  
+     0.4     8/12  
+     0.5     9/12  
+   [FAIL] G1: every record converged (REGISTERED 72 of 72)  --  58/72 -- reported as an amendment, NOT re-run at a raised cap (prereg section 4)
+
+=== W2  (AMENDMENT 2) SPAN/SD per CV group ===
+      CV      span        sd  SPAN/SD  readable?
+     0.0   0.00951   0.00131      7.3  yes
+     0.1   0.00944   0.00099      9.6  yes
+     0.2   0.00800   0.00035     23.0  yes
+     0.3   0.00856   0.00107      8.0  yes
+     0.4   0.01197   0.00098     12.2  yes
+     0.5   0.01289   0.00123     10.5  yes
+   groups below the bar: 0 of 6
+
+   phi_0^bidi(CV) on both channels, mean +- se over 3 seeds:
+      CV           extrapolated        matched rung 3e-5
+     0.0     0.63233 +- 0.00044       0.63172 +- 0.00076
+     0.1     0.63533 +- 0.00043       0.63541 +- 0.00057
+     0.2     0.64451 +- 0.00052       0.64391 +- 0.00020
+     0.3     0.65316 +- 0.00050       0.65282 +- 0.00062
+     0.4     0.65561 +- 0.00121       0.65498 +- 0.00057
+     0.5     0.64767 +- 0.00080       0.64578 +- 0.00071
+
+=== G3  PRIMARY: does the frictionless branch inherit the non-monotonicity? ===
+   (T) TRANSLATION => argmax in {0.2, 0.3, 0.4};  (D) DEFORMATION => argmax = 0.5
+   extrap  argmax CV = 0.4 (runner-up 0.3, gap +0.00245 vs 1 se = 0.00131) -> T
+   rung    argmax CV = 0.4 (runner-up 0.3, gap +0.00216 vs 1 se = 0.00084) -> T
+
+   G1 ROBUSTNESS -- the two questions a non-convergence rate raises:
+      (i) convergence rate vs CV: slope -0.333 per unit CV, range 0.67-0.92
+   [PASS] the non-convergence is NOT concentrated at high CV, so it cannot bias the axis G3 tests  --  slope -0.333 per unit CV
+      (ii) cells with ALL FOUR rungs converged, per CV: {0.0: 1, 0.1: 2, 0.2: 1, 0.3: 1, 0.4: 0, 0.5: 0}
+      too few fully-converged cells to re-run the argmax; reported, not hidden
+
+   🔴 PREREG SECTION 5, REGISTERED IN ADVANCE: 'More than 2 of 72 cells cap ->
+      G3's argmax is being read off a CENSORED CURVE.'
+      capped: 14 of 72. Criterion TRIGGERED.
+      And the argmax rung itself (CV = 0.4) has 0 of 3 cells with a fully converged ladder.
+
+   🔑 G3 VERDICT: T (PROVISIONAL -- censored curve)
+   [PASS] G3 returned a verdict on the registered scale (T, D or UNDETERMINED)  --  T (PROVISIONAL -- censored curve)
+   [FAIL] 🔴 the campaign meets the prereg's own section-5 worthlessness criterion, so G3's verdict is PROVISIONAL and not a result  --  14 of 72 capped against a registered bar of 2
+
+=== G4  BLIND PREDICTION: d(phi_0)^bidi in [+0.0125, +0.0146] ===
+   extrap  +0.01534 +- 0.00097   🔴 OUTSIDE the registered band
+   rung    +0.01406 +- 0.00139   INSIDE the registered band
+   [PASS] G4 on the fit-free channel lands in the registered band  --  +0.01406 vs (0.0125, 0.0146)
+
+=== G5  THE WINDOW W = phi_0 - phi_m for the bidisperse family ===
+      CV   W (extrap)        se    W(CV)-W(0) paired     |t|
+     0.0      0.05719   0.00043 
+     0.1      0.05880   0.00094             +0.00161    2.36
+     0.2      0.05734   0.00035             +0.00015    0.57
+     0.3      0.05655   0.00191             -0.00064    0.31
+     0.4      0.06152   0.00057             +0.00433   30.34
+
+   W(CV = 0) = 0.05719, registered 0.05723
+   [PASS] G5a: W(CV = 0) reproduces the registered value (this is W1 restated, not an independent result)  --  0.05719
+   range of W across the rungs: 0.00497 against 2 x mean se = 0.00168
+   [FAIL] G5b: the window's range is below 2 x the propagated paired s.e. (the bar the other two families met)  --  0.00497 vs 0.00168
+
+=== G2  REGISTERED NOT INFORMATIVE IN ADVANCE ===
+   d(phi_0) +0.01534 +- 0.00097 against d(phi_m) +0.01389 +- 0.00248
+   |t| = 0.55 vs 4.303;  t_crit * se_diff = 0.01146 = 82 % of the effect
+   ⚠ REGISTERED NOT INFORMATIVE: any outcome passes. Printed, not read.
+
+==========================================================================================
+FAILED 3 gate(s):
+   - G1: every record converged (REGISTERED 72 of 72)
+   - 🔴 the campaign meets the prereg's own section-5 worthlessness criterion, so G3's verdict is PROVISIONAL and not a result
+   - G5b: the window's range is below 2 x the propagated paired s.e. (the bar the other two families met)
