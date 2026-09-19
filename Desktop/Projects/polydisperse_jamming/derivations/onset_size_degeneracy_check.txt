@@ -1,0 +1,192 @@
+==========================================================================================
+onset_size_degeneracy_check.py   (v3, 2026-09-19, after two referee passes)
+==========================================================================================
+
+=== S1  EXPONENT ALGEBRA (an identity given the definitions, not a result) ===
+   [PASS] C = (1-phi)^3/(180 phi^2) > 0 on 0 < phi < 1 (20001 points)
+   [PASS] size exponent of sigma* is -alpha  --  -alpha
+   [PASS] size exponent of P_f (ell ~ D0) is -2  --  -2
+   [PASS] size exponent of rho U0^2 is 0  --  0
+   [PASS] size exponent of ID is 2  --  2
+
+   the three ratios that matter, and what each one ASKS:
+      sigma_in/sigma*  d^(alpha)   is the IMPOSED stress above the frictional onset?   (activation, route A)
+   [PASS] size exponent of sigma_in/sigma* is alpha  --  alpha
+      P_f/sigma*       d^(alpha - 2)   is the SUCTION above the frictional onset?          (activation, route B)
+   [PASS] size exponent of P_f/sigma* is alpha - 2  --  alpha - 2
+      sigma_in/P_f     d^(2)   does inertia beat the suction?   <-- THE A-vs-B DISCRIMINATOR
+   [PASS] size exponent of sigma_in/P_f is 2  --  2
+
+   🔴 WITHDRAWN v2 HEADLINE. v2 read the middle row as 'the two mechanisms are
+      size-degenerate'. It is not: sigma* is the THRESHOLD BOTH routes cross, so
+      that row is route B's activation number and says nothing about route A.
+      The discriminator is the LAST row, exponent +2 -- i.e. a size ladder
+      separates the two mechanisms at ~100x per size decade. v2 asserted the
+      opposite four lines below printing this exponent.
+   [PASS] the A-vs-B discriminator sigma_in/P_f has exponent 2, NOT 0 (so a size ladder is not blind, contrary to v1 and v2)
+   [PASS] ID is sigma_in/P_f up to the factor A (so [M26]'s number ALREADY is the A-vs-B discriminator and this page adds no new one)
+
+=== S2  DIMENSIONS (pint) ===
+   [PASS] kappa is an area
+   [PASS] ID has the dimensions of dimensionless
+   [PASS] sigma* has the dimensions of pascal
+   [PASS] P_f has the dimensions of pascal
+   [PASS] rho U0^2 has the dimensions of pascal
+   [PASS] B = 2e-11 J m^-1.1 with sigma* = B d^-1.9 gives a stress (an independent check on how alpha was read out of the paper)
+
+=== S3  LIMITS ===
+   [PASS] d -> 0 at alpha = 2 : P_f/sigma* tends to a FINITE NONZERO d-free limit (v2's version of this check also passed on oo and on 0)  --  limit = D0*U0*dphi*mu/(B*C)
+   [PASS] d -> 0 at alpha = 1.9 : P_f/sigma* -> inf
+   [PASS] dphi -> 0+ : P_f -> 0 (no dilation, no suction)
+   [PASS] dphi -> 0+ : ID -> inf
+   [PASS] shipped ID() returns inf at dphi = 0, the same convention
+   [PASS] mu -> 0 : P_f/sigma* -> 0 (free drainage, no frustration)
+   [PASS] phi -> 1 : ID -> 0 (no pore space to drain)
+
+=== S4  THE SHIPPED IMPLEMENTATION, AND ITS OWN VALIDITY CEILING ===
+   size exponents by finite difference on the SHIPPED functions:
+      silica (lab) 3.0 m/s  ID +2.000000 (want +2)   P_f -2.000000 (want -2)
+   [PASS] shipped ID has size exponent +2 at silica (lab) 3.0 m/s
+   [PASS] shipped dilatant_pressure has size exponent -2 at silica (lab) 3.0 m/s
+      cornstarch   0.5 m/s  ID +2.000000 (want +2)   P_f -2.000000 (want -2)
+   [PASS] shipped ID has size exponent +2 at cornstarch   0.5 m/s
+   [PASS] shipped dilatant_pressure has size exponent -2 at cornstarch   0.5 m/s
+
+   🔴 `dilatant_pressure`'s own docstring: 'Compare it against
+      p_dilatant_ceiling before believing it.' v1 and v2 never did.
+   point                     P_f [Pa]     ceiling       p_cap   P_f/ceil
+   silica (lab) 3.0 m/s     4.651e+07   1.013e+05   2.323e+06      459.1
+   silica (lab) 0.5 m/s     7.751e+06   1.013e+05   2.323e+06       76.5
+   cornstarch   0.5 m/s     1.627e+05   1.013e+05   1.858e+05        1.6
+   cornstarch   7.2 m/s     2.343e+06   1.013e+05   1.858e+05       23.1
+   [PASS] 🔴 REFUTED: the Darcy branch is NOT valid at the parameter points this page uses -- P_f exceeds the module's own ceiling at every one of them  --  4 of 4 points are above the ceiling
+      Above the ceiling the suction is set by cavitation (exponent 0) or by
+      capillary entry (2 gamma / r_throat, exponent -1), NOT by Darcy (-2).
+      So the dilatant stress's size exponent at these very points is one of
+      {0, -1}, not the -2 the whole of v2 was built on.
+
+=== S5  WHAT SETS THE DILATANT STRESS'S SIZE EXPONENT: three unpinned knobs ===
+   P_f ~ (mu/kappa) dphi gammadot ell^2 with kappa ~ d^2, so the exponent is
+   2*(d ln ell/d ln d) - 2. NOTHING ON DISK PINS ell.
+
+   SIZE_THRESHOLD sec 1 prints BOTH: ID(ell = D0) = 7.19e-05, ID(ell = 10a) = 7.03
+   ell enters SQUARED, so the ratio should be (D0/10a)^2 = 9.766e+04: predicted 7.021 against the printed 7.03
+   [PASS] the two drainage-length readings differ by exactly (D0/10a)^2, confirming ell enters squared and that BOTH are on record  --  7.021 vs 7.03, 0.12 %
+
+   convention for the dilatant stress                                 p  vs sigma* ~ d^  vs sigma_in ~ d^
+   Darcy, ell ~ D0        (drop-scale drainage, [M26]'s choice)      -2           -0.10              2.00
+   Darcy, ell ~ 10a       (grain-scale drainage, SIZE_THRESHOLD sec 1)   0            1.90              0.00
+   cavitation-limited     (P_f above 1 atm of suction; S4 says it is)   0            1.90              0.00
+   capillary-entry limited(2 gamma / r_throat; S4 says it binds too)  -1            0.90              1.00
+   CAPACITY criterion     (p_dil^max/P_conf ~ (a/6 lam_D)(dphi/phi), PORE_PHYSICS 9.1)   1            2.90             -1.00
+
+   the dilatant stress's size exponent is one of [-2, -1, 0, 1]: a span of 3 decades PER SIZE DECADE.
+   [PASS] 🔴 UNDETERMINED: the dilatant stress's size exponent is not pinned by anything on disk, and the candidates span 3 decades per size decade  --  candidates [-2, -1, 0, 1]
+   ⚠ v2 picked the FIRST row and called the question settled. v1 picked a
+     zero-exponent gauge and called it settled. Both are one row of this table.
+
+   WHAT WOULD SETTLE IT -- three measurements, none of them algebra:
+     1. the drainage length: does the suction relax over the contact patch or
+        over the grain scale? A pressure probe, or the U0-dependence of the
+        force plateau, decides it.
+     2. the ceiling regime: does the pore fluid cavitate during impact? S4 says
+        both materials are above 1 atm of suction on the Darcy formula.
+     3. whether capacity or drainage binds -- SIZE_THRESHOLD sec 3 already says
+        these scale as a^1 and a^2 and point opposite ways, and withdrew the
+        window they bracket as unquotable.
+
+=== S6  THE DOUBLE LAYER: a condition on the EXPONENT, not on the value ===
+   kappa_eff/kappa = (1-x)^n with x = lambda_D/r_throat, n = 2 (immobile shell)
+   or 4 (Poiseuille throat); r_throat = 0.0775 d. Both readings are ESTIMATES.
+   ⚠ v2 required the VALUE correction to be small (x <= 0.1 -> 2-4 %). The claim
+     is about an EXPONENT, and d ln(1-x)^n/d ln d = n x/(1-x), which at x = 0.1
+     is 0.222 (n=2) / 0.444 (n=4) -- 2.2x to 4.4x the residual it must protect.
+
+   extra size exponent from the double layer, against the residual |alpha-2| = 0.10:
+    lam_D [nm]   d [um]       x      n=2      n=4
+          30.0     0.80  0.4839    1.875    3.750
+          30.0     3.87  0.1000    0.222    0.445
+          30.0    10.00  0.0387    0.081    0.161
+          30.0    25.00  0.0155    0.031    0.063
+          95.0     0.80  0.9990 1998.000 3996.000
+          95.0     3.87  0.3167    0.927    1.854
+          95.0    10.00  0.1226    0.279    0.559
+          95.0    25.00  0.0490    0.103    0.206
+   [PASS] 🔴 the double-layer term dominates the residual exponent at 800 nm under both readings and both lambda_D values  --  smallest 1.875 vs residual 0.10
+
+   the EXPONENT condition (extra exponent <= the residual 0.10), which is what
+   v2 should have required. v2's VALUE condition gave 3.87 um at zero salt:
+    lam_D [nm]  salt [mM]  d_min n=2 [um]  d_min n=4 [um]
+          30.0        0.0            8.13           15.87
+          95.0        0.0           25.74           50.26
+          10.0        1.0            2.71            5.29
+           3.0       10.0            0.81            1.59
+           1.0      100.0            0.27            0.53
+   [PASS] 🔴 v2's escape clause FAILS: at 1 mM the lab's 800 nm particle still does not clear the exponent condition  --  needs d > 2.71 um at 1 mM; the particle is 0.80 um
+   at 10 mM the shell reading needs d > 0.81 um -- so 800 nm clears
+   it only on the mildest reading of the mildest lambda_D. ⚠ PORE_PHYSICS 5.2
+   calls 30 nm a compromise against its own primary 95 nm and says the value
+   'spans a decade' and 'is not measured'.
+
+=== S7  THE CV LEVER: read locally, per family, from each family's own ladder ===
+
+   (a) phi_J(CV) per family, mean over seeds, mu_p = 0.3 (out/phase2_fits.csv)
+   family            0.0      0.1      0.2      0.3      0.4      0.5
+   lognormal     0.57453  0.57811  0.58805  0.60399  0.61970  0.63661
+   uniform       0.57514  0.57896  0.58665  0.59591  0.59744  0.59934
+   bidisperse    0.57514  0.57653  0.58717  0.59661  0.59409  0.58902
+
+   family       chord 0-0.5  local 0-0.2  local 0.3-0.5  local/chord
+   lognormal         0.1241       0.0676        +0.1631        0.544
+   uniform           0.0484       0.0576        +0.0171        1.189
+   bidisperse        0.0278       0.0602        -0.0379        2.167
+
+   🔴 v2 multiplied every family's chord by the LOGNORMAL local/chord ratio
+      (0.544), i.e. assumed family-independent convexity. Measured,
+      the two non-lognormal families are CONCAVE there (ratio > 1), so the
+      correction had the WRONG SIGN for two of three:
+   family       v2 s_local  true s_local    v2 CV*   true CV*
+   lognormal        0.0676        0.0676     0.296      0.296
+   uniform          0.0264        0.0576     0.759      0.348
+   bidisperse       0.0151        0.0602     1.323      0.332
+   [PASS] 🔴 REFUTED: v2's local-slope rescaling has the wrong sign for the two non-lognormal families (they are concave near CV = 0.2, not convex)  --  local/chord = lognormal 0.54, uniform 1.19, bidisperse 2.17
+
+   ⚠ AND THE FAMILY SPREAD IS AN ENDPOINT ARTEFACT AT THIS CV. Over the chord
+     it is 4.47x (the manuscript's headline); LOCALLY at CV ~ 0.2,
+     where CV* actually is, it is 1.17x. The three families are
+     nearly indistinguishable where the lever is asked about.
+   [PASS] the family spread collapses between the chord and the local slope at CV ~ 0.2  --  4.47x chord vs 1.17x local
+
+   🔴 AND THE SIGN IS NOT FAMILY-UNIVERSAL. The bidisperse family is
+      NON-MONOTONE (main.tex: it peaks near CV = 0.3), and its local slope
+      above 0.3 is -0.0379. v2's 'dphi_c/dCV > 0 on every
+      family' is a statement about the CHORD only.
+   [PASS] 🔴 REFUTED: at least one family has a NEGATIVE local slope above CV = 0.3, so the lever's sign is not family-universal  --  bidisperse 0.3->0.5 = -0.0379
+
+   (b) the CRITICAL-STATE channel, recomputed from out/phase8_prod2*.jsonl
+       (v2 hardcoded three numbers here and one of them was 10 seed s.d. out)
+   [PASS] phase8's critical-state ladder is LOGNORMAL ONLY (so any s from it is a one-family number)  --  families present: {'lognormal'}
+
+   (c) 🔴 THE MODEL'S phi_c IS UNMEASURED FOR THE LAB SILICA.
+       v2 listed four values and read '3 of 4 close the branch' as a sign
+       ambiguity in one quantity. They are not one quantity:
+       0.4200  drop-impact solidification fronts    the model's phi_c -- and the module calls it a PLACEHOLDER
+       0.4700  Shah et al., first localised solid   an OBSERVATION of solidity under their loading, not a dilatancy onset
+       0.4900  Shah et al., bulk                    same, at a different criterion
+       0.5176  repo Wyart-Cates phi_M               🔴 a VISCOSITY-DIVERGENCE fraction, and part of the WITHDRAWN si_fit
+       PORE_PHYSICS 9.5 and inertial_dilatant.py both already say these cannot
+       all sit on one phi axis. The honest statement needs no vote:
+       🔴 THE ONLY VALUE THAT NAMES THE MODEL'S phi_c IS FLAGGED A PLACEHOLDER.
+   [PASS] the one candidate that is the model's own phi_c is a placeholder, so the lever's magnitude has no measured input
+
+   (d) WHAT SURVIVES OF THE CV LEVER, and it is one sentence:
+       dphi enters the dilatant stress linearly and ID as 1/dphi, and CV raises
+       phi_c, so widening the size distribution at fixed phi moves the drop
+       toward the inertial side. That SIGN matches the author's bench
+       observation (2026-08-31). Everything quantitative about it -- the
+       magnitude, the family dependence, the CV at which the branch closes --
+       needs a measured phi_c for this material, which does not exist.
+   [PASS] the chord slope is positive on all three families (so the SIGN, over the whole ladder, is the part that transfers)
+
+==========================================================================================
+ALL CHECKS PASSED

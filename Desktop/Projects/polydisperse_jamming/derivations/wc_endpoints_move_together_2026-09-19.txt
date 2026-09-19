@@ -1,0 +1,80 @@
+======================================================================================
+Do the two Wyart-Cates endpoints move together under polydispersity?
+======================================================================================
+
+=== 0. GRID ON DISK (printed, not assumed) ===
+    mu_p family                         CV levels  seeds/cell
+     0.0 lognormal   [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]         [3]
+     0.0 uniform     [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]         [3]
+     0.3 bidisperse  [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]         [3]
+     0.3 lognormal   [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]         [3]
+     0.3 uniform     [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]         [3]
+     1.0 lognormal                [0.0, 0.2, 0.5]         [3]
+     3.0 lognormal                          [0.0]         [3]
+
+   families with BOTH endpoints at matched CV: ['lognormal', 'uniform']
+   [PASS] both Wyart-Cates endpoints exist at matched CV for at least two families  --  ['lognormal', 'uniform']
+   [PASS] the bidisperse family has NO frictionless block, so this runs on 2 of 3 families  --  mu_p=0 families: ['lognormal', 'uniform']
+
+=== 1. THE PAIRED CV 0 -> 0.5 SHIFT AT EACH FRICTION ===
+   family       mu_p  Delta phi_J        se  n
+   lognormal     0.0     +0.05803   0.00268  3
+   [PASS] lognormal at mu_p=0.0 has a positive shift  --  +0.05803
+   lognormal     0.3     +0.06207   0.00255  3
+   [PASS] lognormal at mu_p=0.3 has a positive shift  --  +0.06207
+   uniform       0.0     +0.02385   0.00162  3
+   [PASS] uniform at mu_p=0.0 has a positive shift  --  +0.02385
+   uniform       0.3     +0.02420   0.00080  3
+   [PASS] uniform at mu_p=0.3 has a positive shift  --  +0.02420
+
+=== 2. H1 vs H2: is d(phi_0)/dCV equal to d(phi_m)/dCV? ===
+   family        d(phi_0)   d(phi_m)   difference   se_diff    |t|                      verdict
+   lognormal     +0.05803   +0.06207     -0.00404   0.00370   1.09 NOT RESOLVED APART (H1 not rejected)
+   [PASS] lognormal: the two endpoints' CV shifts are not resolved apart at 2 dof  --  |t| = 1.09 against t_crit = 4.303
+   uniform       +0.02385   +0.02420     -0.00035   0.00181   0.20 NOT RESOLVED APART (H1 not rejected)
+   [PASS] uniform: the two endpoints' CV shifts are not resolved apart at 2 dof  --  |t| = 0.20 against t_crit = 4.303
+
+   ⚠ 'NOT RESOLVED APART' AT n = 3 IS A BOUND, NOT A PROOF OF EQUALITY.
+   family       smallest resolvable diff   as a % of d(phi_m)
+   lognormal                     0.01593                25.7%
+   uniform                       0.00779                32.2%
+   So what is EXCLUDED is a difference larger than that; a difference up to
+   ~26-32 % of the effect would have passed unnoticed. The claim is 'the two
+   endpoints move together to within a quarter to a third of the shift', not
+   'they move identically'.
+
+=== 3. THE FRICTIONAL WINDOW W = phi_0 - phi_m, AT EVERY CV ===
+   Wyart-Cates interpolates phi_J(sigma) across W. If W is CV-independent the
+   phi-axis TRANSLATES and the DST diagram keeps its shape.
+   family            0.0      0.1      0.2      0.3      0.4      0.5    range
+   lognormal     0.05784  0.05938  0.05734  0.05433  0.05292  0.05380  0.00646
+               range = 1.75 x the propagated seed s.e. (0.00370)
+   [PASS] lognormal: the window's range across the CV ladder is within 2 s.e.  --  range 0.00646 vs 2 s.e. = 0.00740
+   uniform       0.05723  0.05703  0.05756  0.05649  0.05840  0.05688  0.00191
+               range = 1.06 x the propagated seed s.e. (0.00181)
+   [PASS] uniform: the window's range across the CV ladder is within 2 s.e.  --  range 0.00191 vs 2 s.e. = 0.00362
+
+=== 4. A CHECK THAT COULD HAVE FAILED: the window is nonzero and both
+       endpoints are ORDERED phi_0 > phi_m at every CV ===
+   [PASS] phi_0 > phi_m at every (family, CV) -- friction lowers the jamming fraction, which is the sign the literature reports  --  0 violations
+   [PASS] the window at CV = 0 is many seed s.e. wide, so it is a real gap  --  W = 0.05784 = 21.6 x the seed s.e.
+
+=== 5. CAVEATS THAT TRAVEL WITH EVERY NUMBER ABOVE ===
+   (a) ⚠ POST-HOC. The two candidates and the resolving power were not written
+       down before computing. See the module docstring.
+   (b) ⚠ paper/main.tex: 'The frictionless ladders are not monotone in p_hat at
+       this seed count, so this anchor is a check of the protocol's scale and
+       not a result of the paper.' That caveat attaches to phi_0 here too.
+   (c) ⚠ At CV = 0 the generator ignores the family label, so the two families'
+       phi_0 values share a cell (found 2026-09-19). A test treating the two
+       families as independent over-states the variance of their difference,
+       i.e. errs CONSERVATIVELY.
+   (d) ⚠ TWO families, not three. Bidisperse -- the non-monotone one -- has no
+       frictionless block, so the family whose behaviour is least like the
+       others is the one not tested.
+   (e) ⚠ sigma* itself is untouched by any of this: it is a contact-force
+       property and Wyart-Cates makes it independent of phi. Nothing here
+       measures it.
+
+======================================================================================
+ALL CHECKS PASSED
