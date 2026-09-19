@@ -1,0 +1,123 @@
+NEXT SESSION PROMPT -- polydisperse_jamming, written 2026-09-19 after commit cc6194a
+
+Project: Desktop\Projects\polydisperse_jamming, branch portfolio-audit-2026-08-29, git root
+C:\Users\compl. Resume from Status\_Router.md, then the card "Drop Impact -- Polydispersity
+Jamming Model.md" section 2 (the 2026-09-19 SECOND BLOCK) and section 3. Do not reconstruct
+state from repo docs. Read ~/.claude/CLAUDE.md and lessons.md; the 2026-09-19 entries are
+this project's and three of them were earned the hard way.
+
+------------------------------------------------------------------------------------------
+0. FIRST, AND IT IS TIME-CRITICAL: ARE THE CAMPAIGNS ALIVE?
+------------------------------------------------------------------------------------------
+Two campaigns were launched from the previous session via
+  scripts\launch_capmustar.sh   (12 WSL workers, held open in a background Bash call)
+and they run SEQUENTIALLY: `wcbidicap` first, then `mustar`.
+
+⚠ NOTHING SPAWNED BY A wsl.exe CALL SURVIVES THAT CALL EXITING. The previous session held
+it open; if that session ended, the workers died. CHECK FIRST:
+
+  PowerShell:  wsl -e bash -lc "pgrep -c -f phase2_phiJ; cat ~/pj/out/phase2_wcbidicap*.jsonl | wc -l; cat ~/pj/out/phase2_mustar*.jsonl | wc -l"
+
+  At handoff: wcbidicap 61 of 72, mustar 0 of 72, 4 workers alive.
+
+The runner RESUMES BY KEY, so relaunching the same script simply picks up where it stopped
+and re-runs nothing. If the workers are dead, relaunch it the same way (BY FILE PATH from
+PowerShell, backgrounded, never inline from Git Bash) and let it finish.
+
+------------------------------------------------------------------------------------------
+1. GRADE THE TWO CAMPAIGNS. Both graders are written, committed and dry-run clean.
+------------------------------------------------------------------------------------------
+  python grade_wcbidicap.py    -> out/grade_wcbidicap.txt
+  python grade_mustar.py       -> out/grade_mustar.txt
+
+(a) wcbidicap -- PREREG_WCBIDI_2026-09-19.md AMENDMENT 3.
+    ⚠ C1 IS AN IDENTITY GATE AND IT GATES EVERYTHING ELSE. The 58 cells that already
+    converged at MAX_ITER = 200000 must come back BIT-IDENTICAL at 1e6. A cell that stopped
+    because it converged cannot be affected by raising a limit it never reached. IF C1
+    FAILS, NOTHING FROM THE RE-RUN MAY BE READ -- the grader prints C2-C4 but says so.
+    C3 is the point: G3's argmax on CONVERGED-ONLY data. The first campaign gave (T),
+    argmax CV = 0.4, but PROVISIONAL, because 14 of 72 capped and the argmax rung had
+    0 of 3 fully-converged ladders. C3 turns provisional into a result, or refutes it.
+
+(b) mustar -- PREREG_MUSTAR_2026-09-19.md.
+    F1 wiring first (the mu_p = 3.0, CV = 0 cells are deliberately re-run and must
+    reproduce an existing record exactly). Then F3, and read its STRUCTURE: F3a asks
+    whether the amplitude A is stable, and IF IT IS NOT, mu* and A are not separated by
+    this design and the verdict is UNDETERMINED REGARDLESS of what mu* does. The prereg
+    registers that as a LIKELY outcome, not an unlikely one. F5 tests the exponential FORM
+    against an algebraic alternative named in advance; report whichever fits better, do not
+    choose. F4's three blind point predictions are hardcoded from the prereg -- a miss is a
+    miss and the tolerance is not widened.
+
+Then write CLAIMS_*.md for each, update the card, append any lesson, commit.
+
+------------------------------------------------------------------------------------------
+2. THE STANDING BAR, WHICH COST THREE VERDICTS ON 09-19 AND REACHED THE PAPER
+------------------------------------------------------------------------------------------
+🔴 A SEED-PAIRED STANDARD ERROR IS NOT THE BAR. This repo declares its own run-to-run
+non-determinism (mixture_model.PHI_SCALE = 2.1e-3), test_mixture.py ENFORCES it, and
+\phiScale is a macro in main.tex. Grade every t-test against
+
+    max( seed-paired s.e.,  sqrt(L) * SCALE / sqrt(n) )
+
+with L the number of cells that do NOT cancel. Getting L wrong flips verdicts: the
+zero-skewness pair reads t = 6.01 at L = 2 (correct, the shared CV = 0 cell cancels) and
+4.25 at L = 4. Measured scales, from the disagreeing duplicate records:
+
+    phi 0.00234   z_all 0.0533   z_nr 0.0375   rattler_frac 0.00367 (~13 % of its value)
+
+⚠ rattler_frac is the noisiest channel and it is the one the rattler-volume work below is
+built on. Carry that floor from the start.
+
+------------------------------------------------------------------------------------------
+3. THE CHEAPEST REAL MEASUREMENT IN THE PROJECT, AND IT IS NOW HALF-DONE
+------------------------------------------------------------------------------------------
+Every rattler field on disk is a COUNT. The exact decomposition is phi = phi_B/(1-psi) with
+psi the rattler VOLUME fraction, so a count cannot close it, and rattlers are preferentially
+small so the two differ by a PSD-dependent factor -- precisely the dependence this project
+is trying to measure. `measure.rattler_report` now takes an optional `volumes` and emits
+`rattler_vol_frac_k*`; `packing.measure` supplies per-grain volumes for SPHERE packs only
+(clump volumes are the analytic union and utils.porosity() double-counts the overlap).
+Two bit-identity tests gate it (test_measure.py).
+
+WHAT REMAINS: no cell on disk carries the field, because it is computed at run time. Decide
+whether to re-run a grid for it. The geometry work's item B has a SHARP pre-registrable
+prediction waiting: if backbone invariance holds, the required selectivity
+S = (q - psi)/(q - Psi(q)) must land in 0.75-1.03 at every CV >= 0.3 across three families
+and four rungs, and for bidisperse CV = 0.5 exactly 92.4 % of small grains and 7.3 % of
+large grains must rattle. That is a real test, not a fit.
+
+------------------------------------------------------------------------------------------
+4. OPEN, IN PRIORITY ORDER, AFTER THE ABOVE
+------------------------------------------------------------------------------------------
+- 🔴 THE AUTHOR LINE in paper/main.tex:31-32 is still `A.~Author`. Author's call.
+- 🔴 PREREG_LOGN_LARGEN_2026-09-17.md (48 cells, N = 6000, 12-30 h) -- author's call, and
+  it needs vmIdleTimeout = -1 plus a service-style launch.
+- Carry the tie-break bound into the manuscript's Methods: the disclosure bounds the INPUT
+  (\conflictWorstDphi = 0.0040) and there is now an exhaustive bound on the OUTPUT (2.0 %
+  of the lognormal shift, 0.0 % for the other two families, all 32 choices enumerated).
+- A REPRODUCTION criterion beats "first in file order" as a tie-break, and the wcbidi
+  campaign showed one is available: a fresh run reproduced one member of every conflicting
+  pair bit-for-bit, 12 of 12. The current rule picks it on 20 of 24, all 4 misses at the
+  bottom rung. Effect on \phiJFrictionless: -0.00004.
+- The LevelSet control, wave 2 of the alpha ladder, the lognormal seed-3 abort, the
+  MAX_ITER audit, the third fabric invariant, K = 6, the off-locus PSD -- all unchanged.
+
+------------------------------------------------------------------------------------------
+5. STANDING RULES THAT EARNED THEIR PLACE THIS SESSION
+------------------------------------------------------------------------------------------
+- An EXTRAPOLATED observable needs its INPUT RANGE checked, not just its fit quality.
+  SPAN/SD = [phi(top rung) - phi(bottom)]/(seed scatter) is below 2 on 12 of 34 groups and
+  NEGATIVE on two -- physically inadmissible, and no threshold is needed to say so.
+  phi_J_lin at mu_p >= 1.0 is a fit to noise; use phi at the matched rung p_hat = 3e-5.
+- A gate written against "the existing record" is ill-posed where duplicates disagree.
+  Write it against the SET, and put mu_p in the cell key (omitting it made two of my own
+  reference sets come back empty and fail for the wrong reason).
+- Prefer a clean REFUTED to a SUPPORTED that leans on the code, and when a registered bar
+  fails, report the failing number and ask whether the TEST was wrong -- never loosen it.
+- Every derivation goes through derive-and-check and then physics-referee in a fresh
+  context, repeated until a pass returns nothing. Three passes on one page each withdrew a
+  headline on 09-19; the fourth version is a negative and is the better deliverable.
+
+Stop and report, rather than proceed, if: C1 fails on the cap re-run; a reviewer finding
+would move a printed macro; or an item needs a DEM cell longer than 600 s from an agent call.
