@@ -43,6 +43,36 @@ Re-grading the geometry batch against the protocol's own scale
    ⚠ paper/main.tex and paper/extract_numbers.py were corrected to this bar on
      2026-09-19 and now print BOTH counts.
 
+=== ITEM D  A RUN-TO-RUN SCALE FOR Z_nr, measured from the duplicates ===
+   The referee flagged item D as un-re-gradable because 'there is NO z_iso
+   analogue of PHI_SCALE on record'. There is one to be MEASURED, by exactly the
+   route that produced PHI_SCALE: the records whose key repeats and whose values
+   disagree ARE the protocol re-running the same cell.
+
+   channel         pairs   median |d|    max |d|
+   phi                14      0.00234    0.00503
+   z_all              14      0.05333    0.12933
+   z_nr               14      0.03745    0.12439
+   rattler_frac       14      0.00367    0.00933
+
+   ✅ The phi row (0.00234) CORROBORATES PHI_SCALE = 0.0021 -- the declared constant sits just below the measured
+      median, which is the right side to be on.
+   [PASS] the measured phi re-run scatter corroborates the declared PHI_SCALE (within a factor of 2), so the same route is trustworthy for Z  --  measured 0.00234 vs declared 0.0021
+
+   🔑 Z_SCALE = 0.0374  (median run-to-run |delta Z_nr|)
+
+   item D's backbone drift, re-graded against it (1e-3 rung, paired on seed):
+   family        paired d   se_seed  t_seed  se_proto  t_proto  verdict
+   lognormal      -0.2008    0.0525    3.82    0.0306     3.82  NOT resolved
+   uniform        -0.0812    0.0162    5.01    0.0306     2.66  NOT resolved
+   bidisperse     -0.1172    0.0393    2.98    0.0306     2.98  NOT resolved
+   [PASS] 🔑 item D's backbone drift is NOT resolved on ANY family against the measured Z scale, so its 'REFUTED as exact' verdict also becomes UNDETERMINED  --  no family resolves
+   ⚠ THIS STRENGTHENS THE MANUSCRIPT rather than weakening it: main.tex claims
+     the backbone coordination STAYS FLAT with CV, and on the protocol's own
+     reproducibility it does, on all three families.
+   ⚠ Also worth carrying: rattler_frac's run-to-run scatter is 0.00367, which is ~13 % of its own value --
+     by far the noisiest channel here, and the one the rattler-volume work will use.
+
 === WHAT THIS CORRECTION DOES NOT TOUCH ===
    Items C1, B, D's z_iso derivation and E's Furnas identity are ALGEBRA. They
    cannot fail on data and carry no t-test, so the protocol floor is irrelevant

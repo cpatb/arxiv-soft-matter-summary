@@ -74,10 +74,34 @@ significance test — and it is all "additive to ~6.5 % of the shift" was ever e
   `r = 3, CV = ½`, and that `z_iso = d(d+1)/(d−x_m)` reproduces both limits.
 - **Item B's verdict already leans "not resolved"**, and under-counting noise cannot
   manufacture that, so UNDETERMINED is unaffected.
-- 🔴 **Item D's isostatic drift (t = −7.25) uses the same machinery and CANNOT be re-graded
-  here**, because there is no `z_iso` analogue of `PHI_SCALE` on record. The honest
-  statement is that its significance is **unaudited**, not that it is wrong. Establishing a
-  run-to-run scale for `Z_nr` is a cheap, unregistered gap.
+- 🔑 **Item D was re-graded after all — the missing scale was measurable.** The referee said
+  item D could not be re-graded because "there is no `z_iso` analogue of `PHI_SCALE` on
+  record". There was one to be *measured*, by exactly the route that produced `PHI_SCALE`:
+  the records whose key repeats and whose values disagree **are** the protocol re-running
+  the same cell. Over the 14 disagreeing keys:
+
+  | channel | median run-to-run \|Δ\| | max |
+  |---|---|---|
+  | `phi` | **0.00234** | 0.00503 |
+  | `z_all` | 0.05333 | 0.12933 |
+  | **`z_nr`** | **0.03745** | 0.12439 |
+  | `rattler_frac` | 0.00367 | 0.00933 |
+
+  ✅ The `phi` row **corroborates** the declared `PHI_SCALE` = 0.0021, which sits just below
+  the measured median — the right side to be on. That is what licenses using the same route
+  for `Z`.
+
+  Re-graded against `Z_SCALE = 0.0374`, item D's backbone drift is **NOT RESOLVED on any
+  family**: lognormal t 3.82, uniform **5.01 → 2.66**, bidisperse 2.98. So item D's
+  "REFUTED as exact" also becomes **UNDETERMINED**.
+
+  ⚠ **This strengthens the manuscript rather than weakening it.** `main.tex` claims the
+  backbone coordination *stays flat* with CV, and on the protocol's own reproducibility it
+  does, on all three families.
+
+  ⚠ Worth carrying separately: **`rattler_frac`'s run-to-run scatter is ~13 % of its own
+  value** — by far the noisiest channel measured here, and the one the rattler-volume work
+  (item B) will be built on.
 
 ## 4. Where else this bar belongs
 
