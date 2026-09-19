@@ -245,8 +245,18 @@ def s5_conventions():
           f"ID(ell = 10a) = {id_10a:.3g}")
     print(f"   ell enters SQUARED, so the ratio should be (D0/10a)^2 = "
           f"{(D0/(10*a))**2:.4g}: predicted {predicted:.4g} against the printed {id_10a:.4g}")
-    check("the two drainage-length readings differ by exactly (D0/10a)^2, confirming ell "
-          "enters squared and that BOTH are on record",
+    # 🔴 RETRACTED 2026-09-19 (referee pass 3). This check used to be labelled "confirming
+    # ell enters squared and that BOTH are on record". It is a TAUTOLOGY:
+    # `size_threshold.py:140` literally computes ID(ell=10a) = ID(ell=D0)*(D0/(10a))**2, so
+    # the agreement verifies a multiplication and nothing about the physics. Worse, the two
+    # inputs above are TYPED LITERALS while out/size_threshold.txt holds 7.194e-05 and
+    # 7.025. The check is kept, relabelled for what it is, and the claim it was used to
+    # support -- that the drainage length is unpinned -- is FALSE: PORE_PHYSICS sec 3 pins
+    # it to the CONTACT length L = 0.49 D0 for precisely this question, and
+    # size_threshold.py's own comment calls the 10a row "SIZE-BLIND by construction and
+    # predicts no threshold", i.e. a declared null rather than a rival convention.
+    check("[TAUTOLOGY, kept for the record] the 10a row reproduces (D0/10a)^2 times the D0 "
+          "row -- which is how size_threshold.py computes it, so this cannot fail",
           abs(predicted - id_10a) / id_10a < 0.01,
           f"{predicted:.4g} vs {id_10a:.4g}, {abs(predicted-id_10a)/id_10a*100:.2f} %")
 
@@ -372,11 +382,39 @@ def s7_cv():
 
     spread_chord = max(chords.values()) / min(chords.values())
     spread_local = max(locs.values()) / min(locs.values())
-    print("\n   ⚠ AND THE FAMILY SPREAD IS AN ENDPOINT ARTEFACT AT THIS CV. Over the chord")
+    # 🔴 RETRACTED 2026-09-19 (referee pass 3). The wording below ("an endpoint artefact")
+    # and the 1.17x are both withdrawn: 1.17x is the ARGMIN of its own sweep over CV, and
+    # the local max-min difference is not resolved at the design's own 2 dof. Swept here so
+    # the cherry-pick cannot recur.
+    print("\n   🔴 RETRACTED: the spread of the 0 -> CV chord slope, at EVERY CV, with the")
+    print("      max-min difference's own t value at 2 dof:")
+    print(f"      {'CV':>5s} {'spread':>8s} {'max-min':>10s} {'se':>9s} {'t':>7s}")
+    swept = []
+    for cvx in (0.1, 0.2, 0.3, 0.4, 0.5):
+        vals = {}
+        for fam in ("lognormal", "uniform", "bidisperse"):
+            g = fits[(fits.family == fam) & (fits.mu_p == 0.3)]
+            a = g[g.cv_nom == 0.0].set_index("seed").phi_J_lin
+            b = g[g.cv_nom == cvx].set_index("seed").phi_J_lin
+            cs = sorted(set(a.index) & set(b.index))
+            dd = np.array([(b[s] - a[s]) / cvx for s in cs])
+            vals[fam] = (float(dd.mean()), float(dd.std(ddof=1) / math.sqrt(len(dd))))
+        ms = {k: v[0] for k, v in vals.items()}
+        hi, lo = max(ms, key=lambda k: ms[k]), min(ms, key=lambda k: ms[k])
+        diff, sed = ms[hi] - ms[lo], math.hypot(vals[hi][1], vals[lo][1])
+        sp = max(ms.values()) / min(ms.values())
+        swept.append(sp)
+        print(f"      {cvx:5.1f} {sp:8.2f} {diff:10.4f} {sed:9.4f} {diff/sed:7.2f}")
+    check("[RETRACTED CLAIM] the CV = 0.2 spread is the MINIMUM over the CV sweep, so "
+          "quoting it as 'the local spread' was an argmin, not a property of the data",
+          abs(spread_local - min(swept)) < 1e-9,
+          f"{spread_local:.2f}x at CV = 0.2 against a sweep {[round(s, 2) for s in swept]}")
+    print("\n   (the withdrawn wording is kept below for the record)")
+    print("   ⚠ AND THE FAMILY SPREAD IS AN ENDPOINT ARTEFACT AT THIS CV. Over the chord")
     print(f"     it is {spread_chord:.2f}x (the manuscript's headline); LOCALLY at CV ~ 0.2,")
     print(f"     where CV* actually is, it is {spread_local:.2f}x. The three families are")
     print("     nearly indistinguishable where the lever is asked about.")
-    check("the family spread collapses between the chord and the local slope at CV ~ 0.2",
+    check("[WITHDRAWN] the family spread collapses between the chord and the local slope",
           spread_local < spread_chord / 2,
           f"{spread_chord:.2f}x chord vs {spread_local:.2f}x local")
 
@@ -384,9 +422,25 @@ def s7_cv():
     print("      NON-MONOTONE (main.tex: it peaks near CV = 0.3), and its local slope")
     print(f"      above 0.3 is {late['bidisperse']:+.4f}. v2's 'dphi_c/dCV > 0 on every")
     print("      family' is a statement about the CHORD only.")
-    check("🔴 REFUTED: at least one family has a NEGATIVE local slope above CV = 0.3, so "
-          "the lever's sign is not family-universal",
-          min(late.values()) < 0, f"bidisperse 0.3->0.5 = {late['bidisperse']:+.4f}")
+    # 🔴 RETRACTED 2026-09-19 (referee pass 3). This was graded "REFUTED" on a bare mean.
+    # Paired per seed the bidisperse local slope is -0.0379 +- 0.0187, t = 2.03 against
+    # t_crit = 4.303 at 2 dof -- NOT RESOLVED. main.tex's own Statistics section says a flat
+    # 2 s.e. bar is a test at p = 0.184. The mean sign is printed; the verdict is not.
+    _latese = {}
+    for fam in ("lognormal", "uniform", "bidisperse"):
+        g = fits[(fits.family == fam) & (fits.mu_p == 0.3)]
+        a = g[g.cv_nom == 0.3].set_index("seed").phi_J_lin
+        b = g[g.cv_nom == 0.5].set_index("seed").phi_J_lin
+        cs = sorted(set(a.index) & set(b.index))
+        dd = np.array([(b[s] - a[s]) / 0.2 for s in cs])
+        _latese[fam] = (float(dd.mean()), float(dd.std(ddof=1) / math.sqrt(len(dd))))
+    print("       paired per seed, with the t value at the design's own 2 dof:")
+    for fam, (m, se) in _latese.items():
+        print(f"         {fam:11s} {m:+.4f} +- {se:.4f}   t = {m/se:+6.2f}  vs t_crit 4.303")
+    check("[RETRACTED VERDICT] the bidisperse local slope is NEGATIVE in the mean but NOT "
+          "RESOLVED at 2 dof, so the sign is undetermined above CV = 0.3, not refuted",
+          abs(_latese["bidisperse"][0] / _latese["bidisperse"][1]) < 4.303,
+          f"t = {_latese['bidisperse'][0]/_latese['bidisperse'][1]:+.2f}")
 
     # --- (b) the phase8 critical-state channel, read from the file this time -----------
     print("\n   (b) the CRITICAL-STATE channel, recomputed from out/phase8_prod2*.jsonl")

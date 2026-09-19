@@ -71,7 +71,7 @@ onset_size_degeneracy_check.py   (v3, 2026-09-19, after two referee passes)
 
    SIZE_THRESHOLD sec 1 prints BOTH: ID(ell = D0) = 7.19e-05, ID(ell = 10a) = 7.03
    ell enters SQUARED, so the ratio should be (D0/10a)^2 = 9.766e+04: predicted 7.021 against the printed 7.03
-   [PASS] the two drainage-length readings differ by exactly (D0/10a)^2, confirming ell enters squared and that BOTH are on record  --  7.021 vs 7.03, 0.12 %
+   [PASS] [TAUTOLOGY, kept for the record] the 10a row reproduces (D0/10a)^2 times the D0 row -- which is how size_threshold.py computes it, so this cannot fail  --  7.021 vs 7.03, 0.12 %
 
    convention for the dilatant stress                                 p  vs sigma* ~ d^  vs sigma_in ~ d^
    Darcy, ell ~ D0        (drop-scale drainage, [M26]'s choice)      -2           -0.10              2.00
@@ -151,17 +151,32 @@ onset_size_degeneracy_check.py   (v3, 2026-09-19, after two referee passes)
    bidisperse       0.0151        0.0602     1.323      0.332
    [PASS] 🔴 REFUTED: v2's local-slope rescaling has the wrong sign for the two non-lognormal families (they are concave near CV = 0.2, not convex)  --  local/chord = lognormal 0.54, uniform 1.19, bidisperse 2.17
 
+   🔴 RETRACTED: the spread of the 0 -> CV chord slope, at EVERY CV, with the
+      max-min difference's own t value at 2 dof:
+         CV   spread    max-min        se       t
+        0.1     2.74     0.0242    0.0080    3.04
+        0.2     1.17     0.0100    0.0108    0.93
+        0.3     1.42     0.0289    0.0075    3.84
+        0.4     2.38     0.0655    0.0064   10.23
+        0.5     4.47     0.0964    0.0071   13.52
+   [PASS] [RETRACTED CLAIM] the CV = 0.2 spread is the MINIMUM over the CV sweep, so quoting it as 'the local spread' was an argmin, not a property of the data  --  1.17x at CV = 0.2 against a sweep [2.74, 1.17, 1.42, 2.38, 4.47]
+
+   (the withdrawn wording is kept below for the record)
    ⚠ AND THE FAMILY SPREAD IS AN ENDPOINT ARTEFACT AT THIS CV. Over the chord
      it is 4.47x (the manuscript's headline); LOCALLY at CV ~ 0.2,
      where CV* actually is, it is 1.17x. The three families are
      nearly indistinguishable where the lever is asked about.
-   [PASS] the family spread collapses between the chord and the local slope at CV ~ 0.2  --  4.47x chord vs 1.17x local
+   [PASS] [WITHDRAWN] the family spread collapses between the chord and the local slope  --  4.47x chord vs 1.17x local
 
    🔴 AND THE SIGN IS NOT FAMILY-UNIVERSAL. The bidisperse family is
       NON-MONOTONE (main.tex: it peaks near CV = 0.3), and its local slope
       above 0.3 is -0.0379. v2's 'dphi_c/dCV > 0 on every
       family' is a statement about the CHORD only.
-   [PASS] 🔴 REFUTED: at least one family has a NEGATIVE local slope above CV = 0.3, so the lever's sign is not family-universal  --  bidisperse 0.3->0.5 = -0.0379
+       paired per seed, with the t value at the design's own 2 dof:
+         lognormal   +0.1631 +- 0.0070   t = +23.35  vs t_crit 4.303
+         uniform     +0.0171 +- 0.0101   t =  +1.70  vs t_crit 4.303
+         bidisperse  -0.0379 +- 0.0187   t =  -2.03  vs t_crit 4.303
+   [PASS] [RETRACTED VERDICT] the bidisperse local slope is NEGATIVE in the mean but NOT RESOLVED at 2 dof, so the sign is undetermined above CV = 0.3, not refuted  --  t = -2.03
 
    (b) the CRITICAL-STATE channel, recomputed from out/phase8_prod2*.jsonl
        (v2 hardcoded three numbers here and one of them was 10 seed s.d. out)

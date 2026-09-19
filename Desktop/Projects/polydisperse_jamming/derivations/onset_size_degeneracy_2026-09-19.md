@@ -1,4 +1,66 @@
-# Does particle size decide the regime? — UNDETERMINED, and this page says exactly why
+# Does particle size decide the regime? — three versions, three withdrawals
+
+> # 🔴 v3's VERDICT IS WITHDRAWN TOO. Referee pass 3, the same day.
+>
+> v3 (below) reported **UNDETERMINED**: "the dilatant stress's size exponent is one of
+> {−2, −1, 0, +1} across five conventions", and in bold, "**NOTHING ON DISK PINS `ℓ`**".
+> **That is over-claimed, and the file this page names as its own companion settles two of
+> the three knobs.** Verified against the files before acting:
+>
+> 1. **`impact_stress/PORE_PHYSICS.md` §3 pins the drainage length for exactly this
+>    question.** Its title is "The drainage length is a modelling choice" and its closing
+>    paragraph makes the choice: *"For whether frustrated dilatancy can raise the particle
+>    pressure in the spreading film, the contact length is correct: the fluid must be drawn
+>    from somewhere in the film to fill the dilating region, and the film's own radius bounds
+>    that distance."* `L = 0.49 D₀`, and it is a **computed** Wagner `r_c` at peak force from
+>    `stress.py`, not an assumption — *"and it is the length implied by Mobaseri et al.'s
+>    Eq. 3."* §3's row 2 (`ℓ = 10a`) is not a rival convention either: `size_threshold.py:138`
+>    says of that very line, *"this group is SIZE-BLIND by construction and predicts no
+>    threshold"* — a declared null.
+> 2. **§9.1 and §9.2 already ran the capacity-vs-drainage comparison.** Lab silica, uncapped
+>    `p_dil = 6.2e7 Pa` against `p_dil^max = K_p Δφ/φ = 94 Pa`: ***"The ceiling binds by six
+>    decades."*** Cornstarch: 1.3e5 against 4.0e5, *"only by a factor of 3."* So the ceiling
+>    that binds for the lab silica is the **capacity** one, three decades below the
+>    `min(P_atm, 2γ/r_throat)` §2 used, and above it the exponent is **+1** for an EDL
+>    contact and **0** for a Hertzian one — i.e. **determined, per material**, not one of
+>    five. ⚠ And applying `p = +1` material-independently is the EDL-vs-Hertz error
+>    `SIZE_THRESHOLD` §3 already recorded against its own v1. Committed again.
+> 3. **§3's "reproduced to 0.12 %" check is a tautology.** `size_threshold.py:140` literally
+>    computes `ID(ℓ=10a) = ID(ℓ=D₀)·(D₀/10a)²`. The check verified a multiplication, not that
+>    `ℓ` enters squared — and its two inputs were typed literals in a page whose first line
+>    says nothing is typed from memory.
+> 4. **§5's bidisperse "REFUTED" rests on an unresolved number.** Paired per seed, the local
+>    0.3 → 0.5 slope is **−0.0379 ± 0.0187, t = 2.03 against `t_crit` = 4.303**. `main.tex`
+>    says in its own Statistics section that a flat 2 s.e. bar is a test at p = 0.184. The
+>    page states −0.0379 bare, three times, and marks it REFUTED.
+> 5. **§5's "1.17× locally" is the argmin of its own sweep.** The spread of the 0 → CV chord
+>    slope runs **2.74 / 1.17 / 1.42 / 2.38 / 4.47** at CV = 0.1 … 0.5. The page's own `CV*`
+>    is 0.30–0.35, where it is 1.42 and rising. The local max−min difference is
+>    **+0.0100 ± 0.0108, t = 0.93** — it establishes nothing, and it was used to call an
+>    "endpoint artefact" a result that passes three gates in `main.tex`. **That claim is
+>    retracted and nothing in `paper/` should change on account of it.**
+>
+> ### What is actually established, after three passes
+>
+> * `σ_in/P_f = A·ID` exactly, and the force-vs-stress distinction does not change the
+>   exponent: `F_d = A π r_c² · P_f`, so the `r_c²` cancels. [M26]'s number **is** the
+>   A-vs-B discriminator and this page never had a new one.
+> * For the lab silica the dilatant stress is **capacity-limited**, and the capacity ceiling
+>   carries the particle size through the contact law: `K_p ∝ a` for a double layer, nothing
+>   for Hertz. That is a statement per material, and it is in `PORE_PHYSICS` §9.
+> * What is genuinely open is narrower than v3 claimed: **`φ_c`** for this material (the only
+>   value naming the model's own quantity is a placeholder), **which contact law it has**,
+>   and **`λ_D`**, which `PORE_PHYSICS` §5.2 says "spans a decade" and "is not measured".
+> * ⚠ Unexamined by all three versions: `poroelastic_time_ratio` returns **τ_χ/τ_imp = 1.058**
+>   for the lab silica, against 1.5e-3 and 0.021 for cornstarch. The lab's own particle sits
+>   on the incompressible-pore-fluid boundary that every row of §3 assumes.
+>
+> **Everything below is left as the record of v3, with its errors marked here rather than
+> edited out. Do not quote §3's "3 decades per size decade" or §5's 1.17× and −0.0379.**
+
+---
+
+# v3, as written and now withdrawn: UNDETERMINED, and this page says exactly why
 
 **2026-09-19.** Every number below is printed by `onset_size_degeneracy_check.py` into
 `onset_size_degeneracy_check.txt` (rc 0, ALL CHECKS PASSED); nothing is typed from memory.

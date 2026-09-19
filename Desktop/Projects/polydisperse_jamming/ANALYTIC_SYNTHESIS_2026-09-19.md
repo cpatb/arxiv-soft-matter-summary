@@ -12,7 +12,26 @@ started, and saying which is the point of §3.
 
 ## 1. The one item carried through: does size decide the regime?
 
-`derivations/onset_size_degeneracy_2026-09-19.md`. **Verdict: UNDETERMINED.**
+`derivations/onset_size_degeneracy_2026-09-19.md`. **Three headlines, three withdrawals.**
+
+> 🔴 **The verdict below is itself withdrawn.** Referee pass 3 found that the file this page
+> names as its own companion settles two of the three knobs the negative rests on.
+> `impact_stress/PORE_PHYSICS.md` §3 is titled "The drainage length is a modelling choice"
+> and then makes the choice for exactly this question: for whether frustrated dilatancy can
+> raise the particle pressure in the spreading film, the contact length is correct,
+> `L = 0.49 D₀`, a computed Wagner `r_c` rather than an assumption, and the length implied by
+> Mobaseri et al.'s Eq. 3. The `ℓ = 10a` row is not a rival convention: `size_threshold.py`
+> says of that very line that the group is size-blind by construction and predicts no
+> threshold. And §9.1 already ran the capacity-versus-drainage comparison: for the lab silica
+> the uncapped `p_dil = 6.2e7 Pa` against a capacity ceiling of 94 Pa, which binds by six
+> decades. So the binding ceiling is the capacity one, three decades below the cavitation
+> ceiling §1 used, and above it the exponent is +1 for a double-layer contact and 0 for a
+> Hertzian one: determined per material, not one of five.
+>
+> Two smaller failures in the same page. The "reproduced to 0.12 %" check is a tautology,
+> because `size_threshold.py:140` computes the 10a row as the D₀ row times `(D₀/10a)²`. And
+> the bidisperse "refuted" rests on −0.0379 ± 0.0187, t = 2.03 against t_crit = 4.303, which
+> is not resolved. Both verified against the files before acting.
 
 Two headlines were written and both were withdrawn by referee passes.
 
@@ -86,15 +105,31 @@ no frictionless block: the family least like the others is the one not tested.
 
 ---
 
-## 2. A correction the manuscript should carry, and it is not an error
+## 2. 🔴 A retraction: the "correction" this section proposed is withdrawn
 
-`paper/main.tex` quotes the family spread in `φ_J` as 4.47x and brackets it correctly
-(2.89x peak-defined, 5.51x inverse-variance). Read as a statement about the CV 0 to 0.5
-endpoint, that is right. Read as "the families differ by 4.5x at a given CV", it is not.
-Locally at CV ≈ 0.2, where the regime question sits, the spread is 1.17x, computed from the
-same committed fits. The three families are nearly indistinguishable exactly where the
-impact question asks about them, and separate only toward the top of the ladder. One
-sentence in the Discussion would close a gap a referee will otherwise find.
+This section said `paper/main.tex`'s 4.47x family spread is an endpoint quantity that falls
+to 1.17x locally at CV ≈ 0.2, and that one sentence in the Discussion would close a gap.
+**Both halves fail, and nothing in `paper/` should change.**
+
+The spread of the 0 to CV chord slope, at every CV, with the max-min difference's own t at
+the design's 2 dof:
+
+| CV | spread | max−min | s.e. | t |
+|---|---|---|---|---|
+| 0.1 | 2.74 | 0.0242 | 0.0080 | 3.04 |
+| **0.2** | **1.17** | **0.0100** | **0.0108** | **0.93** |
+| 0.3 | 1.42 | 0.0289 | 0.0075 | 3.84 |
+| 0.4 | 2.38 | 0.0655 | 0.0064 | 10.23 |
+| 0.5 | 4.47 | 0.0964 | 0.0071 | 13.52 |
+
+1.17x is the **argmin** of its own sweep: I quoted the single CV at which the families are
+closest, while §1's own `CV*` sits at 0.30 to 0.35 where the spread is 1.42 and rising. And
+at that CV the difference is not resolved (t = 0.93 against t_crit = 4.303), so it
+establishes nothing. An unresolved number cannot demote one that passes three gates in
+`main.tex` (ANOVA F = 144.7, Welch t = 13.5 against a selection-calibrated 5.87), and
+"artefact" was the wrong word for a result the manuscript already brackets as 2.89 to 5.51.
+
+Found by referee pass 3 and verified against the committed fits before retracting.
 
 ---
 
@@ -102,7 +137,7 @@ sentence in the Discussion would close a gap a referee will otherwise find.
 
 | axis | can the existing data test it? | what it would take |
 |---|---|---|
-| **absolute size** | No. §1: the dilatant stress's size exponent is unpinned across 3 decades per size decade, and the one anchor (`α = 1.9(1)`) is measured on a sterically stabilised system where salt does not move `σ*`, while the lab's is charge stabilised. | the three measurements in §1, plus `α` in a second chemistry. Of the five candidates searched and DOI-resolved this session, only Guy et al. 2015 has a particle-size series of `σ*`. ⚠ The other four were checked at abstract level only, so that is CANNOT TELL rather than a hard negative. |
+| **absolute size** | **More than §1 claimed, less than a result.** After the §1 retraction: `PORE_PHYSICS` §3 pins the drainage length and §9.1 shows the capacity ceiling binds by six decades for the lab silica, so the exponent there is +1 (double-layer contact) or 0 (Hertzian), per material. What is open is narrower: `φ_c`, which contact law the material has, and `λ_D`. | `φ_c` for this material; a contact-law determination; `λ_D`, which `PORE_PHYSICS` §5.2 says spans a decade and is not measured. Plus `α` in a second chemistry: of the five candidates DOI-resolved this session only Guy et al. 2015 has a particle-size series of `σ*`, and ⚠ the other four were checked at abstract level only, so that is CANNOT TELL rather than a hard negative. |
 | **size variation (CV)** | Partly. `φ_J(CV)` is measured for three families on a committed ladder, and the sign of its effect on the regime follows. The magnitude does not, because it needs `φ_c`. | `φ_c` for the lab silica, and the contact-weighted PSD moment (§4), which is free. |
 | **shape** | Partly, and not started this session. The 83-cell clump campaign measures `φ_J(α)` and `Z_nr(α)`, and the constraint-counting literature is now API-resolved: van Hecke 2010 for `d+1 ≤ Z ≤ 2d`, Donev 2004 for the near-sphere limit (spheres `Z ≈ 6.4`; oblate 9.82 measured against an isostatic 10; and their own observation that the contact number is *singular at the sphere value*, rising sharply for small deviations while the degree-of-freedom count jumps discontinuously). That last point is the one a two-rung α ladder is worst placed to see. | the LevelSet control, already item 1 of the 09-16 list. Until it exists, every α > 1 number is "elongation + interlocking + contact multiplicity". |
 | **material properties (friction, stiffness)** | **Yes, and it was done: see §1b.** Both Wyart-Cates endpoints are on disk at matched CV for two of three families, and their CV dependences are not resolved apart. Stiffness was not touched. | more seeds (the bound is 26-32 % of the effect at n = 3), a frictionless bidisperse block (six cells), and the `μ_p = 1.0` ladder to check whether 0.3 stands in for the frictional limit. |
@@ -129,10 +164,18 @@ is Q1 on the Paper 1 card, and it remains the single measurement that decides th
 
 ## 5. What this session's failures are worth
 
-Two headlines withdrawn in one day, by two referees, on the same underlying mistake. Each
+Three headlines withdrawn in one day by three referees. The first two shared a mistake: each
 version chose a convention where the literature offers several, and reported the consequence
-as a result. The second time is the instructive one, because the repair repeated the error
-it was repairing.
+as a result. The second is instructive because the repair repeated the error it was
+repairing.
+
+The third failure is different and worse. Having been caught twice choosing a convention, I
+wrote a page whose whole claim was that the conventions are unpinned, in bold, while the
+file I named as the page's own companion has a section titled "The drainage length is a
+modelling choice" that makes the choice, and a worked section that runs the comparison I
+said nobody had run. I cited that file six times and did not read the two sections that
+answer the question. Over-claiming a negative is still over-claiming: "nobody has pinned
+this" is a literature claim and it needs the same reading a positive one does.
 
 The check script could not catch either, for a reason worth writing down. The symbolic pass
 carried the disputed factor as a free symbol, so it could not see the dependence. The
