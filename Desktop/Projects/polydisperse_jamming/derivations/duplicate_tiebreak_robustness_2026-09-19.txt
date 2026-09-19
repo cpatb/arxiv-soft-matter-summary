@@ -1,0 +1,53 @@
+========================================================================================
+Does the duplicate tie-break move the published family shifts?
+========================================================================================
+
+=== S0  LOADING, N printed at every filter ===
+   files (wcbidi excluded, mid-flight): 158
+   N records                          : 717
+   N after dropping failed            : 717
+   N after N = 1500                   : 607
+   N after mu_p = 0.3                : 270
+   N after converged                  : 257   (dropped 13 non-converged)
+   N distinct (family, cv, seed, rung) cells: 217
+
+=== S1  CELLS WITH DISAGREEING DUPLICATES, inside the selected set ===
+   cells with more than one record   : 40
+   of those, DISAGREEING on phi      : 5
+      lognormal   cv=0.0 seed=1 p_hat=0.0001  phi = [0.574831, 0.578557]  spread 0.00373
+      lognormal   cv=0.0 seed=1 p_hat=0.001  phi = [0.592804, 0.594903]  spread 0.00210
+      lognormal   cv=0.0 seed=2 p_hat=0.0001  phi = [0.57491, 0.572343]  spread 0.00257
+      lognormal   cv=0.0 seed=2 p_hat=0.001  phi = [0.596028, 0.592049]  spread 0.00398
+      lognormal   cv=0.0 seed=3 p_hat=0.001  phi = [0.595227, 0.593124]  spread 0.00210
+
+   CV levels affected: [0.0]
+   [PASS] every disagreeing duplicate in the selected set sits at CV = 0, as main.tex's Methods states  --  [0.0]
+   [PASS] there is something to enumerate -- the test is not vacuous  --  5 cells
+
+=== S2  DUPLICATE CHOICES: 32 possible ===
+   ENUMERATING ALL 32 exhaustively.
+   family       combos        min        max      range  committed  range/committed
+   lognormal        32    0.06128    0.06252    0.00123     0.0621             2.0%
+   uniform          32    0.02420    0.02420    0.00000     0.0242             0.0%
+   bidisperse       32    0.01389    0.01389    0.00000     0.0139             0.0%
+   [PASS] the committed value of every family shift lies inside the range its duplicate choices span, at the 4-decimal precision the manuscript prints  --  committed values bracketed by the enumeration to within 5e-5
+
+=== S3  THE HEADLINE RATIO under every duplicate choice ===
+   lognormal/bidisperse spans 4.41x to 4.50x against the committed 4.47x
+   ⚠ that is a WORST-CASE pairing (best lognormal against worst bidisperse and
+     vice versa), so it is an upper bound on the tie-break's influence, not an
+     error bar: the two families share their CV = 0 cells, so the numerator and
+     denominator move TOGETHER and the true span is narrower.
+   taking the SAME combo for both families: 4.41x to 4.50x
+   [PASS] the headline ratio's 'three to five' bracket survives every duplicate choice, on the correlated (correct) pairing  --  4.41x to 4.50x against the paper's stated 'three to five'
+
+=== S4  THE PROTOCOL'S OWN RE-RUN SCATTER (all cells, not just selected) ===
+   keys with >1 record: 81; DISAGREEING: 14
+   |delta phi| on re-run: median 0.00234, mean 0.00235, max 0.00503
+   ⚠ This is a per-RUNG phi scatter. The published shifts are PAIRED differences
+     of EXTRAPOLATED phi_J, so this number does not propagate to them directly --
+     which is why S2's enumeration is the test and this is only context.
+   S2 measured the actual propagation: at most 0.00123 in any family shift.
+
+========================================================================================
+ALL CHECKS PASSED

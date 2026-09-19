@@ -328,7 +328,7 @@ def test_load_shards_returns_one_record_per_physical_cell():
     # (or pass) for a reason unrelated to the collapse. Both sides now come from the same
     # in-process load; the artifact is checked separately, as an artifact.
     import sweep_descriptive as sd
-    n_raw = sd.LAST_LOAD["n_records"]
+    n_raw = sd.LAST_LOAD["n_selected_records"]
     assert sd.LAST_LOAD["n_cells"] == len(sel), "LAST_LOAD disagrees with the returned list"
     assert n_raw > len(sel), (
         f"no record was collapsed ({n_raw} == {len(sel)}); either the raised-cap records "

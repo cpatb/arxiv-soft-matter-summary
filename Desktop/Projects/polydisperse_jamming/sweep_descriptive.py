@@ -281,7 +281,16 @@ def load_shards():
     _unb = []
     for gk, recs in sorted(_pre.items()):
         n_seed = len({r["seed"] for r in recs})
-        if len(recs) != n_seed and len(recs) % n_seed != 0:
+        # ⚠ 2026-09-19: this used `len(recs) % n_seed != 0`, which is NECESSARY but NOT
+        # SUFFICIENT for equal multiplicities -- multiplicities {4, 2} over two seeds give
+        # 6 records, 6 % 2 == 0, and would NOT have been flagged even though the unweighted
+        # mean weights one seed twice the other. The premise that saved it (max multiplicity
+        # 2) is asserted in a DIFFERENT FILE, so this module standalone could print
+        # "0 unbalanced" with the rule silently wrong. Compare the multiplicities directly.
+        _mult: dict[int, int] = {}
+        for r in recs:
+            _mult[r["seed"]] = _mult.get(r["seed"], 0) + 1
+        if len(set(_mult.values())) != 1:
             _unb.append((gk, len(recs), n_seed))
     P(f"   groups with an UNBALANCED duplication (pre-collapse mean != mean over seeds): "
       f"{len(_unb)} of {len(_pre)}")
@@ -304,8 +313,13 @@ def load_shards():
     _maxmult = max(_cellmult.values()) if _cellmult else 0
     _ndup = sum(1 for v in _cellmult.values() if v > 1)
     P(f"   cell multiplicity: max {_maxmult}, cells appearing more than once {_ndup}")
-    LAST_LOAD.update(n_records=len(sel), n_cells=len(cap_pick), n_unbalanced=len(_unb),
-                     max_multiplicity=_maxmult, n_duplicated_cells=_ndup)
+    # ⚠ `n_selected_records`, NOT `n_records`: this is len(sel), the count AFTER the
+    # N/mu_p/converged filter (252), not the globbed record count (717). The key was called
+    # `n_records` until 2026-09-19, which is the same unit ambiguity as the FATAL this
+    # module was fixed for, relocated into a public dict.
+    LAST_LOAD.update(n_selected_records=len(sel), n_cells=len(cap_pick),
+                     n_unbalanced=len(_unb), max_multiplicity=_maxmult,
+                     n_duplicated_cells=_ndup)
     return list(cap_pick.values())
 
 
@@ -897,7 +911,11 @@ def md(rows_out, health, sel, qres, peak_rows, order_frac, order0, pair_hits, re
         "went through this path and did not move.",
         "",
         "- **AMENDED 2026-09-19: \"no mean moved\" was too strong.** The duplication is "
-        f"BALANCED in all but {LAST_LOAD.get('n_unbalanced', 0)} of the affected groups "
+        # ⚠ 2026-09-19: `.get(..., 0)` here would assert "BALANCED in all but 0" -- an
+        # affirmative FALSE claim inside a generated document -- if md() ever ran without a
+        # preceding load_shards(). Every other reader of this dict subscripts and fails
+        # loudly; this one now does too.
+        f"BALANCED in all but {LAST_LOAD['n_unbalanced']} of the affected groups "
         "— where an unweighted mean over the records equals the mean over cells — and "
         "UNBALANCED in the rest. The unbalanced groups, with the means before and after "
         "the collapse, are printed in §3 of `out/sweep_descriptive.txt`; none of them is "
