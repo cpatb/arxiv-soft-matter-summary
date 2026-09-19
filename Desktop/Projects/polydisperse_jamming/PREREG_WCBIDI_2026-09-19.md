@@ -234,6 +234,56 @@ question at "not decidable on this protocol" rather than at a verdict.
 
 ---
 
+## 3d. AMENDMENT 3 — the cap re-run, registered AFTER the first campaign was graded
+
+The campaign delivered and **G1 failed: 58 of 72 converged**, which triggers §5's own
+worthlessness criterion ("more than 2 of 72 cells cap → G3's argmax is being read off a
+censored curve"). §4 said capped cells would be *reported, not rescued inside this
+campaign*. They are reported, in `CLAIMS_WCBIDI_2026-09-19.md`. This amendment registers a
+**separate** campaign to rescue them, written before it launches.
+
+**What capped:** all 14 at `MAX_ITER = 200000`, and **13 of 14 at the bottom rung
+`p̂ = 3e-5`** (the remaining one at `1e-4`, CV 0.4 seed 2). Per CV: 2/1/2/2/4/3.
+
+**Registered grid:** the **full** 6 CV × 3 seeds × 4 rungs at `PJ_MAX_ITER = 1000000`, tag
+**`wcbidicap`**. The whole grid rather than only the 14, so that every ladder is internally
+consistent at one cap — mixing rungs from two caps into one ladder is precisely the pooling
+the `_it{cap}` key suffix exists to prevent.
+
+> ⚠ **A raised resource limit is a change of protocol until an identity gate says
+> otherwise** (standing rule S6). **C1, the identity gate, is therefore the primary gate of
+> this amendment**: the cells that **already converged** under the 200000 cap must come back
+> **bit-identical** under the 1000000 one. A cell that stopped because it converged cannot
+> be affected by raising a limit it never reached; if any such cell moves, the cap is not the
+> only thing that changed and nothing from this re-run may be read.
+>
+> **REGISTERED: C1 passes on all 58 previously-converged records.**
+
+**C2:** the 14 previously-capped cells converge under the raised cap. **Registered: 14 of
+14.** If any still cap at 1e6 that is reported, not raised again.
+
+**C3, the point of the exercise:** G3's argmax, re-graded on converged-only data.
+
+> **REGISTERED, and this is the falsifiable part:** the argmax of `φ_0^bidi(CV)` on the
+> converged-only raised-cap data lands in **{0.2, 0.3, 0.4}**, i.e. the provisional (T)
+> verdict survives. The alternative registered outcome is argmax = 0.5, which would mean
+> the turnover seen in the censored data was an artefact of which cells capped.
+>
+> ⚠ The first campaign's argmax was CV = 0.4 and that rung had **0 of 3** fully converged
+> ladders, so this is a genuine test and not a formality.
+
+**C4:** `Δφ_0` re-measured on the raised-cap data against G4's original registered band
+**[+0.0125, +0.0146]**. The band is not moved.
+
+## 3e. AMENDMENT 4 — `PREREG_MUSTAR_2026-09-19.md` runs in the same launch
+
+The `mustar` campaign (72 records, `μ_p ∈ {0.6, 3.0}` × CV {0, 0.2, 0.5} × 3 seeds ×
+4 rungs, lognormal) is launched in the same background call, **after** `wcbidicap`
+completes, so the two never compete for the 16 physical cores and the wall-time budgets in
+both preregs stay meaningful. Neither campaign's gates reference the other.
+
+---
+
 ## 4. What is NOT being run, and why
 
 - **No raised iteration cap.** If cells fail G1 they are reported, not rescued.
