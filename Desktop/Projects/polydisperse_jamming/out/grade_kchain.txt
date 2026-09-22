@@ -1,0 +1,21 @@
+grade_kchain -- 25 of 36 chain records
+K4-excluded chain cells: see below; total K4 exclusions touched: 44
+
+=== p_hat 3e-05: chi = phi(mu m)/phi(mu 0), seed-paired; Z_nr ===
+  chain w3=0.5                    chi(0.3) 0.8834 (n 3)  Z(0) 6.428
+  dumbbell w2=1                   chi(0.3) 0.8642 (n 2)  Z(0) 7.921
+  dumbbell w2=1 [K4-EXCLUDED]     chi(3) 0.7852 (n 1)  Z(3) 3.829
+  singlet                         chi(0.3) 0.9083 (n 3)  chi(3) 0.8856 (n 3)  Z(0) 5.973  Z(3) 4.038
+
+=== p_hat 0.001: chi = phi(mu m)/phi(mu 0), seed-paired; Z_nr ===
+  chain w3=0.5                    chi(0.3) 0.9066 (n 3)  Z(0) 6.943
+  chain w3=1.0                    chi(0.3) 0.8805 (n 3)  Z(0) 8.635
+  dumbbell w2=1                   chi(0.3) 0.8978 (n 3)  Z(0) 8.472
+  dumbbell w2=1 [K4-EXCLUDED]     chi(3) 0.7824 (n 3)  Z(3) 4.655
+  singlet                         chi(0.3) 0.9284 (n 3)  chi(3) 0.8749 (n 3)  Z(0) 6.506  Z(3) 4.477
+  triangle w3=1                   Z(0) 8.729
+  triangle w3=1 [K4-EXCLUDED]     chi(0.3) 0.8846 (n 3)  chi(3) 0.7519 (n 3)  Z(3) 4.573
+
+C1 (chi(chain) < 0.788 < 0.886 and chi(triangle) > chi(chain) at w3 = 1, p 3e-5, mu_m 3):
+   read from the table; the mu_m 3 rows are K4-EXCLUDED wherever flagged, so C1 is graded
+   only if the chain mu_m 3 cells pass K4 -- otherwise UNDETERMINED, with mu_m 0.3 printed.
