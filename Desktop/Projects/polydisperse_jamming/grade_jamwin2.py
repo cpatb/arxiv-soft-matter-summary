@@ -106,8 +106,10 @@ def main() -> int:
     vals = [sc[d] for d in DELTAS]
     if any(v is None for v in vals):
         verdict = "UNDETERMINED (a delta has no readable boundary)"
-    elif vals[0] == vals[1] == vals[2]:
-        verdict = "UNDETERMINED (tie at this ladder spacing)"
+    elif vals[0] == vals[2]:
+        # Amendment 4: (S) predicts a >= 1-rung RISE (3.67x > 3.16x spacing); (R) a 0-1 rung
+        # FALL (1.87x). A tie between the delta extremes therefore refutes (S).
+        verdict = "(S) REFUTED, (R) not excluded (tie between delta 0.7 and 2.6; Amendment 4)"
     elif vals[0] <= vals[1] <= vals[2] and vals[2] > vals[0]:
         verdict = "(S) stress-thresholded: sigma*_c RISES with delta"
     elif vals[0] >= vals[1] >= vals[2] and vals[0] > vals[2]:
