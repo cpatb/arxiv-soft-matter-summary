@@ -10,11 +10,11 @@ the PLOTTED DATA as .csv.
 
 Figures
 -------
-A1  THE AGGREGATION PLANE. `Lambda/G` over `(d_f, <k>)`, with the `Lambda = G` crossing
-    drawn as a contour and the region where the model is INADMISSIBLE (`phi_eff > 1`)
-    hatched out. One figure carries the whole result: the sign of the aggregation effect
-    is set by the aggregate's OPENNESS, not by how much it has aggregated, and the model
-    destroys itself before the open-aggregate corner is reached.
+A1  THE AGGREGATION PLANE. `Lambda/G` over `(d_f, <k>)`, with TWO contours of that same
+    field: `Lambda = G`, where aggregation starts promoting jamming, and
+    `Lambda/G = PHI0_MONO/PHI_SOLID`, beyond which assumption A3 fails. The gap between
+    them is the whole admissible window in which the promoting effect can be quoted, and
+    it is NARROW -- which is the honest version of this figure.
 A2  THE TWO LEVERS SEPARATELY, against `d_f` at three aggregation numbers, with the
     MEASURED ceiling on `G` drawn as a horizontal line. This is the closure-free form:
     `G` never leaves a narrow band that measurement already bounds, while `Lambda` runs
@@ -39,6 +39,33 @@ from multiplet_levers import BETA, critical_df, levers  # noqa: E402
 # The solid loading the admissibility bound is drawn at. It is the Wyart-Cates solver's
 # own default PHI, so the hatched region is the one a DNS run would actually hit.
 PHI_SOLID = 0.52
+
+# 🔴 THE ADMISSIBILITY CEILING, CORRECTED 2026-09-22 after referee pass 3.
+#
+# This figure first hatched `phi_eff = Lambda * PHI_SOLID > 1` -- a space-filling bound.
+# Referee pass 2 had already rejected exactly that ceiling in `multiplet_wc.py` and
+# replaced it with the pack's own jamming point, and THIS FILE WAS NEVER REVISITED: it
+# was committed before that correction and kept shipping the discredited bound. A
+# downstream artifact going stale when an upstream correction lands is a defect this
+# repository already records; here it meant the figure drew a large wedge of
+# INADMISSIBLE parameter space as valid coloured data.
+#
+# The right ceiling: rigid, non-interpenetrating aggregates (assumption A3) cannot be
+# packed denser than where that effective-sphere pack JAMS. For the frictionless
+# (geometric) maximum that is `G * phi_0_mono`, so A3 fails when
+#
+#     Lambda * PHI_SOLID > G * PHI0_MONO     <=>     Lambda/G > PHI0_MONO/PHI_SOLID.
+#
+# which is a CONTOUR OF THE VERY FIELD THIS FIGURE PLOTS -- so the hatching and the
+# `Lambda = G` line are two contours of one quantity, and the gap between them is the
+# whole admissible window.
+#
+# ⚠ `G` here is the FRICTIONAL gain (mu_p = 0.3, the closure's gauge) standing in for the
+# frictionless one. `multiplet_wc.py` section 2 finds no resolved friction dependence of
+# G (0 of 4 CV levels), which is a BOUND and not a proof of equality; the substitution is
+# flagged in FIGURES_MULTIPLET.md rather than hidden.
+PHI0_MONO = 0.6324          # \phiJFrictionless, paper/numbers.tex; reproduced to 1.2e-14
+A3_RATIO = PHI0_MONO / PHI_SOLID
 
 # The MEASURED ceiling on G: the widest pack this project has ever made, lognormal
 # CV = 0.5 at this rung, divided by the measured monodisperse beta. Source:
@@ -85,10 +112,10 @@ def fig_A1() -> None:
     cs = ax.contour(dfs, kbs, ratio, levels=[1.0], colors=COL[0], linewidths=1.4)
     ax.clabel(cs, fmt={1.0: r"$\Lambda=G$"}, fontsize=7, inline=True)
 
-    # where the effective-sphere model destroys itself: phi_eff = Lambda*phi_solid > 1
-    ax.contourf(dfs, kbs, lam * PHI_SOLID, levels=[1.0, 1e9],
+    # where the effective-sphere model destroys itself: Lambda/G > PHI0_MONO/PHI_SOLID
+    ax.contourf(dfs, kbs, ratio, levels=[A3_RATIO, 1e9],
                 colors="none", hatches=["///"], alpha=0.0)
-    ax.contour(dfs, kbs, lam * PHI_SOLID, levels=[1.0], colors=COL[2],
+    ax.contour(dfs, kbs, ratio, levels=[A3_RATIO], colors=COL[2],
                linewidths=1.0, linestyles="--")
 
     ax.set_xlabel(r"$d_f$")
@@ -101,9 +128,12 @@ def fig_A1() -> None:
                lambda_over_G=float(ratio[i, j]), Lambda=float(lam[i, j]),
                phi_eff=float(lam[i, j] * PHI_SOLID))
           for i in range(0, kbs.size, 4) for j in range(0, dfs.size, 4)],
-         f"Lambda/G over the aggregation plane. Solid line: the Lambda = G crossing. "
-         f"Dashed line: phi_eff = Lambda*phi_solid = 1 at phi_solid = {PHI_SOLID}, "
-         f"beyond which the no-interpenetration model is INADMISSIBLE. "
+         f"Lambda/G over the aggregation plane. Solid line: the Lambda = G crossing "
+         f"(aggregation starts PROMOTING jamming). Dashed line + hatching: "
+         f"Lambda/G = PHI0_MONO/PHI_SOLID = {A3_RATIO:.4f}, beyond which phi_eff exceeds "
+         f"the effective pack's own jamming point and assumption A3 "
+         f"(no interpenetration) FAILS. Both are contours of the same plotted field. "
+         f"phi_solid = {PHI_SOLID}, phi_0 monodisperse = {PHI0_MONO}. "
          f"Closure: mixture_model refit, beta = {BETA}.")
 
 

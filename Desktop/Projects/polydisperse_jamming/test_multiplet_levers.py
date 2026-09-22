@@ -9,6 +9,8 @@ Same rule as the sibling suites: each anchor is a closed form, an exactly-known 
 or a discriminating negative, never a round trip.
 """
 
+import math
+
 import numpy as np
 import pytest
 
@@ -207,15 +209,17 @@ def test_df_star_sensitivity_matches_a_direct_perturbation():
     crossing with G shifted by exactly one PHI_SCALE/BETA and measures how far the root
     actually moved. If the derivative form were wrong -- or inverted -- this disagrees.
     """
-    from multiplet_levers import (BETA, D10, SCALE, df_star_sensitivity, flory,
-                                  levers, phi_J)
+    from multiplet_levers import (BETA, D10, N_SEEDS, SCALE, df_star_sensitivity,
+                                  flory, phi_J)
     from psd import MultipletPSD
     import scipy.optimize as so
 
     for k_bar in (1.2, 2.0, 5.0):
         d0 = critical_df(k_bar)
         pred = df_star_sensitivity(k_bar, d0)
-        dG = SCALE / BETA
+        # the SAME noise magnitude the module declares -- what this anchor tests is the
+        # DERIVATIVE FORM (via an independent brentq re-solve), not the convention for dG
+        dG = SCALE / (BETA * math.sqrt(N_SEEDS))
 
         def f(x, shift):
             p = MultipletPSD(d10=D10, d_f=float(x), n_k=flory(k_bar))

@@ -57,6 +57,7 @@ Run:  python3 multiplet_levers.py      (writes out/multiplet_levers.txt)
 
 from __future__ import annotations
 
+import math
 import os
 import sys
 
@@ -92,6 +93,9 @@ D10 = 0.8e-6                      # the lab silica's nominal size; only ratios m
 K_MAX = 240
 K_CONV_TOL = 0.005                # relative, on Lambda/G
 SCALE = mm.PHI_SCALE
+# Seeds per cell in the registered campaign. The floor on a CELL MEAN is
+# SCALE/sqrt(N_SEEDS), which is the convention `multiplet_wc.gain` already uses.
+N_SEEDS = 3
 
 
 # A class that cannot place a single grain in the pack is not a class. The DEM packs
@@ -186,6 +190,15 @@ def df_star_sensitivity(k_bar: float, d_f_star: float, h: float = 1e-4) -> float
 
     and the protocol's own noise on `G` is `PHI_SCALE/BETA` (since `G = phi_J/beta`).
     Both derivatives are taken by central difference at the root.
+
+    ⚠ THE NOISE IS AVERAGED OVER SEEDS, corrected after referee pass 3. This first used
+    `SCALE/BETA`, a SINGLE-run reproducibility, while the registered campaign averages
+    `N_SEEDS = 3` seeds per cell and the sibling module `multiplet_wc.gain` divides the
+    identical floor by `sqrt(n)`. Two files in one derivation using the same declared
+    scale with different conventions is the drift this repository punishes, so the seed
+    average is used here too. It makes the estimate SMALLER (less conservative), which is
+    why it is stated rather than quietly applied: on the undivided value the surviving
+    subset was `2.0 <= <k> <= 8.0`; on this one `<k> = 1.5` also clears the cut.
     """
     def lam(x):
         return MultipletPSD(d10=D10, d_f=x, n_k=flory(k_bar)).lambda_trap
@@ -196,7 +209,8 @@ def df_star_sensitivity(k_bar: float, d_f_star: float, h: float = 1e-4) -> float
     dlam = (lam(d_f_star + h) - lam(d_f_star - h)) / (2 * h)
     dg = (g(d_f_star + h) - g(d_f_star - h)) / (2 * h)
     denom = abs(dlam - dg)
-    return float("inf") if denom == 0 else float((SCALE / BETA) / denom)
+    dG = SCALE / (BETA * math.sqrt(N_SEEDS))
+    return float("inf") if denom == 0 else float(dG / denom)
 
 
 def truncation_report(k_bar: float, d_f: float) -> str:
@@ -285,7 +299,24 @@ def main() -> int:
                 f"{frac:.0%} of the whole plateau") if frac > 0.25 else ""
         say(f"      <k> = {kb:4.1f}:  D(d_f*) = {sens:.3f}  = {frac:5.0%} of the plateau"
             f"{flag}")
-    ok = [(k, d) for k, d, _, s in rows if s < 0.25 * plateau]
+    # The cut: a row is quoted only if its root is pinned to better than a QUARTER of
+    # the spread being quoted. ⚠ One quarter is a convention, not a derivation, and a
+    # referee rightly flagged it as undocumented. It is chosen so that four such rows
+    # could differ by the full spread before the spread became noise.
+    #
+    # ⚠ AND IT IS NOT FULLY INERT -- a first version of this comment claimed the
+    # surviving spread was "0.053 at any cut from 0.10 to 0.50", which the line this
+    # code prints immediately refuted (0.031 at 10 %). The measured values are printed
+    # rather than asserted. Tightening to 10 % drops <k> = 1.5 and 2.0 and NARROWS the
+    # surviving spread to 0.031; 25 % and 50 % both give 0.053. So the quoted spread is
+    # stable upward from the chosen cut and would SHRINK if tightened -- i.e. the cut is
+    # conservative in the direction that matters. The ORDINAL headline uses no cut.
+    CUT = 0.25
+    ok = [(k, d) for k, d, _, s in rows if s < CUT * plateau]
+    spreads = {c: (lambda sel: (max(sel) - min(sel)) if sel else float("nan"))(
+        [d for _, d, _, s in rows if s < c * plateau]) for c in (0.10, 0.25, 0.50)}
+    say("   cut sensitivity -- the surviving SPREAD at three thresholds: "
+        + ", ".join(f"{c:.0%}: {v:.3f}" for c, v in spreads.items()))
     say("")
     if ok:
         ks = [k for k, _ in ok]

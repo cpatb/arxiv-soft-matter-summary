@@ -68,6 +68,11 @@ N_REQ = 1500
 # The solver's own defaults, for reference when a mapped quadruple is printed.
 WC_DEFAULT = dict(PHI=0.52, PHI0=0.62, PHIM=0.50, SIGMA_STAR=20.0, ETA_S=0.05)
 
+# Two-sided 95 % Student t, by the number of PAIRED seeds a row actually has.
+# n = 3 -> 2 dof -> 4.303 is the design's own bar and the one the manuscript uses;
+# a row that lost a seed to non-convergence has n = 2 -> 1 dof -> 12.706.
+T_CRIT = {2: 12.706, 3: 4.303, 4: 3.182, 5: 2.776}
+
 
 def load_rung(rung: float = RUNG) -> dict:
     """Every lognormal N=1500 record at one rung, keyed (mu_p, cv, seed).
@@ -293,12 +298,17 @@ def main() -> int:
             continue
         t = abs(diff) / se if se > 0 else float("inf")
         t_hypot = abs(lo[1] - hi[1]) / math.hypot(lo[2], hi[2])
-        differ = t > 4.303
+        # ⚠ t_crit FOLLOWS THE ROW'S OWN n, corrected after referee pass 3. A single
+        # 4.303 was applied to every row, but that is the two-sided 95 % value at 2 dof
+        # (n = 3). The CV = 0.4 row has n = 2, i.e. 1 dof, where the value is 12.706 --
+        # and the error was in the LENIENT direction, making "DIFFER" easier to reach.
+        t_crit = T_CRIT.get(npair, 4.303)
+        differ = t > t_crit
         n_resolved += 1
         n_differ += differ
         say(f"      CV = {cv}: G(mu={lo[0]}) = {lo[1]:.4f}   G(mu={hi[0]}) = {hi[1]:.4f}"
             f"   PAIRED d = {diff:+.4f} +- {se:.4f} (n={npair}, r={r:+.2f})")
-        say(f"                 |t| = {t:.2f} vs t_crit 4.303 -> "
+        say(f"                 |t| = {t:.2f} vs t_crit {t_crit} (n={npair}) -> "
             f"{'DIFFER' if differ else 'not resolved'}"
             f"    [the withdrawn hypot estimator gave {t_hypot:.2f}]")
     say("")
@@ -377,8 +387,15 @@ def main() -> int:
             # (using a fixed 0.64 would over-flag). It catches 3 of 5.
             if w["_phi_over_phi0"] > 1.0:
                 return "🔴 A3 FAILS"
+            # ⚠ LABEL NARROWED after referee pass 3. phi/phiM > 1 means the material
+            # jams at the FULLY ACTIVATED end (fhat = 1), not unconditionally: phiJ(fhat)
+            # runs continuously from PHI0 to PHIM, so phi_m < phi < phi_0 is exactly the
+            # stress- and history-dependent window Wyart-Cates exists to describe. The
+            # baseline row makes the point -- phi/phi0 = 0.84 (freely flowable at low
+            # stress) and phi/phiM = 1.04 -- and calling that "shear-jammed" invites
+            # reading a fragile state as a static one.
             if w["_phi_over_phim"] > 1.0:
-                return "shear-jammed"
+                return "fragile (can shear-jam)"
             return "flowable"
 
         base_row = dict(base)

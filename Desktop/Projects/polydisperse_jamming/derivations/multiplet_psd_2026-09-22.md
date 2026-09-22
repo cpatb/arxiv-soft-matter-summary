@@ -35,12 +35,15 @@
 >
 > | `⟨k⟩` | 1.1 | 1.2 | 1.5 | 2.0 | 3.0 | 5.0 | 8.0 |
 > |---|---|---|---|---|---|---|---|
-> | `Δ(d_f*)` | 0.081 | 0.042 | 0.019 | 0.011 | 0.007 | 0.005 | 0.004 |
-> | as % of the plateau | **152 %** | **80 %** | **36 %** | 22 % | 14 % | 10 % | 8 % |
+> | `Δ(d_f*)` | 0.047 | 0.025 | 0.011 | 0.007 | 0.004 | 0.003 | 0.002 |
+> | as % of the plateau | **88 %** | **46 %** | 21 % | 12 % | 8 % | 6 % | 4 % |
 >
 > So at low `⟨k⟩` the individual roots are less well pinned than the whole spread they are
 > being compared across, and their agreement with the high-`⟨k⟩` rows **is not evidence of
-> flatness**. ⚠ The first version of this box filtered rows on
+> flatness**. (⚠ These figures were first computed with an un-averaged `PHI_SCALE`; the
+> campaign averages **3 seeds** per cell and the sibling module already divided by
+> `√n`, so the seed-averaged values above are the consistent ones. They are SMALLER,
+> i.e. less conservative, which is why the change is stated. The demotion stands.) ⚠ The first version of this box filtered rows on
 > `|φ_J(d_f*) − β| ≥ PHI_SCALE`, which asks whether `G ≠ 1` at the crossing — **the wrong
 > question**; the right one is the sensitivity of the root, above.
 >
@@ -389,5 +392,28 @@ found that **two of the four corrections were half-fixes with the wrong criterio
 **Confirmed clean by pass 2**: the step-11 sign correction reproduced exactly from a fresh
 script; the `β = 0.5947` gauge fix consistent throughout; and no FATAL anywhere.
 
-⚠ **Pass 3 has not run**, and pass 2 changed four files. The loop rule is "repeat until a
-pass returns nothing"; neither pass has yet returned nothing.
+### Pass 3 — 2026-09-22. **Two FATAL, four Material, three Minor. All acted on.**
+
+Pass 3 was asked to check pass 2's corrections and find anything new. **Both FATALs were
+in the FIGURES**, which pass 2 never touched — they were built *before* pass 2 and kept
+shipping claims pass 2 had retracted. A downstream artifact going stale when an upstream
+correction lands, inside one session.
+
+| # | finding | action |
+|---|---|---|
+| **P3-F1 FATAL** | `make_multiplet_figures.py` hatched `φ_eff > 1` — **the exact ceiling pass 2 rejected** — so A1 drew a wide wedge of inadmissible parameter space as valid coloured data. | **Accepted.** The hatching is now `Λ/G > φ₀ᵐᵒⁿᵒ/φ_solid = 1.2162`, which is **a contour of the field the figure already plots**. ⚠ The referee called it "3× tighter"; on `Λ` it is **1.58×** (1.923 → 1.216 at `G = 1`). The finding stands; the factor did not. **The figure now tells a different story: the admissible window is a NARROW band at `d_f ≈ 2.6–2.9`, and the `d_f ≈ 1.8–2.1` corner where the effect looked largest is entirely inside the failed region.** |
+| **P3-F2 FATAL** | `FIGURES_MULTIPLET.md` restated "2.89–2.95 across a sevenfold range" flatly — the precision claim the result box retracts. A reader seeing only the figure got the overclaim. | **Accepted.** Caption rewritten with the demotion, and it now opens by recording that it *was* stale. |
+| **P3-M1** | Amendment 1.2's table says the kept four pairs sit at gaps "0.7 and 0.9"; **PAIR 4 is `d_f` 1.6 → 2.1, gap 0.5** — the same gap the positives occupy. | **Accepted.** Table corrected to "0.5, 0.7 and 0.9" and the mechanism claim narrowed: one kept pair sits at the smallest gap and is still negative, so gap width alone is not what excludes the positives. |
+| **P3-M2** | `df_star_sensitivity` used an **un-averaged** `PHI_SCALE` while the campaign averages 3 seeds and the sibling module already divides by `√n`. | **Accepted.** Now `SCALE/(β√3)`. The estimate gets **smaller** (less conservative), so the change is stated, not quiet: the surviving subset widens from `⟨k⟩ ≥ 2.0` to `⟨k⟩ ≥ 1.5`, the quoted spread is unchanged at 0.053, **and the demotion stands**. |
+| **P3-M3** | `regime()` labelled any `φ/φ_M > 1` row "shear-jammed", but Wyart–Cates exists precisely to describe `φ_m < φ < φ_0` as a **stress- and history-dependent** window. | **Accepted.** Relabelled **"fragile (can shear-jam)"**, with the baseline row — flowable at low stress, jamming only at `f̂ = 1` — cited as the reason. |
+| **P3-M4** | `t_crit = 4.303` (2 dof) applied to every row including the `n = 2` one, whose value is **12.706**. The error was in the **lenient** direction. | **Accepted.** `T_CRIT` is now indexed by the row's own `n` and printed with it. |
+| P3-m1 | The "25 % of the plateau" cut was undocumented and effectively arbitrary. | **Accepted.** Documented, **and its sensitivity is now printed**: the surviving spread is 0.031 / 0.053 / 0.053 at cuts of 10 / 25 / 50 %. ⚠ My first attempt at that comment asserted "0.053 at any cut", which the line printed beside it refuted — corrected to the measured values. |
+| P3-m2 | The admissibility paragraph says "its own FRICTIONLESS jamming fraction" without repeating that `G₀` is measured at `μ_p = 0.3`, the lowest *converged* friction. | **Accepted** — flagged at the point of use. |
+
+**Confirmed sound by pass 3**: the IFT form of `df_star_sensitivity`, independently
+anchored against a `brentq` re-solve; the choice of the pack's own jamming point over a
+fixed RCP = 0.64; `packing.py:492`'s seed independence from `μ_p` (so the paired estimator
+is right); and that the **ordinal** claim survives every measured sensitivity — the worst
+(0.047) is an order of magnitude below the 0.7–1.1 gap to the colloidal values.
+
+⚠ **Pass 4 has not run**, and pass 3 changed six files. No pass has yet returned nothing.

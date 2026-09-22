@@ -169,10 +169,15 @@ single positive pair refutes it." Regenerating the **full candidate population**
 | of those, **positive** `Δφ` | **29 (36 %)** |
 | clearing the 2 × `PHI_SCALE` floor | 13 (**9 negative, 4 positive**) |
 | `d_f` gap of the 4 positive resolvable pairs | **all 0.5** |
-| `d_f` gap of the kept 4 | 0.7 and 0.9 |
+| `d_f` gap of the kept 4 | **0.5, 0.7 and 0.9** |
 
 **The sign is genuinely mixed in the population, and the selection rule sorts by WIDEST
-`d_f` gap first** — which in this grid picks only from the negative subgroup. The rule was
+`d_f` gap first.** ⚠ **CORRECTED after referee pass 3:** an earlier version of the table
+above said the kept four sit at gaps "0.7 and 0.9". **PAIR 4 is `d_f` 1.6 → 2.1, gap
+0.5** — the same gap the positive resolvable pairs occupy. So gap width alone is NOT
+what excludes the positives: one kept pair sits at the smallest allowed gap and is
+still negative. The narrowed claim is that **in at least one CV bucket** the rule's
+gap preference selects a negative pair where a positive one of equal CV exists. The rule was
 fixed before the search and is not tuned to the response, so this is not p-hacking; but it
 **is** selection on a variable (gap width) that turns out to correlate with the sign, which
 is precisely what §2 M4 claims to have avoided.
