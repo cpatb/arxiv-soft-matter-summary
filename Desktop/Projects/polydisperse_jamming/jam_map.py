@@ -180,7 +180,8 @@ def main() -> int:
         # Revised after referee 2026-09-22 (MATERIAL x3): both swap orders and the interaction
         # term are printed; the decomposition is repeated at three length conventions because
         # the g-only factor's SIGN depends on which diameter is held fixed; and the g of ONE
-        # sheared steady state (x_ss ~ 0.97-0.99) is applied across the whole phi sweep, an
+        # sheared steady state (x_ss 0.978-0.994 at mu_p 0, 0.923-0.936 at mu_p 0.3) is applied
+        # across the whole phi sweep, an
         # extrapolation in x that is flagged, not measured.
         say("")
         say("=== 4. DECOMPOSITION at fixed phi: window shift (x) vs activation (g) ===")
@@ -189,7 +190,8 @@ def main() -> int:
         say("   x-share: order x-first ln X/ln T, order g-first ln(T/G)/ln T -- both printed.")
         say("   G is referenced to a fixed diameter: sjam scales as d_ref^(2-m), m = 1 (derjaguin).")
         say("   ⚠ CV 0.5 is FINITE-SIZE FLAGGED (PREREG_ACTSHAPE Amendment 1): provisional.")
-        say("   ⚠ g is measured at the sheared steady state (x_ss ~ 0.97-0.99) and APPLIED at every")
+        say("   ⚠ g is measured at the sheared steady state (x_ss = phi_ss/phi0 = 0.978-0.994 at mu_p 0,")
+        say("     0.923-0.936 at mu_p 0.3; referee pass 2) and APPLIED at every")
         say("     phi below: an extrapolation in x the DEM has not tested (assumption A4). The only")
         say("     evidence is H4 (delta stable across a decade of p_hat, which moves x slightly).")
         for mu in (0.0, 0.3):

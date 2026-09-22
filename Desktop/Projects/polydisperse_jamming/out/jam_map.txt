@@ -73,7 +73,8 @@ window endpoints at the quoted rung p_hat = 3e-05 (converged records only)
    x-share: order x-first ln X/ln T, order g-first ln(T/G)/ln T -- both printed.
    G is referenced to a fixed diameter: sjam scales as d_ref^(2-m), m = 1 (derjaguin).
    ⚠ CV 0.5 is FINITE-SIZE FLAGGED (PREREG_ACTSHAPE Amendment 1): provisional.
-   ⚠ g is measured at the sheared steady state (x_ss ~ 0.97-0.99) and APPLIED at every
+   ⚠ g is measured at the sheared steady state (x_ss = phi_ss/phi0 = 0.978-0.994 at mu_p 0,
+     0.923-0.936 at mu_p 0.3; referee pass 2) and APPLIED at every
      phi below: an extrapolation in x the DEM has not tested (assumption A4). The only
      evidence is H4 (delta stable across a decade of p_hat, which moves x slightly).
    mu 0.0 CV 0.2 phi 0.58 [d10]: f_c 0.727->0.898  T x2.213  X x2.064  G x1.023  I 1.048  x-share 0.91 / 0.97  G reinforces
