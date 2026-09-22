@@ -1,0 +1,80 @@
+============================================================================================
+grade_mustar.py -- PREREG_MUSTAR_2026-09-19.md
+============================================================================================
+
+   new `mustar` records on disk: 152  (registered 72)
+
+=== F1  WIRING: the re-run (mu_p = 3.0, CV = 0) cells ===
+      seed 1: new 0.557936741 vs existing [0.557936741]  MATCH
+      seed 2: new 0.564950903 vs existing [0.564950903]  MATCH
+      seed 3: new 0.558744296 vs existing [0.558744296]  MATCH
+   [PASS] F1: the re-run mu_p = 3.0, CV = 0 cells reproduce an existing record exactly  --  3/3
+
+=== F2  LADDER HEALTH (registered 72 of 72) ===
+   converged 55 of 72 new records
+   [FAIL] F2: every new record converged  --  55/72
+
+=== F0  SPAN/SD per (mu_p, CV) group ===
+    mu_p    CV      span        sd  SPAN/SD
+     0.0   0.0   0.00941   0.00124      7.6
+     0.0   0.2   0.01144   0.00097     11.8
+     0.0   0.5   0.00577   0.00468      1.2
+     0.3   0.0   0.01933   0.00125     15.4
+     0.3   0.2   0.02156   0.00044     48.7
+     0.3   0.5   0.01227   0.00323      3.8
+     0.6   0.0   0.01426   0.00275      5.2
+     0.6   0.2   0.01056   0.00641      1.6
+     0.6   0.5   0.02770   0.00390      7.1
+     1.0   0.0   0.00543   0.00150      3.6
+     1.0   0.2   0.00360   0.00427      0.8
+     1.0   0.5  -0.00090   0.00498     -0.2
+     3.0   0.0  -0.00058   0.00384     -0.1
+     3.0   0.2   0.00288   0.00266      1.1
+     3.0   0.5   0.02716   0.00439      6.2
+
+=== THE mu LADDERS, matched rung p_hat = 3e-5 (Amendment 1's channel) ===
+      CV          0.0         0.3         0.6         1.0         3.0
+     0.0      0.63182     0.57535     0.56413     0.56148     0.56054
+     0.2      0.64245     0.58755     0.57824     0.57316     0.56795
+     0.5      0.69084     0.63667     0.59853     0.61486     0.57693
+
+=== F3 / F5  FITS: exponential and the pre-named algebraic alternative ===
+   --- exponential ---
+      CV  n pts    phi_inf          A       mu*   resid RMS
+     0.0      5    0.56108    0.07074    0.1876    0.000252
+     0.2      5    0.56942    0.07303    0.2154    0.002451
+     0.5      5    0.58348    0.10685    0.4162    0.011152
+   --- algebraic ---
+      CV  n pts    phi_inf          A       mu*   resid RMS
+     0.0      5    0.55423    0.07761    0.1097    0.001870
+     0.2      5    0.56481    0.07764    0.1242    0.000116
+     0.5      5    0.56627    0.12511    0.3437    0.009700
+
+   mean seed s.e. over all points: 0.001790  (F5's bar)
+   exponential: residual RMS exceeds the seed s.e. at CV [0.2, 0.5]
+   algebraic: residual RMS exceeds the seed s.e. at CV [0.0, 0.5]
+
+   🔑 mu*(0.5)/mu*(0) = 2.219   registered (1.05, 1.45)
+      A(0.5)/A(0)     = 1.510   registered (0.9, 1.2)
+      ⚠ A moved outside its registered band, so the two mechanisms are NOT separated by this design -> UNDETERMINED, as registered.
+   [FAIL] F3a: the amplitude A is stable, so mu* and A ARE separated by this design  --  A ratio 1.510 vs (0.9, 1.2)
+   [FAIL] F3b: mu*(0.5)/mu*(0) lands in the registered band, i.e. (M1) SCALE  --  mu* ratio 2.219 vs (1.05, 1.45)  [moot: F3a failed]
+
+   F6 mu*(CV) = [np.float64(0.1876), np.float64(0.2154), np.float64(0.4162)] at CV [0.0, 0.2, 0.5]
+   [PASS] F6: mu*(CV) is monotone across the three CV levels  --  [np.float64(0.18757597943129076), np.float64(0.21543840018393948), np.float64(0.41620279490775525)]
+
+=== F4  BLIND POINT PREDICTIONS (matched rung, +-0.0030) ===
+   phi(mu=0.6, CV=0.0): predicted 0.56394  measured 0.56413 +- 0.00159  delta +0.00019  HIT
+   [PASS] F4: phi(mu=0.6, CV=0.0) within +-0.003 of its blind prediction  --  +0.00019
+   phi(mu=0.6, CV=0.5): predicted 0.62042  measured 0.59853 +- 0.00225  delta -0.02189  🔴 MISS
+   [FAIL] F4: phi(mu=0.6, CV=0.5) within +-0.003 of its blind prediction  --  -0.02189
+   phi(mu=3.0, CV=0.5): predicted 0.61346  measured 0.57693 +- 0.00254  delta -0.03653  🔴 MISS
+   [FAIL] F4: phi(mu=3.0, CV=0.5) within +-0.003 of its blind prediction  --  -0.03653
+
+============================================================================================
+FAILED 5 gate(s):
+   - F2: every new record converged
+   - F3a: the amplitude A is stable, so mu* and A ARE separated by this design
+   - F3b: mu*(0.5)/mu*(0) lands in the registered band, i.e. (M1) SCALE
+   - F4: phi(mu=0.6, CV=0.5) within +-0.003 of its blind prediction
+   - F4: phi(mu=3.0, CV=0.5) within +-0.003 of its blind prediction

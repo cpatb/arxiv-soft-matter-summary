@@ -1,0 +1,36 @@
+============================================================================================
+grade_wcbidicap.py -- PREREG_WCBIDI_2026-09-19.md Amendment 3 (the cap re-run)
+============================================================================================
+
+   original wcbidi records : 72
+   re-run wcbidicap records: 72
+   caps present in the re-run: [1000000]
+   [PASS] the re-run really used the raised cap  --  [1000000]
+
+=== C1  IDENTITY (PRIMARY): previously-CONVERGED cells must be BIT-IDENTICAL ===
+   previously-converged records compared: 58  (registered 58)
+   [PASS] C1: raising the cap did not move a single cell that had already converged  --  58 compared, 0 mismatches
+
+=== C2  the 14 previously-capped cells under the raised cap ===
+   previously capped: 14  (registered 14)
+   of those, converged at 1000000: 14 of 14
+   [PASS] C2: every previously-capped cell converges under the raised cap  --  14/14
+
+   re-run overall: 72 of 72 converged
+   cells with ALL FOUR rungs converged, per CV: {0.0: 3, 0.1: 3, 0.2: 3, 0.3: 3, 0.4: 3, 0.5: 3}
+
+=== C3  G3's ARGMAX on CONVERGED-ONLY data (the registered test) ===
+   all, extrap         : 6 CV levels, argmax 0.4 (runner-up 0.3, gap +0.00357 vs 1 se 0.00158) -> T
+   all, rung           : 6 CV levels, argmax 0.4 (runner-up 0.3, gap +0.00439 vs 1 se 0.00091) -> T
+   CONVERGED, extrap   : 6 CV levels, argmax 0.4 (runner-up 0.3, gap +0.00357 vs 1 se 0.00158) -> T
+   CONVERGED, rung     : 6 CV levels, argmax 0.4 (runner-up 0.3, gap +0.00439 vs 1 se 0.00091) -> T
+
+   🔑 C3 VERDICT (converged-only): T
+   [PASS] C3: the provisional (T) verdict SURVIVES on converged-only data  --  ['T', 'T']
+
+=== C4  d(phi_0) against G4's ORIGINAL registered band ===
+   all, rung            +0.01895 +- 0.00100 (n=3)  🔴 OUTSIDE (0.0125, 0.0146)
+   CONVERGED, rung      +0.01895 +- 0.00100 (n=3)  🔴 OUTSIDE (0.0125, 0.0146)
+
+============================================================================================
+ALL GATES PASSED
