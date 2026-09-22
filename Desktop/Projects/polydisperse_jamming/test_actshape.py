@@ -84,3 +84,35 @@ def test_activation_curve_is_survival():
     assert A.activation_curve(g, np.array([1 / 2.5]))[0] == pytest.approx(0.5)
     assert A.activation_curve(g, np.array([1 / 0.5]))[0] == pytest.approx(1.0)
     assert A.activation_curve(g, np.array([1 / 10.0]))[0] == pytest.approx(0.0)
+
+
+def _relax_reaches(stress_at, x, chi, gd, fc):
+    """Brute force: df/dt = F(f) - f from 0, F(f) = fraction active at stress eta(f)*gd."""
+    f = 0.0
+    for _ in range(40_000):
+        s = A.eta_rel(f, x, chi) * gd
+        # invert stress_at on a grid: largest f' with stress_at(f') <= s
+        grid = np.linspace(1e-6, 1 - 1e-6, 4001)
+        ok = stress_at(grid) <= s
+        F = grid[ok].max() if ok.any() else 0.0
+        f += 0.05 * (F - f)
+    return f >= fc
+
+
+@pytest.mark.parametrize("delta", [0.7, 2.6])
+def test_rate_threshold_matches_brute_relaxation(delta):
+    x, chi = 0.85, 0.8
+    fc = A.f_crit(x, chi)
+
+    def weib(f):
+        return np.log(1 / np.asarray(f)) ** (-1 / delta)
+
+    gdc, fstar = A.rate_threshold(weib, x, chi)
+    assert 0 < fstar < fc
+    assert not _relax_reaches(weib, x, chi, 0.97 * gdc, fc)
+    assert _relax_reaches(weib, x, chi, 1.03 * gdc, fc)
+
+
+def test_rate_threshold_refuses_outside_window():
+    with pytest.raises(ValueError):
+        A.rate_threshold(lambda f: f, 0.7, 0.8)

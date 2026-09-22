@@ -144,6 +144,34 @@ def weibull_sigma_jam_ratio(fc: float, delta: float) -> float:
     return math.log(1.0 / fc) ** (-1.0 / delta)
 
 
+def eta_rel(f, x: float, chi: float, eps_min: float = 0.01, mp_expo: float = 2.0):
+    """eta/eta_s exactly as wc_drop_impact.c eta_wc(): eps^-MP_EXPO, eps = 1 - x/(1-(1-chi)f),
+    floored at eps_min (EPS_SOFT, off by default in the solver, is not modelled)."""
+    f = np.asarray(f, dtype=float)
+    eps = np.maximum(1.0 - x / (1.0 - (1.0 - chi) * f), eps_min)
+    return eps ** -mp_expo
+
+
+def rate_threshold(stress_at, x: float, chi: float, eps_min: float = 0.01,
+                   mp_expo: float = 2.0, n: int = 200_001) -> tuple[float, float]:
+    """RATE-driven jamming threshold, the solver's own drive (sigma = eta(fhat) gd).
+
+    `stress_at(f)` is the stress at which the activation reaches fraction f (vectorised):
+    sigma*.(ln 1/f)^(-1/delta) for the Weibull law, or kappa/Q_{1-f}(g) for a measured g.
+    A point relaxing from fhat = 0 reaches f_c iff eta(f) gd > stress_at(f) on all of
+    [0, f_c), so
+        gd_c * eta_s = max_{0<f<f_c} stress_at(f) / eta_rel(f).
+    Returns (gd_c * eta_s, f*), f* the bottleneck. derivations/jam_rate_driven_2026-09-22.py.
+    """
+    fc = f_crit(x, chi)
+    if not (0.0 < fc < 1.0):
+        raise ValueError(f"rate threshold defined only inside the window; f_c = {fc}")
+    f = np.linspace(1e-6, fc * (1 - 1e-9), n)
+    r = np.asarray(stress_at(f)) / eta_rel(f, x, chi, eps_min, mp_expo)
+    i = int(np.argmax(r))
+    return float(r[i]), float(f[i])
+
+
 def activation_curve(g: np.ndarray, s: np.ndarray) -> np.ndarray:
     """Empirical fhat at sigma/kappa = s: P(g > 1/s), eq. (3)."""
     g = np.sort(np.asarray(g, dtype=float))
