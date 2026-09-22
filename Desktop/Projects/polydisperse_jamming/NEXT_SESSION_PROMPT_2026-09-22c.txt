@@ -1,0 +1,37 @@
+NEXT SESSION PROMPT -- polydisperse_jamming, written 2026-09-22 (FOURTH block)
+
+Read ~/.claude/CLAUDE.md and lessons.md first. Then (~10 min):
+  1. Status card "Drop Impact -- Polydispersity Jamming Model.md", section 2 FOURTH BLOCK and
+     section 3 "(fourth block)".
+  2. derivations/multiplet_knobs_2026-09-22.md (result box, sections 2, 3, 8, 9, 10).
+  3. PREREG_KMER_2026-09-22.md (incl. Amendments 1-2), out/grade_kmer.txt, out/kmer_overlap.txt.
+
+THE AUTHOR'S HYPOTHESIS, AS IT NOW STANDS
+One primary particle aggregated into tangent doublets/triplets acts on the shear-jamming WINDOW
+(chi), not on effective size: S/V and hence the Sauter diameter are exactly unchanged, compact
+small clusters enclose no closed pore. Measured (DEM, realistic friction mu_p 0.3, clean):
+chi 0.908 -> 0.864 singlets -> pure doublets, on the ideal-mixing curve within +-0.005; the
+onset sigma* falls to x0.783 (every contact primary-primary, no diameter convention); the
+activation sharpness delta does NOT change. In the Wyart-Cates DNS at fixed phi the doublet
+fraction takes the drop from spreading to jamming (J 0 -> 0.385, beta 1.39 -> 1.08). The lab's
+salt series reads as screening, not aggregation -- counting doublets at 0/100 mM decides it.
+
+OPEN, in order
+- The last kmer cells (frictionless, low rung): python grade_kmer.py; make_kmer_figures.py.
+- kchain (36 straight-chain cells): grade C1-C3 with the K4 overlap gate.
+- 🔴 FRICTIONAL CLUMP PACKS (mu_p 3) CONTAIN INTERPENETRATED CONTACTS (up to ~1 radius). The
+  volume correction says chi survives (<= 0.0017), the forces do not. Fix or bound it before
+  quoting any mu_p 3 clump number, including shapechi's window x1.85.
+- Sheared doublet packs for sigma*/delta (isotropic so far).
+- Referee pass 3 on multiplet_knobs.
+
+The DNS: two independent signs (jamwin P2, jamwin2 censored bounds) say the impact is effectively
+STRESS-controlled although the solver's law is written in rate form. The solver cannot integrate
+a deeply jammed drop at L9 (dies at the eta floor).
+
+RULES THAT COST SOMETHING THIS BLOCK
+- Derive the control variable from what the flow imposes, not from the closure's written form.
+- Before trusting a force moment or tail, look at the top of the sorted array and the implied
+  overlap u/r = fn/(E r^2): 2-7 contacts at 50-143x mean made a "CV 8.8".
+- A scaled geometric copy is not a scaled dynamic copy: the protocol's time constants are absolute.
+- Heredoc Python mangles "\n" and "\d" -- use the Write/Edit tools (bit twice more this block).
