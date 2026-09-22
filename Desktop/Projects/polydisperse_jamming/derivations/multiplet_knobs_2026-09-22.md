@@ -276,3 +276,15 @@ Read through this file:
    ladder, and it is the cleanest σ\* lever the lab already owns (it moves the onset by ×3
    without moving the window). If w₂ rises strongly with salt, the arrested-state constancy
    is a puzzle for this theory and must be reported as such.
+
+## 10. The DNS consequence (`PREREG_KMERDROP`, graded 2026-09-22)
+
+Feeding the DEM-measured χ(w₂) into the Wyart–Cates drop solver at a FIXED weighed φ (x = 0.85,
+σ\* 300 Pa, δ 1.3169 — only the window channel moves): the jammed volume goes **0 / 0 / 0.049 /
+0.220 / 0.385** at w₂ = 0 / 0.25 / 0.5 / 0.75 / 1 (D2 PASS), and the maximum spread falls from
+β 1.39 to 1.08 (continuous radial Rg 0.460 → 0.348, strictly monotone; the registered β test
+FAILED on a one-grid-quantum tie between w₂ 0.75 and 1). So, within the closure, **raising the
+doublet fraction of one primary at fixed φ switches the drop from spreading to arrest** — the
+author's hypothesis in its continuum form. ⚠ It inherits every DEM → DNS caveat (χ from the
+μ_m = 3 convention; the DEM φ axis is not the bench's; stress-controlled activation assumed
+from jamwin's one informative pair).
