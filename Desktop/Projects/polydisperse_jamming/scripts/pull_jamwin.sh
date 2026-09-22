@@ -1,8 +1,9 @@
 #!/bin/bash
 # Copy jamwin's per-cell spread files + RUN_STATUS + banner lines to the Windows side.
 set -u
-SRC=/home/cpb/work/campaigns/jamwin_2026-09-22
-DST=/mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming/out/jamwin
+CAMP=${1:-jamwin}
+SRC=/home/cpb/work/campaigns/${CAMP}_2026-09-22
+DST=/mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming/out/${CAMP}
 mkdir -p "$DST"
 n=0
 for d in "$SRC"/*/; do
