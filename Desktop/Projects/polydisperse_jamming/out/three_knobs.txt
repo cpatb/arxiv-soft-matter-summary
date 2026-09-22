@@ -86,3 +86,43 @@ three_knobs.py -- the five particle axes, reduced to x, chi and sigma*
    ⚠ WHICH STRESS GAUGE sigma_imp IS is a convention this file does not choose;
    lessons.md records that `rho k U0^2` and the deviatoric wall shear give
    OPPOSITE verdicts on whether the activation half is saturated.
+
+=== 5. THE OBSERVABLE-FACING NUMBER: the THICKENING RATIO ===
+   The rheometer does not measure x and chi; it measures how much the viscosity
+   RISES. That is also closed-form in the same two numbers:
+
+       Theta = eta(fhat=1)/eta(fhat=0) = chi^2 (1-x)^2 / (chi - x)^2
+             = [(1-x)/(1-x/chi)]^2,     -> infinity as x -> chi from below
+
+   (SymPy-verified in three_knobs_check.py, C4. Theta DIVERGES exactly at the
+   window edge FOR chi < 1, so 'shear-jamming' and 'infinite Theta' are the same
+   statement. ⚠ The condition is not decoration: at chi = 1 the two branches
+   coincide and Theta == 1 identically -- the check FAILED until it carried it.)
+
+   🔑 SO A FLOW CURVE GIVES ALL THREE NUMBERS AND NEEDS NO PACKING MODEL:
+      sigma*                 the thickening knee
+      eta_low/eta_s = (1-x)^-2   ->  x
+      Theta = eta_high/eta_low   ->  chi, given x
+   which is why the experimental half of this programme needs no new instrument.
+
+   The drop-impact solver's own presets, placed on the diagram:
+
+     preset        x      chi    x/chi       Theta  state
+         cs   0.8387   0.8065   1.0400         inf  SHEAR-JAMS (Theta diverges)
+         si   0.9219   0.8906   1.0351         inf  SHEAR-JAMS (Theta diverges)
+     si_fit   0.6286   0.7394   0.8501        6.14  🔴 never jams -- continuous thickening only
+     cs_fit   0.6714   0.7807   0.8600        5.51  🔴 never jams -- continuous thickening only
+
+   ⚠ THAT THE TWO `_fit` PRESETS CANNOT JAM IS ALREADY KNOWN in the solver's own
+   repository (PAPER_STF_CLAIMS_2026-08-02: 'Wyart-Cates cannot jam there at any
+   fhat'), and that repo ALSO records cells ARRESTING in that regime anyway --
+   so drop arrest is NOT a one-to-one readout of constitutive jamming. This
+   table reproduces a classification that was already made in words; what is new
+   is Theta as a number.
+
+   🔑 AND THE NUMBER IS THE POINT: the two CALIBRATED presets thicken by only
+   ~6x and ~5.5x at full activation. Measured DST routinely spans two to three
+   DECADES. So both fitted parameter sets sit in a regime that cannot produce
+   the phenomenon they were fitted to describe -- a quantitative statement the
+   'cannot jam' wording does not make. (si_fit's calibration is independently
+   WITHDRAWN; cs_fit's is not, and it is the one to look at first.)

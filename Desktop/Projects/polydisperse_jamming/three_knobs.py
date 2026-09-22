@@ -267,6 +267,53 @@ def main() -> int:
     say("   lessons.md records that `rho k U0^2` and the deviatoric wall shear give")
     say("   OPPOSITE verdicts on whether the activation half is saturated.")
 
+    # ---------------------------------------------------------------- 5
+    say("\n=== 5. THE OBSERVABLE-FACING NUMBER: the THICKENING RATIO ===")
+    say("   The rheometer does not measure x and chi; it measures how much the viscosity")
+    say("   RISES. That is also closed-form in the same two numbers:")
+    say("")
+    say("       Theta = eta(fhat=1)/eta(fhat=0) = chi^2 (1-x)^2 / (chi - x)^2")
+    say("             = [(1-x)/(1-x/chi)]^2,     -> infinity as x -> chi from below")
+    say("")
+    say("   (SymPy-verified in three_knobs_check.py, C4. Theta DIVERGES exactly at the")
+    say("   window edge FOR chi < 1, so 'shear-jamming' and 'infinite Theta' are the same")
+    say("   statement. ⚠ The condition is not decoration: at chi = 1 the two branches")
+    say("   coincide and Theta == 1 identically -- the check FAILED until it carried it.)")
+    say("")
+    say("   🔑 SO A FLOW CURVE GIVES ALL THREE NUMBERS AND NEEDS NO PACKING MODEL:")
+    say("      sigma*                 the thickening knee")
+    say("      eta_low/eta_s = (1-x)^-2   ->  x")
+    say("      Theta = eta_high/eta_low   ->  chi, given x")
+    say("   which is why the experimental half of this programme needs no new instrument.")
+    say("")
+    say("   The drop-impact solver's own presets, placed on the diagram:")
+    say("")
+    say(f"   {'preset':>8}{'x':>9}{'chi':>9}{'x/chi':>9}{'Theta':>12}  state")
+    presets = {"cs": (0.52, 0.62, 0.50), "si": (0.59, 0.64, 0.57),
+               "si_fit": (0.44, 0.70, 0.5176), "cs_fit": (0.47, 0.70, 0.5465)}
+    for name, (pp, p0, pmm) in presets.items():
+        X, C = pp / p0, pmm / p0
+        if X >= C:
+            T, st = float("inf"), "SHEAR-JAMS (Theta diverges)"
+        else:
+            T = ((1 - X) / (1 - X / C)) ** 2
+            st = "🔴 never jams -- continuous thickening only"
+        say(f"   {name:>8}{X:9.4f}{C:9.4f}{X/C:9.4f}{T:12.2f}  {st}")
+    say("")
+    say("   ⚠ THAT THE TWO `_fit` PRESETS CANNOT JAM IS ALREADY KNOWN in the solver's own")
+    say("   repository (PAPER_STF_CLAIMS_2026-08-02: 'Wyart-Cates cannot jam there at any")
+    say("   fhat'), and that repo ALSO records cells ARRESTING in that regime anyway --")
+    say("   so drop arrest is NOT a one-to-one readout of constitutive jamming. This")
+    say("   table reproduces a classification that was already made in words; what is new")
+    say("   is Theta as a number.")
+    say("")
+    say("   🔑 AND THE NUMBER IS THE POINT: the two CALIBRATED presets thicken by only")
+    say("   ~6x and ~5.5x at full activation. Measured DST routinely spans two to three")
+    say("   DECADES. So both fitted parameter sets sit in a regime that cannot produce")
+    say("   the phenomenon they were fitted to describe -- a quantitative statement the")
+    say("   'cannot jam' wording does not make. (si_fit's calibration is independently")
+    say("   WITHDRAWN; cs_fit's is not, and it is the one to look at first.)")
+
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, "three_knobs.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
