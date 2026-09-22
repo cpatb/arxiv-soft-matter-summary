@@ -67,7 +67,7 @@ def act_g(cv: float, mu: float, norm: str) -> dict[int, np.ndarray]:
             g = [A.g_values(d["fn"][e[k]:e[k + 1]], d["r1"][e[k]:e[k + 1]],
                             d["r2"][e[k]:e[k + 1]], float(d["p_hat"][k]), norm)
                  for k in range(len(d["n"]))]
-            out[r["seed"]] = (np.concatenate(g), r["d50_realised"])
+            out[r["seed"]] = (np.concatenate(g), r["d50_realised"], r["d32_realised"])
     return out
 
 
@@ -144,7 +144,7 @@ def main() -> int:
                     gs = act_g(cv, mu, norm)
                     chi = ends[cv]["phim3"] / ends[cv]["phi0"]
                     curves, curves50 = [], []
-                    for s, (g, d50) in sorted(gs.items()):
+                    for s, (g, d50, _d32) in sorted(gs.items()):
                         c = []
                         for ph in phig:
                             fc = A.f_crit(ph / ends[cv]["phi0"], chi)
@@ -177,36 +177,53 @@ def main() -> int:
                         say(f"     CV {cv:.1f} [{lab}]: phi " + " ".join(f"{p:.2f}" for p in pick)
                             + " -> " + " ".join(vals))
         # ---- 4. which ingredient moves it: counterfactual swaps -----------------------
+        # Revised after referee 2026-09-22 (MATERIAL x3): both swap orders and the interaction
+        # term are printed; the decomposition is repeated at three length conventions because
+        # the g-only factor's SIGN depends on which diameter is held fixed; and the g of ONE
+        # sheared steady state (x_ss ~ 0.97-0.99) is applied across the whole phi sweep, an
+        # extrapolation in x that is flagged, not measured.
         say("")
         say("=== 4. DECOMPOSITION at fixed phi: window shift (x) vs activation (g) ===")
-        say("   total = sjam(g_CV, f_c[CV]) / sjam(g_0, f_c[0])")
-        say("   x-only = sjam(g_0, f_c[CV]) / ...   (CV moves only phi_0, phi_m)")
-        say("   g-only = sjam(g_CV, f_c[0]) / ...   (CV moves only the force distribution)")
-        say("   seed-mean g pooled over seeds; derjaguin; activation network mu_p shown; mu_m = 3.")
+        say("   T = sjam(g_CV, f_c[CV]) / sjam(g_0, f_c[0]);  X = sjam(g_0, f_c[CV])/base;")
+        say("   G = sjam(g_CV, f_c[0])/base;  interaction I = T/(X G) (1 = separable).")
+        say("   x-share: order x-first ln X/ln T, order g-first ln(T/G)/ln T -- both printed.")
+        say("   G is referenced to a fixed diameter: sjam scales as d_ref^(2-m), m = 1 (derjaguin).")
         say("   ⚠ CV 0.5 is FINITE-SIZE FLAGGED (PREREG_ACTSHAPE Amendment 1): provisional.")
+        say("   ⚠ g is measured at the sheared steady state (x_ss ~ 0.97-0.99) and APPLIED at every")
+        say("     phi below: an extrapolation in x the DEM has not tested (assumption A4). The only")
+        say("     evidence is H4 (delta stable across a decade of p_hat, which moves x slightly).")
         for mu in (0.0, 0.3):
-            g0 = np.concatenate([g for g, _ in act_g(0.0, mu, "derjaguin").values()])
+            s0 = act_g(0.0, mu, "derjaguin")
+            g0 = np.concatenate([v[0] for v in s0.values()])
+            dref0 = {"d10": 1.0, "d50": float(np.mean([v[1] for v in s0.values()])),
+                     "d32": float(np.mean([v[2] for v in s0.values()]))}
             chi0 = ends[0.0]["phim3"] / ends[0.0]["phi0"]
             for cv in (0.2, 0.5):
-                gc = np.concatenate([g for g, _ in act_g(cv, mu, "derjaguin").values()])
+                sc = act_g(cv, mu, "derjaguin")
+                gc = np.concatenate([v[0] for v in sc.values()])
+                drefc = {"d10": 1.0, "d50": float(np.mean([v[1] for v in sc.values()])),
+                         "d32": float(np.mean([v[2] for v in sc.values()]))}
                 chic = ends[cv]["phim3"] / ends[cv]["phi0"]
                 for ph in (0.58, 0.59, 0.60, 0.61, 0.62, 0.63):
                     f0 = A.f_crit(ph / ends[0.0]["phi0"], chi0)
                     fcv = A.f_crit(ph / ends[cv]["phi0"], chic)
                     if not (0 < f0 < 1 and 0 < fcv < 1):
-                        state = ("never" if fcv == math.inf else "rest" if fcv <= 0 else "ok",
-                                 "never" if f0 == math.inf else "rest" if f0 <= 0 else "ok")
                         say(f"   mu {mu:.1f} CV {cv:.1f} phi {ph:.2f}: outside a window "
-                            f"(CV {cv}: {state[0]}, CV 0: {state[1]})")
+                            f"(CV {cv}: {'never' if fcv == math.inf else 'rest' if fcv <= 0 else 'ok'},"
+                            f" CV 0: {'never' if f0 == math.inf else 'rest' if f0 <= 0 else 'ok'})")
                         continue
-                    base = A.sigma_jam_over_kappa(g0, f0)
-                    tot = A.sigma_jam_over_kappa(gc, fcv) / base
-                    xo = A.sigma_jam_over_kappa(g0, fcv) / base
-                    go = A.sigma_jam_over_kappa(gc, f0) / base
-                    say(f"   mu {mu:.1f} CV {cv:.1f} phi {ph:.2f}: f_c {f0:.3f} -> {fcv:.3f}   "
-                        f"total x{tot:.3f}  x-only x{xo:.3f}  g-only x{go:.3f}  "
-                        f"[ln-share of x: {math.log(xo) / math.log(tot):.2f}]"
-                        if abs(math.log(tot)) > 1e-9 else "")
+                    for ref in ("d10", "d50", "d32"):
+                        k = drefc[ref] / dref0[ref]          # (2 - m) = 1
+                        base = A.sigma_jam_over_kappa(g0, f0)
+                        T = A.sigma_jam_over_kappa(gc, fcv) * k / base
+                        X = A.sigma_jam_over_kappa(g0, fcv) / base
+                        G = A.sigma_jam_over_kappa(gc, f0) * k / base
+                        inter = T / (X * G)
+                        sh1 = math.log(X) / math.log(T)
+                        sh2 = math.log(T / G) / math.log(T)
+                        say(f"   mu {mu:.1f} CV {cv:.1f} phi {ph:.2f} [{ref}]: f_c {f0:.3f}->{fcv:.3f}"
+                            f"  T x{T:.3f}  X x{X:.3f}  G x{G:.3f}  I {inter:.3f}  "
+                            f"x-share {sh1:.2f} / {sh2:.2f}  G {'opposes' if (G - 1) * (T - 1) < 0 else 'reinforces'}")
         np.savez(os.path.join(OUT, "jam_map.npz"), phi=phig, **npz,
                  **{f"phi0_cv{cv}": ends[cv]["phi0"] for cv in CVS},
                  **{f"phim3_cv{cv}": ends[cv]["phim3"] for cv in CVS})

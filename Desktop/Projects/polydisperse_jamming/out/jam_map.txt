@@ -68,32 +68,67 @@ window endpoints at the quoted rung p_hat = 3e-05 (converged records only)
      CV 0.5 [d50]: phi 0.60 0.62 0.64 0.66 0.68 ->    never     3.988    0.9256    0.4113    0.1944 
 
 === 4. DECOMPOSITION at fixed phi: window shift (x) vs activation (g) ===
-   total = sjam(g_CV, f_c[CV]) / sjam(g_0, f_c[0])
-   x-only = sjam(g_0, f_c[CV]) / ...   (CV moves only phi_0, phi_m)
-   g-only = sjam(g_CV, f_c[0]) / ...   (CV moves only the force distribution)
-   seed-mean g pooled over seeds; derjaguin; activation network mu_p shown; mu_m = 3.
+   T = sjam(g_CV, f_c[CV]) / sjam(g_0, f_c[0]);  X = sjam(g_0, f_c[CV])/base;
+   G = sjam(g_CV, f_c[0])/base;  interaction I = T/(X G) (1 = separable).
+   x-share: order x-first ln X/ln T, order g-first ln(T/G)/ln T -- both printed.
+   G is referenced to a fixed diameter: sjam scales as d_ref^(2-m), m = 1 (derjaguin).
    ⚠ CV 0.5 is FINITE-SIZE FLAGGED (PREREG_ACTSHAPE Amendment 1): provisional.
-   mu 0.0 CV 0.2 phi 0.58: f_c 0.727 -> 0.898   total x2.213  x-only x2.064  g-only x1.023  [ln-share of x: 0.91]
-   mu 0.0 CV 0.2 phi 0.59: f_c 0.587 -> 0.758   total x1.596  x-only x1.551  g-only x1.001  [ln-share of x: 0.94]
-   mu 0.0 CV 0.2 phi 0.60: f_c 0.446 -> 0.618   total x1.427  x-only x1.418  g-only x0.978  [ln-share of x: 0.98]
-   mu 0.0 CV 0.2 phi 0.61: f_c 0.306 -> 0.478   total x1.354  x-only x1.379  g-only x0.962  [ln-share of x: 1.06]
-   mu 0.0 CV 0.2 phi 0.62: f_c 0.166 -> 0.338   total x1.373  x-only x1.421  g-only x0.955  [ln-share of x: 1.11]
-   mu 0.0 CV 0.2 phi 0.63: f_c 0.026 -> 0.198   total x1.689  x-only x1.772  g-only x0.941  [ln-share of x: 1.09]
+   ⚠ g is measured at the sheared steady state (x_ss ~ 0.97-0.99) and APPLIED at every
+     phi below: an extrapolation in x the DEM has not tested (assumption A4). The only
+     evidence is H4 (delta stable across a decade of p_hat, which moves x slightly).
+   mu 0.0 CV 0.2 phi 0.58 [d10]: f_c 0.727->0.898  T x2.213  X x2.064  G x1.023  I 1.048  x-share 0.91 / 0.97  G reinforces
+   mu 0.0 CV 0.2 phi 0.58 [d50]: f_c 0.727->0.898  T x2.167  X x2.064  G x1.002  I 1.048  x-share 0.94 / 1.00  G reinforces
+   mu 0.0 CV 0.2 phi 0.58 [d32]: f_c 0.727->0.898  T x2.390  X x2.064  G x1.105  I 1.048  x-share 0.83 / 0.89  G reinforces
+   mu 0.0 CV 0.2 phi 0.59 [d10]: f_c 0.587->0.758  T x1.596  X x1.551  G x1.001  I 1.028  x-share 0.94 / 1.00  G reinforces
+   mu 0.0 CV 0.2 phi 0.59 [d50]: f_c 0.587->0.758  T x1.563  X x1.551  G x0.981  I 1.028  x-share 0.98 / 1.04  G opposes
+   mu 0.0 CV 0.2 phi 0.59 [d32]: f_c 0.587->0.758  T x1.724  X x1.551  G x1.082  I 1.028  x-share 0.81 / 0.86  G reinforces
+   mu 0.0 CV 0.2 phi 0.60 [d10]: f_c 0.446->0.618  T x1.427  X x1.418  G x0.978  I 1.029  x-share 0.98 / 1.06  G opposes
+   mu 0.0 CV 0.2 phi 0.60 [d50]: f_c 0.446->0.618  T x1.397  X x1.418  G x0.958  I 1.029  x-share 1.04 / 1.13  G opposes
+   mu 0.0 CV 0.2 phi 0.60 [d32]: f_c 0.446->0.618  T x1.541  X x1.418  G x1.056  I 1.029  x-share 0.81 / 0.87  G reinforces
+   mu 0.0 CV 0.2 phi 0.61 [d10]: f_c 0.306->0.478  T x1.354  X x1.379  G x0.962  I 1.020  x-share 1.06 / 1.13  G opposes
+   mu 0.0 CV 0.2 phi 0.61 [d50]: f_c 0.306->0.478  T x1.326  X x1.379  G x0.943  I 1.020  x-share 1.14 / 1.21  G opposes
+   mu 0.0 CV 0.2 phi 0.61 [d32]: f_c 0.306->0.478  T x1.463  X x1.379  G x1.040  I 1.020  x-share 0.84 / 0.90  G reinforces
+   mu 0.0 CV 0.2 phi 0.62 [d10]: f_c 0.166->0.338  T x1.373  X x1.421  G x0.955  I 1.011  x-share 1.11 / 1.14  G opposes
+   mu 0.0 CV 0.2 phi 0.62 [d50]: f_c 0.166->0.338  T x1.345  X x1.421  G x0.936  I 1.011  x-share 1.19 / 1.22  G opposes
+   mu 0.0 CV 0.2 phi 0.62 [d32]: f_c 0.166->0.338  T x1.483  X x1.421  G x1.032  I 1.011  x-share 0.89 / 0.92  G reinforces
+   mu 0.0 CV 0.2 phi 0.63 [d10]: f_c 0.026->0.198  T x1.689  X x1.772  G x0.941  I 1.013  x-share 1.09 / 1.12  G opposes
+   mu 0.0 CV 0.2 phi 0.63 [d50]: f_c 0.026->0.198  T x1.655  X x1.772  G x0.922  I 1.013  x-share 1.14 / 1.16  G opposes
+   mu 0.0 CV 0.2 phi 0.63 [d32]: f_c 0.026->0.198  T x1.825  X x1.772  G x1.017  I 1.013  x-share 0.95 / 0.97  G reinforces
    mu 0.0 CV 0.5 phi 0.58: outside a window (CV 0.5: never, CV 0: ok)
    mu 0.0 CV 0.5 phi 0.59: outside a window (CV 0.5: never, CV 0: ok)
    mu 0.0 CV 0.5 phi 0.60: outside a window (CV 0.5: never, CV 0: ok)
    mu 0.0 CV 0.5 phi 0.61: outside a window (CV 0.5: never, CV 0: ok)
-   mu 0.0 CV 0.5 phi 0.62: f_c 0.166 -> 0.907   total x7.617  x-only x7.172  g-only x0.726  [ln-share of x: 0.97]
-   mu 0.0 CV 0.5 phi 0.63: f_c 0.026 -> 0.785   total x6.154  x-only x6.411  g-only x0.657  [ln-share of x: 1.02]
-   mu 0.3 CV 0.2 phi 0.58: f_c 0.727 -> 0.898   total x2.587  x-only x2.363  g-only x1.009  [ln-share of x: 0.90]
-   mu 0.3 CV 0.2 phi 0.59: f_c 0.587 -> 0.758   total x1.717  x-only x1.694  g-only x0.978  [ln-share of x: 0.97]
-   mu 0.3 CV 0.2 phi 0.60: f_c 0.446 -> 0.618   total x1.497  x-only x1.516  g-only x0.965  [ln-share of x: 1.03]
-   mu 0.3 CV 0.2 phi 0.61: f_c 0.306 -> 0.478   total x1.406  x-only x1.455  g-only x0.948  [ln-share of x: 1.10]
-   mu 0.3 CV 0.2 phi 0.62: f_c 0.166 -> 0.338   total x1.425  x-only x1.494  g-only x0.936  [ln-share of x: 1.13]
-   mu 0.3 CV 0.2 phi 0.63: f_c 0.026 -> 0.198   total x1.819  x-only x1.940  g-only x0.928  [ln-share of x: 1.11]
+   mu 0.0 CV 0.5 phi 0.62 [d10]: f_c 0.166->0.907  T x7.617  X x7.172  G x0.726  I 1.462  x-share 0.97 / 1.16  G opposes
+   mu 0.0 CV 0.5 phi 0.62 [d50]: f_c 0.166->0.907  T x6.826  X x7.172  G x0.651  I 1.462  x-share 1.03 / 1.22  G opposes
+   mu 0.0 CV 0.5 phi 0.62 [d32]: f_c 0.166->0.907  T x11.609  X x7.172  G x1.107  I 1.462  x-share 0.80 / 0.96  G reinforces
+   mu 0.0 CV 0.5 phi 0.63 [d10]: f_c 0.026->0.785  T x6.154  X x6.411  G x0.657  I 1.460  x-share 1.02 / 1.23  G opposes
+   mu 0.0 CV 0.5 phi 0.63 [d50]: f_c 0.026->0.785  T x5.515  X x6.411  G x0.589  I 1.460  x-share 1.09 / 1.31  G opposes
+   mu 0.0 CV 0.5 phi 0.63 [d32]: f_c 0.026->0.785  T x9.378  X x6.411  G x1.002  I 1.460  x-share 0.83 / 1.00  G reinforces
+   mu 0.3 CV 0.2 phi 0.58 [d10]: f_c 0.727->0.898  T x2.587  X x2.363  G x1.009  I 1.085  x-share 0.90 / 0.99  G reinforces
+   mu 0.3 CV 0.2 phi 0.58 [d50]: f_c 0.727->0.898  T x2.534  X x2.363  G x0.988  I 1.085  x-share 0.92 / 1.01  G opposes
+   mu 0.3 CV 0.2 phi 0.58 [d32]: f_c 0.727->0.898  T x2.795  X x2.363  G x1.090  I 1.085  x-share 0.84 / 0.92  G reinforces
+   mu 0.3 CV 0.2 phi 0.59 [d10]: f_c 0.587->0.758  T x1.717  X x1.694  G x0.978  I 1.037  x-share 0.97 / 1.04  G opposes
+   mu 0.3 CV 0.2 phi 0.59 [d50]: f_c 0.587->0.758  T x1.682  X x1.694  G x0.958  I 1.037  x-share 1.01 / 1.08  G opposes
+   mu 0.3 CV 0.2 phi 0.59 [d32]: f_c 0.587->0.758  T x1.855  X x1.694  G x1.056  I 1.037  x-share 0.85 / 0.91  G reinforces
+   mu 0.3 CV 0.2 phi 0.60 [d10]: f_c 0.446->0.618  T x1.497  X x1.516  G x0.965  I 1.023  x-share 1.03 / 1.09  G opposes
+   mu 0.3 CV 0.2 phi 0.60 [d50]: f_c 0.446->0.618  T x1.466  X x1.516  G x0.945  I 1.023  x-share 1.09 / 1.15  G opposes
+   mu 0.3 CV 0.2 phi 0.60 [d32]: f_c 0.446->0.618  T x1.617  X x1.516  G x1.043  I 1.023  x-share 0.87 / 0.91  G reinforces
+   mu 0.3 CV 0.2 phi 0.61 [d10]: f_c 0.306->0.478  T x1.406  X x1.455  G x0.948  I 1.019  x-share 1.10 / 1.16  G opposes
+   mu 0.3 CV 0.2 phi 0.61 [d50]: f_c 0.306->0.478  T x1.377  X x1.455  G x0.928  I 1.019  x-share 1.17 / 1.23  G opposes
+   mu 0.3 CV 0.2 phi 0.61 [d32]: f_c 0.306->0.478  T x1.519  X x1.455  G x1.024  I 1.019  x-share 0.90 / 0.94  G reinforces
+   mu 0.3 CV 0.2 phi 0.62 [d10]: f_c 0.166->0.338  T x1.425  X x1.494  G x0.936  I 1.018  x-share 1.13 / 1.19  G opposes
+   mu 0.3 CV 0.2 phi 0.62 [d50]: f_c 0.166->0.338  T x1.395  X x1.494  G x0.917  I 1.018  x-share 1.21 / 1.26  G opposes
+   mu 0.3 CV 0.2 phi 0.62 [d32]: f_c 0.166->0.338  T x1.539  X x1.494  G x1.011  I 1.018  x-share 0.93 / 0.97  G reinforces
+   mu 0.3 CV 0.2 phi 0.63 [d10]: f_c 0.026->0.198  T x1.819  X x1.940  G x0.928  I 1.010  x-share 1.11 / 1.12  G opposes
+   mu 0.3 CV 0.2 phi 0.63 [d50]: f_c 0.026->0.198  T x1.782  X x1.940  G x0.909  I 1.010  x-share 1.15 / 1.16  G opposes
+   mu 0.3 CV 0.2 phi 0.63 [d32]: f_c 0.026->0.198  T x1.965  X x1.940  G x1.003  I 1.010  x-share 0.98 / 1.00  G reinforces
    mu 0.3 CV 0.5 phi 0.58: outside a window (CV 0.5: never, CV 0: ok)
    mu 0.3 CV 0.5 phi 0.59: outside a window (CV 0.5: never, CV 0: ok)
    mu 0.3 CV 0.5 phi 0.60: outside a window (CV 0.5: never, CV 0: ok)
    mu 0.3 CV 0.5 phi 0.61: outside a window (CV 0.5: never, CV 0: ok)
-   mu 0.3 CV 0.5 phi 0.62: f_c 0.166 -> 0.907   total x11.406  x-only x10.224  g-only x0.655  [ln-share of x: 0.96]
-   mu 0.3 CV 0.5 phi 0.63: f_c 0.026 -> 0.785   total x8.721  x-only x8.873  g-only x0.580  [ln-share of x: 1.01]
+   mu 0.3 CV 0.5 phi 0.62 [d10]: f_c 0.166->0.907  T x11.406  X x10.224  G x0.655  I 1.703  x-share 0.96 / 1.17  G opposes
+   mu 0.3 CV 0.5 phi 0.62 [d50]: f_c 0.166->0.907  T x10.179  X x10.224  G x0.585  I 1.703  x-share 1.00 / 1.23  G opposes
+   mu 0.3 CV 0.5 phi 0.62 [d32]: f_c 0.166->0.907  T x17.781  X x10.224  G x1.021  I 1.703  x-share 0.81 / 0.99  G reinforces
+   mu 0.3 CV 0.5 phi 0.63 [d10]: f_c 0.026->0.785  T x8.721  X x8.873  G x0.580  I 1.695  x-share 1.01 / 1.25  G opposes
+   mu 0.3 CV 0.5 phi 0.63 [d50]: f_c 0.026->0.785  T x7.783  X x8.873  G x0.517  I 1.695  x-share 1.06 / 1.32  G opposes
+   mu 0.3 CV 0.5 phi 0.63 [d32]: f_c 0.026->0.785  T x13.596  X x8.873  G x0.904  I 1.695  x-share 0.84 / 1.04  G opposes
