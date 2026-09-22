@@ -1,0 +1,100 @@
+# PREREG — `jamwin`: does the ACTIVATION SHAPE decide whether an impacting drop jams, and does it do so with the sign the reduced framework predicts?
+
+Written 2026-09-22, third block, **before any cell runs**. Solver:
+`Github/Drop Impact/basilisk-drop-impact/wc_drop_impact.c`. Companion DEM campaign:
+`PREREG_ACTSHAPE_2026-09-22.md` (measures the shape `δ` this campaign varies).
+
+## 0. What is being tested
+
+The reduced framework (`three_knobs.py`) says a suspension at `x = φ/φ₀` can jam only in
+the window `χ ≤ x < 1`, and does so where the frictional fraction reaches
+`f_c = (1 − x)/(1 − χ)`. With the solver's activation `f_ss = exp(−(σ*/σ)^δ)`, a material
+point in steady state jams iff its stress exceeds
+
+&nbsp;&nbsp;&nbsp;&nbsp;`σ_jam = σ* · [ln(1/f_c)]^(−1/δ)`.                                    (1)
+
+(1) is a closed form (checked in `test_actshape.py` against a Weibull sample). It makes a
+**sign-reversing** prediction, which is what makes it testable rather than illustrative:
+
+- **Deep in the window, `f_c < 1/e`** (`ln 1/f_c > 1`): `σ_jam/σ*` RISES with `δ`, so a
+  SHARPER activation jams LESS.
+- **Near the window edge, `f_c > 1/e`**: `σ_jam/σ*` FALLS with `δ`, so a sharper activation
+  jams MORE.
+
+The companion DEM campaign asks whether polydispersity moves `δ`. This one asks whether
+`δ` moves the drop — in the full DNS, with inertia, capillarity, a finite state clock
+(`WC_CLOCK = 1`, `γ₀ = 0.2`) and a spatially varying stress, none of which (1) contains.
+
+## 0b. A defect in the observable, found while designing this
+
+`wc_drop_impact.c` reports `jam_frac` as the volume fraction with **`f̂ > 0.5`**, a fixed
+threshold that knows neither `x` nor `χ`. The closure's own jamming condition is
+`φ ≥ φ_J(f̂)`, i.e. `f̂ ≥ f_c`, and for `x < χ` it is **unreachable at any `f̂`**. The
+shipped `cs_fit` preset has `x = 0.671`, `χ = 0.781`, so it can never jam, and the
+programme's "arrest" readings of `jam_frac > 0.5` on it are readings of ACTIVATION, not of
+jamming. A new env override **`JAM_FHAT`** (default 0.5, output byte-identical when unset)
+lets `jam_frac` be read at the closure's `f_c`. Arm N below exists to show the conventional
+reading reporting "jammed" on a suspension that provably cannot jam.
+
+## 1. Grid
+
+Base preset `cs_fit` (`η_s` = 0.003939 Pa·s, `EPS_MIN` = 0.01, `MP_EXPO` = 2,
+`DIL_COEFF` = 0, `WC_CLOCK` = 1), `U₀` = 2.0 m/s, `θ₀` = 5°, `TEND` = 6, `CFLNUM` = 0.10,
+`SHAPE_MODE` = 1, **L9**, overridden by env:
+
+`PHI0` = 0.62, `PHIM` = 0.496, so **`χ` = 0.80** (window width 0.20), and
+
+| arm | `x` | `PHI` | `f_c` | `JAM_FHAT` | role |
+|---|---|---|---|---|---|
+| **A** | 0.95 | 0.589 | 0.25 (< 1/e) | 0.25 | deep in window |
+| **B** | 0.85 | 0.527 | 0.75 (> 1/e) | 0.75 | near the edge |
+| **N** | 0.75 | 0.465 | unreachable | 0.5 | outside: cannot jam |
+
+× `δ` ∈ {0.7, 1.3169, 2.6} (the `deltastiff` ladder) × `σ*` ∈ {30, 300, 3000} Pa = **27 cells**.
+
+The `σ*` ladder spans the impact's stress scales: `ρU₀²` = 4800 Pa; the unactivated
+viscous stress `η(f̂=0) U₀/D₀` ≈ 1050 Pa (A), 115 Pa (B), 42 Pa (N). `δ` can only matter
+where `σ ~ σ*`, so a single `σ*` could sit where every `δ` saturates or none activates.
+
+Plus the identity gate (§2, G0): **2 cells** reproducing `deltastiff_2026-09-03/DS_d1.3169_L9`.
+
+## 2. Gates
+
+- **G0 — IDENTITY (primary).** The new binary, run on `DS_d1.3169_L9`'s exact configuration,
+  must reproduce its `spread_*.dat` **byte-for-byte (md5)** with `JAM_FHAT` unset (G0a) and
+  with `JAM_FHAT = 0.5` set explicitly (G0b). The build source differs from the one that
+  made `DS_d1.3169_L9` only by the `JAM_FHAT` lines (verified: the old build source is
+  md5-identical to repo HEAD).
+- **G1 — PROVENANCE.** Every cell's stderr banner must print the `phi`, `phi0`, `phiM`,
+  `sigma*` and `delta` it was asked for, and `JAM_FHAT=` when set. The preset block runs
+  before the env overrides; this repo corrupted an anchor on 2026-08-31 by trusting that.
+- **G2 — HEALTH.** `rc = 0` and the run reaches `t/τ ≥ 5.9`. Failing cells are printed and
+  excluded; the count is printed. ⚠ **A cell that dies is not a jam.**
+
+## 3. Observable and predictions
+
+**Primary observable:** `J = max over t of jam_frac` (volume fraction with `f̂ > f_c`),
+per cell. Secondary: `f̂_mean` at its maximum, `β_max`, and `u_rms_jam/u_rms` late.
+
+A `(arm, σ*)` pair is **INFORMATIVE** only if `J` is neither ≤ 1e-3 nor ≥ 0.99 at all three
+`δ` (otherwise every `δ` is saturated or silent and the pair decides nothing). Only
+informative pairs are graded; the count of informative pairs is printed.
+
+- **P1 — arm A (f_c = 0.25):** on every informative `σ*`, `J` is **non-increasing** in `δ`,
+  and `J(0.7) > J(2.6)`.
+- **P2 — arm B (f_c = 0.75):** on every informative `σ*`, `J` is **non-decreasing** in `δ`,
+  and `J(2.6) > J(0.7)`.
+- **P3 — the reversal is the claim.** P1 and P2 must BOTH hold on at least one informative
+  `σ*` each. A monotone response of the same sign in both arms (e.g. `δ` just speeding the
+  whole activation) **refutes** the reduced framework's reading of `δ`, and would be
+  reported as such.
+- **P4 — arm N:** `J` (at the conventional 0.5) exceeds 0.1 at `σ*` = 30 Pa for all `δ`,
+  while the closure guarantees the jamming gap there never falls below
+  `1 − x/χ = 0.0625` > `EPS_MIN`. That is the demonstration of §0b. **Expected, and graded
+  only as a demonstration; it is not a test of the physics.**
+
+**What would make this uninformative:** at L9 the `f̂` family is grid-sensitive
+(`deltastiff`: `f̂_mean` 21.9× between L9 and L10 at `cs_fit`). The predictions here are
+**SIGNS within one grid**, which a grid error can still flip if it is `δ`-dependent (and
+`deltastiff`'s D2 was designed precisely to ask whether it is). If P1–P3 pass, an L10 rung
+on the informative pairs is the registered follow-up before anything is quoted.
