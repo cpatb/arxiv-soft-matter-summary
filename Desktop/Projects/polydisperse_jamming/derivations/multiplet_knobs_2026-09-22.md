@@ -288,3 +288,10 @@ doublet fraction of one primary at fixed φ switches the drop from spreading to 
 author's hypothesis in its continuum form. ⚠ It inherits every DEM → DNS caveat (χ from the
 μ_m = 3 convention; the DEM φ axis is not the bench's; stress-controlled activation assumed
 from jamwin's one informative pair).
+
+**Why spreading falls before any jamming (K5 made quantitative).** Outside the window the
+activated drop can only thicken, by `Θ = [(1−x)/(1−x/χ)]^MP_EXPO` (MP_EXPO = 2 in the solver).
+At x = 0.85: Θ = 13.6 at w₂ = 0 (χ 0.886) and **205** at w₂ = 0.25 (χ 0.859) — a 15× stiffer
+fully-activated drop from a quarter of the volume in doublets, with no jamming anywhere. That is
+the K2 drop in spreading between w₂ 0 and 0.25. ⚠ Θ is quoted WITH its exponent (lessons.md);
+at MP_EXPO = 5 the same step is ×877.
