@@ -1,0 +1,88 @@
+============================================================================================
+three_knobs.py -- the five particle axes, reduced to x, chi and sigma*
+============================================================================================
+   eta/eta_s = (1 - x/[1 - (1-chi) fhat])^-2,  x = phi/phi0, chi = phim/phi0
+   x <  chi     : never jams          (continuous thickening only)
+   chi <= x < 1 : SHEAR-JAMMING window, width 1-chi
+   x >= 1       : jammed at rest
+   chi is formed as phi(mu_p=3.0)/phi(mu_p=0.0), seed-paired, converged cells only.
+   grading scale PHI_SCALE = 0.0021.
+
+=== 1. DOES THE SIZE DISTRIBUTION MOVE THE WINDOW? ===
+   At the quoted rung p_hat = 3e-05:
+
+       CV   n     phi_0     phi_m      chi       se  window 1-chi
+      0.0   3   0.63182   0.56054   0.8872   0.0042        0.1128
+      0.2   3   0.64413   0.57272   0.8891   0.0025        0.1109
+      0.5   1   0.69428   0.61236   0.8876      inf        0.1124
+
+   chi(CV=0.2) - chi(CV=0.0) = +0.0019 +- 0.0049   |t| = 0.40 vs t_crit 4.303 -> NOT RESOLVED
+   ⚠ CV = 0.5 has n = 1 converged pair: the FRICTIONLESS arm still
+     caps at 1e6 on 2 of 3 seeds, so chi(0.5) is not resolvable. Its central
+     value 0.8876 sits with the others and is printed, not quoted.
+
+   🔑 THE SIZE DISTRIBUTION IS AN x-KNOB, NOT A chi-KNOB. It raises phi_0 and
+   phi_m by the SAME factor, so the shear-jamming window does not move. Widening
+   the PSD does not make a suspension more able to shear-jam; it moves the
+   suspension within the window, exactly as changing concentration would.
+
+=== 2. 🔴 chi IS NOT RUNG-INDEPENDENT. The ratio does NOT escape the ladder. ===
+   A tempting simplification -- 'chi is a ratio, so the pressure dependence
+   cancels and two cells measure it' -- is FALSE, and this is the test:
+
+       CV    p=1e-03    p=3e-04    p=1e-04    p=3e-05  chi spread  phi_0 spread
+      0.0     0.8733     0.8708     0.8798     0.8872      0.0164        0.0094
+      0.2     0.8730     0.8698     0.8766     0.8891      0.0193        0.0098
+      0.5     0.8672     0.8627     0.8774     0.8876      0.0250        0.0050
+
+   chi drifts across the ladder by MORE than phi_0 itself does, because the two
+   friction arms have different compressibilities: phi = phi_J + c p^b with a
+   different c in each arm, so the ratio does not cancel -- it AMPLIFIES.
+   ⚠ CONSEQUENCE: chi must be quoted AT A NAMED RUNG or extrapolated. There is
+   no shortcut around the ladder, and the 'two cells measure chi' idea is dead.
+
+   ✅ BUT THE VERDICT IN SECTION 1 SURVIVES, and this is why: chi moves across
+   CV by at most ~0.008 at any single rung, while it moves 0.016-0.025 ACROSS
+   rungs. The CV effect is smaller than the systematic it would have to beat.
+   'The distribution does not move the window' is a statement about a
+   comparison AT FIXED RUNG, and that is the comparison that was made.
+
+=== 3. THE AXIS MAP: which knob does each particle property turn? ===
+
+   axis              knob            why                                                 status
+   SIZE  a           sigma*          sigma* ~ F_rep/a^2 (convention-dependent)           
+                                                                                         NOT SEPARATED -- onset_size_degeneracy_2026-09-19: a size ladder cannot separate the two grain-scale stresses
+   SHAPE alpha       chi (expected)  elongation/interlocking should lower phi_m more than phi_0
+                                                                                         🔴 UNMEASURED: the shape campaign ran at ONE friction, so it measures neither phi_0 nor phi_m separately -- no chi
+   DISTRIBUTION CV   x               phi_0 and phi_m rise together                       
+                                                                                         ✅ MEASURED HERE: chi flat to |t| = 0.40 across CV 0 -> 0.2
+   POTENTIAL F_rep   sigma*          sets the repulsive force the contact must overcome  
+                                                                                         🔴 UNMEASURED in this repo -- it is the DEM's `sigma*` input, not an output
+   MATERIAL mu_p     chi             phi_0 is frictionless BY DEFINITION, so mu_p moves phi_m alone
+                                                                                         ✅ MEASURED: chi = 0.887 at mu_p 0 -> 3, window 1-chi = 0.113
+   MATERIAL E        eta_s / none    stiffness rescales the contact, not phi_J           
+                                                                                         ✅ the static packing is scale-free (test_scale_invariance.py)
+
+   🔑 READ THE TABLE AS A PROGRAMME. Two axes turn the WINDOW (shape, friction),
+   two turn the ONSET STRESS (size, potential), one turns POSITION (distribution)
+   and one turns nothing (stiffness). Only the window knobs can change WHETHER a
+   suspension shear-jams; the rest change where or when.
+
+   🔴 THE LARGEST GAP IS SHAPE. It is the other candidate chi-knob and the repo
+   cannot presently measure its chi at all, because the shape campaign ran at a
+   single friction. Two extra friction values on the EXISTING shape grid would
+   close it, and that is the cheapest high-value campaign this project has.
+
+=== 4. WHAT A DROP IMPACT NEEDS ON TOP OF (x, chi, sigma*) ===
+   The drop supplies a STRESS and a TIME, and the suspension answers with a
+   state. Two conditions, and they are independent:
+
+      (i)  sigma_imp / sigma*  >> 1     the contacts are actually activated
+      (ii) chi <= x < 1                 the activated state is JAMMED
+
+   Both must hold for a drop to rebound as a solid. (i) is the sigma*-knobs
+   (size, potential); (ii) is the window knobs (friction, shape) and the
+   position knob (concentration, distribution, aggregation).
+   ⚠ WHICH STRESS GAUGE sigma_imp IS is a convention this file does not choose;
+   lessons.md records that `rho k U0^2` and the deviatoric wall shear give
+   OPPOSITE verdicts on whether the activation half is saturated.
