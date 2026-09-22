@@ -1,0 +1,16 @@
+grade_actshape_fs -- PREREG_ACTSHAPE Amendment 1 (mu_p 0.3, p 3e-4, derjaguin)
+N=1000 CV0 delta [1.2538, 1.2543, 1.2536]
+N=1000 CV0.5 delta [1.0113, 1.0074, 1.0323] (all finite-size flagged)
+N=4000 CV0.5 delta [(1, 1.0116, 'ok'), (2, 1.0105, 'FLAG'), (3, 1.0439, 'ok')]
+
+--- all healthy N=4000 seeds: n = 3 ---
+F1 |delta(4000) - delta(1000)| = |1.0220 - 1.0170| = 0.0050 (bar 0.05)  PASS
+F2 CV0 (N1000) -> CV0.5 (N4000): ratio 0.815, Welch t -21.19, df 2.00, t_crit 4.299  PASS
+F3 sigma*/kappa ratio CV0.5(N4000)/CV0(N1000) at d10 = 0.735  PASS
+
+--- unflagged N=4000 seeds only: n = 2 ---
+F1 |delta(4000) - delta(1000)| = |1.0277 - 1.0170| = 0.0107 (bar 0.05)  PASS
+F2 CV0 (N1000) -> CV0.5 (N4000): ratio 0.820, Welch t -14.03, df 1.00, t_crit 12.695  PASS
+F3 sigma*/kappa ratio CV0.5(N4000)/CV0(N1000) at d10 = 0.736  PASS
+
+mu_p 0 at N=4000 (printed, not graded): healthy seeds [3], delta [1.222]

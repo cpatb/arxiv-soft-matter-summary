@@ -52,4 +52,10 @@ OK   lognormal_cv0.500_mu0.000_s3_phi00.5500_N1000_p1.000e-04_K0.15_g3.00_st9600
 OK   lognormal_cv0.500_mu0.300_s1_phi00.5500_N1000_p1.000e-04_K0.15_g3.00_st960000
 OK   lognormal_cv0.500_mu0.300_s2_phi00.5500_N1000_p1.000e-04_K0.15_g3.00_st960000
 OK   lognormal_cv0.500_mu0.300_s3_phi00.5500_N1000_p1.000e-04_K0.15_g3.00_st960000
-W2'' same-platform identical: 54/54
+OK   lognormal_cv0.500_mu0.000_s1_phi00.5500_N4000_p3.000e-04_K0.15_g3.00_st480000
+OK   lognormal_cv0.500_mu0.000_s2_phi00.5500_N4000_p3.000e-04_K0.15_g3.00_st480000
+OK   lognormal_cv0.500_mu0.000_s3_phi00.5500_N4000_p3.000e-04_K0.15_g3.00_st480000
+OK   lognormal_cv0.500_mu0.300_s1_phi00.5500_N4000_p3.000e-04_K0.15_g3.00_st480000
+OK   lognormal_cv0.500_mu0.300_s2_phi00.5500_N4000_p3.000e-04_K0.15_g3.00_st480000
+OK   lognormal_cv0.500_mu0.300_s3_phi00.5500_N4000_p3.000e-04_K0.15_g3.00_st480000
+W2'' same-platform identical: 60/60
