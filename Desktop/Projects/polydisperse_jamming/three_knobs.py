@@ -261,12 +261,11 @@ def main() -> int:
         ("SIZE  a", "sigma*", "sigma* ~ F_rep/a^2 (convention-dependent)",
          "NOT SEPARATED -- onset_size_degeneracy_2026-09-19: a size ladder cannot "
          "separate the two grain-scale stresses"),
-        ("SHAPE alpha", "chi (expected)",
-         "elongation/interlocking should lower phi_m more than phi_0",
-         "🔴 UNMEASURED: the shape campaign ran at ONE friction, so it measures neither "
-         "phi_0 nor phi_m separately -- no chi"),
+        ("SHAPE alpha", "chi", "elongation/interlocking lowers phi_m far more than phi_0",
+         "✅ MEASURED (shapechi): chi 0.8856 -> 0.7884, window x1.85, |t| = 19.3, "
+         "same sign at all 4 rungs. phi_0 moves -0.9 %, phi_m -11.7 %"),
         ("DISTRIBUTION CV", "x", "phi_0 and phi_m rise together",
-         "✅ MEASURED HERE: chi flat to |t| = 0.40 across CV 0 -> 0.2"),
+         "✅ MEASURED HERE: chi flat, PAIRED |t| = 0.56 (r = +0.86) across CV 0 -> 0.2"),
         ("POTENTIAL F_rep", "sigma*", "sets the repulsive force the contact must overcome",
          "🔴 UNMEASURED in this repo -- it is the DEM's `sigma*` input, not an output"),
         ("MATERIAL mu_p", "chi", "phi_0 is frictionless BY DEFINITION, so mu_p moves "
@@ -284,10 +283,16 @@ def main() -> int:
     say("   and one turns nothing (stiffness). Only the window knobs can change WHETHER a")
     say("   suspension shear-jams; the rest change where or when.")
     say("")
-    say("   🔴 THE LARGEST GAP IS SHAPE. It is the other candidate chi-knob and the repo")
-    say("   cannot presently measure its chi at all, because the shape campaign ran at a")
-    say("   single friction. Two extra friction values on the EXISTING shape grid would")
-    say("   close it, and that is the cheapest high-value campaign this project has.")
+    say("   🔑 BOTH WINDOW-KNOBS ARE NOW MEASURED, and they behave the same way: each")
+    say("   leaves phi_0 nearly alone and pulls phi_m down. Friction does it by design;")
+    say("   non-sphericity does it because constraining ROTATION is mechanically what")
+    say("   friction does. The size distribution, which moves both branches together, is")
+    say("   a position-knob and cannot change whether a suspension shear-jams at all.")
+    say("")
+    say("   🔴 THE LARGEST GAP IS NOW sigma*: BOTH remaining axes -- particle SIZE and")
+    say("   surface POTENTIAL -- act through it, and NEITHER has a measurement here. The")
+    say("   existing size derivation says a size ladder alone cannot separate them, so")
+    say("   the campaign that closes it sweeps the REPULSIVE FORCE explicitly.")
 
     # ---------------------------------------------------------------- 4
     say("\n=== 4. WHAT A DROP IMPACT NEEDS ON TOP OF (x, chi, sigma*) ===")

@@ -118,8 +118,8 @@ def main() -> int:
     say("=" * 96)
     say("   chi = phim/phi0 sets the SHEAR-JAMMING WINDOW (width 1-chi).")
     say("   Friction moves chi by construction; the size DISTRIBUTION does not")
-    say("   (|t| = 0.40). Shape is the remaining candidate window-knob, and the shape")
-    say("   campaign ran at ONE friction so it could not form chi at all.")
+    say("   (paired |t| = 0.56, r = +0.86). Shape was the remaining candidate window-knob,")
+    say("   and the shape campaign ran at ONE friction so it could not form chi at all.")
 
     cells = load()
     say(f"\n   `{TAG}` records on disk: {len(cells)}  (registered {N_REGISTERED})")
@@ -131,31 +131,66 @@ def main() -> int:
 
     # ---------------------------------------------------------------- W1
     say("\n=== W1  WIRING (PRIMARY): the three pre-existing records must reproduce ===")
-    ref = load(tag=None)          # every N=1700 CV=0 record, any tag
+    # 🔴 W1 WAS A BAR NO CORRECT RUN COULD PASS, and its first version failed 0/3 for
+    # that reason alone. The prereg quotes the three reference values to SIX DECIMALS
+    # (0.595694, ...) because that is what a document can carry, and the gate then
+    # demanded `abs(got - want) == 0.0` against those transcriptions -- impossible for
+    # any float that is not itself 6-dp. Measured: the re-run reproduces the records on
+    # disk BIT-IDENTICALLY (|d| = 0.000e+00, `iters` equal) while differing from the
+    # transcribed literal by ~3e-7, which is exactly the rounding.
+    #
+    # Replaced by a STRICTER test in kind, never a looser one: W1a compares against the
+    # FULL-PRECISION record on disk and requires bit-identity on `phi`, `iters` and
+    # `n_contacts`. W1b keeps the transcribed literal as a separate, weaker check that
+    # the prereg's printed numbers are the right cells at all, at their own precision.
+    import glob as _glob
+    import os as _os
+
+    def _preexisting(al, rung):
+        """The pre-shapechi record at this key, full precision, from a DIFFERENT tag."""
+        found = None
+        for fn in sorted(_glob.glob(_os.path.join(OUT, "shape", "*.jsonl"))):
+            if TAG in _os.path.basename(fn):
+                continue
+            for ln in open(fn, encoding="utf-8"):
+                ln = ln.strip()
+                if not ln:
+                    continue
+                r = json.loads(ln)
+                if (r.get("n_requested") == N_REQ and abs(r.get("cv", 1.0)) < 1e-12
+                        and round(r.get("alpha", 1.0), 3) == al and r.get("mu_p") == 0.3
+                        and r.get("seed") == W1_SEED
+                        and r.get("p_hat_target") == rung and "phi" in r):
+                    found = r
+        return found
+
     n_cmp = n_bad = 0
+    n_lit = n_lit_bad = 0
     for (al, rung), want in sorted(W1.items()):
         got = cells.get((al, 0.3, W1_SEED, rung))
         if got is None:
             say(f"      alpha={al}, p={rung:.0e}: NOT YET RUN")
             continue
+        old = _preexisting(al, rung)
+        n_lit += 1
+        d_lit = abs(got["phi"] - want)
+        n_lit_bad += (d_lit > 5e-7)
+        if old is None:
+            say(f"      alpha={al}, p={rung:.0e}: no pre-existing record to compare")
+            continue
         n_cmp += 1
-        old = ref.get((al, 0.3, W1_SEED, rung))
-        d = abs(got["phi"] - want)
-        traj = ""
-        if old is not None and old is not got:
-            same = all(old.get(f) == got.get(f) for f in ("iters", "n_contacts")
-                       if f in old and f in got)
-            traj = f"   trajectory identical: {same}"
-        ok = d == 0.0
-        n_bad += (not ok)
-        say(f"      alpha={al}, p={rung:.0e}: got {got['phi']:.9f} vs registered "
-            f"{want:.6f}  |d| = {d:.2e}{traj}")
-    gate("W1: the three registered records reproduce EXACTLY",
-         n_cmp > 0 and n_bad == 0, f"{n_cmp - n_bad}/{n_cmp} exact")
-    if n_cmp and n_bad:
-        say("      ⚠ If the only difference is ~1e-14 in `phi` while `iters` and")
-        say("      `n_contacts` match, this is the cross-code-era effect this session")
-        say("      characterised, NOT a wiring fault -- but it is reported, not excused.")
+        same_fields = [f for f in ("phi", "iters", "n_contacts")
+                       if f in old and f in got and old[f] != got[f]]
+        n_bad += bool(same_fields)
+        say(f"      alpha={al}, p={rung:.0e}: |d(phi)| vs RECORD = "
+            f"{abs(got['phi'] - old['phi']):.3e}   iters {old['iters']} == "
+            f"{got['iters']}   fields differing: {same_fields or 'none'}")
+        say(f"{'':21s}(vs the prereg's 6-dp literal {want:.6f}: {d_lit:.2e} "
+            f"-- that is the ROUNDING, not a difference)")
+    gate("W1a: the re-run reproduces the pre-existing records BIT-IDENTICALLY",
+         n_cmp > 0 and n_bad == 0, f"{n_cmp - n_bad}/{n_cmp} bit-identical")
+    gate("W1b: the prereg's transcribed literals match to their printed precision",
+         n_lit > 0 and n_lit_bad == 0, f"{n_lit - n_lit_bad}/{n_lit} within 5e-7")
 
     # ---------------------------------------------------------------- W2
     say("\n=== W2  HEALTH ===")

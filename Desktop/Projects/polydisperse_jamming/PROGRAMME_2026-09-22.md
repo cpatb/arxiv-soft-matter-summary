@@ -50,15 +50,22 @@ A drop rebounds as a solid iff **both** `σ_imp/σ* ≫ 1` (contacts activated) 
 |---|---|---|
 | **material: friction `μ_p`** | **χ** | ✅ **measured**: `χ = 0.8872 ± 0.0042`, window `1 − χ = 0.113` (`μ_p` 0 → 3) |
 | **distribution: CV** | **x** | ✅ **measured**: `Δχ = +0.0019 ± 0.0034` PAIRED (r = +0.86), `\|t\| = 0.56` — does **not** move the window |
-| **shape: `α`** | **χ?** | ⏳ **running** (`PREREG_SHAPECHI`) — the only untested window-knob |
+| **shape: `α`** | **χ** | ✅ **measured**: `χ` 0.8856 → 0.7884, window **×1.85**, `\|t\| = 19.3`, same sign at all 4 rungs |
 | **size `a`** | **σ\*** | 🔴 **degenerate**: a size ladder cannot separate the two grain-scale stresses (`onset_size_degeneracy_2026-09-19`) |
 | **potential `F_rep`** | **σ\*** | 🔴 **not measured here** — it is a DEM *input*, not an output |
 | **material: stiffness `E`** | — | ✅ the static packing is scale-free (`test_scale_invariance.py`) |
 | *(aggregation)* | **x**, via `Λ` | ✅ derived: `Λ = ⟨k^γ⟩/⟨k⟩`; the model's own domain fails before the interesting corner |
 
-**Two axes can change the window (shape, friction). Two change the onset stress (size,
-potential). The rest change position.** That is the whole answer at framework level, and
-it is why the next campaign is the shape one and not another distribution one.
+**Two axes change the window (friction, shape) — both now MEASURED, and both work the
+same way: they leave `φ₀` almost alone and pull `φ_m` down. Two change the onset stress
+(size, potential) — and NEITHER is measured. One changes position (the distribution).**
+
+> 🔑 **The bench consequence of the shape result:** between `χ(sphere) = 0.886` and
+> `χ(clump) = 0.788` there is a band — at `φ₀ ≈ 0.633`, **`φ` from 0.499 to 0.560** — in
+> which the same material at the same loading **shear-jams as clumps and cannot as
+> spheres**. That is the sharpest prediction this framework has produced.
+
+So the next campaign is `σ*`, not another packing study.
 
 ⚠ **`χ` is not rung-independent** — it drifts 0.016–0.025 across the pressure ladder,
 *more* than `φ₀` does, because the two friction arms have different compressibilities. So
@@ -148,7 +155,7 @@ The reduction says which of this repository's ~45 pre-registrations bear on the 
 
 In cost order, each with what it decides:
 
-1. **`shapechi`** (running, 72 cells) — is shape a second window-knob?
+1. ~~`shapechi`~~ — **DONE**: shape IS a second window-knob (`CLAIMS_SHAPECHI`).
 2. **`σ*` from the potential** — the one axis with no measurement at all. DEM with an
    explicit repulsive force, sweeping `F_rep`, checking `σ* ∝ F_rep/a²` and **which
    area convention** the simulation actually realises. This settles the size axis too,
