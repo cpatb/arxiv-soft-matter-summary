@@ -1,0 +1,136 @@
+grade_actshape -- PREREG_ACTSHAPE_2026-09-22.md
+records: 54 of 54 registered
+W4 HEALTH: 48 healthy of 54 with dumps; 0 error cells
+  EXCLUDED lognormal_cv0.500_mu0.000_s1_phi00.5500_N1000_p1.000e-03_K0.15_g3.00_st480000: ['FINITE SIZE RISK: d_max/L_dense = 0.361 > 0.25', 'NOT STEADY: p halves differ by 16.6%, phi halves by 0.2% (bar 15%)']
+  EXCLUDED lognormal_cv0.500_mu0.000_s1_phi00.5500_N1000_p1.000e-04_K0.15_g3.00_st960000: ['FINITE SIZE RISK: d_max/L_dense = 0.361 > 0.25', 'SERVO DID NOT HOLD: <p>_ss/p_target - 1 = -5.2% (bar 5%)']
+  EXCLUDED lognormal_cv0.500_mu0.000_s2_phi00.5500_N1000_p1.000e-03_K0.15_g3.00_st480000: ['FINITE SIZE RISK: d_max/L_dense = 0.340 > 0.25', 'NOT STEADY: p halves differ by 17.2%, phi halves by 0.6% (bar 15%)', 'SERVO DID NOT HOLD: <p>_ss/p_target - 1 = -9.1% (bar 5%)']
+  EXCLUDED lognormal_cv0.500_mu0.000_s2_phi00.5500_N1000_p1.000e-04_K0.15_g3.00_st960000: ['FINITE SIZE RISK: d_max/L_dense = 0.340 > 0.25', 'SERVO DID NOT HOLD: <p>_ss/p_target - 1 = -6.2% (bar 5%)']
+  EXCLUDED lognormal_cv0.500_mu0.000_s2_phi00.5500_N1000_p3.000e-04_K0.15_g3.00_st480000: ['FINITE SIZE RISK: d_max/L_dense = 0.340 > 0.25', 'SERVO DID NOT HOLD: <p>_ss/p_target - 1 = -7.4% (bar 5%)']
+  EXCLUDED lognormal_cv0.500_mu0.000_s3_phi00.5500_N1000_p1.000e-03_K0.15_g3.00_st480000: ['FINITE SIZE RISK: d_max/L_dense = 0.376 > 0.25', 'SERVO DID NOT HOLD: <p>_ss/p_target - 1 = -7.2% (bar 5%)']
+
+=== W1 IDENTITY vs phase9_rm (dump must not perturb the run) ===
+  lognormal_cv0.000_mu0.300_s1_phi00.5500_N100  p/z/force identical={'p_hat_series': True, 'z_series': True, 'force': True}  max|dphi|=0.0e+00  PASS
+  lognormal_cv0.000_mu0.300_s2_phi00.5500_N100  p/z/force identical={'p_hat_series': True, 'z_series': True, 'force': True}  max|dphi|=0.0e+00  PASS
+  lognormal_cv0.000_mu0.300_s3_phi00.5500_N100  p/z/force identical={'p_hat_series': True, 'z_series': True, 'force': True}  max|dphi|=0.0e+00  PASS
+  lognormal_cv0.200_mu0.300_s1_phi00.5500_N100  p/z/force identical={'p_hat_series': True, 'z_series': True, 'force': True}  max|dphi|=0.0e+00  PASS
+  lognormal_cv0.200_mu0.300_s2_phi00.5500_N100  p/z/force identical={'p_hat_series': True, 'z_series': True, 'force': True}  max|dphi|=0.0e+00  PASS
+  lognormal_cv0.200_mu0.300_s3_phi00.5500_N100  p/z/force identical={'p_hat_series': True, 'z_series': True, 'force': True}  max|dphi|=0.0e+00  PASS
+  lognormal_cv0.500_mu0.300_s1_phi00.5500_N100  p/z/force identical={'p_hat_series': True, 'z_series': True, 'force': True}  max|dphi|=0.0e+00  PASS
+  lognormal_cv0.500_mu0.300_s2_phi00.5500_N100  p/z/force identical={'p_hat_series': True, 'z_series': True, 'force': True}  max|dphi|=0.0e+00  PASS
+  lognormal_cv0.500_mu0.300_s3_phi00.5500_N100  p/z/force identical={'p_hat_series': True, 'z_series': True, 'force': True}  max|dphi|=0.0e+00  PASS
+W1: 9/9 identical (9 registered)  PASS
+W2 DUMP == RECORD force block on the last snapshot: 16/54  FAIL   [as registered, compared on Windows]
+W2' n/mean/cv/n_tail bit-identical and |d tail_slope| < 1e-12: 54/54  PASS
+W2'' same-platform identical: 54/54   [recomputed on the platform that wrote the record]
+W3 CV=0 norms identical: worst spread 0.0e+00 (bar 1e-12); CV=0.5 constant vs derjaguin differ: min 5.732e-02 (bar 1e-3)  PASS
+
+=== norm = constant   (seed mean +- sd; n = seeds) ===
+   mu     p      CV   n   d10/90          d25/75          sigma*/kappa(d10)   mu_M
+  0.0  1e-04  0.0  3   1.479 +- 0.006   1.458 +- 0.008   0.9358 +- 0.015   0.205
+  0.0  1e-04  0.2  3   1.387 +- 0.009   1.380 +- 0.005   0.893 +- 0.036   0.208
+  0.0  1e-04  0.5  1   1.157 +- 0.000   1.145 +- 0.000   0.5415 +- 0   0.227
+  0.0  3e-04  0.0  3   1.477 +- 0.017   1.481 +- 0.013   0.9909 +- 0.009   0.196
+  0.0  3e-04  0.2  3   1.359 +- 0.006   1.345 +- 0.004   0.9345 +- 0.024   0.202
+  0.0  3e-04  0.5  2   1.133 +- 0.007   1.121 +- 0.018   0.6345 +- 0.061   0.222
+  0.0  1e-03  0.0  3   1.431 +- 0.005   1.435 +- 0.009   1.096 +- 0.0011   0.159
+  0.0  1e-03  0.2  3   1.334 +- 0.018   1.326 +- 0.023   1.06 +- 0.022   0.167
+  0.3  1e-04  0.0  3   1.235 +- 0.015   1.249 +- 0.015   0.6815 +- 0.028   0.380
+  0.3  1e-04  0.2  3   1.169 +- 0.036   1.161 +- 0.021   0.613 +- 0.011   0.392
+  0.3  1e-04  0.5  3   1.005 +- 0.035   0.993 +- 0.017   0.4018 +- 0.039   0.421
+  0.3  3e-04  0.0  3   1.254 +- 0.000   1.248 +- 0.009   0.7767 +- 0.0074   0.377
+  0.3  3e-04  0.2  3   1.154 +- 0.021   1.156 +- 0.017   0.7196 +- 0.0099   0.394
+  0.3  3e-04  0.5  3   0.951 +- 0.009   0.932 +- 0.015   0.4482 +- 0.048   0.416
+  0.3  1e-03  0.0  3   1.220 +- 0.018   1.233 +- 0.023   0.8413 +- 0.0031   0.370
+  0.3  1e-03  0.2  3   1.117 +- 0.018   1.126 +- 0.027   0.7973 +- 0.022   0.380
+  0.3  1e-03  0.5  3   0.918 +- 0.021   0.929 +- 0.034   0.5294 +- 0.04   0.397
+
+=== norm = derjaguin   (seed mean +- sd; n = seeds) ===
+   mu     p      CV   n   d10/90          d25/75          sigma*/kappa(d10)   mu_M
+  0.0  1e-04  0.0  3   1.479 +- 0.006   1.458 +- 0.008   0.2339 +- 0.0039   0.205
+  0.0  1e-04  0.2  3   1.425 +- 0.007   1.418 +- 0.010   0.2293 +- 0.0068   0.208
+  0.0  1e-04  0.5  1   1.248 +- 0.000   1.233 +- 0.000   0.1742 +- 0   0.227
+  0.0  3e-04  0.0  3   1.477 +- 0.017   1.481 +- 0.013   0.2477 +- 0.0023   0.196
+  0.0  3e-04  0.2  3   1.396 +- 0.001   1.389 +- 0.003   0.2403 +- 0.0039   0.202
+  0.0  3e-04  0.5  2   1.235 +- 0.023   1.227 +- 0.030   0.1959 +- 0.01   0.222
+  0.0  1e-03  0.0  3   1.431 +- 0.005   1.435 +- 0.009   0.274 +- 0.00029   0.159
+  0.0  1e-03  0.2  3   1.367 +- 0.017   1.363 +- 0.023   0.271 +- 0.0025   0.167
+  0.3  1e-04  0.0  3   1.235 +- 0.015   1.249 +- 0.015   0.1704 +- 0.0071   0.380
+  0.3  1e-04  0.2  3   1.197 +- 0.030   1.185 +- 0.022   0.1585 +- 0.0029   0.392
+  0.3  1e-04  0.5  3   1.068 +- 0.035   1.056 +- 0.014   0.1285 +- 0.0083   0.421
+  0.3  3e-04  0.0  3   1.254 +- 0.000   1.248 +- 0.009   0.1942 +- 0.0019   0.377
+  0.3  3e-04  0.2  3   1.176 +- 0.017   1.181 +- 0.007   0.1858 +- 0.00031   0.394
+  0.3  3e-04  0.5  3   1.017 +- 0.013   0.995 +- 0.019   0.143 +- 0.0092   0.416
+  0.3  1e-03  0.0  3   1.220 +- 0.018   1.233 +- 0.023   0.2103 +- 0.00078   0.370
+  0.3  1e-03  0.2  3   1.143 +- 0.013   1.152 +- 0.024   0.205 +- 0.0035   0.380
+  0.3  1e-03  0.5  3   0.978 +- 0.018   0.992 +- 0.034   0.1667 +- 0.0075   0.397
+
+=== norm = area   (seed mean +- sd; n = seeds) ===
+   mu     p      CV   n   d10/90          d25/75          sigma*/kappa(d10)   mu_M
+  0.0  1e-04  0.0  3   1.479 +- 0.006   1.458 +- 0.008   0.05849 +- 0.00097   0.205
+  0.0  1e-04  0.2  3   1.420 +- 0.008   1.420 +- 0.004   0.05858 +- 0.0013   0.208
+  0.0  1e-04  0.5  1   1.241 +- 0.000   1.244 +- 0.000   0.05558 +- 0   0.227
+  0.0  3e-04  0.0  3   1.477 +- 0.017   1.481 +- 0.013   0.06193 +- 0.00056   0.196
+  0.0  3e-04  0.2  3   1.395 +- 0.003   1.397 +- 0.003   0.06163 +- 0.00042   0.202
+  0.0  3e-04  0.5  2   1.236 +- 0.030   1.231 +- 0.023   0.06036 +- 0.0006   0.222
+  0.0  1e-03  0.0  3   1.431 +- 0.005   1.435 +- 0.009   0.0685 +- 7.2e-05   0.159
+  0.0  1e-03  0.2  3   1.370 +- 0.018   1.370 +- 0.021   0.06938 +- 0.00058   0.167
+  0.3  1e-04  0.0  3   1.235 +- 0.015   1.249 +- 0.015   0.04259 +- 0.0018   0.380
+  0.3  1e-04  0.2  3   1.198 +- 0.027   1.197 +- 0.028   0.04098 +- 0.00095   0.392
+  0.3  1e-04  0.5  3   1.068 +- 0.024   1.058 +- 0.027   0.04174 +- 0.0012   0.421
+  0.3  3e-04  0.0  3   1.254 +- 0.000   1.248 +- 0.009   0.04854 +- 0.00046   0.377
+  0.3  3e-04  0.2  3   1.177 +- 0.014   1.189 +- 0.004   0.04796 +- 0.00068   0.394
+  0.3  3e-04  0.5  3   1.026 +- 0.012   1.011 +- 0.015   0.04614 +- 0.00098   0.416
+  0.3  1e-03  0.0  3   1.220 +- 0.018   1.233 +- 0.023   0.05258 +- 0.0002   0.370
+  0.3  1e-03  0.2  3   1.149 +- 0.014   1.160 +- 0.020   0.05296 +- 0.00062   0.380
+  0.3  1e-03  0.5  3   0.991 +- 0.020   1.009 +- 0.037   0.05342 +- 0.0015   0.397
+
+=== H1  delta_10/90 (derjaguin), CV 0 -> 0.5, mu 0.3, p 3e-4, seed-paired ===
+  seeds [1, 2, 3]: diff -0.2369 +- 0.0079, t = -30.17 (t_crit 4.303, df 2); ratio 0.811 (registered [0.60, 0.90])  -> PASS
+
+=== H1b  ordering at CV 0.5: delta(constant) < delta(derjaguin) < delta(area) ===
+  mu 0.0 p 1e-04: 1.157 / 1.248 / 1.241  FAIL
+  mu 0.0 p 3e-04: 1.133 / 1.235 / 1.236  PASS
+  mu 0.3 p 1e-04: 1.005 / 1.068 / 1.068  PASS
+  mu 0.3 p 3e-04: 0.951 / 1.017 / 1.026  PASS
+  mu 0.3 p 1e-03: 0.918 / 0.978 / 0.991  PASS
+
+=== H2  sigma*/kappa (derjaguin), CV 0 -> 0.5, at fixed d10 / d50 / d32 ===
+  derjaguin mu 0.0: sigma*(0.5)/sigma*(0) at d10 0.789 (ln diff t = -5.38, df 1), at realised d10 0.783, at d50 0.706, at d32 1.200   [reported]
+  derjaguin mu 0.3: sigma*(0.5)/sigma*(0) at d10 0.736 (ln diff t = -8.08, df 2), at realised d10 0.732, at d50 0.657, at d32 1.145   [PASS]
+  constant  mu 0.0: sigma*(0.5)/sigma*(0) at d10 0.639 (ln diff t = -5.93, df 1), at realised d10 0.630, at d50 0.512, at d32 1.478   [reported]
+  constant  mu 0.3: sigma*(0.5)/sigma*(0) at d10 0.577 (ln diff t = -8.94, df 2), at realised d10 0.569, at d50 0.459, at d32 1.395   [reported]
+
+=== H3  friction: delta_10/90 (derjaguin) mu 0 vs 0.3, p 3e-4, seed-paired ===
+  CV 0.0: mu0 1.477  mu0.3 1.254  diff -0.223 +- 0.009 t -23.74
+  CV 0.2: mu0 1.396  mu0.3 1.176  diff -0.220 +- 0.010 t -21.19
+  CV 0.5: mu0 1.235  mu0.3 1.020  diff -0.215 +- 0.028 t -7.57
+
+=== H4  is delta a material property? span over p < half the CV 0->0.5 effect ===
+  derjaguin mu 0.0 CV 0.0: delta over p 1.479 / 1.477 / 1.431  span 0.047 vs half-effect 0.121  [PASS]
+  derjaguin mu 0.0 CV 0.2: delta over p 1.425 / 1.396 / 1.367  span 0.058 vs half-effect 0.121  [PASS]
+      CV effect at each p: -0.231 / -0.242
+  derjaguin mu 0.3 CV 0.0: delta over p 1.235 / 1.254 / 1.220  span 0.033 vs half-effect 0.118  [PASS]
+  derjaguin mu 0.3 CV 0.2: delta over p 1.197 / 1.176 / 1.143  span 0.054 vs half-effect 0.118  [PASS]
+  derjaguin mu 0.3 CV 0.5: delta over p 1.068 / 1.017 / 0.978  span 0.091 vs half-effect 0.118  [PASS]
+      CV effect at each p: -0.167 / -0.237 / -0.243
+  constant  mu 0.0 CV 0.0: delta over p 1.479 / 1.477 / 1.431  span 0.047 vs half-effect 0.172  [reported]
+  constant  mu 0.0 CV 0.2: delta over p 1.387 / 1.359 / 1.334  span 0.053 vs half-effect 0.172  [reported]
+      CV effect at each p: -0.322 / -0.344
+  constant  mu 0.3 CV 0.0: delta over p 1.235 / 1.254 / 1.220  span 0.033 vs half-effect 0.151  [reported]
+  constant  mu 0.3 CV 0.2: delta over p 1.169 / 1.154 / 1.117  span 0.052 vs half-effect 0.151  [reported]
+  constant  mu 0.3 CV 0.5: delta over p 1.005 / 0.951 / 0.918  span 0.087 vs half-effect 0.151  [reported]
+      CV effect at each p: -0.230 / -0.303 / -0.302
+
+=== H5  Weibull adequacy: delta_25/75 > delta_10/90 on CV 0 ===
+  mu 0.0 p 1e-04: d10/90 1.479  d25/75 1.458  ratio 0.986  FAIL
+  mu 0.0 p 3e-04: d10/90 1.477  d25/75 1.481  ratio 1.003  PASS
+  mu 0.0 p 1e-03: d10/90 1.431  d25/75 1.435  ratio 1.003  PASS
+  mu 0.3 p 1e-04: d10/90 1.235  d25/75 1.249  ratio 1.011  PASS
+  mu 0.3 p 3e-04: d10/90 1.254  d25/75 1.248  ratio 0.995  FAIL
+  mu 0.3 p 1e-03: d10/90 1.220  d25/75 1.233  ratio 1.011  PASS
+
+=== H6  sigma_jam/kappa vs f_c, CV 0 vs 0.5, derjaguin, fixed d10: do they cross? ===
+  mu 0.0: ln[sjam(0.5)/sjam(0)] at f_c 0.1/0.25/0.5/0.75/0.9 = -0.353 / -0.284 / -0.182 / -0.064 / +0.056   sign changes 1 at f_c [0.84], registered direction (neg->pos, one crossing) True
+  mu 0.3: ln[sjam(0.5)/sjam(0)] at f_c 0.1/0.25/0.5/0.75/0.9 = -0.474 / -0.374 / -0.230 / -0.053 / +0.099   sign changes 1 at f_c [0.8], registered direction (neg->pos, one crossing) True   [H6 PASS]
+
+solver presets for scale (NOT graded): DELTA si_fit 1.3852 (withdrawn), cs_fit 1.3169
