@@ -117,11 +117,46 @@ def fig_k1():
          "endpoints; (b) mu_p 0.3 dumps, shaded = registered sigma* band [0.55, 0.95]")
 
 
+def fig_k2():
+    """K2: the DNS drop at fixed x = 0.85 across the chi(w2) ladder (PREREG_KMERDROP):
+    jammed volume J(f_hat > f_c) and the maximum radial radius of gyration (continuous;
+    beta_max is grid-quantised)."""
+    labs = (("w0.00", 0.0), ("w0.25", 0.25), ("w0.50", 0.5), ("w0.75", 0.75), ("w1.00", 1.0))
+    rows, ws, J, R = [], [], [], []
+    for lab, w in labs:
+        p = os.path.join(OUT, "kmerdrop", lab, "spread.dat")
+        if not os.path.exists(p):
+            continue
+        a = np.loadtxt(p, comments="#", ndmin=2)
+        ws.append(w)
+        J.append(float(a[:, 7].max()))
+        R.append(float(a[:, 11].max()))
+        rows.append({"w2": w, "J_max": J[-1], "Rg_r_max_over_D0": R[-1],
+                     "beta_max": float(a[:, 2].max())})
+    if not ws:
+        return
+    fig, ax = plt.subplots(1, 2, figsize=(6.6, 2.6))
+    ax[0].plot(ws, J, "o-", color=COL[2])
+    ax[0].set_ylim(0, 1)
+    ax[0].set_xlabel(r"$w_2$")
+    ax[0].set_ylabel(r"jammed volume fraction")
+    ax[1].plot(ws, R, "s-", color=COL[1])
+    ax[1].set_ylim(0, 0.5)
+    ax[1].set_xlabel(r"$w_2$")
+    ax[1].set_ylabel(r"max $R_{g,r}/D_0$")
+    for a_ in ax:
+        a_.set_xlim(-0.05, 1.05)
+    fig.tight_layout()
+    save(fig, "K2_doublet_drop", rows,
+         "PREREG_KMERDROP: x = 0.85, sigma* 300 Pa, delta 1.3169, L9; chi(w2) from the DEM")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
     a = ap.parse_args()
     fig_k1()
+    fig_k2()
     if a.check:
         h1 = md5(os.path.join(FIG, "K1_doublet_window.png"))
         fig_k1()
