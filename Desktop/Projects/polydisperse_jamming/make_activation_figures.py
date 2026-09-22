@@ -74,11 +74,77 @@ def fig_j1():
          "rate_threshold; dotted line f_c = 1/e")
 
 
+def j2_data():
+    """delta_10/90 (derjaguin) per (mu, CV) at p 3e-4, N = 1000, W4-healthy cells; and the
+    seed-pooled activation curves at mu 0.3."""
+    import grade_actshape as G
+    recs = G.load_records(os.path.join(HERE, "out"), "phase9_actshape_c*.jsonl")
+    per, pooled = {}, {}
+    for key, r in recs.items():
+        if "error" in r or r["p_hat_target"] != 3e-4:
+            continue
+        if not (r["steady"] and r["servo_held"] and r["quasistatic"]):
+            continue
+        d = np.load(os.path.join(HERE, "out", "actshape_dump", key + ".npz"))
+        snaps = G.snapshots(d)
+        g = np.concatenate([A.g_values(s["fn"], s["r1"], s["r2"], s["p"], "derjaguin")
+                            for s in snaps])
+        per.setdefault((r["mu_p"], r["cv"]), []).append(A.delta_from_quantiles(g, 0.1, 0.9))
+        if r["mu_p"] == 0.3:
+            pooled.setdefault(r["cv"], []).append(g)
+    return per, {cv: np.concatenate(v) for cv, v in pooled.items()}
+
+
+def fig_j2():
+    per, pooled = j2_data()
+    fig, ax = plt.subplots(1, 2, figsize=(6.6, 2.6))
+    rows = []
+    for k, mu in enumerate((0.0, 0.3)):
+        for cv in (0.0, 0.2, 0.5):
+            v = per.get((mu, cv))
+            if not v:
+                continue
+            m, sd = float(np.mean(v)), float(np.std(v, ddof=1)) if len(v) > 1 else 0.0
+            flagged = cv == 0.5                      # finite-size flagged (Amendment 1)
+            ax[0].errorbar(cv, m, yerr=sd, fmt="o", color=COL[k + 1], capsize=2,
+                           mfc="white" if flagged else COL[k + 1],
+                           label=f"μp = {mu:g}" if cv == 0.0 else None)
+            rows.append({"mu_p": mu, "cv": cv, "delta_mean": m, "delta_sd": sd, "n": len(v),
+                         "finite_size_flagged": int(flagged)})
+    ax[0].axhspan(1.3169, 1.3852, color=COL[0], alpha=0.12, lw=0)
+    ax[0].set_ylim(0, 1.7)
+    ax[0].set_xlim(-0.05, 0.55)
+    ax[0].set_xlabel("CV")
+    ax[0].set_ylabel(r"$\delta_{10/90}$")
+    ax[0].legend(frameon=False, fontsize=8, loc="lower left")
+    s = np.logspace(-2, 1.5, 351)
+    for k, cv in enumerate((0.0, 0.2, 0.5)):
+        if cv not in pooled:
+            continue
+        f = A.activation_curve(pooled[cv], s)
+        ax[1].plot(s, f, color=COL[k + 1], lw=1.4, ls="--" if cv == 0.5 else "-",
+                   label=f"CV = {cv:g}")
+        rows += [{"mu_p": 0.3, "cv": cv, "sigma_over_kappa": float(a), "fhat": float(b)}
+                 for a, b in zip(s[::10], f[::10])]
+    ax[1].set_xscale("log")
+    ax[1].set_ylim(0, 1)
+    ax[1].set_xlabel(r"$\sigma/\kappa$  ($d_{10}$ units)")
+    ax[1].set_ylabel(r"$\hat f$")
+    ax[1].legend(frameon=False, fontsize=8)
+    fig.tight_layout()
+    keys = sorted({k for r in rows for k in r})
+    rows = [{k: r.get(k, "") for k in keys} for r in rows]
+    save(fig, "J2_activation_by_cv", rows,
+         "actshape p=3e-4 N=1000 derjaguin; hollow/dashed = CV 0.5 finite-size flagged; "
+         "grey band = solver DELTA cs_fit 1.3169 .. si_fit 1.3852")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
     a = ap.parse_args()
     fig_j1()
+    fig_j2()
     if a.check:
         h1 = md5(os.path.join(FIG, "J1_threshold_across_window.png"))
         fig_j1()
