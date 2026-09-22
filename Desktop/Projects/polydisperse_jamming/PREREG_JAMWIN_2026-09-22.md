@@ -217,3 +217,22 @@ is the MOMENTUM FLUX: as `η` rises, `γ̇` falls at roughly fixed stress, so th
 point behaves as stress-controlled and the bottleneck feedback does not operate. A direct
 test is the local `σ` and `γ̇` fields in the jamming region (not written by the solver);
 `jamwin2`'s bracketed boundary is the next check of the sign.
+
+## RESULT — jamwin2 (graded 2026-09-22 ~18:20 CDT, `out/grade_jamwin2.txt`)
+
+Provenance 21/21. Outcome table (JAM / free / ? = died before a decisive row):
+
+| δ \ σ\* (Pa) | 10 | 31.6 | 100 | 316 | 1000 | 3162 | 10000 |
+|---|---|---|---|---|---|---|---|
+| 0.7 | free | free | free | free | ? | free | free |
+| 1.3169 | JAM | ? | free | ? | free | ? | free |
+| 2.6 | JAM | JAM | free | free | ? | free | free |
+
+**Registered verdict: UNDETERMINED** — δ 0.7 has no boundary on the ladder (free everywhere) and
+δ 1.3169's boundary rung is a dead cell, so only δ 2.6 is bracketed (σ\*_c = 31.6 Pa).
+
+**Descriptive, NOT the registered reading:** the censored bounds are σ\*_c(0.7) < 10 ≤ σ\*_c(1.3169)
+< 100 and σ\*_c(2.6) = 31.6, i.e. the boundary RISES with δ by more than one rung (> ×3.16)
+between δ 0.7 and 2.6 — the (S) direction and consistent with its predicted ×3.67, against (R)'s
+predicted ×1.87 FALL. Together with jamwin's P2 this is the second, independent sign in favour
+of stress-thresholded activation at impact; neither is a clean bracketed test.

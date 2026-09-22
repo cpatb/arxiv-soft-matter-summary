@@ -1,0 +1,16 @@
+grade_jamwin2 -- PREREG_JAMWIN Amendment 2 (arm B, x = 0.85, f_c = 0.75)
+outcome: JAMMED iff jam_frac(fhat > f_c) >= 0.5 at a written row; NOT JAMMED iff survives to t/tau >= 5.9; else UNDETERMINED
+cells landed: 21 of 21;  provenance ok: 21/21
+
+   delta \ sigma*       10     31.6      100      316     1000     3162    10000
+       0.7            free     free     free     free        ?     free     free
+            t_jam          -        -        -        -        -        -        -
+            sigma*_c = None   (monotone=True, complete=True, bracketed=False)
+    1.3169             JAM        ?     free        ?     free        ?     free
+            t_jam      1.300        -        -        -        -        -        -
+            sigma*_c = None   (monotone=True, complete=True, bracketed=False)
+       2.6             JAM      JAM     free     free        ?     free     free
+            t_jam      0.975    1.200        -        -        -        -        -
+            sigma*_c = 31.6   (monotone=True, complete=True, bracketed=True)
+
+VERDICT: UNDETERMINED (a delta has no readable boundary)
