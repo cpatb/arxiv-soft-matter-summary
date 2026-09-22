@@ -140,6 +140,15 @@ class PackingState:
     # has a SEAM there rather than a limit: dup_contact_frac jumps from 0 to 0.75 the
     # moment two members exist. That seam is registered, not smoothed over.
     alpha: float = 1.0
+    # --- the MULTIPLET axis, added 2026-09-22 (PREREG_KMER_2026-09-22.md). ONE primary
+    # sphere (CV must be 0, alpha must be 1); a grain is a rigid cluster of k TANGENT
+    # primaries: k = 2 a dumbbell, k = 3 an equilateral triangle. `doublet_w` and
+    # `triplet_w` are SOLID-VOLUME fractions; the rest is singlets. 0/0 is the historical
+    # path and draws nothing from any RNG, so every earlier record reproduces bit-for-bit.
+    doublet_w: float = 0.0
+    triplet_w: float = 0.0
+    n_doublets: int = 0
+    n_triplets: int = 0
     eps_corrugation: float = 0.0      # shape.corrugation; the INTERLOCKING half
     span_over_deq: float = 1.0        # shape.span_factor; what S2's clearance uses
     density_scale: float = 1.0        # 1/(2*(ds/d_eq)^3) for clumps, 1.0 for spheres
@@ -527,6 +536,34 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
     st.density_scale = 1.0 / (2.0 * ds_over_deq ** 3) if is_clump else 1.0
     d_span_max = st.span_over_deq * d_max
 
+    # --- MULTIPLETS of one primary (see PackingState.doublet_w). Tangent members do not
+    # overlap, so the union volume is k primary volumes EXACTLY, the member density needs
+    # no correction, and utils.porosity() is not double-counting (the overlap is zero).
+    kmer = {}
+    if st.doublet_w > 0.0 or st.triplet_w > 0.0:
+        if st.cv != 0.0 or alpha != 1.0:
+            raise ValueError("multiplets are built from ONE primary: need cv = 0, alpha = 1")
+        w2, w3 = float(st.doublet_w), float(st.triplet_w)
+        w1 = 1.0 - w2 - w3
+        if w1 < -1e-12:
+            raise ValueError(f"doublet_w + triplet_w = {w2 + w3} > 1")
+        # number fractions: a k-mer carries k primary volumes
+        z = w1 + w2 / 2.0 + w3 / 3.0
+        n = len(radii)
+        n2 = int(round(n * (w2 / 2.0) / z))
+        n3 = int(round(n * (w3 / 3.0) / z))
+        # a SEPARATE stream, drawn only on this path, so the sphere path is untouched
+        pick = np.random.default_rng(st.seed + 2_000_003).permutation(n)
+        kmer = {int(j): 2 for j in pick[:n2]}
+        kmer.update({int(j): 3 for j in pick[n2:n2 + n3]})
+        st.n_doublets, st.n_triplets = n2, n3
+        v1 = 4.0 / 3.0 * math.pi * radii ** 3
+        vol_solid = float(np.sum(v1) + sum((k - 1) * v1[j] for j, k in kmer.items()))
+        st.vol_solid = vol_solid
+        # longest extent: a dumbbell spans 2 primary diameters; a tangent triangle's
+        # enclosing length is also 2 (two members side by side along one edge)
+        d_span_max = 2.0 * d_max
+
     # Yade's periodic collider requires cell edge > 2.1 * maxBodySpan, and the cell
     # SHRINKS under compression, so the binding check is at the FINAL density, not the
     # initial one. Sizing only the insertion cell was not enough: N=200/CV=0.5 passed
@@ -596,6 +633,28 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
     axes = random_axes(len(radii), st.seed + 1_000_003)
     for j, r in enumerate(radii):
         pos = rng.uniform(0, L, 3)
+        k = kmer.get(j, 1)
+        if k > 1:
+            # centres about the centroid: dumbbell along the random axis; triangle in the
+            # plane spanned by the axis and a perpendicular, side = one primary diameter
+            a = np.asarray(axes[j], dtype=float)
+            a = a / np.linalg.norm(a)
+            if k == 2:
+                off = [a * float(r), -a * float(r)]
+            else:
+                t = np.cross(a, [1.0, 0.0, 0.0])
+                if np.linalg.norm(t) < 1e-6:
+                    t = np.cross(a, [0.0, 1.0, 0.0])
+                t = t / np.linalg.norm(t)
+                side = 2.0 * float(r)
+                verts = [np.zeros(3), a * side,
+                         a * side / 2.0 + t * side * math.sqrt(3.0) / 2.0]
+                cen = sum(verts) / 3.0
+                off = [v - cen for v in verts]
+            ids = [O.bodies.append(utils.sphere(tuple(pos + o), float(r), material=mat))
+                   for o in off]
+            O.bodies.clump(ids)
+            continue
         if not is_clump:
             O.bodies.append(utils.sphere(tuple(pos), float(r), material=mat))
             continue
@@ -610,6 +669,32 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
                                             material=mat)) for k in (0, 1)]
         O.bodies.clump(ids)
     return L, mat
+
+
+def kmer_contact_dump(O):  # noqa: E741
+    """Per-contact (fn, k1, k2) over real interactions between DIFFERENT grains, where k is
+    the number of primaries in the grain each member belongs to (1 for a free sphere).
+    For a one-primary multiplet pack every contact is primary-primary, so R* = a/2 is the
+    same for every contact and fn alone is the activation variable (PREREG_KMER)."""
+    ksize, gid = {}, {}
+    for b in O.bodies:
+        if b is None or b.isClump:
+            continue
+        if b.isClumpMember:
+            gid[b.id] = b.clumpId
+            ksize[b.id] = len(O.bodies[b.clumpId].shape.members)
+        else:
+            gid[b.id], ksize[b.id] = b.id, 1
+    fn, k1, k2 = [], [], []
+    for i in O.interactions:
+        if not i.isReal or i.id1 not in gid or i.id2 not in gid:
+            continue
+        if gid[i.id1] == gid[i.id2]:
+            continue
+        fn.append(float(i.phys.normalForce.norm()))
+        k1.append(ksize[i.id1])
+        k2.append(ksize[i.id2])
+    return (np.asarray(fn), np.asarray(k1, dtype=np.int64), np.asarray(k2, dtype=np.int64))
 
 
 def grain_map(O):  # noqa: E741
@@ -639,7 +724,8 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
                        young: float = 1.0, verbose: bool = True,
                        family: str = "lognormal",
                        eta_roll: float | None = None,
-                       alpha: float = 1.0) -> PackingState:
+                       alpha: float = 1.0, doublet_w: float = 0.0,
+                       triplet_w: float = 0.0) -> PackingState:
     """Compress a packing isotropically to reduced pressure `p_hat` = p/E.
 
     Dimensionless throughout: d10 = 1, rho = 1, E = `young` (default 1).
@@ -651,7 +737,8 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
     t0 = time.time()
     O.reset()
     st = PackingState(n_requested=n, cv=cv, mu_p=mu_p, p_hat_target=p_hat,
-                      seed=seed, family=family, eta_roll=eta_roll, alpha=float(alpha))
+                      seed=seed, family=family, eta_roll=eta_roll, alpha=float(alpha),
+                      doublet_w=float(doublet_w), triplet_w=float(triplet_w))
     insert_packing(st, truncate=truncate, young=young)
     grain_of = grain_map(O)
     # Read the mass back off the SCENE, before anything moves. Clump members carry

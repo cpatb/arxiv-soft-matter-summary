@@ -50,7 +50,7 @@ SHAPE_TAG = "shp"
 
 
 def cell_key(cv: float, mu: float, seed: int, p_hat: float, n: int,
-             family: str, alpha: float) -> str:
+             family: str, alpha: float, kmer: tuple[float, float] = (0.0, 0.0)) -> str:
     """Resume key. `alpha` is ALWAYS in it, including at alpha = 1.
 
     Deliberately NOT backward-compatible with `phase2_phiJ.cell_key`: the alpha = 1
@@ -60,6 +60,8 @@ def cell_key(cv: float, mu: float, seed: int, p_hat: float, n: int,
     test, so it must not be able to pass by aliasing.
     """
     base = f"cv{cv:.3f}_mu{mu:.3f}_s{seed}_p{p_hat:.3e}_N{n}_a{alpha:.3f}"
+    if kmer[0] > 0 or kmer[1] > 0:           # PREREG_KMER; absent -> the historical key
+        base += f"_w2{kmer[0]:.3f}_w3{kmer[1]:.3f}"
     key = base if family == "lognormal" else f"{base}_{family}"
     cap = packing.max_iter()
     return key if cap == packing.MAX_ITER else f"{key}_it{cap}"
@@ -79,7 +81,15 @@ def main() -> int:
     ap.add_argument("--cvs", default="")
     ap.add_argument("--seeds", default="")
     ap.add_argument("--phats", default="")
+    ap.add_argument("--kmers", default="",
+                    help="PREREG_KMER: ';'-separated w2:w3 solid-volume fractions of tangent "
+                         "doublets and triangle triplets of ONE primary (needs cv 0, alpha 1)")
+    ap.add_argument("--dump-dir", default="", help="per-contact (fn, k1, k2) npz per cell")
     args = ap.parse_args()
+    kmers = ([tuple(float(v) for v in c.split(":")) for c in args.kmers.split(";")]
+             if args.kmers else [(0.0, 0.0)])
+    if args.dump_dir:
+        os.makedirs(args.dump_dir, exist_ok=True)
 
     os.makedirs(OUT_DIR, exist_ok=True)
     n = args.n or 1500
@@ -96,7 +106,7 @@ def main() -> int:
         suffix += f"_shard{args.shard:02d}of{args.nshards:02d}"
     path = os.path.join(OUT_DIR, f"phase2{suffix}.jsonl")
     done = load_done(path)
-    total = len(alphas) * len(cvs) * len(mus) * len(seeds) * len(ladder)
+    total = len(kmers) * len(alphas) * len(cvs) * len(mus) * len(seeds) * len(ladder)
     mine = (total + args.nshards - 1 - args.shard) // args.nshards
     # N before and after every filter, printed, not inferred.
     print(f"shape: N_cells_total={total} N_on_this_shard={mine} "
@@ -109,7 +119,8 @@ def main() -> int:
     n_run = 0
     n_skipped = 0
     n_failed = 0
-    for alpha in alphas:
+    for kmer in kmers:
+     for alpha in alphas:
         for cv in cvs:
             for mu in mus:
                 for seed in seeds:
@@ -117,22 +128,31 @@ def main() -> int:
                         idx += 1
                         if (idx - 1) % args.nshards != args.shard:
                             continue
-                        key = cell_key(cv, mu, seed, p_hat, n, args.family, alpha)
+                        key = cell_key(cv, mu, seed, p_hat, n, args.family, alpha, kmer)
                         if key in done:
                             n_skipped += 1
                             continue
                         try:
                             st = build_and_compress(cv=cv, mu_p=mu, p_hat=p_hat, n=n,
                                                     seed=seed, verbose=True,
-                                                    family=args.family, alpha=alpha)
+                                                    family=args.family, alpha=alpha,
+                                                    doublet_w=kmer[0], triplet_w=kmer[1])
                             rec = json.loads(st.to_json())
                             n_run += 1
+                            if args.dump_dir:
+                                import numpy as _np
+                                from yade import O as _O
+                                fn, k1, k2 = packing.kmer_contact_dump(_O)
+                                _np.savez_compressed(os.path.join(args.dump_dir, key + ".npz"),
+                                                     fn=fn, k1=k1, k2=k2, p_hat=st.p_hat,
+                                                     mu_p=mu, seed=seed, w2=kmer[0], w3=kmer[1])
                         except Exception as exc:      # noqa: BLE001
                             print(f"CELL FAILED {key}: {exc!r}", flush=True)
                             rec = {"failed": True, "error": repr(exc), "cv": cv,
                                    "mu_p": mu, "seed": seed, "p_hat_target": p_hat,
                                    "n_requested": n, "family": args.family,
-                                   "alpha": alpha}
+                                   "alpha": alpha, "doublet_w": kmer[0],
+                                   "triplet_w": kmer[1]}
                             n_failed += 1
                         rec["key"] = key
                         rec["tag"] = args.tag
