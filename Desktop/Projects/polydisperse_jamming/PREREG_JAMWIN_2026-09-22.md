@@ -163,3 +163,12 @@ LOWER BOUND, not a boundary, and a row whose boundary rung is UNDETERMINED. `gra
 reads `σ*_c` only when it is BRACKETED — the rung above it is NOT JAMMED — and otherwise
 reports UNDETERMINED for that `δ`. Stricter than the sentence, never looser. It also grades
 a cell only if its banner matches the label on all five values plus `JAM_FHAT` (G1).
+
+## Amendment 3 — written 2026-09-22 ~14:35 CDT, before any arm-B cell had finished
+
+Arm B's cells are HEALTHY so far (running to t/τ 1–5.3, no deaths), so Amendment 2's
+contingency is not triggered. `jamwin2` is launched anyway, as a **complementary** test with
+its Amendment-2 design and predictions unchanged, because (i) cores are idle and (ii) a
+bracketed jam/no-jam boundary `σ*_c(δ)` on a factor-√10 ladder discriminates (S) from (R)
+more sharply than `J` on three decade-spaced rungs. Both results are reported; neither is
+pooled into the other, and if they DISAGREE on the sign that disagreement is the finding.
