@@ -1,0 +1,149 @@
+============================================================================================
+multiplet_wc.py -- aggregation state -> Wyart-Cates DNS inputs
+============================================================================================
+
+=== 1. THE COVARIANCE THAT COLLAPSES THREE PARAMETERS INTO ONE ===
+   eta = ETA_S (1 - PHI/phiJ)^-2,  phiJ = PHI0 - (PHI0-PHIM) fhat.
+   Under (PHI, PHI0, PHIM) -> c (PHI, PHI0, PHIM), PHI/phiJ is unchanged at
+   every fhat, and fhat's own dynamics read sigma/SIGMA_STAR, not phi.
+      fhat = 0.0:  phi/phiJ = 0.8387096774   rescaled by c = 1.37: 0.8387096774
+      fhat = 0.5:  phi/phiJ = 0.9285714286   rescaled by c = 1.37: 0.9285714286
+      fhat = 1.0:  phi/phiJ = 1.0400000000   rescaled by c = 1.37: 1.0400000000
+   -> the covariance is EXACT, so only the RATIO Lambda/G can move the solver.
+
+=== 2. ARE THE TWO GAINS EQUAL? G0 (frictionless) vs Gm (frictional) ===
+   N: 789 records read -> 439 lognormal -> 391 at N=1500 -> 93 at the rung p_hat = 3e-05
+   distinct (mu_p, CV, seed) cells after highest-cap dedup: 63
+
+   G(mu, CV) = phi(mu, CV)/phi(mu, 0), seed-paired, CONVERGED CELLS ONLY.
+   bar = max(seed s.e., sqrt(2)*PHI_SCALE/sqrt(n)), PHI_SCALE = 0.0021.
+
+     mu_p    CV         G     s.e.   n  dropped   note
+      0.0   0.1        --       --   0        3   no converged pair
+      0.0   0.2        --       --   0        3   no converged pair
+      0.0   0.3    1.0406   0.0038   3        0
+      0.0   0.4    1.0616   0.0039   2        1
+      0.0   0.5    1.1005      inf   1        2
+      0.3   0.1    1.0043   0.0030   3        0
+      0.3   0.2    1.0212   0.0030   3        0
+      0.3   0.3    1.0518   0.0053   3        0
+      0.3   0.4    1.0781   0.0065   3        0
+      0.3   0.5    1.1066   0.0043   3        0
+      0.6   0.1        --       --   0        0   no converged pair
+      0.6   0.2    1.0140      inf   1        2
+      0.6   0.3        --       --   0        0   no converged pair
+      0.6   0.4        --       --   0        0   no converged pair
+      0.6   0.5        --       --   0        3   no converged pair
+      1.0   0.1        --       --   0        0   no converged pair
+      1.0   0.2    1.0208   0.0055   3        0
+      1.0   0.3        --       --   0        0   no converged pair
+      1.0   0.4        --       --   0        0   no converged pair
+      1.0   0.5    1.0951   0.0068   3        0
+      3.0   0.1        --       --   0        0   no converged pair
+      3.0   0.2        --       --   0        3   no converged pair
+      3.0   0.3        --       --   0        0   no converged pair
+      3.0   0.4        --       --   0        0   no converged pair
+      3.0   0.5        --       --   0        3   no converged pair
+
+   ⚠ 'dropped' counts seed pairs removed because a cell did not converge.
+   A drop rate that tracks mu_p or CV is a drop rate that tracks the axis
+   under test; it is printed per row for exactly that reason.
+
+   THE COMPARISON: does G depend on FRICTION?
+   Taken over the WIDEST FRICTION SPAN that has a resolved G at each CV
+   (n >= 2 converged seed pairs, finite s.e.). The span actually used is
+   printed, because a comparison over a narrow span is a weaker test and the
+   reader must be able to see which one it was.
+
+      CV = 0.1: NOT COMPARABLE -- only 1 friction(s) resolved ['mu=0.3']
+      CV = 0.2: G(mu=0.3) = 1.0212 +- 0.0030   G(mu=1.0) = 1.0208 +- 0.0055   |t| = 0.06 -> not resolved
+      CV = 0.3: G(mu=0.0) = 1.0406 +- 0.0038   G(mu=0.3) = 1.0518 +- 0.0053   |t| = 1.73 -> not resolved
+      CV = 0.4: G(mu=0.0) = 1.0616 +- 0.0039   G(mu=0.3) = 1.0781 +- 0.0065   |t| = 2.18 -> not resolved
+      CV = 0.5: G(mu=0.3) = 1.1066 +- 0.0043   G(mu=1.0) = 1.0951 +- 0.0068   |t| = 1.43 -> not resolved
+
+   -> 0 of 4 comparable CV levels RESOLVE a friction
+      dependence of G at t_crit = 4.303.
+   🔑 So on the cells that exist, G0 = Gm within the protocol floor, and
+      the collapse holds: the whole effect of aggregation on this solver
+      is the single ratio Lambda/G.
+   ⚠ This is a BOUND, not a proof of equality. n = 3 seeds and a friction
+      span narrower than the registered one cannot establish identity;
+      the honest statement is that no friction dependence is resolved.
+
+   ⚠ THE FRICTION SPAN IS CENSORED, and in the direction that matters: the
+   mu_p = 0.6 and 3.0 blocks ran at MAX_ITER = 200000 and capped at exactly
+   the CV > 0 cells this comparison needs (see PREREG_MUSTARCAP_2026-09-22.md).
+   The `mustarcap` re-run at 1e6 is what widens the span; re-run this module
+   when it lands.
+
+   t_crit = 4.303 is the two-sided 95 % value at the design's own 2 dof (n = 3
+   seeds), the same bar the manuscript uses. ⚠ `hypot` is correct HERE because
+   the two arms are different frictions run as separate cells; it would be wrong
+   for two CV levels at one friction, which share the seed's radius draw.
+
+=== 3. THE MAPPED QUADRUPLE, for a solver run ===
+   Using the MEASURED gains where they exist. If G0 and Gm are not resolved
+   apart (section 2), the honest mapping uses ONE G for both and the whole
+   effect is Lambda/G -- which is what the table below reports.
+
+   gains read at CV = 0.5: G0 = 1.1066 (mu_p = 0.3), Gm = 1.0951 (mu_p = 1.0)
+   ⚠ 'G0' here is the LOWEST RESOLVED friction, which is not necessarily
+   mu_p = 0; it is mu_p = 0.3. The frictionless branch is named
+   G0 throughout this repo and the label is kept, but the value is the
+   lowest friction that has converged cells, and it is printed so.
+
+      <k>   d_f   Lambda      PHI     PHI0     PHIM  phi/phi0  phi/phiM
+   (none)    --   1.0000   0.5200   0.6200   0.5000    0.8387    1.0400   jammed (frictional)
+      1.5   3.0   1.0000   0.5200   0.6861   0.5476    0.7579    0.9497   flowable
+      1.5   2.1   1.2944   0.6731   0.6861   0.5476    0.9811    1.2293   jammed (frictional)
+      1.5   1.8   1.5318   0.7965   0.6861   0.5476    1.1610    1.4547   jammed (frictional)
+      2.0   2.1   1.5236   0.7923   0.6861   0.5476    1.1548    1.4470   jammed (frictional)
+      2.0   1.8   1.9892   1.0344   0.6861   0.5476    1.5077    1.8891   🔴 INADMISSIBLE
+
+   🔑 READ THE TOP TWO ROWS TOGETHER. The solver's DEFAULT preset is already
+   frictionally jammed (phi/phiM = 1.0400), and COMPACT aggregation at
+   <k> = 1.5 UN-JAMS it (0.9497) -- Lambda = 1 exactly there, so the only
+   lever acting is the one that RAISES phiJ. Opening the same aggregates to
+   d_f = 2.1 drives it the other way, to 1.2293. One aggregation axis, both
+   signs, at FIXED solid loading -- which is the bench prediction to test.
+
+   🔴 ADMISSIBILITY, and it needs no threshold: phi_eff = Lambda * phi_solid
+   is a VOLUME FRACTION and cannot exceed 1. That caps Lambda at
+      Lambda_max = 1/phi_solid = 1/0.52 = 1.9231,
+   and 1 of the 5 rows above BREACH it. Those rows are not
+   'a large effect' -- they are the no-interpenetration assumption (A3 of
+   the derivation) DESTROYING ITSELF, and they must not be run.
+
+   🔑 This is the sharpest statement in the file, because it is the model
+   bounding its own domain from the inside: open aggregates at moderate
+   loading REQUIRE interpenetration, so any treatment of a d_f = 1.8
+   suspension at phi = 0.52 that keeps them impenetrable is wrong before
+   any rheology is computed. The admissible window is
+      Lambda <= 1.9231, i.e. d_f >= the value where Lambda reaches it.
+      <k> = 1.5: the effective-sphere model is admissible only for d_f >= 1.535
+      <k> = 2.0: the effective-sphere model is admissible only for d_f >= 1.832
+
+   phi/phiM > 1 (non-breaching rows) means the FRICTIONAL branch is jammed:
+   eta diverges as soon as fhat rises. That is the shear-jammed, rebounding
+   state, and the table says which aggregation states reach it from a phi
+   that is SAFE unaggregated -- which is the bench prediction worth testing.
+
+=== 4. SIGMA_STAR IS NOT MAPPED, AND WHY ===
+   The onset stress is a force divided by an area, and WHICH area is a
+   convention this module is not entitled to choose:
+      (a) the MONOMER convention -- the repulsive force is a surface
+          interaction between two monomer surfaces at contact, so the area is
+          d_1^2 and SIGMA_STAR does NOT move with aggregation;
+      (b) the AGGREGATE convention -- the stress is transmitted across the
+          multiplet's cross-section, so the area is d_k^2 and SIGMA_STAR falls
+          like <d^2>^-1, i.e. by a factor k^(2 gamma/3).
+   These differ by orders of magnitude and they predict opposite trends.
+   `SIZE_THRESHOLD_2026-09-08.md` and `derivations/onset_size_degeneracy_2026-
+   09-19.md` already own this question; the second one's verdict is a NEGATIVE
+   (a size ladder cannot separate the two grain-scale stresses). Choosing here
+   would be picking a convention and calling the consequence a result -- which
+   this repository has been caught doing before. It is left OPEN and flagged.
+
+   ⚠ CONSEQUENCE FOR THE DNS: a solver run built from section 3 varies PHI,
+   PHI0 and PHIM at FIXED SIGMA_STAR. That is convention (a). It must be
+   labelled as such in the run's metadata, not presented as the mapping.

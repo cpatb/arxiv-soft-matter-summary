@@ -116,6 +116,28 @@ def fit_phi_J(p_hat: np.ndarray, phi: np.ndarray) -> dict[str, float]:
     return out
 
 
+def fs_safe(family: str) -> str:
+    """Make a family string usable as part of a FILENAME, without touching the key.
+
+    Parameterised families are encoded in the family STRING (`binary:r3.0:x0.30`,
+    `multiplet:f1.8:n0.70/0.20/0.10`), which is right for the record and wrong for a
+    path: `:` is illegal on Windows and `/` would silently create a DIRECTORY on Linux,
+    so a sharded run would scatter its output instead of failing.
+
+    ⚠ THE CELL KEY IS NOT SANITISED and must not be -- it is what `load_done` resumes
+    on and what every record on disk carries. Only the filename is.
+
+    Every family that has ever been run through this script (`lognormal`, `uniform`,
+    `bidisperse`) contains none of these characters, so this is byte-identical for all
+    existing output names; `test_multiplet.py::test_fs_safe_does_not_move_existing_names`
+    pins that.
+
+    >>> fs_safe("multiplet:f1.8:n0.70/0.20/0.10")
+    'multiplet-f1.8-n0.70_0.20_0.10'
+    """
+    return family.replace(":", "-").replace("/", "_")
+
+
 def cell_key(cv: float, mu: float, seed: int, p_hat: float, n: int,
              family: str = "lognormal") -> str:
     # The family suffix is omitted for lognormal so that keys written before
@@ -190,7 +212,7 @@ def main() -> int:
 
     suffix = ("_quick" if args.quick else "") + (f"_{args.tag}" if args.tag else "")
     if args.family != "lognormal":
-        suffix += f"_{args.family}"
+        suffix += f"_{fs_safe(args.family)}"
     if args.nshards > 1:
         suffix += f"_shard{args.shard:02d}of{args.nshards:02d}"
     path = os.path.join(OUT_DIR, f"phase2{suffix}.jsonl")

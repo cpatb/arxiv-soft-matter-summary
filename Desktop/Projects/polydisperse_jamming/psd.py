@@ -47,8 +47,10 @@ __all__ = [
     "BidispersePSD",
     "BinaryPSD",
     "DiscretePSD",
+    "MultipletPSD",
     "parse_binary_family",
     "parse_discrete_family",
+    "parse_multiplet_family",
     "make_psd",
     "lognormal_skewness",
     "moment_ratio_d32_d10",
@@ -690,6 +692,234 @@ class DiscretePSD:
     radii_for_yade = LogNormalPSD.radii_for_yade
 
 
+@dataclass(frozen=True)
+class MultipletPSD:
+    """ONE base particle size; every other class is a k-particle MULTIPLET of it.
+
+    ADDED 2026-09-22. Every other family in this module chooses a *shape for the size
+    distribution* and asks what packing does. A real suspension does not have that
+    freedom: it has ONE primary particle, made in one synthesis, and its width comes
+    from **aggregation** -- singlets, doublets, triplets, higher multiplets. The width
+    is then not a free parameter but a readout of the aggregation state, which is what
+    salt, pH and shear history actually move on the bench.
+
+    Parameters
+    ----------
+    d10 : number-mean particle DIAMETER [m] -- the normalisation every family uses
+    d_f : mass-fractal dimension of the multiplets, in (0, 3]
+    n_k : NUMBER fractions of the k-mers, k = 1, 2, 3, ... by POSITION.
+          `(0.7, 0.2, 0.1)` is 70 % singlets, 20 % doublets, 10 % triplets.
+          Normalised internally; zero entries are allowed and are dropped.
+
+    THE ONE MODELLING CHOICE, named here because it decides every number downstream.
+    A k-mer contains `k` monomers, so its SOLID volume is exactly `k v_1`. What it does
+    to a packing, though, is set by the volume it EXCLUDES, and that is a choice:
+
+        d_k / d_1 = k ** (1 / d_f)        so       v_k / v_1 = k ** gamma,
+        gamma = 3 / d_f
+
+      * `d_f = 3`  (gamma = 1) -- COMPACT. The multiplet excludes exactly its own
+        solid volume. No fluid is trapped.
+      * `d_f < 3`  (gamma > 1) -- OPEN. The multiplet encloses fluid, and the pack sees
+        a bigger object than the solid it contains.
+      * `d_f = 1`  (gamma = 3) -- a straight CHAIN, `d_k = k d_1`.
+
+    Reported values for colloidal aggregates are `d_f ~ 1.8` (diffusion-limited) and
+    `~2.1` (reaction-limited) [UNVERIFIED -- not resolved to a DOI in this repo; the
+    `d_f` axis is SWEPT rather than assumed for exactly that reason].
+
+    ⚠ THIS CLASS IS AN EFFECTIVE-SPHERE MODEL. It replaces each multiplet by one sphere
+    of diameter `d_k`. A real doublet is a dumbbell, and this project's own shape axis
+    (`shape.py`) measures that non-sphericity separately. Pairing a `multiplet:` cell
+    with a clump cell of the same `n_k` is what separates the SIZE consequence of
+    aggregation from its SHAPE consequence; neither alone is the answer.
+
+    Derivation, with SymPy / limiting-case / dimensional / Monte-Carlo checks:
+    `derivations/multiplet_psd_2026-09-22.md`. The two results this class exposes are
+
+        CV^2    = M_{2g/3} / M_{g/3}^2  -  1
+        Lambda  = M_gamma / M_1                       (`lambda_trap`)
+
+    with `M_s = <k^s>` under the NUMBER fractions. `Lambda` is the factor by which the
+    EFFECTIVE volume fraction exceeds the SOLID one: a suspension mixed to a solid
+    fraction `phi_s` packs as though it were at `Lambda * phi_s`. `Lambda = 1` exactly
+    at `d_f = 3`, for any `n_k`.
+
+    IMPLEMENTATION. Sampling is delegated to `DiscretePSD`, which already owns the exact
+    (non-binomial) class-count rule and the shuffle. This class supplies the two
+    sequences and nothing else, so a multiplet pack IS a discrete pack and inherits its
+    anchors.
+    """
+
+    d10: float
+    d_f: float
+    n_k: tuple[float, ...]
+
+    def __post_init__(self) -> None:
+        if self.d10 <= 0:
+            raise ValueError(f"d10 must be > 0 m, got {self.d10}")
+        if not (0.0 < self.d_f <= 3.0):
+            raise ValueError(
+                f"d_f must be in (0, 3]; 3 is compact and larger would mean a multiplet "
+                f"that excludes LESS than its own solid volume. Got {self.d_f}")
+        n = np.asarray(self.n_k, dtype=float)
+        if n.ndim != 1 or n.size < 1:
+            raise ValueError(f"n_k must be a non-empty 1-D sequence, got {self.n_k!r}")
+        if np.any(n < 0):
+            raise ValueError(f"number fractions must be >= 0, got {self.n_k!r}")
+        if not n.sum() > 0:
+            raise ValueError(f"number fractions must sum to > 0, got {self.n_k!r}")
+
+    # ---- the aggregation state ------------------------------------------------
+
+    @property
+    def gamma(self) -> float:
+        """Compaction exponent `3/d_f`. `v_k/v_1 = k**gamma`."""
+        return 3.0 / self.d_f
+
+    @property
+    def k(self) -> np.ndarray:
+        """The aggregation numbers actually present, ascending."""
+        n = np.asarray(self.n_k, dtype=float)
+        return (np.arange(1, n.size + 1, dtype=float))[n > 0]
+
+    @property
+    def n(self) -> np.ndarray:
+        """NUMBER fractions of the surviving classes, normalised, ascending in k."""
+        n = np.asarray(self.n_k, dtype=float)
+        n = n[n > 0]
+        return n / n.sum()
+
+    def k_moment(self, s: float) -> float:
+        """`M_s = <k^s>` under the number fractions. The object every result is built on."""
+        return float(np.sum(self.n * self.k ** s))
+
+    @property
+    def k_bar(self) -> float:
+        """Mean aggregation number `<k>`. 1 for an unaggregated suspension."""
+        return self.k_moment(1.0)
+
+    @property
+    def lambda_trap(self) -> float:
+        """`Lambda = phi_eff / phi_solid = M_gamma / M_1`. Always >= 1; == 1 at d_f = 3.
+
+        The factor by which aggregation inflates the volume fraction the PACKING sees,
+        at fixed solid loading. `k**gamma >= k` pointwise for `gamma >= 1, k >= 1`, so
+        the bound needs no convexity argument.
+        """
+        return self.k_moment(self.gamma) / self.k_moment(1.0)
+
+    @property
+    def d1(self) -> float:
+        """Monomer diameter [m]. `d10 = d1 * M_{gamma/3}`, so this inverts that."""
+        return float(self.d10 / self.k_moment(self.gamma / 3.0))
+
+    # ---- the discrete pack it is ----------------------------------------------
+
+    @property
+    def d_rel(self) -> tuple[float, ...]:
+        """Relative class diameters `k**(gamma/3)`."""
+        return tuple(float(x) for x in self.k ** (self.gamma / 3.0))
+
+    @property
+    def y(self) -> tuple[float, ...]:
+        """VOLUME fractions, `y_k = n_k d_k^3 / sum`.
+
+        Formed from the FLOAT `d_rel` cubed rather than from `k**gamma`, so that
+        `DiscretePSD`'s own `y -> number fraction` inversion returns these number
+        fractions back. The two are equal in exact arithmetic; using the same float the
+        sampler will use keeps the round trip tight (`test_psd.py` pins it).
+        """
+        d = np.asarray(self.d_rel, dtype=float)
+        v = self.n * d ** 3
+        return tuple(float(x) for x in v / v.sum())
+
+    @property
+    def _disc(self) -> "DiscretePSD":
+        return DiscretePSD(d10=self.d10, d_rel=self.d_rel, y=self.y)
+
+    # ---- the PSD interface, delegated -----------------------------------------
+
+    @property
+    def diameters(self) -> np.ndarray:
+        return self._disc.diameters
+
+    @property
+    def number_fractions(self) -> np.ndarray:
+        return self._disc.number_fractions
+
+    @property
+    def volume_fractions(self) -> np.ndarray:
+        return self._disc.volume_fractions
+
+    @property
+    def size_ratio(self) -> float:
+        return self._disc.size_ratio
+
+    def moment(self, n: int) -> float:
+        return self._disc.moment(n)
+
+    @property
+    def cv(self) -> float:
+        """Realised NUMBER CV -- DERIVED from (d_f, n_k), never chosen.
+
+        This is the point of the family: on a real suspension the width is not a knob,
+        it is what the aggregation state leaves behind.
+        """
+        return self._disc.cv
+
+    @property
+    def d32(self) -> float:
+        return self._disc.d32
+
+    @property
+    def d43(self) -> float:
+        return self._disc.d43
+
+    @property
+    def d50(self) -> float:
+        return self._disc.d50
+
+    def class_counts(self, n: int) -> np.ndarray:
+        return self._disc.class_counts(n)
+
+    def sample(self, n: int, rng: np.random.Generator, *, truncate=None) -> np.ndarray:
+        return self._disc.sample(n, rng, truncate=truncate)
+
+    realised_moments = LogNormalPSD.realised_moments
+    radii_for_yade = LogNormalPSD.radii_for_yade
+
+
+def parse_multiplet_family(family: str) -> tuple[float, tuple[float, ...]] | None:
+    """Decode "multiplet:f<D_F>:n<N1>/<N2>/..." -> (d_f, n_k), or None.
+
+    `n` entries are NUMBER fractions of k = 1, 2, 3, ... by position. Same strictness
+    rule as the other parsers, for the same reason: a malformed spec RAISES rather than
+    falling through to a default, because a silent default would put a pack of the wrong
+    aggregation state into the campaign.
+
+    ⚠ ONE SPELLING ONLY. `d_f` is named in the string and `gamma = 3/d_f` is derived.
+    Accepting both would be a precedence rule rather than two spellings, which is a trap
+    this repository has already paid for once (the Basilisk preset/env collision).
+
+    >>> parse_multiplet_family("multiplet:f1.8:n0.70/0.20/0.10")
+    (1.8, (0.7, 0.2, 0.1))
+    """
+    if not family.startswith("multiplet:"):
+        return None
+    parts = family.split(":")
+    if len(parts) != 3 or not parts[1].startswith("f") or not parts[2].startswith("n"):
+        raise ValueError(
+            f"malformed multiplet family {family!r}; expected "
+            f"'multiplet:f<D_F>:n<N1>/<N2>/...'")
+    try:
+        d_f = float(parts[1][1:])
+        n_k = tuple(float(v) for v in parts[2][1:].split("/"))
+    except ValueError as exc:
+        raise ValueError(f"malformed multiplet family {family!r}: {exc}") from exc
+    return d_f, n_k
+
+
 def parse_discrete_family(family: str) -> tuple[tuple[float, ...], tuple[float, ...]] | None:
     """Decode "discrete:d<D1>/<D2>/...:y<Y1>/<Y2>/..." -> (d_rel, y), or None.
 
@@ -756,6 +986,15 @@ def make_psd(family: str, d10: float, cv: float):
     A discrete spec is "discrete:d<D1>/<D2>/...:y<Y1>/<Y2>/...", e.g.
     "discrete:d1/2/4:y0.15/0.25/0.60". Same rule on `cv`: derived, not chosen.
     """
+    multiplet = parse_multiplet_family(family)
+    if multiplet is not None:
+        d_f, n_k = multiplet
+        if cv not in (0.0, None):
+            raise ValueError(
+                f"the multiplet family derives its CV from (d_f, n_k) -- that is the "
+                f"point of the family; pass cv=0.0, got cv={cv}. The realised CV is "
+                f"recorded as `cv_realised`.")
+        return MultipletPSD(d10=d10, d_f=d_f, n_k=n_k)
     discrete = parse_discrete_family(family)
     if discrete is not None:
         d_rel, y = discrete
@@ -779,8 +1018,9 @@ def make_psd(family: str, d10: float, cv: float):
     if family == "bidisperse":
         return BidispersePSD(d10=d10, cv=cv)
     raise ValueError(
-        f"unknown PSD family {family!r}; use 'lognormal', 'uniform', 'bidisperse' "
-        f"or 'binary:r<RATIO>:x<X_SMALL>'")
+        f"unknown PSD family {family!r}; use 'lognormal', 'uniform', 'bidisperse', "
+        f"'binary:r<RATIO>:x<X_SMALL>', 'discrete:d<...>:y<...>' "
+        f"or 'multiplet:f<D_F>:n<N1>/<N2>/...'")
 
 
 def summarise_cv_ladder(d10: float, cvs, phi: float) -> str:
