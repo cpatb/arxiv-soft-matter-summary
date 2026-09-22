@@ -27,3 +27,21 @@ everything else as `PREREG_JAMWIN` §1 (cs_fit base, U₀ = 2, L9, WC_CLOCK = 1)
 ## 3. What this cannot show
 
 That doublets move χ — that is the DEM's (`PREREG_KMER`); this takes it as input.
+
+---
+
+## RESULT (graded 2026-09-22 17:31 CDT, `out/grade_kmerdrop.txt`)
+
+D3 health 5/5 (all rc 0, t/τ = 6, provenance 5/5).
+
+- **D2 PASS.** Jammed volume `J(f̂ > f_c)` = 0 / 0 / **0.049 / 0.220 / 0.385** at w₂ = 0 / 0.25 /
+  0.5 / 0.75 / 1: the drop at x = 0.85 does not jam as singlets and does jam, increasingly, once
+  the doublet fraction has opened the window past x.
+- **D1 FAIL as registered** (strict monotone β_max): 1.391 / 1.172 / 1.109 / **1.078 / 1.078** —
+  the last two TIE. β = 2·r_max is grid-quantised (one quantum = 1/64 ≈ 0.016 at L9; lessons.md
+  2026-08-29), so the pair differs by less than one quantum. The FAIL stands. Printed beside it,
+  NOT graded: the continuous radial radius of gyration at its maximum falls strictly,
+  0.4596 / 0.3875 / 0.3631 / 0.3534 / 0.3477.
+- **Magnitude:** from singlets to pure doublets at the same weighed φ, the maximum spread falls
+  from β 1.39 to 1.08 (−22 %) through the WINDOW channel alone — σ\* and δ were held fixed, and
+  the DEM predicts doublets also lower σ\*, so this under-states the doublet effect on that channel.
