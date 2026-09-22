@@ -129,3 +129,30 @@ The gates, bars and informative-pair rule are unchanged. The grader reports whic
 and (R) the arm-B sign matches. If B rises, the rate-driven reading of the solver is wrong;
 if B falls, the stress-controlled derivation does not describe the solver's drop, and eq.
 (1)/(8) must be restated in rate-driven form before it is used to read a DNS.
+
+---
+
+## Amendment 2 — written 2026-09-22 ~13:55 CDT, BEFORE any arm-B or arm-N cell had finished
+
+**Health finding (arm A, 3/3 finished cells):** every arm-A cell dies within `t/τ ≤ 0.1`
+(`dt`-collapse to ~2e-8, or `umax` blow-up), and in each the rows before death already show
+`jam_frac(f̂ > f_c)` of 0.70–0.86. The solver cannot integrate a drop whose jammed region
+sits at `η_max = η_s/EPS_MIN²` = 10⁴ `η_s`. Under G2 these cells are EXCLUDED and their
+pre-death values are **not** the registered observable. (They were seen while diagnosing
+the deaths; arm A carries only P1, which (S) and (R) share, so nothing that discriminates
+was seen.)
+
+**Contingency, fixed now.** If arm B's cells also fail G2, P1–P3 are recorded
+**UNDETERMINED (observable unmeasurable)**, and the follow-up campaign `jamwin2` uses:
+
+- **Outcome, robust to death-after-jam:** JAMMED if `jam_frac(f̂ > f_c) ≥ 0.5` at any written
+  row; NOT JAMMED if the run reaches `t/τ ≥ 5.9` without that; UNDETERMINED if it dies with
+  `max jam_frac < 0.5`. ⚠ A death is still never a jam; only a written row above 0.5 is.
+- **Forcing ladder:** arm B only (it alone separates (S) from (R)), `σ*` on a factor-√10 ladder
+  {10, 31.6, 100, 316, 1000, 3162, 10000} Pa × `δ` {0.7, 1.3169, 2.6} = 21 cells, L9,
+  everything else as §1.
+- **Observable:** `σ*_c(δ)` = the largest `σ*` rung that JAMS (the jam/no-jam boundary), read
+  only if the outcomes are monotone in `σ*` at that `δ` (else UNDETERMINED for that `δ`).
+- **Predictions:** (S) `σ*_c` RISES with `δ` in arm B (sharper activation jams at lower
+  forcing near the window edge); (R) `σ*_c` FALLS with `δ`. A tie across all three `δ` at
+  this ladder spacing is UNDETERMINED, not support for either.
