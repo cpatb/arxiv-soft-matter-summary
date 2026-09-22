@@ -172,3 +172,25 @@ its Amendment-2 design and predictions unchanged, because (i) cores are idle and
 bracketed jam/no-jam boundary `σ*_c(δ)` on a factor-√10 ladder discriminates (S) from (R)
 more sharply than `J` on three decade-spaced rungs. Both results are reported; neither is
 pooled into the other, and if they DISAGREE on the sign that disagreement is the finding.
+
+## Amendment 4 — resolving power of `jamwin2`, written 2026-09-22 ~15:00 CDT, before any jamwin2 cell finished
+
+Under either reading the jam threshold in `σ*` is proportional to the forcing, so the ratio
+of `σ*_c` between `δ` = 0.7 and 2.6 is fixed by the closed forms already registered:
+
+- **(S)** `σ*_c ∝ 1/g(f_c)`: `g(0.75)` = 5.929 (δ 0.7) vs 1.615 (δ 2.6) → `σ*_c` RISES **3.67×**.
+- **(R)** `σ*_c ∝ 1/(γ̇_c η_s/σ*)`: 7.03e-3 vs 1.31e-2 → `σ*_c` FALLS **1.87×**.
+
+The ladder spacing is √10 = 3.16×. So (S) predicts the boundary moves UP by **at least one
+rung**, while (R) predicts it moves DOWN by **zero or one** rung, depending on where the true
+boundary falls between rungs. Therefore, fixed now:
+
+- boundary UP by ≥ 1 rung → **(S)**;
+- boundary DOWN by 1 rung → **(R)**;
+- **a TIE (same rung for δ 0.7 and 2.6) refutes (S)** and is consistent with (R); it is
+  recorded as "(S) refuted, (R) not excluded", not as uninformative. `grade_jamwin2.py`'s
+  "UNDETERMINED (tie)" label is superseded by this sentence for the tie case.
+
+⚠ The proportionality assumes the drop's stress field does not itself change with `δ` before
+jamming. That is the one piece of physics (1) and Amendment 1 both omit, so a result against
+both is possible and would be reported as such.
