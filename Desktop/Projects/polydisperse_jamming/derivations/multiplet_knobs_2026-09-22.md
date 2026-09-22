@@ -148,7 +148,7 @@ permeability `κ` (sets dilatancy/Darcy times), and the drop groups
 |---|---|---|---|---|---|---|---|
 | packing fraction φ | ✔ | — | — | — | ✔ | definition | — |
 | **size distribution CV** | ✔ (~a window per ΔCV 0.5) | ✗ (paired \|t\| 0.56) | ✔ (convention-dependent sign) | ✔ (δ −19 % at CV 0.5, μ 0.3) | ✔ d₃₂² | MEASURED | bench at fixed φ, two CVs, same d₅₀ |
-| **singlet/doublet ratio (this file)** | ~0 (0.9 %) | ✔✔ (window ×1.85) | ✔ predicted −14…−39 % | ✔ predicted ↓ | ✗ (K1, exact) | endpoints MEASURED, mixtures RUNNING | bench: fractionate or grow doublets, same primary, same φ |
+| **singlet/doublet ratio (this file)** | ~0 (0.9 %) | ✔✔ (window ×1.85) | ✔ predicted −14…−39 % | ? (mechanism withdrawn; H_δ graded as registered) | ✗ (K1, exact) | endpoints MEASURED, mixtures RUNNING | bench: fractionate or grow doublets, same primary, same φ |
 | **open aggregates (large k)** | ✔ via Λ ≥ 1 | ✔ (shape, unmeasured) | ✔ | ? | ✔ ↑ | modelled (`multiplet_psd`) | salt/pH-aggregated suspension vs dispersed |
 | friction μ_p | — | ✔✔ (window 0.113 at 0→3) | — | ✔ (δ −0.22 at 0→0.3) | — | MEASURED | coated vs bare particles |
 | shape (elongation) | ~0 | ✔✔ | ? | ? | ✔ (via S/V) | χ MEASURED | rods vs spheres, same volume |
