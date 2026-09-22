@@ -176,6 +176,37 @@ def main() -> int:
                                         ("   rest  " if fc <= 0 else f"{arr[i]:8.4g} "))
                         say(f"     CV {cv:.1f} [{lab}]: phi " + " ".join(f"{p:.2f}" for p in pick)
                             + " -> " + " ".join(vals))
+        # ---- 4. which ingredient moves it: counterfactual swaps -----------------------
+        say("")
+        say("=== 4. DECOMPOSITION at fixed phi: window shift (x) vs activation (g) ===")
+        say("   total = sjam(g_CV, f_c[CV]) / sjam(g_0, f_c[0])")
+        say("   x-only = sjam(g_0, f_c[CV]) / ...   (CV moves only phi_0, phi_m)")
+        say("   g-only = sjam(g_CV, f_c[0]) / ...   (CV moves only the force distribution)")
+        say("   seed-mean g pooled over seeds; derjaguin; activation network mu_p shown; mu_m = 3.")
+        say("   ⚠ CV 0.5 is FINITE-SIZE FLAGGED (PREREG_ACTSHAPE Amendment 1): provisional.")
+        for mu in (0.0, 0.3):
+            g0 = np.concatenate([g for g, _ in act_g(0.0, mu, "derjaguin").values()])
+            chi0 = ends[0.0]["phim3"] / ends[0.0]["phi0"]
+            for cv in (0.2, 0.5):
+                gc = np.concatenate([g for g, _ in act_g(cv, mu, "derjaguin").values()])
+                chic = ends[cv]["phim3"] / ends[cv]["phi0"]
+                for ph in (0.58, 0.59, 0.60, 0.61, 0.62, 0.63):
+                    f0 = A.f_crit(ph / ends[0.0]["phi0"], chi0)
+                    fcv = A.f_crit(ph / ends[cv]["phi0"], chic)
+                    if not (0 < f0 < 1 and 0 < fcv < 1):
+                        state = ("never" if fcv == math.inf else "rest" if fcv <= 0 else "ok",
+                                 "never" if f0 == math.inf else "rest" if f0 <= 0 else "ok")
+                        say(f"   mu {mu:.1f} CV {cv:.1f} phi {ph:.2f}: outside a window "
+                            f"(CV {cv}: {state[0]}, CV 0: {state[1]})")
+                        continue
+                    base = A.sigma_jam_over_kappa(g0, f0)
+                    tot = A.sigma_jam_over_kappa(gc, fcv) / base
+                    xo = A.sigma_jam_over_kappa(g0, fcv) / base
+                    go = A.sigma_jam_over_kappa(gc, f0) / base
+                    say(f"   mu {mu:.1f} CV {cv:.1f} phi {ph:.2f}: f_c {f0:.3f} -> {fcv:.3f}   "
+                        f"total x{tot:.3f}  x-only x{xo:.3f}  g-only x{go:.3f}  "
+                        f"[ln-share of x: {math.log(xo) / math.log(tot):.2f}]"
+                        if abs(math.log(tot)) > 1e-9 else "")
         np.savez(os.path.join(OUT, "jam_map.npz"), phi=phig, **npz,
                  **{f"phi0_cv{cv}": ends[cv]["phi0"] for cv in CVS},
                  **{f"phim3_cv{cv}": ends[cv]["phim3"] for cv in CVS})
