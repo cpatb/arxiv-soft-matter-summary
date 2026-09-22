@@ -106,17 +106,12 @@ def load_rung(rung: float = RUNG) -> dict:
                 n_rung=n_rung)
 
 
-def gain(cells: dict, mu: float, cv: float, converged_only: bool = True):
-    """G(mu, cv) = <phi(mu, cv)> / <phi(mu, 0)>, SEED-PAIRED, and its floor-based s.e.
+def gain_seeds(cells: dict, mu: float, cv: float, converged_only: bool = True):
+    """Per-seed G(mu, cv) = phi(mu, cv)/phi(mu, 0), plus the denominators and the drops.
 
-    Returns (G, se_G, n_pairs, n_dropped). Seeds are paired because `packing.py` seeds
-    the radius draw from `st.seed` regardless of CV, so the same seed is a correlated
-    draw at both CV levels -- treating the arms as independent inflates the bar (a
-    referee caught exactly that in this repo on 2026-09-19).
-
-    ⚠ The quoted s.e. is `max(seed-paired s.e., sqrt(L) * SCALE / sqrt(n))` with L = 2:
-    the two cells (cv, 0) do NOT share a record, so neither cancels. A seed-paired s.e.
-    alone is NOT an acceptable bar in this repository.
+    Returns ({seed: G}, {seed: phi(mu,0)}, n_dropped). Kept per-seed rather than
+    averaged, because the friction comparison in `compare_frictions` has to be PAIRED
+    and an average throws the pairing away.
     """
     num, den, dropped = {}, {}, 0
     for s in (1, 2, 3):
@@ -126,17 +121,72 @@ def gain(cells: dict, mu: float, cv: float, converged_only: bool = True):
         if converged_only and not (a.get("converged") and b.get("converged")):
             dropped += 1
             continue
-        num[s], den[s] = a["phi"], b["phi"]
-    if not num:
+        num[s], den[s] = a["phi"] / b["phi"], b["phi"]
+    return num, den, dropped
+
+
+def gain(cells: dict, mu: float, cv: float, converged_only: bool = True):
+    """G(mu, cv), SEED-PAIRED across CV, and its floor-based s.e.
+
+    Returns (G, se_G, n_pairs, n_dropped). Seeds are paired across CV because
+    `packing.py` seeds the radius draw from `st.seed` regardless of CV, so the same seed
+    is a correlated draw at both CV levels.
+
+    ⚠ The quoted s.e. is `max(seed-paired s.e., floor)`. The floor propagates the
+    protocol's per-record non-determinism `SCALE` through the RATIO: with `G = a/b`,
+    `var(G) = SCALE^2 (1 + G^2)/b^2`, and the mean over `n` seeds divides by `n`. The
+    protocol floor does NOT cancel under seed pairing -- pairing removes the SEED's
+    contribution, not the re-run scatter of each record.
+    """
+    g, den, dropped = gain_seeds(cells, mu, cv, converged_only)
+    if not g:
         return None, None, 0, dropped
-    seeds = sorted(num)
-    g = np.array([num[s] / den[s] for s in seeds])
-    m = float(g.mean())
-    se_seed = float(g.std(ddof=1) / math.sqrt(len(g))) if len(g) > 1 else float("inf")
-    # propagate the protocol floor through the RATIO: d(a/b) = (1/b) sqrt(2) SCALE / sqrt(n)
+    seeds = sorted(g)
+    arr = np.array([g[s] for s in seeds])
+    m = float(arr.mean())
+    se_seed = float(arr.std(ddof=1) / math.sqrt(len(arr))) if len(arr) > 1 else float("inf")
     b_mean = float(np.mean([den[s] for s in seeds]))
-    se_floor = math.sqrt(2.0) * SCALE / (b_mean * math.sqrt(len(g)))
-    return m, max(se_seed, se_floor), len(g), dropped
+    se_floor = SCALE * math.sqrt(1.0 + m * m) / (b_mean * math.sqrt(len(arr)))
+    return m, max(se_seed, se_floor), len(arr), dropped
+
+
+def compare_frictions(cells: dict, mu_lo: float, mu_hi: float, cv: float):
+    """PAIRED comparison of G between two frictions. Returns (diff, se, n, r).
+
+    🔴 CORRECTED 2026-09-22 after referee pass 2. This comparison previously combined the
+    two arms with `math.hypot`, justified in a comment as *"correct HERE because the two
+    arms are different frictions run as separate cells"*. **That reasoning is wrong on
+    this repository's own recorded terms**: `packing.py` seeds the radius draw with
+    `default_rng(st.seed)` REGARDLESS of `mu_p`, so seed `s` is the same size draw at
+    both frictions -- which is exactly the pairing a referee caught being ignored here on
+    2026-09-19. Being separate CELLS does not make two arms independent when they share
+    the draw.
+
+    The correct estimator is the per-seed DIFFERENCE of the two gains. The measured
+    correlation is printed beside the result so the reader can see how much pairing buys.
+
+    The floor propagates `SCALE` through all FOUR records that enter `d_s`:
+        d = a/b - c/e,
+        var(d) = SCALE^2 [ (1 + G_lo^2)/b^2 + (1 + G_hi^2)/e^2 ].
+    None of the four cancels: pairing removes the seed's radius draw, not the protocol's
+    per-record re-run scatter.
+    """
+    g_lo, den_lo, _ = gain_seeds(cells, mu_lo, cv)
+    g_hi, den_hi, _ = gain_seeds(cells, mu_hi, cv)
+    seeds = sorted(set(g_lo) & set(g_hi))
+    if len(seeds) < 2:
+        return None, None, len(seeds), None
+    d = np.array([g_lo[s] - g_hi[s] for s in seeds])
+    a = np.array([g_lo[s] for s in seeds])
+    b = np.array([g_hi[s] for s in seeds])
+    r = float(np.corrcoef(a, b)[0, 1]) if len(seeds) > 2 else float("nan")
+    n = len(seeds)
+    se_seed = float(d.std(ddof=1) / math.sqrt(n))
+    bl = float(np.mean([den_lo[s] for s in seeds]))
+    bh = float(np.mean([den_hi[s] for s in seeds]))
+    var = SCALE ** 2 * ((1 + a.mean() ** 2) / bl ** 2 + (1 + b.mean() ** 2) / bh ** 2)
+    se_floor = math.sqrt(var / n)
+    return float(d.mean()), max(se_seed, se_floor), n, r
 
 
 def wc_inputs(k_bar: float, d_f: float, G0: float, Gm: float,
@@ -179,6 +229,15 @@ def main() -> int:
         say(f"      fhat = {fh:.1f}:  phi/phiJ = {b['PHI']/pj:.10f}   "
             f"rescaled by c = {c}: {c*b['PHI']/pj_c:.10f}")
     say("   -> the covariance is EXACT, so only the RATIO Lambda/G can move the solver.")
+    say("")
+    say("   ⚠ SCOPE, added after referee pass 2. The covariance was verified against the")
+    say("   solver source: `eps = 1 - PHI/phiJ` is scale-invariant, and the hard clip,")
+    say("   `EPS_SOFT` and `MP_EXPO` all act on `eps`, so none of them breaks it. BUT")
+    say("   the claim holds only at DIL_COEFF = 0. The Reynolds-dilatancy / Darcy term")
+    say("   is built from a `perm_factor(PHI)` that uses a FIXED `PHI_REF = 0.49`, which")
+    say("   is NOT one of the three rescaled parameters, so that term is NOT covariant.")
+    say("   DIL_COEFF defaults to 0 and is not in WC_DEFAULT, so no number here is")
+    say("   affected -- but a DNS run with dilatancy on is outside this mapping.")
 
     # ------------------------------------------------------------------ 2
     say("\n=== 2. ARE THE TWO GAINS EQUAL? G0 (frictionless) vs Gm (frictional) ===")
@@ -227,15 +286,21 @@ def main() -> int:
                 f"resolved {have}")
             continue
         lo, hi = usable[0], usable[-1]
-        diff = lo[1] - hi[1]
-        se = math.hypot(lo[2], hi[2])   # DIFFERENT frictions, run as separate cells
+        diff, se, npair, r = compare_frictions(cells, lo[0], hi[0], cv)
+        if diff is None:
+            say(f"      CV = {cv}: fewer than 2 PAIRED seeds between mu = {lo[0]} "
+                f"and {hi[0]}")
+            continue
         t = abs(diff) / se if se > 0 else float("inf")
+        t_hypot = abs(lo[1] - hi[1]) / math.hypot(lo[2], hi[2])
         differ = t > 4.303
         n_resolved += 1
         n_differ += differ
-        say(f"      CV = {cv}: G(mu={lo[0]}) = {lo[1]:.4f} +- {lo[2]:.4f}   "
-            f"G(mu={hi[0]}) = {hi[1]:.4f} +- {hi[2]:.4f}   "
-            f"|t| = {t:.2f} -> {'DIFFER' if differ else 'not resolved'}")
+        say(f"      CV = {cv}: G(mu={lo[0]}) = {lo[1]:.4f}   G(mu={hi[0]}) = {hi[1]:.4f}"
+            f"   PAIRED d = {diff:+.4f} +- {se:.4f} (n={npair}, r={r:+.2f})")
+        say(f"                 |t| = {t:.2f} vs t_crit 4.303 -> "
+            f"{'DIFFER' if differ else 'not resolved'}"
+            f"    [the withdrawn hypot estimator gave {t_hypot:.2f}]")
     say("")
     if n_resolved:
         say(f"   -> {n_differ} of {n_resolved} comparable CV levels RESOLVE a friction")
@@ -255,9 +320,15 @@ def main() -> int:
     say("   when it lands.")
     say("")
     say("   t_crit = 4.303 is the two-sided 95 % value at the design's own 2 dof (n = 3")
-    say("   seeds), the same bar the manuscript uses. ⚠ `hypot` is correct HERE because")
-    say("   the two arms are different frictions run as separate cells; it would be wrong")
-    say("   for two CV levels at one friction, which share the seed's radius draw.")
+    say("   seeds), the same bar the manuscript uses.")
+    say("   🔴 THE ESTIMATOR CHANGED after referee pass 2 and the old value is printed")
+    say("   beside the new one above. `hypot` was justified here as 'correct because the")
+    say("   two arms are different frictions run as separate cells' -- WRONG on this")
+    say("   repo's own terms: `packing.py` seeds the radius draw from the seed REGARDLESS")
+    say("   of mu_p, so the arms share the draw (measured r = +0.56 to +0.84) and the")
+    say("   paired difference is the right estimator. It moves CV = 0.3 from 1.73 to")
+    say("   2.73 and CV = 0.5 from 1.43 to 2.56: the '0 of 4' verdict SURVIVES, but the")
+    say("   margin is far thinner than the withdrawn estimator suggested.")
 
     # ------------------------------------------------------------------ 3
     say("\n=== 3. THE MAPPED QUADRUPLE, for a solver run ===")
@@ -296,12 +367,18 @@ def main() -> int:
             while its own phi/phiM = 1.0400 said otherwise -- the exact defect this
             repository records as 'prose contradicts its own artifact'. Computed now.
             """
-            if w["PHI"] > 1.0:
-                return "🔴 INADMISSIBLE"
-            if w["_phi_over_phim"] > 1.0:
-                return "jammed (frictional)"
+            # 🔴 CEILING CORRECTED 2026-09-22 after referee pass 2. This first used
+            # `phi_eff > 1`, which is a TRIVIAL space-filling bound and flagged 1 of 5
+            # rows. The binding ceiling for RIGID, NON-INTERPENETRATING aggregates
+            # (assumption A3) is the pack's own FRICTIONLESS jamming point: a collection
+            # of impenetrable spheres cannot be denser than where it jams. That is
+            # `PHI0` here -- the multiplet's OWN phi_0, already computed, and HIGHER
+            # than a monodisperse RCP of 0.64 because the effective pack is polydisperse
+            # (using a fixed 0.64 would over-flag). It catches 3 of 5.
             if w["_phi_over_phi0"] > 1.0:
-                return "jammed (frictionless)"
+                return "🔴 A3 FAILS"
+            if w["_phi_over_phim"] > 1.0:
+                return "shear-jammed"
             return "flowable"
 
         base_row = dict(base)
@@ -314,11 +391,13 @@ def main() -> int:
         for kb, df in ((1.5, 3.0), (1.5, 2.1), (1.5, 1.8), (2.0, 2.1), (2.0, 1.8)):
             w = wc_inputs(kb, df, g0[0], gm[0])
             flag = regime(w)
-            n_inadm += flag.endswith("INADMISSIBLE")
+            n_inadm += flag.endswith("A3 FAILS")
             say(f"   {kb:6.1f}{df:6.1f}{w['_Lambda']:9.4f}{w['PHI']:9.4f}{w['PHI0']:9.4f}"
                 f"{w['PHIM']:9.4f}{w['_phi_over_phi0']:10.4f}{w['_phi_over_phim']:10.4f}"
                 f"   {flag}")
         say("")
+        say("   ⚠ READ THE ADMISSIBILITY BLOCK BELOW BEFORE THIS PARAGRAPH: three of the")
+        say("   five rows are outside the model's own domain.")
         say("   🔑 READ THE TOP TWO ROWS TOGETHER. The solver's DEFAULT preset is already")
         say("   frictionally jammed (phi/phiM = 1.0400), and COMPACT aggregation at")
         say("   <k> = 1.5 UN-JAMS it (0.9497) -- Lambda = 1 exactly there, so the only")
@@ -326,33 +405,36 @@ def main() -> int:
         say("   d_f = 2.1 drives it the other way, to 1.2293. One aggregation axis, both")
         say("   signs, at FIXED solid loading -- which is the bench prediction to test.")
         say("")
-        say("   🔴 ADMISSIBILITY, and it needs no threshold: phi_eff = Lambda * phi_solid")
-        say("   is a VOLUME FRACTION and cannot exceed 1. That caps Lambda at")
-        say(f"      Lambda_max = 1/phi_solid = 1/{base['PHI']} = {lam_max:.4f},")
-        say(f"   and {n_inadm} of the 5 rows above BREACH it. Those rows are not")
-        say("   'a large effect' -- they are the no-interpenetration assumption (A3 of")
-        say("   the derivation) DESTROYING ITSELF, and they must not be run.")
+        say("   🔴 ADMISSIBILITY -- CEILING CORRECTED after referee pass 2.")
+        say("   This block first used `phi_eff <= 1`, a space-filling bound, and flagged")
+        say("   ONE row. That is far too loose. Under assumption A3 the aggregates are")
+        say("   RIGID and IMPENETRABLE, and such a collection cannot be denser than the")
+        say("   point where it JAMS -- its own frictionless jamming fraction, which is")
+        say("   the PHI0 column above and is already computed:")
         say("")
-        say("   🔑 This is the sharpest statement in the file, because it is the model")
-        say("   bounding its own domain from the inside: open aggregates at moderate")
-        say("   loading REQUIRE interpenetration, so any treatment of a d_f = 1.8")
-        say("   suspension at phi = 0.52 that keeps them impenetrable is wrong before")
-        say("   any rheology is computed. The admissible window is")
-        say(f"      Lambda <= {lam_max:.4f}, i.e. d_f >= the value where Lambda reaches it.")
-        for kb in (1.5, 2.0):
-            cross = None
-            nk = flory(kb)
-            for f in np.linspace(3.0, 1.0, 20001):
-                if MultipletPSD(d10=D10, d_f=float(f), n_k=nk).lambda_trap >= lam_max:
-                    cross = float(f)
-                    break
-            say(f"      <k> = {kb}: the effective-sphere model is admissible only for "
-                f"d_f >= {cross:.3f}")
+        say(f"      phi_eff <= phi_0^eff = G0 * PHI0 = {g0[0]:.4f} * {base['PHI0']} "
+            f"= {g0[0]*base['PHI0']:.4f}")
+        say(f"      (the looser bound was 1/phi_solid = {lam_max:.4f} on Lambda, i.e. "
+            f"phi_eff <= 1)")
         say("")
-        say("   phi/phiM > 1 (non-breaching rows) means the FRICTIONAL branch is jammed:")
-        say("   eta diverges as soon as fhat rises. That is the shear-jammed, rebounding")
-        say("   state, and the table says which aggregation states reach it from a phi")
-        say("   that is SAFE unaggregated -- which is the bench prediction worth testing.")
+        say(f"   On that ceiling {n_inadm} of the 5 rows BREACH -- not 1. Those rows are")
+        say("   not 'a large effect': they are the NO-INTERPENETRATION ASSUMPTION")
+        say("   DESTROYING ITSELF, and they must not be run.")
+        say("")
+        say("   ⚠ A monodisperse RCP of 0.64 would be the WRONG ceiling here and would")
+        say("   over-flag, because the effective pack is polydisperse and its own")
+        say(f"   jamming point is {g0[0]*base['PHI0']:.4f}. The bound has to be the")
+        say("   multiplet's own, which is why it is read off the mapped PHI0.")
+        say("")
+        say("   🔑 THE CONSEQUENCE FOR THE BENCH PREDICTION, and it is a DEMOTION.")
+        say("   The un-jam / re-jam contrast below survives only where A3 holds. The")
+        say("   compact row (d_f = 3) and the <k> = 1.5, d_f = 2.1 row are admissible;")
+        say("   the d_f = 1.8 rows and <k> = 2.0, d_f = 2.1 are NOT. So the statement")
+        say("   'open aggregates drive the suspension deep into the jammed state' is")
+        say("   true of the MODEL and NOT of a rigid-aggregate suspension -- past the")
+        say("   ceiling the aggregates must deform or interpenetrate, which is physics")
+        say("   this model does not contain. The admissible part of the contrast is")
+        say("   still real and is the part to quote.")
 
     # ------------------------------------------------------------------ 4
     say("\n=== 4. SIGMA_STAR IS NOT MAPPED, AND WHY ===")

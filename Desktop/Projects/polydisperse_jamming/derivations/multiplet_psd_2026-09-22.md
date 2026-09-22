@@ -26,11 +26,29 @@
 > `G = φ_J(multiplet PSD)/φ_J(mono)` is the polydispersity gain. Since `Λ → ∞` as
 > `d_f → 0` while `G` is bounded, **a critical `d_f*` must exist**, and it is found at
 >
-> **`d_f* = 2.89 – 2.95` across `⟨k⟩ = 1.2 – 8`** — essentially independent of *how much*
-> the suspension has aggregated. ⚠ The `⟨k⟩ = 1.1` row is **excluded from that range**:
-> the closure predicts a `φ_J` shift of 0.89 × `PHI_SCALE` there, which the DEM protocol
-> could not tell from zero, so its `d_f*` is model output with no measurable content.
-> The range is stable to ±0.01 across three closure calibrations (§7 item 6).
+> **`d_f* ≈ 2.89 – 2.95` over `⟨k⟩ = 1.1 – 8`**, stable to ±0.01 across the two refit
+> calibrations and ±0.1 to the textbook one (§7 item 6).
+>
+> 🔴 **THE FLATNESS IS NOT ESTABLISHED AT THAT PRECISION, and an earlier version of this
+> box claimed it was.** The plateau is only **0.053** wide, and one `PHI_SCALE` of
+> protocol noise moves the *root* by
+>
+> | `⟨k⟩` | 1.1 | 1.2 | 1.5 | 2.0 | 3.0 | 5.0 | 8.0 |
+> |---|---|---|---|---|---|---|---|
+> | `Δ(d_f*)` | 0.081 | 0.042 | 0.019 | 0.011 | 0.007 | 0.005 | 0.004 |
+> | as % of the plateau | **152 %** | **80 %** | **36 %** | 22 % | 14 % | 10 % | 8 % |
+>
+> So at low `⟨k⟩` the individual roots are less well pinned than the whole spread they are
+> being compared across, and their agreement with the high-`⟨k⟩` rows **is not evidence of
+> flatness**. ⚠ The first version of this box filtered rows on
+> `|φ_J(d_f*) − β| ≥ PHI_SCALE`, which asks whether `G ≠ 1` at the crossing — **the wrong
+> question**; the right one is the sensitivity of the root, above.
+>
+> **What survives without a precision argument is ORDINAL and is the claim to carry:**
+> every row's `d_f*` lies near **2.9** — far below the compact limit `d_f = 3` and far
+> above the reported colloidal values 1.8–2.1 — on all three calibrations. That is enough
+> for the conclusion, because the conclusion is about which *side* of the crossing a real
+> aggregate sits on.
 >
 > **The closure-free form, which is the one to quote:** this project's *widest measured*
 > pack reaches only `G = 1.0911`, so the polydispersity lever is capped near **+9 %,
@@ -352,6 +370,24 @@ existence argument for `d_f*` logically sound regardless of F2/M3; and the closu
 section genuinely closure-free (no `PA`/`PB` enters). It also verified the committed
 artifact is not stale.
 
-⚠ **Pass 2 has not run.** The loop rule is "repeat until a pass returns nothing", and a
-pass that found a FATAL has not itself been repeated clean. That is the next action on
-this file, and until it happens the corrections above are unrefereed.
+### Pass 2 — 2026-09-22. **No FATAL. Five Material, three Minor. All acted on.**
+
+Pass 2 was asked to check pass 1's *corrections* as well as look for new defects, and it
+found that **two of the four corrections were half-fixes with the wrong criterion.**
+
+| # | finding | action |
+|---|---|---|
+| **P2-1** | **The resolvability filter added by F2 asks the wrong question.** It tests `\|φ_J(d_f*) − β\| ≥ PHI_SCALE` ("is `G ≠ 1` at the crossing"), not whether the *root's location* is resolvable — which needs `Δ(d_f*) = (PHI_SCALE/β)/\|Λ′ − G′\|` by the implicit function theorem. At `⟨k⟩ = 1.2`, kept as resolvable by the old filter, noise alone moves `d_f*` by **80 % of the entire plateau**. | **Accepted in full.** `df_star_sensitivity()` added and printed per row; **the flatness headline is demoted to an ORDINAL claim** in the result box. Both columns stay printed. A test anchors the estimator against a direct re-solve of the perturbed root. |
+| **P2-2** | **The admissibility ceiling `Λ ≤ 1/φ` is a trivial space-filling bound.** Rigid non-interpenetrating spheres cannot exceed *jamming*. **3 of 5 rows breach the right ceiling, not 1.** | **Accepted.** `multiplet_wc.py` now uses the multiplet's **own** `φ_0^eff = G₀·PHI0 = 0.6861`. ⚠ Note the referee proposed a fixed RCP ≈ 0.64, which would **over-flag**: the effective pack is polydisperse and its own jamming point is higher. The bound has to be the multiplet's own. **This DEMOTES the bench prediction** — the `d_f = 1.8` rows are outside the model's domain. |
+| **P2-3** | **The `hypot` justification for the friction comparison is wrong on this repo's own terms**: `packing.py` seeds the radius draw independent of `μ_p`, so the arms are paired (measured `r = +0.56 … +0.84`). | **Accepted.** Replaced by a per-seed paired difference with the floor propagated through all four records. The verdict **survives** (0 of 4 resolved) but the margins move: CV 0.3 `1.73 → 2.73`, CV 0.5 `1.43 → 2.56`. Both estimators printed. |
+| **P2-4** | **Block C's pair selection correlates with the sign.** Of 80 candidates **29 (36 %) are positive**; of the 13 resolvable, 9 neg / 4 pos — and **every positive one sits at the smallest `d_f` gap**, which the rule sorts against. | **Accepted.** `PREREG_MULTIPLET` **Amendment 1.2** withdraws the "uniformly negative" framing; the four predictions and tolerances are unchanged and still blind. The full population is now printed by `predict_multiplet.py`. Block C's *discriminating* content is undamaged: a CV-only closure predicts zero for every pair, either sign. |
+| **P2-5** | **Block B does NOT discriminate a CV-only closure**, though `PREREG` M3 says it does: ordering its four points by `CV` and by `φ` gives the **identical** order, so any increasing function of `CV` reproduces the turnover. | **Accepted.** **Amendment 1.1.** The per-point predictions stand; the interpretive claim is withdrawn. This is the repo's own "a discriminator that passes BOTH candidates has discriminated nothing" lesson — caught *before* the cells ran. |
+| P2-6 | The step-11 mechanism is verified only as a *linear-vs-semi-linear* statement and is invoked as a general one; it predicts the wrong direction for 3 of 7 rows. | **Accepted** — §2 step 11 already reports the two negative rows as unexplained; the general wording is the part to read narrowly. |
+| P2-7 | The covariance claim is **confirmed against the solver source** (`eps` is scale-invariant, and the clip, `EPS_SOFT` and `MP_EXPO` all act on `eps`) — but is unconditionally worded. `DIL_COEFF > 0` adds a term built from a **fixed** `PHI_REF = 0.49`, which is not covariant. | **Accepted.** `multiplet_wc.py` §1 now scopes the claim to `DIL_COEFF = 0` and says why. No printed number changes (`DIL_COEFF` defaults to 0). |
+| P2-8 | The "same sign below the threshold" check is near-trivial, since all tabulated `d_f` sit well below `d_f*`. | **Noted**, no change; recorded as a weak check rather than presented as a strong one. |
+
+**Confirmed clean by pass 2**: the step-11 sign correction reproduced exactly from a fresh
+script; the `β = 0.5947` gauge fix consistent throughout; and no FATAL anywhere.
+
+⚠ **Pass 3 has not run**, and pass 2 changed four files. The loop rule is "repeat until a
+pass returns nothing"; neither pass has yet returned nothing.

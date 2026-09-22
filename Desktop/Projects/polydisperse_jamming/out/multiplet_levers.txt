@@ -28,25 +28,48 @@ multiplet_levers.py -- does AGGREGATION promote or suppress jamming?
 === 2. THE CRITICAL FRACTAL DIMENSION d_f* (where Lambda = G) ===
    Below d_f*, aggregation brings the suspension CLOSER to jamming.
 
-   ⚠ RESOLVABILITY IS PART OF THE TABLE. d_f* is a property of G, and G is only
-   meaningful where the phi_J it is built from moves by more than the protocol's
-   own reproducibility. The last column applies section 3's bar TO THIS TABLE,
-   which an earlier version of this file did not do.
+   🔴 THE RESOLVABILITY CRITERION CHANGED after referee pass 2. This table first
+   filtered rows on |phi_J(d_f*) - beta| >= PHI_SCALE -- 'is G measurably
+   different from 1 at the crossing'. THAT IS THE WRONG QUESTION. What decides
+   whether d_f* is a measurement is how far the ROOT moves under the protocol's
+   own noise, which the implicit function theorem on Lambda(d_f) = G(d_f) gives:
 
-      <k>  CV at d_f*     d_f*  d_f*(text)  d_f*(wide)   ratio  phiJ-beta /SCALE
-      1.1      0.0819   2.9300      2.8230      2.9389   1.843              0.89  🔴 UNRESOLVABLE
-      1.2      0.1128   2.9241      2.8180      2.9332   2.036              1.84
-      1.5      0.1664   2.9098      2.8069      2.9192   2.415              4.80
-      2.0      0.2138   2.8933      2.8378      2.9028   2.816              9.57
-      3.0      0.2574   2.9155      2.8803      2.9231   3.318             11.52
-      5.0      0.2942   2.9341      2.9100      2.9399   3.967             12.64
-      8.0      0.3171   2.9463      2.9270      2.9509   4.623             12.93
+       d(d_f*) = (PHI_SCALE/BETA) / |Lambda'(d_f*) - G'(d_f*)|
 
-   🔑 QUOTABLE RANGE, resolvable rows only: d_f* = 2.89 - 2.95
-      across <k> = 1.2 - 8.0. Rows below the bar are printed but
-      NOT included in that range: at <k> = 1.1 the closure predicts a phi_J
-      shift the DEM could not tell from zero, so its d_f* is a model output
-      with no measurable content, not a measurement.
+   BOTH columns are printed, so the old filter's number stays visible.
+
+      <k>       CV     d_f*   (text)   (wide)  phiJ-b /SC   D(d_f*)
+      1.1   0.0819   2.9300   2.8230   2.9389        0.89     0.081
+      1.2   0.1128   2.9241   2.8180   2.9332        1.84     0.042
+      1.5   0.1664   2.9098   2.8069   2.9192        4.80     0.019
+      2.0   0.2138   2.8933   2.8378   2.9028        9.57     0.011
+      3.0   0.2574   2.9155   2.8803   2.9231       11.52     0.007
+      5.0   0.2942   2.9341   2.9100   2.9399       12.64     0.005
+      8.0   0.3171   2.9463   2.9270   2.9509       12.93     0.004
+
+   🔴 THE PLATEAU IS 0.053 WIDE (d_f* = 2.893 - 2.946), and the last
+   column says how much of that width ONE PHI_SCALE of protocol noise buys:
+      <k> =  1.1:  D(d_f*) = 0.081  =  152% of the plateau  🔴 noise alone moves d_f* by 152% of the whole plateau
+      <k> =  1.2:  D(d_f*) = 0.042  =   80% of the plateau  🔴 noise alone moves d_f* by 80% of the whole plateau
+      <k> =  1.5:  D(d_f*) = 0.019  =   36% of the plateau  🔴 noise alone moves d_f* by 36% of the whole plateau
+      <k> =  2.0:  D(d_f*) = 0.011  =   22% of the plateau
+      <k> =  3.0:  D(d_f*) = 0.007  =   14% of the plateau
+      <k> =  5.0:  D(d_f*) = 0.005  =   10% of the plateau
+      <k> =  8.0:  D(d_f*) = 0.004  =    8% of the plateau
+
+   🔑 WHAT SURVIVES: on the rows whose root is pinned to better than a
+   quarter of the plateau (2.0 <= <k> <= 8.0), d_f* = 2.893 - 2.946,
+   a spread of 0.053.
+
+   ⚠ THE HEADLINE IS DEMOTED. 'd_f* is essentially independent of how much the
+   suspension has aggregated' is NOT established at the precision first claimed:
+   the low-<k> rows carry a statistical uncertainty COMPARABLE TO the whole
+   plateau width, so their agreement with the high-<k> rows is not evidence of
+   flatness. What IS established, and needs no precision argument, is the
+   ORDINAL fact: every row's d_f* lies near 2.9, far below the compact limit
+   d_f = 3 and far above the open-aggregate values 1.8-2.1, on all three closure
+   calibrations. The '+-0.01 across calibrations' figure is a SYSTEMATIC
+   uncertainty and does NOT cover this statistical one, which is larger.
 
    ⚠ THREE closure calibrations are printed because d_f* is a property of G, and
    G is the part of this calculation that comes from a FIT. Lambda is closed

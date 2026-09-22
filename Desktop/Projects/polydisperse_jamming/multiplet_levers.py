@@ -171,6 +171,34 @@ def critical_df(k_bar: float, pa: float = PA_REFIT, pb: float = PB_REFIT,
     return 0.5 * (a + b)
 
 
+def df_star_sensitivity(k_bar: float, d_f_star: float, h: float = 1e-4) -> float:
+    """How far one PHI_SCALE of protocol noise moves the ROOT `d_f*`.
+
+    ADDED 2026-09-22 after referee pass 2, which found that the resolvability filter
+    first written here asked the WRONG QUESTION. That filter tested
+    `|phi_J(d_f*) - beta| >= PHI_SCALE` -- "is `G` measurably different from 1 at the
+    crossing" -- which is not the same as "is the LOCATION of the crossing resolvable".
+
+    The right quantity follows from the implicit function theorem on `Lambda(d_f) =
+    G(d_f)`: a perturbation `dG` in `G` moves the root by
+
+        d(d_f*) = dG / |Lambda'(d_f*) - G'(d_f*)|,
+
+    and the protocol's own noise on `G` is `PHI_SCALE/BETA` (since `G = phi_J/beta`).
+    Both derivatives are taken by central difference at the root.
+    """
+    def lam(x):
+        return MultipletPSD(d10=D10, d_f=x, n_k=flory(k_bar)).lambda_trap
+
+    def g(x):
+        return phi_J(MultipletPSD(d10=D10, d_f=x, n_k=flory(k_bar))) / BETA
+
+    dlam = (lam(d_f_star + h) - lam(d_f_star - h)) / (2 * h)
+    dg = (g(d_f_star + h) - g(d_f_star - h)) / (2 * h)
+    denom = abs(dlam - dg)
+    return float("inf") if denom == 0 else float((SCALE / BETA) / denom)
+
+
 def truncation_report(k_bar: float, d_f: float) -> str:
     """How much of the answer is the truncation at K_MAX rather than the physics."""
     out = []
@@ -219,14 +247,19 @@ def main() -> int:
     say("\n=== 2. THE CRITICAL FRACTAL DIMENSION d_f* (where Lambda = G) ===")
     say("   Below d_f*, aggregation brings the suspension CLOSER to jamming.")
     say("")
-    say("   ⚠ RESOLVABILITY IS PART OF THE TABLE. d_f* is a property of G, and G is only")
-    say("   meaningful where the phi_J it is built from moves by more than the protocol's")
-    say("   own reproducibility. The last column applies section 3's bar TO THIS TABLE,")
-    say("   which an earlier version of this file did not do.")
+    say("   🔴 THE RESOLVABILITY CRITERION CHANGED after referee pass 2. This table first")
+    say("   filtered rows on |phi_J(d_f*) - beta| >= PHI_SCALE -- 'is G measurably")
+    say("   different from 1 at the crossing'. THAT IS THE WRONG QUESTION. What decides")
+    say("   whether d_f* is a measurement is how far the ROOT moves under the protocol's")
+    say("   own noise, which the implicit function theorem on Lambda(d_f) = G(d_f) gives:")
     say("")
-    say(f"   {'<k>':>6}{'CV at d_f*':>12}{'d_f*':>9}{'d_f*(text)':>12}{'d_f*(wide)':>12}"
-        f"{'ratio':>8}{'phiJ-beta /SCALE':>18}")
-    resolvable = []
+    say("       d(d_f*) = (PHI_SCALE/BETA) / |Lambda'(d_f*) - G'(d_f*)|")
+    say("")
+    say("   BOTH columns are printed, so the old filter's number stays visible.")
+    say("")
+    say(f"   {'<k>':>6}{'CV':>9}{'d_f*':>9}{'(text)':>9}{'(wide)':>9}"
+        f"{'phiJ-b /SC':>12}{'D(d_f*)':>10}")
+    rows = []
     for kb in (1.1, 1.2, 1.5, 2.0, 3.0, 5.0, 8.0):
         dstar = critical_df(kb)
         if np.isnan(dstar):
@@ -236,20 +269,41 @@ def main() -> int:
         dstar_w = critical_df(kb, PA_WIDE, PB_WIDE)
         lv = levers(kb, dstar)
         shift = (lv["phiJ"] - BETA) / SCALE
-        mark = "  🔴 UNRESOLVABLE" if abs(shift) < 1.0 else ""
-        if abs(shift) >= 1.0:
-            resolvable.append((kb, dstar))
-        say(f"   {kb:6.1f}{lv['cv']:12.4f}{dstar:9.4f}{dstar_t:12.4f}{dstar_w:12.4f}"
-            f"{lv['ratio_size']:8.3f}{shift:18.2f}{mark}")
+        sens = df_star_sensitivity(kb, dstar)
+        rows.append((kb, dstar, shift, sens))
+        say(f"   {kb:6.1f}{lv['cv']:9.4f}{dstar:9.4f}{dstar_t:9.4f}{dstar_w:9.4f}"
+            f"{shift:12.2f}{sens:10.3f}")
     say("")
-    if resolvable:
-        ks = [k for k, _ in resolvable]
-        ds = [d for _, d in resolvable]
-        say(f"   🔑 QUOTABLE RANGE, resolvable rows only: d_f* = {min(ds):.2f} - {max(ds):.2f}")
-        say(f"      across <k> = {min(ks)} - {max(ks)}. Rows below the bar are printed but")
-        say("      NOT included in that range: at <k> = 1.1 the closure predicts a phi_J")
-        say("      shift the DEM could not tell from zero, so its d_f* is a model output")
-        say("      with no measurable content, not a measurement.")
+    ds_all = [d for _, d, _, _ in rows]
+    plateau = max(ds_all) - min(ds_all)
+    say(f"   🔴 THE PLATEAU IS {plateau:.3f} WIDE (d_f* = {min(ds_all):.3f} - "
+        f"{max(ds_all):.3f}), and the last")
+    say("   column says how much of that width ONE PHI_SCALE of protocol noise buys:")
+    for kb, dstar, shift, sens in rows:
+        frac = sens / plateau
+        flag = ("  🔴 noise alone moves d_f* by "
+                f"{frac:.0%} of the whole plateau") if frac > 0.25 else ""
+        say(f"      <k> = {kb:4.1f}:  D(d_f*) = {sens:.3f}  = {frac:5.0%} of the plateau"
+            f"{flag}")
+    ok = [(k, d) for k, d, _, s in rows if s < 0.25 * plateau]
+    say("")
+    if ok:
+        ks = [k for k, _ in ok]
+        ds = [d for _, d in ok]
+        say("   🔑 WHAT SURVIVES: on the rows whose root is pinned to better than a")
+        say(f"   quarter of the plateau ({min(ks)} <= <k> <= {max(ks)}), d_f* = "
+            f"{min(ds):.3f} - {max(ds):.3f},")
+        say(f"   a spread of {max(ds)-min(ds):.3f}.")
+    say("")
+    say("   ⚠ THE HEADLINE IS DEMOTED. 'd_f* is essentially independent of how much the")
+    say("   suspension has aggregated' is NOT established at the precision first claimed:")
+    say("   the low-<k> rows carry a statistical uncertainty COMPARABLE TO the whole")
+    say("   plateau width, so their agreement with the high-<k> rows is not evidence of")
+    say("   flatness. What IS established, and needs no precision argument, is the")
+    say("   ORDINAL fact: every row's d_f* lies near 2.9, far below the compact limit")
+    say("   d_f = 3 and far above the open-aggregate values 1.8-2.1, on all three closure")
+    say("   calibrations. The '+-0.01 across calibrations' figure is a SYSTEMATIC")
+    say("   uncertainty and does NOT cover this statistical one, which is larger.")
     say("")
     say("   ⚠ THREE closure calibrations are printed because d_f* is a property of G, and")
     say("   G is the part of this calculation that comes from a FIT. Lambda is closed")

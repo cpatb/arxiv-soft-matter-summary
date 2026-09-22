@@ -155,7 +155,56 @@ def main() -> int:
             f"   (textbook: {(a['phi_text']-b['phi_text'])/SCALE:+.1f})")
         say("")
 
-    say("=== WHAT EACH BLOCK CAN AND CANNOT DECIDE ===")
+    say("=== THE CANDIDATE POPULATION BEHIND BLOCK C (referee pass 2, Amendment 1.2) ===")
+    say("   The four pairs above are KEPT from a larger search. Reporting only the kept")
+    say("   ones hid that the sign is mixed in the population and correlates with the")
+    say("   selection variable, so the whole candidate set is now printed:")
+    say("")
+    grid = []
+    for d_f in (1.6, 1.8, 2.1, 2.5, 3.0):
+        for n2 in np.arange(0.05, 0.55, 0.05):
+            for n3 in np.arange(0.0, 0.35, 0.05):
+                n1 = 1.0 - n2 - n3
+                if n1 < 0.30:
+                    continue
+                grid.append(describe(d_f, (round(n1, 3), round(float(n2), 3),
+                                           round(float(n3), 3))))
+    cands = [(a, b, a["phi_refit"] - b["phi_refit"])
+             for a, b in itertools.combinations(grid, 2)
+             if abs(a["d_f"] - b["d_f"]) >= 0.5 and abs(a["cv"] - b["cv"]) <= 5e-4]
+    res = [c for c in cands if abs(c[2]) >= 2 * SCALE]
+    npos = sum(1 for c in cands if c[2] > 0)
+    say(f"   CV-matched pairs with d_f gap >= 0.5 : {len(cands)}")
+    say(f"      positive d(phi): {npos}  ({npos/max(len(cands),1):.0%}) -- the sign is "
+        f"NOT uniform in the population")
+    say(f"   clearing the 2 x PHI_SCALE floor    : {len(res)}  "
+        f"({sum(1 for c in res if c[2] < 0)} negative / "
+        f"{sum(1 for c in res if c[2] > 0)} positive)")
+    gaps_pos = sorted({round(abs(a['d_f'] - b['d_f']), 1) for a, b, d in res if d > 0})
+    gaps_neg = sorted({round(abs(a['d_f'] - b['d_f']), 1) for a, b, d in res if d < 0})
+    say(f"      d_f gaps of the POSITIVE resolvable pairs: {gaps_pos}")
+    say(f"      d_f gaps of the NEGATIVE resolvable pairs: {gaps_neg}")
+    say("")
+    say("   🔴 THE SELECTION RULE SORTS BY WIDEST d_f GAP FIRST, and in this grid every")
+    say("   positive resolvable pair sits at the SMALLEST gap. So the kept four are all")
+    say("   negative BY SELECTION, not because the aggregation axis has a preferred sign.")
+    say("   The rule was fixed before the search and is not tuned to the response, so it")
+    say("   is not p-hacking -- but it IS selection on a variable that correlates with")
+    say("   the sign, which is what this block claimed to avoid. See Amendment 1.2.")
+    say("")
+    say("   ⚠ Block C's DISCRIMINATING content is undamaged: a CV-only closure predicts")
+    say("   exactly ZERO for every pair here, so a resolved non-zero d(phi) of EITHER")
+    say("   sign refutes a CV-only description. Only the stronger 'uniformly negative'")
+    say("   claim is withdrawn.")
+
+    say("\n=== WHAT EACH BLOCK CAN AND CANNOT DECIDE ===")
+    say("   🔴 AMENDMENT 1.1: an earlier version of this file and of PREREG M3 said a")
+    say("   CV-ONLY closure would get block B wrong. FALSE, and block B's own numbers")
+    say("   say so: ordering its four points by CV and by predicted phi gives the SAME")
+    say("   order, so any increasing function of CV alone reproduces the whole shape,")
+    say("   turnover included. Block B's per-point predictions stand; its claim to")
+    say("   discriminate a CV-only surrogate does not. That job is block C's alone.")
+    say("")
     say("   A and B test the closure's TRANSFER to a PSD family no point of which is in")
     say("   its calibration set (16 binary compositions at size ratios 2 and 3). They")
     say("   cannot test Lambda: the DEM packs effective spheres, so it never sees the")

@@ -44,7 +44,37 @@ predict_multiplet.py -- BLIND predictions, written before any multiplet cell exi
                    multiplet:f2.1:n0.65/0.1/0.25  d_f = 2.1  <k> = 1.600  ratio = 1.687  Lambda = 1.3251  phi = 0.6180
       PREDICTED d(phi) = -0.0080 = -3.8 x PHI_SCALE   (textbook: -8.2)
 
+=== THE CANDIDATE POPULATION BEHIND BLOCK C (referee pass 2, Amendment 1.2) ===
+   The four pairs above are KEPT from a larger search. Reporting only the kept
+   ones hid that the sign is mixed in the population and correlates with the
+   selection variable, so the whole candidate set is now printed:
+
+   CV-matched pairs with d_f gap >= 0.5 : 80
+      positive d(phi): 29  (36%) -- the sign is NOT uniform in the population
+   clearing the 2 x PHI_SCALE floor    : 13  (9 negative / 4 positive)
+      d_f gaps of the POSITIVE resolvable pairs: [0.5]
+      d_f gaps of the NEGATIVE resolvable pairs: [0.5, 0.7, 0.9]
+
+   🔴 THE SELECTION RULE SORTS BY WIDEST d_f GAP FIRST, and in this grid every
+   positive resolvable pair sits at the SMALLEST gap. So the kept four are all
+   negative BY SELECTION, not because the aggregation axis has a preferred sign.
+   The rule was fixed before the search and is not tuned to the response, so it
+   is not p-hacking -- but it IS selection on a variable that correlates with
+   the sign, which is what this block claimed to avoid. See Amendment 1.2.
+
+   ⚠ Block C's DISCRIMINATING content is undamaged: a CV-only closure predicts
+   exactly ZERO for every pair here, so a resolved non-zero d(phi) of EITHER
+   sign refutes a CV-only description. Only the stronger 'uniformly negative'
+   claim is withdrawn.
+
 === WHAT EACH BLOCK CAN AND CANNOT DECIDE ===
+   🔴 AMENDMENT 1.1: an earlier version of this file and of PREREG M3 said a
+   CV-ONLY closure would get block B wrong. FALSE, and block B's own numbers
+   say so: ordering its four points by CV and by predicted phi gives the SAME
+   order, so any increasing function of CV alone reproduces the whole shape,
+   turnover included. Block B's per-point predictions stand; its claim to
+   discriminate a CV-only surrogate does not. That job is block C's alone.
+
    A and B test the closure's TRANSFER to a PSD family no point of which is in
    its calibration set (16 binary compositions at size ratios 2 and 3). They
    cannot test Lambda: the DEM packs effective spheres, so it never sees the

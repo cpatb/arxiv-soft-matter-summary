@@ -127,6 +127,73 @@ Four pairs matched in number `CV` to ≤ 4 × 10⁻⁴ with `d_f` differing by �
 
 ---
 
+---
+
+## 2b. AMENDMENT 1 — two registered CLAIMS are wrong; the PREDICTIONS are unchanged
+
+Written 2026-09-22 after referee pass 2, **before any cell runs**. Neither the grid, the
+tolerances, nor a single predicted number in §2 is moved. What is withdrawn is what two
+of the gates were said to *discriminate*.
+
+### 🔴 A1.1 — M3's claim that Block B discriminates a CV-only closure is FALSE
+
+M3 says the non-monotone turnover would be got wrong by "a monotone closure, a CV-only
+closure, or a closure that simply tracked `⟨k⟩`". **The CV-only part is false, and Block
+B's own numbers say so.** Ordering its four points by `CV` and by predicted `φ`:
+
+| `⟨k⟩` | 1.10 | 1.40 | 1.70 | 2.10 |
+|---|---|---|---|---|
+| CV | 0.1129 | 0.2068 | **0.2189** | 0.2044 |
+| predicted `φ` | 0.5985 | 0.6102 | **0.6165** | 0.6090 |
+
+Both orderings are `1.10 < 2.10 < 1.40 < 1.70` — **identical**. So *any* strictly
+increasing function of `CV` alone reproduces Block B's whole shape, **including the
+turnover at `⟨k⟩ = 1.70`**. `CV` is itself non-monotone in `⟨k⟩` here, which is what the
+turnover is made of.
+
+> **M3's per-point predictions stand and its tolerance is unchanged.** What is withdrawn
+> is the interpretive claim: **Block B does not discriminate a CV-only surrogate.** That
+> job belongs to Block C alone, which is exactly what Block C was designed for. This is
+> the repository's own "a discriminator that passes BOTH candidates has discriminated
+> nothing" lesson, caught here before the cells ran rather than after.
+
+### 🔴 A1.2 — M4's uniform negative sign is a property of the SELECTED SUBGROUP
+
+M4 says "all four `Δφ` are NEGATIVE … the sign is uniform and is the falsifiable part; a
+single positive pair refutes it." Regenerating the **full candidate population** that
+`matched_cv_pairs` searches, rather than only the four it keeps:
+
+| | count |
+|---|---|
+| CV-matched pairs with `d_f` gap ≥ 0.5 | **80** |
+| of those, **positive** `Δφ` | **29 (36 %)** |
+| clearing the 2 × `PHI_SCALE` floor | 13 (**9 negative, 4 positive**) |
+| `d_f` gap of the 4 positive resolvable pairs | **all 0.5** |
+| `d_f` gap of the kept 4 | 0.7 and 0.9 |
+
+**The sign is genuinely mixed in the population, and the selection rule sorts by WIDEST
+`d_f` gap first** — which in this grid picks only from the negative subgroup. The rule was
+fixed before the search and is not tuned to the response, so this is not p-hacking; but it
+**is** selection on a variable (gap width) that turns out to correlate with the sign, which
+is precisely what §2 M4 claims to have avoided.
+
+> **The four registered `Δφ` values and their ±tolerances are UNCHANGED and still blind.**
+> What is withdrawn is the framing. The correct registered statement is:
+>
+> **REGISTERED (amended): the four selected pairs' `Δφ` are as tabulated in §2 M4, all
+> negative. A positive result on any of the four refutes the closure's prediction FOR
+> THAT PAIR.** It does **not** establish that `Δφ < 0` is a general property of the
+> aggregation axis — the model itself says it is not, at 36 % positive over the
+> population — and no such claim may be made from this block.
+>
+> ⚠ The *discriminating* content of Block C is undamaged and is the reason it exists: a
+> **CV-only closure predicts exactly ZERO for every one of these pairs**, positive or
+> negative, so any resolved non-zero `Δφ` of either sign refutes a CV-only description.
+> The sign was never load-bearing for that; it was load-bearing only for the stronger
+> claim, which is now withdrawn.
+
+---
+
 ## 3. What would make this campaign worthless
 
 - **M0 fails** → the family string is not reaching the packing and nothing may be read.

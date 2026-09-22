@@ -193,3 +193,46 @@ def test_a_too_small_cutoff_really_does_move_the_answer():
     rs = small.lambda_trap / (phi_J(small) / BETA)
     rb = big.lambda_trap / (phi_J(big) / BETA)
     assert abs(rs - rb) / rb > 0.2, (rs, rb)
+
+
+# --------------------------------------------------------------------------
+# E. The root-sensitivity estimator (referee pass 2, finding 1)
+# --------------------------------------------------------------------------
+
+
+def test_df_star_sensitivity_matches_a_direct_perturbation():
+    """ANCHOR outside the formula: perturb G and re-find the root numerically.
+
+    `df_star_sensitivity` uses the implicit function theorem. The check re-solves the
+    crossing with G shifted by exactly one PHI_SCALE/BETA and measures how far the root
+    actually moved. If the derivative form were wrong -- or inverted -- this disagrees.
+    """
+    from multiplet_levers import (BETA, D10, SCALE, df_star_sensitivity, flory,
+                                  levers, phi_J)
+    from psd import MultipletPSD
+    import scipy.optimize as so
+
+    for k_bar in (1.2, 2.0, 5.0):
+        d0 = critical_df(k_bar)
+        pred = df_star_sensitivity(k_bar, d0)
+        dG = SCALE / BETA
+
+        def f(x, shift):
+            p = MultipletPSD(d10=D10, d_f=float(x), n_k=flory(k_bar))
+            return p.lambda_trap - (phi_J(p) / BETA + shift)
+
+        d1 = so.brentq(f, d0 - 0.5, min(d0 + 0.05, 2.999), args=(dG,), xtol=1e-10)
+        actual = abs(d1 - d0)
+        assert pred == pytest.approx(actual, rel=0.12), (k_bar, pred, actual)
+
+
+def test_df_star_sensitivity_falls_as_aggregation_rises():
+    """More aggregation -> steeper Lambda at the crossing -> a better-pinned root.
+
+    DISCRIMINATING: a routine returning a constant, or one that had the derivative in
+    the numerator, would not reproduce this ordering.
+    """
+    from multiplet_levers import df_star_sensitivity
+    s = [df_star_sensitivity(k, critical_df(k)) for k in (1.1, 1.5, 2.0, 5.0)]
+    assert all(b < a for a, b in zip(s, s[1:])), s
+    assert s[0] > 10 * s[-1], s          # and it is a big range, not a flat one
