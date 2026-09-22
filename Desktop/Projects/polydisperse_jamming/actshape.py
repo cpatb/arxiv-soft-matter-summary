@@ -145,8 +145,11 @@ def weibull_sigma_jam_ratio(fc: float, delta: float) -> float:
 
 
 def eta_rel(f, x: float, chi: float, eps_min: float = 0.01, mp_expo: float = 2.0):
-    """eta/eta_s exactly as wc_drop_impact.c eta_wc(): eps^-MP_EXPO, eps = 1 - x/(1-(1-chi)f),
-    floored at eps_min (EPS_SOFT, off by default in the solver, is not modelled)."""
+    """eta/eta_s as wc_drop_impact.c eta_wc(): eps^-MP_EXPO, eps = 1 - x/(1-(1-chi)f), floored
+    at eps_min. NOT modelled: EPS_SOFT (solver default 0.0, i.e. off) and the outer clamp
+    min(e, mu_max_wc) with mu_max_wc = min(eta_s/EPS_MIN^2, MUMAX_WC); at the default
+    MUMAX_WC = 1e9 (code units) that clamp equals the eps floor this function already applies
+    whenever eta_s_code < 1e5, which holds for every preset (checked in jam_rate_driven)."""
     f = np.asarray(f, dtype=float)
     eps = np.maximum(1.0 - x / (1.0 - (1.0 - chi) * f), eps_min)
     return eps ** -mp_expo

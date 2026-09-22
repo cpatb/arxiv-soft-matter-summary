@@ -4,7 +4,7 @@ Written 2026-09-22 (third block). Checks: `jam_stress_2026-09-22_check.py` →
 `jam_stress_2026-09-22_check.txt` (**11/11 PASS**). Code: `actshape.py`.
 Status: **derived and checked; referee pass 1 returned 1 FATAL + 2 MATERIAL, all in the
 interpretive layer (§0, §5), all acted on below; the algebra was independently re-derived and
-stands. Pass 2 not yet run.**
+stands. Pass 2: all pass-1 fixes confirmed; one MATERIAL (this box lacked the stress-controlled scope) acted on.**
 
 > **RESULT.** A suspension inside the shear-jamming window jams wherever the local stress exceeds
 >
@@ -19,6 +19,13 @@ stands. Pass 2 not yet run.**
 > Weibull activation (8) reduces to `σ_jam = σ*[ln(1/f_c)]^(−1/δ)`, and the shape `δ` has a
 > **sign-reversing** effect: sharper activation needs MORE stress to jam when `f_c < 1/e`
 > (deep in the window) and LESS when `f_c > 1/e` (near its edge).
+>
+> ⚠ **SCOPE: a STRESS-CONTROLLED material point.** The DNS solver is not one: it activates on
+> `η(f̂)γ̇`, so activation feeds back through the viscosity and the reversal moves from
+> `f_c = 1/e` to a bottleneck `f* = 1/e` with `f* < f_c` (`jam_rate_driven_2026-09-22.py`). On
+> the `jamwin` grid `f* < 1/e` in both arms, so the rate-driven reading predicts **no**
+> reversal there. Which reading describes the solver's drop is `PREREG_JAMWIN` Amendment 1's
+> question, open until it is graded. (Added on referee pass 2.)
 
 ## 0. Frame
 
