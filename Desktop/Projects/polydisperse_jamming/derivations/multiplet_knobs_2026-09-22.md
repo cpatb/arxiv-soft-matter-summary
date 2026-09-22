@@ -216,3 +216,33 @@ framework is exactly covariant in `(φ, φ₀, φ_m)`:
    size–potential degeneracy of `onset_size_degeneracy_2026-09-19.md` in another form. Count
    w by microscopy on the remixed batches. Run a sintered-doublet batch beside it to read the
    breakage number `Π_b` (§5) off the difference.
+
+## 9. What the lab's own salt series already says (existing data, no new experiment)
+
+Salt screens charge-stabilised silica — which lowers the repulsive threshold κ — **and** lets it
+aggregate. The two predict different things, and the bench has measured both channels:
+
+- **Onset.** `impact_stress/results.py` LAB records the fitted onset at 0 / 10 / 50 / 100 mM:
+  γ̇_c = 631.6 / 478.8 / 470.6 / 195.5 s⁻¹ and u₀\* = 1.473 / 1.120 / 1.138 / 0.455 m/s. At
+  100 mM the onset has fallen to **×0.310** (γ̇_c) or ×0.309 (u₀\*; ×0.095 in u₀\*²).
+- **Arrested state.** lessons.md (2026-08-30): among arrested drops at matched velocity, salt
+  moves the footprint by only **×1.28 against a ×6.35 total range** — "salt shifts the ONSET,
+  not the arrested state".
+
+Read through this file:
+
+1. **Doublets alone cannot produce the onset shift.** Their predicted onset factor is ≥ 0.61
+   even at w₂ = 1 (§2), against a measured 0.31 on the most generous (viscous) gauge. So if
+   aggregation drives the salt onset, it is not by doublets; it needs larger aggregates.
+2. **Aggregation of any size must also move the window** (shape → χ, K3/§2), and hence the
+   arrested state. The arrested state barely moves.
+3. **So the lab's salt effect reads as SCREENING (κ ↓, σ\* ↓ at fixed χ), not aggregation**,
+   unless the aggregates break under impact (`Π_b ≫ 1`, §5), which would hide them from the
+   arrested state while still having lowered the onset… no — broken aggregates would lower the
+   onset less, not more. ⚠ This is a reading of two recorded numbers against a model; it is
+   not a measurement of the aggregation state, which no data on disk contains.
+4. **The decisive bench measurement is therefore the doublet fraction itself** (microscopy or
+   analytical centrifugation) at 0 and 100 mM. If w₂ is ≈ equal, the salt series is a κ
+   ladder, and it is the cleanest σ\* lever the lab already owns (it moves the onset by ×3
+   without moving the window). If w₂ rises strongly with salt, the arrested-state constancy
+   is a puzzle for this theory and must be reported as such.
