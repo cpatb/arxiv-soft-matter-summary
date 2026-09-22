@@ -1,0 +1,143 @@
+NEXT SESSION PROMPT -- polydisperse_jamming, written 2026-09-22
+
+Project: Desktop\Projects\polydisperse_jamming, branch portfolio-audit-2026-08-29, git root
+C:\Users\compl. Resume from Status\_Router.md, then the card "Drop Impact -- Polydispersity
+Jamming Model.md" section 2 (the 2026-09-22 block) and section 3. Do not reconstruct state
+from repo docs. Read ~/.claude/CLAUDE.md and lessons.md; the last three entries are this
+session's and two were earned from a referee finding a FATAL in work I had just checked.
+
+------------------------------------------------------------------------------------------
+0. FIRST: IS `mustarcap` ALIVE, AND DID IT FINISH?
+------------------------------------------------------------------------------------------
+  PowerShell:
+    wsl -e bash -lc "cat ~/pj/out/phase2_mustarcap*.jsonl | wc -l; ps -eo cmd | grep -c '[p]hase2_phiJ'"
+
+At handoff: 94 of 108 records, 6 workers alive. The runner RESUMES BY KEY, so if the
+workers are dead just relaunch and nothing is re-run:
+
+    wsl -e bash /mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming/scripts/launch_mustarcap.sh 12
+
+⚠ BY FILE PATH, FROM POWERSHELL, BACKGROUNDED. Never inline from Git Bash (it rewrites
+/mnt/c into a Windows path), and nothing spawned by a wsl.exe call survives that call
+exiting. The launcher copies the shards to out/ only when the whole block finishes; to
+grade partial data, copy them yourself first:
+
+    wsl -e bash -lc "cp ~/pj/out/phase2_mustarcap*.jsonl /mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming/out/"
+
+------------------------------------------------------------------------------------------
+1. GRADE IT. The grader is written, committed and dry-run clean on partial data.
+------------------------------------------------------------------------------------------
+    python grade_mustarcap.py      -> out/grade_mustarcap.txt
+
+Against PREREG_MUSTARCAP_2026-09-22.md. Read the structure before the numbers:
+
+  M1a IDENTITY is PRIMARY and gates everything. On partial data it already passes 52/52
+      EXACTLY. If it fails, nothing else may be read.
+  M1b is a DIAGNOSTIC, NOT A GATE, and the grader says why: it compares against records
+      written by an OLDER code state, which differ in `phi` ONLY at ~1e-14 while `iters`
+      and `n_contacts` are bit-identical -- the trajectory is the same and only the
+      derived scalar moves. Do not turn it into a gate; it would fail the campaign for
+      the wrong reason.
+  M2  RESCUE: >= 15 of the 17 previously-capped cells converge at 1e6. A miss is reported,
+      NOT re-raised to a third cap.
+  M3  IS THE POINT and IS NOT PASSABLE BY CONSTRUCTION. The violating step is CV 0.5,
+      mu 0.6 -> 1.0, +0.01633 = 7.8x PHI_SCALE, and only the 0.6 end is being re-run.
+  M4  DIRECTION: the previously-capped cells must shift UP (under-compressed reads low).
+      This is the test that distinguishes "the cap explained it" from "it is monotone now
+      for some other reason" -- M3 alone is necessary, not sufficient.
+  M5  mu* and A re-fitted, REPORTED not gated. F3a stays binding: if A again leaves
+      [0.90, 1.20] the verdict is UNDETERMINED whatever mu* does. Repairing a cap does not
+      repair an identifiability problem.
+
+Then write CLAIMS_MUSTARCAP_2026-09-22.md, update the card, commit.
+
+------------------------------------------------------------------------------------------
+2. THEN RE-RUN `python multiplet_wc.py` -- this is what the campaign was FOR
+------------------------------------------------------------------------------------------
+Its section 2 asks whether the polydispersity gain G depends on FRICTION, and it currently
+cannot answer at full span: the mu_p = 3.0 arm has NO converged pairs, so the module
+correctly REFUSES to emit a solver quadruple. On the cells that do exist, 0 of 4 comparable
+CV levels resolve a friction dependence (|t| = 0.06-2.18 against t_crit 4.303), reported as
+a BOUND and not as equality.
+
+It matters because the Wyart-Cates closure is EXACTLY covariant under a common rescaling of
+(PHI, PHI0, PHIM):
+
+    if G0 == Gm, the entire effect of aggregation on the DNS collapses to ONE number,
+    the ratio Lambda/G. If G0 != Gm, aggregation also changes the SHAPE of phiJ(fhat),
+    i.e. the thickening contrast, which is a qualitatively different claim.
+
+mustarcap is exactly what widens the friction span. Re-run and re-grade that sentence.
+
+------------------------------------------------------------------------------------------
+3. REFEREE PASS 2 ON THE MULTIPLET WORK
+------------------------------------------------------------------------------------------
+Pass 1 returned ONE FATAL, six Material, three Minor -- ALL accepted and fixed (see the
+card, section 2 D, and section 9 of derivations/multiplet_psd_2026-09-22.md, which tabulates
+every finding and its action). Pass 2 was launched at the end of this session. THE LOOP RULE
+IS "REPEAT UNTIL A PASS RETURNS NOTHING", and the pass that found the FATAL has not itself
+been repeated clean. Act on pass 2 before anything from that derivation is quoted anywhere.
+
+The FATAL is worth re-reading because it is this repo's standing defect: my PROSE
+contradicted the TABLE THE SAME FILE PRINTS, and every numerical check passed because none
+of them tested the prose.
+
+------------------------------------------------------------------------------------------
+4. THE BIG OPEN DECISION: LAUNCH PREREG_MULTIPLET_2026-09-22.md?
+------------------------------------------------------------------------------------------
+144 cells, lognormal-free (it is its own family), mu_p = 0.3, PJ_MAX_ITER = 1e6,
+12 compositions x 3 seeds x 4 rungs. It tests whether the calibrated filling functional --
+fitted on 16 binaries, transferring to three continuous families -- also predicts a FOURTH
+PSD shape.
+
+⚠ BLIND PREDICTIONS ARE ALREADY COMMITTED in out/predict_multiplet.txt AND MUST NOT BE
+REGENERATED. Block B's registered outcome is NON-MONOTONE (argmax of phi at <k> = 1.7);
+block C is four CV-MATCHED pairs where a CV-only closure must predict exactly zero and the
+calibrated one predicts -2.3 to -3.8 x PHI_SCALE, all the same sign.
+
+⚠ Expect it to be LONGER than wcbidicap: the low-d_f cells carry size ratio up to 2.0 and
+are the slow ones. The family string reaches the runner already (`--family
+multiplet:f1.8:n0.70/0.20/0.10`); phase2_phiJ.fs_safe makes it filename-safe and the CELL
+KEY is deliberately NOT sanitised.
+
+------------------------------------------------------------------------------------------
+5. THE CLUMP CONTROL IS THE ONE THAT TESTS THE MODEL'S MAIN ASSUMPTION, AND IT IS BLOCKED
+------------------------------------------------------------------------------------------
+Everything in the multiplet work replaces each aggregate by ONE SPHERE. A real doublet is a
+dumbbell. The control that separates the SIZE consequence of aggregation from its SHAPE
+consequence is the same n_k run as rigid clumps -- and it is blocked on volume bookkeeping,
+not on cells:
+
+  * utils.porosity() in Yade DOUBLE-COUNTS clump overlap, alpha-dependent up to a factor 2;
+  * packing.measure supplies per-grain volumes for SPHERE packs only.
+
+Fix that first. A clump campaign run on a porosity that double-counts would produce a
+confident wrong answer rather than an error.
+
+------------------------------------------------------------------------------------------
+6. STANDING RULES THAT EARNED THEIR PLACE THIS SESSION
+------------------------------------------------------------------------------------------
+- When you fit a SCALE ALONG an axis, check the PROTOCOL does not change along that axis.
+  The mu ladder mixed two iteration caps and its single monotonicity violation sat exactly
+  at the cap boundary, with the sign under-compression predicts.
+- "phi_J cannot rise with friction" is a fit-free admissibility check needing no threshold,
+  and it is what found that. The fitted mu* never would have.
+- A gate NAMED "bit-identical" and IMPLEMENTED as a tolerance is a different gate. Check
+  the stated criterion; the difference may be a real fact (here: this repo's older records
+  are not bit-reproducible by current code at ~1e-14, trajectory identical).
+- Apply each bar the file states to EVERY table in the file, not only the one it was
+  written under. One quoted row sat below the project's own resolution floor.
+- A range over the values you happened to tabulate is not a bound over "any realistic"
+  case. Compute the threshold where the claim stops holding, and print it.
+- Read the generated table back against the sentence that describes it. If a paragraph's
+  MECHANISM sentence and its DIRECTION word disagree, the paragraph is already telling you
+  it is wrong.
+
+------------------------------------------------------------------------------------------
+7. UNCHANGED, AND THE AUTHOR'S
+------------------------------------------------------------------------------------------
+- FILL IN THE AUTHOR LINE, paper/main.tex:31-32, still `A.~Author`.
+- PREREG_LOGN_LARGEN_2026-09-17.md (48 cells, N = 6000, 12-30 h) needs vmIdleTimeout = -1
+  plus a service-style launch.
+- The tie-break bound into the manuscript's Methods; the LevelSet control; wave 2 of the
+  alpha ladder; the MAX_ITER audit; the third fabric invariant; K = 6; the off-locus PSD.
