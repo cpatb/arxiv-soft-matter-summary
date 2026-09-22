@@ -1,0 +1,10 @@
+K1: PASS  S/V of k tangent spheres - 6/d = 0
+K1b: PASS  MC volume vs closed form worst 6.0e-04; Sauter d at s = 0.6/0.8/1.0: [1.12, 1.08, 1.0] (tangent = 1 exactly, sintered > 1)
+K2: PASS  throat inscribed radius = (-a + 2*sqrt(3)*a/3)/a a = 0.1547 a > 0
+K3: PASS  frictionless Z_iso = 2*(3*n1 + 5*n2 + 6*n3)/(n1 + n2 + n3); rough Z = 4
+K4a: PASS  w* = (-A0s + Ams*x)/(A0d - A0s - Amd*x + Ams*x)
+K4b: PASS  closed form vs predict_kmer.py brute roots, worst 8.4e-04
+K5: PASS  d ln Theta / d chi = n*x/(chi*(-chi + x))  (< 0 for x < chi: a smaller chi means MORE thickening)
+K6: PASS  contacts per primary ratio 0.608; sigma* bracket [0.608, 0.860]
+K7: PASS  F/a^2 -> [mass] / [length] / [time] ** 2; Pi_b dimensionless = True
+ALL PASS
