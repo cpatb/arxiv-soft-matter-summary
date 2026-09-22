@@ -28,8 +28,21 @@ def eta_rel(f, phi):
     return eps ** -MP
 
 
+def check_mumax_inert():
+    """The solver's outer clamp min(e, mu_max_wc), mu_max_wc = min(eta_s/EPS_MIN^2, MUMAX_WC),
+    is inert here iff eta_s_code/EPS_MIN^2 < MUMAX_WC. Anchor: the jamwin banners print
+    'eta_max=5.47 code' (out/jamwin/*/banner.txt)."""
+    eta_s, rho, u0, d0, mumax = 0.003939, 1200.0, 2.0, 3.0e-3, 1e9   # cs_fit, RHO_L, U0, D0
+    eta_s_code = eta_s / (rho * u0 * d0)
+    cap = eta_s_code / EPS_MIN ** 2
+    print(f"mu_max_wc check: eta_s_code {eta_s_code:.4g}, eta_s/EPS_MIN^2 = {cap:.3g} code "
+          f"(banner prints 5.47) < MUMAX_WC {mumax:g}: {'INERT' if cap < mumax else 'BINDS'}")
+    assert abs(cap - 5.47) < 0.01 and cap < mumax
+
+
 def main():
     print(__doc__.split("\n")[0])
+    check_mumax_inert()
     print(f"phi0 {PHI0} phim {PHIM} chi {PHIM / PHI0:.3f}  EPS_MIN {EPS_MIN}  MP_EXPO {MP}")
     rows = {}
     for arm, phi in ARMS.items():
