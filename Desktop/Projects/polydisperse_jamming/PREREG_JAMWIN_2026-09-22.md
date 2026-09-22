@@ -156,3 +156,10 @@ was seen.)
 - **Predictions:** (S) `σ*_c` RISES with `δ` in arm B (sharper activation jams at lower
   forcing near the window edge); (R) `σ*_c` FALLS with `δ`. A tie across all three `δ` at
   this ladder spacing is UNDETERMINED, not support for either.
+
+**Amendment 2, clarification (grader review, before any jamwin2 cell ran):** "read only if
+the outcomes are monotone" admits a row that JAMS at every rung, where the largest rung is a
+LOWER BOUND, not a boundary, and a row whose boundary rung is UNDETERMINED. `grade_jamwin2.py`
+reads `σ*_c` only when it is BRACKETED — the rung above it is NOT JAMMED — and otherwise
+reports UNDETERMINED for that `δ`. Stricter than the sentence, never looser. It also grades
+a cell only if its banner matches the label on all five values plus `JAM_FHAT` (G1).
