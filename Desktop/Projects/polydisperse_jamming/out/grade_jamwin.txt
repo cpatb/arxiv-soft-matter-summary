@@ -1,0 +1,58 @@
+grade_jamwin -- PREREG_JAMWIN_2026-09-22.md
+G0 G0a_unset: md5 dfbf78f4a2ec vs deltastiff dfbf78f4a2ec  PASS
+G0 G0b_half: md5 dfbf78f4a2ec vs deltastiff dfbf78f4a2ec  PASS
+cells landed: 27 of 27
+G1 PROVENANCE: 27/27 banners match phi/phi0/phiM/sigma*/delta/JAM_FHAT
+G2 HEALTH: 15/27 rc=0 and t/tau >= 5.9
+  EXCLUDED A_s30_d0.7: rc=2 last t/tau=0.125
+  EXCLUDED A_s30_d1.3169: rc=2 last t/tau=0.05
+  EXCLUDED A_s30_d2.6: rc=2 last t/tau=0.075
+  EXCLUDED A_s300_d0.7: rc=2 last t/tau=0.075
+  EXCLUDED A_s300_d1.3169: rc=2 last t/tau=0.1
+  EXCLUDED A_s300_d2.6: rc=2 last t/tau=0.15
+  EXCLUDED A_s3000_d0.7: rc=134 last t/tau=0.5
+  EXCLUDED A_s3000_d1.3169: rc=2 last t/tau=0.05
+  EXCLUDED A_s3000_d2.6: rc=2 last t/tau=0.075
+  EXCLUDED B_s30_d1.3169: rc=0 last t/tau=3.725
+  EXCLUDED B_s30_d2.6: rc=134 last t/tau=2.85
+  EXCLUDED B_s300_d2.6: rc=134 last t/tau=3.775
+
+arm  sigma*  delta    J=max jam_frac  t/tau@J  <fhat>max  beta_max  jam(t/tau>=5)
+  A     30  0.7000   1.0000         0.10     0.675     1.047    nan   [EXCLUDED]
+  A     30  1.3169   0.7447         0.05     0.369     1.016    nan   [EXCLUDED]
+  A     30  2.6000   0.7816         0.07     0.384     1.016    nan   [EXCLUDED]
+  A    300  0.7000   0.8624         0.07     0.390     1.016    nan   [EXCLUDED]
+  A    300  1.3169   0.9232         0.10     0.476     1.016    nan   [EXCLUDED]
+  A    300  2.6000   1.0000         0.10     0.814     1.141    nan   [EXCLUDED]
+  A   3000  0.7000   0.9800         0.23     0.589     1.016    nan   [EXCLUDED]
+  A   3000  1.3169   0.5552         0.05     0.294     1.016    nan   [EXCLUDED]
+  A   3000  2.6000   0.6887         0.07     0.357     1.016    nan   [EXCLUDED]
+  B     30  0.7000   0.3223         0.07     0.720     1.047    0.0973
+  B     30  1.3169   0.3502         0.28     0.736     1.047    nan   [EXCLUDED]
+  B     30  2.6000   0.9951         2.20     0.869     1.078    nan   [EXCLUDED]
+  B    300  0.7000   0.1691         0.07     0.665     1.078    0.0246
+  B    300  1.3169   0.3030         0.07     0.697     1.078    0.0276
+  B    300  2.6000   0.3325         0.07     0.708     1.078    nan   [EXCLUDED]
+  B   3000  0.7000   0.0000         0.00     0.048     1.859    0.0000
+  B   3000  1.3169   0.0230         0.17     0.032     1.859    0.0000
+  B   3000  2.6000   0.0412         0.10     0.042     1.828    0.0000
+  N     30  0.7000   0.9999         0.12     0.867     1.547    0.0001
+  N     30  1.3169   1.0000         0.10     0.964     1.422    0.0004
+  N     30  2.6000   1.0000         0.10     0.986     1.422    0.0083
+  N    300  0.7000   0.1901         0.07     0.318     2.109    0.0000
+  N    300  1.3169   0.3183         0.10     0.340     2.109    0.0000
+  N    300  2.6000   0.4014         0.12     0.395     1.922    0.0000
+  N   3000  0.7000   0.0000         0.00     0.010     2.203    0.0000
+  N   3000  1.3169   0.0000         0.00     0.003     2.203    0.0000
+  N   3000  2.6000   0.0000         0.00     0.002     2.203    0.0000
+
+  A sigma* 30: incomplete
+  A sigma* 300: incomplete
+  A sigma* 3000: incomplete
+P1 arm A: 0/0 informative sigma* pass  UNDETERMINED (observable unmeasurable: no informative pair among cells passing G1/G2)
+  B sigma* 30: incomplete
+  B sigma* 300: incomplete
+  B sigma* 3000: J(delta 0.7/1.32/2.6) = [0.0, 0.023, 0.0412]  predicted non-decreasing  PASS
+P2 arm B: 1/1 informative sigma* pass  PASS
+P3 reversal: NOT ESTABLISHED
+P4 arm N at sigma* 30 (x < chi, cannot jam): J(fhat>0.5) = [1.0, 1.0, 1.0]  DEMONSTRATED   gap floor 1 - x/chi = 0.0625 > EPS_MIN 0.01

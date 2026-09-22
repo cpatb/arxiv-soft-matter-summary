@@ -194,3 +194,26 @@ boundary falls between rungs. Therefore, fixed now:
 ⚠ The proportionality assumes the drop's stress field does not itself change with `δ` before
 jamming. That is the one piece of physics (1) and Amendment 1 both omit, so a result against
 both is possible and would be reported as such.
+
+---
+
+## RESULT (graded 2026-09-22 ~16:10 CDT, `out/grade_jamwin.txt`)
+
+- G0 2/2 byte-identical; G1 27/27; G2 15/27 (all 9 arm-A cells die at the jammed floor;
+  B_s30_d1.3169, B_s30_d2.6, B_s300_d2.6 fail — two of them rc 134, the high-`δ`,
+  low-`σ*` corner).
+- **P2 PASS on its ONE informative pair** (σ* = 3000 Pa): `J` = 0.0000 / 0.0230 / 0.0412 at
+  `δ` 0.7 / 1.32 / 2.6 — **rises with `δ`, the (S) sign.** **Amendment 1's (R) prediction for
+  arm B ("falls with `δ`") is REFUTED on that pair.** P1 and P3 UNDETERMINED (arm A
+  unmeasurable). P4 DEMONSTRATED: arm N (x < χ, cannot jam) reads `jam_frac(f̂ > 0.5)` = 1.000
+  at σ* = 30 Pa, and its `β_max` still falls 2.20 → 1.42–1.55 from activation alone.
+- Descriptive only, not graded: every other arm-B and arm-N row that has data also rises
+  with `δ` (B σ* = 300: 0.169 → 0.303 → [0.333, dead]; N σ* = 300: 0.19 → 0.32 → 0.40).
+- ⚠ One informative pair, and `J` ≤ 0.04 on it. This is a sign, not a magnitude.
+
+**Interpretation, a HYPOTHESIS and not a result:** Amendment 1 assumed the drop is
+rate-controlled because the solver's activation reads `η(f̂)γ̇`. But what an impact fixes
+is the MOMENTUM FLUX: as `η` rises, `γ̇` falls at roughly fixed stress, so the material
+point behaves as stress-controlled and the bottleneck feedback does not operate. A direct
+test is the local `σ` and `γ̇` fields in the jamming region (not written by the solver);
+`jamwin2`'s bracketed boundary is the next check of the sign.
