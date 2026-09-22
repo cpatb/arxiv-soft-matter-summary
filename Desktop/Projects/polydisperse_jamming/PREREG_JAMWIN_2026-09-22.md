@@ -98,3 +98,34 @@ informative pairs are graded; the count of informative pairs is printed.
 **SIGNS within one grid**, which a grid error can still flip if it is `δ`-dependent (and
 `deltastiff`'s D2 was designed precisely to ask whether it is). If P1–P3 pass, an L10 rung
 on the informative pairs is the registered follow-up before anything is quoted.
+
+---
+
+## Amendment 1 — written 2026-09-22 ~13:50 CDT, BEFORE any grid cell was read
+
+Only `G0a_unset`/`G0b_half` had been pulled (`out/jamwin/` held those two and the reference).
+
+**§0's prediction (1) is a STRESS-controlled threshold. The solver is not stress-controlled.**
+`wc_relax` activates on `σ = η(f̂)·γ̇` — the lagged viscosity times the local strain rate —
+and `η(f̂)` rises steeply towards `f_c`. So activation feeds back on itself, and a material
+point relaxing from `f̂ = 0` reaches `f_c` iff `f̂ < F(f̂) = exp(−(σ*/(η(f̂)γ̇))^δ)` on all of
+`[0, f_c)`. The threshold is then set by the BOTTLENECK `f*`, not by `f_c`:
+
+&nbsp;&nbsp;&nbsp;&nbsp;`γ̇_c · η_s/σ* = max_{0<f<f_c} (ln 1/f)^(−1/δ) / (η(f)/η_s)`,
+
+and `∂γ̇_c/∂δ` has the sign of `ln ln(1/f*)` — the reversal sits at `f* = 1/e`, not `f_c = 1/e`.
+Computed for this grid (`derivations/jam_rate_driven_2026-09-22.py`, brute-force relaxation
+check 6/6 PASS): `f*` = 0.011–0.050 (arm A) and **0.053–0.295 (arm B), below 1/e in both
+arms**, and `γ̇_c` RISES with `δ` in both: A 3.41e-4 / 7.59e-4 / 1.29e-3, B 7.03e-3 / 9.43e-3 /
+1.31e-2 (in `σ*/η_s`, at δ 0.7 / 1.32 / 2.6).
+
+**So two predictions are now registered, and the DNS discriminates between them:**
+
+- **(S) stress-thresholded** (§3 as written): A falls with `δ`, **B rises** — reversal (P1–P3).
+- **(R) rate-driven bottleneck** (this amendment): **A and B BOTH fall with `δ`** — no reversal.
+  P1 is shared; **P2 flips**; P3 is predicted to FAIL.
+
+The gates, bars and informative-pair rule are unchanged. The grader reports which of (S)
+and (R) the arm-B sign matches. If B rises, the rate-driven reading of the solver is wrong;
+if B falls, the stress-controlled derivation does not describe the solver's drop, and eq.
+(1)/(8) must be restated in rate-driven form before it is used to read a DNS.

@@ -1,0 +1,24 @@
+Rate-driven jamming threshold for the solver's own activation (amendment to PREREG_JAMWIN).
+phi0 0.62 phim 0.496 chi 0.800  EPS_MIN 0.01  MP_EXPO 2.0
+
+arm A: x = 0.9500, f_c = 0.2500
+   delta   f*      gd_c*eta_s/sigma*   [stress-driven sigma_jam/sigma* = g(f_c)]
+   0.7000  0.0497   3.40514e-04          [0.6271]
+   1.3169  0.0241   7.59191e-04          [0.7803]
+   2.6000  0.0106   1.28583e-03          [0.8819]
+   rate-driven threshold gd_c RISES with delta => J should FALL with delta at fixed forcing
+
+arm B: x = 0.8500, f_c = 0.7500
+   delta   f*      gd_c*eta_s/sigma*   [stress-driven sigma_jam/sigma* = g(f_c)]
+   0.7000  0.2947   7.03293e-03          [5.9290]
+   1.3169  0.1330   9.43192e-03          [2.5756]
+   2.6000  0.0532   1.31157e-02          [1.6148]
+   rate-driven threshold gd_c RISES with delta => J should FALL with delta at fixed forcing
+
+brute-force check: relax df/dt = F(f) - f from f = 0 (sigma* = eta_s = 1)
+   A delta 0.7: reaches f_c at 0.98 gd_c? False   at 1.02 gd_c? True   PASS
+   A delta 1.3169: reaches f_c at 0.98 gd_c? False   at 1.02 gd_c? True   PASS
+   A delta 2.6: reaches f_c at 0.98 gd_c? False   at 1.02 gd_c? True   PASS
+   B delta 0.7: reaches f_c at 0.98 gd_c? False   at 1.02 gd_c? True   PASS
+   B delta 1.3169: reaches f_c at 0.98 gd_c? False   at 1.02 gd_c? True   PASS
+   B delta 2.6: reaches f_c at 0.98 gd_c? False   at 1.02 gd_c? True   PASS
