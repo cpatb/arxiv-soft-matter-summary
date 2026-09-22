@@ -21,7 +21,7 @@ multiplet_wc.py -- aggregation state -> Wyart-Cates DNS inputs
    affected -- but a DNS run with dilatancy on is outside this mapping.
 
 === 2. ARE THE TWO GAINS EQUAL? G0 (frictionless) vs Gm (frictional) ===
-   N: 869 records read -> 519 lognormal -> 471 at N=1500 -> 103 at the rung p_hat = 3e-05
+   N: 897 records read -> 547 lognormal -> 499 at N=1500 -> 120 at the rung p_hat = 3e-05
    distinct (mu_p, CV, seed) cells after highest-cap dedup: 63
 
    G(mu, CV) = phi(mu, CV)/phi(mu, 0), seed-paired, CONVERGED CELLS ONLY.
@@ -29,7 +29,7 @@ multiplet_wc.py -- aggregation state -> Wyart-Cates DNS inputs
 
      mu_p    CV         G     s.e.   n  dropped   note
       0.0   0.1        --       --   0        3   no converged pair
-      0.0   0.2    1.0166      inf   1        2
+      0.0   0.2    1.0195   0.0027   3        0
       0.0   0.3    1.0406   0.0038   3        0
       0.0   0.4    1.0616   0.0039   2        1
       0.0   0.5    1.1005      inf   1        2
@@ -39,20 +39,20 @@ multiplet_wc.py -- aggregation state -> Wyart-Cates DNS inputs
       0.3   0.4    1.0781   0.0065   3        0
       0.3   0.5    1.1066   0.0043   3        0
       0.6   0.1        --       --   0        0   no converged pair
-      0.6   0.2    1.0140      inf   1        2
+      0.6   0.2    1.0256   0.0098   3        0
       0.6   0.3        --       --   0        0   no converged pair
       0.6   0.4        --       --   0        0   no converged pair
-      0.6   0.5        --       --   0        3   no converged pair
+      0.6   0.5    1.1022   0.0032   3        0
       1.0   0.1        --       --   0        0   no converged pair
       1.0   0.2    1.0208   0.0055   3        0
       1.0   0.3        --       --   0        0   no converged pair
       1.0   0.4        --       --   0        0   no converged pair
       1.0   0.5    1.0951   0.0068   3        0
       3.0   0.1        --       --   0        0   no converged pair
-      3.0   0.2        --       --   0        3   no converged pair
+      3.0   0.2    1.0217   0.0031   3        0
       3.0   0.3        --       --   0        0   no converged pair
       3.0   0.4        --       --   0        0   no converged pair
-      3.0   0.5        --       --   0        3   no converged pair
+      3.0   0.5    1.0924   0.0032   3        0
 
    ⚠ 'dropped' counts seed pairs removed because a cell did not converge.
    A drop rate that tracks mu_p or CV is a drop rate that tracks the axis
@@ -65,14 +65,14 @@ multiplet_wc.py -- aggregation state -> Wyart-Cates DNS inputs
    reader must be able to see which one it was.
 
       CV = 0.1: NOT COMPARABLE -- only 1 friction(s) resolved ['mu=0.3']
-      CV = 0.2: G(mu=0.3) = 1.0212   G(mu=1.0) = 1.0208   PAIRED d = +0.0004 +- 0.0050 (n=3, r=+0.56)
-                 |t| = 0.07 vs t_crit 4.303 (n=3) -> not resolved    [the withdrawn hypot estimator gave 0.06]
+      CV = 0.2: G(mu=0.0) = 1.0195   G(mu=3.0) = 1.0217   PAIRED d = -0.0022 +- 0.0041 (n=3, r=-0.90)
+                 |t| = 0.54 vs t_crit 4.303 (n=3) -> not resolved    [the withdrawn hypot estimator gave 0.54]
       CV = 0.3: G(mu=0.0) = 1.0406   G(mu=0.3) = 1.0518   PAIRED d = -0.0113 +- 0.0041 (n=3, r=+0.84)
                  |t| = 2.73 vs t_crit 4.303 (n=3) -> not resolved    [the withdrawn hypot estimator gave 1.73]
       CV = 0.4: G(mu=0.0) = 1.0616   G(mu=0.3) = 1.0781   PAIRED d = -0.0137 +- 0.0062 (n=2, r=+nan)
                  |t| = 2.23 vs t_crit 12.706 (n=2) -> not resolved    [the withdrawn hypot estimator gave 2.18]
-      CV = 0.5: G(mu=0.3) = 1.1066   G(mu=1.0) = 1.0951   PAIRED d = +0.0115 +- 0.0045 (n=3, r=+0.84)
-                 |t| = 2.56 vs t_crit 4.303 (n=3) -> not resolved    [the withdrawn hypot estimator gave 1.43]
+      CV = 0.5: G(mu=0.3) = 1.1066   G(mu=3.0) = 1.0924   PAIRED d = +0.0141 +- 0.0053 (n=3, r=-1.00)
+                 |t| = 2.68 vs t_crit 4.303 (n=3) -> not resolved    [the withdrawn hypot estimator gave 2.64]
 
    -> 0 of 4 comparable CV levels RESOLVE a friction
       dependence of G at t_crit = 4.303.
@@ -105,28 +105,50 @@ multiplet_wc.py -- aggregation state -> Wyart-Cates DNS inputs
    apart (section 2), the honest mapping uses ONE G for both and the whole
    effect is Lambda/G -- which is what the table below reports.
 
-   gains read at CV = 0.5: G0 = 1.1066 (mu_p = 0.3), Gm = 1.0951 (mu_p = 1.0)
+   gains read at CV = 0.5: G0 = 1.1066 (mu_p = 0.3), Gm = 1.0924 (mu_p = 3.0)
    ⚠ 'G0' here is the LOWEST RESOLVED friction, which is not necessarily
    mu_p = 0; it is mu_p = 0.3. The frictionless branch is named
    G0 throughout this repo and the label is kept, but the value is the
    lowest friction that has converged cells, and it is printed so.
 
-      <k>   d_f   Lambda      PHI     PHI0     PHIM  phi/phi0  phi/phiM
-   (none)    --   1.0000   0.5200   0.6200   0.5000    0.8387    1.0400   fragile (can shear-jam)
-      1.5   3.0   1.0000   0.5200   0.6861   0.5476    0.7579    0.9497   flowable
-      1.5   2.1   1.2944   0.6731   0.6861   0.5476    0.9811    1.2293   fragile (can shear-jam)
-      1.5   1.8   1.5318   0.7965   0.6861   0.5476    1.1610    1.4547   🔴 A3 FAILS
-      2.0   2.1   1.5236   0.7923   0.6861   0.5476    1.1548    1.4470   🔴 A3 FAILS
-      2.0   1.8   1.9892   1.0344   0.6861   0.5476    1.5077    1.8891   🔴 A3 FAILS
+      <k>   d_f      CV   G(row)   Lambda      PHI     PHI0     PHIM  phi/phi0  phi/phiM
+   (none)    --  0.0000   1.0000   1.0000   0.5200   0.6200   0.5000    0.8387    1.0400   fragile (can shear-jam)
+      1.5   3.0  0.1609   1.0157   1.0000   0.5200   0.6298   0.5079    0.8257    1.0239   fragile (can shear-jam)
+               (withdrawn: G at CV=0.5)                     0.6861   0.5462    0.7579    0.9520   flowable
+      1.5   2.1  0.2389   1.0375   1.2944   0.6731   0.6433   0.5188    1.0464    1.2975   🔴 A3 FAILS
+               (withdrawn: G at CV=0.5)                     0.6861   0.5462    0.9811    1.2322   fragile (can shear-jam)
+      1.5   1.8  0.2847   1.0547   1.5318   0.7965   0.6539   0.5274    1.2181    1.5104   🔴 A3 FAILS
+               (withdrawn: G at CV=0.5)                     0.6861   0.5462    1.1610    1.4582   🔴 A3 FAILS
+      2.0   2.1  0.3025   1.0547   1.5236   0.7923   0.6539   0.5274    1.2116    1.5024   🔴 A3 FAILS
+               (withdrawn: G at CV=0.5)                     0.6861   0.5462    1.1548    1.4505   🔴 A3 FAILS
+      2.0   1.8  0.3587   1.0638   1.9892   1.0344   0.6595   0.5319    1.5683    1.9448   🔴 A3 FAILS
+               (withdrawn: G at CV=0.5)                     0.6861   0.5462    1.5077    1.8937   🔴 A3 FAILS
 
-   ⚠ READ THE ADMISSIBILITY BLOCK BELOW BEFORE THIS PARAGRAPH: three of the
-   five rows are outside the model's own domain.
-   🔑 READ THE TOP TWO ROWS TOGETHER. The solver's DEFAULT preset is already
-   frictionally jammed (phi/phiM = 1.0400), and COMPACT aggregation at
-   <k> = 1.5 UN-JAMS it (0.9497) -- Lambda = 1 exactly there, so the only
-   lever acting is the one that RAISES phiJ. Opening the same aggregates to
-   d_f = 2.1 drives it the other way, to 1.2293. One aggregation axis, both
-   signs, at FIXED solid loading -- which is the bench prediction to test.
+
+   🔴 THE 'ONE AXIS, BOTH SIGNS' BENCH PREDICTION IS WITHDRAWN.
+   Referee pass 4 found that this table applied a gain measured at CV = 0.5
+   to every row, while the rows' own CVs are 0.16-0.36 and G RISES with CV.
+   Every mapped PHI0/PHIM was inflated and every ratio biased DOWNWARD --
+   toward looking less jammed. On each row's OWN G the two headline rows flip:
+
+      (<k>=1.5, d_f=3.0): phi/phiM  0.9520 -> 1.0239   flowable -> fragile (can shear-jam)
+      (<k>=1.5, d_f=2.1): phi/phi0  0.9811 -> 1.0464   fragile (can shear-jam) -> 🔴 A3 FAILS
+
+   So there is no admissible row on the far side, and NOTHING is left of the
+   two-sided contrast. The withdrawn row is printed under each corrected one.
+
+   🔑 WHAT SURVIVES, and it is weaker and quantitative. At d_f = 3
+   Lambda = 1 EXACTLY, so the only lever acting raises phiJ, and compact
+   aggregation does move the suspension TOWARD flowable:
+      phi/phiM: 1.0400 (unaggregated) -> 1.0239 (<k> = 1.5, d_f = 3).
+   It does NOT cross 1. A 1.6 % gain in phiM against a 4.0 % excess is not
+   enough, and the direction is the whole claim. Opening the aggregates
+   reverses that direction, but only into INADMISSIBLE territory at this
+   solid loading -- so the reversal cannot be quoted from this table either.
+
+   ⚠ To get an admissible two-sided contrast the solid loading must come
+   DOWN so the open rows clear the A3 ceiling. That is a different table and
+   it has not been computed; no claim is made from this one.
 
    🔴 ADMISSIBILITY -- CEILING CORRECTED after referee pass 2.
    This block first used `phi_eff <= 1`, a space-filling bound, and flagged
@@ -138,7 +160,7 @@ multiplet_wc.py -- aggregation state -> Wyart-Cates DNS inputs
       phi_eff <= phi_0^eff = G0 * PHI0 = 1.1066 * 0.62 = 0.6861
       (the looser bound was 1/phi_solid = 1.9231 on Lambda, i.e. phi_eff <= 1)
 
-   On that ceiling 3 of the 5 rows BREACH -- not 1. Those rows are
+   On that ceiling 4 of the 5 rows BREACH -- not 1. Those rows are
    not 'a large effect': they are the NO-INTERPENETRATION ASSUMPTION
    DESTROYING ITSELF, and they must not be run.
 

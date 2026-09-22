@@ -39,27 +39,27 @@ multiplet_levers.py -- does AGGREGATION promote or suppress jamming?
    BOTH columns are printed, so the old filter's number stays visible.
 
       <k>       CV     d_f*   (text)   (wide)  phiJ-b /SC   D(d_f*)
-      1.1   0.0819   2.9300   2.8230   2.9389        0.89     0.047
-      1.2   0.1128   2.9241   2.8180   2.9332        1.84     0.025
-      1.5   0.1664   2.9098   2.8069   2.9192        4.80     0.011
-      2.0   0.2138   2.8933   2.8378   2.9028        9.57     0.007
-      3.0   0.2574   2.9155   2.8803   2.9231       11.52     0.004
-      5.0   0.2942   2.9341   2.9100   2.9399       12.64     0.003
-      8.0   0.3171   2.9463   2.9270   2.9509       12.93     0.002
+      1.1   0.0819   2.9300   2.8230   2.9389        0.89     0.066
+      1.2   0.1128   2.9241   2.8180   2.9332        1.84     0.035
+      1.5   0.1664   2.9098   2.8069   2.9192        4.80     0.016
+      2.0   0.2138   2.8933   2.8378   2.9028        9.57     0.009
+      3.0   0.2574   2.9155   2.8803   2.9231       11.52     0.006
+      5.0   0.2942   2.9341   2.9100   2.9399       12.64     0.004
+      8.0   0.3171   2.9463   2.9270   2.9509       12.93     0.003
 
    🔴 THE PLATEAU IS 0.053 WIDE (d_f* = 2.893 - 2.946), and the last
    column says how much of that width ONE PHI_SCALE of protocol noise buys:
-      <k> =  1.1:  D(d_f*) = 0.047  =   88% of the plateau  🔴 noise alone moves d_f* by 88% of the whole plateau
-      <k> =  1.2:  D(d_f*) = 0.025  =   46% of the plateau  🔴 noise alone moves d_f* by 46% of the whole plateau
-      <k> =  1.5:  D(d_f*) = 0.011  =   21% of the plateau
-      <k> =  2.0:  D(d_f*) = 0.007  =   12% of the plateau
-      <k> =  3.0:  D(d_f*) = 0.004  =    8% of the plateau
-      <k> =  5.0:  D(d_f*) = 0.003  =    6% of the plateau
-      <k> =  8.0:  D(d_f*) = 0.002  =    4% of the plateau
-   cut sensitivity -- the surviving SPREAD at three thresholds: 10%: 0.031, 25%: 0.053, 50%: 0.053
+      <k> =  1.1:  D(d_f*) = 0.066  =  125% of the plateau  🔴 noise alone moves d_f* by 125% of the whole plateau
+      <k> =  1.2:  D(d_f*) = 0.035  =   66% of the plateau  🔴 noise alone moves d_f* by 66% of the whole plateau
+      <k> =  1.5:  D(d_f*) = 0.016  =   30% of the plateau  🔴 noise alone moves d_f* by 30% of the whole plateau
+      <k> =  2.0:  D(d_f*) = 0.009  =   18% of the plateau
+      <k> =  3.0:  D(d_f*) = 0.006  =   11% of the plateau
+      <k> =  5.0:  D(d_f*) = 0.004  =    8% of the plateau
+      <k> =  8.0:  D(d_f*) = 0.003  =    6% of the plateau
+   cut sensitivity -- the surviving SPREAD at three thresholds: 10%: 0.012, 25%: 0.053, 50%: 0.053
 
    🔑 WHAT SURVIVES: on the rows whose root is pinned to better than a
-   quarter of the plateau (1.5 <= <k> <= 8.0), d_f* = 2.893 - 2.946,
+   quarter of the plateau (2.0 <= <k> <= 8.0), d_f* = 2.893 - 2.946,
    a spread of 0.053.
 
    ⚠ THE HEADLINE IS DEMOTED. 'd_f* is essentially independent of how much the

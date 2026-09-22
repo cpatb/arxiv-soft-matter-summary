@@ -35,15 +35,17 @@
 >
 > | `⟨k⟩` | 1.1 | 1.2 | 1.5 | 2.0 | 3.0 | 5.0 | 8.0 |
 > |---|---|---|---|---|---|---|---|
-> | `Δ(d_f*)` | 0.047 | 0.025 | 0.011 | 0.007 | 0.004 | 0.003 | 0.002 |
-> | as % of the plateau | **88 %** | **46 %** | 21 % | 12 % | 8 % | 6 % | 4 % |
+> | `Δ(d_f*)` | 0.066 | 0.035 | 0.016 | 0.009 | 0.006 | 0.004 | 0.003 |
+> | as % of the plateau | **125 %** | **66 %** | **30 %** | 18 % | 11 % | 8 % | 6 % |
 >
 > So at low `⟨k⟩` the individual roots are less well pinned than the whole spread they are
 > being compared across, and their agreement with the high-`⟨k⟩` rows **is not evidence of
-> flatness**. (⚠ These figures were first computed with an un-averaged `PHI_SCALE`; the
-> campaign averages **3 seeds** per cell and the sibling module already divided by
-> `√n`, so the seed-averaged values above are the consistent ones. They are SMALLER,
-> i.e. less conservative, which is why the change is stated. The demotion stands.) ⚠ The first version of this box filtered rows on
+> flatness**. (⚠ These figures took two corrections that partly cancel: an un-averaged
+> `PHI_SCALE` → `√n` for the 3-seed mean (pass 3), and then the restored ratio term
+> `√(1+G²)` — `β` is itself a 3-seed measurement, `0.5947 ± 0.0010`, not a noise-free
+> constant (pass 4, which caught pass 3 citing the sibling module while dropping its
+> ratio term). The values above carry both. **The demotion stands and is slightly
+> stronger**: `⟨k⟩ = 1.5` now also fails the cut.) ⚠ The first version of this box filtered rows on
 > `|φ_J(d_f*) − β| ≥ PHI_SCALE`, which asks whether `G ≠ 1` at the crossing — **the wrong
 > question**; the right one is the sensitivity of the root, above.
 >
@@ -416,4 +418,17 @@ fixed RCP = 0.64; `packing.py:492`'s seed independence from `μ_p` (so the paire
 is right); and that the **ordinal** claim survives every measured sensitivity — the worst
 (0.047) is an order of magnitude below the 0.7–1.1 gap to the colloidal values.
 
-⚠ **Pass 4 has not run**, and pass 3 changed six files. No pass has yet returned nothing.
+### Pass 4 — 2026-09-22. **One FATAL, one Material. Both acted on.**
+
+| # | finding | action |
+|---|---|---|
+| **P4-F1 FATAL** | `multiplet_wc.py` §3 read `G` once at `cv_ref = max(cvs)` — **CV = 0.5** — and applied it to **every** row, though the rows' own CVs are **0.16–0.36** and `G` rises with CV. Every mapped `PHI0`/`PHIM` was inflated and every ratio biased **downward**, toward looking less jammed. **It flipped both rows carrying the headline.** Predates all three earlier passes. | **Accepted; the headline is WITHDRAWN.** The mapping now evaluates the same closure on each row's **own** PSD. `(⟨k⟩=1.5, d_f=3)` `φ/φ_M` **0.9520 → 1.0239** — "compact aggregation un-jams it" is **false**; `(⟨k⟩=1.5, d_f=2.1)` `φ/φ₀` **0.9811 → 1.0464** — admissible → **A3 FAILS**. **Nothing is left of the two-sided contrast.** What survives is weaker and directional: at `d_f = 3`, `Λ = 1` exactly, and compact aggregation moves `φ/φ_M` from 1.0400 to 1.0239 — **toward** flowable, **without crossing 1**. Each withdrawn row is printed under its corrected one. |
+| **P4-M1** | `df_star_sensitivity` used `SCALE/(β√n)` while **citing** `multiplet_wc.gain`, whose floor is `SCALE·√(1+G²)/(b√n)`. `β` is itself `0.5947 ± 0.0010 (n = 3)`, so `G = φ_J/β` has two noisy terms. Sensitivities were ~1.43× too small. | **Accepted.** Ratio term restored. `⟨k⟩ = 1.5` returns to failing the cut, the surviving subset is again `2.0 ≤ ⟨k⟩ ≤ 8.0`, and the printed 10 %-cut spread corrects **0.031 → 0.012**. |
+| P4-m1 | `PHI0_MONO = 0.6324` is **ladder-extrapolated** while `β` and `G` are read at a finite rung `p̂ = 1e-3`; the finite-rung frictionless value is **0.6414** (+1.4 %). Direction-ambiguous. | **Disclosed** in the figure module. Not "fixed": a zero-pressure ceiling is arguably the more correct one for "cannot pack denser without interpenetration", and the effect is far smaller than the CV mismatch. |
+
+**Confirmed by pass 4**: pass 3's `regime()` relabelling, the `T_CRIT` values and their
+per-row indexing, and Amendment 1.2's corrected population table (reproduces bit-for-bit
+against `out/predict_multiplet.txt`).
+
+⚠ **Pass 5 has not run.** Four passes, four sets of findings; none has yet returned
+nothing, and pass 4's FATAL had survived three previous passes untouched.

@@ -196,9 +196,11 @@ def df_star_sensitivity(k_bar: float, d_f_star: float, h: float = 1e-4) -> float
     `N_SEEDS = 3` seeds per cell and the sibling module `multiplet_wc.gain` divides the
     identical floor by `sqrt(n)`. Two files in one derivation using the same declared
     scale with different conventions is the drift this repository punishes, so the seed
-    average is used here too. It makes the estimate SMALLER (less conservative), which is
-    why it is stated rather than quietly applied: on the undivided value the surviving
-    subset was `2.0 <= <k> <= 8.0`; on this one `<k> = 1.5` also clears the cut.
+    average is used here too.
+
+    ⚠ Pass 3 applied that `sqrt(n)` and DROPPED the sibling's `sqrt(1 + G^2)` while
+    citing the sibling as its authority -- so the two corrections partly cancel. With
+    both terms the surviving subset is `2.0 <= <k> <= 8.0`, which is where it started.
     """
     def lam(x):
         return MultipletPSD(d10=D10, d_f=x, n_k=flory(k_bar)).lambda_trap
@@ -209,7 +211,15 @@ def df_star_sensitivity(k_bar: float, d_f_star: float, h: float = 1e-4) -> float
     dlam = (lam(d_f_star + h) - lam(d_f_star - h)) / (2 * h)
     dg = (g(d_f_star + h) - g(d_f_star - h)) / (2 * h)
     denom = abs(dlam - dg)
-    dG = SCALE / (BETA * math.sqrt(N_SEEDS))
+    # 🔴 THE RATIO TERM, added after referee pass 4. `G = phi_J/BETA` has TWO
+    # independently noisy terms -- `out/mixture_model.txt` records BETA itself as
+    # `0.5947 +- 0.0010 (n = 3)`, a measurement carrying the same per-seed floor, NOT a
+    # noise-free reference constant. So the floor is the sibling module's own form,
+    #     var(G) = SCALE^2 (1 + G^2) / BETA^2 / n,
+    # and pass 3's fix had cited that sibling while dropping its sqrt(1 + G^2). The
+    # omission made every sensitivity ~1.43x too SMALL, i.e. too favourable.
+    g_at_root = g(d_f_star)
+    dG = SCALE * math.sqrt(1.0 + g_at_root ** 2) / (BETA * math.sqrt(N_SEEDS))
     return float("inf") if denom == 0 else float(dG / denom)
 
 

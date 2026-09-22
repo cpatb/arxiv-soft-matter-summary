@@ -216,10 +216,15 @@ def test_df_star_sensitivity_matches_a_direct_perturbation():
 
     for k_bar in (1.2, 2.0, 5.0):
         d0 = critical_df(k_bar)
-        pred = df_star_sensitivity(k_bar, d0)
-        # the SAME noise magnitude the module declares -- what this anchor tests is the
-        # DERIVATIVE FORM (via an independent brentq re-solve), not the convention for dG
-        dG = SCALE / (BETA * math.sqrt(N_SEEDS))
+        # scale the module's answer to this perturbation: sens is LINEAR in dG
+        implied = df_star_sensitivity(k_bar, d0)
+        g_root = phi_J(MultipletPSD(d10=D10, d_f=d0, n_k=flory(k_bar))) / BETA
+        dG_mod = SCALE * math.sqrt(1.0 + g_root ** 2) / (BETA * math.sqrt(N_SEEDS))
+        pred = implied * (1e-3 / dG_mod)
+        # An ARBITRARY small perturbation: this anchor tests the DERIVATIVE FORM via an
+        # independent brentq re-solve, and must not depend on the noise convention at
+        # all. `test_sensitivity_noise_matches_the_sibling_module` pins the convention.
+        dG = 1e-3
 
         def f(x, shift):
             p = MultipletPSD(d10=D10, d_f=float(x), n_k=flory(k_bar))
@@ -240,3 +245,38 @@ def test_df_star_sensitivity_falls_as_aggregation_rises():
     s = [df_star_sensitivity(k, critical_df(k)) for k in (1.1, 1.5, 2.0, 5.0)]
     assert all(b < a for a, b in zip(s, s[1:])), s
     assert s[0] > 10 * s[-1], s          # and it is a big range, not a flat one
+
+
+def test_sensitivity_noise_matches_the_sibling_module():
+    """The CONVENTION, pinned against `multiplet_wc.gain` rather than restated.
+
+    ⚠ THIS TEST EXISTS BECAUSE ITS ABSENCE HID A REAL DEFECT. The previous anchor
+    hardcoded `dG = SCALE/(BETA*sqrt(N_SEEDS))` as its own reference, so it could only
+    ever confirm the module against itself — and referee pass 4 found that form was
+    missing the `sqrt(1 + G^2)` term the sibling module it CITED actually uses. `BETA` is
+    a 3-seed measurement (`0.5947 +- 0.0010`), not a noise-free constant, so `G = phi_J/
+    BETA` has two independently noisy terms.
+
+    Back-solves the dG the module implies and compares it with the sibling's own form.
+    """
+    from multiplet_levers import (BETA, D10, N_SEEDS, SCALE, critical_df,
+                                  df_star_sensitivity, flory, phi_J)
+    from psd import MultipletPSD
+    for k_bar in (1.2, 2.0, 5.0):
+        d0 = critical_df(k_bar)
+        h = 1e-4
+
+        def at(x):
+            p = MultipletPSD(d10=D10, d_f=x, n_k=flory(k_bar))
+            return p.lambda_trap, phi_J(p) / BETA
+
+        (lp, gp), (lm, gm_) = at(d0 + h), at(d0 - h)
+        denom = abs((lp - lm) / (2 * h) - (gp - gm_) / (2 * h))
+        dG_implied = df_star_sensitivity(k_bar, d0) * denom
+        g_root = at(d0)[1]
+        want = SCALE * math.sqrt(1.0 + g_root ** 2) / (BETA * math.sqrt(N_SEEDS))
+        assert dG_implied == pytest.approx(want, rel=1e-3), (k_bar, dG_implied, want)
+        # DISCRIMINATING: it must NOT be the bare form pass 3 shipped
+        bare = SCALE / (BETA * math.sqrt(N_SEEDS))
+        assert abs(dG_implied - bare) / bare > 0.3, (
+            "the ratio term sqrt(1+G^2) is missing -- this is the pass-4 defect")

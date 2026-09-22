@@ -64,6 +64,14 @@ PHI_SOLID = 0.52
 # frictionless one. `multiplet_wc.py` section 2 finds no resolved friction dependence of
 # G (0 of 4 CV levels), which is a BOUND and not a proof of equality; the substitution is
 # flagged in FIGURES_MULTIPLET.md rather than hidden.
+# ⚠ A SECOND GAUGE CAVEAT, disclosed after referee pass 4. PHI0_MONO is a p_hat -> 0
+# LADDER-EXTRAPOLATED value, while BETA and the closure's G are read at a FINITE rung
+# (p_hat = 1e-3), deliberately un-extrapolated. Measured directly, the frictionless
+# mu_p = 0, CV = 0 mean phi at p_hat = 1e-3 is 0.6414 (n = 24) against the extrapolated
+# 0.6324 -- a +1.4 % rung effect. It is NOT "fixed" here: a finite-pressure soft-sphere
+# pack already carries grain overlap, so the ZERO-pressure value is arguably the more
+# correct ceiling for "cannot pack denser without interpenetration", and the effect is
+# far smaller than the CV mismatch pass 4 found in multiplet_wc.py. Stated, not hidden.
 PHI0_MONO = 0.6324          # \phiJFrictionless, paper/numbers.tex; reproduced to 1.2e-14
 A3_RATIO = PHI0_MONO / PHI_SOLID
 

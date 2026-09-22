@@ -55,7 +55,9 @@ import sys
 import numpy as np
 
 import mixture_model as mm
+from multiplet_levers import BETA as ML_BETA
 from multiplet_levers import D10, flory
+from multiplet_levers import phi_J as ml_phi_J
 from psd import MultipletPSD
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -195,15 +197,43 @@ def compare_frictions(cells: dict, mu_lo: float, mu_hi: float, cv: float):
 
 
 def wc_inputs(k_bar: float, d_f: float, G0: float, Gm: float,
-              base: dict | None = None) -> dict:
-    """Map an aggregation state onto the solver's quadruple."""
+              base: dict | None = None, row_gain: bool = True) -> dict:
+    """Map an aggregation state onto the solver's quadruple.
+
+    🔴 FATAL DEFECT, FOUND BY REFEREE PASS 4 AND FIXED HERE. This function used to apply
+    the `G0`/`Gm` passed in -- read once at `cv_ref = max(cvs)`, i.e. **CV = 0.5** -- to
+    EVERY row, whatever that row's own CV was. The rows' actual realised CVs are
+    **0.16 to 0.36**, and `G` rises monotonically with CV (this module's own section 2
+    measures it: 1.0043 / 1.0212 / 1.0518 / 1.0781 / 1.1066 at CV 0.1 ... 0.5). So every
+    row got an INFLATED `G`, which inflated the mapped `PHI0`/`PHIM` and biased every
+    `phi/phiJ` ratio DOWNWARD -- toward looking less jammed than it is.
+
+    It flipped the two rows that carried the headline. With the row's own `G`:
+        (<k> = 1.5, d_f = 3.0): phi/phiM  0.9497 -> 1.0250   ("un-jams" is FALSE)
+        (<k> = 1.5, d_f = 2.1): phi/phi0  0.9810 -> 1.0508   (admissible -> A3 FAILS)
+
+    `row_gain=True` (the default, and the only defensible setting) evaluates the SAME
+    calibrated closure on the row's OWN multiplet PSD, which is what `multiplet_levers`
+    already computes as `G`. It is self-consistent by construction: the closure that
+    supplies `Lambda`'s partner supplies the gain at the same PSD, same rung, same gauge.
+
+    ⚠ One `G` is used for both `PHI0` and `PHIM`, because section 2 resolves no friction
+    dependence of `G`. That is a BOUND, not a proof of equality -- see section 2.
+
+    `row_gain=False` reproduces the withdrawn behaviour and exists only so the two can be
+    printed side by side; it is never the quoted mapping.
+    """
     base = dict(base or WC_DEFAULT)
-    lam = MultipletPSD(d10=D10, d_f=d_f, n_k=flory(k_bar)).lambda_trap
+    psd = MultipletPSD(d10=D10, d_f=d_f, n_k=flory(k_bar))
+    lam = psd.lambda_trap
+    g_row = ml_phi_J(psd) / ML_BETA
     out = dict(base)
     out["PHI"] = base["PHI"] * lam
-    out["PHI0"] = base["PHI0"] * G0
-    out["PHIM"] = base["PHIM"] * Gm
+    out["PHI0"] = base["PHI0"] * (g_row if row_gain else G0)
+    out["PHIM"] = base["PHIM"] * (g_row if row_gain else Gm)
     out["_Lambda"] = lam
+    out["_cv"] = psd.cv
+    out["_G_row"] = g_row
     # the two distances to jamming that actually drive the solver
     out["_phi_over_phi0"] = out["PHI"] / out["PHI0"]
     out["_phi_over_phim"] = out["PHI"] / out["PHIM"]
@@ -365,8 +395,8 @@ def main() -> int:
         say("   G0 throughout this repo and the label is kept, but the value is the")
         say("   lowest friction that has converged cells, and it is printed so.")
         say("")
-        say(f"   {'<k>':>6}{'d_f':>6}{'Lambda':>9}{'PHI':>9}{'PHI0':>9}{'PHIM':>9}"
-            f"{'phi/phi0':>10}{'phi/phiM':>10}")
+        say(f"   {'<k>':>6}{'d_f':>6}{'CV':>8}{'G(row)':>9}{'Lambda':>9}{'PHI':>9}"
+            f"{'PHI0':>9}{'PHIM':>9}{'phi/phi0':>10}{'phi/phiM':>10}")
         base = WC_DEFAULT
         lam_max = 1.0 / base["PHI"]
 
@@ -401,26 +431,56 @@ def main() -> int:
         base_row = dict(base)
         base_row["_phi_over_phi0"] = base["PHI"] / base["PHI0"]
         base_row["_phi_over_phim"] = base["PHI"] / base["PHIM"]
-        say(f"   {'(none)':>6}{'--':>6}{1.0:9.4f}{base['PHI']:9.4f}{base['PHI0']:9.4f}"
-            f"{base['PHIM']:9.4f}{base_row['_phi_over_phi0']:10.4f}"
+        say(f"   {'(none)':>6}{'--':>6}{0.0:8.4f}{1.0:9.4f}{1.0:9.4f}{base['PHI']:9.4f}"
+            f"{base['PHI0']:9.4f}{base['PHIM']:9.4f}{base_row['_phi_over_phi0']:10.4f}"
             f"{base_row['_phi_over_phim']:10.4f}   {regime(base_row)}")
         n_inadm = 0
         for kb, df in ((1.5, 3.0), (1.5, 2.1), (1.5, 1.8), (2.0, 2.1), (2.0, 1.8)):
             w = wc_inputs(kb, df, g0[0], gm[0])
             flag = regime(w)
             n_inadm += flag.endswith("A3 FAILS")
-            say(f"   {kb:6.1f}{df:6.1f}{w['_Lambda']:9.4f}{w['PHI']:9.4f}{w['PHI0']:9.4f}"
+            old = wc_inputs(kb, df, g0[0], gm[0], row_gain=False)
+            say(f"   {kb:6.1f}{df:6.1f}{w['_cv']:8.4f}{w['_G_row']:9.4f}"
+                f"{w['_Lambda']:9.4f}{w['PHI']:9.4f}{w['PHI0']:9.4f}"
                 f"{w['PHIM']:9.4f}{w['_phi_over_phi0']:10.4f}{w['_phi_over_phim']:10.4f}"
                 f"   {flag}")
+            say(f"   {'':12s}{'(withdrawn: G at CV=0.5)':>17}{'':18s}"
+                f"{old['PHI0']:9.4f}{old['PHIM']:9.4f}"
+                f"{old['_phi_over_phi0']:10.4f}{old['_phi_over_phim']:10.4f}"
+                f"   {regime(old)}")
         say("")
-        say("   ⚠ READ THE ADMISSIBILITY BLOCK BELOW BEFORE THIS PARAGRAPH: three of the")
-        say("   five rows are outside the model's own domain.")
-        say("   🔑 READ THE TOP TWO ROWS TOGETHER. The solver's DEFAULT preset is already")
-        say("   frictionally jammed (phi/phiM = 1.0400), and COMPACT aggregation at")
-        say("   <k> = 1.5 UN-JAMS it (0.9497) -- Lambda = 1 exactly there, so the only")
-        say("   lever acting is the one that RAISES phiJ. Opening the same aggregates to")
-        say("   d_f = 2.1 drives it the other way, to 1.2293. One aggregation axis, both")
-        say("   signs, at FIXED solid loading -- which is the bench prediction to test.")
+        say("")
+        say("   🔴 THE 'ONE AXIS, BOTH SIGNS' BENCH PREDICTION IS WITHDRAWN.")
+        say("   Referee pass 4 found that this table applied a gain measured at CV = 0.5")
+        say("   to every row, while the rows' own CVs are 0.16-0.36 and G RISES with CV.")
+        say("   Every mapped PHI0/PHIM was inflated and every ratio biased DOWNWARD --")
+        say("   toward looking less jammed. On each row's OWN G the two headline rows flip:")
+        say("")
+        for kb, df, ch, lab in ((1.5, 3.0, "_phi_over_phim", "phi/phiM"),
+                                (1.5, 2.1, "_phi_over_phi0", "phi/phi0")):
+            nw = wc_inputs(kb, df, g0[0], gm[0])
+            od = wc_inputs(kb, df, g0[0], gm[0], row_gain=False)
+            say(f"      (<k>={kb}, d_f={df}): {lab}  {od[ch]:.4f} -> {nw[ch]:.4f}"
+                f"   {regime(od)} -> {regime(nw)}")
+        say("")
+        say("   So there is no admissible row on the far side, and NOTHING is left of the")
+        say("   two-sided contrast. The withdrawn row is printed under each corrected one.")
+        say("")
+        say("   🔑 WHAT SURVIVES, and it is weaker and quantitative. At d_f = 3")
+        say("   Lambda = 1 EXACTLY, so the only lever acting raises phiJ, and compact")
+        say("   aggregation does move the suspension TOWARD flowable:")
+        _c = wc_inputs(1.5, 3.0, g0[0], gm[0])
+        say(f"      phi/phiM: {base_row['_phi_over_phim']:.4f} (unaggregated) -> "
+            f"{_c['_phi_over_phim']:.4f} (<k> = 1.5, d_f = 3).")
+        say(f"   It does NOT cross 1. A {(_c['_G_row']-1)*100:.1f} % gain in phiM against "
+            f"a {(base_row['_phi_over_phim']-1)*100:.1f} % excess is not")
+        say("   enough, and the direction is the whole claim. Opening the aggregates")
+        say("   reverses that direction, but only into INADMISSIBLE territory at this")
+        say("   solid loading -- so the reversal cannot be quoted from this table either.")
+        say("")
+        say("   ⚠ To get an admissible two-sided contrast the solid loading must come")
+        say("   DOWN so the open rows clear the A3 ceiling. That is a different table and")
+        say("   it has not been computed; no claim is made from this one.")
         say("")
         say("   🔴 ADMISSIBILITY -- CEILING CORRECTED after referee pass 2.")
         say("   This block first used `phi_eff <= 1`, a space-filling bound, and flagged")
