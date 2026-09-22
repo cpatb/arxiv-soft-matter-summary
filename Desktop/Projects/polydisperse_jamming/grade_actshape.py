@@ -23,6 +23,8 @@ from measure import force_moments
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 T_CRIT_DF2 = 4.303                       # two-sided 95 %, df = 2 (n = 3 seeds)
+# t_crit by df = n - 1 (reviewer 2026-09-22: a seed lost to W4 must not be graded at df = 2)
+T_CRIT = {1: 12.706, 2: 4.303}
 NORMS = ("constant", "derjaguin", "area")
 FCS = (0.10, 0.25, 0.50, 0.75, 0.90)
 PRIMARY = dict(mu=0.3, p=3e-4)
@@ -107,6 +109,12 @@ def main() -> int:
             say(f"  NO DUMP for {key}")
             continue
         d = np.load(path)
+        prov = (float(d["cv"]) == r["cv"] and float(d["mu_p"]) == r["mu_p"]
+                and int(d["seed"]) == r["seed"] and float(d["p_hat_target"]) == r["p_hat_target"]
+                and len(d["n"]) == 10 and int(d["n"].sum()) == d["fn"].size)
+        if not prov:
+            say(f"  DUMP PROVENANCE MISMATCH {key} -- excluded")
+            continue
         healthy = bool(r["steady"] and r["servo_held"] and r["quasistatic"])
         cells[key] = {"rec": r, "dump": d, "healthy": healthy,
                       "cv": r["cv"], "mu": r["mu_p"], "p": r["p_hat_target"],
@@ -225,10 +233,11 @@ def main() -> int:
     if len(s) >= 2:
         mean, se, t = paired(a, b)
         ratio = float(np.mean(b) / np.mean(a))
-        h1 = mean < 0 and abs(t) >= T_CRIT_DF2 and 0.60 <= ratio <= 0.90
-        say(f"  seeds {s}: diff {mean:+.4f} +- {se:.4f}, t = {t:.2f} (t_crit {T_CRIT_DF2}); "
+        tc = T_CRIT[len(s) - 1]
+        h1 = mean < 0 and abs(t) >= tc and 0.60 <= ratio <= 0.90
+        say(f"  seeds {s}: diff {mean:+.4f} +- {se:.4f}, t = {t:.2f} (t_crit {tc}, df {len(s) - 1}); "
             f"ratio {ratio:.3f} (registered [0.60, 0.90])  -> {'PASS' if h1 else 'FAIL'}")
-        if mean < 0 and abs(t) >= T_CRIT_DF2 and not 0.60 <= ratio <= 0.90:
+        if mean < 0 and abs(t) >= tc and not 0.60 <= ratio <= 0.90:
             say("  (sign and significance as predicted; the MAGNITUDE band is missed)")
     else:
         say("  not gradable yet")
@@ -261,10 +270,14 @@ def main() -> int:
                      / (ga[x]["m"][norm]["sstar"] * ga[x]["d32"] ** (2 - mexp)) for x in s]
             mean, se, t = paired(list(np.log(a)), list(np.log(b)))
             graded = norm == "derjaguin"
-            verdict = ("PASS" if (mean < 0 and abs(t) >= T_CRIT_DF2) else "FAIL") \
+            rat10r = [gb[x]["m"][norm]["sstar"] * gb[x]["rec"]["d10_realised"] ** (2 - mexp)
+                      / (ga[x]["m"][norm]["sstar"] * ga[x]["rec"]["d10_realised"] ** (2 - mexp))
+                      for x in s]
+            verdict = ("PASS" if (mean < 0 and abs(t) >= T_CRIT[len(s) - 1]) else "FAIL") \
                 if graded else "reported"
             say(f"  {norm:9s} mu {mu:.1f}: sigma*(0.5)/sigma*(0) at d10 {np.mean(rat10):.3f} "
-                f"(ln diff t = {t:.2f}), at d50 {np.mean(rat50):.3f}, at d32 {np.mean(rat32):.3f}"
+                f"(ln diff t = {t:.2f}, df {len(s) - 1}), at realised d10 {np.mean(rat10r):.3f}, "
+                f"at d50 {np.mean(rat50):.3f}, at d32 {np.mean(rat32):.3f}"
                 f"   [{verdict if mu == mu0 else 'reported'}]")
 
     say("")
@@ -296,7 +309,8 @@ def main() -> int:
                     continue
                 span = max(vals) - min(vals)
                 okh = span < 0.5 * abs(eff_primary)
-                tag = ("PASS" if okh else "FAIL") if norm == "derjaguin" else "reported"
+                tag = ("UNDETERMINED (no CV 0/0.5 pair at p 3e-4)" if not math.isfinite(eff_primary)
+                       else ("PASS" if okh else "FAIL")) if norm == "derjaguin" else "reported"
                 say(f"  {norm:9s} mu {mu:.1f} CV {cv:.1f}: delta over p "
                     f"{' / '.join(f'{v:.3f}' for v in vals)}  span {span:.3f} vs half-effect "
                     f"{0.5 * abs(eff_primary):.3f}  [{tag}]")
@@ -325,11 +339,15 @@ def main() -> int:
         c5 = np.mean([np.log(c["m"]["derjaguin"]["curve"]) for c in g5.values()], axis=0)
         fcg = next(iter(g0.values()))["m"]["derjaguin"]["curve_fc"]
         diff = c5 - c0
-        cross = bool(np.any(np.sign(diff[:-1]) != np.sign(diff[1:])))
-        where = fcg[np.flatnonzero(np.sign(diff[:-1]) != np.sign(diff[1:]))]
+        # registered direction: CV 0.5 needs LESS stress at small f_c and MORE near the edge,
+        # i.e. diff < 0 at the low-f_c end and > 0 at the high end, with ONE crossing
+        idx = np.flatnonzero(np.sign(diff[:-1]) != np.sign(diff[1:]))
+        where = fcg[idx]
+        cross = bool(len(idx) == 1 and diff[0] < 0 and diff[-1] > 0)
         say(f"  mu {mu:.1f}: ln[sjam(0.5)/sjam(0)] at f_c 0.1/0.25/0.5/0.75/0.9 = "
             + " / ".join(f"{np.interp(f, fcg, diff):+.3f}" for f in FCS)
-            + f"   cross={cross} at f_c {np.round(where, 3).tolist()}"
+            + f"   sign changes {len(idx)} at f_c {np.round(where, 3).tolist()}, "
+              f"registered direction (neg->pos, one crossing) {cross}"
             + ("   [H6 " + ("PASS" if cross else "FAIL") + "]" if mu == mu0 else ""))
 
     say("")

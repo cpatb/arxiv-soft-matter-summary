@@ -38,6 +38,8 @@ def load(lab):
     st = json.load(open(os.path.join(d, "RUN_STATUS.json"), encoding="utf-8"))
     dat = os.path.join(d, "spread.dat")
     arr = np.loadtxt(dat, comments="#", ndmin=2) if os.path.exists(dat) else None
+    if arr is not None and arr.size == 0:
+        arr = None                       # header-only file: no rows were written
     ban = open(os.path.join(d, "banner.txt"), encoding="utf-8", errors="replace").read() \
         if os.path.exists(os.path.join(d, "banner.txt")) else ""
     return st, arr, ban
@@ -144,14 +146,17 @@ def main() -> int:
         tag = "P1" if arm == "A" else "P2"
         say(f"{tag} arm {arm}: {passes}/{inf_pairs} informative sigma* pass"
             + ("  PASS" if inf_pairs and passes == inf_pairs else
-               "  UNDETERMINED (no informative pair)" if not inf_pairs else "  FAIL"))
+               "  UNDETERMINED (observable unmeasurable: no informative pair among cells "
+               "passing G1/G2)" if not inf_pairs else "  FAIL"))
     a, b = verdict.get("A", (0, 0)), verdict.get("B", (0, 0))
     p3 = a[0] and b[0] and a[1] == a[0] and b[1] == b[0]
     say(f"P3 reversal: {'PASS' if p3 else 'NOT ESTABLISHED'}")
     # P4
     n30 = [cells.get(f"N_s30_d{d}") for d in DELTAS]
     if all(c is not None and "J" in c for c in n30):
-        ok4 = all(c["J"] > 0.1 for c in n30)
+        # only cells that pass G1 and G2 count (reviewer 2026-09-22: a dead cell's pre-death
+        # rows must not demonstrate anything)
+        ok4 = all(c["healthy"] and c["prov"] and c["J"] > 0.1 for c in n30)
         say(f"P4 arm N at sigma* 30 (x < chi, cannot jam): J(fhat>0.5) = "
             f"{[round(c['J'], 3) for c in n30]}  {'DEMONSTRATED' if ok4 else 'NOT DEMONSTRATED'}"
             f"   gap floor 1 - x/chi = {1 - 0.75 / 0.8:.4f} > EPS_MIN 0.01")

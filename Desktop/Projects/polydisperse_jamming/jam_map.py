@@ -153,18 +153,29 @@ def main() -> int:
                         c = np.array(c)
                         curves.append(c)
                         curves50.append(c * d50 ** (2 - m))
-                    cm = np.exp(np.mean(np.log(np.where(np.isfinite(curves) & (np.array(curves) > 0),
-                                                        curves, np.nan)), axis=0))
+                    def gmean(cs):
+                        a = np.array(cs)
+                        return np.exp(np.mean(np.log(np.where(np.isfinite(a) & (a > 0), a,
+                                                              np.nan)), axis=0))
+                    cm, cm50 = gmean(curves), gmean(curves50)
+                    # state per phi: 0 = window, +1 = jammed at rest, -1 = never jams, kept
+                    # separately so 'rest' and 'never' are not both just NaN in the npz
+                    state = np.array([0 if 0 < A.f_crit(ph / ends[cv]["phi0"], chi) < 1 else
+                                      (1 if A.f_crit(ph / ends[cv]["phi0"], chi) <= 0 else -1)
+                                      for ph in phig])
                     npz[f"{norm}_mu{mu}_cv{cv}"] = cm
+                    npz[f"{norm}_mu{mu}_cv{cv}_d50"] = cm50
+                    npz[f"state_cv{cv}"] = state
                     pick = [0.60, 0.62, 0.64, 0.66, 0.68]
-                    vals = []
-                    for ph in pick:
-                        i = int(np.argmin(abs(phig - ph)))
-                        fc = A.f_crit(ph / ends[cv]["phi0"], chi)
-                        vals.append("   never " if not math.isfinite(fc) else
-                                    ("   rest  " if fc <= 0 else f"{cm[i]:8.4g} "))
-                    say(f"     CV {cv:.1f}: phi " + " ".join(f"{p:.2f}" for p in pick)
-                        + " -> " + " ".join(vals))
+                    for lab, arr in (("d10", cm), ("d50", cm50)):
+                        vals = []
+                        for ph in pick:
+                            i = int(np.argmin(abs(phig - ph)))
+                            fc = A.f_crit(ph / ends[cv]["phi0"], chi)
+                            vals.append("   never " if not math.isfinite(fc) else
+                                        ("   rest  " if fc <= 0 else f"{arr[i]:8.4g} "))
+                        say(f"     CV {cv:.1f} [{lab}]: phi " + " ".join(f"{p:.2f}" for p in pick)
+                            + " -> " + " ".join(vals))
         np.savez(os.path.join(OUT, "jam_map.npz"), phi=phig, **npz,
                  **{f"phi0_cv{cv}": ends[cv]["phi0"] for cv in CVS},
                  **{f"phim3_cv{cv}": ends[cv]["phim3"] for cv in CVS})
