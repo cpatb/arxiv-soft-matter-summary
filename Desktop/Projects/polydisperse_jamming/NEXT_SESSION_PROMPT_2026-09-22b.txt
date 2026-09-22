@@ -1,0 +1,36 @@
+NEXT SESSION PROMPT -- polydisperse_jamming, written 2026-09-22 (THIRD block)
+
+Read ~/.claude/CLAUDE.md and lessons.md first. Then, in order (~10 min):
+  1. Status card "Drop Impact -- Polydispersity Jamming Model.md", section 2, THIRD BLOCK.
+  2. out/grade_actshape.txt, out/actshape_cv02.txt, out/jam_map.txt (section 4).
+  3. derivations/jam_stress_2026-09-22.md (result box + section 6) and PREREG_JAMWIN_2026-09-22.md
+     (all three amendments).
+
+THE QUESTION: which particle property decides whether an impacting drop shear-JAMS or stays
+inertial-dilatant. Reduced framework: x = phi/phi0, chi = phim/phi0, sigma*; the drop jams where
+the local stress exceeds sigma_jam = kappa_m d^(m-2) / Q_{1-f_c}(g_m), f_c = (1-x)/(1-chi).
+
+WHAT THIS BLOCK ESTABLISHED
+- The solver's DELTA is a measurable contact statistic (Weibull shape of g = f/(R* p)).
+  Polydispersity and friction both SOFTEN it; it is pressure-stable. CV 0 -> 0.2 clean (6/6).
+- CV 0.5 is FINITE-SIZE FLAGGED at N = 1000. The N = 4000 control (PREREG_ACTSHAPE Amendment 1,
+  tag actshape_fs, grade F1-F3 by hand or extend grade_actshape.py) decides whether it is quotable.
+- At fixed phi and chemistry, CV moves sigma_jam through x (81-126 % of the log-change, every
+  order and convention); the activation factor is small and its SIGN is a diameter convention.
+- The DNS solver is RATE-driven (sigma = eta(fhat) gd): the jamming threshold is a bottleneck
+  f* < f_c, which moves the stress-controlled sign reversal to within ~0.01 of the window edge.
+- jam_frac (fhat > 0.5) is a convention, not the closure's jamming point; JAM_FHAT env added.
+- The solver cannot integrate a genuinely jammed drop at L9 (arm A died 8/9 cells by t/tau 0.15).
+
+CAMPAIGNS (check whether they landed; restartable by key)
+- jamwin (arms B, N): python grade_jamwin.py after `wsl bash scripts/pull_jamwin.sh` (PowerShell).
+  Arm B's sign decides (S) stress-thresholded vs (R) rate-driven. (R) was registered in
+  Amendment 1 BEFORE any data.
+- jamwin2: `wsl bash scripts/pull_jamwin.sh jamwin2`, then python grade_jamwin2.py.
+- actshape_fs: records land in out/phase9_actshape_fs*.jsonl + dumps.
+
+STANDING RULES THAT COST SOMETHING THIS BLOCK
+- A patch script whose .replace() assertion fails writes NOTHING: grep the result before
+  committing. Happened once this block (fixed in a follow-up commit).
+- Quote a sigma* shift, or any activation factor, WITH the diameter it holds fixed.
+- wsl.exe quoting from Git Bash eats $-expansions: use script files, invoke from PowerShell.
