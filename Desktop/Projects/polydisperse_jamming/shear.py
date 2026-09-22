@@ -326,6 +326,47 @@ def _measure_network(O):  # noqa: E741
             rep[f"rattler_frac_k{RATTLER_MIN_CONTACTS}"], forces)
 
 
+# --- per-contact dump (added 2026-09-22, PREREG_ACTSHAPE_2026-09-22.md) -------------
+# `force_moments` keeps only a summary of f/<f>. The Wyart-Cates activation threshold is
+# a force F_rep that, for every surface force this project would map onto (screened
+# electrostatics, steric brushes, DLVO in the Derjaguin approximation), scales with the
+# REDUCED RADIUS of the pair, R* = R1 R2/(R1 + R2). The variable that decides whether a
+# contact is frictional is then f/R*, not f/<f>, and no summary on disk can form it.
+# So the dump records the raw per-contact arrays, and every normalisation is chosen in
+# the analysis (actshape.py), not here.
+# Read-only: it iterates O.interactions between O.run calls and cannot drive the solver.
+N_DUMP = 10                    # snapshots, evenly spaced over the steady window
+
+
+def _contact_arrays(O):  # noqa: E741
+    """(fn, ft, r1, r2) over the real sphere-sphere interactions, float64 arrays."""
+    fn, ft, r1, r2 = [], [], [], []
+    for i in O.interactions:
+        if not i.isReal:
+            continue
+        b1, b2 = O.bodies[i.id1], O.bodies[i.id2]
+        if b1 is None or b2 is None:
+            continue
+        fn.append(float(i.phys.normalForce.norm()))
+        ft.append(float(i.phys.shearForce.norm()))
+        r1.append(float(b1.shape.radius))
+        r2.append(float(b2.shape.radius))
+    return (np.asarray(fn), np.asarray(ft), np.asarray(r1), np.asarray(r2))
+
+
+def dump_sample_indices(n_samples: int, steady_frac: float = STEADY_FRAC,
+                        n_dump: int = N_DUMP) -> list[int]:
+    """1-based sample indices (of `n_samples`) at which the dump is taken.
+
+    Evenly spaced over the steady window and ending on the LAST sample, which is the
+    state `force_moments` summarises -- so the final snapshot of every dump can be
+    checked against the record's own `force` block.
+    """
+    first = int(math.ceil((1.0 - steady_frac) * n_samples))
+    idx = np.linspace(first, n_samples, n_dump + 1)[1:]
+    return sorted({int(round(v)) for v in idx})
+
+
 def _prepare(st: ShearState, O, Matrix3, utils, *,  # noqa: E741
              truncate: tuple[float, float] | None) -> float:
     """Stages A-C: insert, compress to `st.phi_target`, relax. Returns the phi reached.
@@ -605,6 +646,7 @@ def shear_at_constant_pressure(cv: float, mu_p: float, p_hat_target: float, n: i
                                young: float = 1.0, family: str = "lognormal",
                                gamma_max: float = 3.0, shear_steps: int = 900_000,
                                servo_gain: float = SERVO_GAIN,
+                               dump_path: str | None = None,
                                verbose: bool = True) -> ShearState:
     """Insert, compress to `phi_start_target`, then shear at CONSTANT PRESSURE.
 
@@ -652,6 +694,10 @@ def shear_at_constant_pressure(cv: float, mu_p: float, p_hat_target: float, n: i
     every = max(1, shear_steps // N_SAMPLES)
     steps_done = 0
     edot = 0.0
+    n_taken = 0
+    dump_at = set(dump_sample_indices(-(-shear_steps // every))) if dump_path else set()
+    dump: dict[str, list] = {"gamma": [], "p_hat": [], "fn": [], "ft": [],
+                             "r1": [], "r2": [], "n": []}
     while steps_done < shear_steps:
         third = edot / 3.0
         O.cell.velGrad = Matrix3(third, gdot, 0,
@@ -670,8 +716,23 @@ def shear_at_constant_pressure(cv: float, mu_p: float, p_hat_target: float, n: i
         st.z_nr_series.append(z_nr_now)
         st.phi_series.append(phi_now)
         st.edot_v_series.append(float(edot))
+        n_taken += 1
+        if n_taken in dump_at:
+            fn_, ft_, r1_, r2_ = _contact_arrays(O)
+            dump["gamma"].append(st.gamma[-1])
+            dump["p_hat"].append(p_hat)
+            dump["n"].append(len(fn_))
+            for k, v in (("fn", fn_), ("ft", ft_), ("r1", r1_), ("r2", r2_)):
+                dump[k].append(v)
         edot = servo_edot(p_hat, p_hat_target, gdot, gain=servo_gain)
     O.cell.velGrad = Matrix3.Zero
+    if dump_path:
+        np.savez_compressed(
+            dump_path, gamma=np.asarray(dump["gamma"]), p_hat=np.asarray(dump["p_hat"]),
+            n=np.asarray(dump["n"], dtype=np.int64),
+            **{k: np.concatenate(dump[k]) if dump[k] else np.zeros(0)
+               for k in ("fn", "ft", "r1", "r2")},
+            young=young, mu_p=mu_p, cv=cv, seed=seed, p_hat_target=p_hat_target)
 
     st.phi = float(1.0 - utils.porosity())
     st.phi_drift = abs(st.phi - phi_start)      # here a MEASUREMENT, not a gate: the

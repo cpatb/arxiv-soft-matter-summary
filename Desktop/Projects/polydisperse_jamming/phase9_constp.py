@@ -79,6 +79,8 @@ def main() -> int:
     ap.add_argument("--mus", default="")
     ap.add_argument("--gamma-max", type=float, default=GAMMA_MAX)
     ap.add_argument("--shear-steps", type=int, default=SHEAR_STEPS)
+    ap.add_argument("--dump-dir", default="",
+                    help="write per-contact arrays to <dir>/<key>.npz (PREREG_ACTSHAPE)")
     args = ap.parse_args()
 
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -115,6 +117,8 @@ def main() -> int:
           f"{args.nshards}, gamma_max={args.gamma_max}, steps={args.shear_steps}, "
           f"{len(done)} already done -> {path}", flush=True)
 
+    if args.dump_dir:
+        os.makedirs(args.dump_dir, exist_ok=True)
     t0 = time.time()
     nrun = 0
     for idx, (family, cv, mu, seed, phi0, ncell, p_star, gain) in enumerate(grid):
@@ -129,6 +133,8 @@ def main() -> int:
                 cv=cv, mu_p=mu, p_hat_target=p_star, n=ncell, seed=seed,
                 phi_start_target=phi0, family=family, servo_gain=gain,
                 gamma_max=args.gamma_max, shear_steps=args.shear_steps, verbose=True,
+                dump_path=(os.path.join(args.dump_dir, key + ".npz")
+                           if args.dump_dir else None),
             )
             rec = json.loads(st.to_json())
             rec["key"] = key
