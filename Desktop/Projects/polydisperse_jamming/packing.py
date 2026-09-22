@@ -540,7 +540,8 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
     # overlap, so the union volume is k primary volumes EXACTLY, the member density needs
     # no correction, and utils.porosity() is not double-counting (the overlap is zero).
     kmer = {}
-    if st.doublet_w > 0.0 or st.triplet_w > 0.0:
+    # getattr: `shear.ShearState` also comes through here and has no multiplet fields
+    if getattr(st, "doublet_w", 0.0) > 0.0 or getattr(st, "triplet_w", 0.0) > 0.0:
         if st.cv != 0.0 or alpha != 1.0:
             raise ValueError("multiplets are built from ONE primary: need cv = 0, alpha = 1")
         w2, w3 = float(st.doublet_w), float(st.triplet_w)
