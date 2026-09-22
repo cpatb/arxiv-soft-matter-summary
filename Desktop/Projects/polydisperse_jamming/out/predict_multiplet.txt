@@ -1,0 +1,56 @@
+====================================================================================================
+predict_multiplet.py -- BLIND predictions, written before any multiplet cell exists
+====================================================================================================
+   closure: beta = 0.5947 (measured), refit PA = 0.911, PB = 2.122;
+   textbook PA = 1.02, PB = 1.5. Rung p_hat = 0.001, mu_p = 0.3, N = 1500.
+   PHI_SCALE = 0.0021. A predicted difference below 1 scale is NOT testable.
+
+=== BLOCK A  ladder in d_f, composition fixed at 70/20/10 ===
+                                family string    <k>      CV   ratio   Lambda  phi refit  phi text
+                  multiplet:f1.8:n0.7/0.2/0.1  1.400  0.2448   1.841   1.3993     0.6170    0.6351
+                  multiplet:f2.1:n0.7/0.2/0.1  1.400  0.2068   1.687   1.2277     0.6102    0.6249
+                  multiplet:f2.5:n0.7/0.2/0.1  1.400  0.1712   1.552   1.0951     0.6050    0.6165
+                    multiplet:f3:n0.7/0.2/0.1  1.400  0.1408   1.442   1.0000     0.6014    0.6103
+   span of the predicted phi across this block: 0.0156 = 7.4 x PHI_SCALE
+
+=== BLOCK B  ladder in <k>, d_f fixed at 2.1 ===
+                                family string    <k>      CV   ratio   Lambda  phi refit  phi text
+                      multiplet:f2.1:n0.9/0.1  1.100  0.1129   1.391   1.0629     0.5985    0.6031
+                  multiplet:f2.1:n0.7/0.2/0.1  1.400  0.2068   1.687   1.2277     0.6102    0.6249
+                  multiplet:f2.1:n0.5/0.3/0.2  1.700  0.2189   1.687   1.3343     0.6165    0.6229
+                  multiplet:f2.1:n0.3/0.3/0.4  2.100  0.2044   1.687   1.4424     0.6090    0.6154
+   span of the predicted phi across this block: 0.0180 = 8.6 x PHI_SCALE
+
+=== BLOCK C  MATCHED-CV PAIRS: same width, different compactness ===
+   A closure written in CV alone predicts ZERO difference for every row here.
+
+   PAIR 1:  CV = 0.1543 vs 0.1546  (matched to 3.4e-04)
+                       multiplet:f1.6:n0.9/0.1/0  d_f = 1.6  <k> = 1.100  ratio = 1.542  Lambda = 1.1516  phi = 0.6024
+                     multiplet:f2.5:n0.4/0.5/0.1  d_f = 2.5  <k> = 1.700  ratio = 1.552  Lambda = 1.1308  phi = 0.6073
+      PREDICTED d(phi) = -0.0049 = -2.3 x PHI_SCALE   (textbook: -1.9)
+
+   PAIR 2:  CV = 0.1567 vs 0.1567  (matched to 5.8e-06)
+                     multiplet:f1.8:n0.85/0.15/0  d_f = 1.8  <k> = 1.150  ratio = 1.470  Lambda = 1.1532  phi = 0.6025
+                   multiplet:f2.5:n0.35/0.5/0.15  d_f = 2.5  <k> = 1.800  ratio = 1.552  Lambda = 1.1440  phi = 0.6090
+      PREDICTED d(phi) = -0.0065 = -3.1 x PHI_SCALE   (textbook: -0.4)
+
+   PAIR 3:  CV = 0.1718 vs 0.1714  (matched to 4.0e-04)
+                       multiplet:f1.8:n0.8/0.2/0  d_f = 1.8  <k> = 1.200  ratio = 1.470  Lambda = 1.1958  phi = 0.6043
+                     multiplet:f2.5:n0.4/0.4/0.2  d_f = 2.5  <k> = 1.800  ratio = 1.552  Lambda = 1.1480  phi = 0.6101
+      PREDICTED d(phi) = -0.0058 = -2.7 x PHI_SCALE   (textbook: -0.1)
+
+   PAIR 4:  CV = 0.2465 vs 0.2462  (matched to 2.5e-04)
+                   multiplet:f1.6:n0.3/0.45/0.25  d_f = 1.6  <k> = 1.950  ratio = 1.987  Lambda = 2.0061  phi = 0.6100
+                   multiplet:f2.1:n0.65/0.1/0.25  d_f = 2.1  <k> = 1.600  ratio = 1.687  Lambda = 1.3251  phi = 0.6180
+      PREDICTED d(phi) = -0.0080 = -3.8 x PHI_SCALE   (textbook: -8.2)
+
+=== WHAT EACH BLOCK CAN AND CANNOT DECIDE ===
+   A and B test the closure's TRANSFER to a PSD family no point of which is in
+   its calibration set (16 binary compositions at size ratios 2 and 3). They
+   cannot test Lambda: the DEM packs effective spheres, so it never sees the
+   solid/excluded volume distinction Lambda is built from.
+   C tests whether CV suffices. It cannot distinguish 'the closure is right'
+   from 'some other non-CV descriptor is doing the work' -- only that a
+   CV-only description is incomplete along the aggregation axis.
+   NOTHING here tests assumption A1 (the effective-sphere replacement). That
+   needs CLUMP cells at the same n_k, and it is registered separately.

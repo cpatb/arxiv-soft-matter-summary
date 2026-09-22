@@ -51,8 +51,9 @@ multiplet_psd_2026-09-22 -- derivation checks
 === C5  Lambda >= 1, and the EXISTENCE of a critical gamma* ===
    [PASS] C5a  Lambda >= 1 on 20000 random (n, K, gamma in [1,3]) draws  --  0 violations
    [PASS] C5b  Lambda is monotone increasing in gamma
-   [PASS] C5c  Lambda exceeds the ABSOLUTE ceiling on G before gamma = 3  --  G_max = 1/phi_J_mono = 1.7397, crossed at gamma = 1.9340 (d_f = 1.5512)
-   so a critical gamma* EXISTS for this population: below d_f = 1.551
+   [PASS] C5b'  PHI_J_MONO equals mixture_model.BETA (one gauge, not two)  --  PHI_J_MONO = 0.5947, and mixture_model's measured monodisperse value at p_hat = 0.001 is 0.5946865273380492
+   [PASS] C5c  Lambda exceeds the ABSOLUTE ceiling on G before gamma = 3  --  G_max = 1/phi_J_mono = 1.6815, crossed at gamma = 1.8860 (d_f = 1.5907)
+   so a critical gamma* EXISTS for this population: below d_f = 1.591
    aggregation must promote jamming, whatever phi_J(CV) does, because Lambda
    diverges while G cannot exceed 1/phi_J_mono.
 

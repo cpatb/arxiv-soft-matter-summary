@@ -26,14 +26,32 @@
 > `G = φ_J(multiplet PSD)/φ_J(mono)` is the polydispersity gain. Since `Λ → ∞` as
 > `d_f → 0` while `G` is bounded, **a critical `d_f*` must exist**, and it is found at
 >
-> **`d_f* = 2.89 – 2.95` across `⟨k⟩ = 1.1 – 8`** — essentially independent of *how much*
-> the suspension has aggregated.
+> **`d_f* = 2.89 – 2.95` across `⟨k⟩ = 1.2 – 8`** — essentially independent of *how much*
+> the suspension has aggregated. ⚠ The `⟨k⟩ = 1.1` row is **excluded from that range**:
+> the closure predicts a `φ_J` shift of 0.89 × `PHI_SCALE` there, which the DEM protocol
+> could not tell from zero, so its `d_f*` is model output with no measurable content.
+> The range is stable to ±0.01 across three closure calibrations (§7 item 6).
 >
 > **The closure-free form, which is the one to quote:** this project's *widest measured*
-> pack reaches only `G = 1.0911`. `Λ` alone passes that ceiling at `d_f = 2.27 – 2.87`,
-> and at the diffusion-limited `d_f = 1.8` it is **1.22 – 4.11**. So for any realistic
-> colloidal aggregate (`d_f ≈ 1.8 – 2.1`) **the trapped-fluid lever wins by a factor of
-> several, and no width effect this project has ever measured can offset it.**
+> pack reaches only `G = 1.0911`, so the polydispersity lever is capped near **+9 %,
+> measured**. Asking where the closed-form `Λ` alone exceeds that ceiling needs no fit:
+>
+> | `d_f` | smallest `⟨k⟩` at which `Λ` reaches `G_max` |
+> |---|---|
+> | 1.8 | 1.08 |
+> | 2.1 | 1.14 |
+> | 2.5 | 1.37 |
+>
+> **Above those thresholds, no width effect this project has ever measured can offset the
+> trapped-fluid lever** — and `Λ` is then **at most** 1.22 – 4.11 over `⟨k⟩ = 1.2 – 5` at
+> `d_f = 1.8` (an upper bound; see §7 item 1). **Below them the closure-free test is
+> uninformative**, and the fitted closure still gives the same *sign* but by a margin of
+> a per cent, not a factor of several.
+>
+> ⚠ An earlier version of this box quoted `Λ = 1.22 – 4.11` as a *bound over any
+> realistic colloidal aggregate*. It is the range over the five tabulated `⟨k⟩` values,
+> and a lightly aggregated suspension is equally realistic. Corrected 2026-09-22 after a
+> referee pass.
 >
 > **Bench consequence.** The sign of the aggregation effect is set by the aggregate's
 > *openness*, not by the amount of aggregation — so **two suspensions at the same measured
@@ -138,9 +156,27 @@ because `φ_J < 1`. `Λ` is continuous and increasing in `γ`. **So a crossing `
 &nbsp;&nbsp;&nbsp;&nbsp;`γ* − 1 = (G₀ − 1)/(L₁ − G₀') ≈ (G₀ − 1)/L₁`.
 
 Both `G₀ − 1` and `L₁` grow with aggregation, so their **ratio** is nearly invariant —
-which is the explanation for the flat `d_f*` column. Checked numerically in §6: the
-first-order `d_f*` tracks the exact one to 0.005 and lies **below** it throughout, the
-sign expected from dropping `G₀' > 0`.
+which is the explanation for the flat `d_f*` column.
+
+**The sign.** `G₀' > 0`, so dropping it makes the denominator *larger*, hence
+`γ*_approx < γ*_exact`; and `d_f = 3/γ`, so **`d_f*_approx > d_f*_exact`** — the
+first-order estimate sits **closer to `d_f = 3`, i.e. ABOVE**. Measured (printed by
+`multiplet_levers.py` §6):
+
+| `⟨k⟩` | 1.1 | 1.2 | 1.5 | 2.0 | 3.0 | 5.0 | 8.0 |
+|---|---|---|---|---|---|---|---|
+| first-order − exact | +0.0034 | +0.0038 | +0.0049 | **+0.0058** | +0.0011 | −0.0003 | −0.0003 |
+
+**Above on 5 of 7 rows, worst deviation 0.0058.**
+
+> 🔴 **CORRECTED 2026-09-22 after a referee pass.** This paragraph previously read *"the
+> first-order `d_f*` tracks the exact one to 0.005 and lies **below** it throughout"*.
+> Both halves are wrong and **the table this very file prints refutes them**: the
+> estimate is above on 5 of 7 rows and the worst deviation is 0.0058. The *mechanism*
+> sentence that followed ("it puts the crossing too close to `d_f = 3`") was right —
+> "too close to 3" means *larger*, i.e. above — so the prose contradicted itself as well
+> as its own artifact. The two rows that land marginally below (−0.0003) are second
+> order and are reported rather than absorbed into the argument.
 
 ---
 
@@ -233,8 +269,43 @@ the sampler reproduces it exactly rather than approximately.
 5. **Not addressed here: the onset stress `σ*`.** Whether aggregation moves `σ*` as well as
    `φ_J` is a separate question with its own gauge problem, and `SIZE_THRESHOLD_2026-09-08.md`
    and `onset_size_degeneracy_2026-09-19.md` already own it. **No claim about `σ*` is made
-   in this file.** It is taken up in `MULTIPLET_WC_2026-09-22.md`, which reads those two
-   first.
+   in this file.** It is taken up in **`multiplet_wc.py` §4** (a module, not a document —
+   an earlier version of this line pointed at a `.md` that does not exist), which states
+   the two candidate conventions and refuses to choose between them.
+
+6. **`G` is the only fitted half, and the fit's FORM is on record as too rigid.** Three
+   calibrations are now carried side by side in `multiplet_levers.py` §2: textbook
+   (1.020, 1.500), the ratio-2-and-3 refit (0.911, 2.122), and the **wider** ratio-1.25-to-3
+   refit (0.961, 2.214), which `out/mixture_closure.txt` E2 records as the **better**
+   held-out transfer (family `χ² = 34.9` against 63.0) and which the first version of this
+   work did not use. `d_f*` moves by **at most ≈ 0.01** between the two refits, so no
+   conclusion turns on the choice — but the same source file's E1 verdict is that the
+   two-exponent **form** is too rigid (joint `χ²` 3.55 × the sum of per-ratio fits), so
+   **neither pair is "the" answer** and `G` should be read as an O(10 %) quantity with a
+   form error, not as a calibrated constant.
+
+7. **A4 (rigid, non-restructuring multiplets) is an assumption with NO evidence behind it
+   here, and it is the one most likely to fail in the regime of interest.** Shear and
+   compression are known to restructure open flocs toward compactness, i.e. to raise
+   `d_f` *during* the very loading this model is about — and this project's own
+   `dilatancy_sign_mechanism` work established that the packing response is
+   history-dependent rather than a function of `φ`. Restructuring would move a suspension
+   **up** through `d_f*` as it is loaded, which is a *time-dependent* crossing this
+   static model cannot represent at all. ⚠ This item was **absent** from the first version
+   of this list, which named A4 in §1 and then never returned to it.
+
+8. **The effective-diameter convention is a free O(1) factor that is NOT swept.** A2 fixes
+   `d_k/d_1 = k^{1/d_f}`, normalised so that `k = 1` returns the monomer exactly. But
+   *which* diameter of an aggregate sets its excluded volume is a convention — enclosing
+   sphere, radius-of-gyration-equivalent, or hydrodynamic radius — and the aggregation
+   literature writes the mass-fractal relation with a structural prefactor `k_f`
+   (`N = k_f (R_g/a)^{d_f}`) that is commonly away from 1. **[UNVERIFIED — not resolved
+   to a DOI in this repository.]** Any constant prefactor `c` on `d_k` multiplies every
+   effective volume by `c³` and therefore multiplies `Λ` uniformly, which shifts `d_f*`
+   by an O(1)-factor's worth. **This is a real degree of freedom the `d_f` sweep does not
+   explore**, it was missing from the first version of this list, and it is the single
+   largest un-bounded uncertainty in the *location* of `d_f*` — though not in the
+   *existence* of a crossing, which needs only that `Λ` diverge.
 
 ---
 
@@ -255,4 +326,32 @@ the sampler reproduces it exactly rather than approximately.
 
 ## 9. Referee
 
-Pass 1: see §10 below (appended after the referee returns).
+### Pass 1 — 2026-09-22. **One FATAL, six Material, three Minor. All acted on.**
+
+The referee recomputed every number independently (its own SymPy re-derivation, direct
+sweeps, `brentq` cross-checks) rather than reading the check output.
+
+| # | finding | action |
+|---|---|---|
+| **F1 FATAL** | Step 11's sign claim (*"lies below throughout"*, *"tracks to 0.005"*) is **refuted by the table this file prints**: above on 5/7 rows, worst 0.0058. The prose also contradicted its own following sentence. | **Accepted in full.** §2 step 11 rewritten with the measured deviations and the corrected direction; `multiplet_levers.py` §6 prints the same table and the retraction. |
+| **F2** | The flat-`d_f*` headline included `⟨k⟩ = 1.1`, where the predicted `φ_J` shift is 0.89 × `PHI_SCALE` — **below the project's own resolution bar**, which §3 states but never applied to §2's own table. | **Accepted.** §2 now prints the shift in `PHI_SCALE` units per row, flags unresolvable rows, and the quoted range is computed from resolvable rows only (`⟨k⟩ = 1.2 – 8`). |
+| **M1** | *"wins by a factor of several for any realistic aggregate"* is the range over the five tabulated `⟨k⟩`, not a bound; the closure-free test is **uninformative** below `⟨k⟩ ≈ 1.15`. | **Accepted.** The `⟨k⟩` thresholds are now computed and printed per `d_f`, and the claim is scoped to above them. |
+| **M2** | `Λ` is stated as a value ("it **is** 1.22–4.11", "by 87.0 %") while §7 claims it is used as a bound throughout. | **Accepted.** Result box now says "at most" and points at §7 item 1. |
+| **M3** | `PHI_J_MONO = 0.5748` in the check script is a **different rung** (`p̂ = 3e-5`) from the `β = 0.5947` gauge every other number uses. | **Accepted.** Set to `0.5947`; a new check `C5b'` asserts it agrees with `mixture_model`, so the two gauges cannot drift apart again. (The referee's "matches none of the gauges" is because it checked one rung; 0.5748 *is* a real project number, at the other rung. The inconsistency stands either way.) |
+| **M4** | The fractal structural prefactor `k_f` is an un-enumerated convention; it scales `Λ` as `k_f³`. | **Accepted.** New §7 item 8. |
+| **M5** | A4 (rigid multiplets) is named in §1 and has no limitations item. | **Accepted.** New §7 item 7, with the restructuring mechanism and why it matters here. |
+| **M6** | A better-transferring calibration (0.961, 2.214; `χ² = 34.9` vs 63.0) exists in the cited source and was not tried. | **Accepted.** Carried as a third column; `d_f*` moves ≤ 0.01. New §7 item 6 also records the source's own "form is too rigid" verdict. |
+| **m1** | No test exercises `multiplet_levers.py`'s own logic. | **Accepted** — `test_multiplet_levers.py` added. |
+| **m2** | The §4 convergence gate covered `⟨k⟩ ∈ {1.2…5}` but §2 and §6 also quote 1.1 and 8.0. | **Accepted.** The gate now covers the union (42 points, all converged). |
+| **m3** | Dangling reference to a non-existent `MULTIPLET_WC_2026-09-22.md`. | **Accepted** — it is `multiplet_wc.py` §4. |
+
+**What the referee confirmed independently** (criteria A–D, F): all five closed forms
+exact in its own SymPy; the `Λ ≥ 1` pointwise proof correct; **no double counting** — `Λ`
+and `G` are orthogonal computations on the same object in one volume convention; the
+existence argument for `d_f*` logically sound regardless of F2/M3; and the closure-free
+section genuinely closure-free (no `PA`/`PB` enters). It also verified the committed
+artifact is not stale.
+
+⚠ **Pass 2 has not run.** The loop rule is "repeat until a pass returns nothing", and a
+pass that found a FATAL has not itself been repeated clean. That is the next action on
+this file, and until it happens the corrections above are unrefereed.

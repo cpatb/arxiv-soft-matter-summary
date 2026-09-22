@@ -75,6 +75,12 @@ OUT = os.path.join(HERE, "out")
 BETA = 0.5947
 PA_REFIT, PB_REFIT = 0.911, 2.122
 PA_TEXT, PB_TEXT = 1.020, 1.500
+# The WIDER calibration, on size ratios 1.25-3.0. `out/mixture_closure.txt` E2 records it
+# as the BETTER held-out family transfer (chi2 34.9 against 63.0) and it was not used in
+# the first version of this file -- a referee found the omission. Carried as a third
+# column rather than adopted, because the same file's E1 verdict is that the
+# two-exponent FORM is too rigid, so neither pair is "the" answer.
+PA_WIDE, PB_WIDE = 0.961, 2.214
 D10 = 0.8e-6                      # the lab silica's nominal size; only ratios matter here
 # Truncation of the aggregation-number distribution. NOT a free choice: `Lambda` is
 # `<k^gamma>/<k>` with `gamma > 1`, so it weights the tail, and at `<k> = 5, d_f = 1.8`
@@ -213,19 +219,49 @@ def main() -> int:
     say("\n=== 2. THE CRITICAL FRACTAL DIMENSION d_f* (where Lambda = G) ===")
     say("   Below d_f*, aggregation brings the suspension CLOSER to jamming.")
     say("")
-    say(f"   {'<k>':>6}{'CV at d_f*':>12}{'d_f*':>9}{'d_f* (textbook)':>18}{'size ratio':>12}")
+    say("   ⚠ RESOLVABILITY IS PART OF THE TABLE. d_f* is a property of G, and G is only")
+    say("   meaningful where the phi_J it is built from moves by more than the protocol's")
+    say("   own reproducibility. The last column applies section 3's bar TO THIS TABLE,")
+    say("   which an earlier version of this file did not do.")
+    say("")
+    say(f"   {'<k>':>6}{'CV at d_f*':>12}{'d_f*':>9}{'d_f*(text)':>12}{'d_f*(wide)':>12}"
+        f"{'ratio':>8}{'phiJ-beta /SCALE':>18}")
+    resolvable = []
     for kb in (1.1, 1.2, 1.5, 2.0, 3.0, 5.0, 8.0):
         dstar = critical_df(kb)
-        dstar_t = critical_df(kb, PA_TEXT, PB_TEXT)
         if np.isnan(dstar):
             say(f"   {kb:6.1f}{'--':>12}{'no crossing in [0.7, 3.0]':>27}")
             continue
+        dstar_t = critical_df(kb, PA_TEXT, PB_TEXT)
+        dstar_w = critical_df(kb, PA_WIDE, PB_WIDE)
         lv = levers(kb, dstar)
-        say(f"   {kb:6.1f}{lv['cv']:12.4f}{dstar:9.4f}{dstar_t:18.4f}{lv['ratio_size']:12.3f}")
+        shift = (lv["phiJ"] - BETA) / SCALE
+        mark = "  🔴 UNRESOLVABLE" if abs(shift) < 1.0 else ""
+        if abs(shift) >= 1.0:
+            resolvable.append((kb, dstar))
+        say(f"   {kb:6.1f}{lv['cv']:12.4f}{dstar:9.4f}{dstar_t:12.4f}{dstar_w:12.4f}"
+            f"{lv['ratio_size']:8.3f}{shift:18.2f}{mark}")
     say("")
-    say("   ⚠ the two closure calibrations are printed side by side because d_f* is a")
-    say("   property of G, and G is the part of this calculation that comes from a FIT.")
-    say("   Lambda is closed-form and carries no fitted parameter at all.")
+    if resolvable:
+        ks = [k for k, _ in resolvable]
+        ds = [d for _, d in resolvable]
+        say(f"   🔑 QUOTABLE RANGE, resolvable rows only: d_f* = {min(ds):.2f} - {max(ds):.2f}")
+        say(f"      across <k> = {min(ks)} - {max(ks)}. Rows below the bar are printed but")
+        say("      NOT included in that range: at <k> = 1.1 the closure predicts a phi_J")
+        say("      shift the DEM could not tell from zero, so its d_f* is a model output")
+        say("      with no measurable content, not a measurement.")
+    say("")
+    say("   ⚠ THREE closure calibrations are printed because d_f* is a property of G, and")
+    say("   G is the part of this calculation that comes from a FIT. Lambda is closed")
+    say("   form and carries no fitted parameter at all.")
+    say(f"      text = textbook exponents ({PA_TEXT}, {PB_TEXT});")
+    say(f"      (default column) = refit on size ratios 2 and 3 ({PA_REFIT}, {PB_REFIT});")
+    say(f"      wide = refit on ratios 1.25-3 ({PA_WIDE}, {PB_WIDE}), which out/")
+    say("      mixture_closure.txt records as the BETTER held-out transfer (family chi2")
+    say("      34.9 against 63.0). It is shown rather than adopted because the same file's")
+    say("      E1 verdict is that the two-exponent FORM is too rigid (joint chi2 3.55x the")
+    say("      sum of per-ratio fits), so neither pair is the right answer -- and d_f*")
+    say("      moves by at most ~0.01 between them, which is the point worth carrying.")
 
     # ---------------------------------------------------------------- 3
     say("\n=== 3. IS THE EFFECT RESOLVABLE? d(phi_J) against the protocol floor ===")
@@ -261,7 +297,10 @@ def main() -> int:
     say(f"   Lambda/G at K_max = {K_MAX} against K_max = {K_MAX // 2}, "
         f"tolerance {K_CONV_TOL:.1%} relative.")
     worst_rel, worst_at, n_bad = 0.0, None, 0
-    for kb in kbars:
+    # ⚠ The gate must cover every <k> QUOTED anywhere in this file, not only section 1's
+    # grid: sections 2 and 6 also use 1.1 and 8.0, and a referee found them uncovered.
+    gate_kbars = sorted(set(kbars) | {1.1, 8.0})
+    for kb in gate_kbars:
         for f in dfs:
             full = MultipletPSD(d10=D10, d_f=f, n_k=flory(kb, K_MAX))
             half = MultipletPSD(d10=D10, d_f=f, n_k=flory(kb, K_MAX // 2))
@@ -274,10 +313,10 @@ def main() -> int:
                 n_bad += 1
                 say(f"      🔴 NOT CONVERGED  <k> = {kb}, d_f = {f}: "
                     f"{rh:.4f} -> {rf:.4f}  ({rel:.2%})")
-    say(f"      worst relative drift {worst_rel:.3%} at <k> = {worst_at[0]}, "
-        f"d_f = {worst_at[1]}")
+    say(f"      worst relative drift {worst_rel:.3%} at <k> = {worst_at[0] if worst_at else 0}, "
+        f"d_f = {worst_at[1] if worst_at else 0}")
     say(f"      {'[PASS]' if n_bad == 0 else '[FAIL]'} "
-        f"{len(kbars)*len(dfs) - n_bad} of {len(kbars)*len(dfs)} quoted points converged")
+        f"{len(gate_kbars)*len(dfs) - n_bad} of {len(gate_kbars)*len(dfs)} quoted points converged")
 
     # ---------------------------------------------------------------- 5
     say("\n=== 5. THE BENCH STATEMENT ===")
@@ -321,11 +360,31 @@ def main() -> int:
         say(f"   {kb:6.1f}{G0-1:10.4f}{L1:10.4f}{approx:12.4f}"
             f"{3.0/dstar - 1.0:18.4f}{3.0/(1.0+approx):16.4f}{dstar:12.4f}")
     say("")
-    say("   the first-order column sits BELOW the exact one throughout, which is the")
-    say("   expected sign: dropping G0' (> 0, since opening the aggregates also widens")
-    say("   the PSD) removes a term that OPPOSES Lambda, so it puts the crossing too")
-    say("   close to d_f = 3. It is an explanation of the flatness, not a replacement")
-    say("   for the bisection, and every number quoted elsewhere is the exact one.")
+    say("   🔴 THE SIGN, CORRECTED 2026-09-22 after a referee pass. An earlier version of")
+    say("   this paragraph said the first-order column 'sits BELOW the exact one")
+    say("   throughout'. THAT IS REFUTED BY THE TABLE ABOVE, which this file prints:")
+    devs = []
+    for kb in (1.1, 1.2, 1.5, 2.0, 3.0, 5.0, 8.0):
+        psd0 = MultipletPSD(d10=D10, d_f=3.0, n_k=flory(kb))
+        G0 = phi_J(psd0) / BETA
+        L1 = float(np.sum(psd0.n * psd0.k * np.log(psd0.k)) / np.sum(psd0.n * psd0.k))
+        devs.append((kb, 3.0 / (1.0 + (G0 - 1.0) / L1) - critical_df(kb)))
+    n_above = sum(1 for _, d in devs if d > 0)
+    say("      " + "  ".join(f"<k>={k}: {d:+.4f}" for k, d in devs))
+    say(f"   The first-order estimate is ABOVE the exact d_f* on {n_above} of {len(devs)}")
+    say(f"   rows, worst |deviation| {max(abs(d) for _, d in devs):.4f} (not 0.005).")
+    say("")
+    say("   ABOVE is the direction the algebra predicts, and the earlier prose had the")
+    say("   word wrong while its own mechanism sentence was right. Since")
+    say("       gamma* - 1 = (G0-1)/(L1 - G0')   and   G0' > 0,")
+    say("   dropping G0' makes the denominator LARGER, so gamma*_approx < gamma*_exact,")
+    say("   and d_f = 3/gamma means d_f*_approx > d_f*_exact -- i.e. the first-order")
+    say("   estimate sits CLOSER TO d_f = 3, which is ABOVE. The two rows that come out")
+    say("   marginally below (-0.0003) are second order and are not explained by this")
+    say("   argument; they are reported, not absorbed into it.")
+    say("")
+    say("   This is an explanation of the FLATNESS, not a replacement for the bisection,")
+    say("   and every number quoted elsewhere in this file is the exact one.")
 
     # ---------------------------------------------------------------- 7
     say("\n=== 7. THE ANCHOR ON G THAT DOES NOT PASS THROUGH THE CLOSURE ===")
@@ -359,9 +418,29 @@ def main() -> int:
         lam18 = MultipletPSD(d10=D10, d_f=1.8, n_k=n_kb).lambda_trap
         say(f"   {kb:6.1f}{cross:28.3f}{lam18:22.4f}")
     say("")
-    say("   This is the CLOSURE-FREE form of the result, and it is the one to quote:")
-    say("   the fitted half enters only as an upper bound that measurement already")
-    say("   supplies. The exact d_f* in section 2 is the closure's refinement of it.")
+    say("   🔴 WHERE THE CLOSURE-FREE TEST STOPS WORKING, added 2026-09-22 after a")
+    say("   referee pass. The rows above start at <k> = 1.2; a LIGHTLY aggregated")
+    say("   suspension is just as realistic, and there Lambda may never reach the")
+    say("   ceiling at all, which makes the closure-free test UNINFORMATIVE rather")
+    say("   than favourable. The threshold is computable, so it is printed:")
+    say("")
+    say(f"   {'d_f':>7}{'smallest <k> whose Lambda reaches G_max':>42}")
+    for df in (1.8, 2.1, 2.5):
+        kmin = None
+        for kb in np.arange(1.01, 3.0, 0.01):
+            if MultipletPSD(d10=D10, d_f=df,
+                            n_k=flory(float(kb))).lambda_trap >= gmax_meas:
+                kmin = float(kb)
+                break
+        say(f"   {df:7.1f}{(f'{kmin:.2f}' if kmin else 'never below <k> = 3'):>42}")
+    say("")
+    say("   So the closure-free statement is NOT 'aggregation always wins'. It is:")
+    say("   ABOVE those <k> thresholds, no width effect this project has ever measured")
+    say("   can offset the trapped-fluid lever. Below them the test says nothing and the")
+    say("   answer depends on the closure -- where the fitted G still gives the same")
+    say("   SIGN, but by a margin of a per cent rather than a factor of several.")
+    say("   The earlier wording quoted the Lambda range over the five tabulated <k>")
+    say("   values as if it were a bound over all realistic aggregates. It was not.")
 
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, "multiplet_levers.txt"), "w", encoding="utf-8") as fh:

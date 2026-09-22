@@ -1,0 +1,169 @@
+NEXT SESSION PROMPT -- polydisperse_jamming, written 2026-09-17 after commit 8948560
+
+Project: Desktop\Projects\polydisperse_jamming, branch portfolio-audit-2026-08-29, git root
+C:\Users\compl. Resume from Status\_Router.md, then the card "Drop Impact -- Polydispersity
+Jamming Model.md" section 2 (2026-09-17 blocks) and section 3. Do not reconstruct state from
+repo docs. Read ~/.claude/CLAUDE.md and lessons.md; the 2026-09-13 to 2026-09-18 entries are
+this project's.
+
+This session has two parts. Part A is short and closes an open loop. Part B is the main work:
+analytic and geometric arguments, anchored to data already on disk, with no new DEM campaign
+unless pre-registered and runnable inside the 600 s per-call WSL cap.
+
+Standing rules (repeat of the briefing, still binding):
+- Never edit .tex, .md or regex-heavy .py with sed, perl or heredocs. Use the Edit tool or a
+  Python script file with asserted match counts, then grep the result on disk.
+- PYTHONUTF8=1. Every number in generated text is printed by a script. A citation exists only
+  when API-resolved (lit-verify / citation-checker); otherwise tag [UNVERIFIED].
+- Read exit codes, never stale artifacts. Raw data is hook-protected; report a BLOCKED, do not
+  work around it. Only Status/ in the vault is agent-writable.
+- Do not fill in the author line in paper/main.tex. Do not launch PREREG_LOGN_LARGEN. Both
+  are the author's calls; if you reach a point where either would unblock you, stop and say so.
+- Every derivation goes through derive-and-check (SymPy, limiting cases, dimensional check,
+  numeric spot check at >= 3 parameter points, written to derivations/). Every physical claim
+  gets one anchor that does not pass through the code under test. Then physics-referee in a
+  fresh context, repeated "check again -- anything new?" until a pass returns nothing.
+- Before any pre-registered gate is graded, re-read the sentence that defines it beside the
+  line of code that grades it, and check that both candidates cannot pass it.
+
+------------------------------------------------------------------------------------------
+PART A -- close the reviewer loop on commit 8948560 (target: under 45 minutes)
+------------------------------------------------------------------------------------------
+A1. science-code-reviewer, fresh context, on the diff 5573617..8948560 restricted to
+    paper/extract_numbers.py, paper/make_paper_figures.py, sweep_descriptive.py,
+    paper/test_paper_numbers.py. Pass 2 of this reviewer died on an API session limit last
+    session and never read anything; the loop is recorded OPEN in the card. Repeat until a
+    pass returns nothing.
+A2. numerics-verifier, fresh context, from a clean checkout of 8948560: run
+    paper/extract_numbers.py, paper/make_paper_figures.py --check, pytest paper/ (25 tests),
+    then the full suite (521 tests, ~6 min). Nothing else may touch the tree while it runs;
+    last session I raced it and it reverted an artifact I was regenerating. Do not start A1
+    and A2 concurrently if A1 might regenerate anything (it should not; it is read-only).
+A3. If either reviewer finds anything correctness-affecting: fix, rebuild (latexmk rc=0,
+    0 undefined refs, 0 overfull > 10 pt), rerun --check and the tests, append one lesson,
+    update the card, commit paper/ and card-adjacent files only. If both return nothing,
+    record the loop CLOSED in card section 3 item 0b and move on.
+
+------------------------------------------------------------------------------------------
+PART B -- geometric and analytic arguments: size, shape, size variation, material
+properties, chemical potential, on shear thickening and jamming
+------------------------------------------------------------------------------------------
+Goal: turn what the DEM campaigns have measured into stated, checked, refereed arguments,
+and find where the arguments predict something the data on disk can already test. Each
+item below ends in one file derivations/<slug>_2026-09-<dd>.md with a verdict line:
+SUPPORTED / REFUTED / UNDETERMINED, and a one-line statement of what the anchor can and
+cannot decide. Prefer a REFUTED that is clean to a SUPPORTED that leans on the code.
+
+Order of work is by what has data on disk, not by interest. Before each item, list the
+shard sets and graders that exist for it (grep, do not assume), and print N before and after
+every filter. If an item needs a run that cannot fit in 600 s per cell, write the PREREG
+file and stop; do not launch.
+
+B1. MATERIAL PROPERTIES: friction and stiffness as the two knobs that enter the static
+    problem, and what polydispersity does to each Wyart-Cates endpoint.
+    - Stiffness: the static packing is scale-free in E (proven 2026-09-02, static part only;
+      the dynamic part is NOT, see lessons). State the argument in derivations/ with the
+      reduced variable p_hat = p/E and say exactly which observables it covers.
+    - Friction: constraint counting for frictional spheres gives an isostatic Z between
+      d+1 and 2d [textbook, cite via lit-verify]; the campaign measures Z_nr at mu_p = 0.3
+      (4.535 +/- 0.072, drifting with CV, 2026-09-09 lesson) and has a mu_p = 0 block
+      (landed 2026-09-13). Check the card and shards for which families exist at mu_p = 0.
+    - The analytic target: in Wyart-Cates, phi_J(sigma) interpolates between phi_0
+      (frictionless) and phi_m (frictional). If both endpoints are on disk at matched CV,
+      compute d phi_0/dCV and d phi_m/dCV with seed-based SE, and derive what the model then
+      predicts for the CV dependence of the DST onset phi and of sigma*. Pre-register the
+      two candidate outcomes (polydispersity shifts both endpoints equally, or shifts phi_m
+      more) and the resolving power before computing. If only one endpoint exists, say so
+      and write the prereg for the other.
+    - Anchor: the Z_all = (1 - f_r) Z_nr identity (already in the paper) and the published
+      frictionless RCP band [lit-verify; do not quote 0.64 from memory as a bound].
+
+B2. SIZE VARIATION: the filling functional as a geometric argument, not a fit.
+    - Write the two-exponent filling closure (mixture_closure.py, mixture_model.py
+      a_loosening with the sqrt form) as a function and derive its limits analytically:
+      size ratio r -> 1, r -> infinity, fines volume fraction y_s -> 0 and -> 1. Compare
+      each limit with the classical Furnas / compressible-packing-model bounds [lit-verify
+      each; the de Larrard 1999 attribution is UNRESOLVED and stays that way unless an
+      API-resolvable source settles it -- do not re-open it by argument].
+    - The matched-pair negative: prove the general statement the paper only demonstrates.
+      A two-point PSD normalised to fixed mean has two free parameters (r, n_s); fixing the
+      number-CV leaves one; so at fixed CV the pair spans a one-parameter family along which
+      skewness varies. Derive skewness(n_s) at fixed CV in closed form and show it cannot be
+      held fixed at two compositions. State precisely which class of descriptors the pair
+      refutes (width descriptors) and which it cannot (any functional of the full PSD).
+      This is the claim the humanized abstract now makes; the derivation should match its
+      wording or the wording changes, not the derivation.
+    - Anchor that does not pass through the closure: the 123-cell binary grid's 0.0635
+      separation at 30x reproducibility, read from the shards, and the calibrated
+      threshold's held-out miss (worst 26.0 %, out/diag_u3decide.txt).
+    - Do NOT rest any argument on lognormal CV = 0.5 being finite-size clean; that flag is
+      open (100 % of those cells, d_max/L > 0.25) and the N = 6000 replicate is unlaunched.
+
+B3. SHAPE: what constraint counting predicts for two-sphere clumps and whether the shape
+    campaign's Z_nr agrees.
+    - Derive the isostatic contact number for a rigid body with 6 degrees of freedom vs a
+      sphere's 3 (frictionless) and the frictional analogues; state the known hypostaticity
+      of nearly spherical bodies [lit-verify Donev et al. and Williams & Philipse before
+      quoting any number; do not write 10 or 1.5 from memory as facts].
+    - Read Z_nr(alpha) and phi_J(alpha) off the shape campaign shards (83 cells, alpha in
+      [1, 2], commit e7814b9) with the corrected porosity (utils.porosity double-counts
+      clump overlap by 2(ds/d_eq)^3, alpha-dependent; grep grade_shape for the correction
+      before trusting any phi). Grade the campaign's "CV effect survives at ~0.6x" against
+      the counting argument: does the reduction in the CV effect track the change in Z_iso,
+      or the change in phi_J(alpha), or neither? Pre-register the three outcomes and the
+      resolving power; if the campaign cannot separate them, that is the result.
+
+B4. CHEMICAL POTENTIAL: the thermodynamic axis the DEM does not have, written so the
+    drop-impact data can test it.
+    - Nondimensionalise first: Pe (Brownian vs athermal), the ratio of Debye length to
+      particle radius, and the solvent chemical potential difference driving evaporation.
+      Put order-of-magnitude values for the lab silica (sizes and ionic strengths from the
+      Paper 1 card, not from memory) beside each group.
+    - Ionic strength: derive the effective-radius correction a_eff = a + c kappa^-1 and the
+      resulting shift in effective phi and in phi_J for a fixed particle set. Treat the
+      coefficient c as a parameter, not a number; find what the literature reports for it
+      via lit-verify and tag anything you cannot resolve. Then state the prediction for
+      how salt moves the DST ONSET and check its SIGN against the Paper 1 finding recorded
+      in memory: salt shifts the onset, not the arrested state (2026-08-30). A sign
+      disagreement is a result; do not tune c to fix it.
+    - Osmotic pressure as the equation of state: below jamming Pi(phi) diverges as phi
+      approaches phi_J from below for hard spheres [lit-verify Brady 1993 or the source
+      you can resolve; do not quote the exponent from memory]; above jamming the DEM
+      ladder gives p_hat(phi) rising from phi_J. Write both sides on one axis with the
+      DEM ladder's measured p_hat(phi) at 4 rungs and ask whether a single crossover
+      scale exists. This is the one place the DEM pressure ladder and a thermodynamic
+      quantity meet; say clearly that the DEM is athermal and what that excludes.
+    - Evaporation: the memory says RH is set by the high-phi end and the drop dries
+      during the experiment. Derive d phi/dt from a solvent flux and state the drift as
+      a fraction of (phi_J - phi) over one impact; if it is not negligible, that is a
+      result for Paper 1, recorded in its card, not silently fixed.
+
+B5. SIZE (absolute): what sets the size dependence of the onset when the static packing is
+    scale-free.
+    - Derive sigma* proportional to F*/a^2 from a fixed repulsive force scale F* and state
+      its dimensional check. Find the published a-dependence of sigma* [lit-verify Guy,
+      Hermes & Poon 2015 or the resolvable source] and compare exponent, not prefactor.
+    - Add the gravitational and Stokes numbers for the lab silica and say at which size
+      each becomes O(1). This item is mostly literature; do it last and keep it short.
+
+Deliverables for Part B, in order:
+1. derivations/ files as above, each with the SymPy script that generated its numbers
+   beside it, and each refereed by physics-referee until clean.
+2. A short synthesis, ANALYTIC_SYNTHESIS_2026-09-<dd>.md in the project root: one
+   paragraph per item, verdict line, what would change the verdict, and which of the
+   five axes the existing data can test versus which need a new measurement. Run the
+   humanizer on it. No macro-free typed numbers: every figure in it is printed by a
+   script or quoted from a derivations/ file with its path.
+3. Card update: section 2 block for the session, section 3 next actions, then
+   Status\_validate.py to "all checks passed". One lesson per corrected error.
+4. Commit derivations/, the synthesis, and card-adjacent files. Leave untracked files
+   alone and do not add any patch script to the index.
+
+Time budget: ~5 h. Part A first. Then B1 and B2 (data on disk, closure on disk), then
+B3, then B4, then B5. If B4 cannot be anchored because the Paper 1 numbers are behind the
+raw-data hook, write the derivation with the parameters symbolic and record what table
+would close it.
+
+Stop and report, rather than proceed, if: a derivation contradicts a number already in
+paper/main.tex; a reviewer finding would move a printed macro; or an item needs a DEM
+cell longer than 600 s.

@@ -12,7 +12,7 @@ multiplet_wc.py -- aggregation state -> Wyart-Cates DNS inputs
    -> the covariance is EXACT, so only the RATIO Lambda/G can move the solver.
 
 === 2. ARE THE TWO GAINS EQUAL? G0 (frictionless) vs Gm (frictional) ===
-   N: 789 records read -> 439 lognormal -> 391 at N=1500 -> 93 at the rung p_hat = 3e-05
+   N: 869 records read -> 519 lognormal -> 471 at N=1500 -> 103 at the rung p_hat = 3e-05
    distinct (mu_p, CV, seed) cells after highest-cap dedup: 63
 
    G(mu, CV) = phi(mu, CV)/phi(mu, 0), seed-paired, CONVERGED CELLS ONLY.
@@ -20,7 +20,7 @@ multiplet_wc.py -- aggregation state -> Wyart-Cates DNS inputs
 
      mu_p    CV         G     s.e.   n  dropped   note
       0.0   0.1        --       --   0        3   no converged pair
-      0.0   0.2        --       --   0        3   no converged pair
+      0.0   0.2    1.0166      inf   1        2
       0.0   0.3    1.0406   0.0038   3        0
       0.0   0.4    1.0616   0.0039   2        1
       0.0   0.5    1.1005      inf   1        2

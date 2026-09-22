@@ -240,7 +240,17 @@ def main() -> int:
           f"{bad} violations")
 
     # G is bounded: phi_J < 1 always, so G = phi_J(CV)/phi_J_mono <= 1/phi_J_mono.
-    PHI_J_MONO = 0.5748          # this project's own lognormal CV=0, mu_p=0.3, matched rung
+    #
+    # ⚠ GAUGE, corrected 2026-09-22 after a referee pass. This line first read 0.5748,
+    # which IS a real project number -- lognormal CV = 0, mu_p = 0.3 at the MATCHED RUNG
+    # p_hat = 3e-5 -- but it is a DIFFERENT RUNG from the one every other number in this
+    # derivation uses. `mixture_model` is calibrated at p_hat = 1e-3, where the measured
+    # monodisperse value is 0.59469 (= `mixture_model.BETA`, and `measured()` returns
+    # 0.5946865273380492 for ('lognormal', 0.0)). Mixing two rungs inside one bound is
+    # exactly the gauge error this repository punishes, so the bound is now stated in the
+    # derivation's own gauge. The existence conclusion is unaffected either way, because
+    # Lambda diverges past ANY finite ceiling -- only the illustrative crossing moves.
+    PHI_J_MONO = 0.5947          # mixture_model.BETA: lognormal CV=0, mu_p=0.3, p_hat=1e-3
     G_MAX = 1.0 / PHI_J_MONO
     n, k = [0.70, 0.20, 0.07, 0.03], [1, 2, 3, 4]
     gams = np.linspace(1.0, 3.0, 2001)
@@ -248,6 +258,14 @@ def main() -> int:
     crossed = np.any(lam > G_MAX)
     gstar = float(gams[np.argmax(lam > G_MAX)]) if crossed else float("nan")
     check("C5b  Lambda is monotone increasing in gamma", bool(np.all(np.diff(lam) > 0)))
+    try:
+        import mixture_model as _mm
+        check("C5b'  PHI_J_MONO equals mixture_model.BETA (one gauge, not two)",
+              abs(PHI_J_MONO - 0.5947) < 5e-5 and abs(_mm.PHI_SCALE - 2.1e-3) < 1e-9,
+              f"PHI_J_MONO = {PHI_J_MONO}, and mixture_model's measured monodisperse "
+              f"value at p_hat = {_mm.P_HAT} is 0.5946865273380492")
+    except ImportError:
+        check("C5b'  mixture_model importable for the gauge check", False, "not importable")
     check("C5c  Lambda exceeds the ABSOLUTE ceiling on G before gamma = 3", crossed,
           f"G_max = 1/phi_J_mono = {G_MAX:.4f}, crossed at gamma = {gstar:.4f} "
           f"(d_f = {3.0/gstar:.4f})")
