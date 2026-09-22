@@ -1,143 +1,148 @@
-NEXT SESSION PROMPT -- polydisperse_jamming, written 2026-09-22
+NEXT SESSION PROMPT -- polydisperse_jamming, written 2026-09-22 (second block)
 
 Project: Desktop\Projects\polydisperse_jamming, branch portfolio-audit-2026-08-29, git root
-C:\Users\compl. Resume from Status\_Router.md, then the card "Drop Impact -- Polydispersity
-Jamming Model.md" section 2 (the 2026-09-22 block) and section 3. Do not reconstruct state
-from repo docs. Read ~/.claude/CLAUDE.md and lessons.md; the last three entries are this
-session's and two were earned from a referee finding a FATAL in work I had just checked.
+C:\Users\compl. Read ~/.claude/CLAUDE.md and lessons.md first.
+
+⚠ THE PROJECT WAS REORGANISED THIS SESSION. Do not resume from the older NEXT_STEPS files
+or from the 09-19 handoff; they predate the reframing and will send you down parked lines.
+
+RESUME IN THIS ORDER, and it is about 10 minutes:
+  1. PROGRAMME_2026-09-22.md            -- the question, the reduction, what to prune
+  2. out/three_knobs.txt                -- every measured number, with its caveats
+  3. Status card "Drop Impact -- Polydispersity Jamming Model.md", section 2 (the
+     2026-09-22 SECOND BLOCK) and section 3.
+Then stop reading and start working.
 
 ------------------------------------------------------------------------------------------
-0. FIRST: IS `mustarcap` ALIVE, AND DID IT FINISH?
+0. THE ONE THING TO UNDERSTAND BEFORE TOUCHING ANYTHING
 ------------------------------------------------------------------------------------------
-  PowerShell:
-    wsl -e bash -lc "cat ~/pj/out/phase2_mustarcap*.jsonl | wc -l; ps -eo cmd | grep -c '[p]hase2_phiJ'"
+The author's actual question is: how do a particle's SIZE, SHAPE, SIZE DISTRIBUTION,
+SURFACE POTENTIAL and MATERIAL PROPERTIES change shear thickening / jamming in DROP
+IMPACT -- answered numerically/analytically, backed by simulation, backed by experiment.
+The standing instruction is "as simple as possible while maintaining rigor."
 
-At handoff: 94 of 108 records, 6 workers alive. The runner RESUMES BY KEY, so if the
-workers are dead just relaunch and nothing is re-run:
+The Wyart-Cates closure the DNS solves is EXACTLY covariant under a common rescaling of
+(phi, phi0, phim), so the whole thing is three numbers:
 
-    wsl -e bash /mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming/scripts/launch_mustarcap.sh 12
+    x = phi/phi0   (position)    chi = phim/phi0   (contrast)    sigma*   (onset)
 
-⚠ BY FILE PATH, FROM POWERSHELL, BACKGROUNDED. Never inline from Git Bash (it rewrites
-/mnt/c into a Windows path), and nothing spawned by a wsl.exe call survives that call
-exiting. The launcher copies the shards to out/ only when the whole block finishes; to
-grade partial data, copy them yourself first:
+    x < chi       never jams -- continuous thickening only
+    chi <= x < 1  THE SHEAR-JAMMING WINDOW, width 1-chi
+    x >= 1        jammed at rest
 
-    wsl -e bash -lc "cp ~/pj/out/phase2_mustarcap*.jsonl /mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming/out/"
+    Theta = eta(fhat=1)/eta(fhat=0) = [(1-x)/(1-x/chi)]^MP_EXPO   -> inf at x = chi
 
-------------------------------------------------------------------------------------------
-1. GRADE IT. The grader is written, committed and dry-run clean on partial data.
-------------------------------------------------------------------------------------------
-    python grade_mustarcap.py      -> out/grade_mustarcap.txt
+chi decides WHETHER a suspension can shear-jam; x decides WHERE it sits; sigma* decides AT
+WHAT STRESS, never whether. Every particle axis is classified by which knob it turns.
 
-Against PREREG_MUSTARCAP_2026-09-22.md. Read the structure before the numbers:
+⚠ SCOPE: DIL_COEFF = 0. The dilatancy term uses a fixed PHI_REF = 0.49 that does not
+rescale. Every preset on record uses the default, but say it whenever you say "exact".
 
-  M1a IDENTITY is PRIMARY and gates everything. On partial data it already passes 52/52
-      EXACTLY. If it fails, nothing else may be read.
-  M1b is a DIAGNOSTIC, NOT A GATE, and the grader says why: it compares against records
-      written by an OLDER code state, which differ in `phi` ONLY at ~1e-14 while `iters`
-      and `n_contacts` are bit-identical -- the trajectory is the same and only the
-      derived scalar moves. Do not turn it into a gate; it would fail the campaign for
-      the wrong reason.
-  M2  RESCUE: >= 15 of the 17 previously-capped cells converge at 1e6. A miss is reported,
-      NOT re-raised to a third cap.
-  M3  IS THE POINT and IS NOT PASSABLE BY CONSTRUCTION. The violating step is CV 0.5,
-      mu 0.6 -> 1.0, +0.01633 = 7.8x PHI_SCALE, and only the 0.6 end is being re-run.
-  M4  DIRECTION: the previously-capped cells must shift UP (under-compressed reads low).
-      This is the test that distinguishes "the cap explained it" from "it is monotone now
-      for some other reason" -- M3 alone is necessary, not sufficient.
-  M5  mu* and A re-fitted, REPORTED not gated. F3a stays binding: if A again leaves
-      [0.90, 1.20] the verdict is UNDETERMINED whatever mu* does. Repairing a cap does not
-      repair an identifiability problem.
-
-Then write CLAIMS_MUSTARCAP_2026-09-22.md, update the card, commit.
+MEASURED SO FAR (two of five axes):
+  friction  -> chi   0.8872 +- 0.0042, window 0.113
+  shape     -> chi   0.8856 -> 0.7884, window x1.85, |t| = 19.3, same sign at all 4 rungs
+  CV        -> x     does NOT move the window: paired |t| = 0.56 (r = +0.86)
+  size, potential -> sigma*, NEITHER MEASURED. This is the hole.
 
 ------------------------------------------------------------------------------------------
-2. THEN RE-RUN `python multiplet_wc.py` -- this is what the campaign was FOR
+1. THE HIGHEST-VALUE NEXT STEP, AND IT NEEDS NO NEW CELLS
 ------------------------------------------------------------------------------------------
-Its section 2 asks whether the polydispersity gain G depends on FRICTION, and it currently
-cannot answer at full span: the mu_p = 3.0 arm has NO converged pairs, so the module
-correctly REFUSES to emit a solver quadruple. On the cells that do exist, 0 of 4 comparable
-CV levels resolve a friction dependence (|t| = 0.06-2.18 against t_crit 4.303), reported as
-a BOUND and not as equality.
+Read out/three_knobs.txt section 6 in full before planning anything about sigma*.
 
-It matters because the Wyart-Cates closure is EXACTLY covariant under a common rescaling of
-(PHI, PHI0, PHIM):
+⚠ A sigma* DEM CAMPAIGN IS NOT RUNNABLE AS THINGS STAND. Audited this session:
+packing.py and shear.py carry ONLY Cundall-Strack friction and a cohesion law with
+cohesion OFF -- there is no repulsive force law -- and the shear is RATE-controlled, not
+stress-controlled. Measuring sigma* directly is a CAPABILITY BUILD.
 
-    if G0 == Gm, the entire effect of aggregation on the DNS collapses to ONE number,
-    the ratio Lambda/G. If G0 != Gm, aggregation also changes the SHAPE of phiJ(fhat),
-    i.e. the thickening contrast, which is a qualitatively different claim.
+But there is a cheap route. In WC, fhat is the FRACTION OF CONTACTS whose normal force
+exceeds F_rep -- i.e. the SURVIVAL FUNCTION of the contact-force distribution, which
+measure.force_moments ALREADY RECORDS on every record (`force`: mean, cv, tail_slope,
+n_tail). So
 
-mustarcap is exactly what widens the friction span. Re-run and re-grade that sentence.
+    fhat(sigma) = S(F_rep/<f>) = S(sigma*/sigma)
 
-------------------------------------------------------------------------------------------
-3. REFEREE PASS 2 ON THE MULTIPLET WORK
-------------------------------------------------------------------------------------------
-Pass 1 returned ONE FATAL, six Material, three Minor -- ALL accepted and fixed (see the
-card, section 2 D, and section 9 of derivations/multiplet_psd_2026-09-22.md, which tabulates
-every finding and its action). Pass 2 was launched at the end of this session. THE LOOP RULE
-IS "REPEAT UNTIL A PASS RETURNS NOTHING", and the pass that found the FATAL has not itself
-been repeated clean. Act on pass 2 before anything from that derivation is quoted anywhere.
+and tail_slope sets the SHAPE of the activation curve -- which is what the solver's DELTA
+parameterises. Measured, controlled (lognormal, N=1500, alpha=1, mu_p=0.3, converged,
+n_tail >= 200): POLYDISPERSITY FLATTENS THE TAIL, monotonically, at every rung:
 
-The FATAL is worth re-reading because it is this repo's standing defect: my PROSE
-contradicted the TABLE THE SAME FILE PRINTS, and every numerical check passed because none
-of them tested the prose.
+    rung      CV0.0    CV0.2    CV0.5   d(0->0.5)   within-cell sd
+    1e-03    -2.516   -1.800   -1.133     +1.383            0.063
+    3e-05    -1.509   -1.489   -0.968     +0.541            0.075
 
-------------------------------------------------------------------------------------------
-4. THE BIG OPEN DECISION: LAUNCH PREREG_MULTIPLET_2026-09-22.md?
-------------------------------------------------------------------------------------------
-144 cells, lognormal-free (it is its own family), mu_p = 0.3, PJ_MAX_ITER = 1e6,
-12 compositions x 3 seeds x 4 rungs. It tests whether the calibrated filling functional --
-fitted on 16 binaries, transferring to three continuous families -- also predicts a FOURTH
-PSD shape.
+=> the size distribution may be a THIRD kind of knob: the SHARPNESS of the transition,
+not the window and not the position. THAT WOULD BE A NEW CATEGORY IN THE AXIS MAP.
 
-⚠ BLIND PREDICTIONS ARE ALREADY COMMITTED in out/predict_multiplet.txt AND MUST NOT BE
-REGENERATED. Block B's registered outcome is NON-MONOTONE (argmax of phi at <k> = 1.7);
-block C is four CV-MATCHED pairs where a CV-only closure must predict exactly zero and the
-calibrated one predicts -2.3 to -3.8 x PHI_SCALE, all the same sign.
-
-⚠ Expect it to be LONGER than wcbidicap: the low-d_f cells carry size ratio up to 2.0 and
-are the slow ones. The family string reaches the runner already (`--family
-multiplet:f1.8:n0.70/0.20/0.10`); phase2_phiJ.fs_safe makes it filename-safe and the CELL
-KEY is deliberately NOT sanitised.
+🔴 IT IS A LEAD, NOT A RESULT. The largest gap: these are ISOTROPICALLY COMPRESSED packs
+and WC's fhat is about SHEARED contacts. THE REGISTERED NEXT STEP IS TO CLOSE THAT:
+shear.py already runs sheared packs to the critical state; it needs only
+measure.force_moments recorded on its output. Do that before anything else on sigma*.
+Three smaller caveats are listed in section 6 and all three are unchecked.
 
 ------------------------------------------------------------------------------------------
-5. THE CLUMP CONTROL IS THE ONE THAT TESTS THE MODEL'S MAIN ASSUMPTION, AND IT IS BLOCKED
+2. AFTER THAT, IN COST ORDER
 ------------------------------------------------------------------------------------------
-Everything in the multiplet work replaces each aggregate by ONE SPHERE. A real doublet is a
-dumbbell. The control that separates the SIZE consequence of aggregation from its SHAPE
-consequence is the same n_k run as rigid clumps -- and it is blocked on volume bookkeeping,
-not on cells:
-
-  * utils.porosity() in Yade DOUBLE-COUNTS clump overlap, alpha-dependent up to a factor 2;
-  * packing.measure supplies per-grain volumes for SPHERE packs only.
-
-Fix that first. A clump campaign run on a porosity that double-counts would produce a
-confident wrong answer rather than an error.
+- sigma* ANALYTICALLY: sigma* = F_rep/(c a^2); enumerate the AREA CONVENTIONS and connect
+  to DLVO/steric. derivations/onset_size_degeneracy_2026-09-19.md already establishes that
+  a SIZE ladder cannot separate size from potential, so the sweep must be on F_rep.
+- TWO DNS RUNS in wc_drop_impact.c: one (x, chi, sigma*) triple inside the window and one
+  outside, checking the phase diagram predicts the drop outcome. Label MP_EXPO and
+  DIL_COEFF = 0 in the run metadata.
+- THE BENCH COLLAPSE (PROGRAMME section 3). ⚠ It must run ON THE BENCH: at DIL_COEFF = 0
+  the DNS has no particle-scale length, so matched triples collapse there TRIVIALLY. And
+  matching We and Re is NOT enough when size is the axis -- Stokes number, rho_p/rho_f and
+  particle-size-to-film-thickness must be controlled, or a failed collapse cannot
+  distinguish particle inertia from "the three numbers are insufficient".
 
 ------------------------------------------------------------------------------------------
-6. STANDING RULES THAT EARNED THEIR PLACE THIS SESSION
+3. THE REFEREE LOOP IS OPEN
 ------------------------------------------------------------------------------------------
+The framework has had ONE pass. It returned TWO FATALs (both fixed) and the loop rule is
+"repeat until a pass returns nothing". Referee it again before quoting it anywhere.
+
+The pattern across five passes this session is worth carrying: THE GEOMETRY AND THE ALGEBRA
+SURVIVED EVERY PASS; EVERYTHING BUILT DOWNSTREAM FAILED AT LEAST ONCE. Trust the reduction;
+treat each application of it as provisional.
+
+Two specific things a pass already caught and you must not re-introduce:
+  * Theta IS the solver's own R_max, already in wc_drop_impact.c's comment block WITH
+    NUMBERS. That section RE-DERIVES a documented result. It is a check, not a discovery.
+  * Theta depends on MP_EXPO, and the same block says 2 is WRONG for cornstarch (fitted
+    ~5). cs_fit gives Theta = 5.5 at n=2 and 71 at n=5 -- 0.74 vs 1.85 decades. ALWAYS
+    quote Theta with its exponent. The block also says the exponent is DEGENERATE WITH
+    phi, so no amount of fitting settles it.
+
+------------------------------------------------------------------------------------------
+4. STATE OF THE CAMPAIGNS
+------------------------------------------------------------------------------------------
+ALL FOUR THIS SESSION LANDED AND ARE GRADED. Nothing is running.
+  wcbidicap  72/72  ALL GATES PASS  (C1 identity 58/58 bit-identical; turned a PROVISIONAL
+                                     verdict into a result)
+  mustar     72/72  NOT READABLE    (mixed-cap ladder; superseded by mustarcap)
+  mustarcap 108/108 ALL GATES PASS  (17/17 rescued; 2 of 3 previously-MISSED blind
+                                     predictions became HITS with no tolerance moved)
+  shapechi   72/72  ALL GATES PASS  (the shape result above)
+
+⚠ 2 of 108 mustarcap cells still cap at 1e6 (mu_p = 0, CV = 0.5, seeds 1 and 3). REPORTED,
+not re-raised -- the prereg says a third cap raise is not the response.
+
+NOT LAUNCHED, written and ready: PREREG_MULTIPLET_2026-09-22.md (144 cells) with blind
+predictions already committed in out/predict_multiplet.txt. ⚠ Those must NOT be
+regenerated. Amendment 1 withdraws two of its interpretive claims; the predictions stand.
+
+------------------------------------------------------------------------------------------
+5. STANDING RULES THAT COST SOMETHING THIS SESSION
+------------------------------------------------------------------------------------------
+- A capped cell reads LOW. Measured twice: +0.0049 on one headline, +0.01319 mean over 17
+  cells. MAX_ITER = 200000 is too low wherever CV > 0 and mu_p >= 0.6.
 - When you fit a SCALE ALONG an axis, check the PROTOCOL does not change along that axis.
-  The mu ladder mixed two iteration caps and its single monotonicity violation sat exactly
-  at the cap boundary, with the sign under-compression predicts.
-- "phi_J cannot rise with friction" is a fit-free admissibility check needing no threshold,
-  and it is what found that. The fitted mu* never would have.
-- A gate NAMED "bit-identical" and IMPLEMENTED as a tolerance is a different gate. Check
-  the stated criterion; the difference may be a real fact (here: this repo's older records
-  are not bit-reproducible by current code at ~1e-14, trajectory identical).
-- Apply each bar the file states to EVERY table in the file, not only the one it was
-  written under. One quoted row sat below the project's own resolution floor.
-- A range over the values you happened to tabulate is not a bound over "any realistic"
-  case. Compute the threshold where the claim stops holding, and print it.
-- Read the generated table back against the sentence that describes it. If a paragraph's
-  MECHANISM sentence and its DIRECTION word disagree, the paragraph is already telling you
-  it is wrong.
-
-------------------------------------------------------------------------------------------
-7. UNCHANGED, AND THE AUTHOR'S
-------------------------------------------------------------------------------------------
-- FILL IN THE AUTHOR LINE, paper/main.tex:31-32, still `A.~Author`.
-- PREREG_LOGN_LARGEN_2026-09-17.md (48 cells, N = 6000, 12-30 h) needs vmIdleTimeout = -1
-  plus a service-style launch.
-- The tie-break bound into the manuscript's Methods; the LevelSet control; wave 2 of the
-  alpha ladder; the MAX_ITER audit; the third fabric invariant; K = 6; the off-locus PSD.
+- chi is NOT rung-independent (drifts 0.016-0.025, more than phi0 itself). Quote it at a
+  named rung. "It's a ratio so the rung cancels" is FALSE and was tested.
+- Two arms that share a seed are PAIRED even if they are different cells: packing.py seeds
+  the radius draw from the seed regardless of mu_p AND regardless of CV. hypot is wrong
+  for both. Caught twice this session, and once before on 2026-09-19.
+- Do not register a reference value to 6 decimals and then demand exact float equality --
+  shapechi's W1 failed 0/3 on a bar no correct run could pass. Compare to the RECORD.
+- When a correction lands upstream, GREP FOR EVERY DOWNSTREAM ARTIFACT. Two FATALs this
+  session were figures and captions that went stale after an upstream fix, inside one day.
+- Writing Python through a bash heredoc mangles "\n" inside string literals. Use the Edit
+  tool. This bit three times today.

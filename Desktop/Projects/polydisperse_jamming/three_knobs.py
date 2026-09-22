@@ -190,7 +190,7 @@ def main() -> int:
             if all(k in best and best[k]["converged"] for k in (ka, kb, kc, kd)):
                 d_seed[s_] = (best[kd]["phi"] / best[kc]["phi"]
                               - best[kb]["phi"] / best[ka]["phi"])
-        (m0, s0, n0), (m2, s2, n2) = q[0.0], q[0.2]
+        (m0, s0, _), (m2, s2, _) = q[0.0], q[0.2]
         if len(d_seed) > 1:
             arr = np.array(list(d_seed.values()))
             a_ = np.array([best[(MU_M, 0.0, s_, QUOTE_RUNG)]["phi"]
@@ -392,6 +392,89 @@ def main() -> int:
     say("   So drop ARREST is a KINETIC criterion (the solver's own `jam_frac`, `u_max <")
     say("   0.02 U0`) and is NOT a readout of CONSTITUTIVE jamming (eta -> infinity).")
     say("   A finite Theta of 5-90x is perfectly capable of arresting a drop.")
+
+    # ---------------------------------------------------------------- 6
+    say("\n=== 6. sigma* AND THE ACTIVATION SHAPE -- a LEAD, not a result ===")
+    say("   sigma* is the one axis with no measurement, and a DEM capability audit says")
+    say("   why: `packing.py` and `shear.py` carry only Cundall-Strack friction and a")
+    say("   cohesion law with cohesion OFF -- there is NO repulsive force law -- and the")
+    say("   shear is RATE-controlled, not stress-controlled. So sigma* cannot be measured")
+    say("   here as things stand. That is a CAPABILITY BUILD, not a campaign, and the")
+    say("   next session should know it before planning one.")
+    say("")
+    say("   🔑 BUT THERE IS A CHEAPER ROUTE, AND IT NEEDS NO NEW CELLS. In Wyart-Cates")
+    say("   fhat is the FRACTION OF CONTACTS whose normal force exceeds the repulsive")
+    say("   force F_rep. If an applied stress scales the whole force distribution, then")
+    say("")
+    say("       fhat(sigma) = S(F_rep/<f>) = S(sigma*/sigma),")
+    say("")
+    say("   with S the SURVIVAL FUNCTION of the contact-force distribution -- which this")
+    say("   project ALREADY MEASURES on every record (`measure.force_moments`). Its")
+    say("   `tail_slope` is d ln P/d(f/<f>) over 1 <= f/<f> <= 4, so it sets the SHAPE of")
+    say("   the activation curve, which is what the solver's DELTA parameterises.")
+    say("")
+    say("   Controlled: lognormal, N = 1500, alpha = 1, mu_p = 0.3, converged, n_tail >= 200.")
+    say("")
+    import collections as _c
+    rows = []
+    for fn in glob.glob(os.path.join(OUT, "phase2*.jsonl")):
+        for ln in open(fn, encoding="utf-8"):
+            ln = ln.strip()
+            if not ln:
+                continue
+            r = json.loads(ln)
+            if r.get("failed") or not r.get("converged") or "force" not in r:
+                continue
+            if r.get("n_requested") != N_REQ:
+                continue
+            if (r.get("family") or "lognormal") != "lognormal":
+                continue
+            if round(r.get("alpha", 1.0), 1) != 1.0 or r.get("mu_p") != 0.3:
+                continue
+            fm = r["force"]
+            if not isinstance(fm, dict) or fm.get("n_tail", 0) < 200:
+                continue
+            if not np.isfinite(fm.get("tail_slope", float("nan"))):
+                continue
+            rows.append(r)
+    say(f"   {'rung':>8}" + "".join(f"{('CV%.1f' % c):>9}" for c in (0.0, 0.2, 0.5))
+        + f"{'d(0->0.5)':>11}{'within-cell sd':>16}")
+    for rung in RUNGS:
+        d = _c.defaultdict(list)
+        for r in rows:
+            if abs(r["p_hat_target"] - rung) / rung < 0.05:
+                d[round(r["cv"], 1)].append(r["force"]["tail_slope"])
+        if 0.0 not in d or 0.5 not in d:
+            continue
+        sd = float(np.mean([np.std(v, ddof=1) for v in d.values() if len(v) > 1]))
+        lo, hi = float(np.mean(d[0.0])), float(np.mean(d[0.5]))
+        say(f"   {rung:8.0e}"
+            + "".join(f"{float(np.mean(d[c])):9.3f}" if c in d else f"{'--':>9}"
+                      for c in (0.0, 0.2, 0.5))
+            + f"{hi-lo:+11.3f}{sd:16.3f}")
+    say("")
+    say("   🔑 POLYDISPERSITY FLATTENS THE CONTACT-FORCE TAIL, monotonically, at every")
+    say("   rung, by 0.5-1.4 against a within-cell scatter of 0.06-0.12. A flatter tail")
+    say("   means more contacts carry large forces relative to the mean, so fhat would")
+    say("   rise MORE GRADUALLY with stress -- a broader, less abrupt thickening.")
+    say("")
+    say("   => the size distribution may be a THIRD kind of knob: not the window, not")
+    say("   the position, but the SHARPNESS of the transition. That would be a new")
+    say("   category in the axis map.")
+    say("")
+    say("   🔴 THIS IS A LEAD AND IS NOT CLAIMED. Four things stand between it and a")
+    say("   result, and none is checked:")
+    say("     (a) these are ISOTROPICALLY COMPRESSED packs. Wyart-Cates fhat is about")
+    say("         SHEARED contacts, and the force distribution under shear is not this")
+    say("         one. This is the largest gap and it is not a detail.")
+    say("     (b) `tail_slope` is itself RUNG-DEPENDENT (-2.52 to -1.51 at CV = 0 across")
+    say("         the ladder), like chi, so it must be quoted at a named rung.")
+    say("     (c) fhat = S(sigma*/sigma) assumes the applied stress RESCALES the whole")
+    say("         distribution without changing its shape. Untested here.")
+    say("     (d) the slope is a 12-bin fit over 1 <= f/<f> <= 4. A different window or")
+    say("         a non-exponential tail would move it.")
+    say("   The registered next step is to check (a) with `shear.py`, which already runs")
+    say("   sheared packs and would need only the force moments recorded.")
 
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, "three_knobs.txt"), "w", encoding="utf-8") as fh:
