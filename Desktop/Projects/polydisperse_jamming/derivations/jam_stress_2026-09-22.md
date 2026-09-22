@@ -2,7 +2,9 @@
 
 Written 2026-09-22 (third block). Checks: `jam_stress_2026-09-22_check.py` →
 `jam_stress_2026-09-22_check.txt` (**11/11 PASS**). Code: `actshape.py`.
-Status: **derived and checked; not yet refereed.**
+Status: **derived and checked; referee pass 1 returned 1 FATAL + 2 MATERIAL, all in the
+interpretive layer (§0, §5), all acted on below; the algebra was independently re-derived and
+stands. Pass 2 not yet run.**
 
 > **RESULT.** A suspension inside the shear-jamming window jams wherever the local stress exceeds
 >
@@ -10,10 +12,10 @@ Status: **derived and checked; not yet refereed.**
 >
 > with `x = φ/φ₀`, `χ = φ_m/φ₀`, `d` the particle size, `F_rep = κ_m R*^m` the repulsive
 > threshold, and `ĝ_m` the dimensionless contact-force variable of §2 whose distribution the
-> DEM measures. **Each particle property enters one factor:** packing fraction through `x`;
-> friction and shape through `χ` (and weakly through `ĝ`); surface potential through `κ_m`;
-> size through `d^(m−2)`; **the size DISTRIBUTION through `x` AND through the whole
-> distribution of `ĝ`**, i.e. both the onset scale and the activation SHAPE. For the solver's
+> DEM measures. **The factors are:** packing fraction through `x`; friction and shape
+> through `χ` **and, unmeasured, through `ĝ`**; surface potential through `κ_m`; size through
+> `d^(m−2)` **only if `ĝ`'s distribution is scale-free (A4b, untested)**; the size
+> DISTRIBUTION through `x` and through the distribution of `ĝ` (its onset scale and shape). For the solver's
 > Weibull activation (8) reduces to `σ_jam = σ*[ln(1/f_c)]^(−1/δ)`, and the shape `δ` has a
 > **sign-reversing** effect: sharper activation needs MORE stress to jam when `f_c < 1/e`
 > (deep in the window) and LESS when `f_c > 1/e` (near its edge).
@@ -34,12 +36,23 @@ inertial-dilatant" becomes a comparison of the impact stress with one number.
   `R* = R₁R₂/(R₁+R₂)`. `m = 1` is Derjaguin (any flat-plate law); `m = 0` is a
   size-independent threshold, which is what the one measured size series implies (Guy,
   Hermes & Poon, PRL 115, 088304 (2015), doi:10.1103/PhysRevLett.115.088304: `σ* ∝ d^−1.9`,
-  resolved in `onset_size_degeneracy_2026-09-19.md` §6.2). **`m` is not settled; both are
-  carried.**
+  sourced and discussed — as an OPEN problem with four live caveats — in
+  `onset_size_degeneracy_2026-09-19.md` §6.2). **`m` is not settled; both are carried.**
 - (A4) At fixed packing and friction, contact forces scale with the applied stress times a
   size-squared: `f = σ d² ĝ`, `ĝ` a dimensionless random variable whose distribution depends on
-  the packing (CV, shape, `μ_p`, `x`) but **not** on `σ` (the "rescaling" assumption; tested in
-  `PREREG_ACTSHAPE` H4 over a decade of `p̂`).
+  the packing (CV, shape, `μ_p`, `x`) but **not** on `σ` (the "rescaling" assumption; TO BE
+  tested by `PREREG_ACTSHAPE` H4 over a decade of `p̂` — which, in a pressure-servoed cell,
+  moves the pack's compression together with `σ`, so a pass cannot separate the two).
+- (A4b) **`ĝ_m`'s distribution does not depend on the absolute size scale**, only on the
+  distribution's shape. Needed for "size enters only as `d^(m−2)`". **Untested for SHEARED
+  packs**: `test_scale_invariance.py` covers static isotropic packs, and lessons.md records
+  that a static scale-invariance does not transfer to the dynamics for free. In a real
+  suspension Brownian and hydrodynamic forces break it outright (they carry their own size
+  dependence), so (A4b) is a statement about the frictional-contact network only.
+- (A6) **`f̂` is the UNWEIGHTED fraction of contacts, by count**, pooled over all pair types.
+  This is a modelling choice, not a consequence of (A3)–(A4): it matches Wyart–Cates'
+  constraint-counting motivation, but `φ_J` is a volume fraction and a size- or
+  coordination-weighted fraction is a defensible alternative. Untested against one.
 - (A5) Gauge: `σ` is the pack's mean pressure in the DEM. The solver's `σ` is a shear-stress
   magnitude; `τ = μ_M p` relates them in steady flow. Named, not assumed away.
 
@@ -121,19 +134,29 @@ A drop jams where its local stress exceeds (8). Reading the particle properties 
 | property | enters through | kind of effect |
 |---|---|---|
 | packing fraction `φ` | `x` → `f_c` | position in the window |
-| friction `μ_p`, shape `α` | `χ` → `f_c` (and `ĝ`) | whether a window exists and how wide (measured: `three_knobs.py`) |
+| friction `μ_p`, shape `α` | `χ` → `f_c`, and `ĝ` (unmeasured; `actshape` H3 measures friction's) | whether a window exists and how wide (measured: `three_knobs.py`) |
 | surface potential | `κ_m` | pure stress scale; cannot change WHETHER, only at what stress |
-| size `d` | `d^(m−2)` | pure stress scale, exponent `m − 2` ∈ {−2, −1} |
-| **size distribution CV** | `x` (φ₀ rises) **and** the distribution of `ĝ_m` | position AND onset scale AND activation shape |
+| size `d` | `d^(m−2)`, if (A4b) | pure stress scale, exponent `m − 2` ∈ {−2, −1} |
+| **size distribution CV** | `x` (φ₀ rises) **and** the distribution of `ĝ_m` | position; and, through `ĝ_m`, onset scale and activation shape |
 
-The size distribution is the only property that enters (8) in more than one place, which is
-why it is the one the bench sees moving the regime at fixed mean size. **Whether its shape
+The size distribution is the only property **measured** to enter (8) in more than one place.
+Friction and shape may too (through `ĝ`); that is unmeasured, and `actshape` H3 measures the
+friction half. ~~"the only property that enters (8) in more than one place"~~ was the v1 wording
+and was withdrawn on referee pass 1 (FATAL: it contradicted the result box's own "weakly through `ĝ`",
+which was itself unsupported). **Whether its shape
 effect is large enough to matter is what `PREREG_ACTSHAPE` measures; whether shape matters
 for a drop at all is what `PREREG_JAMWIN` measures.** Neither result is in this document.
 
 ## 6. Open
 
 - (A2) quasi-steadiness: tested only by `jamwin`.
-- (A4) rescaling in `σ`: `actshape` H4.
+- (A4) rescaling in `σ`: `actshape` H4 (confounded with compression, see A4).
+- (A4b) size-scale invariance of the SHEARED `ĝ`: no test planned yet.
+- (A6) count-weighted `f̂`: no alternative computed yet.
+- **The solver is rate-driven, not stress-controlled.** `wc_relax` activates on `η(f̂)γ̇`, so
+  in a DNS the threshold is set by a bottleneck `f*` below `f_c`, and (7)'s reversal at
+  `f_c = 1/e` moves to `f* = 1/e`: `jam_rate_driven_2026-09-22.py`, `PREREG_JAMWIN`
+  Amendment 1. (8) describes a stress-controlled material point; reading a DNS with it needs
+  that restatement.
 - `m`: unsettled; Derjaguin says 1, the one size series says ≈ 0. (8) carries both.
 - The gauge (A5) turns a DEM `p` into a solver `τ` through `μ_M`, which moves with CV and `μ_p`.
