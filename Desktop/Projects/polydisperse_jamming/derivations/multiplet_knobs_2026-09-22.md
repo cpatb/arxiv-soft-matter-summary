@@ -4,7 +4,7 @@ Written 2026-09-22 (fourth block). Checks: `multiplet_knobs_2026-09-22_check.py`
 `..._check.txt` (**9/9 PASS**; K6 is an arithmetic cross-check against `predict_kmer.py`,
 not a physics test). Predictions: `predict_kmer.py` → `out/predict_kmer.txt`. Test:
 `PREREG_KMER_2026-09-22.md` (126 DEM cells, running at time of writing).
-Status: **derived, checked; unrefereed.**
+Status: **derived, checked; referee pass 1 returned 1 FATAL + 4 MATERIAL + 2 MINOR, all acted on below (marked "(pass 1)"). Pass 2 not yet run.**
 
 > ## RESULT BOX
 >
@@ -12,10 +12,12 @@ Status: **derived, checked; unrefereed.**
 > k-clusters (singlets, dumbbells, triangles, …):
 >
 > 1. **Aggregation is not a size knob. It is a WINDOW knob.** Tangent clusters leave the
->    solid's specific surface exactly unchanged (`S/V = 6/d`, K1), so the Sauter diameter
->    and the Carman–Kozeny permeability at fixed φ do not move; and a compact cluster of
->    k ≤ 4 encloses no fluid (throat radius 0.155 a > 0, K2), so the trapped-fluid factor is
->    **Λ = 1 exactly** — the lever the effective-sphere model (`multiplet_psd_2026-09-22.md`)
+>    solid's specific surface exactly unchanged (`S/V = 6/d`, K1), so the Sauter diameter is
+>    unchanged and so is the Carman–Kozeny permeability IF the Kozeny constant is
+>    shape-independent (an assumption: a dumbbell's concave waist can raise tortuosity);
+>    and a compact cluster of k ≤ 4 encloses no topologically closed pore (throat radius
+>    0.155 a > 0, K2), so the trapped-fluid factor is **Λ ≈ 1** (hydrodynamic screening of
+>    the throat not computed) — the lever the effective-sphere model (`multiplet_psd_2026-09-22.md`)
 >    is built on is absent for singlet/doublet/triplet populations. What survives is SHAPE:
 >    measured pure doublets have `χ` = 0.788 against 0.886 for singlets (μ_m = 3; 0.862 vs
 >    0.908 at μ_m = 0.3), i.e. **a doublet fraction widens the shear-jamming window.**
@@ -33,11 +35,15 @@ Status: **derived, checked; unrefereed.**
 > 4. **Isostatic counting fixes the contact number**: rough (μ → ∞) clusters of ANY shape
 >    jam at Z = 4 (measured 4.04 singlets, 3.88 doublets); frictionless dumbbells are
 >    hypostatic (7.92 against an isostatic 10).
-> 5. For a drop, doublets push the same way on **every** channel: wider window (jam), lower
->    onset stress (earlier activation), larger thickening ratio outside the window (K5), and a
->    smaller inertial-dilatant number through a lower critical packing at unchanged
->    permeability. **The singlet/doublet ratio is the one particle property that moves the
->    window, the onset and the dilatancy together at fixed primary size and chemistry.**
+> 5. For a drop, doublets push toward jamming on the window (wider), the onset (lower σ\*),
+>    the thickening ratio outside the window (K5) and the inertial-dilatant number (lower φ_c).
+>    ⚠ **Not on every channel** (pass 1 FATAL): the activation-shape channel's sign depends on
+>    `f_c` — a LOWER δ lowers σ_jam only for `f_c < 1/e` and RAISES it for `f_c > 1/e` — and
+>    its doublet direction is itself unmeasured. At `f_c` = 0.75 a fall of δ from 1.3 to 1.0
+>    would raise σ_jam ×1.33 against the predicted σ\* factor ×0.61–0.86, so the net there is
+>    ×0.81–1.15: **the two can cancel near the window edge.** The singlet/doublet ratio is the
+>    particle property that moves the window, the onset and the dilatancy together at fixed
+>    primary size and chemistry; whether it lowers σ_jam everywhere in the window is open.
 
 ---
 
@@ -67,15 +73,20 @@ it does not.
 **K1 — specific surface is invariant.** A k-cluster of tangent spheres has `V = k·πd³/6` and
 `S = k·πd²` (point contacts remove zero area), so `S/V = 6/d` for every k: the Sauter
 diameter is `d` whatever the composition. With Carman–Kozeny, `κ = d_s²(1−φ)³/(180φ²)`, the
-permeability at fixed φ is **independent of the singlet/doublet ratio**. (For a SINTERED
+permeability at fixed φ is independent of the singlet/doublet ratio **only if the Kozeny
+constant (180 here) is shape-independent** — it encodes tortuosity, and a dumbbell's concave
+waist ("as corrugated as a body can be", `shape.py`) can raise it. S/V is exact; κ is not
+(pass 1). (For a SINTERED
 dumbbell at centre separation `s < d`, the removed caps lower `S` faster than `V`, so
 `d_s` = 1.08 d at `s = 0.8d` and 1.12 d at `0.6d` — K1b, checked against Monte-Carlo volume.
 Necks raise κ.) *This is the opposite of polydisperse spheres, where κ ∝ d₃₂² moves with CV.*
 
 **K2 — no trapped fluid for compact small clusters.** The throat between three mutually
 tangent primaries has inscribed radius `(2/√3 − 1)a = 0.155a > 0`, so the pore inside a
-triangle or tetrahedron of tangent spheres connects to the outside. **Λ = 1 exactly** for
-k ≤ 4 compact clusters: the effective volume fraction equals the solid fraction. The
+triangle or tetrahedron of tangent spheres connects to the outside: there is no
+TOPOLOGICALLY closed pore, so **Λ ≈ 1** for k ≤ 4 compact clusters. ⚠ The hydrodynamic
+criterion (below) is not computed: whether fluid in a tetrahedral interstice drains through
+a 0.155a throat on the impact timescale is an open estimate (pass 1). The
 trapped-fluid lever needs OPEN aggregates whose interior is screened hydrodynamically (the
 Brinkman screening length of the aggregate interior smaller than its size), i.e. large k.
 
@@ -94,10 +105,13 @@ the same everywhere. The size-convention trap that dogged the CV onset (σ\* shi
 ## 2. The reduced knobs as functions of composition
 
 Write `A = 1/φ` (specific volume). **H_mix** (ideal mixing): `A_J(w) = (1−w)A_J,s + wA_J,d` for
-each branch (φ₀ at μ 0; φ_m at μ_m). Justification for "no excess": all grains share one
-primary, so no size-ratio filling (body-size ratio 2^{1/3} = 1.26, far below the ~2.4 at which
-filling appears in this project's binaries). The rival — a positive excess from mixing
-shapes — is registered beside it (`PREREG_KMER` §3).
+each branch (φ₀ at μ 0; φ_m at μ_m). Justification, and its limit (pass 1): all grains share one primary and the body-size ratio
+is only 2^{1/3} = 1.26. This project's own SPHERE binaries at size ratio 1.25
+(`phase12_mixr125`, μ_p 0.3, p̂ 1e-3) show a filling excess of at most **+0.0036** over the
+monodisperse value (0.5976 at x = 0.4 vs 0.5940) — 1.7·PHI_SCALE, just inside the H_mix bar —
+so size-ratio filling is small but not zero, and the non-spherical excess is untested. (An
+earlier version cited a "~2.4 filling threshold" that is not traceable in this repository;
+withdrawn.) The rival — a positive excess from mixing shapes — is registered beside it.
 
 - **Position.** `x(w) = φ/φ₀(w)`. φ₀ moves only 0.9 % from singlets to dumbbells, so **the
   doublet fraction barely moves x.** (Contrast CV, which moves x by ~a window.)
@@ -112,7 +126,9 @@ shapes — is registered beside it (`PREREG_KMER` §3).
 - **Onset (K6).** At fixed p and φ the mean contact force is `⟨f⟩ ∝ p/(n_c ℓ)` (Love–Weber:
   n_c contacts per volume, ℓ the mean contact lever arm about the body centroid). External
   contacts per primary: 4.63 (singlets) vs 2.82 (dumbbells) at μ_p 0.3 → `n_c` ratio 0.61;
-  the lever arm of a lobe contact is between 1 and √2 times a sphere's. So
+  the lever arm of a lobe contact is between 1 and √2 times a sphere's (a HEURISTIC bracket:
+it assumes contacts uniform over the lobe surface and ignores the exclusion zone next to the
+sibling lobe — pass 1 MINOR; the `kmer` dumps measure the ratio directly). So
   `σ*(w=1)/σ*(0) = (n_c ℓ)_d/(n_c ℓ)_s ∈ [0.61, 0.86]` — the onset stress FALLS with doublets.
 - **Sharpness.** δ(w). ⚠ **The first version of this bullet predicted δ(dumbbells) <
   δ(singlets) from the frictional-dumbbell force CV of 1.3–8.8. That CV is an OUTLIER
@@ -127,15 +143,18 @@ shapes — is registered beside it (`PREREG_KMER` §3).
 ## 3. What a drop sees — every channel, one composition
 
 With (M6), a material point jams where the impact stress exceeds
-`σ_jam(w) = σ*(w)·[ln 1/f_c(x,w)]^(−1/δ(w))`. Doublets lower `σ*`, lower `f_c` and (predicted)
-lower `δ`. The first two lower `σ_jam` unconditionally; the third lowers it only for
-`f_c > 1/e` (`jam_stress_2026-09-22.md` §3). **Outside** the window the drop cannot jam but
+`σ_jam(w) = σ*(w)·[ln 1/f_c(x,w)]^(−1/δ(w))`. Doublets lower `σ*` and lower `f_c`; both lower `σ_jam` unconditionally. A change in `δ`
+has an `f_c`-dependent sign: by `jam_stress_2026-09-22.md` eq. (9), a LOWER δ lowers `σ_jam`
+for `f_c < 1/e` and RAISES it for `f_c > 1/e` (an earlier version had this backwards — pass 1
+FATAL). The doublet direction of δ is unmeasured (§2), so near the window edge the δ channel
+may offset the σ\* channel: at `f_c` = 0.75, δ 1.3 → 1.0 gives ×1.33 against σ\* ×0.61–0.86. **Outside** the window the drop cannot jam but
 still thickens by `Θ = [(1−x)/(1−x/χ)]^n`, which RISES as χ falls (K5). And the
 inertial-dilatant number `ID ∝ κ/(φ − φ_c)` FALLS: κ is unchanged (K1) while the critical
 packing φ_c tracks the frictional branch, which dumbbells lower by 12 %.
 
-So **every channel moves the same way**: toward jamming, earlier activation, stronger
-thickening, stronger dilatancy — at fixed primary size, chemistry and weighed φ.
+So the window, onset, thickening and dilatancy channels move the same way — toward jamming,
+earlier activation, stronger thickening, stronger dilatancy — at fixed primary size,
+chemistry and weighed φ; the activation-shape channel is the exception whose sign is open.
 
 ## 4. The complete knob atlas for a dense-suspension drop impact
 
@@ -148,7 +167,7 @@ permeability `κ` (sets dilatancy/Darcy times), and the drop groups
 |---|---|---|---|---|---|---|---|
 | packing fraction φ | ✔ | — | — | — | ✔ | definition | — |
 | **size distribution CV** | ✔ (~a window per ΔCV 0.5) | ✗ (paired \|t\| 0.56) | ✔ (convention-dependent sign) | ✔ (δ −19 % at CV 0.5, μ 0.3) | ✔ d₃₂² | MEASURED | bench at fixed φ, two CVs, same d₅₀ |
-| **singlet/doublet ratio (this file)** | ~0 (0.9 %) | ✔✔ (window ×1.85) | ✔ predicted −14…−39 % | ? (mechanism withdrawn; H_δ graded as registered) | ✗ (K1, exact) | endpoints MEASURED, mixtures RUNNING | bench: fractionate or grow doublets, same primary, same φ |
+| **singlet/doublet ratio (this file)** | ~0 (0.9 %) | ✔✔ (window ×1.85) | ✔ predicted −14…−39 % | ? (mechanism withdrawn; H_δ graded as registered) | ✗ if the Kozeny constant is shape-free (K1) | endpoints MEASURED, mixtures RUNNING | bench: fractionate or grow doublets, same primary, same φ |
 | **open aggregates (large k)** | ✔ via Λ ≥ 1 | ✔ (shape, unmeasured) | ✔ | ? | ✔ ↑ | modelled (`multiplet_psd`) | salt/pH-aggregated suspension vs dispersed |
 | friction μ_p | — | ✔✔ (window 0.113 at 0→3) | — | ✔ (δ −0.22 at 0→0.3) | — | MEASURED | coated vs bare particles |
 | shape (elongation) | ~0 | ✔✔ | ? | ? | ✔ (via S/V) | χ MEASURED | rods vs spheres, same volume |
@@ -158,6 +177,9 @@ permeability `κ` (sets dilatancy/Darcy times), and the drop groups
 | particle density ρ_p | — | — | — | — | — | via St only | density-matched vs not |
 | **breakage of doublets** (§5) | — | ✔ reverses during impact | ✔ | ? | — | criterion only | sintered vs salt-bridged doublets |
 | drop U₀, D₀, fluid η_s, γ | — | — | — | — | — | set Π, We, Re, the film thickness | the impact ladder |
+| **Brownian motion (Péclet)** | ✔ (thermal φ₀ shift) | ? | ✔ (entropic repulsion adds to κ) | ✔ | — | breaks A4b (a size-free ĝ); not in the DEM | Pe ladder via solvent viscosity at fixed a |
+| **lubrication film vs particle size** (h_film/a) | — | — | ✔ (contact vs lubricated) | ? | — | not modelled; the DNS has no particle scale at DIL_COEFF = 0 | drops of one D₀ at two a |
+| **particle inertia** (St = ρ_p γ̇ b²/η_s; doublets ×2^{2/3}) | — | — | — | — | — | not modelled | density-matched vs not |
 
 **What the atlas says about the question.** Only three knobs move χ — friction, shape, and
 (through shape) the singlet/doublet ratio — and χ is what decides whether jamming is
