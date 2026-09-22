@@ -335,13 +335,25 @@ def main() -> int:
                 p, _ = curve_fit(model, xs, ys, p0=[ys[-1], ys[0] - ys[-1], 0.25],
                                  sigma=ses, absolute_sigma=True, maxfev=40000)
                 res = float(np.sqrt(np.mean((ys - model(xs, *p)) ** 2)))
-                fits[(cv, label)] = (p, res)
+                # ⚠ ADMISSIBILITY BEFORE REPORTING. A fitted parameter outside its own
+                # physical range is a FAILED fit, not a measurement: `A` is a packing
+                # -fraction amplitude and must be O(0.1), `mu*` a friction scale and must
+                # be > 0. At CV = 0.5 the algebraic form runs away to A ~ 1e4, mu* -> 0
+                # on 4 points and 3 parameters, and quoting a RATIO from it would print
+                # 1.6e5 as if it meant something.
+                degenerate = not (0.0 < p[1] < 1.0 and 1e-4 < p[2] < 100.0)
+                fits[(cv, label)] = None if degenerate else (p, res)
                 say(f"   CV = {cv}  {label:12s} phi_inf={p[0]:.5f} A={p[1]:.5f} "
-                    f"mu*={p[2]:.4f}  resid RMS={res:.6f}  (n={len(xs)} pts)")
+                    f"mu*={p[2]:.4f}  resid RMS={res:.6f}  (n={len(xs)} pts)"
+                    + ("   🔴 DEGENERATE: parameter outside its admissible range, "
+                       "NOT used for any ratio" if degenerate else ""))
             except Exception as exc:
                 say(f"   CV = {cv}  {label:12s} FIT FAILED: {exc}")
     for label in ("exponential", "algebraic"):
         a, b = fits.get((0.0, label)), fits.get((0.5, label))
+        if a is None or b is None:
+            say(f"   {label}: ratio NOT REPORTED -- at least one fit is degenerate or "
+                f"absent, and a ratio of a runaway fit is not a number.")
         if a and b:
             r_mu = b[0][2] / a[0][2]
             r_A = b[0][1] / a[0][1]
