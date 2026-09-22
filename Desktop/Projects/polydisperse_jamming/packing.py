@@ -147,6 +147,7 @@ class PackingState:
     # path and draws nothing from any RNG, so every earlier record reproduces bit-for-bit.
     doublet_w: float = 0.0
     triplet_w: float = 0.0
+    triplet_chain: bool = False       # k = 3 as a straight chain instead of a triangle
     n_doublets: int = 0
     n_triplets: int = 0
     eps_corrugation: float = 0.0      # shape.corrugation; the INTERLOCKING half
@@ -562,8 +563,10 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
         vol_solid = float(np.sum(v1) + sum((k - 1) * v1[j] for j, k in kmer.items()))
         st.vol_solid = vol_solid
         # longest extent: a dumbbell spans 2 primary diameters; a tangent triangle's
-        # enclosing length is also 2 (two members side by side along one edge)
-        d_span_max = 2.0 * d_max
+        # enclosing length is also 2 (two members side by side along one edge); a straight
+        # chain of three spans 3
+        chain = bool(getattr(st, "triplet_chain", False))
+        d_span_max = (3.0 if (chain and n3 > 0) else 2.0) * d_max
 
     # Yade's periodic collider requires cell edge > 2.1 * maxBodySpan, and the cell
     # SHRINKS under compression, so the binding check is at the FINAL density, not the
@@ -642,6 +645,8 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
             a = a / np.linalg.norm(a)
             if k == 2:
                 off = [a * float(r), -a * float(r)]
+            elif getattr(st, "triplet_chain", False):
+                off = [a * 2.0 * float(r), np.zeros(3), -a * 2.0 * float(r)]
             else:
                 t = np.cross(a, [1.0, 0.0, 0.0])
                 if np.linalg.norm(t) < 1e-6:
@@ -726,7 +731,7 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
                        family: str = "lognormal",
                        eta_roll: float | None = None,
                        alpha: float = 1.0, doublet_w: float = 0.0,
-                       triplet_w: float = 0.0) -> PackingState:
+                       triplet_w: float = 0.0, triplet_chain: bool = False) -> PackingState:
     """Compress a packing isotropically to reduced pressure `p_hat` = p/E.
 
     Dimensionless throughout: d10 = 1, rho = 1, E = `young` (default 1).
@@ -739,7 +744,8 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
     O.reset()
     st = PackingState(n_requested=n, cv=cv, mu_p=mu_p, p_hat_target=p_hat,
                       seed=seed, family=family, eta_roll=eta_roll, alpha=float(alpha),
-                      doublet_w=float(doublet_w), triplet_w=float(triplet_w))
+                      doublet_w=float(doublet_w), triplet_w=float(triplet_w),
+                      triplet_chain=bool(triplet_chain))
     insert_packing(st, truncate=truncate, young=young)
     grain_of = grain_map(O)
     # Read the mass back off the SCENE, before anything moves. Clump members carry

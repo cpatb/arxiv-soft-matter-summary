@@ -66,3 +66,24 @@ GRAINS, tag `kmer`, per-contact dumps `(f_n, k₁, k₂)` on every cell.
 
 Breakage (rigid clusters only), fractal k ≥ 4 aggregates (the Λ lever), and anything
 sheared. The CV 0.5 / N = 1000 finite-size lesson applies: every cell's `d_max/L` is printed.
+
+---
+
+## Amendment 1 — the straight-chain trimer, written 2026-09-22 ~16:40 CDT, before its campaign
+
+`packing.PackingState.triplet_chain` (added after launch; the running campaign uses the
+triangle): k = 3 as three collinear tangent primaries, span 3 diameters. It asks whether
+GEOMETRY at fixed k matters as much as k does. One smoke cell (w₃ 0.5, μ_p 0.3, p̂ 1e-3,
+seed 1) ran to check the construction: converged, mass/volume 1 to 2e-15, 0 internal
+contacts, φ = 0.5547 (the triangle's gate cell: 0.5773). Seen, one friction, one seed; it
+decides none of the predictions below, which need χ (two frictions).
+
+Grid (tag `kchain`): (w₂, w₃) ∈ {(0, 0.5), (0, 1)} as CHAINS × μ_p {0, 0.3, 3} × seeds
+{1,2,3} × p̂ {1e-3, 3e-5} = 36 cells.
+
+**Predictions (ordinal; elongation is the hypothesis):**
+- **C1** at w₃ = 1, p̂ 3e-5, μ_m 3: `χ(chain) < χ(dumbbell, pure) = 0.788 < χ(singlet) = 0.886`,
+  and `χ(triangle) > χ(chain)`. I.e. the window-knob tracks ELONGATION, not k.
+- **C2** rough (μ_p 3) `Z_nr` = 4 ± 0.25 for pure chains (isostatic counting; any rigid body).
+- **C3** frictionless chains are hypostatic: `Z_nr` < 10 (a chain, like a dumbbell, has an
+  unconstrained spin about its axis: 5 dofs).

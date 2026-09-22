@@ -62,6 +62,8 @@ def cell_key(cv: float, mu: float, seed: int, p_hat: float, n: int,
     base = f"cv{cv:.3f}_mu{mu:.3f}_s{seed}_p{p_hat:.3e}_N{n}_a{alpha:.3f}"
     if kmer[0] > 0 or kmer[1] > 0:           # PREREG_KMER; absent -> the historical key
         base += f"_w2{kmer[0]:.3f}_w3{kmer[1]:.3f}"
+        if len(kmer) > 2 and kmer[2]:
+            base += "_chain"
     key = base if family == "lognormal" else f"{base}_{family}"
     cap = packing.max_iter()
     return key if cap == packing.MAX_ITER else f"{key}_it{cap}"
@@ -86,8 +88,10 @@ def main() -> int:
                          "doublets and triangle triplets of ONE primary (needs cv 0, alpha 1)")
     ap.add_argument("--dump-dir", default="", help="per-contact (fn, k1, k2) npz per cell")
     args = ap.parse_args()
-    kmers = ([tuple(float(v) for v in c.split(":")) for c in args.kmers.split(";")]
-             if args.kmers else [(0.0, 0.0)])
+    # "w2:w3" or "w2:w3:c" (triplets as straight chains)
+    kmers = ([(float(c.split(":")[0]), float(c.split(":")[1]),
+               len(c.split(":")) > 2 and c.split(":")[2] == "c")
+              for c in args.kmers.split(";")] if args.kmers else [(0.0, 0.0, False)])
     if args.dump_dir:
         os.makedirs(args.dump_dir, exist_ok=True)
 
@@ -136,7 +140,8 @@ def main() -> int:
                             st = build_and_compress(cv=cv, mu_p=mu, p_hat=p_hat, n=n,
                                                     seed=seed, verbose=True,
                                                     family=args.family, alpha=alpha,
-                                                    doublet_w=kmer[0], triplet_w=kmer[1])
+                                                    doublet_w=kmer[0], triplet_w=kmer[1],
+                                                    triplet_chain=kmer[2])
                             rec = json.loads(st.to_json())
                             n_run += 1
                             if args.dump_dir:
