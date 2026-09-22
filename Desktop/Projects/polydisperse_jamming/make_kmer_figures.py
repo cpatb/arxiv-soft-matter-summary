@@ -69,7 +69,7 @@ def fig_k1():
         hm = (1 / ((1 - wg) / e[(0.0, mm)] + wg / e[(1.0, mm)])) / \
              (1 / ((1 - wg) / e[(0.0, 0.0)] + wg / e[(1.0, 0.0)]))
         ax[0].plot(wg, hm, color=COL[k + 1], lw=1.0, ls="--")
-        rows += [{"panel": "a", "mu_m": mm, "w2": a, "chi": b, "sd": c, "n": d}
+        rows += [{"panel": "a", "quantity": "chi", "mu_m": mm, "w2": a, "value": b, "sd": c, "n": d}
                  for a, b, c, d in pts]
     ax[0].set_xlabel(r"doublet volume fraction $w_2$")
     ax[0].set_ylabel(r"$\chi=\phi_m/\phi_0$")
@@ -98,7 +98,7 @@ def fig_k1():
             if rr:
                 ax[1].errorbar(w, np.mean(rr), yerr=np.std(rr, ddof=1) if len(rr) > 1 else 0,
                                fmt="s", color=COL[1], capsize=2)
-                rows.append({"panel": "b", "mu_m": 0.3, "w2": w, "chi": np.mean(rr),
+                rows.append({"panel": "b", "quantity": "sigma_star_ratio", "mu_m": 0.3, "w2": w, "value": np.mean(rr),
                              "sd": 0.0, "n": len(rr)})
         if w in dl:
             v = list(dl[w].values())
