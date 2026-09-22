@@ -236,11 +236,11 @@ Read through this file:
    aggregation drives the salt onset, it is not by doublets; it needs larger aggregates.
 2. **Aggregation of any size must also move the window** (shape → χ, K3/§2), and hence the
    arrested state. The arrested state barely moves.
-3. **So the lab's salt effect reads as SCREENING (κ ↓, σ\* ↓ at fixed χ), not aggregation**,
-   unless the aggregates break under impact (`Π_b ≫ 1`, §5), which would hide them from the
-   arrested state while still having lowered the onset… no — broken aggregates would lower the
-   onset less, not more. ⚠ This is a reading of two recorded numbers against a model; it is
-   not a measurement of the aggregation state, which no data on disk contains.
+3. **So the lab's salt effect reads as SCREENING (κ ↓, σ\* ↓ at fixed χ), not aggregation.**
+   Breakage does not rescue the aggregation reading: aggregates that broke under impact
+   (`Π_b ≫ 1`, §5) would stop moving the arrested state, but they would ALSO stop lowering
+   the onset, which the data show falling ×3. ⚠ This is a reading of two recorded numbers
+   against a model; no data on disk measures the aggregation state itself.
 4. **The decisive bench measurement is therefore the doublet fraction itself** (microscopy or
    analytical centrifugation) at 0 and 100 mM. If w₂ is ≈ equal, the salt series is a κ
    ladder, and it is the cleanest σ\* lever the lab already owns (it moves the onset by ×3
