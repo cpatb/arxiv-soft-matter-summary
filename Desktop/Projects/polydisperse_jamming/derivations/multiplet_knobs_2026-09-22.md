@@ -4,7 +4,7 @@ Written 2026-09-22 (fourth block). Checks: `multiplet_knobs_2026-09-22_check.py`
 `..._check.txt` (**9/9 PASS**; K6 is an arithmetic cross-check against `predict_kmer.py`,
 not a physics test). Predictions: `predict_kmer.py` → `out/predict_kmer.txt`. Test:
 `PREREG_KMER_2026-09-22.md` (126 DEM cells, running at time of writing).
-Status: **derived, checked; referee pass 1 returned 1 FATAL + 4 MATERIAL + 2 MINOR, all acted on below (marked "(pass 1)"). Pass 2 not yet run.**
+Status: **derived, checked; referee pass 1 returned 1 FATAL + 4 MATERIAL + 2 MINOR, all acted on below (marked "(pass 1)"); pass 2 confirmed them and returned 1 MATERIAL + 2 MINOR, acted on ("pass 2").**
 
 > ## RESULT BOX
 >
@@ -108,8 +108,11 @@ Write `A = 1/φ` (specific volume). **H_mix** (ideal mixing): `A_J(w) = (1−w)A
 each branch (φ₀ at μ 0; φ_m at μ_m). Justification, and its limit (pass 1): all grains share one primary and the body-size ratio
 is only 2^{1/3} = 1.26. This project's own SPHERE binaries at size ratio 1.25
 (`phase12_mixr125`, μ_p 0.3, p̂ 1e-3) show a filling excess of at most **+0.0036** over the
-monodisperse value (0.5976 at x = 0.4 vs 0.5940) — 1.7·PHI_SCALE, just inside the H_mix bar —
-so size-ratio filling is small but not zero, and the non-spherical excess is untested. (An
+monodisperse value (0.5976 at fines volume fraction X_s = 0.4 vs 0.5940) — but that single
+point is **not resolved**: seed-paired t = 2.06 against t_crit 4.303 (n = 3). Its SIGN is
+corroborated (20 of 24 seed-paired differences over the eight X_s rungs are positive; not
+independent, the same three seeds). So size-ratio filling is small, of either sign within
+noise at a single composition, and the non-spherical excess is untested (pass 2). (An
 earlier version cited a "~2.4 filling threshold" that is not traceable in this repository;
 withdrawn.) The rival — a positive excess from mixing shapes — is registered beside it.
 
@@ -132,8 +135,8 @@ sibling lobe — pass 1 MINOR; the `kmer` dumps measure the ratio directly). So
   `σ*(w=1)/σ*(0) = (n_c ℓ)_d/(n_c ℓ)_s ∈ [0.61, 0.86]` — the onset stress FALLS with doublets.
 - **Sharpness.** δ(w). ⚠ **The first version of this bullet predicted δ(dumbbells) <
   δ(singlets) from the frictional-dumbbell force CV of 1.3–8.8. That CV is an OUTLIER
-  statistic, not a width**: the `kmer` per-contact dumps show 3–5 contacts out of ~4000
-  carrying 50–143× the mean force in frictional clump packs (μ_p 3 doublets, μ_p 0.3
+  statistic, not a width**: the `kmer` per-contact dumps show 2–7 contacts per cell out of ~3500–4700
+  carrying 50–143× the mean force in frictional clump packs (2–7 per cell across the dumps, pass 2) (μ_p 3 doublets, μ_p 0.3
   triplets), while the 99th percentile is 2.2–3.2× the mean — the same as spheres.
   Whether those few contacts are real wedging in a dumbbell's neck or an overlap artefact is
   open. The quantile estimators (δ₁₀/₉₀, σ\* at the 1/e quantile) are insensitive to five
@@ -208,7 +211,7 @@ vs salt-bridged doublets must behave identically if `Π_b ≪ 1` and differently
 | P-χ | χ(w) 0.886 → 0.788 near-linearly; `w*(0.85)` ≈ 0.34 | χ flat in w, or non-monotone | `kmer` |
 | P-Z | rough Z = 4 ± 0.25 at every composition | Z drifting with w at μ_p 3 | `kmer` |
 | P-σ\* | σ\*(dumbbell)/σ\*(singlet) ∈ [0.55, 0.95] at μ_p 0.3 | ratio ≥ 1 | `kmer` dumps |
-| P-δ | δ(dumbbell) < δ(singlet) | δ(dumbbell) ≥ δ(singlet) | `kmer` dumps |
+| P-δ | registered as δ(dumbbell) < δ(singlet), but its mechanism is WITHDRAWN (§2): graded as registered, read as a measurement of an open sign, not as a test of a mechanism | — | `kmer` dumps |
 | P-bench | at fixed φ and primary, raising doublet volume fraction past `w*(x)` switches the drop from spreading to arrest | no switch across the whole w range at an x inside [χ_d, χ_s) | bench |
 | P-κ | tangent aggregation does NOT change the Darcy time at fixed φ | a measured permeability change at fixed φ with tangent (non-sintered) doublets | Darcy cell |
 
