@@ -16,7 +16,8 @@ three_knobs.py -- the five particle axes, reduced to x, chi and sigma*
       0.2   3   0.64413   0.57272   0.8891   0.0025        0.1109
       0.5   1   0.69428   0.61236   0.8876      inf        0.1124
 
-   chi(CV=0.2) - chi(CV=0.0) = +0.0019 +- 0.0049   |t| = 0.40 vs t_crit 4.303 -> NOT RESOLVED
+   chi(CV=0.2) - chi(CV=0.0), PAIRED = +0.0019 +- 0.0034  (n=3, r=+0.86)
+      |t| = 0.56 vs t_crit 4.303 -> NOT RESOLVED    [the withdrawn unpaired estimator gave 0.40]
    ⚠ CV = 0.5 has n = 1 converged pair: the FRICTIONLESS arm still
      caps at 1e6 on 2 of 3 seeds, so chi(0.5) is not resolvable. Its central
      value 0.8876 sits with the others and is printed, not quoted.
@@ -91,38 +92,70 @@ three_knobs.py -- the five particle axes, reduced to x, chi and sigma*
    The rheometer does not measure x and chi; it measures how much the viscosity
    RISES. That is also closed-form in the same two numbers:
 
-       Theta = eta(fhat=1)/eta(fhat=0) = chi^2 (1-x)^2 / (chi - x)^2
-             = [(1-x)/(1-x/chi)]^2,     -> infinity as x -> chi from below
+       Theta = eta(fhat=1)/eta(fhat=0) = [(1-x)/(1-x/chi)]^MP_EXPO
+             -> infinity as x -> chi from below (for chi < 1)
+
+   🔴 THE EXPONENT IS A PARAMETER, NOT A CONSTANT, and an earlier version of
+   this section hardcoded it at 2. `wc_drop_impact.c` exposes MP_EXPO and its
+   comment block says, for THIS material, that 2 is the assumption that FAILS:
+   freeing it takes the cornstarch fit residual from rms(log eta) = 1.335 to
+   0.274, fitted value ~5. Quoting Theta at 2 for cs_fit uses the one value the
+   solver's own code says is wrong for cornstarch.
+
+   ⚠ AND Theta IS NOT NEW. It is the solver's own `R_max`, defined in that same
+   comment block and verified here to be the identical formula to 1e-9. The
+   block also already reports R_max = 3.3 for cs_fit over phi = 0.30-0.43 and
+   already concludes it is short. This section RE-DERIVES a documented result
+   from the (x, chi) reduction -- which is a CHECK on the reduction, and was
+   wrongly written up as a new number.
 
    (SymPy-verified in three_knobs_check.py, C4. Theta DIVERGES exactly at the
    window edge FOR chi < 1, so 'shear-jamming' and 'infinite Theta' are the same
    statement. ⚠ The condition is not decoration: at chi = 1 the two branches
    coincide and Theta == 1 identically -- the check FAILED until it carried it.)
 
-   🔑 SO A FLOW CURVE GIVES ALL THREE NUMBERS AND NEEDS NO PACKING MODEL:
-      sigma*                 the thickening knee
-      eta_low/eta_s = (1-x)^-2   ->  x
-      Theta = eta_high/eta_low   ->  chi, given x
-   which is why the experimental half of this programme needs no new instrument.
+   WHAT RHEOMETRY BUYS, stated more carefully than the first version of this
+   file did (it said 'a flow curve gives all three numbers and needs no packing
+   model', which oversells on three counts):
+      sigma*   -- yes, read off the thickening knee of ONE curve.
+      x, chi   -- NOT from one curve. eta_low/eta_s = (1-x)^-n gives x only if
+                  eta_s AND n are known, and NEITHER is a datasheet number: the
+                  calibrated eta_s values (0.05 ... 0.0039 Pa.s) are 4-50x any
+                  plausible carrier viscosity, i.e. eta_s is itself a fit output,
+                  and n is the MP_EXPO the solver says is degenerate with phi.
+      => the honest recipe is a WC fit to eta(sigma) at SEVERAL phi, which is
+         what PROGRAMME section 3 says. Still no new instrument -- but it is a
+         concentration series, not a single curve.
 
    The drop-impact solver's own presets, placed on the diagram:
 
-     preset        x      chi    x/chi       Theta  state
-         cs   0.8387   0.8065   1.0400         inf  SHEAR-JAMS (Theta diverges)
-         si   0.9219   0.8906   1.0351         inf  SHEAR-JAMS (Theta diverges)
-     si_fit   0.6286   0.7394   0.8501        6.14  🔴 never jams -- continuous thickening only
-     cs_fit   0.6714   0.7807   0.8600        5.51  🔴 never jams -- continuous thickening only
+      preset       x     chi  Theta(n=2)  Theta(n=5)  decades n=2     n=5  state
+          cs  0.8387  0.8065         inf         inf          inf     inf  SHEAR-JAMS  [PLACEHOLDER, never calibrated]
+          si  0.9219  0.8906         inf         inf          inf     inf  SHEAR-JAMS  [PLACEHOLDER, never calibrated]
+      si_fit  0.6286  0.7394        6.14       93.33         0.79    1.97  never jams  [calibrated; the FIT IS WITHDRAWN]
+      cs_fit  0.6714  0.7807        5.51       71.25         0.74    1.85  never jams  [calibrated, live]
 
-   ⚠ THAT THE TWO `_fit` PRESETS CANNOT JAM IS ALREADY KNOWN in the solver's own
-   repository (PAPER_STF_CLAIMS_2026-08-02: 'Wyart-Cates cannot jam there at any
-   fhat'), and that repo ALSO records cells ARRESTING in that regime anyway --
-   so drop arrest is NOT a one-to-one readout of constitutive jamming. This
-   table reproduces a classification that was already made in words; what is new
-   is Theta as a number.
+   🔴 THE HEADLINE FLIPS WITH THE EXPONENT, so it is quoted with the exponent.
+   At n = 2 the calibrated presets reach 0.74-0.79 decades -- far short of the
+   two to three decades DST is usually quoted at, which is what an earlier
+   version of this file asserted as 'cannot produce the phenomenon'. At the
+   repo's OWN fitted n ~ 5 they reach 1.85-1.97 decades, i.e. MOST OF THE WAY.
+   ⚠ The solver's comment block also records that n is DEGENERATE WITH phi --
+   refitting with phi free per curve and n held at 2 fits equally well (rms
+   0.270 vs 0.274) -- so this is a CHOICE BETWEEN TWO READINGS OF ONE DATASET,
+   not a number to be settled by more fitting. Breaking it needs an independent
+   phi measurement on the batch. Nothing here settles it, and nothing here may
+   be quoted as if it did.
 
-   🔑 AND THE NUMBER IS THE POINT: the two CALIBRATED presets thicken by only
-   ~6x and ~5.5x at full activation. Measured DST routinely spans two to three
-   DECADES. So both fitted parameter sets sit in a regime that cannot produce
-   the phenomenon they were fitted to describe -- a quantitative statement the
-   'cannot jam' wording does not make. (si_fit's calibration is independently
-   WITHDRAWN; cs_fit's is not, and it is the one to look at first.)
+   ⚠ 'DST spans two to three decades' is [UNVERIFIED] -- no citation resolved,
+   and it is the bar the comparison above is graded against. The solver's own
+   block quotes a specific measured 206x (2.3 decades) for its cornstarch set,
+   which is a sourced number and the one to use.
+
+
+   ⚠ THAT THE TWO `_fit` PRESETS CANNOT JAM is ALREADY KNOWN in the solver's
+   own repository (PAPER_STF_CLAIMS_2026-08-02: 'Wyart-Cates cannot jam there at
+   any fhat'), and that repo ALSO records cells ARRESTING in that regime anyway.
+   So drop ARREST is a KINETIC criterion (the solver's own `jam_frac`, `u_max <
+   0.02 U0`) and is NOT a readout of CONSTITUTIVE jamming (eta -> infinity).
+   A finite Theta of 5-90x is perfectly capable of arresting a drop.

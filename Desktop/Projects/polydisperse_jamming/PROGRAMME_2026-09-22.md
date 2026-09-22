@@ -15,8 +15,15 @@ The Wyart–Cates closure the drop-impact DNS solves,
 
 &nbsp;&nbsp;&nbsp;&nbsp;`η = η_s (1 − φ/φ_J)⁻²`, `φ_J(f̂) = φ₀ − (φ₀ − φ_m) f̂`, `f̂ = f(σ/σ*)`,
 
-is **exactly covariant** under `(φ, φ₀, φ_m) → c·(φ, φ₀, φ_m)` (SymPy-verified). So those
-are not three independent inputs. Writing `x = φ/φ₀` and `χ = φ_m/φ₀`:
+is **exactly covariant** under `(φ, φ₀, φ_m) → c·(φ, φ₀, φ_m)` (SymPy-verified).
+
+> ⚠ **SCOPE: at `DIL_COEFF = 0`.** The solver's Reynolds-dilatancy / Darcy term uses a
+> `perm_factor(φ)` built on a **fixed `PHI_REF = 0.49`**, which does not rescale, so with
+> dilatancy on the covariance is broken and this reduction is out of scope. Every preset
+> on record uses the default `DIL_COEFF = 0`. This caveat was already written into
+> `multiplet_wc.py` the same day and was not carried here until a referee found it twice.
+
+So those are not three independent inputs. Writing `x = φ/φ₀` and `χ = φ_m/φ₀`:
 
 &nbsp;&nbsp;&nbsp;&nbsp;**`η/η_s = (1 − x/[1 − (1−χ) f̂])⁻²`** — three numbers: **`x`, `χ`, `σ*`.**
 
@@ -42,7 +49,7 @@ A drop rebounds as a solid iff **both** `σ_imp/σ* ≫ 1` (contacts activated) 
 | axis | knob | status |
 |---|---|---|
 | **material: friction `μ_p`** | **χ** | ✅ **measured**: `χ = 0.8872 ± 0.0042`, window `1 − χ = 0.113` (`μ_p` 0 → 3) |
-| **distribution: CV** | **x** | ✅ **measured**: `Δχ = +0.0019 ± 0.0049`, `\|t\| = 0.40` — does **not** move the window |
+| **distribution: CV** | **x** | ✅ **measured**: `Δχ = +0.0019 ± 0.0034` PAIRED (r = +0.86), `\|t\| = 0.56` — does **not** move the window |
 | **shape: `α`** | **χ?** | ⏳ **running** (`PREREG_SHAPECHI`) — the only untested window-knob |
 | **size `a`** | **σ\*** | 🔴 **degenerate**: a size ladder cannot separate the two grain-scale stresses (`onset_size_degeneracy_2026-09-19`) |
 | **potential `F_rep`** | **σ\*** | 🔴 **not measured here** — it is a DEM *input*, not an output |
@@ -62,14 +69,16 @@ it" shortcut is **dead**, and it was tested rather than assumed.
 
 ## 3. The experimental half — and why it is easy
 
-All three numbers are **rheometer-measurable from one steady-state flow curve**:
+All three numbers are **rheometer-measurable with no new instrument** — but it is a
+**concentration series, not one curve**, and that distinction matters:
 
-- `σ*` — the onset stress, read directly off the thickening knee.
-- `φ₀`, `φ_m` — a Wyart–Cates fit to `η(σ)` at several `φ` returns both branches.
+- `σ*` — the onset stress, read off the thickening knee of a **single** curve.
+- `φ₀`, `φ_m` — a Wyart–Cates fit to `η(σ)` **at several `φ`**. ⚠ It cannot be done from
+  one curve: `η_low/η_s = (1−x)^{−n}` needs both `η_s` and the exponent `n`, and **neither
+  is a datasheet number** — the calibrated `η_s` values (0.05 … 0.0039 Pa·s) are 4–50×
+  any plausible carrier viscosity, so `η_s` is itself a fit output, and `n` is the
+  `MP_EXPO` the solver's own notes call **degenerate with `φ`**.
 - `x`, `χ` — ratios of those.
-
-So the bench half needs **no new instrument**, and the DEM half predicts how `x` and `χ`
-move when you change the particles.
 
 ### 🔑 The falsifiable experiment: a COLLAPSE
 
@@ -92,6 +101,19 @@ result worth having either way.
 `ρ k U₀²` and the deviatoric wall shear give *opposite* verdicts on whether the activation
 half is saturated. **The collapse test must name its gauge before it runs**, and the
 matched pair should be designed so the verdict does not depend on that choice.
+
+> 🔴 **THE COLLAPSE TEST MUST BE RUN ON THE BENCH, NOT IN THE SOLVER.** At `DIL_COEFF = 0`
+> the DNS has **no particle-scale length at all** — size enters only through `σ*`, by the
+> axis map's own logic — so two matched triples would collapse **trivially and
+> uninformatively** there. The DNS pairs (§5 item 3) test something different: whether the
+> phase diagram predicts the drop outcome. Do not conflate them.
+
+> ⚠ **Matching `We` and `Re` is not enough when SIZE is the axis being varied.** A bench
+> collapse must also control the **particle-scale** groups — Stokes number, density ratio
+> `ρ_p/ρ_f`, and particle-size-to-film-thickness — or a failure to collapse cannot
+> distinguish *"particle inertia / a boundary-scale effect"* from *"the three numbers are
+> insufficient"*, which is the whole question. **Design the pair so those are matched too,
+> or state which one is deliberately not and why.**
 
 ---
 

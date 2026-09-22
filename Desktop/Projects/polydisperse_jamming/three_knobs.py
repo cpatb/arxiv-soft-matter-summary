@@ -17,6 +17,15 @@ and it is EXACTLY covariant under a common rescaling of the three packing fracti
 (verified symbolically in `three_knobs_check.py` C1-C2). So the three of them are not
 three independent inputs: only their RATIOS matter. Write
 
+    ⚠ SCOPE: AT `DIL_COEFF = 0`. The solver's Reynolds-dilatancy / Darcy-backflow
+    term adds `p_dil = DIL_COEFF * gd * perm_factor(PHI)` with `perm_factor` built from a
+    FIXED `PHI_REF = 0.49`, which does NOT rescale with phi -- so with dilatancy on the
+    covariance is broken and this whole reduction is out of scope. `DIL_COEFF` defaults
+    to 0 and every preset on record uses the default. ⚠ This caveat was already written
+    into `multiplet_wc.py` after its own referee pass the SAME DAY and was not carried
+    here; a referee had to find it twice.
+
+
     x    = phi / phi0        the distance to FRICTIONLESS jamming
     chi  = phim / phi0       the CONTRAST between the two branches, 0 < chi < 1
 
@@ -167,12 +176,40 @@ def main() -> int:
         say(f"   {cv:6.1f}{n:4d}{p0:10.5f}{pm:10.5f}{m:9.4f}{se:9.4f}{1-m:14.4f}")
     say("")
     if 0.0 in q and 0.2 in q:
+        # 🔴 PAIRED, corrected after the referee pass. This used `math.hypot`, which
+        # treats the two CV groups as INDEPENDENT. They are not: `packing.py` seeds with
+        # `default_rng(st.seed)` regardless of CV, and `rng.lognormal` at a fixed seed
+        # reuses the SAME underlying normal draws rescaled by sigma -- so seed s is a
+        # correlated draw at both CV levels (measured r below). This is the identical bug
+        # class a referee already caught in this project on 2026-09-19, where it inflated
+        # an s.e. 25x. Fixed on principle; here it does not flip the verdict.
+        d_seed = {}
+        for s_ in (1, 2, 3):
+            ka, kb = (MU_0, 0.0, s_, QUOTE_RUNG), (MU_M, 0.0, s_, QUOTE_RUNG)
+            kc, kd = (MU_0, 0.2, s_, QUOTE_RUNG), (MU_M, 0.2, s_, QUOTE_RUNG)
+            if all(k in best and best[k]["converged"] for k in (ka, kb, kc, kd)):
+                d_seed[s_] = (best[kd]["phi"] / best[kc]["phi"]
+                              - best[kb]["phi"] / best[ka]["phi"])
         (m0, s0, n0), (m2, s2, n2) = q[0.0], q[0.2]
-        se = math.hypot(s0, s2)
-        t = abs(m2 - m0) / se
-        tc = T_CRIT.get(min(n0, n2), 4.303)
-        say(f"   chi(CV=0.2) - chi(CV=0.0) = {m2-m0:+.4f} +- {se:.4f}   |t| = {t:.2f} "
-            f"vs t_crit {tc} -> {'DIFFER' if t > tc else 'NOT RESOLVED'}")
+        if len(d_seed) > 1:
+            arr = np.array(list(d_seed.values()))
+            a_ = np.array([best[(MU_M, 0.0, s_, QUOTE_RUNG)]["phi"]
+                           / best[(MU_0, 0.0, s_, QUOTE_RUNG)]["phi"] for s_ in d_seed])
+            b_ = np.array([best[(MU_M, 0.2, s_, QUOTE_RUNG)]["phi"]
+                           / best[(MU_0, 0.2, s_, QUOTE_RUNG)]["phi"] for s_ in d_seed])
+            r = float(np.corrcoef(a_, b_)[0, 1]) if len(d_seed) > 2 else float("nan")
+            se_p = max(float(arr.std(ddof=1) / math.sqrt(len(arr))),
+                       math.hypot(s0, s2) / math.sqrt(2.0))
+            t = abs(float(arr.mean())) / se_p
+            tc = T_CRIT.get(len(arr), 4.303)
+            say(f"   chi(CV=0.2) - chi(CV=0.0), PAIRED = {arr.mean():+.4f} +- {se_p:.4f}"
+                f"  (n={len(arr)}, r={r:+.2f})")
+            say(f"      |t| = {t:.2f} vs t_crit {tc} -> "
+                f"{'DIFFER' if t > tc else 'NOT RESOLVED'}"
+                f"    [the withdrawn unpaired estimator gave "
+                f"{abs(m2-m0)/math.hypot(s0, s2):.2f}]")
+        else:
+            say("   fewer than 2 fully-paired seeds; the CV comparison is not formed")
     if 0.5 in q and not math.isfinite(q[0.5][1]):
         say(f"   ⚠ CV = 0.5 has n = {q[0.5][2]} converged pair: the FRICTIONLESS arm still")
         say("     caps at 1e6 on 2 of 3 seeds, so chi(0.5) is not resolvable. Its central")
@@ -272,47 +309,84 @@ def main() -> int:
     say("   The rheometer does not measure x and chi; it measures how much the viscosity")
     say("   RISES. That is also closed-form in the same two numbers:")
     say("")
-    say("       Theta = eta(fhat=1)/eta(fhat=0) = chi^2 (1-x)^2 / (chi - x)^2")
-    say("             = [(1-x)/(1-x/chi)]^2,     -> infinity as x -> chi from below")
+    say("       Theta = eta(fhat=1)/eta(fhat=0) = [(1-x)/(1-x/chi)]^MP_EXPO")
+    say("             -> infinity as x -> chi from below (for chi < 1)")
+    say("")
+    say("   🔴 THE EXPONENT IS A PARAMETER, NOT A CONSTANT, and an earlier version of")
+    say("   this section hardcoded it at 2. `wc_drop_impact.c` exposes MP_EXPO and its")
+    say("   comment block says, for THIS material, that 2 is the assumption that FAILS:")
+    say("   freeing it takes the cornstarch fit residual from rms(log eta) = 1.335 to")
+    say("   0.274, fitted value ~5. Quoting Theta at 2 for cs_fit uses the one value the")
+    say("   solver's own code says is wrong for cornstarch.")
+    say("")
+    say("   ⚠ AND Theta IS NOT NEW. It is the solver's own `R_max`, defined in that same")
+    say("   comment block and verified here to be the identical formula to 1e-9. The")
+    say("   block also already reports R_max = 3.3 for cs_fit over phi = 0.30-0.43 and")
+    say("   already concludes it is short. This section RE-DERIVES a documented result")
+    say("   from the (x, chi) reduction -- which is a CHECK on the reduction, and was")
+    say("   wrongly written up as a new number.")
     say("")
     say("   (SymPy-verified in three_knobs_check.py, C4. Theta DIVERGES exactly at the")
     say("   window edge FOR chi < 1, so 'shear-jamming' and 'infinite Theta' are the same")
     say("   statement. ⚠ The condition is not decoration: at chi = 1 the two branches")
     say("   coincide and Theta == 1 identically -- the check FAILED until it carried it.)")
     say("")
-    say("   🔑 SO A FLOW CURVE GIVES ALL THREE NUMBERS AND NEEDS NO PACKING MODEL:")
-    say("      sigma*                 the thickening knee")
-    say("      eta_low/eta_s = (1-x)^-2   ->  x")
-    say("      Theta = eta_high/eta_low   ->  chi, given x")
-    say("   which is why the experimental half of this programme needs no new instrument.")
+    say("   WHAT RHEOMETRY BUYS, stated more carefully than the first version of this")
+    say("   file did (it said 'a flow curve gives all three numbers and needs no packing")
+    say("   model', which oversells on three counts):")
+    say("      sigma*   -- yes, read off the thickening knee of ONE curve.")
+    say("      x, chi   -- NOT from one curve. eta_low/eta_s = (1-x)^-n gives x only if")
+    say("                  eta_s AND n are known, and NEITHER is a datasheet number: the")
+    say("                  calibrated eta_s values (0.05 ... 0.0039 Pa.s) are 4-50x any")
+    say("                  plausible carrier viscosity, i.e. eta_s is itself a fit output,")
+    say("                  and n is the MP_EXPO the solver says is degenerate with phi.")
+    say("      => the honest recipe is a WC fit to eta(sigma) at SEVERAL phi, which is")
+    say("         what PROGRAMME section 3 says. Still no new instrument -- but it is a")
+    say("         concentration series, not a single curve.")
     say("")
     say("   The drop-impact solver's own presets, placed on the diagram:")
     say("")
-    say(f"   {'preset':>8}{'x':>9}{'chi':>9}{'x/chi':>9}{'Theta':>12}  state")
-    presets = {"cs": (0.52, 0.62, 0.50), "si": (0.59, 0.64, 0.57),
-               "si_fit": (0.44, 0.70, 0.5176), "cs_fit": (0.47, 0.70, 0.5465)}
-    for name, (pp, p0, pmm) in presets.items():
+    say(f"   {'preset':>9}{'x':>8}{'chi':>8}{'Theta(n=2)':>12}{'Theta(n=5)':>12}"
+        f"{'decades n=2':>13}{'n=5':>8}  state")
+    presets = {"cs": (0.52, 0.62, 0.50, "PLACEHOLDER, never calibrated"),
+               "si": (0.59, 0.64, 0.57, "PLACEHOLDER, never calibrated"),
+               "si_fit": (0.44, 0.70, 0.5176, "calibrated; the FIT IS WITHDRAWN"),
+               "cs_fit": (0.47, 0.70, 0.5465, "calibrated, live")}
+    for name, (pp, p0, pmm, note) in presets.items():
         X, C = pp / p0, pmm / p0
         if X >= C:
-            T, st = float("inf"), "SHEAR-JAMS (Theta diverges)"
-        else:
-            T = ((1 - X) / (1 - X / C)) ** 2
-            st = "🔴 never jams -- continuous thickening only"
-        say(f"   {name:>8}{X:9.4f}{C:9.4f}{X/C:9.4f}{T:12.2f}  {st}")
+            say(f"   {name:>9}{X:8.4f}{C:8.4f}{'inf':>12}{'inf':>12}{'inf':>13}{'inf':>8}"
+                f"  SHEAR-JAMS  [{note}]")
+            continue
+        t2 = ((1 - X) / (1 - X / C)) ** 2
+        t5 = ((1 - X) / (1 - X / C)) ** 5
+        say(f"   {name:>9}{X:8.4f}{C:8.4f}{t2:12.2f}{t5:12.2f}"
+            f"{math.log10(t2):13.2f}{math.log10(t5):8.2f}  never jams  [{note}]")
     say("")
-    say("   ⚠ THAT THE TWO `_fit` PRESETS CANNOT JAM IS ALREADY KNOWN in the solver's own")
-    say("   repository (PAPER_STF_CLAIMS_2026-08-02: 'Wyart-Cates cannot jam there at any")
-    say("   fhat'), and that repo ALSO records cells ARRESTING in that regime anyway --")
-    say("   so drop arrest is NOT a one-to-one readout of constitutive jamming. This")
-    say("   table reproduces a classification that was already made in words; what is new")
-    say("   is Theta as a number.")
+    say("   🔴 THE HEADLINE FLIPS WITH THE EXPONENT, so it is quoted with the exponent.")
+    say("   At n = 2 the calibrated presets reach 0.74-0.79 decades -- far short of the")
+    say("   two to three decades DST is usually quoted at, which is what an earlier")
+    say("   version of this file asserted as 'cannot produce the phenomenon'. At the")
+    say("   repo's OWN fitted n ~ 5 they reach 1.85-1.97 decades, i.e. MOST OF THE WAY.")
+    say("   ⚠ The solver's comment block also records that n is DEGENERATE WITH phi --")
+    say("   refitting with phi free per curve and n held at 2 fits equally well (rms")
+    say("   0.270 vs 0.274) -- so this is a CHOICE BETWEEN TWO READINGS OF ONE DATASET,")
+    say("   not a number to be settled by more fitting. Breaking it needs an independent")
+    say("   phi measurement on the batch. Nothing here settles it, and nothing here may")
+    say("   be quoted as if it did.")
     say("")
-    say("   🔑 AND THE NUMBER IS THE POINT: the two CALIBRATED presets thicken by only")
-    say("   ~6x and ~5.5x at full activation. Measured DST routinely spans two to three")
-    say("   DECADES. So both fitted parameter sets sit in a regime that cannot produce")
-    say("   the phenomenon they were fitted to describe -- a quantitative statement the")
-    say("   'cannot jam' wording does not make. (si_fit's calibration is independently")
-    say("   WITHDRAWN; cs_fit's is not, and it is the one to look at first.)")
+    say("   ⚠ 'DST spans two to three decades' is [UNVERIFIED] -- no citation resolved,")
+    say("   and it is the bar the comparison above is graded against. The solver's own")
+    say("   block quotes a specific measured 206x (2.3 decades) for its cornstarch set,")
+    say("   which is a sourced number and the one to use.")
+    say("")
+    say("")
+    say("   ⚠ THAT THE TWO `_fit` PRESETS CANNOT JAM is ALREADY KNOWN in the solver's")
+    say("   own repository (PAPER_STF_CLAIMS_2026-08-02: 'Wyart-Cates cannot jam there at")
+    say("   any fhat'), and that repo ALSO records cells ARRESTING in that regime anyway.")
+    say("   So drop ARREST is a KINETIC criterion (the solver's own `jam_frac`, `u_max <")
+    say("   0.02 U0`) and is NOT a readout of CONSTITUTIVE jamming (eta -> infinity).")
+    say("   A finite Theta of 5-90x is perfectly capable of arresting a drop.")
 
     os.makedirs(OUT, exist_ok=True)
     with open(os.path.join(OUT, "three_knobs.txt"), "w", encoding="utf-8") as fh:
