@@ -192,3 +192,27 @@ vs salt-bridged doublets must behave identically if `Π_b ≪ 1` and differently
 - Triplets carry no prediction (unmeasured endpoint).
 - The lab's working φ (0.44) sits below every DEM window (09-09 record); the transferable
   statements are in `x` and in RATIOS, not in raw φ.
+
+## 8. The bench protocol, in quantities a rheometer measures (scale-free by construction)
+
+The DEM φ axis does not transfer to the bench (the lab's φ = 0.44 sits below every DEM window;
+09-09 record). What transfers are **ratios measured on one material**, because the reduced
+framework is exactly covariant in `(φ, φ₀, φ_m)`:
+
+1. **χ is measurable without knowing φ's absolute scale.** From steady flow curves at several
+   φ: `φ₀` = divergence of the LOW-stress viscosity branch, `φ_m` = divergence of the
+   HIGH-stress branch (both fits of `η ∝ (1 − φ/φ_J)^(−n)`, same n). `χ = φ_m/φ₀`.
+   **Prediction: `χ(w)/χ(0)` falls from 1 to 0.89 (μ_m = 3 convention) or 0.95 (μ_p = 0.3)
+   as the doublet volume fraction goes 0 → 1**, near-linearly (H_mix), independent of
+   whatever sets the absolute φ scale of the real particles.
+2. **The onset ratio.** `σ*(w)/σ*(0)` read at the thickening onset of the same flow curves:
+   predicted in [0.61, 0.86] at w = 1 (⚠ from isotropic packs; `kmer` dumps test it).
+3. **The drop.** With `x = φ/φ₀(w)` measured on the rheometer, a drop at fixed weighed φ
+   switches from spreading to arrest when the doublet fraction crosses `w*(x)` (§2), computed
+   from the SAME material's measured endpoint χ's — no DEM number enters.
+4. **Controls that make it a test and not a correlation.** Vary w at FIXED chemistry: fractionate
+   one batch (centrifugation separates singlets from doublets) and remix, rather than
+   aggregating with salt — salt moves `κ` (and so σ\*) at the same time, which is the
+   size–potential degeneracy of `onset_size_degeneracy_2026-09-19.md` in another form. Count
+   w by microscopy on the remixed batches. Run a sintered-doublet batch beside it to read the
+   breakage number `Π_b` (§5) off the difference.
