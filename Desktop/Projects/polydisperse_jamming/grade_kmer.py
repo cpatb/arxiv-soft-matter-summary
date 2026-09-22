@@ -63,6 +63,27 @@ def main() -> int:
         say(f"  EXCLUDED {k}: conv {good[k]['converged']} mass {good[k]['mass_over_vol_solid']:.9f}"
             f" internal {good[k]['n_contacts_internal']} notes {good[k]['notes']}")
     ok = {k: r for k, r in good.items() if k not in bad}
+
+    # ---- K4 (POST-HOC, PREREG_KMER Amendment 2): overlap sanity ---------------------
+    # Linear FrictPhys between equal primaries: kn = 2E r1 r2/(r1+r2) = E r, so a contact's
+    # overlap is u = fn/(E r) and u/r = fn/(E r^2) = fn/0.25 (E = 1, r = 1/2). Frictional
+    # triplet packs were found with 7-13 % of contacts above u/r = 0.05 and some above 1 --
+    # interpenetrated primaries, not a rigid-body packing, and an inflated phi. Stricter, not
+    # looser: a cell whose dump shows > 0.1 % of contacts above u/r = 0.05 is EXCLUDED.
+    k4_bad = {}
+    for k in list(ok):
+        p = os.path.join(OUT, "kmer_dump", k + ".npz")
+        if not os.path.exists(p):
+            continue
+        fn = np.load(p)["fn"]
+        frac = float((fn / 0.25 > 0.05).mean()) if fn.size else 0.0
+        if frac > 1e-3:
+            k4_bad[k] = frac
+    say(f"K4 OVERLAP SANITY (post-hoc, Amendment 2): {len(k4_bad)} cells excluded "
+        f"(> 0.1 % of contacts with overlap > 5 % of the radius)")
+    for k, frac in sorted(k4_bad.items()):
+        say(f"  EXCLUDED {k[:64]}: {frac:.2%} of contacts deep-overlapped")
+    ok = {k: r for k, r in ok.items() if k not in k4_bad}
     fs = [k for k, r in ok.items() if r["d_max_over_L"] > 0.25]
     say(f"finite-size flag d_max/L > 0.25 on {len(fs)} cells "
         f"(max {max((r['d_max_over_L'] for r in ok.values()), default=float('nan')):.3f})")

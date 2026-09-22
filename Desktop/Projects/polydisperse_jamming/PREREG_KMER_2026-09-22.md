@@ -87,3 +87,25 @@ Grid (tag `kchain`): (w₂, w₃) ∈ {(0, 0.5), (0, 1)} as CHAINS × μ_p {0, 0
 - **C2** rough (μ_p 3) `Z_nr` = 4 ± 0.25 for pure chains (isostatic counting; any rigid body).
 - **C3** frictionless chains are hypostatic: `Z_nr` < 10 (a chain, like a dumbbell, has an
   unconstrained spin about its axis: 5 dofs).
+
+## Amendment 2 — written 2026-09-22 ~18:45 CDT AFTER 109 of 126 cells had landed (post-hoc; stricter)
+
+**Found in the per-contact dumps:** in FRICTIONAL clump packs a fraction of contacts carry forces
+implying overlaps far beyond the protocol's softness — with the linear law between equal
+primaries, `u/r = fn/(E r²)` — up to 0.7–1.15 of the radius (interpenetrated primaries) and
+7–14 % of contacts above u/r = 0.05 in pure frictional triplets. Sphere packs: max u/r 1e-3.
+Such contacts are not a rigid-body packing, and they carry unphysical forces.
+
+- **K4 (new, post-hoc, stricter):** a cell is excluded if > 0.1 % of its contacts exceed
+  u/r = 0.05. It removes **every μ_p = 3 cell with any clusters** and the μ_p = 0.3 triplet
+  cells; μ_p = 0 and 0.3 doublet cells pass. So under K4, **H_χ at μ_m = 3 cannot be graded
+  (UNDETERMINED)**; H_σ\* and H_δ are graded at μ_p 0.3 and are unaffected.
+- **Sensitivity (`kmer_overlap.py` → `out/kmer_overlap.txt`), reported beside it, not a gate:**
+  subtracting the double-counted lens volume moves φ by ≤ 0.2 % of the solid for doublets and
+  moves χ(w₂) at μ_m 3 by at most −0.0017 — 60× smaller than the doublet effect (≈ −0.10) and in
+  the CONSERVATIVE direction (a smaller χ, i.e. a wider window). The registered H_χ numbers
+  therefore stand under the correction; they do not stand under K4, and both are printed.
+- **What is clean either way:** the realistic-friction window, μ_p 0.3: χ 0.908 → ~0.864 for
+  singlets → pure doublets, all cells passing K4.
+- ⚠ The same artefact is expected in `shapechi`'s α = 2, μ_p 3 cells (no dumps there). Its χ
+  0.788 headline inherits this caveat; the kmer w₂ = 1 cells (near-copies) bound the effect.
