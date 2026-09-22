@@ -114,10 +114,15 @@ shapes — is registered beside it (`PREREG_KMER` §3).
   contacts per primary: 4.63 (singlets) vs 2.82 (dumbbells) at μ_p 0.3 → `n_c` ratio 0.61;
   the lever arm of a lobe contact is between 1 and √2 times a sphere's. So
   `σ*(w=1)/σ*(0) = (n_c ℓ)_d/(n_c ℓ)_s ∈ [0.61, 0.86]` — the onset stress FALLS with doublets.
-- **Sharpness.** δ(w): the frictional dumbbell records already show a force CV of 1.3–8.8
-  against 0.7 for spheres, so **δ(dumbbells) < δ(singlets)** is predicted; the CV value is
-  large enough to need checking on per-contact data before it is believed (a few huge forces
-  would do it) — which the `kmer` dumps now record.
+- **Sharpness.** δ(w). ⚠ **The first version of this bullet predicted δ(dumbbells) <
+  δ(singlets) from the frictional-dumbbell force CV of 1.3–8.8. That CV is an OUTLIER
+  statistic, not a width**: the `kmer` per-contact dumps show 3–5 contacts out of ~4000
+  carrying 50–143× the mean force in frictional clump packs (μ_p 3 doublets, μ_p 0.3
+  triplets), while the 99th percentile is 2.2–3.2× the mean — the same as spheres.
+  Whether those few contacts are real wedging in a dumbbell's neck or an overlap artefact is
+  open. The quantile estimators (δ₁₀/₉₀, σ\* at the 1/e quantile) are insensitive to five
+  outliers in 4000, so the registered H_δ is graded as registered, but its REASON is
+  withdrawn: there is no longer a mechanism on record predicting its sign.
 
 ## 3. What a drop sees — every channel, one composition
 
