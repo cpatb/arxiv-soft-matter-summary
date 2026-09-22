@@ -1,0 +1,12 @@
+C1: PASS  f at phi = phiJ(f): (x - 1)/(chi - 1)
+C2: PASS  exp(-(s*/s_jam)^d) - f_c with f_c = e^-L = 0
+C2b: PASS  d f_ss/d sigma = (delta/sigma)(s*/sigma)^delta f_ss > 0
+C3: PASS  d ln(s_jam/s*)/d delta = log(-log(f_c))/delta**2
+C3b: PASS  sign at f_c = 0.1, 0.25, 1/e, 0.75: [(0.1, 0.4935103226319264), (0.25, 0.19327471004632005), (0.36787944117144233, 0.0), (0.75, -0.7372185347380107)]
+C4: PASS  delta->inf [1, 1]; delta->0 deep 0, edge oo; f_c->1 oo; f_c->0 0
+C5: PASS  worst |brute/closed - 1| over 4 points = 6.65e-06
+C6: PASS  lognormal g, worst |brute/closed - 1| = 2.47e-05
+C7a: PASS  g = f/(R* sigma) has [length]; kappa/Q(g) has [mass] / [length] / [time] ** 2
+C7b: PASS  d ln sigma_thr / d ln d = m - 2
+C8: PASS  lim (1-f_c)^(1/d) s_jam/s* = 1
+ALL PASS
