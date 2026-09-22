@@ -135,3 +135,27 @@ The DEM has no repulsive force law: `f̂` here is the fraction that WOULD be fri
 under (1) given the force network of a pack that is uniformly frictional (`μ_p` 0.3) or
 uniformly frictionless (`μ_p` 0). A pack whose friction switches contact by contact is a
 capability build and is not attempted.
+
+---
+
+## Amendment 1 — the finite-size control, written 2026-09-22 after grading, BEFORE its cells ran
+
+**Why.** The graded campaign passed W1 (9/9 bit-identical), W2′/W2″ (54/54), W3, H1 (ratio 0.811,
+t = −30.2), H2, H4 and H6. But **every CV = 0.5 cell carries `FINITE SIZE RISK: d_max/L_dense`
+= 0.34–0.38 > 0.25**, including the `μ_p` = 0.3 cells the headline contrasts rest on, and all
+six W4 exclusions are frictionless CV = 0.5 cells. The CV 0 → 0.2 contrasts are free of the
+flag. So the CV 0.5 numbers are **not quotable** until this control returns.
+
+**Grid.** The same protocol at **N = 4000** (d_max/L ≈ 0.36·(1/4)^{1/3} ≈ 0.23), CV = 0.5,
+`μ_p` ∈ {0, 0.3}, `p̂` = 3e-4, seeds {1,2,3}, 480 000 steps, dumps on. 6 cells, tag
+`actshape_fs`.
+
+**Registered comparison.** Seeds at different N are different radius draws, so this is
+**unpaired** (Welch). For `μ_p` = 0.3:
+- **F1** `|δ₁₀/₉₀(N=4000) − δ₁₀/₉₀(N=1000)|` < 0.05 (the within-cell sd is 0.01–0.04): the
+  N = 1000 CV 0.5 value is not a finite-size artefact.
+- **F2** H1 recomputed with CV 0.5 at N = 4000 against CV 0 at N = 1000 (Welch t, df by
+  Welch–Satterthwaite): `δ` falls, `|t| ≥ t_crit`, ratio in [0.60, 0.90].
+- **F3** `σ*/κ` (derjaguin, `d₁₀`) ratio CV 0.5/CV 0 recomputed the same way: < 1.
+For `μ_p` = 0 the question is whether the servo holds at all at N = 4000 (W4); if it does,
+the frictionless CV 0.5 numbers are printed, not graded.
