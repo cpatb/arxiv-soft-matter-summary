@@ -149,6 +149,31 @@ def main():
             + ("PASS" if cls and side else "UNDECIDABLE (class changed)" if not cls else "FAIL"))
     else:
         say("K2 L10: INCOMPLETE")
+    # ---- Amendment 2 (registered before its cells): singlets across x, K3 ------------------
+    say("")
+    say("Amendment 2 (singlets across x, default cap; S2* = 0.1):")
+    k3 = []
+    for d in sorted(glob.glob(os.path.join(OUT, "jamsig2", "s_*"))):
+        lab = os.path.basename(d)
+        st = json.load(open(os.path.join(d, "RUN_STATUS.json"), encoding="utf-8"))
+        p = os.path.join(d, "spread.dat")
+        a = np.loadtxt(p, comments="#", ndmin=2) if os.path.exists(p) else np.zeros((0, 21))
+        ban = open(os.path.join(d, "banner.txt"), encoding="utf-8", errors="replace").read()
+        em = re.search(r"eps_min=([\d.e+-]+)", ban)
+        prov = bool(em) and abs(float(em.group(1)) - 0.01) < 1e-12 and "_L9_" in ban
+        healthy = bool(st["rc"] == 0 and a.size and a[-1, 1] >= 5.9 and prov)
+        u0 = 4.0 if "U4.0" in lab else 2.0
+        J = float(a[:, 7].max()) if a.size else float("nan")
+        s2 = sig(a, u0)[1] if a.size and a[-1, 1] >= 5.0 else float("nan")
+        c_ = "J+" if J > 0.01 else "J0" if J == 0 else "ambiguous"
+        say(f"  {lab}: healthy {healthy} (rc {st['rc']}, t/tau {a[-1, 1] if a.size else 0})  J {J:.4f}  "
+            f"S2 {s2:+.4f}  class {c_}")
+        if healthy and c_ != "ambiguous":
+            k3.append((c_, s2, (s2 < 0.1) if c_ == "J+" else (s2 >= 0.1)))
+    classes = {c for c, _, _ in k3}
+    say(f"K3: {sum(r for *_, r in k3)}/{len(k3)} on the predicted side; classes present {sorted(classes)}  "
+        + ("PASS" if k3 and all(r for *_, r in k3) and len(classes) == 2 else
+           "FAIL" if any(not r for *_, r in k3) else "UNINFORMATIVE/INCOMPLETE"))
     with open(os.path.join(OUT, "grade_jamsig.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     return 0

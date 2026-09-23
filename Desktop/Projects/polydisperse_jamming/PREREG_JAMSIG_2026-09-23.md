@@ -92,3 +92,20 @@ kmermap R2/R3 (Status §3 item 3). ⚠ Survivorship: the J0 death came late (t/�
 recoil window) and the J+ deaths at impact. If large recoils crash the solver preferentially,
 surviving cells are biased toward gentle cases, so K1/K2 must not later be read as 'resolved by
 attrition' without addressing that.
+
+## Amendment 2 — out-of-sample test on SINGLETS across x (registered before its cells; commit time is the record)
+Amendment 1's held-out test failed to inform because its J0 cell died. This one uses regimes that
+SURVIVED at the default cap (the singlet kmermap cells at x 0.85/0.88/0.92, U₀ 2/4 were all
+healthy). Eight never-seen singlet cells (χ 0.9083: φ_m 0.56315, σ\* 300 Pa, δ 1.3169, default
+EPS_MIN 0.01, L9), campaign `jamsig2_2026-09-23`:
+| label | x | φ | JAM_FHAT (f_c) | expected class |
+|---|---|---|---|---|
+| s_x0.86_U2.0 / _U4.0 | 0.86 | 0.5332 | 1.0 (outside window) | J0 by construction |
+| s_x0.87_U2.0 / _U4.0 | 0.87 | 0.5394 | 1.0 (outside window) | J0 by construction |
+| s_x0.93_U2.0 / _U4.0 | 0.93 | 0.5766 | 0.7634 | J+ expected, decided by the run |
+| s_x0.94_U2.0 / _U4.0 | 0.94 | 0.5828 | 0.6543 | J+ expected, decided by the run |
+- **K3 (the out-of-sample test, S2\* = 0.1 unchanged):** every healthy J+ cell has S2 < 0.1 and every
+  healthy J0 cell has S2 ≥ 0.1. It is informative only if ≥ 1 healthy cell of EACH class exists.
+- One particle type throughout, so composition, σ\* and δ cannot carry the separation; only x and
+  the jam state differ.
+- Health as before; deaths are reported, never graded.
