@@ -109,3 +109,18 @@ EPS_MIN 0.01, L9), campaign `jamsig2_2026-09-23`:
 - One particle type throughout, so composition, σ\* and δ cannot carry the separation; only x and
   the jam state differ.
 - Health as before; deaths are reported, never graded.
+
+### Amendment 2 — RESULT (commit time is the record; `out/grade_jamsig.txt`)
+| cell | health | J | class | S2 |
+|---|---|---|---|---|
+| s_x0.86_U2.0 / U4.0 | healthy / healthy | 0 / 0 | J0 | 0.461 / 0.500 |
+| s_x0.87_U2.0 / U4.0 | healthy / healthy | 0 / 0 | J0 | 0.391 / 0.391 |
+| s_x0.93_U2.0 | died (t/τ 1.25, dt-collapse) | ≥ 0.126 | J+ | — |
+| s_x0.93_U4.0 | healthy | 0.329 | J+ | **0.000** |
+| s_x0.94_U2.0 / U4.0 | died (rc 134 at t/τ 1.23; t/τ 3.45) | ≥ 0.453 / ≥ 0.452 | J+ | — |
+
+**K3 PASS: 5/5 healthy cells on the predicted side of the pre-fixed S2\* = 0.1, both classes present.**
+This is the first registered OUT-OF-SAMPLE pass for apex recoil, on one particle type, so composition,
+σ\* and δ cannot carry it. ⚠ **Its J+ side is n = 1**: 3 of 4 jammed cells died at the L9 floor,
+exactly the survivorship pattern flagged under Amendment 1. S2 is therefore upgraded from
+"candidate" to **"passed one out-of-sample test, J0 side n = 4, J+ side n = 1"**, not to validated.
