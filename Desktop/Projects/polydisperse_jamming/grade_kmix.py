@@ -60,8 +60,13 @@ def main():
     clean = {}
     for k in sorted(g):
         v = g[k]
-        dmax = max(x[1] for x in v.values() if x[1] is not None) if v else float("nan")
-        clean[k] = dmax <= 1e-3
+        # a MISSING dump is not evidence of a clean pack: it makes the group unclean (stricter;
+        # added before the data landed)
+        miss = sum(x[1] is None for x in v.values())
+        dmax = max((x[1] for x in v.values() if x[1] is not None), default=float("nan"))
+        clean[k] = miss == 0 and dmax <= 1e-3
+        if miss:
+            say(f"  MISSING DUMP x{miss} in group {k} -> not clean")
         say(f"  {k[1]:.1f}  {k[0]:.2f}  {k[2]:.0e}  {len(v)}   {np.mean([x[0] for x in v.values()]):.4f}"
             f"   {dmax:.4f}   {'clean' if clean[k] else 'EXCLUDED'}")
     u1 = [clean.get((1.0, 1.0, p)) for p in (1e-3, 3e-5)]
@@ -96,7 +101,10 @@ def main():
             say(f"  UNHEALTHY {r['key']}")
             continue
         dd = deep(r["key"])
-        if dd is not None and dd > 1e-3:
+        if dd is None:
+            say(f"  NO DUMP {r['key'][:60]} -> excluded (K4 cannot be applied)")
+            continue
+        if dd > 1e-3:
             say(f"  K4-EXCLUDED {r['key'][:60]}: {dd:.2%}")
             continue
         m[(r["doublet_w"], r["triplet_w"], r["mu_p"], r["p_hat_target"])][r["seed"]] = r["phi"]
