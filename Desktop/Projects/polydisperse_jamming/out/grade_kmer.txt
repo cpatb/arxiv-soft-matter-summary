@@ -91,7 +91,7 @@ H_chi (p 3e-5, mu_m 3): 1/1 within +-0.01  INCOMPLETE
   comp w2 0.00 w3 0.50 p 3e-05: Z_nr(mu 3) nan  Z_nr(mu 0) 6.585
   comp w2 0.00 w3 1.00 p 1e-03: Z_nr(mu 3) nan  Z_nr(mu 0) 8.729
   comp w2 0.00 w3 1.00 p 3e-05: Z_nr(mu 3) nan  Z_nr(mu 0) 8.202
-H_Z rough (p 3e-5): 2/2 within 4 +- 0.25  PASS
+H_Z rough (p 3e-5): 1/1 within 4 +- 0.25; CLUSTER compositions graded: 0  UNDETERMINED (every mu_p 3 cluster cell is K4-excluded)
   frictionless w2 0.25 (n2 0.143): Z 6.270 vs linear-in-n2 6.256
   frictionless w2 0.50 (n2 0.333): Z 6.655 vs linear-in-n2 6.633
   frictionless w2 0.75 (n2 0.600): Z 7.233 vs linear-in-n2 7.161

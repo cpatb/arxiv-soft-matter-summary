@@ -182,12 +182,18 @@ def main() -> int:
     for comp in COMPS:
         for rung in RUNGS:
             z3, n3 = m(comp, 3.0, rung, "z_nr")
-            if n3:
-                z_ok.append(abs(z3 - 4.0) <= 0.25 if rung == 3e-5 else True)
+            # graded rung only, and CLUSTER compositions only count toward the registered
+            # "every composition" claim (referee pass 3 M4: the 1e-3 rung was auto-passed and a
+            # singlet-only pass was read as a statement about clusters)
+            if n3 and rung == 3e-5:
+                z_ok.append((comp, abs(z3 - 4.0) <= 0.25))
             say(f"  comp w2 {comp[0]:.2f} w3 {comp[1]:.2f} p {rung:.0e}: Z_nr(mu 3) {z3:.3f}"
                 f"  Z_nr(mu 0) {m(comp, 0.0, rung, 'z_nr')[0]:.3f}")
-    say(f"H_Z rough (p 3e-5): {sum(z_ok)}/{len(z_ok)} within 4 +- 0.25"
-        + ("  PASS" if z_ok and all(z_ok) else "  FAIL"))
+    clus = [ok_ for comp, ok_ in z_ok if comp != (0.0, 0.0)]
+    say(f"H_Z rough (p 3e-5): {sum(o for _, o in z_ok)}/{len(z_ok)} within 4 +- 0.25; CLUSTER "
+        f"compositions graded: {len(clus)}"
+        + ("  UNDETERMINED (every mu_p 3 cluster cell is K4-excluded)" if not clus else
+           "  PASS" if all(clus) else "  FAIL"))
     zl = []
     z0s, _ = m((0.0, 0.0), 0.0, 3e-5, "z_nr")
     z0d, _ = m((1.0, 0.0), 0.0, 3e-5, "z_nr")
