@@ -22,3 +22,19 @@ continuous thickening (Θ rises as χ falls). Jamming switches on once χ < x (w
 
 ⚠ In K1(a) the whole μ_m = 3 series is drawn hollow as K4-flagged, although its w₂ = 0 point
 (singlets) passes K4; only the w₂ > 0 points are excluded.
+
+## K4 — apex recoil against jammed volume (PREREG_JAMSIG)
+Every healthy default-cap DNS cell: the maximum rise of the apex height h/D0 after its minimum,
+against the jammed volume fraction J. Hollow: the 23 cells the observable was found on (in-sample).
+Filled: 5 never-seen singlet cells from Amendment 2 (out-of-sample). Dashed: the threshold 0.1, fixed
+before those cells ran. Non-jammed drops re-rise 0.125–0.59; jammed drops at most 0.078.
+⚠ h/D0 is quantised at 1/64, so 0 means "no rise of one quantum". The out-of-sample JAMMED side is
+one cell (3 of 4 died at L9). The contrast is set by the jammed-state viscosity: it holds at a 10×
+stiffer cap and falls to a quarter at a 10× softer one (`PREREG_EPSSIG`). A candidate bench
+observable, not a validated one.
+
+## K5 — the regime map at EPS_MIN 0.03 (PREREG_KMERMAPE03)
+Same layout and inputs as K3, with a 10× softer viscosity cap. All 18 cells survive, which completes
+the orderings the default-cap deaths left open (R2′, R3′ PASS), and every cell keeps its J+/J0 class
+(X1 12/12). J magnitudes are NOT comparable with K3 (they depend on the cap); classes and orderings
+are. Singlet cells at x 0.85/0.88 are byte-identical to K3's (the cap cannot bind there).

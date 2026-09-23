@@ -170,6 +170,18 @@ def main():
             f"S2 {s2:+.4f}  class {c_}")
         if healthy and c_ != "ambiguous":
             k3.append((c_, s2, (s2 < 0.1) if c_ == "J+" else (s2 >= 0.1)))
+    oos = []
+    for d in sorted(glob.glob(os.path.join(OUT, "jamsig2", "s_*"))):
+        st = json.load(open(os.path.join(d, "RUN_STATUS.json"), encoding="utf-8"))
+        a2 = np.loadtxt(os.path.join(d, "spread.dat"), comments="#", ndmin=2)
+        if st["rc"] == 0 and a2.size and a2[-1, 1] >= 5.9:
+            u0 = 4.0 if "U4.0" in d else 2.0
+            oos.append(dict(set="out-of-sample", lab=os.path.basename(d), u0=u0,
+                            J=float(a2[:, 7].max()), S2=sig(a2, u0)[1]))
+    ins = [dict(set="in-sample", lab=f"{r['camp']}/{r['lab']}", u0=r["u0"], J=r["J"], S2=r["s"][1])
+           for r in rows]
+    with open(os.path.join(OUT, "jamsig_rows.json"), "w", encoding="utf-8") as fh:
+        json.dump(ins + oos, fh, indent=1)
     classes = {c for c, _, _ in k3}
     say(f"K3: {sum(r for *_, r in k3)}/{len(k3)} on the predicted side; classes present {sorted(classes)}  "
         + ("PASS" if k3 and all(r for *_, r in k3) and len(classes) == 2 else

@@ -155,13 +155,13 @@ def fig_k2():
          "PREREG_KMERDROP: x = 0.85, sigma* 300 Pa, delta 1.3169, L9; chi(w2) from the DEM")
 
 
-def fig_k3():
-    """K3: the kmermap regime map (PREREG_KMERMAP) -- all channels from the clean mu_p 0.3 DEM.
+def fig_k3(src="kmermap_cells.json", name="K3_kmermap", note_cap="default EPS_MIN 0.01"):
+    """K3 (and K5 at EPS_MIN 0.03): the kmermap regime map -- all channels from the clean mu_p 0.3 DEM.
     Rows: max jammed volume J(f_hat > f_c) and max Rg_r/D0; columns x = 0.85/0.88/0.92;
     singlets (w0) vs pure doublets (w1) against U0. Cells failing health or provenance are
     drawn hollow grey and NOT joined (a death at the jammed floor ends the record early, so its
     maxima are lower bounds). Input: out/kmermap_cells.json written by grade_kmermap.py."""
-    p = os.path.join(OUT, "kmermap_cells.json")
+    p = os.path.join(OUT, src)
     if not os.path.exists(p):
         return
     cells = json.load(open(p, encoding="utf-8"))
@@ -187,9 +187,33 @@ def fig_k3():
     ax[1, 0].set_ylabel(r"max $R_{g,r}/D_0$")
     ax[0, 0].legend(frameon=False)
     fig.tight_layout()
-    save(fig, "K3_kmermap", cells,
-         "PREREG_KMERMAP: chi, sigma*, delta, JAM_FHAT from the clean mu_p 0.3 DEM; L9; "
+    save(fig, name, cells,
+         f"PREREG_KMERMAP(E03): chi, sigma*, delta, JAM_FHAT from the clean mu_p 0.3 DEM; L9; {note_cap}; "
          "hollow grey = unhealthy/provenance-failed (maxima are lower bounds)")
+
+
+def fig_k4():
+    """K4: apex recoil S2 (max rise of h/D0 after its minimum) against the jammed volume J, every
+    healthy default-cap cell. Hollow = the 23 cells S2 was found on (PREREG_JAMSIG, in-sample);
+    filled = the 5 never-seen singlet cells of Amendment 2 (out-of-sample). Dashed: the threshold
+    S2* = 0.1 fixed BEFORE the out-of-sample cells ran. h/D0 is quantised at 1/64 (L9), so S2 = 0 means
+    no rise of one quantum. Input: out/jamsig_rows.json from grade_jamsig.py."""
+    p = os.path.join(OUT, "jamsig_rows.json")
+    if not os.path.exists(p):
+        return
+    rows = json.load(open(p, encoding="utf-8"))
+    fig, ax = plt.subplots(figsize=(3.4, 2.8))
+    for st, kw in (("in-sample", dict(mfc="none", color=COL[1])), ("out-of-sample", dict(color=COL[2]))):
+        r = [x for x in rows if x["set"] == st]
+        ax.plot([x["J"] for x in r], [x["S2"] for x in r], "o", label=st, **kw)
+    ax.axhline(0.1, ls="--", color="0.5", lw=0.8)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 0.7)
+    ax.set_xlabel("jammed volume fraction")
+    ax.set_ylabel(r"apex recoil $\Delta h/D_0$")
+    ax.legend(frameon=False, loc="upper right")
+    fig.tight_layout()
+    save(fig, "K4_apex_recoil", rows, "PREREG_JAMSIG: S2 vs J, default EPS_MIN, L9; threshold 0.1 pre-fixed")
 
 
 def main():
@@ -199,6 +223,8 @@ def main():
     fig_k1()
     fig_k2()
     fig_k3()
+    fig_k3("kmermapE03_cells.json", "K5_kmermap_eps003", "EPS_MIN 0.03")
+    fig_k4()
     if a.check:
         h1 = md5(os.path.join(FIG, "K1_doublet_window.png"))
         fig_k1()

@@ -94,6 +94,8 @@ def main():
                 + ("" if same else "   CLASS CHANGED"))
     say(f"X1 cross-cap class: {sum(x1)}/{len(x1)} unchanged" + ("  PASS" if x1 and all(x1) else
                                                               "  FAIL" if x1 else "  INCOMPLETE"))
+    with open(os.path.join(HERE, "out", "kmermapE03_cells.json"), "w", encoding="utf-8") as fh:
+        json.dump([dict(w=k[0], x=k[1], U0=float(k[2]), **v) for k, v in sorted(c.items())], fh, indent=1)
     with open(os.path.join(HERE, "out", "grade_kmermapE03.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     return 0
