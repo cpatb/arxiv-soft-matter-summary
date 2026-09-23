@@ -4,7 +4,7 @@ Written 2026-09-22 (fourth block). Checks: `multiplet_knobs_2026-09-22_check.py`
 `..._check.txt` (**9/9 PASS**; K6 is an arithmetic cross-check against `predict_kmer.py`,
 not a physics test). Predictions: `predict_kmer.py` → `out/predict_kmer.txt`. Test:
 `PREREG_KMER_2026-09-22.md` (126 DEM cells, graded; §11).
-Status: **derived, checked; referee pass 1 returned 1 FATAL + 4 MATERIAL + 2 MINOR, all acted on below (marked "(pass 1)"); pass 2 confirmed them and returned 1 MATERIAL + 2 MINOR, acted on ("pass 2"). Pass 3 (after the data) returned 1 FATAL + 5 MATERIAL + 6 MINOR: the result box was rewritten from §11, §10 scoped to the μ_m 3 convention, stale pre-data sections marked, P-Z for clusters set UNDETERMINED ("pass 3"). Pass 4 returned 3 MATERIAL (net bound 0.58 → 0.59 over both rungs; Θ 7.88 → 7.78 from a mis-copied χ; triangles fail K4 at μ_p 0.3 too), acted on ("pass 4").**
+Status: **derived, checked; referee pass 1 returned 1 FATAL + 4 MATERIAL + 2 MINOR, all acted on below (marked "(pass 1)"); pass 2 confirmed them and returned 1 MATERIAL + 2 MINOR, acted on ("pass 2"). Pass 3 (after the data) returned 1 FATAL + 5 MATERIAL + 6 MINOR: the result box was rewritten from §11, §10 scoped to the μ_m 3 convention, stale pre-data sections marked, P-Z for clusters set UNDETERMINED ("pass 3"). Pass 4 returned 3 MATERIAL (net bound 0.58 → 0.59 over both rungs; Θ 7.88 → 7.78 from a mis-copied χ; triangles fail K4 at μ_p 0.3 too), acted on ("pass 4"). Pass 5 recomputed every result-box, §10 and §11 number from the artifacts and dumps: **nothing new**; the referee loop is closed.**
 
 > ## RESULT BOX (rewritten from §11 after referee pass 3; the pre-data version is in git history)
 >
