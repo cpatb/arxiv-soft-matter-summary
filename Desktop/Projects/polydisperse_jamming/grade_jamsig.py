@@ -174,6 +174,39 @@ def main():
     say(f"K3: {sum(r for *_, r in k3)}/{len(k3)} on the predicted side; classes present {sorted(classes)}  "
         + ("PASS" if k3 and all(r for *_, r in k3) and len(classes) == 2 else
            "FAIL" if any(not r for *_, r in k3) else "UNINFORMATIVE/INCOMPLETE"))
+    # ---- Amendment 3 (registered before its cells): EPS_SOFT 0.002 rescue -------------------
+    say("")
+    say("Amendment 3 (EPS_SOFT 0.002; S2* = 0.1):")
+    resc = ("s_x0.93_U2.0", "s_x0.94_U2.0", "s_x0.94_U4.0")
+    t1, t2, k3b = [], [], []
+    ctrl = {"s_x0.93_U4.0": ("J+", 0.0), "s_x0.86_U4.0": ("J0", 0.5)}
+    for d in sorted(glob.glob(os.path.join(OUT, "jamsig3", "s_*"))):
+        lab = os.path.basename(d)
+        st = json.load(open(os.path.join(d, "RUN_STATUS.json"), encoding="utf-8"))
+        p = os.path.join(d, "spread.dat")
+        a = np.loadtxt(p, comments="#", ndmin=2) if os.path.exists(p) else np.zeros((0, 21))
+        ban = open(os.path.join(d, "banner.txt"), encoding="utf-8", errors="replace").read()
+        prov = "_esft0.002" in ban and "_L9_" in ban
+        healthy = bool(st["rc"] == 0 and a.size and a[-1, 1] >= 5.9 and prov)
+        u0 = 4.0 if "U4.0" in lab else 2.0
+        J = float(a[:, 7].max()) if a.size else float("nan")
+        s2 = sig(a, u0)[1] if a.size and a[-1, 1] >= 5.0 else float("nan")
+        c_ = "J+" if J > 0.01 else "J0" if J == 0 else "ambiguous"
+        say(f"  {lab}: healthy {healthy} (esft tag {prov}, rc {st['rc']}, t/tau {a[-1, 1] if a.size else 0})"
+            f"  J {J:.4f}  S2 {s2:+.4f}  class {c_}")
+        if lab in resc:
+            t1.append(healthy)
+            if healthy and c_ != "ambiguous":
+                k3b.append((s2 < 0.1) if c_ == "J+" else (s2 >= 0.1))
+        if lab in ctrl and healthy:
+            want_c, _ = ctrl[lab]
+            t2.append(c_ == want_c and ((s2 < 0.1) if want_c == "J+" else (s2 >= 0.1)))
+    say(f"T1 rescue: {sum(t1)}/{len(t1)} healthy (bar >= 2 of 3)  " + ("PASS" if sum(t1) >= 2 else
+                                                                      "FAIL" if len(t1) == 3 else "INCOMPLETE"))
+    say(f"T2 controls keep class and S2 side: {sum(t2)}/{len(t2)}  " + ("PASS" if len(t2) == 2 and all(t2)
+                                                                    else "FAIL" if t2 and not all(t2) else "INCOMPLETE"))
+    say(f"K3' rescued cells on the predicted side: {sum(k3b)}/{len(k3b)}  "
+        + ("PASS" if k3b and all(k3b) else "FAIL" if k3b else "INCOMPLETE"))
     with open(os.path.join(OUT, "grade_jamsig.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     return 0

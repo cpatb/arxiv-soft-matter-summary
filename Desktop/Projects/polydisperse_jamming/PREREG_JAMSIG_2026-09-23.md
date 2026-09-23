@@ -124,3 +124,20 @@ This is the first registered OUT-OF-SAMPLE pass for apex recoil, on one particle
 σ\* and δ cannot carry it. ⚠ **Its J+ side is n = 1**: 3 of 4 jammed cells died at the L9 floor,
 exactly the survivorship pattern flagged under Amendment 1. S2 is therefore upgraded from
 "candidate" to **"passed one out-of-sample test, J0 side n = 4, J+ side n = 1"**, not to validated.
+
+## Amendment 3 — can EPS_SOFT rescue the L9 deaths? (registered before its cells; commit time is the record)
+The deaths are the solver's HARD dt floor (dt < 1e-7, not scaled by DTFLOOR_FACT) tripping after
+Poisson non-convergence: stop dt 6.8e-8 to 5.8e-11, lowdt mostly 1. So DTFLOOR_FACT cannot help. The
+solver documents EPS_SOFT for exactly this: the hard clip at EPS_MIN puts a C0 corner "at exactly the
+state the jammed plug occupies". EPS_SOFT = 0.002 makes the jammed-state viscosity
+η_s/(EPS_MIN + EPS_SOFT/2)² = 0.83 η_max (a 17 % softer cap; classes survived 10× in `epssig`). For
+unjammed cells far from the floor (ε − EPS_MIN ≫ EPS_SOFT) the change is ≈ EPS_SOFT²/(4d), 0.03 % at
+x 0.86. Campaign `jamsig3_2026-09-23`, singlet cells as Amendment 2, default EPS_MIN, EPS_SOFT 0.002:
+- rescue: `s_x0.93_U2.0`, `s_x0.94_U2.0`, `s_x0.94_U4.0` (died at default);
+- controls: `s_x0.93_U4.0` (J+, S2 0 at default), `s_x0.86_U4.0` (J0, S2 0.500 at default).
+Predictions:
+- **T1 (rescue):** ≥ 2 of the 3 rescue cells are healthy.
+- **T2 (controls keep class and S2 side of 0.1).**
+- **K3′:** every healthy J+ cell in this campaign has S2 < 0.1 and every healthy J0 cell S2 ≥ 0.1. It
+  counts as out-of-sample for the RESCUED cells only (the controls were seen).
+- Health: rc 0, t/τ ≥ 5.9, and the tag must carry the EPS_SOFT marker.
