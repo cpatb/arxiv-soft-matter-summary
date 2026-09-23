@@ -51,8 +51,8 @@ at the conditions tested. Swapping in the doublets' lower σ\* and softer δ wit
 the footprint by 0.08 % (x 0.85). Swapping in the doublets' χ alone reproduces both the jamming at
 x 0.88 (J to 0.001) and the whole footprint cut at x 0.85 (to 0.2 %). The channels add in log Rg to
 0.002. This agrees with the sheared-DEM expectation that onset and sharpness nearly cancel near the
-window edge (net ×0.94–1.05 at f_c 0.75–0.9), and extends it: here the activation channel is inert
-even outside the window.
+window edge (net ×0.94–1.05 at f_c 0.75–0.9), and extends it: the activation channel is minor even outside the window (Amendment 1: ≤ 3 % in Rg
+over U₀ 1–4, growing as U₀ falls).
 
 **Scope.** Tested at U₀ 2 and 4 only, where the singlets' activation is already high (⟨f̂⟩max
 0.77–0.92). At low U₀, where activation is far from saturated, a 21 % lower σ\* could matter and is
@@ -69,3 +69,11 @@ JAM_FHAT 1.0): `act_x0.85_U1.0`, `act_x0.85_U2.0`. References: kmermap w0_x0.85_
   (0.372). If it exceeds ~0.05 at U₀ 1, "the activation channel is inert" is scoped to U₀ ≥ 2.
 - Health as D5. A window-only arm at U₀ 1/2 is NOT run: the all-channel doublet cells there died
   at the L9 floor (Θ ≈ 98), so a window-only cell would too.
+
+### Amendment 1 — RESULT (graded 2026-09-23 ~00:55 CDT)
+Both cells healthy. ln(R_act/R_w0) at x 0.85: **−0.0286 (U₀ 1), −0.0182 (U₀ 2), −0.0008 (U₀ 4)**.
+**E1 PASS**: the activation channel acts more as U₀ falls, as predicted. **E2:** it stays below the
+0.05 scope line at every U₀ tested, about 1/13 of the window's −0.372 cut at U₀ 4. (The window-only
+arm could not be run at U₀ 1–2 because those cells die at L9, so a same-U₀ comparison there is
+unavailable; the U₀ 1 all-channel doublet cell also died.) The reading above is corrected from
+"inert" to **minor and growing as U₀ falls (≤ 3 % in Rg over U₀ 1–4)**.

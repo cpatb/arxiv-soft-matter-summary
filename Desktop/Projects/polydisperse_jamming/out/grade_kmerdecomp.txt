@@ -3,10 +3,17 @@ grade_kmerdecomp -- PREREG_KMERDECOMP_2026-09-23.md
   win_x0.88_U4.0: J 0.2009  Rg_max 0.3532  beta_max 1.0781   [EXCLUDED rc 0 t 2.575 prov True]
   win_x0.85_U4.0: J 0.0000  Rg_max 0.3958  beta_max 1.2031
   act_x0.85_U4.0: J 0.0000  Rg_max 0.5737  beta_max 1.7031
+  act_x0.85_U1.0: J 0.0000  Rg_max 0.4901  beta_max 1.4531
+  act_x0.85_U2.0: J 0.0000  Rg_max 0.5230  beta_max 1.5469
 
 D1 window alone jams at x 0.88 (J > 0.01 in >= 1 of U0 2/4): healthy J [0.0591], dead-cell lower bounds [0.2009]  PASS
 D2 x 0.88 U0 2.0: J(window only) - J(all channels) = +0.0011  (0.0591 vs 0.0579)
 D2 x 0.88 U0 4.0: not decidable (a cell is missing, dead or off-provenance)
 D3 x 0.85 U0 4: ln cut window -0.3721, activation -0.0008, all -0.3709  PASS (window cut larger)
 D4 additivity: ln(all) -0.3709 vs ln(win)+ln(act) -0.3729 (difference +0.0021; no bar)
-D5 health: 3/4
+
+Amendment 1 (low U0, activation only, x 0.85):
+  U0 1.0: ln(R_act/R_w0) = -0.0286 (0.4901 vs 0.5043)
+  U0 2.0: ln(R_act/R_w0) = -0.0182 (0.5230 vs 0.5326)
+E1 |cut| at U0 1 > 0.0008: PASS
+D5 health: 5/6
