@@ -32,3 +32,23 @@ that should differ (lessons.md 2026-08-31). The 12 w₂ > 0 records and dumps ar
 `out/invalid_shearkmer_v1/`. Fixed in `shear.py`; the grader gains **SK3 WIRING** (realised doublet
 count must match w₂), which would have failed launch 1 on every cell. The w₂ = 0 cells are valid
 (SK0 6/6 bit-identical) and are not re-run. Predictions S1–S3 unchanged.
+
+## RESULT (graded 2026-09-22 ~21:00 CDT, `out/grade_shearkmer.txt`, launch 3, 18/18)
+
+Gates: SK0 6/6 bit-identical, SK3 wiring 12/12, SK1 health 18/18, SK2 overlap 0 excluded
+(sheared μ 0.3 doublet packs do NOT interpenetrate, unlike isotropic μ 3 clump packs).
+
+- **S1 PASS:** σ\*(pure doublets)/σ\*(singlets) = **0.786** at μ_p 0.3 — the isotropic 0.783 reproduced
+  under shear. (μ_p 0: 0.853, reported.)
+- **S2 FAIL:** under shear, frictional doublets DO soften the activation: δ₁₀/₉₀ 1.254 → **1.063**
+  (−0.191 ± 0.008, seed-paired). The isotropic "δ unchanged" does not transfer to sheared packs.
+  (μ_p 0: −0.002 ± 0.013, unchanged.)
+- **S3 PASS:** σ\*(w₂ 0.5) lies between the endpoints (0.171 in [0.153, 0.194]).
+
+**Consequence, computed without a Weibull assumption** (`shearkmer_sjam.py`; reported, not
+registered): at fixed chemistry and primary, pure doublets change the stress to jam by
+×0.67 / 0.74 / 0.79 / 0.83 / 0.94 / **1.05** at f_c = 0.10 / 0.25 / 0.37 / 0.50 / 0.75 / 0.90 (μ_p 0.3).
+The δ-channel offset the referee flagged is REAL and appears only at the window edge, where it
+slightly reverses the sign. At fixed φ doublets also LOWER f_c (the window opens), moving the
+operating point away from that edge — so the net effect at fixed weighed φ is toward jamming.
+Frictionless: a uniform ×0.85, as a pure onset-scale shift would give.

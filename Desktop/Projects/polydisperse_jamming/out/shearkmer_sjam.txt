@@ -1,0 +1,10 @@
+shearkmer_sjam -- sigma_jam(w2)/sigma_jam(0) at fixed kappa and primary, seed-paired
+   (sigma = p; f_c is the frictional fraction the window position requires)
+  mu_p 0.3:  f_c = 0.10  0.25  0.37  0.50  0.75  0.90
+    w2 0.5 (n 3):  0.819  0.852  0.880  0.906  0.961  1.039
+    w2 1.0 (n 3):  0.673  0.740  0.786  0.834  0.943  1.049
+  mu_p 0.0:  f_c = 0.10  0.25  0.37  0.50  0.75  0.90
+    w2 0.5 (n 3):  0.929  0.930  0.934  0.940  0.946  0.938
+    w2 1.0 (n 3):  0.851  0.850  0.853  0.858  0.857  0.854
+
+  < 1 means doublets lower the stress needed to jam at that position in the window.

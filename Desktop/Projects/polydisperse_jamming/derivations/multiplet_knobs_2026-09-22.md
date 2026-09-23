@@ -304,7 +304,7 @@ at MP_EXPO = 5 the same step is ×877.
 | P-mix (ideal specific-volume mixing) | ✅ 12/12 clean cells within 2·PHI_SCALE, no systematic excess; the μ 3 half excluded. |
 | P-Z (isostatic counting) | ✅ rough Z ≈ 4; frictionless Z linear in doublet number fraction; frictionless dumbbells and chains hypostatic. |
 | P-σ\* (onset falls) | ✅ σ\*(pure doublets)/σ\*(singlets) = 0.783 at μ_p 0.3 (isotropic packs). |
-| P-δ (sharpness) | ❌ unchanged (+0.004, t 0.05) — so the δ channel does NOT offset σ\* for doublets, and the §3 cancellation worry does not arise at this friction. |
+| P-δ (sharpness) | isotropic: unchanged (+0.004, t 0.05). ⚠ **SHEARED (`PREREG_SHEARKMER`): δ falls 1.254 → 1.063** at μ_p 0.3 (−0.191 ± 0.008) — so the §3 cancellation IS real under shear, but only at the window edge: σ_jam ratio ×0.67 at f_c 0.10, ×0.94 at 0.75, ×1.05 at 0.90 (`out/shearkmer_sjam.txt`). σ\* ratio reproduced under shear (0.786). |
 | chains vs dumbbells | a straight trimer widens the μ 0.3 window no more than a dumbbell at the quoted rung (0.8638 vs 0.8631). |
 
 🔴 **Frictional (μ_p 3) clump packs lock in genuine interpenetration** (penetration depth up to

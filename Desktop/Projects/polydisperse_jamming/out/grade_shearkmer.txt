@@ -1,0 +1,20 @@
+grade_shearkmer -- 18 of 18 records
+SK0 identity vs actshape (w2 = 0): 6/6  PASS
+SK3 wiring (realised doublets match w2): 12/12  PASS
+SK1 health: 18/18
+SK2 overlap: 0 cells with > 0.1 % of contacts beyond u/r 0.05
+
+   mu   w2    n   sigma*/kappa    delta10/90
+  0.0  0.00  3   0.2477        1.477
+  0.0  0.50  3   0.2313        1.470
+  0.0  1.00  3   0.2114        1.475
+  0.3  0.00  3   0.1942        1.254
+  0.3  0.50  3   0.1709        1.144
+  0.3  1.00  3   0.1526        1.063
+
+  mu 0.3: S1 sigma*(w2=1)/sigma*(0) = 0.786 (bar [0.55, 0.95]) PASS   [GRADED]
+  mu 0.3: S2 delta(w2=1) - delta(0) = -0.191 +- 0.008 (bar |.| < 0.05) FAIL   [GRADED]
+  mu 0.3: S3 sigma*(0.5) = 0.1709 between [0.1526, 0.1942] PASS   [GRADED]
+  mu 0.0: S1 sigma*(w2=1)/sigma*(0) = 0.853 (bar [0.55, 0.95]) PASS   [reported]
+  mu 0.0: S2 delta(w2=1) - delta(0) = -0.002 +- 0.013 (bar |.| < 0.05) PASS   [reported]
+  mu 0.0: S3 sigma*(0.5) = 0.2313 between [0.2114, 0.2477] PASS   [reported]
