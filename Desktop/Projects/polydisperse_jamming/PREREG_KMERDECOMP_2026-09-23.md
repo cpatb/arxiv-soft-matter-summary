@@ -32,3 +32,28 @@ cut is at x 0.85 where nothing jams" (is that cut THICKENING, i.e. the window, o
 - **D5** health: rc 0 and t/τ ≥ 5.9, else EXCLUDED and printed; a death is never a jam, and a dead
   cell's maxima are lower bounds, reported as such.
 - **Provenance:** each banner must carry the table's φ, φ_m, σ\*, δ, JAM_FHAT, U₀ to 1e-6.
+
+## RESULT (graded 2026-09-23 ~00:30 CDT, `grade_kmerdecomp.py` → `out/grade_kmerdecomp.txt`)
+
+4/4 cells, provenance 4/4, health 3/4 (win_x0.88_U4.0: `STOP dt-collapse` at t/τ 2.6, the L9
+jammed floor; its J 0.2009 is a lower bound).
+
+| gate | verdict | numbers |
+|---|---|---|
+| **D1** window alone jams at x 0.88 | **PASS** (healthy cell) | J 0.0591 at U₀ 2; ≥ 0.2009 at U₀ 4 (dead) |
+| D2 J(window) − J(all), x 0.88 | reported | **+0.0011** at U₀ 2 (0.0591 vs 0.0579); U₀ 4 undecidable (dead) |
+| **D3** window cut > activation cut, x 0.85 U₀ 4 | **PASS** | ln(R/R_w0): window −0.3721, activation **−0.0008**, all −0.3709 |
+| D4 additivity | reported | ln(all) − [ln(win) + ln(act)] = +0.0021 |
+| D5 health | 3/4 | |
+
+**Reading.** In the DNS drop the doublets' effect is carried **entirely by the window channel (χ)**
+at the conditions tested. Swapping in the doublets' lower σ\* and softer δ with the singlets' χ moves
+the footprint by 0.08 % (x 0.85). Swapping in the doublets' χ alone reproduces both the jamming at
+x 0.88 (J to 0.001) and the whole footprint cut at x 0.85 (to 0.2 %). The channels add in log Rg to
+0.002. This agrees with the sheared-DEM expectation that onset and sharpness nearly cancel near the
+window edge (net ×0.94–1.05 at f_c 0.75–0.9), and extends it: here the activation channel is inert
+even outside the window.
+
+**Scope.** Tested at U₀ 2 and 4 only, where the singlets' activation is already high (⟨f̂⟩max
+0.77–0.92). At low U₀, where activation is far from saturated, a 21 % lower σ\* could matter and is
+untested. Stress-controlled activation (M6), L9, one seed-free DNS realisation per cell.
