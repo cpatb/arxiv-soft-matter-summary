@@ -141,3 +141,18 @@ Predictions:
 - **K3′:** every healthy J+ cell in this campaign has S2 < 0.1 and every healthy J0 cell S2 ≥ 0.1. It
   counts as out-of-sample for the RESCUED cells only (the controls were seen).
 - Health: rc 0, t/τ ≥ 5.9, and the tag must carry the EPS_SOFT marker.
+
+### Amendment 3 — RESULT (commit time is the record)
+| cell | default (Am. 2) | EPS_SOFT 0.002 |
+|---|---|---|
+| s_x0.93_U2.0 (rescue) | died t/τ 1.25 | **died** t/τ 1.83 (rc 0 stop) |
+| s_x0.94_U2.0 (rescue) | died t/τ 1.23 (rc 134) | **died** t/τ 0.93 (rc 134) |
+| s_x0.94_U4.0 (rescue) | died t/τ 3.45 | **died** t/τ 3.98 |
+| s_x0.93_U4.0 (control, J+) | J 0.329, S2 0 | J 0.337, S2 0 |
+| s_x0.86_U4.0 (control, J0) | S2 0.500 | S2 0.500 |
+**T1 FAIL (0/3 rescued). T2 PASS (2/2). K3′ INCOMPLETE (nothing rescued).** Smoothing the C0 corner
+does not cure the deaths: two cells lived somewhat longer and one died EARLIER. So the collapse is not
+caused by the corner alone. The remaining routes are solver work (the viscous/Poisson solve at a 10⁴
+viscosity contrast), not a knob, or the softer cap, which removes the deaths and also the recoil
+contrast. **The J+ side of the recoil test therefore stays n = 1 at the default cap** until the solver
+is changed.

@@ -62,3 +62,13 @@ Amendment 2 (singlets across x, default cap; S2* = 0.1):
   s_x0.94_U2.0: healthy False (rc 134, t/tau 1.225)  J 0.4531  S2 +nan  class J+
   s_x0.94_U4.0: healthy False (rc 0, t/tau 3.45)  J 0.4517  S2 +nan  class J+
 K3: 5/5 on the predicted side; classes present ['J+', 'J0']  PASS
+
+Amendment 3 (EPS_SOFT 0.002; S2* = 0.1):
+  s_x0.86_U4.0: healthy True (esft tag True, rc 0, t/tau 6.0)  J 0.0000  S2 +0.5000  class J0
+  s_x0.93_U2.0: healthy False (esft tag True, rc 0, t/tau 1.825)  J 0.1549  S2 +nan  class J+
+  s_x0.93_U4.0: healthy True (esft tag True, rc 0, t/tau 6.0)  J 0.3365  S2 +0.0000  class J+
+  s_x0.94_U2.0: healthy False (esft tag True, rc 134, t/tau 0.925)  J 0.2314  S2 +nan  class J+
+  s_x0.94_U4.0: healthy False (esft tag True, rc 0, t/tau 3.975)  J 0.7508  S2 +nan  class J+
+T1 rescue: 0/3 healthy (bar >= 2 of 3)  FAIL
+T2 controls keep class and S2 side: 2/2  PASS
+K3' rescued cells on the predicted side: 0/0  INCOMPLETE
