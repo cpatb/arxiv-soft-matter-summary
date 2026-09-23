@@ -17,3 +17,14 @@ Amendment 1 (low U0, activation only, x 0.85):
   U0 2.0: ln(R_act/R_w0) = -0.0182 (0.5230 vs 0.5326)
 E1 |cut| at U0 1 > 0.0008: PASS
 D5 health: 5/6
+
+Amendment 2 (L10 rung, x 0.85):
+  L10 w0 U0 4.0: Rg_max 0.5728 (L9 0.5742)
+  L10 act U0 4.0: Rg_max 0.5723 (L9 0.5737)
+  L10 win U0 4.0: Rg_max 0.3878 (L9 0.3958)
+  L10 w0 U0 1.0: Rg_max 0.4955 (L9 0.5043)
+  L10 act U0 1.0: Rg_max 0.4818 (L9 0.4901)
+  F2 activation cut U0 4.0: L9 -0.0008  L10 -0.0009  -> resolved
+  F2 window cut U0 4: L9 -0.3721  L10 -0.3900
+  F2 activation cut U0 1.0: L9 -0.0286  L10 -0.0280  -> resolved
+F1 (|act cut| < 0.05 at U0 1 and 4; |win| > 5|act| at U0 4): PASS  (3/3)

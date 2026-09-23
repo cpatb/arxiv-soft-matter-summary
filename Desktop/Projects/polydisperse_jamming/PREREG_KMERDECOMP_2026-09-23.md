@@ -90,3 +90,14 @@ f̂-adjacent L9 number is quoted. Five cells at LEVEL 10, otherwise identical to
   moves by more than itself between L9 and L10, is reported as UNRESOLVED BY THE GRID, and the L9
   percentage is withdrawn from the downstream documents.
 - Health as D5; a dead cell decides nothing.
+
+### Amendment 2 — RESULT (graded 2026-09-23 ~01:45 CDT; 5/5 healthy, all banners tagged L10)
+| cut, x 0.85 | L9 | L10 | F2 |
+|---|---|---|---|
+| activation, U₀ 4 | −0.0008 | −0.0009 | resolved |
+| activation, U₀ 1 | −0.0286 | −0.0280 | resolved |
+| window, U₀ 4 | −0.3721 | −0.3900 | (reported) |
+**F1 PASS 3/3.** The activation-channel sizes (0.1 % at U₀ 4, 2.8 % at U₀ 1) hold at L10 to within
+0.0006 in ln Rg; the window cut grows 5 % at L10. The absolute Rg values move 0.2–1.9 % between
+levels, but the cuts are differences at matched level and move much less. The L9 percentages may
+be quoted.
