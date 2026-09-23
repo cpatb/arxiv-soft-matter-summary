@@ -20,3 +20,28 @@ not a replacement for the default-cap numbers. Its J magnitudes are not comparab
 - **X1 (cross-cap class):** every (w, x, U₀) healthy at BOTH caps has the same class (J+ if J > 0.01,
   J0 if J ≡ 0) at 0.03 as at 0.01. Cells in the window at J ≤ 0.01 are reported as ambiguous.
 - Not tested here: the recoil signature (its contrast collapses at this cap by `epssig` G2).
+
+## RESULT (graded 2026-09-23; commit time is the record; `grade_kmermapE03.py` → `out/grade_kmermapE03.txt`)
+18/18 cells healthy, provenance 18/18 (eps_min 0.03 verified in every banner). **Every registered
+gate passes:**
+| gate | verdict | numbers (EPS_MIN 0.03) |
+|---|---|---|
+| R1′ doublets jam at x 0.88 | **PASS** | J 0.041 / 0.357 / 0.673 at U₀ 1 / 2 / 4; singlets 0 |
+| R2′ doublet > singlet at every U₀, x 0.92 | **PASS 3/3** | 0.435 vs 0.058, 0.739 vs 0.338, 0.928 vs 0.646 |
+| R3′ J non-decreasing in U₀ | **PASS 3/3** | all three in-window rows |
+| R4′ β(doublets) ≤ β(singlets) + 1/64 | **PASS 9/9** | |
+| X1 same class at both caps | **PASS 12/12** | every cell healthy at both caps |
+
+- **Control, exact:** the five singlet cells at x 0.85/0.88 are BYTE-IDENTICAL to the default-cap run
+  (spread.dat md5). Their ε = 0.064 / 0.031 exceeds the 0.03 floor, so the cap cannot bind there.
+  Cells where it binds differ (w₁ x 0.85: ε 0.015; w₀ x 0.92). The override acted only where the algebra
+  says it should.
+- **The footprint reading also holds at this cap**: ln Rg cut (doublets vs singlets, U₀ 4) −0.329 at
+  x 0.85 (nothing jams), −0.070 at x 0.88, −0.005 at x 0.92.
+- J magnitudes are 1.5–6× the default-cap values, as `epssig` warned; only classes and orderings
+  transfer between caps.
+
+**Reading.** The orderings that the L9 deaths left INCOMPLETE at the default cap (R2, R3) are complete
+here and pass. Every class seen at both caps is the same. Within the tested cap range
+(1.1e3–1e4 η_s), the regime map is cap-robust in class and ordering. The softer cap is also the one
+at which the recoil signature collapses (`epssig` G2), so recoil is NOT read from this run.

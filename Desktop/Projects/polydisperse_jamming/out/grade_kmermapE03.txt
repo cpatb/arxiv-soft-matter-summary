@@ -1,0 +1,43 @@
+grade_kmermapE03 -- PREREG_KMERMAPE03_2026-09-23.md (EPS_MIN 0.03)
+cells: 18 of 18; provenance (incl. eps_min 0.03) 18/18
+  w0  0.85  1.0  healthy True  J 0.0000  beta 1.4844  Rg 0.5043
+  w0  0.85  2.0  healthy True  J 0.0000  beta 1.5781  Rg 0.5326
+  w0  0.85  4.0  healthy True  J 0.0000  beta 1.7031  Rg 0.5742
+  w0  0.88  1.0  healthy True  J 0.0000  beta 1.2656  Rg 0.4133
+  w0  0.88  2.0  healthy True  J 0.0000  beta 1.2344  Rg 0.4092
+  w0  0.88  4.0  healthy True  J 0.0000  beta 1.2969  Rg 0.4292
+  w0  0.92  1.0  healthy True  J 0.0575  beta 1.0781  Rg 0.3516
+  w0  0.92  2.0  healthy True  J 0.3377  beta 1.1094  Rg 0.3671
+  w0  0.92  4.0  healthy True  J 0.6464  beta 1.2031  Rg 0.3965
+  w1  0.85  1.0  healthy True  J 0.0000  beta 1.2656  Rg 0.4178
+  w1  0.85  2.0  healthy True  J 0.0000  beta 1.2031  Rg 0.3967
+  w1  0.85  4.0  healthy True  J 0.0000  beta 1.2656  Rg 0.4133
+  w1  0.88  1.0  healthy True  J 0.0410  beta 1.1094  Rg 0.3630
+  w1  0.88  2.0  healthy True  J 0.3567  beta 1.1406  Rg 0.3735
+  w1  0.88  4.0  healthy True  J 0.6730  beta 1.2031  Rg 0.4000
+  w1  0.92  1.0  healthy True  J 0.4350  beta 1.0469  Rg 0.3466
+  w1  0.92  2.0  healthy True  J 0.7389  beta 1.1094  Rg 0.3638
+  w1  0.92  4.0  healthy True  J 0.9280  beta 1.2031  Rg 0.3945
+
+R1' x 0.88 doublets J [0.041, 0.3567, 0.673]  PASS
+R2' x 0.92 (U0, J d, J s) [('1.0', 0.435, 0.0575), ('2.0', 0.7389, 0.3377), ('4.0', 0.928, 0.6464)]  PASS
+  R3' w0 x 0.92: J over U0 1/2/4 = [0.0575, 0.3377, 0.6464]
+  R3' w1 x 0.88: J over U0 1/2/4 = [0.041, 0.3567, 0.673]
+  R3' w1 x 0.92: J over U0 1/2/4 = [0.435, 0.7389, 0.928]
+R3': 3/3 non-decreasing  PASS
+R4' 9/9  PASS
+R5' health: 18/18
+
+  X1 ('w0', 0.85, '1.0'): default J0 (0.0000)  e03 J0 (0.0000)
+  X1 ('w0', 0.85, '2.0'): default J0 (0.0000)  e03 J0 (0.0000)
+  X1 ('w0', 0.85, '4.0'): default J0 (0.0000)  e03 J0 (0.0000)
+  X1 ('w0', 0.88, '1.0'): default J0 (0.0000)  e03 J0 (0.0000)
+  X1 ('w0', 0.88, '2.0'): default J0 (0.0000)  e03 J0 (0.0000)
+  X1 ('w0', 0.88, '4.0'): default J0 (0.0000)  e03 J0 (0.0000)
+  X1 ('w0', 0.92, '2.0'): default J+ (0.0621)  e03 J+ (0.3377)
+  X1 ('w0', 0.92, '4.0'): default J+ (0.1378)  e03 J+ (0.6464)
+  X1 ('w1', 0.85, '4.0'): default J0 (0.0000)  e03 J0 (0.0000)
+  X1 ('w1', 0.88, '2.0'): default J+ (0.0579)  e03 J+ (0.3567)
+  X1 ('w1', 0.88, '4.0'): default J+ (0.1958)  e03 J+ (0.6730)
+  X1 ('w1', 0.92, '4.0'): default J+ (0.6362)  e03 J+ (0.9280)
+X1 cross-cap class: 12/12 unchanged  PASS
