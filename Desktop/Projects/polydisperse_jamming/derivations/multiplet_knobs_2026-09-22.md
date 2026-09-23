@@ -304,6 +304,13 @@ other pairs censored by L9 deaths). The largest spread cut, however, is at x 0.8
 jams: the footprint does not discriminate jamming from thickening. Stress-controlled scope (M6) as
 before.
 
+**Which channel (`PREREG_KMERDECOMP`, graded 2026-09-23).** Holding the singlets' σ\* and δ and
+swapping in only the doublets' χ reproduces the x 0.88 jamming (J 0.0591 vs 0.0579 all-channel, U₀ 2)
+and the whole x 0.85 footprint cut (ln Rg −0.372 vs −0.371). Swapping in only the doublets' σ\* and δ
+moves the footprint by 0.08 %. So at U₀ 2–4 **the doublets act on the drop through the window
+alone**. The onset and sharpness channels measured in the DEM are real but inert in this DNS
+(low U₀ under test, Amendment 1).
+
 **Why spreading falls before any jamming (K5 made quantitative).** Outside the window the
 activated drop can only thicken, by `Θ = [(1−x)/(1−x/χ)]^MP_EXPO` (MP_EXPO = 2 in the solver).
 At x = 0.85 with the μ_m 3 PREDICTED χ: Θ = 13.6 at w₂ = 0 (χ 0.886) and 205 at w₂ = 0.25
