@@ -10,7 +10,7 @@ cd ~/pj || exit 1
 source scripts/env.sh
 export OMP_NUM_THREADS=1
 pids=()
-for w in 0.0 0.5 1.0; do
+for w in ${WS:-0.0 0.5 1.0}; do
   for i in 0 1 2 3 4 5; do
     stdbuf -oL python3 -u phase9_constp.py --cvs 0.0 --mus 0.0,0.3 --p-stars 3e-4 \
         --phi-starts 0.55 --gains 0.15 --seeds 1,2,3 --n 1000 --tag shearkmer_w$w \

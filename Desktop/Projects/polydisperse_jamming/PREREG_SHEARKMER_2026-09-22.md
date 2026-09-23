@@ -23,3 +23,12 @@ w₂ ∈ {0, 0.5, 1} (tangent doublets of one primary, `--doublet-w`) × μ_p �
 Seed-paired, t_crit(df 2) = 4.303 where a contrast is tested.
 ⚠ Z from sheared clump packs is member-level (shear.py's contact graph is not grain-aware) and is
 not read.
+
+## Launch 1 INVALID (recorded, not deleted)
+The first launch built SINGLETS for every w₂ > 0 cell: `shear._prepare` constructs its own
+`PackingState` for insertion and did not carry `doublet_w` into it. Caught because σ\*/κ and δ
+came back IDENTICAL across w₂ = 0 / 0.5 / 1 to every printed digit — byte-identity between cells
+that should differ (lessons.md 2026-08-31). The 12 w₂ > 0 records and dumps are kept in
+`out/invalid_shearkmer_v1/`. Fixed in `shear.py`; the grader gains **SK3 WIRING** (realised doublet
+count must match w₂), which would have failed launch 1 on every cell. The w₂ = 0 cells are valid
+(SK0 6/6 bit-identical) and are not re-run. Predictions S1–S3 unchanged.

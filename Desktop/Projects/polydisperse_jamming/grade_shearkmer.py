@@ -58,6 +58,19 @@ def main():
             sk0.append(all(a[f] == b[f] for f in ("p_hat_series", "z_series", "force")))
     say(f"SK0 identity vs actshape (w2 = 0): {sum(sk0)}/{len(sk0)}"
         + ("  PASS" if sk0 and all(sk0) and len(sk0) == 6 else "  FAIL/INCOMPLETE"))
+    # SK3 WIRING (added after the first launch built singlets for every w2 > 0): the realised
+    # doublet count must match w2. N grains, number fraction n2 = w/(2 - w).
+    sk3 = []
+    for k, c in cells.items():
+        if c["w"] > 0:
+            n = c["rec"]["n_requested"]
+            want = round(n * c["w"] / (2 - c["w"]) / (1 - c["w"] / (2 - c["w"]) + c["w"] / (2 - c["w"])))
+            got = c["rec"].get("n_doublets", 0) or 0
+            sk3.append(abs(got - want) <= 1)
+            if abs(got - want) > 1:
+                say(f"  SK3 WIRING FAIL {k}: n_doublets {got} vs expected ~{want}")
+    say(f"SK3 wiring (realised doublets match w2): {sum(sk3)}/{len(sk3)}"
+        + ("  PASS" if sk3 and all(sk3) else "  FAIL/INCOMPLETE"))
     bad = [k for k, c in cells.items() if not c["healthy"]]
     say(f"SK1 health: {len(cells) - len(bad)}/{len(cells)}")
     for k in bad:

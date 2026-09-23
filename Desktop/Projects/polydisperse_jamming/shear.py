@@ -221,6 +221,7 @@ class ShearState:
     shear_steps: int = 0
     # realised PSD (filled by insert_packing via a PackingState)
     n_placed: int = 0
+    n_doublets: int = 0               # realised count (PREREG_SHEARKMER)
     d10_realised: float = float("nan")
     d32_realised: float = float("nan")
     d43_realised: float = float("nan")
@@ -386,9 +387,13 @@ def _prepare(st: ShearState, O, Matrix3, utils, *,  # noqa: E741
     seed, family, young = st.seed, st.family, st.young
     phi_target = st.phi_target
     # --- stage A: insert -----------------------------------------------------------
+    # doublet_w must be carried INTO this PackingState: insert_packing reads it from here,
+    # not from `st` (the first shearkmer launch built singlets for every w2 > 0 because of this)
     pk = PackingState(n_requested=n, cv=cv, mu_p=mu_p, p_hat_target=float("nan"),
-                      seed=seed, family=family)
+                      seed=seed, family=family,
+                      doublet_w=float(getattr(st, "doublet_w", 0.0)))
     insert_packing(pk, truncate=truncate, young=young)
+    st.n_doublets = pk.n_doublets
     st.n_placed = pk.n_placed
     st.d10_realised = pk.d10_realised
     st.d32_realised = pk.d32_realised
