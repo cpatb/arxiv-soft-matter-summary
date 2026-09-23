@@ -21,3 +21,18 @@ Compositions (w₂ dumbbells, w₃ straight chains; w₁ = rest) ∈ {(0.3, 0.2)
   `out/predict_kmix.txt` (e.g. p̂ 3e-5, μ 0.3: 0.5448 / 0.5296 / 0.5124).
 - **M2:** χ(μ 0.3/μ 0) at p̂ 3e-5 within ±0.01 of 0.8847 / 0.8801 / 0.8635.
 - The rival for both: a non-additive excess (shape mixing). A systematic sign is reported either way.
+
+## RESULT A1 `kmu` (graded 2026-09-22 ~23:15 CDT, 36/36, `grade_kmix.py` → `out/grade_kmix.txt`)
+
+**U1: DIRTY**, as registered. At μ_p 1.0, w₂ 1 the deep-overlap fraction is 1.84 % (p̂ 3e-5) and
+1.28 % (1e-3), against the 0.1 % K4 gate. The interpenetration also starts EARLIER than the
+question assumed: μ 0.6 pure dumbbells fail too (0.70 % / 0.51 %), and so does μ 1.0 at w₂ 0.5
+(0.42 % / 0.32 %). Singlets are clean at both frictions. Clean cells: singlets at μ 0.6 and 1.0, and
+μ 0.6 w₂ 0.5. So frictional tangent clumps interpenetrate from μ_p ~0.6 upward, growing with
+friction and with clump content, and **the clean window stays at μ_m 0.3**, as registered for
+this outcome. U2 is not graded (conditional on CLEAN).
+
+The one clean frictional mixture (reported, not graded): χ(μ_m 0.6, w₂ 0.5) = 0.8558 vs 0.8930 for
+singlets at p̂ 3e-5 (0.8732 vs 0.9021 at 1e-3), i.e. the window widens 0.107 → 0.144. At μ_m 0.3 the
+same composition goes 0.092 → 0.119. Whether higher friction amplifies the doublet effect is not
+resolved at n = 3 and is not claimed.
