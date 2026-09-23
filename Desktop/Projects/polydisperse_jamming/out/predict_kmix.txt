@@ -1,0 +1,22 @@
+predict_kmix -- generalised ideal mixing from pure singlet / dumbbell / chain endpoints
+p 3e-05 mu 0.0: endpoints singlet 0.6327 dumbbell 0.6273 chain 0.5629
+   w2 0.3 w3 0.2: phi_pred 0.6158
+   w2 0.2 w3 0.4: phi_pred 0.6018
+   w2 0.5 w3 0.5: phi_pred 0.5934
+p 3e-05 mu 0.3: endpoints singlet 0.5747 dumbbell 0.5414 chain 0.4862
+   w2 0.3 w3 0.2: phi_pred 0.5448
+   w2 0.2 w3 0.4: phi_pred 0.5296
+   w2 0.5 w3 0.5: phi_pred 0.5124
+p 0.001 mu 0.0: endpoints singlet 0.6399 dumbbell 0.6341 chain 0.5733
+   w2 0.3 w3 0.2: phi_pred 0.6237
+   w2 0.2 w3 0.4: phi_pred 0.6104
+   w2 0.5 w3 0.5: phi_pred 0.6022
+p 0.001 mu 0.3: endpoints singlet 0.5940 dumbbell 0.5693 chain 0.5048
+   w2 0.3 w3 0.2: phi_pred 0.5666
+   w2 0.2 w3 0.4: phi_pred 0.5503
+   w2 0.5 w3 0.5: phi_pred 0.5351
+
+chi_pred(mu 0.3 / mu 0) at p 3e-5 per composition:
+   w2 0.3 w3 0.2: chi_pred 0.8847
+   w2 0.2 w3 0.4: chi_pred 0.8801
+   w2 0.5 w3 0.5: chi_pred 0.8635

@@ -1,0 +1,23 @@
+# PREREG — `kmu` (A1) and `kmix` (A2): a clean saturated-friction window, and mixed populations
+
+Written 2026-09-22 ~21:40 CDT, before either campaign ran. Plan: `OVERNIGHT_PLAN_2026-09-23.md`.
+Blind numbers: `predict_kmix.py` → `out/predict_kmix.txt` (committed with this file).
+
+## A1 `kmu` — does frictional clump interpenetration go away below μ = 3?
+Isotropic ladder, N = 1700 grains, `PJ_MAX_ITER` 1e6, dumps on: w₂ ∈ {0, 0.5, 1} (tangent doublets)
+× μ_p ∈ {0.6, 1.0} × seeds {1,2,3} × p̂ {1e-3, 3e-5} = 36 cells, tag `kmu`.
+- **U1 (the question):** the K4 deep-overlap fraction (contacts beyond u/r 0.05) at μ_p 1.0, w₂ = 1.
+  Two registered outcomes: CLEAN (≤ 0.1 %, K4 passes) → report χ(w₂) at μ_m = 1 as the clean
+  saturated-friction window; DIRTY → interpenetration is a property of frictional clumps at any
+  high μ, and the clean window stays at μ_m 0.3. No direction is predicted.
+- **U2 (if clean):** χ_{μ1}(w₂ = 1)/χ_{μ1}(0) = **0.889 ± 0.02** (the μ_m 3 ratio 0.788/0.886, on
+  the premise that φ_m saturates by μ = 1).
+
+## A2 `kmix` — do mixed singlet/dumbbell/chain populations follow ideal mixing of the pure ends?
+Compositions (w₂ dumbbells, w₃ straight chains; w₁ = rest) ∈ {(0.3, 0.2), (0.2, 0.4), (0.5, 0.5)} ×
+μ_p {0, 0.3} × seeds {1,2,3} × p̂ {1e-3, 3e-5} = 36 cells, tag `kmix`, dumps on, K4 applied.
+- **M1:** φ within **2·PHI_SCALE = 0.0042** of `1/φ = Σ w_k/φ_k` (endpoints: kmer singlets and
+  dumbbells, kchain chains, same μ and rung) at every (composition, μ, rung) — values in
+  `out/predict_kmix.txt` (e.g. p̂ 3e-5, μ 0.3: 0.5448 / 0.5296 / 0.5124).
+- **M2:** χ(μ 0.3/μ 0) at p̂ 3e-5 within ±0.01 of 0.8847 / 0.8801 / 0.8635.
+- The rival for both: a non-additive excess (shape mixing). A systematic sign is reported either way.
