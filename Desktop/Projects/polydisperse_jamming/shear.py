@@ -401,7 +401,9 @@ def _prepare(st: ShearState, O, Matrix3, utils, *,  # noqa: E741
     st.cv_realised = pk.cv_realised
     st.d_max_over_L = pk.d_max_over_L
     st.notes.extend(pk.notes)
-    radii = np.array([b.shape.radius for b in O.bodies if b is not None])
+    # clump BODIES carry no shape radius; read the member spheres (identical to before for a
+    # sphere pack, which has no clumps)
+    radii = np.array([b.shape.radius for b in O.bodies if b is not None and not b.isClump])
     st.d50_realised = float(np.median(2.0 * radii))
 
     O.engines = [
