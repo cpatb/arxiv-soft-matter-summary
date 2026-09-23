@@ -44,7 +44,7 @@ def main():
                     math.isclose(float(jb.group(1)), pr["jf"][x], rel_tol=1e-6)
                 a = np.loadtxt(os.path.join(d, "spread.dat"), comments="#", ndmin=2) \
                     if os.path.exists(os.path.join(d, "spread.dat")) else np.zeros((0, 21))
-                healthy = st["rc"] == 0 and a.size > 0 and a[-1, 1] >= 5.9
+                healthy = bool(st["rc"] == 0 and a.size > 0 and a[-1, 1] >= 5.9)
                 c[(w, x, u)] = dict(prov=prov, healthy=healthy, rc=st["rc"],
                                    t=st["last_t_over_tau"],
                                    J=float(a[:, 7].max()) if a.size else math.nan,
@@ -81,6 +81,9 @@ def main():
     say(f"R4 beta(doublets) <= beta(singlets) + one quantum: {sum(r4)}/{len(r4)}"
         + ("  PASS" if r4 and all(r4) else "  FAIL" if r4 else "  INCOMPLETE"))
     say(f"R5 health: {len(ok)}/{len(c)}")
+    with open(os.path.join(HERE, "out", "kmermap_cells.json"), "w", encoding="utf-8") as fh:
+        json.dump([dict(w=k[0], x=k[1], U0=float(k[2]), **v) for k, v in sorted(c.items())], fh,
+                  indent=1)
     with open(os.path.join(HERE, "out", "grade_kmermap.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     return 0

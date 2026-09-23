@@ -155,12 +155,50 @@ def fig_k2():
          "PREREG_KMERDROP: x = 0.85, sigma* 300 Pa, delta 1.3169, L9; chi(w2) from the DEM")
 
 
+def fig_k3():
+    """K3: the kmermap regime map (PREREG_KMERMAP) -- all channels from the clean mu_p 0.3 DEM.
+    Rows: max jammed volume J(f_hat > f_c) and max Rg_r/D0; columns x = 0.85/0.88/0.92;
+    singlets (w0) vs pure doublets (w1) against U0. Cells failing health or provenance are
+    drawn hollow grey and NOT joined (a death at the jammed floor ends the record early, so its
+    maxima are lower bounds). Input: out/kmermap_cells.json written by grade_kmermap.py."""
+    p = os.path.join(OUT, "kmermap_cells.json")
+    if not os.path.exists(p):
+        return
+    cells = json.load(open(p, encoding="utf-8"))
+    xs = (0.85, 0.88, 0.92)
+    fig, ax = plt.subplots(2, 3, figsize=(7.0, 4.0), sharex=True)
+    for j, x in enumerate(xs):
+        for w, col, mk in (("w0", COL[1], "o"), ("w1", COL[2], "s")):
+            cs = sorted((c for c in cells if c["w"] == w and abs(c["x"] - x) < 1e-9),
+                        key=lambda c: c["U0"])
+            good = [c for c in cs if c["healthy"] and c["prov"]]
+            bad = [c for c in cs if not (c["healthy"] and c["prov"])]
+            for i, f in enumerate(("J", "rg")):
+                ax[i, j].plot([c["U0"] for c in good], [c[f] for c in good], mk + "-", color=col,
+                              label=w if (i, j) == (0, 0) else None)
+                ax[i, j].plot([c["U0"] for c in bad], [c[f] for c in bad], mk, mfc="none",
+                              color="0.6")
+        ax[0, j].set_title(f"$x = {x}$")
+        ax[0, j].set_ylim(0, 1)
+        ax[1, j].set_ylim(0, 0.6)
+        ax[1, j].set_xlabel(r"$U_0$ (m/s)")
+        ax[1, j].set_xlim(0, 4.5)
+    ax[0, 0].set_ylabel("jammed volume fraction")
+    ax[1, 0].set_ylabel(r"max $R_{g,r}/D_0$")
+    ax[0, 0].legend(frameon=False)
+    fig.tight_layout()
+    save(fig, "K3_kmermap", cells,
+         "PREREG_KMERMAP: chi, sigma*, delta, JAM_FHAT from the clean mu_p 0.3 DEM; L9; "
+         "hollow grey = unhealthy/provenance-failed (maxima are lower bounds)")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true")
     a = ap.parse_args()
     fig_k1()
     fig_k2()
+    fig_k3()
     if a.check:
         h1 = md5(os.path.join(FIG, "K1_doublet_window.png"))
         fig_k1()

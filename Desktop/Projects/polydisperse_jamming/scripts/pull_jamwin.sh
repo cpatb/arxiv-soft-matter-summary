@@ -2,7 +2,9 @@
 # Copy jamwin's per-cell spread files + RUN_STATUS + banner lines to the Windows side.
 set -u
 CAMP=${1:-jamwin}
-SRC=/home/cpb/work/campaigns/${CAMP}_2026-09-22
+DATE=${2:-2026-09-22}
+SRC=/home/cpb/work/campaigns/${CAMP}_${DATE}
+[ -d "$SRC" ] || { echo "NO CAMPAIGN DIR $SRC"; exit 2; }
 DST=/mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming/out/${CAMP}
 mkdir -p "$DST"
 n=0
