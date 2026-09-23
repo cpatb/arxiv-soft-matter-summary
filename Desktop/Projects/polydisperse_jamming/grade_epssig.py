@@ -76,6 +76,24 @@ def main():
         say(f"READING (fixed in the prereg): {reading[(g1, g2)]}")
     elif g1 is False:
         say(f"READING (fixed in the prereg): {reading[(False, True)]}")
+    # ---- Amendment 1 (registered before its cells): kmermap R1 under the cap -------------
+    say("")
+    say("Amendment 1: kmermap R1 (w1, x 0.88) under EPS_MIN 0.003 / 0.03; default J 0.0579 (U0 2), 0.1958 (U0 4, dead)")
+    for e, tag in ((0.003, "e003"), (0.03, "e03")):
+        js = []
+        for u in ("2.0", "4.0"):
+            d = os.path.join(OUT, "epssig", f"r1_{tag}_U{u}")
+            if not os.path.exists(os.path.join(d, "RUN_STATUS.json")):
+                say(f"  r1_{tag}_U{u}: not run yet")
+                continue
+            v = read(d, e)
+            usable = v["eps_ok"] and (v["healthy"] or v["J"] > 0.01)
+            say(f"  r1_{tag}_U{u}: healthy {v['healthy']} (eps tag {v['eps_ok']}, rc {v['rc']}, t/tau {v['t']})  "
+                f"J {v['J']:.4f}{'' if v['healthy'] else ' (lower bound)'}")
+            if usable:
+                js.append(v["J"])
+        say(f"H1 EPS_MIN {e}: J > 0.01 in >= 1 cell: "
+            + ("PASS" if any(j > 0.01 for j in js) else "FAIL" if len(js) == 2 else "INCOMPLETE"))
     with open(os.path.join(OUT, "grade_epssig.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     return 0

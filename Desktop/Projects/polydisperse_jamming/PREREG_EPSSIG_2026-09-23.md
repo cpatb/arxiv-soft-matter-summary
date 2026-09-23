@@ -48,14 +48,15 @@ Default-EPS_MIN references: `kmerdrop` w0.25 (S2 0.172, J0) and w0.75 (S2 0.047,
 | 0.03 (1.1e3) | 0, 0.1719, 0.3947 | 0.5694, **0.1406**, 0.3776 | 0.031 |
 
 **G1 PASS, G2 PASS → the registered reading: S2 is a signature of the jammed-vs-thickened VISCOSITY
-CONTRAST.** A jammed drop stops recoiling once its jammed region is ≥ 10⁴ η_s stiff. At a cap of
-1.1e3 η_s it recoils almost as much as the unjammed one (0.141 vs 0.172).
+CONTRAST.** At a jammed-region viscosity of 10⁴ or 1.1e5 η_s the jammed drop does not recoil
+(S2 0.047 at both, identical); at 1.1e3 η_s it recoils almost as much as the unjammed one (0.141 vs
+0.172). The stiffness at which recoil switches off is bracketed in (1.1e3, 1e4) η_s, not measured.
 
 - **Control, exact:** e003_w0.25 is BYTE-IDENTICAL to the default w₂ 0.25 cell (spread.dat md5
   30e112861cce), while its banner confirms eps_min 0.003 / η_max 60.8 code. That is the algebra of
   the prereg: this cell's ε never falls below 0.0105, so a floor moved from 0.01 to 0.003 cannot
-  bind. The J0 arm is therefore cap-independent below the default, and all of G1's movement is in
-  the jammed arm, as it should be.
+  bind. The J0 arm is therefore cap-independent below the default. In the jammed arm, S2 is also
+  unchanged at the stiffer cap and only J moves (below).
 - ⚠ **New and important: J's MAGNITUDE depends on the cap.** w₂ 0.75 gives J = 0.096 / 0.220 / 0.569
   at EPS_MIN 0.003 / 0.01 / 0.03 (×5.9 over one decade). A stiffer jammed region deforms less,
   shears less and activates less. The J+/J0 CLASS held at all three caps for this pair. **Every
@@ -66,3 +67,14 @@ CONTRAST.** A jammed drop stops recoiling once its jammed region is ≥ 10⁴ η
 - Reading for the bench (REASONING, not measured): a real jammed suspension is a yield-stress solid,
   i.e. stiffer than any finite cap, so the recoil contrast should be at least as large on the bench
   as at the default cap. That is the direction G1 tested.
+
+## Amendment 1 — does the HEADLINE (kmermap R1) survive the cap? (written 2026-09-23 ~03:30 CDT, before its cells)
+Four cells re-run `kmermap` w1_x0.88 (pure doublets, clean μ_p 0.3 inputs: φ 0.5456, φ_m 0.53512,
+σ\* 235.8 Pa, δ 1.1163, JAM_FHAT 0.8766) at U₀ 2 and 4 with EPS_MIN 0.003 and 0.03:
+`r1_e003_U2.0`, `r1_e003_U4.0`, `r1_e03_U2.0`, `r1_e03_U4.0`.
+- **H1:** R1 survives the cap: at EACH EPS_MIN, J > 0.01 in at least one healthy U₀ cell (the
+  default gave 0.058 / 0.196). J is expected LOWER at 0.003 (the w₂ 0.75 pattern), so H1 at 0.003 is
+  the risky half.
+- A dead cell's J is a lower bound and counts toward H1 only if it exceeds 0.01, as in kmermap's
+  post-hoc reading (declared here, in advance, for this amendment).
+- J reported per cell beside its default value; singlets at x 0.88 remain J ≡ 0 by construction.

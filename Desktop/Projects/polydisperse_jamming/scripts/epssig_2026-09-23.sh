@@ -57,12 +57,13 @@ EOJ
   echo "  done $lab rc=$rc ${e}s rows=$n t_end=$lastt jam_fhat=${jb:-unset}"
 }
 
-# --- epssig (PREREG_EPSSIG_2026-09-23.md): EPS_MIN sweep on the closest J0/J+ pair ---------------
+# --- epssig Amendment 1: kmermap R1 cell under the cap sweep. The first four cells (e003_/e03_ w0.25,
+# w0.75) were run by the previous version of this LIST (git history); they are not re-listed.
 LIST=()
-LIST+=("e003_w0.25 0.527 1.3169 300 1.0 0.53258 2.0 9 0.003")
-LIST+=("e003_w0.75 0.527 1.3169 300 0.7937 0.50282 2.0 9 0.003")
-LIST+=("e03_w0.25 0.527 1.3169 300 1.0 0.53258 2.0 9 0.03")
-LIST+=("e03_w0.75 0.527 1.3169 300 0.7937 0.50282 2.0 9 0.03")
+LIST+=("r1_e003_U2.0 0.5456 1.1163 235.8 0.8766 0.53512 2.0 9 0.003")
+LIST+=("r1_e003_U4.0 0.5456 1.1163 235.8 0.8766 0.53512 4.0 9 0.003")
+LIST+=("r1_e03_U2.0 0.5456 1.1163 235.8 0.8766 0.53512 2.0 9 0.03")
+LIST+=("r1_e03_U4.0 0.5456 1.1163 235.8 0.8766 0.53512 4.0 9 0.03")
 echo "=== epssig ${#LIST[@]} cells, NPAR=$NPAR, start $(date -Is) ==="
 running=0
 for c in "${LIST[@]}"; do
