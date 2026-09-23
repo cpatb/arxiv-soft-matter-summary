@@ -29,8 +29,9 @@ can jam; only thickening); x = 0.88 is inside the doublets' window only; x = 0.9
 
 ## RESULT (graded 2026-09-22 23:10 CDT, `grade_kmermap.py` → `out/grade_kmermap.txt`; figure K3)
 
-18/18 cells, provenance 18/18, health 12/18. All six deaths are the L9 jammed-floor failure
-(five `STOP dt-collapse`, one `events.h: n < INT_MAX` after Poisson non-convergence); none is a
+18/18 cells, provenance 18/18, health 12/18. All six deaths are the L9 high-viscosity failure
+(five `STOP dt-collapse`, one `events.h: n < INT_MAX` after Poisson non-convergence). Four occur
+in jammed cells; the two at x 0.85 occur in thickened cells that cannot jam (R5 row). None is a
 crash of another kind.
 
 | gate | verdict | numbers |
@@ -39,7 +40,7 @@ crash of another kind.
 | R2 J(doublet) > J(singlet) at every U₀, x 0.92 | **INCOMPLETE** (deaths) | holds on the one healthy pair: 0.636 vs 0.138 at U₀ 4 |
 | R3 J non-decreasing in U₀ | **INCOMPLETE** (no row fully healthy) | — |
 | **R4** β_max(w₂ 1) ≤ β_max(w₂ 0) + 1/64 | **PASS** 4/4 | |
-| R5 health | 12/18 | deaths as expected at x 0.92 w₂ 1 (both), plus x 0.85/0.88 w₂ 1 at low U₀ |
+| R5 health | 12/18 | deaths: 5 doublet cells (x 0.92 U₀ 1/2; x 0.88 U₀ 1; x 0.85 U₀ 1/2) and **1 singlet** (x 0.92 U₀ 1). The registration anticipated only x 0.92 w₂ 1. The singlet death is the same failure (dt-collapse, dt 3.7e-10): at x 0.92 singlets are inside their window too and were jamming (J ≥ 0.056) when it died. The x 0.85 doublet deaths are NOT jams (J ≡ 0 outside the window); they are dt-collapse under the thickened viscosity (Θ ≈ 98). So L9 deaths track high viscosity, jammed or not, not low f_c alone. |
 
 **Post-hoc, labelled, verdicts above unchanged.** A dead cell's recorded max is a LOWER bound.
 Every dead cell peaked early (t/τ 0.05–0.93) and was falling when it died. R2′: doublet > singlet is
@@ -52,12 +53,18 @@ J(U₀ 2) = 0.0579, a 0.0004 inversion (0.7 %). The honest reading is flat betwe
 (χ, σ\*, δ all from the μ_p 0.3 DEM), the doublet fraction switches a fixed-φ drop from a regime
 that cannot jam (x 0.88 is outside the singlets' window) to one that jams at U₀ 2 and 4. This is
 the first DNS result for the multiplet hypothesis that does not use a predicted or excluded χ.
+Scope: stress-controlled activation (multiplet_knobs M6), L9, DEM → DNS transfer of χ, σ\*, δ.
 
 The SPREAD tells a different story from the jammed volume. The doublets' cut in max Rg_r is
-largest where NOTHING can jam (x 0.85, U₀ 4: −31 %; healthy pair), smaller where only the doublets
-jam (x 0.88: −14 % / −18 %), and ~−3 % where both jam (x 0.92). ⚠ The last is partly headroom:
+largest where NOTHING can jam (x 0.85, U₀ 4: −31 %), smaller where only the doublets jam (x 0.88,
+U₀ 2 / 4: −14 % / −18 %), and ~−3 % where both jam (x 0.92, U₀ 4). Each number is the one or two
+healthy pairs at that x. ⚠ The last is partly headroom:
 singlets at x 0.92 already sit at Rg 0.35, so a percentage cut there is compressed; and at x 0.85
-the doublet arm also carries the lower σ\* and δ, so that cut is thickening plus onset, but not
-jamming. What survives either caveat: **the largest footprint reduction occurs with no jammed
+the doublet arm carries the lower σ\* and δ — true at every x by design (all channels move
+together), so no row isolates the window channel — and the x 0.85 cut is thickening plus onset,
+but not jamming. What survives either caveat: **the largest footprint reduction occurs with no jammed
 volume at all**, so a reduced spread is not evidence of jamming, and a bench test that reads
 arrest from the footprint cannot tell the two apart.
+
+
+Referee (2026-09-22): no FATAL; 2 MATERIAL (the singlet death omitted from R5; R4's 4-of-9 coverage dropped downstream) and 3 MINOR, all acted on above and in ANSWER.
