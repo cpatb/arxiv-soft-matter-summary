@@ -1,14 +1,17 @@
 grade_kmer -- PREREG_KMER_2026-09-22.md
-records: 110 of 126
-K3 HEALTH: 110/110 converged, mass/vol = 1, no internal
-K4 OVERLAP SANITY (post-hoc, Amendment 2): 37 cells excluded (> 0.1 % of contacts with overlap > 5 % of the radius)
+records: 126 of 126
+K3 HEALTH: 126/126 converged, mass/vol = 1, no internal
+K4 OVERLAP SANITY (post-hoc, Amendment 2): 46 cells excluded (> 0.1 % of contacts with overlap > 5 % of the radius)
   EXCLUDED cv0.000_mu0.300_s1_p1.000e-03_N1700_a1.000_w20.000_w30.500_it100: 0.30% of contacts deep-overlapped
   EXCLUDED cv0.000_mu0.300_s1_p1.000e-03_N1700_a1.000_w20.000_w31.000_it100: 2.19% of contacts deep-overlapped
   EXCLUDED cv0.000_mu0.300_s1_p3.000e-05_N1700_a1.000_w20.000_w30.500_it100: 0.36% of contacts deep-overlapped
+  EXCLUDED cv0.000_mu0.300_s1_p3.000e-05_N1700_a1.000_w20.000_w31.000_it100: 2.65% of contacts deep-overlapped
   EXCLUDED cv0.000_mu0.300_s2_p1.000e-03_N1700_a1.000_w20.000_w30.500_it100: 0.28% of contacts deep-overlapped
   EXCLUDED cv0.000_mu0.300_s2_p1.000e-03_N1700_a1.000_w20.000_w31.000_it100: 2.00% of contacts deep-overlapped
   EXCLUDED cv0.000_mu0.300_s2_p3.000e-05_N1700_a1.000_w20.000_w30.500_it100: 0.34% of contacts deep-overlapped
+  EXCLUDED cv0.000_mu0.300_s2_p3.000e-05_N1700_a1.000_w20.000_w31.000_it100: 2.48% of contacts deep-overlapped
   EXCLUDED cv0.000_mu0.300_s3_p1.000e-03_N1700_a1.000_w20.000_w31.000_it100: 2.47% of contacts deep-overlapped
+  EXCLUDED cv0.000_mu0.300_s3_p3.000e-05_N1700_a1.000_w20.000_w31.000_it100: 3.08% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s1_p1.000e-03_N1700_a1.000_w20.000_w30.500_it100: 3.46% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s1_p1.000e-03_N1700_a1.000_w20.000_w31.000_it100: 12.97% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s1_p1.000e-03_N1700_a1.000_w20.250_w30.000_it100: 0.17% of contacts deep-overlapped
@@ -16,6 +19,7 @@ K4 OVERLAP SANITY (post-hoc, Amendment 2): 37 cells excluded (> 0.1 % of contact
   EXCLUDED cv0.000_mu3.000_s1_p1.000e-03_N1700_a1.000_w20.750_w30.000_it100: 2.19% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s1_p1.000e-03_N1700_a1.000_w21.000_w30.000_it100: 3.66% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s1_p3.000e-05_N1700_a1.000_w20.000_w30.500_it100: 5.23% of contacts deep-overlapped
+  EXCLUDED cv0.000_mu3.000_s1_p3.000e-05_N1700_a1.000_w20.000_w31.000_it100: 19.88% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s1_p3.000e-05_N1700_a1.000_w20.250_w30.000_it100: 0.22% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s1_p3.000e-05_N1700_a1.000_w20.500_w30.000_it100: 1.09% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s1_p3.000e-05_N1700_a1.000_w20.750_w30.000_it100: 3.31% of contacts deep-overlapped
@@ -26,27 +30,32 @@ K4 OVERLAP SANITY (post-hoc, Amendment 2): 37 cells excluded (> 0.1 % of contact
   EXCLUDED cv0.000_mu3.000_s2_p1.000e-03_N1700_a1.000_w20.500_w30.000_it100: 1.20% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s2_p1.000e-03_N1700_a1.000_w20.750_w30.000_it100: 1.42% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s2_p1.000e-03_N1700_a1.000_w21.000_w30.000_it100: 3.45% of contacts deep-overlapped
+  EXCLUDED cv0.000_mu3.000_s2_p3.000e-05_N1700_a1.000_w20.000_w30.500_it100: 3.52% of contacts deep-overlapped
+  EXCLUDED cv0.000_mu3.000_s2_p3.000e-05_N1700_a1.000_w20.000_w31.000_it100: 19.74% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s2_p3.000e-05_N1700_a1.000_w20.250_w30.000_it100: 0.50% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s2_p3.000e-05_N1700_a1.000_w20.500_w30.000_it100: 1.66% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s2_p3.000e-05_N1700_a1.000_w20.750_w30.000_it100: 2.08% of contacts deep-overlapped
+  EXCLUDED cv0.000_mu3.000_s2_p3.000e-05_N1700_a1.000_w21.000_w30.000_it100: 5.19% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s3_p1.000e-03_N1700_a1.000_w20.000_w30.500_it100: 2.43% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s3_p1.000e-03_N1700_a1.000_w20.000_w31.000_it100: 13.99% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s3_p1.000e-03_N1700_a1.000_w20.250_w30.000_it100: 0.28% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s3_p1.000e-03_N1700_a1.000_w20.500_w30.000_it100: 0.69% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s3_p1.000e-03_N1700_a1.000_w20.750_w30.000_it100: 1.96% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s3_p1.000e-03_N1700_a1.000_w21.000_w30.000_it100: 3.57% of contacts deep-overlapped
+  EXCLUDED cv0.000_mu3.000_s3_p3.000e-05_N1700_a1.000_w20.000_w30.500_it100: 3.84% of contacts deep-overlapped
+  EXCLUDED cv0.000_mu3.000_s3_p3.000e-05_N1700_a1.000_w20.000_w31.000_it100: 21.21% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s3_p3.000e-05_N1700_a1.000_w20.250_w30.000_it100: 0.33% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s3_p3.000e-05_N1700_a1.000_w20.500_w30.000_it100: 0.93% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s3_p3.000e-05_N1700_a1.000_w20.750_w30.000_it100: 2.77% of contacts deep-overlapped
   EXCLUDED cv0.000_mu3.000_s3_p3.000e-05_N1700_a1.000_w21.000_w30.000_it100: 5.29% of contacts deep-overlapped
 finite-size flag d_max/L > 0.25 on 0 cells (max 0.178)
 K0' singlet path == shapechi alpha 1 (phi and iters exact): 18/18  PASS
-K2 w2 = 1 scaled copy of shapechi alpha 2: worst |dphi| = 6.00e-03 over 11 cells (bar 1e-4)  FAIL/INCOMPLETE
+K2 w2 = 1 scaled copy of shapechi alpha 2: worst |dphi| = 6.00e-03 over 12 cells (bar 1e-4)  FAIL/INCOMPLETE
 
 === H_mix: phi(w2) vs ideal specific-volume mixing of the campaign's own endpoints ===
    bar |phi - H_mix| < 2 PHI_SCALE = 0.0042 at every (mu, rung, w2 in .25/.5/.75)
   mu 0.0 p 1e-03: ends 0.6399/0.6341 | w 0.25: 0.6389 vs 0.6384 (+0.0005, n 3) | w 0.50: 0.6383 vs 0.6370 (+0.0014, n 3) | w 0.75: 0.6355 vs 0.6355 (-0.0000, n 3)
-  mu 0.0 p 3e-05: ends 0.6327/0.6272 | w 0.25: 0.6315 vs 0.6313 (+0.0002, n 3) | w 0.50: 0.6301 vs 0.6300 (+0.0001, n 3) | w 0.75: 0.6284 vs 0.6286 (-0.0002, n 3)
+  mu 0.0 p 3e-05: ends 0.6327/0.6273 | w 0.25: 0.6315 vs 0.6313 (+0.0002, n 3) | w 0.50: 0.6301 vs 0.6300 (+0.0001, n 3) | w 0.75: 0.6284 vs 0.6286 (-0.0003, n 3)
   mu 0.3 p 1e-03: ends 0.5940/0.5693 | w 0.25: 0.5872 vs 0.5876 (-0.0004, n 3) | w 0.50: 0.5816 vs 0.5814 (+0.0002, n 3) | w 0.75: 0.5767 vs 0.5752 (+0.0015, n 3)
   mu 0.3 p 3e-05: ends 0.5747/0.5414 | w 0.25: 0.5672 vs 0.5660 (+0.0012, n 3) | w 0.50: 0.5554 vs 0.5576 (-0.0022, n 3) | w 0.75: 0.5453 vs 0.5494 (-0.0041, n 3)
   mu 3.0 p 1e-03: ends 0.5598/nan | w 0.25: nan vs nan (+nan, n 0) | w 0.50: nan vs nan (+nan, n 0) | w 0.75: nan vs nan (+nan, n 0)
@@ -64,7 +73,7 @@ H_mix: 12/12 within bar  INCOMPLETE
   p 3e-05 w2 0.25: chi(3) nan (n 0)  chi(.3) 0.8983 (n 3)   registered 0.859 +- 0.01 (no data)
   p 3e-05 w2 0.50: chi(3) nan (n 0)  chi(.3) 0.8814 (n 3)   registered 0.834 +- 0.01 (no data)
   p 3e-05 w2 0.75: chi(3) nan (n 0)  chi(.3) 0.8678 (n 3)   registered 0.811 +- 0.01 (no data)
-  p 3e-05 w2 1.00: chi(3) nan (n 0)  chi(.3) 0.8642 (n 2)   registered 0.788 +- 0.01 (no data)
+  p 3e-05 w2 1.00: chi(3) nan (n 0)  chi(.3) 0.8631 (n 3)   registered 0.788 +- 0.01 (no data)
 H_chi (p 3e-5, mu_m 3): 1/1 within +-0.01  INCOMPLETE
 
 === H_Z: isostatic counting ===
@@ -77,15 +86,15 @@ H_chi (p 3e-5, mu_m 3): 1/1 within +-0.01  INCOMPLETE
   comp w2 0.75 w3 0.00 p 1e-03: Z_nr(mu 3) nan  Z_nr(mu 0) 7.698
   comp w2 0.75 w3 0.00 p 3e-05: Z_nr(mu 3) nan  Z_nr(mu 0) 7.233
   comp w2 1.00 w3 0.00 p 1e-03: Z_nr(mu 3) nan  Z_nr(mu 0) 8.472
-  comp w2 1.00 w3 0.00 p 3e-05: Z_nr(mu 3) nan  Z_nr(mu 0) 7.921
+  comp w2 1.00 w3 0.00 p 3e-05: Z_nr(mu 3) nan  Z_nr(mu 0) 7.952
   comp w2 0.00 w3 0.50 p 1e-03: Z_nr(mu 3) nan  Z_nr(mu 0) 7.088
-  comp w2 0.00 w3 0.50 p 3e-05: Z_nr(mu 3) nan  Z_nr(mu 0) 6.565
+  comp w2 0.00 w3 0.50 p 3e-05: Z_nr(mu 3) nan  Z_nr(mu 0) 6.585
   comp w2 0.00 w3 1.00 p 1e-03: Z_nr(mu 3) nan  Z_nr(mu 0) 8.729
-  comp w2 0.00 w3 1.00 p 3e-05: Z_nr(mu 3) nan  Z_nr(mu 0) nan
+  comp w2 0.00 w3 1.00 p 3e-05: Z_nr(mu 3) nan  Z_nr(mu 0) 8.202
 H_Z rough (p 3e-5): 2/2 within 4 +- 0.25  PASS
-  frictionless w2 0.25 (n2 0.143): Z 6.270 vs linear-in-n2 6.251
-  frictionless w2 0.50 (n2 0.333): Z 6.655 vs linear-in-n2 6.623
-  frictionless w2 0.75 (n2 0.600): Z 7.233 vs linear-in-n2 7.142
+  frictionless w2 0.25 (n2 0.143): Z 6.270 vs linear-in-n2 6.256
+  frictionless w2 0.50 (n2 0.333): Z 6.655 vs linear-in-n2 6.633
+  frictionless w2 0.75 (n2 0.600): Z 7.233 vs linear-in-n2 7.161
 H_Z frictionless linear-in-n2: 3/3 within 0.30  PASS
 
 === H_sigma* and H_delta from per-contact dumps (R* = 1/4 for every contact) ===
@@ -100,8 +109,9 @@ H_Z frictionless linear-in-n2: 3/3 within 0.30  PASS
   mu 0.0 p 3e-05 w2 0.25 w3 0.00: sigma*/kappa 0.2628  delta10/90 1.353  delta25/75 1.373  force cv 0.727  f99/<f> 3.21  fmax/<f> 5.2  (n 3)
   mu 0.0 p 3e-05 w2 0.50 w3 0.00: sigma*/kappa 0.2562  delta10/90 1.366  delta25/75 1.384  force cv 0.720  f99/<f> 3.17  fmax/<f> 5.2  (n 3)
   mu 0.0 p 3e-05 w2 0.75 w3 0.00: sigma*/kappa 0.2516  delta10/90 1.366  delta25/75 1.385  force cv 0.719  f99/<f> 3.20  fmax/<f> 4.9  (n 3)
-  mu 0.0 p 3e-05 w2 1.00 w3 0.00: sigma*/kappa 0.2441  delta10/90 1.361  delta25/75 1.378  force cv 0.717  f99/<f> 3.17  fmax/<f> 5.4  (n 2)
-  mu 0.0 p 3e-05 w2 0.00 w3 0.50: sigma*/kappa 0.2462  delta10/90 1.372  delta25/75 1.385  force cv 0.725  f99/<f> 3.27  fmax/<f> 4.8  (n 1)
+  mu 0.0 p 3e-05 w2 1.00 w3 0.00: sigma*/kappa 0.2451  delta10/90 1.359  delta25/75 1.377  force cv 0.721  f99/<f> 3.19  fmax/<f> 5.8  (n 3)
+  mu 0.0 p 3e-05 w2 0.00 w3 0.50: sigma*/kappa 0.2449  delta10/90 1.354  delta25/75 1.368  force cv 0.730  f99/<f> 3.25  fmax/<f> 5.4  (n 3)
+  mu 0.0 p 3e-05 w2 0.00 w3 1.00: sigma*/kappa 0.2167  delta10/90 1.359  delta25/75 1.367  force cv 0.737  f99/<f> 3.31  fmax/<f> 5.6  (n 3)
   mu 0.3 p 1e-03 w2 0.00 w3 0.00: sigma*/kappa 0.2036  delta10/90 1.721  delta25/75 1.777  force cv 0.584  f99/<f> 2.65  fmax/<f> 3.6  (n 3)
   mu 0.3 p 1e-03 w2 0.25 w3 0.00: sigma*/kappa 0.1931  delta10/90 1.713  delta25/75 1.775  force cv 0.575  f99/<f> 2.54  fmax/<f> 3.8  (n 3)
   mu 0.3 p 1e-03 w2 0.50 w3 0.00: sigma*/kappa 0.1862  delta10/90 1.598  delta25/75 1.725  force cv 0.593  f99/<f> 2.62  fmax/<f> 3.5  (n 3)
@@ -113,6 +123,7 @@ H_Z frictionless linear-in-n2: 3/3 within 0.30  PASS
   mu 0.3 p 3e-05 w2 0.50 w3 0.00: sigma*/kappa 0.1528  delta10/90 1.266  delta25/75 1.295  force cv 0.753  f99/<f> 3.29  fmax/<f> 5.3  (n 3)
   mu 0.3 p 3e-05 w2 0.75 w3 0.00: sigma*/kappa 0.1409  delta10/90 1.306  delta25/75 1.291  force cv 8.453  f99/<f> 2.51  fmax/<f> 294.0  (n 3)
   mu 0.3 p 3e-05 w2 1.00 w3 0.00: sigma*/kappa 0.1361  delta10/90 1.406  delta25/75 1.465  force cv 8.717  f99/<f> 2.27  fmax/<f> 324.0  (n 3)
+  mu 0.3 p 3e-05 w2 0.00 w3 0.50: sigma*/kappa 0.1444  delta10/90 1.334  delta25/75 1.385  force cv 0.766  f99/<f> 3.47  fmax/<f> 7.0  (n 1)
   mu 3.0 p 1e-03 w2 0.00 w3 0.00: sigma*/kappa 0.1641  delta10/90 1.383  delta25/75 1.473  force cv 0.675  f99/<f> 2.93  fmax/<f> 4.2  (n 3)
   mu 3.0 p 3e-05 w2 0.00 w3 0.00: sigma*/kappa 0.1388  delta10/90 1.243  delta25/75 1.261  force cv 0.772  f99/<f> 3.45  fmax/<f> 5.4  (n 3)
   p 1e-03 H_sigma*: ratio doublet/singlet 0.862 (registered [0.55, 0.95]) PASS [reported]

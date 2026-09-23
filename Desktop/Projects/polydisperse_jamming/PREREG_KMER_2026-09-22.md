@@ -123,3 +123,23 @@ Such contacts are not a rigid-body packing, and they carry unphysical forces.
   a preparation-history artefact of rigid, soft-contact clumps at very high friction.
 - **Consequence:** clump χ is quoted at **μ_m = 0.3** (clean, and the realistic friction);
   μ_m = 3 clump numbers are reported only with the overlap-volume sensitivity beside them.
+
+---
+
+## RESULT (graded 2026-09-22 ~20:00 CDT, `out/grade_kmer.txt`, 126/126 records)
+
+- K3 health 126/126; **K0′ 18/18 bit-identical**; **K2 FAIL** (|Δφ| up to 6.0e-3: a geometric scaled
+  copy is not a dynamic one — the time step scales with the member radius); **K4 (post-hoc)**
+  excludes 46 cells: every μ_p 3 cluster cell and the μ_p 0.3 triplet cells.
+- **H_mix: 12/12 K4-clean cells within 2·PHI_SCALE** (worst −0.0041 at μ 0.3, p̂ 3e-5, w₂ 0.75);
+  INCOMPLETE as registered (the μ 3 half is excluded). No systematic excess of either sign.
+- **H_χ at μ_m 3: UNDETERMINED** under K4 (the overlap-volume sensitivity moves χ ≤ 0.0017, so
+  the registered values would pass). **Clean, realistic friction (μ_p 0.3, p̂ 3e-5):**
+  χ = 0.908 / 0.898 / 0.881 / 0.868 / 0.863 at w₂ = 0 → 1 — the window widens ×1.49
+  (0.092 → 0.137), on the ideal-mixing curve (prediction 0.908 / 0.896 / 0.885 / 0.873 / 0.862).
+- **H_Z PASS** (rough Z = 4 ± 0.25; frictionless Z linear in doublet number fraction, 3/3).
+- **H_σ\* PASS:** σ\*(w₂ = 1)/σ\*(0) = **0.783** at μ_p 0.3, p̂ 3e-5 (registered [0.55, 0.95]).
+- **H_δ FAIL:** δ(w₂ = 1) − δ(0) = +0.004, t = 0.05 — doublets do not change the activation
+  sharpness (the mechanism behind the prediction had already been withdrawn).
+- Triplets: μ_p 0 cells clean; μ_p 0.3 and 3 triangle cells K4-excluded — no clean frictional
+  triplet number exists yet. Chains: `grade_kchain.py` (Amendment 1).

@@ -15,3 +15,6 @@ jammed volume fraction (fraction with f̂ > f_c) and the maximum radial radius o
 Spreading falls most between w₂ = 0 and 0.25, where NO jamming is possible (x < χ): that part is
 continuous thickening (Θ rises as χ falls). Jamming switches on once χ < x (w₂ ≳ 0.33 by H_mix).
 β_max is grid-quantised at L9 and ties at w₂ 0.75/1; the radius of gyration is continuous.
+
+⚠ In K1(a) the whole μ_m = 3 series is drawn hollow as K4-flagged, although its w₂ = 0 point
+(singlets) passes K4; only the w₂ > 0 points are excluded.

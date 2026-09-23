@@ -57,8 +57,12 @@ def fig_k1():
         if not pts:
             continue
         ww, mean, sd, n = zip(*pts)
+        # mu_m 3 clump cells fail the post-hoc overlap gate K4 (PREREG_KMER Amendment 2):
+        # drawn HOLLOW and labelled, never as clean data
+        flagged = mm == 3.0
         ax[0].errorbar(ww, mean, yerr=sd, fmt="o", color=COL[k + 1], capsize=2,
-                       label=f"μm = {mm:g}")
+                       mfc="white" if flagged else COL[k + 1],
+                       label=f"μm = {mm:g}" + (" (K4-flagged)" if flagged else ""))
         # H_mix from the campaign's own endpoint means
         e = {}
         for w in (0.0, 1.0):
