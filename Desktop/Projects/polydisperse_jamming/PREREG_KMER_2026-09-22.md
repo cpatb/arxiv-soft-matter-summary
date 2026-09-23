@@ -109,3 +109,17 @@ Such contacts are not a rigid-body packing, and they carry unphysical forces.
   singlets → pure doublets, all cells passing K4.
 - ⚠ The same artefact is expected in `shapechi`'s α = 2, μ_p 3 cells (no dumps there). Its χ
   0.788 headline inherits this caveat; the kmer w₂ = 1 cells (near-copies) bound the effect.
+
+**Amendment 2 — diagnosis (added the same evening, `scripts/diag_dt_overlap.sh`,
+`scripts/diag_penetration.py`).** One bad cell (μ_p 3, w₂ = 1, p̂ 1e-3, seed 1) re-run:
+- **Not a time-step artefact:** DT_SAFETY 0.5 / 0.25 / 0.1 gives 3.66 / 3.54 / 3.43 % of contacts
+  beyond u/r = 0.05, max u/r 0.735 / 0.740 / 0.737 (φ 0.4952 / 0.4970 / 0.4990). The default run
+  reproduces the campaign cell's 3.66 %.
+- **The overlap is geometric, not inferred:** Yade's `penetrationDepth` equals fn/kn to 5.6e-17;
+  worst contact 0.735 of a radius; tangential/normal 0.39–0.81, far below μ = 3 (locked, not sliding).
+- **It grows as the pressure falls** (5.3 % at p̂ 3e-5 vs 3.7 % at 1e-3), which a softness artefact
+  at the final state would not do. Reading (hypothesis): frictional rigid clumps interlock during
+  stress-controlled compression and LOCK IN deep penetrations that μ = 3 prevents from relaxing —
+  a preparation-history artefact of rigid, soft-contact clumps at very high friction.
+- **Consequence:** clump χ is quoted at **μ_m = 0.3** (clean, and the realistic friction);
+  μ_m = 3 clump numbers are reported only with the overlap-volume sensitivity beside them.
