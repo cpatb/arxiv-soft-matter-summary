@@ -35,7 +35,7 @@ Status: **derived, checked; referee pass 1 returned 1 FATAL + 4 MATERIAL + 2 MIN
 >    **UNDETERMINED**: every μ_p 3 cluster cell fails the K4 overlap gate (singlets: 4.04).
 > 6. **In the drop** (§10): the only DNS test so far (`kmerdrop`) used μ_m 3 χ values, which are
 >    the predicted, K4-excluded convention; at the clean μ 0.3 χ its x = 0.85 lies OUTSIDE the
->    window at every w₂. The clean test is `kmermap` (x 0.88/0.92), pending.
+>    window at every w₂. The clean test, `kmermap`, **passes R1**: doublets jam at x 0.88 where singlets cannot (J up to 0.196); see §10.
 >
 > Scope: everything in 4 and 6 assumes **stress-controlled activation** (M6), which rests on
 > one informative DNS pair (`jamwin` P2) and censored bounds (`jamwin2`).
@@ -297,7 +297,12 @@ from jamwin's one informative pair).
 At the clean μ_p 0.3 χ (0.9083 → 0.8631), x = 0.85 lies **outside the window at every w₂**, so
 this run cannot be quoted as "doublets switch a drop to arrest" for a realistic-friction
 material. It shows what the solver does IF χ moves by that much. The clean-χ test is
-`PREREG_KMERMAP` (x 0.88/0.92, U₀ 1/2/4), pending.
+`PREREG_KMERMAP` (x 0.88/0.92, U₀ 1/2/4). **Graded 2026-09-22 (after the pass-5 close):** with
+χ, σ\* and δ all from the clean μ_p 0.3 DEM, pure doublets jam at x 0.88 (J 0.058 / 0.196 at
+U₀ 2 / 4) where singlets cannot (R1 PASS), and at x 0.92 they jam more (0.636 vs 0.138 at U₀ 4;
+other pairs censored by L9 deaths). The largest spread cut, however, is at x 0.85, where nothing
+jams: the footprint does not discriminate jamming from thickening. Stress-controlled scope (M6) as
+before.
 
 **Why spreading falls before any jamming (K5 made quantitative).** Outside the window the
 activated drop can only thicken, by `Θ = [(1−x)/(1−x/χ)]^MP_EXPO` (MP_EXPO = 2 in the solver).

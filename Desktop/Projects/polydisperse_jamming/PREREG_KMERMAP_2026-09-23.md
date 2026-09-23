@@ -55,6 +55,9 @@ the first DNS result for the multiplet hypothesis that does not use a predicted 
 
 The SPREAD tells a different story from the jammed volume. The doublets' cut in max Rg_r is
 largest where NOTHING can jam (x 0.85, U₀ 4: −31 %; healthy pair), smaller where only the doublets
-jam (x 0.88: −14 % / −18 %), and ~−3 % where both jam (x 0.92). The footprint is set mostly by
-thickening outside the window, not by jamming. **A reduced spread is therefore not evidence of
-jamming**, and a bench test that reads arrest from the footprint cannot tell the two apart.
+jam (x 0.88: −14 % / −18 %), and ~−3 % where both jam (x 0.92). ⚠ The last is partly headroom:
+singlets at x 0.92 already sit at Rg 0.35, so a percentage cut there is compressed; and at x 0.85
+the doublet arm also carries the lower σ\* and δ, so that cut is thickening plus onset, but not
+jamming. What survives either caveat: **the largest footprint reduction occurs with no jammed
+volume at all**, so a reduced spread is not evidence of jamming, and a bench test that reads
+arrest from the footprint cannot tell the two apart.
