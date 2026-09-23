@@ -64,6 +64,31 @@ def main():
             f"{ok[0]['J']}, {ok[1]['J']})  {'PASS' if d2 else 'FAIL'}")
     else:
         say("D1/D2: not graded -- fewer than 5 healthy cells; rows above are descriptive")
+    # ---- Amendment 1: all channels (chi + sheared sigma* + sheared delta) -----------------
+    say("")
+    say("=== Amendment 1: all doublet channels vs window-only ===")
+    say("   registered: J_all / J_window in [1/1.5, 1.5]; beta_max within one grid quantum (1/64)")
+    a1 = []
+    for lab, ref in (("all_w0.50", "w0.50"), ("all_w1.00", "w1.00")):
+        pa = os.path.join(HERE, "out", "kmerdrop2", lab, "spread.dat")
+        pb = os.path.join(ROOT, ref, "spread.dat")
+        sa = os.path.join(HERE, "out", "kmerdrop2", lab, "RUN_STATUS.json")
+        if not (os.path.exists(pa) and os.path.exists(pb) and os.path.exists(sa)):
+            say(f"  {lab}: not landed")
+            continue
+        st = json.load(open(sa, encoding="utf-8"))
+        a = np.loadtxt(pa, comments="#", ndmin=2)
+        b = np.loadtxt(pb, comments="#", ndmin=2)
+        healthy = st["rc"] == 0 and a[-1, 1] >= 5.9
+        ratio = a[:, 7].max() / b[:, 7].max()
+        dbeta = abs(a[:, 2].max() - b[:, 2].max())
+        ok_ = healthy and (1 / 1.5 <= ratio <= 1.5) and dbeta <= 1 / 64 + 1e-12
+        a1.append(ok_)
+        say(f"  {lab}: healthy {healthy}  J {a[:, 7].max():.4f} vs {b[:, 7].max():.4f} (ratio "
+            f"{ratio:.2f})  beta {a[:, 2].max():.4f} vs {b[:, 2].max():.4f}  Rg "
+            f"{a[:, 11].max():.4f} vs {b[:, 11].max():.4f}  {'PASS' if ok_ else 'FAIL'}")
+    say(f"Amendment 1: {sum(a1)}/{len(a1)}" + ("  PASS" if len(a1) == 2 and all(a1) else
+                                              "  FAIL" if a1 and not all(a1) else "  INCOMPLETE"))
     with open(os.path.join(HERE, "out", "grade_kmerdrop.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     return 0
