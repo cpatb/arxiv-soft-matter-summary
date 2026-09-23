@@ -14,6 +14,12 @@ State (the git log is the time record; the overnight session ran from 21:30 CDT 
   - jamsig/epssig: apex recoil (S2) is the candidate camera-visible jam-vs-thicken signature. It reads
     the jammed-vs-thickened viscosity contrast (holds at a 10x stiffer cap, collapses at a 10x softer
     one). Out-of-sample/L10 tests were blocked by deaths.
+  - Headline robustness: R1 (doublets jam where singlets cannot) holds at L10 (EPS_MIN 0.03) and with chi
+    from the OTHER DEM pressure rung (RG1: x 0.91 at p 1e-3). The window's POSITION is a rung convention;
+    its existence is not.
+  - Apex recoil: out-of-sample K3 PASS 5/5 (J+ side n = 1). EPS_SOFT does not rescue the L9 deaths (0/3);
+    they need solver work on the viscous/Poisson solve at 1e4 contrast (an author decision).
+  - Figures K3/K4/K5 (make_kmer_figures.py), documented in FIGURES_KMER.md.
   - IMPORTANT: the DNS jammed viscosity IS the EPS_MIN cap; J magnitudes are cap-dependent, while
     classes and orderings are what is robust.
   - kmu: U1 DIRTY. kmix: M1 FAIL (chains mix +0.005), M2 PASS. kmerdrop Am. 1: INCOMPLETE.
