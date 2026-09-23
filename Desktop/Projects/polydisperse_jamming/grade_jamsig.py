@@ -112,6 +112,43 @@ def main():
         tag = ("JAMMING SIGNATURE (separates across U0 and at shared x)" if sep_all and sh and sh[0]
                else "x-confounded (separates across x only)" if sep_all else "no signature")
         say(f"J3 {n}: {tag}")
+    # ---- Amendment 1 (registered before its cells): held-out K1 and grid K2, S2* = 0.1 -------
+    say("")
+    say("Amendment 1 (S2* = 0.1 fixed before the cells):")
+    am = {}
+    for d in sorted(glob.glob(os.path.join(OUT, "jamsig", "*"))):
+        lab = os.path.basename(d)
+        if lab.startswith("_ref") or not os.path.exists(os.path.join(d, "RUN_STATUS.json")):
+            continue
+        st = json.load(open(os.path.join(d, "RUN_STATUS.json"), encoding="utf-8"))
+        p = os.path.join(d, "spread.dat")
+        a = np.loadtxt(p, comments="#", ndmin=2) if os.path.exists(p) else np.zeros((0, 21))
+        ban = open(os.path.join(d, "banner.txt"), encoding="utf-8", errors="replace").read()
+        lvl_ok = ("_L10_" in ban) if lab.startswith("L10") else ("_L9_" in ban)
+        healthy = bool(st["rc"] == 0 and a.size and a[-1, 1] >= 5.9 and lvl_ok)
+        u0 = 4.0 if "U4.0" in lab else 2.0
+        J = float(a[:, 7].max()) if a.size else float("nan")
+        s2 = sig(a, u0)[1] if a.size else float("nan")
+        am[lab] = dict(healthy=healthy, J=J, s2=s2)
+        say(f"  {lab}: healthy {healthy} (level tag ok {lvl_ok})  J {J:.4f}  S2 {s2:+.4f}  "
+            f"class {'J+' if J > 0.01 else 'J0' if J == 0 else 'ambiguous'}")
+    k1 = [(v["J"] > 0.01, v["s2"]) for k, v in am.items() if k.startswith("kd_") and v["healthy"]]
+    if k1:
+        right = [(s2 < 0.1) if jp else (s2 >= 0.1) for jp, s2 in k1]
+        classes = {jp for jp, _ in k1}
+        say(f"K1 held-out: {sum(right)}/{len(right)} on the predicted side of 0.1"
+            + ("  PASS" if all(right) and len(classes) == 2 else
+               "  UNINFORMATIVE (one class only)" if all(right) else "  FAIL"))
+    else:
+        say("K1 held-out: INCOMPLETE")
+    a25, a50 = am.get("L10_w0.25_U2.0"), am.get("L10_w0.50_U2.0")
+    if a25 and a50 and a25["healthy"] and a50["healthy"]:
+        cls = (a25["J"] == 0.0) and (a50["J"] > 0.01)
+        side = (a25["s2"] >= 0.1) and (a50["s2"] < 0.1)
+        say(f"K2 L10: classes kept {cls}, S2 sides kept {side}  "
+            + ("PASS" if cls and side else "UNDECIDABLE (class changed)" if not cls else "FAIL"))
+    else:
+        say("K2 L10: INCOMPLETE")
     with open(os.path.join(OUT, "grade_jamsig.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     return 0

@@ -1,0 +1,48 @@
+grade_jamsig -- PREREG_JAMSIG_2026-09-23.md
+  kmermap    w0_x0.85_U1.0    U0 1 x 0.8500 J 0.0000 Rg 0.5043  S1 0.003254  S2 +0.5859  S3 +0.02134
+  kmermap    w0_x0.85_U2.0    U0 2 x 0.8500 J 0.0000 Rg 0.5326  S1 0.0006735  S2 +0.5781  S3 +0.02394
+  kmermap    w0_x0.85_U4.0    U0 4 x 0.8500 J 0.0000 Rg 0.5742  S1 0.0001226  S2 +0.5  S3 +0.004094
+  kmermap    w0_x0.88_U1.0    U0 1 x 0.8800 J 0.0000 Rg 0.4133  S1 0.0008745  S2 +0.2031  S3 +0.001692
+  kmermap    w0_x0.88_U2.0    U0 2 x 0.8800 J 0.0000 Rg 0.4092  S1 0.0001985  S2 +0.1719  S3 +0.001801
+  kmermap    w0_x0.88_U4.0    U0 4 x 0.8800 J 0.0000 Rg 0.4292  S1 0.0001835  S2 +0.2656  S3 +0.007276
+  kmermap    w0_x0.92_U2.0    U0 2 x 0.9200 J 0.0621 Rg 0.3423  S1 0.001166  S2 +0.01562  S3 -0.007555
+  kmermap    w0_x0.92_U4.0    U0 4 x 0.9200 J 0.1378 Rg 0.3464  S1 9.303e-05  S2 +0  S3 -0.003541
+  kmermap    w1_x0.85_U4.0    U0 4 x 0.8500 J 0.0000 Rg 0.3963  S1 3.31e-05  S2 +0.125  S3 +0.001478
+  kmermap    w1_x0.88_U2.0    U0 2 x 0.8800 J 0.0579 Rg 0.3513  S1 0.0007268  S2 +0.03125  S3 -0.01502
+  kmermap    w1_x0.88_U4.0    U0 4 x 0.8800 J 0.1958 Rg 0.3534  S1 0.0001613  S2 +0  S3 -0.0009143
+  kmermap    w1_x0.92_U4.0    U0 4 x 0.9200 J 0.6362 Rg 0.3366  S1 0.0006501  S2 +0  S3 +0.0001545
+  kmerdecomp act_x0.85_U1.0   U0 1 x 0.8500 J 0.0000 Rg 0.4901  S1 0.003015  S2 +0.5469  S3 +0.02142
+  kmerdecomp act_x0.85_U2.0   U0 2 x 0.8500 J 0.0000 Rg 0.5230  S1 0.001356  S2 +0.5625  S3 +0.0307
+  kmerdecomp act_x0.85_U4.0   U0 4 x 0.8500 J 0.0000 Rg 0.5737  S1 0.0002538  S2 +0.4844  S3 +0.0005769
+  kmerdecomp win_x0.85_U4.0   U0 4 x 0.8500 J 0.0000 Rg 0.3958  S1 3.38e-05  S2 +0.125  S3 +0.00155
+  kmerdecomp win_x0.88_U2.0   U0 2 x 0.8800 J 0.0591 Rg 0.3519  S1 0.0007042  S2 +0.04688  S3 -0.01663
+  kmerdrop   w0.00            U0 2 x 0.8500 J 0.0000 Rg 0.4596  S1 0.0006437  S2 +0.4687  S3 +0.02152
+  kmerdrop   w0.25            U0 2 x 0.8500 J 0.0000 Rg 0.3875  S1 0.000674  S2 +0.1719  S3 -0.0266
+  kmerdrop   w0.50            U0 2 x 0.8500 J 0.0492 Rg 0.3631  S1 0.0004649  S2 +0.07812  S3 -0.02038
+  kmerdrop   w0.75            U0 2 x 0.8500 J 0.2197 Rg 0.3534  S1 0.0009737  S2 +0.04688  S3 -0.026
+  kmerdrop   w1.00            U0 2 x 0.8500 J 0.3854 Rg 0.3476  S1 0.0004093  S2 +0.01563  S3 -0.008332
+  kmerdrop2  all_w0.50        U0 2 x 0.8500 J 0.0551 Rg 0.3622  S1 0.0005493  S2 +0.07812  S3 -0.02754
+
+  U0 2: 7 J+ vs 5 J0 (all campaigns; x differs between groups)
+    S1 late motion: J+ median +0.0007042 [+0.0004093, +0.001166] (n 7)  J0 median +0.0006735 [+0.0001985, +0.001356] (n 5)  ratio 1.05  overlap True  -> not informative
+    S2 recoil: J+ median +0.04688 [+0.01562, +0.07812] (n 7)  J0 median +0.4687 [+0.1719, +0.5781] (n 5)  ratio 10.00  overlap False  -> SEPARATES (J+ lower)
+    S3 late creep: J+ median -0.01663 [-0.02754, -0.007555] (n 7)  J0 median +0.02152 [-0.0266, +0.0307] (n 5)  ratio 1.29  overlap True  -> not informative
+  U0 4: 3 J+ vs 5 J0 (all campaigns; x differs between groups)
+    S1 late motion: J+ median +0.0001613 [+9.303e-05, +0.0006501] (n 3)  J0 median +0.0001226 [+3.31e-05, +0.0002538] (n 5)  ratio 1.32  overlap True  -> not informative
+    S2 recoil: J+ median +0 [+0, +0] (n 3)  J0 median +0.2656 [+0.125, +0.5] (n 5)  ratio inf  overlap False  -> SEPARATES (J+ lower)
+    S3 late creep: J+ median -0.0009143 [-0.003541, +0.0001545] (n 3)  J0 median +0.00155 [+0.0005769, +0.007276] (n 5)  ratio 1.70  overlap False  -> SEPARATES (J+ lower)
+
+  SHARED-x subset (kmerdrop ladder, x 0.85, U0 2):
+    S1 late motion: J+ median +0.0004649 [+0.0004093, +0.0009737] (n 3)  J0 median +0.0006589 [+0.0006437, +0.000674] (n 2)  ratio 1.42  overlap True  -> not informative
+    S2 recoil: J+ median +0.04688 [+0.01563, +0.07812] (n 3)  J0 median +0.3203 [+0.1719, +0.4687] (n 2)  ratio 6.83  overlap False  -> SEPARATES (J+ lower)
+    S3 late creep: J+ median -0.02038 [-0.026, -0.008332] (n 3)  J0 median -0.002538 [-0.0266, +0.02152] (n 2)  ratio 8.03  overlap True  -> not informative
+
+J1 S1 separates at every U0 with J+ LOWER: FAIL
+J2 S2 and S3 do NOT separate at any U0: FAIL
+J3 S1 late motion: no signature
+J3 S2 recoil: JAMMING SIGNATURE (separates across U0 and at shared x)
+J3 S3 late creep: no signature
+
+Amendment 1 (S2* = 0.1 fixed before the cells):
+K1 held-out: INCOMPLETE
+K2 L10: INCOMPLETE
