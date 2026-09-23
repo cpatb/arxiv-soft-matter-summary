@@ -143,3 +143,17 @@ Such contacts are not a rigid-body packing, and they carry unphysical forces.
   sharpness (the mechanism behind the prediction had already been withdrawn).
 - Triplets: μ_p 0 cells clean; μ_p 0.3 and 3 triangle cells K4-excluded — no clean frictional
   triplet number exists yet. Chains: `grade_kchain.py` (Amendment 1).
+
+## RESULT — chains (Amendment 1), graded 2026-09-22 ~20:30 CDT, `out/grade_kchain.txt`, 36/36
+
+- **C1 UNDETERMINED:** every μ_p 3 chain cell fails K4 (2–15 % of contacts beyond u/r 0.05).
+- **C2 UNDETERMINED** (same exclusion). **C3 PASS:** frictionless pure chains Z_nr = 8.06 < 10.
+- **Clean, realistic friction (μ_p 0.3; every chain cell passes K4, zero deep overlaps):**
+  pure chains χ = **0.8638** vs pure dumbbells **0.8631** at p̂ 3e-5 — indistinguishable; at
+  p̂ 1e-3 chains are wider (0.8805 vs 0.8978). So at the quoted rung a third collinear primary
+  does NOT widen the window beyond a dumbbell's; the elongation ordering is rung-dependent and
+  unresolved. What is robust: **any** cluster (dumbbell or chain) at w = 1 widens the μ 0.3 window
+  from 0.092 to ~0.137.
+- Note: frictional TRIANGLES interpenetrate (K4-excluded even at μ_p 0.3) while chains do not —
+  the compact triangle's pockets are what lock in overlap, consistent with the history-locking
+  reading of Amendment 2.
