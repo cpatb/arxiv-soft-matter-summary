@@ -67,3 +67,21 @@ kmerdrop ladder; x 0.85, σ\* 300 Pa, δ 1.3169, χ(w₂) as `kmerdrop`). The th
   (J0 / J+) AND its S2 sides of 0.1. A class change at L10 is reported and makes K2 undecidable. At
   L10 one quantum is 1/128, so the threshold is 12.8 quanta.
 - Health as D5 of `PREREG_KMERDECOMP`; a dead cell decides nothing.
+
+### Amendment 1 — RESULT (graded 2026-09-23 ~02:45 CDT)
+| cell | health | J | class | S2 | side of 0.1 |
+|---|---|---|---|---|---|
+| kd_w0.25_U4.0 (held out) | **died** (SIGFPE, t/τ 3.6) | 0 | J0 | ≥ 0.078 (partial) | undecided |
+| kd_w0.50_U4.0 (held out) | healthy | 0.132 | J+ | 0.063 | predicted ✓ |
+| kd_w0.75_U4.0 (held out) | healthy | 0.544 | J+ | 0.000 | predicted ✓ |
+| L10_w0.25_U2.0 | healthy | 0 | J0 | 0.156 | predicted ✓ |
+| L10_w0.50_U2.0 | **died** (rc 2, t/τ 0.075, at impact) | ≥ 0.087 | J+ | — | undecided |
+
+**K1: UNINFORMATIVE** — 2/2 healthy held-out cells on the predicted side, but both are J+; the only
+held-out J0 cell died, so the threshold's other side was never tested out of sample. **K2:
+INCOMPLETE** — the J0 half holds at L10 (0.156 ≥ 0.1, i.e. 20 quanta at 1/128), the J+ half died at
+impact. Every healthy new cell fell on its predicted side (3/3); no cell contradicts S2.
+**Verdict: S2 (apex recoil) stays a CANDIDATE signature**, consistent with every healthy cell seen
+(23 + 3), but its out-of-sample test is undecided on the J0 side and its grid test on the J+ side.
+The deaths are the L9/L10 high-viscosity failure again; they are what blocks this, as they block
+kmermap R2/R3 (Status §3 item 3).

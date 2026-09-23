@@ -44,5 +44,10 @@ J3 S2 recoil: JAMMING SIGNATURE (separates across U0 and at shared x)
 J3 S3 late creep: no signature
 
 Amendment 1 (S2* = 0.1 fixed before the cells):
-K1 held-out: INCOMPLETE
+  L10_w0.25_U2.0: healthy True (level tag ok True)  J 0.0000  S2 +0.1562  class J0
+  L10_w0.50_U2.0: healthy False (level tag ok True)  J 0.0867  S2 +0.0000  class J+
+  kd_w0.25_U4.0: healthy False (level tag ok True)  J 0.0000  S2 +0.0781  class J0
+  kd_w0.50_U4.0: healthy True (level tag ok True)  J 0.1321  S2 +0.0625  class J+
+  kd_w0.75_U4.0: healthy True (level tag ok True)  J 0.5440  S2 +0.0000  class J+
+K1 held-out: 2/2 on the predicted side of 0.1  UNINFORMATIVE (one class only)
 K2 L10: INCOMPLETE
