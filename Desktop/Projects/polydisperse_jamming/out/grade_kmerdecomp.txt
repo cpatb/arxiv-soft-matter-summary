@@ -28,3 +28,13 @@ Amendment 2 (L10 rung, x 0.85):
   F2 window cut U0 4: L9 -0.3721  L10 -0.3900
   F2 activation cut U0 1.0: L9 -0.0286  L10 -0.0280  -> resolved
 F1 (|act cut| < 0.05 at U0 1 and 4; |win| > 5|act| at U0 4): PASS  (3/3)
+
+Amendment 3 (EPS_MIN 0.03; references from kmermapE03):
+  win_x0.88_U2.0: J 0.3808  Rg 0.3742
+  win_x0.88_U4.0: J 0.6828  Rg 0.4002
+  win_x0.85_U4.0: J 0.0000  Rg 0.4136
+  act_x0.85_U4.0: J 0.0000  Rg 0.5737
+D1'' window alone jams at x 0.88: PASS  [0.3808, 0.6828]
+D2'' x 0.88 U0 2.0: J(window) - J(all) = +0.0241 (0.3808 vs 0.3567)
+D2'' x 0.88 U0 4.0: J(window) - J(all) = +0.0098 (0.6828 vs 0.6730)
+D3'' x 0.85 U0 4: ln cut window -0.3281, activation -0.0008, all -0.3288  PASS; additivity residual +0.0001

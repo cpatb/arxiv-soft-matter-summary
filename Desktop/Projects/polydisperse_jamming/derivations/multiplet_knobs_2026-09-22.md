@@ -315,7 +315,7 @@ the DEM are real, but minor in this DNS (≤ 3 % in Rg over U₀ 1–4). Grid-ch
 region's viscosity IS the cap η_s/EPS_MIN² (10⁴ η_s by default), so J's MAGNITUDE is cap-dependent
 (×5.9 per decade in one case, not even monotone across cases). Every CLASS and ORDERING above was then
 re-tested at a 10× softer cap: the whole kmermap grid survives (18/18, R1′–R4′ PASS, incl. the R2/R3
-orderings that L9 deaths had left open), and all 12 cells healthy at both caps keep their class.
+orderings that L9 deaths had left open), and all 12 cells healthy at both caps keep their class. The channel split (window alone jams; footprint cut all window) also holds at the softer cap (`PREREG_KMERDECOMP` Am. 3).
 Doublets also still jam at x 0.88 under a 10× STIFFER cap (a clean lower bound 0.082). So the
 multiplet result is a statement about classes and orderings, robust over 1.1e3–1.1e5 η_s, not about
 J values. The apex-recoil signature is the exception: it reads the jammed-vs-thickened viscosity

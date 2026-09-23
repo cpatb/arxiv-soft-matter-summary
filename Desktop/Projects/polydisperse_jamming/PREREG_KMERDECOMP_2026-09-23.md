@@ -112,3 +112,17 @@ EPS_MIN 0.03 (campaign `kmerdecompE03_2026-09-23`), otherwise identical to their
 - **D3″** at x 0.85 U₀ 4, the window cut exceeds the activation cut in ln Rg (the default gave −0.372 vs
   −0.0008; the all-channel cut at this cap is −0.329 from `kmermapE03`).
 - Health as D5 plus a banner eps_min = 0.03 check.
+
+### Amendment 3 — RESULT (commit time is the record; 4/4 healthy, eps_min 0.03 verified)
+| gate | verdict | EPS_MIN 0.03 | default (0.01) |
+|---|---|---|---|
+| D1″ window alone jams, x 0.88 | **PASS** | J 0.381 / 0.683 (U₀ 2 / 4) | 0.059 / ≥ 0.201 |
+| D2″ J(window) − J(all), x 0.88 | reported | +0.024 / +0.010 | +0.001 / — |
+| D3″ window cut > activation cut, x 0.85 U₀ 4 | **PASS** | −0.328 vs −0.0008 (all −0.329) | −0.372 vs −0.0008 |
+| additivity residual | reported | +0.0001 | +0.0021 |
+
+**Control, exact:** act_x0.85_U4.0 is BYTE-IDENTICAL at both caps (md5 1eb91b520812). It carries
+the singlets' χ, so ε = 0.064 never reaches either floor. The window cell differs, as it must.
+**Reading:** the channel split is cap-robust over 1.1e3–1e4 η_s. The window carries the footprint
+cut and the jamming; the activation channel is minor at both caps. J magnitudes differ ×6 between
+caps as expected.
