@@ -4,7 +4,7 @@ Written 2026-09-22 (fourth block). Checks: `multiplet_knobs_2026-09-22_check.py`
 `..._check.txt` (**9/9 PASS**; K6 is an arithmetic cross-check against `predict_kmer.py`,
 not a physics test). Predictions: `predict_kmer.py` → `out/predict_kmer.txt`. Test:
 `PREREG_KMER_2026-09-22.md` (126 DEM cells, graded; §11).
-Status: **derived, checked; referee pass 1 returned 1 FATAL + 4 MATERIAL + 2 MINOR, all acted on below (marked "(pass 1)"); pass 2 confirmed them and returned 1 MATERIAL + 2 MINOR, acted on ("pass 2"). Pass 3 (after the data) returned 1 FATAL + 5 MATERIAL + 6 MINOR: the result box was rewritten from §11, §10 scoped to the μ_m 3 convention, stale pre-data sections marked, P-Z for clusters set UNDETERMINED ("pass 3").**
+Status: **derived, checked; referee pass 1 returned 1 FATAL + 4 MATERIAL + 2 MINOR, all acted on below (marked "(pass 1)"); pass 2 confirmed them and returned 1 MATERIAL + 2 MINOR, acted on ("pass 2"). Pass 3 (after the data) returned 1 FATAL + 5 MATERIAL + 6 MINOR: the result box was rewritten from §11, §10 scoped to the μ_m 3 convention, stale pre-data sections marked, P-Z for clusters set UNDETERMINED ("pass 3"). Pass 4 returned 3 MATERIAL (net bound 0.58 → 0.59 over both rungs; Θ 7.88 → 7.78 from a mis-copied χ; triangles fail K4 at μ_p 0.3 too), acted on ("pass 4").**
 
 > ## RESULT BOX (rewritten from §11 after referee pass 3; the pre-data version is in git history)
 >
@@ -28,7 +28,7 @@ Status: **derived, checked; referee pass 1 returned 1 FATAL + 4 MATERIAL + 2 MIN
 >    (t −3.79, below t_crit 4.303) at p̂ 1e-3; SHEARED it falls **1.254 → 1.063** (−15 %).
 >    Under stress-controlled activation (§3 scope) the net stress to jam at FIXED composition is
 >    ×0.67 at f_c 0.1 … ×1.05 at f_c 0.9; at FIXED weighed φ (the window opening lowers f_c too)
->    it is **at most ×0.58 anywhere in the window** (`net_fixed_x.py` → `out/net_fixed_x.txt`,
+>    it is **at most ×0.59 anywhere in the window** (`net_fixed_x.py` → `out/net_fixed_x.txt`,
 >    worst 0.579 at p̂ 3e-5, 0.593 at 1e-3).
 > 5. **Isostatic counting.** Frictionless Z is linear in doublet number fraction (3/3) and
 >    dumbbells are hypostatic (7.92 against 10). The rough Z = 4 prediction for CLUSTERS is
@@ -151,7 +151,7 @@ has an `f_c`-dependent sign: by `jam_stress_2026-09-22.md` eq. (9), a LOWER δ l
 for `f_c < 1/e` and RAISES it for `f_c > 1/e` (an earlier version had this backwards — pass 1
 FATAL). The doublet direction of δ was unmeasured when this was written; sheared, it FALLS (§11),
 so near the window edge the δ channel offsets the σ\* channel at FIXED composition (×1.05 at
-f_c 0.9). At FIXED weighed φ the window opening also lowers `f_c`, and the net is ≤ ×0.58
+f_c 0.9). At FIXED weighed φ the window opening also lowers `f_c`, and the net is ≤ ×0.59
 everywhere in the window (`out/net_fixed_x.txt`; pass 3). All of this is under (M6). **Outside** the window the drop cannot jam but
 still thickens by `Θ = [(1−x)/(1−x/χ)]^n`, which RISES as χ falls (K5). And the
 inertial-dilatant number `ID ∝ κ/(φ − φ_c)` FALLS: κ is unchanged (K1) while the critical
@@ -221,7 +221,7 @@ vs salt-bridged doublets must behave identically if `Π_b ≪ 1` and differently
 
 - H_mix passed 12/12 clean cells; a small deficit growing with w₂ at μ_p 0.3 p̂ 3e-5 is not excluded (pass 3).
 - Isotropic packs are not sheared packs — (pass 3) now measured sheared (`shearkmer`): σ\* reproduces, δ does not.
-- Triplets: the chain trimer widens the μ 0.3 window no more than a dumbbell (`kchain`); the compact triangle is K4-excluded at μ 3.
+- Triplets: the chain trimer widens the μ 0.3 window no more than a dumbbell (`kchain`); the compact triangle is K4-excluded at μ 3 AND at μ_p 0.3 (pass 4).
 - The lab's working φ (0.44) sits below every DEM window (09-09 record); the transferable
   statements are in `x` and in RATIOS, not in raw φ.
 
@@ -303,8 +303,8 @@ material. It shows what the solver does IF χ moves by that much. The clean-χ t
 activated drop can only thicken, by `Θ = [(1−x)/(1−x/χ)]^MP_EXPO` (MP_EXPO = 2 in the solver).
 At x = 0.85 with the μ_m 3 PREDICTED χ: Θ = 13.6 at w₂ = 0 (χ 0.886) and 205 at w₂ = 0.25
 (χ 0.859), ×15. ⚠ (pass 3) That step is ill-conditioned — 0.859 sits 0.009 from x, so Θ is
-set by a predicted, K4-excluded χ. With the CLEAN μ_p 0.3 χ at the same x: Θ = **5.46 → 7.88
-(×1.44)** for w₂ 0 → 0.25 and 5.46 → 97.7 for w₂ 0 → 1 (χ 0.8631, still outside the window).
+set by a predicted, K4-excluded χ. With the CLEAN μ_p 0.3 χ at the same x: Θ = **5.46 → 7.78
+(×1.43)** for w₂ 0 → 0.25 and 5.46 → 97.7 for w₂ 0 → 1 (χ 0.8631, still outside the window).
 That this thickening is what lowered the spread in the K5 panel between w₂ 0 and 0.25 is a
 HYPOTHESIS, not measured. ⚠ Θ is quoted WITH its exponent (lessons.md); at MP_EXPO = 5 the
 predicted-χ step is ×877.
@@ -321,7 +321,7 @@ predicted-χ step is ×877.
 | chains vs dumbbells | a straight trimer widens the μ 0.3 window no more than a dumbbell at the quoted rung (0.8638 vs 0.8631). |
 
 🔴 **Frictional (μ_p 3) clump packs lock in genuine interpenetration** (penetration depth up to
-0.74 radius, not a time-step artefact, worse at lower pressure). Every μ_m 3 clump number —
+0.74 radius, not a time-step artefact, worse at lower pressure). ⚠ (pass 4) Measured from the dumps as u/r = fn/0.25, the worst is 0.92 in μ 3 dumbbell mixtures and **1.31** in triangle-bearing cells; and **triangle compositions fail K4 at μ_p 0.3 too** (worst 1.09). Dumbbells are the only shape clean at μ_p 0.3, and even their K4-clean cells hold a few contacts (under the 0.1 % gate) up to u/r 0.62. Every μ_m 3 clump number —
 including `shapechi`'s window ×1.85 — carries that caveat; the overlap-volume sensitivity says the
 χ values survive (≤ 0.0017), the forces do not.
 
@@ -330,7 +330,7 @@ singlets into doublets of the same primary widens the shear-jamming window by ha
 lowers the onset stress by a fifth (×0.78). Under SHEAR it also softens the activation (δ −15 %),
 which at FIXED composition lowers the stress to jam deep in the window (×0.67 at f_c 0.1) and
 slightly raises it at the edge (×1.05 at f_c 0.9). At FIXED weighed φ the window opening also
-lowers f_c, and the net stress to jam is ≤ ×0.58 everywhere in the window (`out/net_fixed_x.txt`,
+lowers f_c, and the net stress to jam is ≤ ×0.59 everywhere in the window (`out/net_fixed_x.txt`,
 recomputed pass 3). ⚠ These σ_jam statements assume **stress-controlled activation** (M6),
 supported by one informative DNS pair; under rate-driven activation they would differ. The DNS
 has shown the window channel switching a fixed-φ drop to jamming only with the μ_m 3 predicted χ
