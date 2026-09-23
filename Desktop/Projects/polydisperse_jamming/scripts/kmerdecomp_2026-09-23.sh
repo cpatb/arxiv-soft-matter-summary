@@ -62,6 +62,9 @@ LIST+=("win_x0.88_U2.0 0.5456 1.3169 300 0.8766 0.53512 2.0")
 LIST+=("win_x0.88_U4.0 0.5456 1.3169 300 0.8766 0.53512 4.0")
 LIST+=("win_x0.85_U4.0 0.527 1.3169 300 1.0 0.53512 4.0")
 LIST+=("act_x0.85_U4.0 0.527 1.1163 235.8 1.0 0.56315 4.0")
+# Amendment 1 (added after the four cells above finished; they are skipped via RUN_STATUS)
+LIST+=("act_x0.85_U1.0 0.527 1.1163 235.8 1.0 0.56315 1.0")
+LIST+=("act_x0.85_U2.0 0.527 1.1163 235.8 1.0 0.56315 2.0")
 echo "=== kmerdecomp ${#LIST[@]} cells, NPAR=$NPAR, start $(date -Is) ==="
 running=0
 for c in "${LIST[@]}"; do

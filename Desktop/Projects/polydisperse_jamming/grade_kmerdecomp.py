@@ -15,7 +15,10 @@ ROOT = os.path.join(HERE, "out", "kmerdecomp")
 CELLS = {"win_x0.88_U2.0": (0.5456, 0.53512, 300.0, 1.3169, 0.8766, 2.0),
          "win_x0.88_U4.0": (0.5456, 0.53512, 300.0, 1.3169, 0.8766, 4.0),
          "win_x0.85_U4.0": (0.527, 0.53512, 300.0, 1.3169, 1.0, 4.0),
-         "act_x0.85_U4.0": (0.527, 0.56315, 235.8, 1.1163, 1.0, 4.0)}
+         "act_x0.85_U4.0": (0.527, 0.56315, 235.8, 1.1163, 1.0, 4.0),
+         # Amendment 1
+         "act_x0.85_U1.0": (0.527, 0.56315, 235.8, 1.1163, 1.0, 1.0),
+         "act_x0.85_U2.0": (0.527, 0.56315, 235.8, 1.1163, 1.0, 2.0)}
 
 
 def read(lab, par):
@@ -85,6 +88,19 @@ def main():
             f" (difference {lall - (lw + la):+.4f}; no bar)")
     else:
         say("D3/D4: INCOMPLETE (a needed cell is missing, dead or off-provenance)")
+    say("")
+    say("Amendment 1 (low U0, activation only, x 0.85):")
+    e1 = None
+    for u in (1.0, 2.0):
+        k, r = f"act_x0.85_U{u}", ref.get(("w0", 0.85, u))
+        if k in ok and r and r["healthy"]:
+            cut = math.log(ok[k]["rg"] / r["rg"])
+            say(f"  U0 {u}: ln(R_act/R_w0) = {cut:+.4f} ({ok[k]['rg']:.4f} vs {r['rg']:.4f})")
+            if u == 1.0:
+                e1 = abs(cut) > 0.0008
+        else:
+            say(f"  U0 {u}: not decidable (missing, dead or reference unhealthy)")
+    say("E1 |cut| at U0 1 > 0.0008: " + ("INCOMPLETE" if e1 is None else "PASS" if e1 else "FAIL"))
     say(f"D5 health: {len(ok)}/{sum(v is not None for v in c.values())}")
     with open(os.path.join(HERE, "out", "grade_kmerdecomp.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")

@@ -57,3 +57,15 @@ even outside the window.
 **Scope.** Tested at U₀ 2 and 4 only, where the singlets' activation is already high (⟨f̂⟩max
 0.77–0.92). At low U₀, where activation is far from saturated, a 21 % lower σ\* could matter and is
 untested. Stress-controlled activation (M6), L9, one seed-free DNS realisation per cell.
+
+## Amendment 1 — the low-U₀ scope gap (written 2026-09-23 ~00:35 CDT, before its cells)
+Two more activation-only cells at x 0.85 (singlets' χ, doublets' σ\* 235.8 Pa and δ 1.1163,
+JAM_FHAT 1.0): `act_x0.85_U1.0`, `act_x0.85_U2.0`. References: kmermap w0_x0.85_U1.0 / U2.0 (R_w0
+0.5043 / 0.5326, both healthy).
+- **E1** the activation channel matters MORE when activation is not saturated:
+  `|ln(R_act/R_w0)|` at U₀ 1 > the U₀ 4 value 0.0008. (A weak, one-sided bar: it can fail only if
+  the channel is inert at U₀ 1 too.)
+- **E2** (reported, no bar) the size of that cut at U₀ 1 and 2, against the window-only U₀ 4 cut
+  (0.372). If it exceeds ~0.05 at U₀ 1, "the activation channel is inert" is scoped to U₀ ≥ 2.
+- Health as D5. A window-only arm at U₀ 1/2 is NOT run: the all-channel doublet cells there died
+  at the L9 floor (Θ ≈ 98), so a window-only cell would too.
