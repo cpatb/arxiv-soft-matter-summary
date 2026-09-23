@@ -18,7 +18,7 @@ U1 (mu 1, w2 1): DIRTY  (per rung [False, False])
   chi(mu_m 0.6) p 3e-05:  w2 0.0: 0.8930  w2 0.5: 0.8558  w2 1.0: [K4-excluded]
   chi(mu_m 0.6) p 1e-03:  w2 0.0: 0.9021  w2 0.5: 0.8732  w2 1.0: [K4-excluded]
 
-=== A2 kmix: 30 of 36 records ===
+=== A2 kmix: 36 of 36 records ===
   w2 0.2 w3 0.4 mu 0.0 p 3e-05: phi 0.6086 vs ideal 0.6018 (+0.0068, n 3)
   w2 0.2 w3 0.4 mu 0.0 p 1e-03: phi 0.6173 vs ideal 0.6104 (+0.0069, n 3)
   w2 0.2 w3 0.4 mu 0.3 p 3e-05: phi 0.5312 vs ideal 0.5296 (+0.0016, n 3)
@@ -27,10 +27,12 @@ U1 (mu 1, w2 1): DIRTY  (per rung [False, False])
   w2 0.3 w3 0.2 mu 0.0 p 1e-03: phi 0.6296 vs ideal 0.6237 (+0.0060, n 3)
   w2 0.3 w3 0.2 mu 0.3 p 3e-05: phi 0.5477 vs ideal 0.5448 (+0.0029, n 3)
   w2 0.3 w3 0.2 mu 0.3 p 1e-03: phi 0.5701 vs ideal 0.5666 (+0.0035, n 3)
+  w2 0.5 w3 0.5 mu 0.0 p 3e-05: phi 0.5972 vs ideal 0.5934 (+0.0039, n 3)
   w2 0.5 w3 0.5 mu 0.0 p 1e-03: phi 0.6069 vs ideal 0.6022 (+0.0047, n 3)
+  w2 0.5 w3 0.5 mu 0.3 p 3e-05: phi 0.5173 vs ideal 0.5124 (+0.0049, n 3)
   w2 0.5 w3 0.5 mu 0.3 p 1e-03: phi 0.5400 vs ideal 0.5351 (+0.0049, n 3)
-M1: 4/10 within 2 PHI_SCALE  FAIL
+M1: 5/12 within 2 PHI_SCALE  FAIL
   M2 w2 0.3 w3 0.2: chi 0.8849 vs 0.8847 ok
   M2 w2 0.2 w3 0.4: chi 0.8729 vs 0.8801 ok
-  M2 w2 0.5 w3 0.5: no paired data
-M2: 2/2  INCOMPLETE
+  M2 w2 0.5 w3 0.5: chi 0.8662 vs 0.8635 ok
+M2: 3/3  PASS

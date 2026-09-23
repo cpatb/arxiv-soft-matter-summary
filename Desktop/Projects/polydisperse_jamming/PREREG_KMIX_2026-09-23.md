@@ -36,3 +36,24 @@ The one clean frictional mixture (reported, not graded): χ(μ_m 0.6, w₂ 0.5) 
 singlets at p̂ 3e-5 (0.8732 vs 0.9021 at 1e-3), i.e. the window widens 0.107 → 0.144. At μ_m 0.3 the
 same composition goes 0.092 → 0.119. Whether higher friction amplifies the doublet effect is not
 resolved at n = 3 and is not claimed.
+
+## RESULT A2 `kmix` (graded 2026-09-22 ~23:40 CDT, 36/36, no cell K4-excluded)
+
+**M1 FAIL: 5/12 within 2·PHI_SCALE.** The deviation from ideal specific-volume mixing is
+**positive in 12/12** (+0.0016 to +0.0069, median +0.0048): mixed singlet/dumbbell/chain populations
+pack DENSER than their pure ends predict. This is the registered rival (a non-additive excess),
+with a systematic positive sign.
+
+**Where the excess comes from.** The 50:50 singlet:chain binary already on disk from `kchain`
+shows the same excess, +0.0050 to +0.0082 at all four (μ, rung), seed-paired sd ≤ 0.002, K4-clean.
+The singlet:dumbbell binaries of `kmer` were ideal within the bar. So the excess enters with the
+straight CHAINS (the endpoint that packs worst, φ 0.486 against 0.575 for singlets at μ 0.3 p̂ 3e-5),
+consistent with compact grains filling the voids chains leave. ⚠ That binary existed before M1 was
+registered and was not checked; had it been, M1 would have been registered with the excess.
+Protocol confounds checked and excluded: every endpoint and mixture cell ran at the same cap (1e6)
+and converged.
+
+**M2 PASS: 3/3.** χ(μ 0.3)/χ(μ 0) = 0.8849 / 0.8729 / 0.8662 against 0.8847 / 0.8801 / 0.8635
+(±0.01). The excess is present on both friction branches and largely cancels in the ratio, so
+**the window prediction from pure endpoints holds even where the packing prediction fails.** For
+the question that is the quantity that matters: χ, not φ, decides whether a drop can jam.
