@@ -3,47 +3,42 @@
 Written 2026-09-22 (fourth block). Checks: `multiplet_knobs_2026-09-22_check.py` →
 `..._check.txt` (**9/9 PASS**; K6 is an arithmetic cross-check against `predict_kmer.py`,
 not a physics test). Predictions: `predict_kmer.py` → `out/predict_kmer.txt`. Test:
-`PREREG_KMER_2026-09-22.md` (126 DEM cells, running at time of writing).
-Status: **derived, checked; referee pass 1 returned 1 FATAL + 4 MATERIAL + 2 MINOR, all acted on below (marked "(pass 1)"); pass 2 confirmed them and returned 1 MATERIAL + 2 MINOR, acted on ("pass 2").**
+`PREREG_KMER_2026-09-22.md` (126 DEM cells, graded; §11).
+Status: **derived, checked; referee pass 1 returned 1 FATAL + 4 MATERIAL + 2 MINOR, all acted on below (marked "(pass 1)"); pass 2 confirmed them and returned 1 MATERIAL + 2 MINOR, acted on ("pass 2"). Pass 3 (after the data) returned 1 FATAL + 5 MATERIAL + 6 MINOR: the result box was rewritten from §11, §10 scoped to the μ_m 3 convention, stale pre-data sections marked, P-Z for clusters set UNDETERMINED ("pass 3").**
 
-> ## RESULT BOX
+> ## RESULT BOX (rewritten from §11 after referee pass 3; the pre-data version is in git history)
 >
 > For a suspension of ONE primary sphere (diameter `d = 2a`) aggregated into rigid, tangent
-> k-clusters (singlets, dumbbells, triangles, …):
+> k-clusters, at the realistic friction μ_p = 0.3 and p̂ 3e-5 (the clean arm; `grade_kmer.txt`):
 >
-> 1. **Aggregation is not a size knob. It is a WINDOW knob.** Tangent clusters leave the
->    solid's specific surface exactly unchanged (`S/V = 6/d`, K1), so the Sauter diameter is
->    unchanged and so is the Carman–Kozeny permeability IF the Kozeny constant is
->    shape-independent (an assumption: a dumbbell's concave waist can raise tortuosity);
->    and a compact cluster of k ≤ 4 encloses no topologically closed pore (throat radius
->    0.155 a > 0, K2), so the trapped-fluid factor is **Λ ≈ 1** (hydrodynamic screening of
->    the throat not computed) — the lever the effective-sphere model (`multiplet_psd_2026-09-22.md`)
->    is built on is absent for singlet/doublet/triplet populations. What survives is SHAPE:
->    measured pure doublets have `χ` = 0.788 against 0.886 for singlets (μ_m = 3; 0.862 vs
->    0.908 at μ_m = 0.3), i.e. **a doublet fraction widens the shear-jamming window.**
-> 2. **The composition that opens the window** at fixed position `x` is, under ideal
->    specific-volume mixing, a closed linear-fractional form (K4):
->    `w*(x) = (x/φ_m,s − 1/φ_0,s) / [(1/φ_0,d − 1/φ_0,s) − x(1/φ_m,d − 1/φ_m,s)]`
->    — 0.87 / 0.54 / 0.34 / 0.15 at x = 0.80 / 0.83 / 0.85 / 0.87 (μ_m = 3). **A suspension
->    that cannot shear-jam as singlets CAN at the same weighed φ once ~a third of its volume
->    is doublets** (x = 0.85). This is the tractable, bench-testable form of the hypothesis.
-> 3. **Every contact is primary–primary**, so the repulsive threshold `F_rep = κR*`
->    (R* = a/2) is UNIFORM. The onset then moves only through the force per contact, which
->    rises because a dumbbell exposes fewer contacts per primary: **σ\*(doublets)/σ\*(singlets)
->    ∈ [0.61, 0.86]** (Love–Weber bracket, μ_p = 0.3). And, unlike polydisperse spheres,
->    **there is no diameter-convention ambiguity in this onset** — the primary IS the size.
-> 4. **Isostatic counting fixes the contact number**: rough (μ → ∞) clusters of ANY shape
->    jam at Z = 4 (measured 4.04 singlets, 3.88 doublets); frictionless dumbbells are
->    hypostatic (7.92 against an isostatic 10).
-> 5. For a drop, doublets push toward jamming on the window (wider), the onset (lower σ\*),
->    the thickening ratio outside the window (K5) and the inertial-dilatant number (lower φ_c).
->    ⚠ **Not on every channel** (pass 1 FATAL): the activation-shape channel's sign depends on
->    `f_c` — a LOWER δ lowers σ_jam only for `f_c < 1/e` and RAISES it for `f_c > 1/e` — and
->    its doublet direction is itself unmeasured. At `f_c` = 0.75 a fall of δ from 1.3 to 1.0
->    would raise σ_jam ×1.33 against the predicted σ\* factor ×0.61–0.86, so the net there is
->    ×0.81–1.15: **the two can cancel near the window edge.** The singlet/doublet ratio is the
->    particle property that moves the window, the onset and the dilatancy together at fixed
->    primary size and chemistry; whether it lowers σ_jam everywhere in the window is open.
+> 1. **Aggregation is a WINDOW knob, not a size knob.** Tangent clusters keep `S/V = 6/d`
+>    exactly (K1) and compact k ≤ 4 clusters enclose no topologically closed pore (K2), so the
+>    effective-sphere levers (Sauter diameter, trapped fluid) are absent. What moves is χ:
+>    **measured 0.9083 → 0.8631 from singlets to pure dumbbells (window ×1.49)**, on the
+>    ideal-mixing curve (12/12 clean cells within 2·PHI_SCALE; the largest gap is −0.0041 in φ at
+>    w₂ 0.75, −0.0061 in χ; the μ 0.3 p̂ 3e-5 deviations run +0.0012 / −0.0022 / −0.0041 across
+>    w₂ 0.25 / 0.5 / 0.75, so a small deficit growing with w₂ is not excluded). φ₀ moves 0.9 %, so the doublet fraction barely moves `x`.
+> 2. **The composition that opens the window** (K4, measured clean endpoints):
+>    `w*(x)` = 0.84 / 0.61 / 0.39 / 0.18 at x = 0.87 / 0.88 / 0.89 / 0.90. At fixed weighed φ in
+>    `x ∈ [0.863, 0.908)` singlets cannot shear-jam and a sufficient doublet fraction can.
+> 3. **Onset.** Every contact is primary–primary, so `F_rep = κa/2` is uniform and there is no
+>    diameter-convention ambiguity. Measured `σ*(dumbbells)/σ*(singlets)` = **0.783** (isotropic)
+>    and **0.786** (sheared, `grade_shearkmer.txt`).
+> 4. **Sharpness.** Isotropic δ is unchanged at p̂ 3e-5 (+0.004, t 0.05) but falls −0.119
+>    (t −3.79, below t_crit 4.303) at p̂ 1e-3; SHEARED it falls **1.254 → 1.063** (−15 %).
+>    Under stress-controlled activation (§3 scope) the net stress to jam at FIXED composition is
+>    ×0.67 at f_c 0.1 … ×1.05 at f_c 0.9; at FIXED weighed φ (the window opening lowers f_c too)
+>    it is **at most ×0.58 anywhere in the window** (`net_fixed_x.py` → `out/net_fixed_x.txt`,
+>    worst 0.579 at p̂ 3e-5, 0.593 at 1e-3).
+> 5. **Isostatic counting.** Frictionless Z is linear in doublet number fraction (3/3) and
+>    dumbbells are hypostatic (7.92 against 10). The rough Z = 4 prediction for CLUSTERS is
+>    **UNDETERMINED**: every μ_p 3 cluster cell fails the K4 overlap gate (singlets: 4.04).
+> 6. **In the drop** (§10): the only DNS test so far (`kmerdrop`) used μ_m 3 χ values, which are
+>    the predicted, K4-excluded convention; at the clean μ 0.3 χ its x = 0.85 lies OUTSIDE the
+>    window at every w₂. The clean test is `kmermap` (x 0.88/0.92), pending.
+>
+> Scope: everything in 4 and 6 assumes **stress-controlled activation** (M6), which rests on
+> one informative DNS pair (`jamwin` P2) and censored bounds (`jamwin2`).
 
 ---
 
@@ -118,12 +113,14 @@ withdrawn.) The rival — a positive excess from mixing shapes — is registered
 
 - **Position.** `x(w) = φ/φ₀(w)`. φ₀ moves only 0.9 % from singlets to dumbbells, so **the
   doublet fraction barely moves x.** (Contrast CV, which moves x by ~a window.)
-- **Contrast.** `χ(w) = A₀(w)/A_m(w)` — measured endpoints 0.886 → 0.788 (μ_m = 3). Window
-  width `1 − χ` ×1.85.
+- **Contrast.** `χ(w) = A₀(w)/A_m(w)` — endpoints 0.886 → 0.788 (μ_m = 3). Window
+  width `1 − χ` ×1.85. ⚠ (pass 3) The μ_m 3 dumbbell endpoint is a K4-excluded clump pack
+  (§11); the clean measurement is μ_p 0.3: 0.9083 → 0.8631, window ×1.49.
 - **Window opening (K4).** Setting `χ(w) = x` is LINEAR in `w`:
   `w* = (xA_m,s − A₀,s)/[(A₀,d − A₀,s) − x(A_m,d − A_m,s)]` (SymPy, K4a);
-  0.87 / 0.54 / 0.34 / 0.15 at x = 0.80 / 0.83 / 0.85 / 0.87 (μ_m = 3). At the realistic
-  μ_m = 0.3 the window only goes 0.092 → 0.138 and `w*` exists only for x ≥ 0.862.
+  0.87 / 0.54 / 0.34 / 0.15 at x = 0.80 / 0.83 / 0.85 / 0.87 (μ_m = 3, excluded convention).
+  At the realistic μ_p = 0.3 (measured, clean) the window goes 0.092 → 0.137 and `w*` =
+  0.84 / 0.61 / 0.39 / 0.18 at x = 0.87 / 0.88 / 0.89 / 0.90; it exists only for x ≥ 0.863.
 - **Required activation** inside the window: `f_c(x, w) = (1 − x)/(1 − χ(w))` FALLS as `w`
   rises — a doublet-rich suspension needs a smaller frictional fraction to jam.
 - **Onset (K6).** At fixed p and φ the mean contact force is `⟨f⟩ ∝ p/(n_c ℓ)` (Love–Weber:
@@ -133,6 +130,7 @@ withdrawn.) The rival — a positive excess from mixing shapes — is registered
 it assumes contacts uniform over the lobe surface and ignores the exclusion zone next to the
 sibling lobe — pass 1 MINOR; the `kmer` dumps measure the ratio directly). So
   `σ*(w=1)/σ*(0) = (n_c ℓ)_d/(n_c ℓ)_s ∈ [0.61, 0.86]` — the onset stress FALLS with doublets.
+  (pass 3) **Measured 0.783 isotropic, 0.786 sheared** — inside the bracket.
 - **Sharpness.** δ(w). ⚠ **The first version of this bullet predicted δ(dumbbells) <
   δ(singlets) from the frictional-dumbbell force CV of 1.3–8.8. That CV is an OUTLIER
   statistic, not a width**: the `kmer` per-contact dumps show 2–7 contacts per cell out of ~3500–4700
@@ -142,6 +140,8 @@ sibling lobe — pass 1 MINOR; the `kmer` dumps measure the ratio directly). So
   open. The quantile estimators (δ₁₀/₉₀, σ\* at the 1/e quantile) are insensitive to five
   outliers in 4000, so the registered H_δ is graded as registered, but its REASON is
   withdrawn: there is no longer a mechanism on record predicting its sign.
+  (pass 3) **Measured:** isotropic δ unchanged at p̂ 3e-5 (+0.004, t 0.05) and −0.119 (t −3.79,
+  unresolved at n 3) at p̂ 1e-3; sheared, 1.254 → 1.063 (§11).
 
 ## 3. What a drop sees — every channel, one composition
 
@@ -149,8 +149,10 @@ With (M6), a material point jams where the impact stress exceeds
 `σ_jam(w) = σ*(w)·[ln 1/f_c(x,w)]^(−1/δ(w))`. Doublets lower `σ*` and lower `f_c`; both lower `σ_jam` unconditionally. A change in `δ`
 has an `f_c`-dependent sign: by `jam_stress_2026-09-22.md` eq. (9), a LOWER δ lowers `σ_jam`
 for `f_c < 1/e` and RAISES it for `f_c > 1/e` (an earlier version had this backwards — pass 1
-FATAL). The doublet direction of δ is unmeasured (§2), so near the window edge the δ channel
-may offset the σ\* channel: at `f_c` = 0.75, δ 1.3 → 1.0 gives ×1.33 against σ\* ×0.61–0.86. **Outside** the window the drop cannot jam but
+FATAL). The doublet direction of δ was unmeasured when this was written; sheared, it FALLS (§11),
+so near the window edge the δ channel offsets the σ\* channel at FIXED composition (×1.05 at
+f_c 0.9). At FIXED weighed φ the window opening also lowers `f_c`, and the net is ≤ ×0.58
+everywhere in the window (`out/net_fixed_x.txt`; pass 3). All of this is under (M6). **Outside** the window the drop cannot jam but
 still thickens by `Θ = [(1−x)/(1−x/χ)]^n`, which RISES as χ falls (K5). And the
 inertial-dilatant number `ID ∝ κ/(φ − φ_c)` FALLS: κ is unchanged (K1) while the critical
 packing φ_c tracks the frictional branch, which dumbbells lower by 12 %.
@@ -170,7 +172,7 @@ permeability `κ` (sets dilatancy/Darcy times), and the drop groups
 |---|---|---|---|---|---|---|---|
 | packing fraction φ | ✔ | — | — | — | ✔ | definition | — |
 | **size distribution CV** | ✔ (~a window per ΔCV 0.5) | ✗ (paired \|t\| 0.56) | ✔ (convention-dependent sign) | ✔ (δ −19 % at CV 0.5, μ 0.3) | ✔ d₃₂² | MEASURED | bench at fixed φ, two CVs, same d₅₀ |
-| **singlet/doublet ratio (this file)** | ~0 (0.9 %) | ✔✔ (window ×1.85) | ✔ predicted −14…−39 % | ? (mechanism withdrawn; H_δ graded as registered) | ✗ if the Kozeny constant is shape-free (K1) | endpoints MEASURED, mixtures RUNNING | bench: fractionate or grow doublets, same primary, same φ |
+| **singlet/doublet ratio (this file)** | ~0 (0.9 %) | ✔✔ (window ×1.49 at μ_p 0.3, clean) | ✔ −22 % measured (0.783 iso., 0.786 sheared) | ✔ sheared −15 %; isotropic unresolved | ✗ if the Kozeny constant is shape-free (K1) | MEASURED (μ_p 0.3); μ_m 3 excluded (K4) | bench: fractionate or grow doublets, same primary, same φ |
 | **open aggregates (large k)** | ✔ via Λ ≥ 1 | ✔ (shape, unmeasured) | ✔ | ? | ✔ ↑ | modelled (`multiplet_psd`) | salt/pH-aggregated suspension vs dispersed |
 | friction μ_p | — | ✔✔ (window 0.113 at 0→3) | — | ✔ (δ −0.22 at 0→0.3) | — | MEASURED | coated vs bare particles |
 | shape (elongation) | ~0 | ✔✔ | ? | ? | ✔ (via S/V) | χ MEASURED | rods vs spheres, same volume |
@@ -208,7 +210,7 @@ vs salt-bridged doublets must behave identically if `Π_b ≪ 1` and differently
 | # | prediction | falsified by | where |
 |---|---|---|---|
 | P-mix | φ(w) follows H_mix within 2·PHI_SCALE | a systematic excess > 0.0042 | `kmer` |
-| P-χ | χ(w) 0.886 → 0.788 near-linearly; `w*(0.85)` ≈ 0.34 | χ flat in w, or non-monotone | `kmer` |
+| P-χ | χ(w) 0.886 → 0.788 near-linearly; `w*(0.85)` ≈ 0.34 — (pass 3) the μ_m 3 arm is UNDETERMINED (K4); the clean μ_p 0.3 arm falls 0.9083 → 0.8631, monotone | χ flat in w, or non-monotone | `kmer` |
 | P-Z | rough Z = 4 ± 0.25 at every composition | Z drifting with w at μ_p 3 | `kmer` |
 | P-σ\* | σ\*(dumbbell)/σ\*(singlet) ∈ [0.55, 0.95] at μ_p 0.3 | ratio ≥ 1 | `kmer` dumps |
 | P-δ | registered as δ(dumbbell) < δ(singlet), but its mechanism is WITHDRAWN (§2): graded as registered, read as a measurement of an open sign, not as a test of a mechanism | — | `kmer` dumps |
@@ -217,9 +219,9 @@ vs salt-bridged doublets must behave identically if `Π_b ≪ 1` and differently
 
 ## 7. Open
 
-- H_mix is a hypothesis; the rival (excess) is live.
-- Isotropic packs are not sheared packs; σ\* and δ from `kmer` carry the caveat the CV lead did.
-- Triplets carry no prediction (unmeasured endpoint).
+- H_mix passed 12/12 clean cells; a small deficit growing with w₂ at μ_p 0.3 p̂ 3e-5 is not excluded (pass 3).
+- Isotropic packs are not sheared packs — (pass 3) now measured sheared (`shearkmer`): σ\* reproduces, δ does not.
+- Triplets: the chain trimer widens the μ 0.3 window no more than a dumbbell (`kchain`); the compact triangle is K4-excluded at μ 3.
 - The lab's working φ (0.44) sits below every DEM window (09-09 record); the transferable
   statements are in `x` and in RATIOS, not in raw φ.
 
@@ -232,11 +234,12 @@ framework is exactly covariant in `(φ, φ₀, φ_m)`:
 1. **χ is measurable without knowing φ's absolute scale.** From steady flow curves at several
    φ: `φ₀` = divergence of the LOW-stress viscosity branch, `φ_m` = divergence of the
    HIGH-stress branch (both fits of `η ∝ (1 − φ/φ_J)^(−n)`, same n). `χ = φ_m/φ₀`.
-   **Prediction: `χ(w)/χ(0)` falls from 1 to 0.89 (μ_m = 3 convention) or 0.95 (μ_p = 0.3)
-   as the doublet volume fraction goes 0 → 1**, near-linearly (H_mix), independent of
+   **Prediction: `χ(w)/χ(0)` falls from 1 to 0.95 (μ_p = 0.3, measured clean: 0.8631/0.9083 =
+   0.950; the μ_m = 3 convention's 0.89 is K4-excluded) as the doublet volume fraction goes
+   0 → 1**, near-linearly (H_mix), independent of
    whatever sets the absolute φ scale of the real particles.
 2. **The onset ratio.** `σ*(w)/σ*(0)` read at the thickening onset of the same flow curves:
-   predicted in [0.61, 0.86] at w = 1 (⚠ from isotropic packs; `kmer` dumps test it).
+   0.786 at w = 1 in sheared DEM packs (pass 3; predicted [0.61, 0.86]).
 3. **The drop.** With `x = φ/φ₀(w)` measured on the rheometer, a drop at fixed weighed φ
    switches from spreading to arrest when the doublet fraction crosses `w*(x)` (§2), computed
    from the SAME material's measured endpoint χ's — no DEM number enters.
@@ -281,7 +284,7 @@ Read through this file:
 
 Feeding the DEM-measured χ(w₂) into the Wyart–Cates drop solver at a FIXED weighed φ (x = 0.85,
 σ\* 300 Pa, δ 1.3169 — only the window channel moves): the jammed volume goes **0 / 0 / 0.049 /
-0.220 / 0.385** at w₂ = 0 / 0.25 / 0.5 / 0.75 / 1 (D2 PASS), and the maximum spread falls from
+0.220 / 0.385** at w₂ = 0 / 0.25 / 0.5 / 0.75 / 1 (D2 PASS; the zeros at w₂ 0 and 0.25 are by construction, since x = 0.85 < χ there puts the drop outside the window), and the maximum spread falls from
 β 1.39 to 1.08 (continuous radial Rg 0.460 → 0.348, strictly monotone; the registered β test
 FAILED on a one-grid-quantum tie between w₂ 0.75 and 1). So, within the closure, **raising the
 doublet fraction of one primary at fixed φ switches the drop from spreading to arrest** — the
@@ -289,20 +292,30 @@ author's hypothesis in its continuum form. ⚠ It inherits every DEM → DNS cav
 μ_m = 3 convention; the DEM φ axis is not the bench's; stress-controlled activation assumed
 from jamwin's one informative pair).
 
+🔴 **Scope (pass 3 FATAL).** The χ(w₂) fed to `kmerdrop` were the μ_m 3 PREDICTIONS
+(0.886/0.859/0.834/0.811/0.788), and the only measured μ_m 3 cluster endpoint is K4-excluded.
+At the clean μ_p 0.3 χ (0.9083 → 0.8631), x = 0.85 lies **outside the window at every w₂**, so
+this run cannot be quoted as "doublets switch a drop to arrest" for a realistic-friction
+material. It shows what the solver does IF χ moves by that much. The clean-χ test is
+`PREREG_KMERMAP` (x 0.88/0.92, U₀ 1/2/4), pending.
+
 **Why spreading falls before any jamming (K5 made quantitative).** Outside the window the
 activated drop can only thicken, by `Θ = [(1−x)/(1−x/χ)]^MP_EXPO` (MP_EXPO = 2 in the solver).
-At x = 0.85: Θ = 13.6 at w₂ = 0 (χ 0.886) and **205** at w₂ = 0.25 (χ 0.859) — a 15× stiffer
-fully-activated drop from a quarter of the volume in doublets, with no jamming anywhere. That is
-the K2 drop in spreading between w₂ 0 and 0.25. ⚠ Θ is quoted WITH its exponent (lessons.md);
-at MP_EXPO = 5 the same step is ×877.
+At x = 0.85 with the μ_m 3 PREDICTED χ: Θ = 13.6 at w₂ = 0 (χ 0.886) and 205 at w₂ = 0.25
+(χ 0.859), ×15. ⚠ (pass 3) That step is ill-conditioned — 0.859 sits 0.009 from x, so Θ is
+set by a predicted, K4-excluded χ. With the CLEAN μ_p 0.3 χ at the same x: Θ = **5.46 → 7.88
+(×1.44)** for w₂ 0 → 0.25 and 5.46 → 97.7 for w₂ 0 → 1 (χ 0.8631, still outside the window).
+That this thickening is what lowered the spread in the K5 panel between w₂ 0 and 0.25 is a
+HYPOTHESIS, not measured. ⚠ Θ is quoted WITH its exponent (lessons.md); at MP_EXPO = 5 the
+predicted-χ step is ×877.
 
 ## 11. What the DEM then measured (`PREREG_KMER` RESULT, 126 + 36 cells, graded 2026-09-22)
 
 | prediction (§6) | outcome |
 |---|---|
 | P-χ (window opens with doublets) | ✅ at realistic friction μ_p 0.3, clean: χ 0.908 → 0.863 (window ×1.49), on the ideal-mixing curve within ±0.005. At μ_m 3 UNDETERMINED: those clump packs interpenetrate (below). |
-| P-mix (ideal specific-volume mixing) | ✅ 12/12 clean cells within 2·PHI_SCALE, no systematic excess; the μ 3 half excluded. |
-| P-Z (isostatic counting) | ✅ rough Z ≈ 4; frictionless Z linear in doublet number fraction; frictionless dumbbells and chains hypostatic. |
+| P-mix (ideal specific-volume mixing) | ✅ 12/12 clean cells within 2·PHI_SCALE (as registered: INCOMPLETE, the μ 3 half excluded). No excess; at μ 0.3 p̂ 3e-5 the deviation runs +0.0012 / −0.0022 / −0.0041, so a small deficit is not excluded. |
+| P-Z (isostatic counting) | frictionless Z linear in doublet number fraction (3/3 PASS); frictionless dumbbells hypostatic. Rough Z = 4: singlets 4.04; **clusters UNDETERMINED** — every μ_p 3 cluster cell is K4-excluded (the grader earlier auto-passed the p̂ 1e-3 rows; fixed, pass 3). |
 | P-σ\* (onset falls) | ✅ σ\*(pure doublets)/σ\*(singlets) = 0.783 at μ_p 0.3 (isotropic packs). |
 | P-δ (sharpness) | isotropic: unchanged (+0.004, t 0.05). ⚠ **SHEARED (`PREREG_SHEARKMER`): δ falls 1.254 → 1.063** at μ_p 0.3 (−0.191 ± 0.008) — so the §3 cancellation IS real under shear, but only at the window edge: σ_jam ratio ×0.67 at f_c 0.10, ×0.94 at 0.75, ×1.05 at 0.90 (`out/shearkmer_sjam.txt`). σ\* ratio reproduced under shear (0.786). |
 | chains vs dumbbells | a straight trimer widens the μ 0.3 window no more than a dumbbell at the quoted rung (0.8638 vs 0.8631). |
@@ -312,9 +325,13 @@ at MP_EXPO = 5 the same step is ×877.
 including `shapechi`'s window ×1.85 — carries that caveat; the overlap-volume sensitivity says the
 χ values survive (≤ 0.0017), the forces do not.
 
-**Net, for the question:** at realistic friction, turning a suspension of singlets into doublets of
-the same primary widens the shear-jamming window by half and lowers the onset stress by a fifth.
-Under SHEAR it also softens the activation (δ −15 %), which lowers the stress to jam deep in the
-window (×0.67 at f_c 0.1) and slightly raises it at the very edge (×1.05 at f_c 0.9); at fixed φ the
-window opening moves the operating point away from that edge, so the net is toward jamming. In the DNS the window channel alone takes a
-fixed-φ drop from spreading to jamming.
+**Net, for the question:** at realistic friction (μ_p 0.3, clean), turning a suspension of
+singlets into doublets of the same primary widens the shear-jamming window by half (×1.49) and
+lowers the onset stress by a fifth (×0.78). Under SHEAR it also softens the activation (δ −15 %),
+which at FIXED composition lowers the stress to jam deep in the window (×0.67 at f_c 0.1) and
+slightly raises it at the edge (×1.05 at f_c 0.9). At FIXED weighed φ the window opening also
+lowers f_c, and the net stress to jam is ≤ ×0.58 everywhere in the window (`out/net_fixed_x.txt`,
+recomputed pass 3). ⚠ These σ_jam statements assume **stress-controlled activation** (M6),
+supported by one informative DNS pair; under rate-driven activation they would differ. The DNS
+has shown the window channel switching a fixed-φ drop to jamming only with the μ_m 3 predicted χ
+(§10 scope); the clean-χ DNS test is `kmermap`.
