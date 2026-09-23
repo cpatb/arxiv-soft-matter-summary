@@ -45,3 +45,16 @@ D3 health 5/5 (all rc 0, t/τ = 6, provenance 5/5).
 - **Magnitude:** from singlets to pure doublets at the same weighed φ, the maximum spread falls
   from β 1.39 to 1.08 (−22 %) through the WINDOW channel alone — σ\* and δ were held fixed, and
   the DEM predicts doublets also lower σ\*, so this under-states the doublet effect on that channel.
+
+## Amendment 1 — ALL channels, written 2026-09-22 ~21:10 CDT before its cells ran
+
+`shearkmer` measured the doublet σ\* and δ in SHEARED packs (μ_p 0.3): σ\* ×0.880 (w₂ 0.5),
+×0.786 (w₂ 1); δ ×0.912, ×0.848. Two cells re-run the w₂ 0.5 and 1 drops with σ\* and δ scaled by
+those ratios from this ladder's 300 Pa / 1.3169 (→ 264.0 Pa / 1.2014 and 235.8 Pa / 1.1163), χ as
+before (`scripts/kmerdrop2_2026-09-22.sh`, labels `all_w0.50`, `all_w1.00`).
+
+**Prediction:** at this ladder's f_c (0.90 and 0.71) the measured fixed-chemistry σ_jam ratios are
+×1.04 and ≈×0.95 (`out/shearkmer_sjam.txt`), i.e. the onset and sharpness channels nearly cancel
+at the window edge. So **J_all / J_window-only ∈ [1/1.5, 1.5]** at both w₂, and β_max within one
+grid quantum of the window-only run. A larger change means the DNS drop does not activate at the
+single stress scale this estimate assumes.
