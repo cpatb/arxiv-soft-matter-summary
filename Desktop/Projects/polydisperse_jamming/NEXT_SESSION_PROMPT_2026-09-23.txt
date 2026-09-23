@@ -12,8 +12,8 @@ State (the git log is the time record; the overnight session ran from 21:30 CDT 
   - kmerdecomp: the DNS effect is almost entirely the window (chi). Holds at L10 (Am. 2) and at the
     softer cap (Am. 3). The activation channel is minor: <= 3 % in Rg over U0 1-4.
   - jamsig/epssig: apex recoil (S2) is the candidate camera-visible jam-vs-thicken signature. It reads
-    the jammed-vs-thickened viscosity contrast (holds at a 10x stiffer cap, collapses at a 10x softer
-    one). Out-of-sample/L10 tests were blocked by deaths.
+    the jammed-vs-thickened viscosity contrast (holds at a 10x stiffer cap, falls to a quarter at a
+    10x softer one). Amendment 1's held-out/L10 tests were blocked by deaths; Amendment 2 then passed.
   - Headline robustness: R1 (doublets jam where singlets cannot) holds at L10 (EPS_MIN 0.03) and with chi
     from the OTHER DEM pressure rung (RG1: x 0.91 at p 1e-3). The window's POSITION is a rung convention;
     its existence is not.
