@@ -45,3 +45,14 @@ gate passes:**
 here and pass. Every class seen at both caps is the same. Within the tested cap range
 (1.1e3–1e4 η_s), the regime map is cap-robust in class and ordering. The softer cap is also the one
 at which the recoil gap falls to a quarter (`epssig` G2), so recoil is NOT read from this run.
+
+## Amendment 1 — a grid check of the headline (registered before its cells; commit time is the record)
+R1 (doublets jam at x 0.88 where singlets cannot) has no grid check. At the default cap, L10 jammed
+cells die at impact (`jamsig` L10_w0.50). At EPS_MIN 0.03 every L9 cell survived and the class is
+cap-robust (X1 12/12). Two LEVEL-10 cells, otherwise identical to `kmermapE03` w1_x0.88_U2.0/U4.0
+(campaign `kmermapE03L10_2026-09-23`). The singlet arm at x 0.88 is J ≡ 0 by construction (JAM_FHAT
+1.0) and is not re-run.
+- **R1L10:** J > 0.01 in ≥ 1 healthy L10 doublet cell (L9 values 0.357 / 0.673).
+- Reported, no bar: J(L10)/J(L9) per U₀ (J is an f̂ quantity, which lessons.md records as
+  grid-sensitive in this solver family, so only the class is registered).
+- Health: rc 0, t/τ ≥ 5.9, banner tag `_L10_` and eps_min 0.03.

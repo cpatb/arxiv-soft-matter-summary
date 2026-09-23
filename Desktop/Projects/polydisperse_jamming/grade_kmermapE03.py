@@ -94,6 +94,30 @@ def main():
                 + ("" if same else "   CLASS CHANGED"))
     say(f"X1 cross-cap class: {sum(x1)}/{len(x1)} unchanged" + ("  PASS" if x1 and all(x1) else
                                                               "  FAIL" if x1 else "  INCOMPLETE"))
+    # ---- Amendment 1 (registered before its cells): R1 at LEVEL 10 --------------------------
+    say("")
+    say("Amendment 1 (R1 at LEVEL 10, EPS_MIN 0.03):")
+    r1l = []
+    for u in ("2.0", "4.0"):   # the two registered cells (not US: U0 1 was not registered)
+        d = os.path.join(HERE, "out", "kmermapE03L10", f"w1_x0.88_U{u}")
+        if not os.path.exists(os.path.join(d, "RUN_STATUS.json")):
+            say(f"  L10 w1 x 0.88 U0 {u}: not run yet")
+            continue
+        st = json.load(open(os.path.join(d, "RUN_STATUS.json"), encoding="utf-8"))
+        ban = open(os.path.join(d, "banner.txt"), encoding="utf-8", errors="replace").read()
+        em = re.search(r"eps_min=([\d.e+-]+)", ban)
+        prov = "_L10_" in ban and bool(em) and math.isclose(float(em.group(1)), EPS, rel_tol=1e-9)
+        p = os.path.join(d, "spread.dat")
+        a = np.loadtxt(p, comments="#", ndmin=2) if os.path.exists(p) else np.zeros((0, 21))
+        healthy = bool(st["rc"] == 0 and a.size and a[-1, 1] >= 5.9 and prov)
+        J = float(a[:, 7].max()) if a.size else math.nan
+        l9 = c.get(("w1", 0.88, u), {}).get("J", math.nan)
+        say(f"  L10 w1 x 0.88 U0 {u}: healthy {healthy} (tag/eps ok {prov}, rc {st['rc']}, t/tau "
+            f"{a[-1, 1] if a.size else 0})  J {J:.4f}  (L9 {l9:.4f}, ratio {J / l9 if l9 else math.nan:.3f})")
+        if healthy:
+            r1l.append(J)
+    say("R1L10: " + ("PASS" if any(j > 0.01 for j in r1l) else "FAIL" if len(r1l) == 2 else "INCOMPLETE")
+        + f"  healthy J {[round(j, 4) for j in r1l]}")
     with open(os.path.join(HERE, "out", "kmermapE03_cells.json"), "w", encoding="utf-8") as fh:
         json.dump([dict(w=k[0], x=k[1], U0=float(k[2]), **v) for k, v in sorted(c.items())], fh, indent=1)
     with open(os.path.join(HERE, "out", "grade_kmermapE03.txt"), "w", encoding="utf-8") as fh:
