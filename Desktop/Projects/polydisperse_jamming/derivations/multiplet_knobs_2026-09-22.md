@@ -311,6 +311,16 @@ moves the footprint by 0.08 % at U₀ 4, growing to 2.9 % at U₀ 1 (Amendment 1
 act on the drop almost entirely through the window**: the onset and sharpness channels measured in
 the DEM are real, but minor in this DNS (≤ 3 % in Rg over U₀ 1–4). Grid-checked: at L10 the activation cuts are −0.0009 (U₀ 4) and −0.0280 (U₀ 1) against L9 −0.0008 / −0.0286, and the window cut is −0.390 (`PREREG_KMERDECOMP` Amendment 2, F1 PASS).
 
+**The regularisation cap (`PREREG_EPSSIG`, `PREREG_KMERMAPE03`, 2026-09-23).** In the solver a jammed
+region's viscosity IS the cap η_s/EPS_MIN² (10⁴ η_s by default), so J's MAGNITUDE is cap-dependent
+(×5.9 per decade in one case, not even monotone across cases). Every CLASS and ORDERING above was then
+re-tested at a 10× softer cap: the whole kmermap grid survives (18/18, R1′–R4′ PASS, incl. the R2/R3
+orderings that L9 deaths had left open), and all 12 cells healthy at both caps keep their class.
+Doublets also still jam at x 0.88 under a 10× STIFFER cap (a clean lower bound 0.082). So the
+multiplet result is a statement about classes and orderings, robust over 1.1e3–1.1e5 η_s, not about
+J values. The apex-recoil signature is the exception: it reads the jammed-vs-thickened viscosity
+contrast and vanishes at the softer cap (`PREREG_JAMSIG`, `PREREG_EPSSIG` G2).
+
 **Why spreading falls before any jamming (K5 made quantitative).** Outside the window the
 activated drop can only thicken, by `Θ = [(1−x)/(1−x/χ)]^MP_EXPO` (MP_EXPO = 2 in the solver).
 At x = 0.85 with the μ_m 3 PREDICTED χ: Θ = 13.6 at w₂ = 0 (χ 0.886) and 205 at w₂ = 0.25
