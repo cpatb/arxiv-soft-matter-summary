@@ -10,3 +10,11 @@ grade_epssig -- PREREG_EPSSIG_2026-09-23.md
 G1 EPS_MIN 0.003: S2(w0.75) 0.0469 < 0.1 <= S2(w0.25) 0.1719  PASS
 G2 EPS_MIN 0.03: gap +0.0312 vs half the default 0.0625  PASS
 READING (fixed in the prereg): S2 is a signature of the jammed-vs-thickened VISCOSITY CONTRAST
+
+Amendment 1: kmermap R1 (w1, x 0.88) under EPS_MIN 0.003 / 0.03; default J 0.0579 (U0 2), 0.1958 (U0 4, dead)
+  r1_e003_U2.0: healthy False (eps tag True, rc 2, t/tau 0.625)  J 0.0816 (lower bound)
+  r1_e003_U4.0: healthy False (eps tag True, rc 2, t/tau 0.025)  J 0.0042 (lower bound)
+H1 EPS_MIN 0.003: J > 0.01 in >= 1 cell: PASS
+  r1_e03_U2.0: healthy True (eps tag True, rc 0, t/tau 6.0)  J 0.3567
+  r1_e03_U4.0: healthy True (eps tag True, rc 0, t/tau 6.0)  J 0.6730
+H1 EPS_MIN 0.03: J > 0.01 in >= 1 cell: PASS

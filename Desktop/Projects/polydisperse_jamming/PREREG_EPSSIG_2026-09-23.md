@@ -78,3 +78,18 @@ Four cells re-run `kmermap` w1_x0.88 (pure doublets, clean μ_p 0.3 inputs: φ 0
 - A dead cell's J is a lower bound and counts toward H1 only if it exceeds 0.01, as in kmermap's
   post-hoc reading (declared here, in advance, for this amendment).
 - J reported per cell beside its default value; singlets at x 0.88 remain J ≡ 0 by construction.
+
+### Amendment 1 — RESULT (graded 2026-09-23 ~03:50 CDT)
+| EPS_MIN | U₀ 2 | U₀ 4 | H1 |
+|---|---|---|---|
+| 0.003 | ≥ 0.0816 (died rc 2, t/τ 0.625) | ≥ 0.0042 (died at impact, t/τ 0.025) | **PASS** (lower bound, rule declared in advance) |
+| 0.01 (default, kmermap) | 0.0579 | ≥ 0.1958 (died) | PASS (registered R1) |
+| 0.03 | 0.3567 | 0.6730 | **PASS** (healthy) |
+
+**The headline survives the cap: pure doublets jam at x 0.88 at all three EPS_MIN.** The 0.003 pass
+rests on one dead cell, and its J(t) was checked for the kmerdrop2 failure mode: a smooth,
+monotone rise from t/τ 0.075 (J 0.022) to 0.0816, no jump, Rg frozen at 0.3507 from t/τ 0.075.
+That is not a death precursor.
+⚠ The cap effect on J's magnitude is **not monotone across cases**. At w₂ 0.75 (x 0.85) a stiffer
+cap LOWERED J (0.220 → 0.096); here, at matched t/τ 0.625, it RAISED it (0.056 → 0.082). Only the
+class is robust. Softening the cap raises J strongly in both cases (×2.6 / ×6.2).
