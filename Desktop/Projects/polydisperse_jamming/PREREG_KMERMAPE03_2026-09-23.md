@@ -44,4 +44,4 @@ gate passes:**
 **Reading.** The orderings that the L9 deaths left INCOMPLETE at the default cap (R2, R3) are complete
 here and pass. Every class seen at both caps is the same. Within the tested cap range
 (1.1e3–1e4 η_s), the regime map is cap-robust in class and ordering. The softer cap is also the one
-at which the recoil signature collapses (`epssig` G2), so recoil is NOT read from this run.
+at which the recoil gap falls to a quarter (`epssig` G2), so recoil is NOT read from this run.

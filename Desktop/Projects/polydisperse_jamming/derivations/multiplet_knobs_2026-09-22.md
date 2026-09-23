@@ -307,7 +307,7 @@ before.
 **Which channel (`PREREG_KMERDECOMP`, graded 2026-09-23).** Holding the singlets' σ\* and δ and
 swapping in only the doublets' χ reproduces the x 0.88 jamming (J 0.0591 vs 0.0579 all-channel, U₀ 2)
 and the whole x 0.85 footprint cut at U₀ 4 (ln Rg −0.372 vs −0.371). Swapping in only the doublets' σ\* and δ
-moves the footprint by 0.08 % at U₀ 4, growing to 2.9 % at U₀ 1 (Amendment 1). So **the doublets
+moves the footprint by 0.08 % at U₀ 4, growing to 2.8 % at U₀ 1 (Amendment 1). So **the doublets
 act on the drop almost entirely through the window**: the onset and sharpness channels measured in
 the DEM are real, but minor in this DNS (≤ 3 % in Rg over U₀ 1–4). Grid-checked: at L10 the activation cuts are −0.0009 (U₀ 4) and −0.0280 (U₀ 1) against L9 −0.0008 / −0.0286, and the window cut is −0.390 (`PREREG_KMERDECOMP` Amendment 2, F1 PASS).
 
@@ -317,9 +317,10 @@ region's viscosity IS the cap η_s/EPS_MIN² (10⁴ η_s by default), so J's MAG
 re-tested at a 10× softer cap: the whole kmermap grid survives (18/18, R1′–R4′ PASS, incl. the R2/R3
 orderings that L9 deaths had left open), and all 12 cells healthy at both caps keep their class. The channel split (window alone jams; footprint cut all window) also holds at the softer cap (`PREREG_KMERDECOMP` Am. 3).
 Doublets also still jam at x 0.88 under a 10× STIFFER cap (a clean lower bound 0.082). So the
-multiplet result is a statement about classes and orderings, robust over 1.1e3–1.1e5 η_s, not about
+multiplet result is a statement about classes and orderings: the full grid and the channel split are
+robust over 1.1e3–1e4 η_s, and R1 alone was also tested (and holds) at 1.1e5 η_s. It is not about
 J values. The apex-recoil signature is the exception: it reads the jammed-vs-thickened viscosity
-contrast and vanishes at the softer cap (`PREREG_JAMSIG`, `PREREG_EPSSIG` G2).
+contrast and falls to a quarter at the softer cap (`PREREG_JAMSIG`, `PREREG_EPSSIG` G2).
 
 **Why spreading falls before any jamming (K5 made quantitative).** Outside the window the
 activated drop can only thicken, by `Θ = [(1−x)/(1−x/χ)]^MP_EXPO` (MP_EXPO = 2 in the solver).
