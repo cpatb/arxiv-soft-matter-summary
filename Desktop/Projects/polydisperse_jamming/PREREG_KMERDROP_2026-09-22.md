@@ -62,7 +62,7 @@ single stress scale this estimate assumes.
 ## Amendment 1 — RESULT (graded 2026-09-23 ~00:05 CDT)
 
 - `all_w0.50`: healthy; J 0.0551 vs window-only 0.0492 (ratio 1.12), β_max identical: **PASS**.
-- `all_w1.00`: **died** (rc 136, SIGFPE, t/τ 5.225) and is EXCLUDED under this prereg's health rule
+- `all_w1.00`: **died** (rc 136, SIGFPE, t/τ 5.225; full-record J 1.0000 vs 0.3854, raw ratio **2.59**, outside the bar) and is EXCLUDED under this prereg's health rule
   (D3). **Amendment 1 is INCOMPLETE (1/1 healthy cells pass), not FAIL.** ⚠ The grader first
   printed FAIL: it appended `False` for a dead cell, contrary to the health rule every grader in this
   project applies. Corrected in `grade_kmerdrop.py`, with the change commented at the line.
@@ -71,7 +71,10 @@ single stress scale this estimate assumes.
   maxima (J 1.0, β 1.109) sit ON those jumps.
 - **POST-HOC, labelled:** truncated before the first jump > 0.2 after the spread peaks (t/τ 4.1),
   applied to both records: J 0.3847 vs 0.3854 (ratio 0.998) and β_max 1.0781 vs 1.0781 — inside
-  both registered bars. So on the record that exists, the onset and sharpness channels cancel at
-  this window edge, as predicted from the sheared DEM.
+  both registered bars. This is CONSISTENT WITH the onset and sharpness channels cancelling at this
+  window edge; it is an unregistered check, not a pass. The post-argmax(Rg) anchor is load-bearing:
+  without it the rule catches the real impact rise at t/τ 0.05 (+0.32). Referee sweep: jump
+  thresholds 0.05–0.35 all cut at t/τ 4.1 with identical numbers; a cut at 4.0 agrees; ≥ 0.4 starts
+  absorbing the blow-up (β then misses by 2 quanta).
 - Scope unchanged: this ladder uses the μ_m 3 PREDICTED χ (see the pass-3 scope in
   `multiplet_knobs` §10). The clean-χ channel split is `PREREG_KMERDECOMP`.

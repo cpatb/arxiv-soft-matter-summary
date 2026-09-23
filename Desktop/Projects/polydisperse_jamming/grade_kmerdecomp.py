@@ -102,6 +102,46 @@ def main():
             say(f"  U0 {u}: not decidable (missing, dead or reference unhealthy)")
     say("E1 |cut| at U0 1 > 0.0008: " + ("INCOMPLETE" if e1 is None else "PASS" if e1 else "FAIL"))
     say(f"D5 health: {len(ok)}/{sum(v is not None for v in c.values())}")
+
+    # ---- Amendment 2: L10 rung (registered before its cells) -----------------------------
+    global ROOT
+    say("")
+    say("Amendment 2 (L10 rung, x 0.85):")
+    l9 = {("w0", 4.0): ref.get(("w0", 0.85, 4.0)), ("w0", 1.0): ref.get(("w0", 0.85, 1.0)),
+          ("act", 4.0): ok.get("act_x0.85_U4.0"), ("act", 1.0): ok.get("act_x0.85_U1.0"),
+          ("win", 4.0): ok.get("win_x0.85_U4.0")}
+    ROOT = os.path.join(HERE, "out", "kmerdecompL10")
+    pars = {("w0", 4.0): (0.527, 0.56315, 300.0, 1.3169, 1.0, 4.0),
+            ("act", 4.0): (0.527, 0.56315, 235.8, 1.1163, 1.0, 4.0),
+            ("win", 4.0): (0.527, 0.53512, 300.0, 1.3169, 1.0, 4.0),
+            ("w0", 1.0): (0.527, 0.56315, 300.0, 1.3169, 1.0, 1.0),
+            ("act", 1.0): (0.527, 0.56315, 235.8, 1.1163, 1.0, 1.0)}
+    l10 = {}
+    for (arm, u), par in pars.items():
+        v = read(f"{arm}_x0.85_U{u}", par)
+        if v is None:
+            say(f"  L10 {arm} U0 {u}: not run yet")
+            continue
+        say(f"  L10 {arm} U0 {u}: Rg_max {v['rg']:.4f} (L9 {l9[(arm, u)]['rg'] if l9[(arm, u)] else float('nan'):.4f})"
+            + ("" if v["healthy"] and v["prov"] else f"  [EXCLUDED rc {v['rc']} t {v['t']} prov {v['prov']}]"))
+        if v["healthy"] and v["prov"]:
+            l10[(arm, u)] = v
+    f1 = []
+    for u in (4.0, 1.0):
+        if ("w0", u) in l10 and ("act", u) in l10:
+            c10 = math.log(l10[("act", u)]["rg"] / l10[("w0", u)]["rg"])
+            c9 = (math.log(l9[("act", u)]["rg"] / l9[("w0", u)]["rg"])
+                  if l9[("act", u)] and l9[("w0", u)] else math.nan)
+            res = "UNRESOLVED BY THE GRID" if (c9 * c10 < 0 or abs(c10 - c9) > abs(c9)) else "resolved"
+            say(f"  F2 activation cut U0 {u}: L9 {c9:+.4f}  L10 {c10:+.4f}  -> {res}")
+            f1.append(abs(c10) < 0.05)
+            if u == 4.0 and ("win", 4.0) in l10:
+                cw = math.log(l10[("win", 4.0)]["rg"] / l10[("w0", 4.0)]["rg"])
+                say(f"  F2 window cut U0 4: L9 -0.3721  L10 {cw:+.4f}")
+                f1.append(abs(cw) > 5 * abs(c10))
+    say("F1 (|act cut| < 0.05 at U0 1 and 4; |win| > 5|act| at U0 4): "
+        + ("PASS" if len(f1) == 3 and all(f1) else "FAIL" if f1 and not all(f1) else "INCOMPLETE")
+        + f"  ({sum(f1)}/{len(f1)})")
     with open(os.path.join(HERE, "out", "grade_kmerdecomp.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     return 0

@@ -306,10 +306,10 @@ before.
 
 **Which channel (`PREREG_KMERDECOMP`, graded 2026-09-23).** Holding the singlets' σ\* and δ and
 swapping in only the doublets' χ reproduces the x 0.88 jamming (J 0.0591 vs 0.0579 all-channel, U₀ 2)
-and the whole x 0.85 footprint cut (ln Rg −0.372 vs −0.371). Swapping in only the doublets' σ\* and δ
+and the whole x 0.85 footprint cut at U₀ 4 (ln Rg −0.372 vs −0.371). Swapping in only the doublets' σ\* and δ
 moves the footprint by 0.08 % at U₀ 4, growing to 2.9 % at U₀ 1 (Amendment 1). So **the doublets
 act on the drop almost entirely through the window**: the onset and sharpness channels measured in
-the DEM are real, but minor in this DNS (≤ 3 % in Rg over U₀ 1–4).
+the DEM are real, but minor in this DNS (≤ 3 % in Rg over U₀ 1–4). ⚠ The percentages are L9 numbers pending an L10 rung (`PREREG_KMERDECOMP` Amendment 2); the 465× margin of window over activation at U₀ 4 is not grid-fragile.
 
 **Why spreading falls before any jamming (K5 made quantitative).** Outside the window the
 activated drop can only thicken, by `Θ = [(1−x)/(1−x/χ)]^MP_EXPO` (MP_EXPO = 2 in the solver).

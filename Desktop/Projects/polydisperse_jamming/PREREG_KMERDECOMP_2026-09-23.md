@@ -77,3 +77,16 @@ Both cells healthy. ln(R_act/R_w0) at x 0.85: **−0.0286 (U₀ 1), −0.0182 (U
 arm could not be run at U₀ 1–2 because those cells die at L9, so a same-U₀ comparison there is
 unavailable; the U₀ 1 all-channel doublet cell also died.) The reading above is corrected from
 "inert" to **minor and growing as U₀ falls (≤ 3 % in Rg over U₀ 1–4)**.
+
+## Amendment 2 — L10 rung on the activation-channel sizes (written 2026-09-23 ~01:20 CDT, before its cells)
+Referee (2026-09-23, MATERIAL): the quoted activation-only cuts (0.08 % at U₀ 4, 2.9 % at U₀ 1) are
+small differences between L9 cells, and `PREREG_JAMWIN` lines 96–99 require an L10 rung before an
+f̂-adjacent L9 number is quoted. Five cells at LEVEL 10, otherwise identical to their L9 twins
+(campaign `kmerdecompL10_2026-09-23`): `w0_x0.85_U4.0`, `act_x0.85_U4.0`, `win_x0.85_U4.0`,
+`w0_x0.85_U1.0`, `act_x0.85_U1.0`.
+- **F1** the qualitative claim survives the grid: at L10, |ln(R_act/R_w0)| < 0.05 at U₀ 1 and 4, and
+  |ln(R_win/R_w0)| > 5·|ln(R_act/R_w0)| at U₀ 4.
+- **F2** (reported, no bar) each L10 cut beside its L9 value. A cut whose sign flips, or whose size
+  moves by more than itself between L9 and L10, is reported as UNRESOLVED BY THE GRID, and the L9
+  percentage is withdrawn from the downstream documents.
+- Health as D5; a dead cell decides nothing.
