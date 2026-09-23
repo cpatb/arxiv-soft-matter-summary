@@ -62,3 +62,15 @@ Both L10 cells healthy (tag `_L10_`, eps_min 0.03 verified). **R1L10 PASS**: J =
 0.672 (U₀ 4) against L9 0.357 / 0.673, ratios 1.083 / 0.998. The headline class holds at L10, and at
 this cap J is grid-converged to within 8 % (U₀ 2) and 0.2 % (U₀ 4). That is better than the f̂-family
 grid sensitivity recorded for this solver elsewhere, but it is measured on these two cells only.
+
+## Amendment 2 — does the switch survive the DEM pressure-rung convention? (registered before its cells)
+Every DNS input so far takes χ from the p̂ 3e-5 rung (singlets 0.9083, doublets 0.8631), which puts the
+switch window at x ∈ [0.863, 0.908). At the p̂ 1e-3 rung (`grade_kmer.txt`: 0.9284 / 0.8978, both
+clean) the window is [0.898, 0.928). "Doublets jam at x 0.88" is therefore RUNG-SPECIFIC by algebra:
+at 1e-3, x 0.88 lies outside both windows. The rung-free claim is that a switch window EXISTS. Test it
+at the 1e-3 rung. Doublet cells at x 0.91: φ 0.5642, φ_m 0.55664, JAM_FHAT = f_c = 0.8806, σ\* 235.8 Pa,
+δ 1.1163. Singlets at x 0.91 are outside their 1e-3 window (0.91 < 0.9284), J ≡ 0 by construction.
+Campaign `kmermapRG_2026-09-23`: `rg_d_x0.91_U2.0_e03`, `rg_d_x0.91_U4.0_e03` (EPS_MIN 0.03) and
+`rg_d_x0.91_U2.0_e01`, `rg_d_x0.91_U4.0_e01` (default, reported).
+- **RG1:** at EPS_MIN 0.03, J > 0.01 in ≥ 1 healthy doublet cell. FAIL if both are healthy with J ≤ 0.01.
+- Default-cap cells reported only (deaths expected).
