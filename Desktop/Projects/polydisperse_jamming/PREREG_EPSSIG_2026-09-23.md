@@ -1,6 +1,6 @@
 # PREREG — `epssig`: is the apex-recoil signature a readout of the viscosity regularisation?
 
-Written 2026-09-23 ~03:05 CDT, before any cell. Launcher `scripts/epssig_2026-09-23.sh`, grader
+Written 2026-09-23, committed 00:47 CDT (git commit time), before any cell. Launcher `scripts/epssig_2026-09-23.sh`, grader
 `grade_epssig.py` (both written before the data). Same binary `db413e87dd21`, cs_fit, L9, WC_CLOCK 1,
 θ₀ 5°, TEND 6, CFL 0.10, MP_EXPO 2; x 0.85 (φ 0.527, φ₀ 0.62), U₀ 2, σ\* 300 Pa, δ 1.3169 — the
 `kmerdrop` ladder's settings.
@@ -40,7 +40,7 @@ Default-EPS_MIN references: `kmerdrop` w0.25 (S2 0.172, J0) and w0.75 (S2 0.047,
   EXCLUDED. A dead cell's S2 is a partial value and decides nothing. Deaths are expected at 0.003.
 - J is reported per cell (its definition, f̂ > f_c, does not involve the cap, but the dynamics do).
 
-## RESULT (graded 2026-09-23 ~03:20 CDT, `grade_epssig.py` → `out/grade_epssig.txt`; 4/4 healthy, eps tags verified)
+## RESULT (committed 2026-09-23 01:14 CDT (git commit time), `grade_epssig.py` → `out/grade_epssig.txt`; 4/4 healthy, eps tags verified)
 | EPS_MIN (η_max/η_s) | w₂ 0.25 (J0): J, S2, Rg | w₂ 0.75 (J+): J, S2, Rg | S2 gap |
 |---|---|---|---|
 | 0.003 (1.1e5) | 0, 0.1719, 0.3875 | 0.0962, **0.0469**, 0.3523 | 0.125 |
@@ -68,7 +68,7 @@ CONTRAST.** At a jammed-region viscosity of 10⁴ or 1.1e5 η_s the jammed drop 
   i.e. stiffer than any finite cap, so the recoil contrast should be at least as large on the bench
   as at the default cap. That is the direction G1 tested.
 
-## Amendment 1 — does the HEADLINE (kmermap R1) survive the cap? (written 2026-09-23 ~03:30 CDT, before its cells)
+## Amendment 1 — does the HEADLINE (kmermap R1) survive the cap? (committed 2026-09-23 01:15 CDT (git commit time), before its cells)
 Four cells re-run `kmermap` w1_x0.88 (pure doublets, clean μ_p 0.3 inputs: φ 0.5456, φ_m 0.53512,
 σ\* 235.8 Pa, δ 1.1163, JAM_FHAT 0.8766) at U₀ 2 and 4 with EPS_MIN 0.003 and 0.03:
 `r1_e003_U2.0`, `r1_e003_U4.0`, `r1_e03_U2.0`, `r1_e03_U4.0`.
@@ -79,7 +79,7 @@ Four cells re-run `kmermap` w1_x0.88 (pure doublets, clean μ_p 0.3 inputs: φ 0
   post-hoc reading (declared here, in advance, for this amendment).
 - J reported per cell beside its default value; singlets at x 0.88 remain J ≡ 0 by construction.
 
-### Amendment 1 — RESULT (graded 2026-09-23 ~03:50 CDT)
+### Amendment 1 — RESULT (committed 2026-09-23 01:22 CDT (git commit time))
 | EPS_MIN | U₀ 2 | U₀ 4 | H1 |
 |---|---|---|---|
 | 0.003 | ≥ 0.0816 (died rc 2, t/τ 0.625) | ≥ 0.0042 (died at impact, t/τ 0.025) | **PASS** (lower bound, rule declared in advance) |

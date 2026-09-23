@@ -1,6 +1,6 @@
 # PREREG — `kmermap` (A3): the drop-impact regime map in (x, doublet fraction, U₀), all channels
 
-Written 2026-09-22 ~21:50 CDT, before any cell. Launcher `scripts/kmermap_2026-09-23.sh` (reuses the
+Written 2026-09-22, committed 21:35 CDT (git commit time), before any cell. Launcher `scripts/kmermap_2026-09-23.sh` (reuses the
 G0-gated jamwin binary `db413e87dd21`). Solver `wc_drop_impact.c`, cs_fit base, L9, WC_CLOCK 1,
 θ₀ 5°, TEND 6, MP_EXPO 2, DIL_COEFF 0, PHI0 0.62.
 
@@ -27,7 +27,7 @@ can jam; only thickening); x = 0.88 is inside the doublets' window only; x = 0.9
 - **R5** health: rc 0 and t/τ ≥ 5.9, else EXCLUDED and printed (jamwin: deep jams die at L9 —
   expected at x 0.92, w₂ 1, where f_c is lowest). A death is never a jam.
 
-## RESULT (graded 2026-09-22 23:10 CDT, `grade_kmermap.py` → `out/grade_kmermap.txt`; figure K3)
+## RESULT (graded 2026-09-22, committed 23:04 CDT (git commit time), `grade_kmermap.py` → `out/grade_kmermap.txt`; figure K3)
 
 18/18 cells, provenance 18/18, health 12/18. All six deaths are the L9 high-viscosity failure
 (five `STOP dt-collapse`, one `events.h: n < INT_MAX` after Poisson non-convergence). Four occur

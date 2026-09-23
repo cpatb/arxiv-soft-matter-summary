@@ -7,7 +7,7 @@ Read first, in order:
   3. derivations/multiplet_knobs_2026-09-22.md RESULT BOX (refereed, passes 1-5; §10 carries the
      kmermap and kmerdecomp results added after pass 5).
 
-State at hand-off (2026-09-23 ~01:30 CDT):
+State at hand-off (written 2026-09-23 00:05 CDT; superseded by the Status card):
   - kmermap (18 DNS cells, clean mu_p 0.3 inputs): R1 PASS -- doublets jam at x 0.88, singlets cannot;
     R4 PASS on 4/9 surviving pairs; R2/R3 INCOMPLETE (L9 deaths). Footprint does not discriminate.
   - kmerdecomp: the DNS effect is almost entirely the window (chi). D1, D3, E1 PASS.

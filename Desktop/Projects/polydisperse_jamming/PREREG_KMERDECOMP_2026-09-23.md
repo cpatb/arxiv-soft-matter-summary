@@ -1,6 +1,6 @@
 # PREREG — `kmerdecomp`: which channel does the doublets' work in the DNS drop?
 
-Written 2026-09-22 ~23:55 CDT, before any cell. Launcher `scripts/kmerdecomp_2026-09-23.sh` (clone of
+Written 2026-09-22, committed 23:37 CDT (git commit time), before any cell. Launcher `scripts/kmerdecomp_2026-09-23.sh` (clone of
 the kmermap launcher: same G0-gated binary `db413e87dd21`, cs_fit, L9, WC_CLOCK 1, θ₀ 5°, TEND 6,
 CFL 0.10, MP_EXPO 2, PHI0 0.62). Grader `grade_kmerdecomp.py`, written before the data.
 
@@ -33,7 +33,7 @@ cut is at x 0.85 where nothing jams" (is that cut THICKENING, i.e. the window, o
   cell's maxima are lower bounds, reported as such.
 - **Provenance:** each banner must carry the table's φ, φ_m, σ\*, δ, JAM_FHAT, U₀ to 1e-6.
 
-## RESULT (graded 2026-09-23 ~00:30 CDT, `grade_kmerdecomp.py` → `out/grade_kmerdecomp.txt`)
+## RESULT (graded 2026-09-22, committed 23:48 CDT (git commit time), `grade_kmerdecomp.py` → `out/grade_kmerdecomp.txt`)
 
 4/4 cells, provenance 4/4, health 3/4 (win_x0.88_U4.0: `STOP dt-collapse` at t/τ 2.6, the L9
 jammed floor; its J 0.2009 is a lower bound).
@@ -58,7 +58,7 @@ over U₀ 1–4, growing as U₀ falls).
 0.77–0.92). At low U₀, where activation is far from saturated, a 21 % lower σ\* could matter and is
 untested. Stress-controlled activation (M6), L9, one seed-free DNS realisation per cell.
 
-## Amendment 1 — the low-U₀ scope gap (written 2026-09-23 ~00:35 CDT, before its cells)
+## Amendment 1 — the low-U₀ scope gap (committed 2026-09-22 23:49 CDT (git commit time), before its cells)
 Two more activation-only cells at x 0.85 (singlets' χ, doublets' σ\* 235.8 Pa and δ 1.1163,
 JAM_FHAT 1.0): `act_x0.85_U1.0`, `act_x0.85_U2.0`. References: kmermap w0_x0.85_U1.0 / U2.0 (R_w0
 0.5043 / 0.5326, both healthy).
@@ -70,7 +70,7 @@ JAM_FHAT 1.0): `act_x0.85_U1.0`, `act_x0.85_U2.0`. References: kmermap w0_x0.85_
 - Health as D5. A window-only arm at U₀ 1/2 is NOT run: the all-channel doublet cells there died
   at the L9 floor (Θ ≈ 98), so a window-only cell would too.
 
-### Amendment 1 — RESULT (graded 2026-09-23 ~00:55 CDT)
+### Amendment 1 — RESULT (committed 2026-09-22 23:52 CDT (git commit time))
 Both cells healthy. ln(R_act/R_w0) at x 0.85: **−0.0286 (U₀ 1), −0.0182 (U₀ 2), −0.0008 (U₀ 4)**.
 **E1 PASS**: the activation channel acts more as U₀ falls, as predicted. **E2:** it stays below the
 0.05 scope line at every U₀ tested, about 1/13 of the window's −0.372 cut at U₀ 4. (The window-only
@@ -78,7 +78,7 @@ arm could not be run at U₀ 1–2 because those cells die at L9, so a same-U₀
 unavailable; the U₀ 1 all-channel doublet cell also died.) The reading above is corrected from
 "inert" to **minor and growing as U₀ falls (≤ 3 % in Rg over U₀ 1–4)**.
 
-## Amendment 2 — L10 rung on the activation-channel sizes (written 2026-09-23 ~01:20 CDT, before its cells)
+## Amendment 2 — L10 rung on the activation-channel sizes (committed 2026-09-23 00:04 CDT (git commit time), before its cells)
 Referee (2026-09-23, MATERIAL): the quoted activation-only cuts (0.08 % at U₀ 4, 2.9 % at U₀ 1) are
 small differences between L9 cells, and `PREREG_JAMWIN` lines 96–99 require an L10 rung before an
 f̂-adjacent L9 number is quoted. Five cells at LEVEL 10, otherwise identical to their L9 twins
@@ -91,7 +91,7 @@ f̂-adjacent L9 number is quoted. Five cells at LEVEL 10, otherwise identical to
   percentage is withdrawn from the downstream documents.
 - Health as D5; a dead cell decides nothing.
 
-### Amendment 2 — RESULT (graded 2026-09-23 ~01:45 CDT; 5/5 healthy, all banners tagged L10)
+### Amendment 2 — RESULT (committed 2026-09-23 00:38 CDT (git commit time); 5/5 healthy, all banners tagged L10)
 | cut, x 0.85 | L9 | L10 | F2 |
 |---|---|---|---|
 | activation, U₀ 4 | −0.0008 | −0.0009 | resolved |

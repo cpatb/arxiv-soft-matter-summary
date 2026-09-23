@@ -59,7 +59,7 @@ at the window edge. So **J_all / J_window-only ∈ [1/1.5, 1.5]** at both w₂, 
 grid quantum of the window-only run. A larger change means the DNS drop does not activate at the
 single stress scale this estimate assumes.
 
-## Amendment 1 — RESULT (graded 2026-09-23 ~00:05 CDT)
+## Amendment 1 — RESULT (committed 2026-09-22 23:44 CDT (git commit time))
 
 - `all_w0.50`: healthy; J 0.0551 vs window-only 0.0492 (ratio 1.12), β_max identical: **PASS**.
 - `all_w1.00`: **died** (rc 136, SIGFPE, t/τ 5.225; full-record J 1.0000 vs 0.3854, raw ratio **2.59**, outside the bar) and is EXCLUDED under this prereg's health rule

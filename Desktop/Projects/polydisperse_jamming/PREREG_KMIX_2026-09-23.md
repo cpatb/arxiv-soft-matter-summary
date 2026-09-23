@@ -1,6 +1,6 @@
 # PREREG — `kmu` (A1) and `kmix` (A2): a clean saturated-friction window, and mixed populations
 
-Written 2026-09-22 ~21:40 CDT, before either campaign ran. Plan: `OVERNIGHT_PLAN_2026-09-23.md`.
+Written 2026-09-22, committed 21:34 CDT (git commit time), before either campaign ran. Plan: `OVERNIGHT_PLAN_2026-09-23.md`.
 Blind numbers: `predict_kmix.py` → `out/predict_kmix.txt` (committed with this file).
 
 ## A1 `kmu` — does frictional clump interpenetration go away below μ = 3?
@@ -22,7 +22,7 @@ Compositions (w₂ dumbbells, w₃ straight chains; w₁ = rest) ∈ {(0.3, 0.2)
 - **M2:** χ(μ 0.3/μ 0) at p̂ 3e-5 within ±0.01 of 0.8847 / 0.8801 / 0.8635.
 - The rival for both: a non-additive excess (shape mixing). A systematic sign is reported either way.
 
-## RESULT A1 `kmu` (graded 2026-09-22 ~23:15 CDT, 36/36, `grade_kmix.py` → `out/grade_kmix.txt`)
+## RESULT A1 `kmu` (graded 2026-09-22, committed 23:06 CDT (git commit time), 36/36, `grade_kmix.py` → `out/grade_kmix.txt`)
 
 **U1: DIRTY**, as registered. At μ_p 1.0, w₂ 1 the deep-overlap fraction is 1.84 % (p̂ 3e-5) and
 1.28 % (1e-3), against the 0.1 % K4 gate. The interpenetration also starts EARLIER than the
@@ -37,7 +37,7 @@ singlets at p̂ 3e-5 (0.8732 vs 0.9021 at 1e-3), i.e. the window widens 0.107 �
 same composition goes 0.092 → 0.119. Whether higher friction amplifies the doublet effect is not
 resolved at n = 3 and is not claimed.
 
-## RESULT A2 `kmix` (graded 2026-09-22 ~23:40 CDT, 36/36, no cell K4-excluded)
+## RESULT A2 `kmix` (graded 2026-09-22, committed 23:35 CDT (git commit time), 36/36, no cell K4-excluded)
 
 **M1 FAIL: 5/12 within 2·PHI_SCALE.** The deviation from ideal specific-volume mixing is
 **positive in 12/12** (+0.0016 to +0.0069, median +0.0048): mixed singlet/dumbbell/chain populations

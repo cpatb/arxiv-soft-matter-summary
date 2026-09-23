@@ -1,6 +1,6 @@
 # PREREG — `jamsig`: is there a camera-visible DNS signature of JAMMING, as opposed to thickening?
 
-Written 2026-09-23 ~01:40 CDT, BEFORE any of the observables below was computed on any cell.
+Written 2026-09-23, committed 00:07 CDT (git commit time), BEFORE any of the observables below was computed on any cell.
 Post-processing only, on existing healthy L9 cells. Grader `grade_jamsig.py`, written with this file.
 
 ## Why
@@ -31,7 +31,7 @@ kmermap (12 healthy), kmerdecomp (5 healthy L9), kmerdrop (w0.00…w1.00 + all_w
   counts as a jamming signature only if it also separates inside the kmerdrop ladder (shared x).
 - Report every value; a separation that holds only across x is labelled "x-confounded".
 
-## RESULT (graded 2026-09-23 ~01:55 CDT, `grade_jamsig.py` → `out/grade_jamsig.txt`; 23 healthy cells)
+## RESULT (committed 2026-09-23 00:08 CDT (git commit time), `grade_jamsig.py` → `out/grade_jamsig.txt`; 23 healthy cells)
 
 | | verdict | numbers |
 |---|---|---|
@@ -55,7 +55,7 @@ in this DNS.
 
 Registered follow-up: Amendment 1 below.
 
-## Amendment 1 — held-out and grid test of S2 (written 2026-09-23 ~02:05 CDT, before its cells)
+## Amendment 1 — held-out and grid test of S2 (committed 2026-09-23 00:08 CDT (git commit time), before its cells)
 Campaign `jamsig_2026-09-23` (launcher `scripts/jamsig_2026-09-23.sh`, same binary and settings as the
 kmerdrop ladder; x 0.85, σ\* 300 Pa, δ 1.3169, χ(w₂) as `kmerdrop`). The threshold is FIXED here:
 **S2\* = 0.1** (6.4 quanta, between the observed ≤ 5 and ≥ 8).
@@ -68,7 +68,7 @@ kmerdrop ladder; x 0.85, σ\* 300 Pa, δ 1.3169, χ(w₂) as `kmerdrop`). The th
   L10 one quantum is 1/128, so the threshold is 12.8 quanta.
 - Health as D5 of `PREREG_KMERDECOMP`; a dead cell decides nothing.
 
-### Amendment 1 — RESULT (graded 2026-09-23 ~02:45 CDT)
+### Amendment 1 — RESULT (committed 2026-09-23 00:46 CDT (git commit time))
 | cell | health | J | class | S2 | side of 0.1 |
 |---|---|---|---|---|---|
 | kd_w0.25_U4.0 (held out) | **died** (SIGFPE, t/τ 3.6) | 0 | J0 | ≥ 0.078 (partial) | undecided |
