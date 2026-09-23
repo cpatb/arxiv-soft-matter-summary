@@ -1,0 +1,12 @@
+grade_epssig -- PREREG_EPSSIG_2026-09-23.md
+  default EPS_MIN 0.01 w0.25: healthy True J 0.0000 S2 +0.1719 Rg 0.3875
+  default EPS_MIN 0.01 w0.75: healthy True J 0.2197 S2 +0.0469 Rg 0.3534
+  default S2 gap (w0.25 - w0.75) = +0.1250; G2 bar = half = 0.0625
+  e003_w0.25: healthy True (eps tag ok True, rc 0, t/tau 6.0)  J 0.0000  S2 +0.1719  Rg 0.3875
+  e003_w0.75: healthy True (eps tag ok True, rc 0, t/tau 6.0)  J 0.0962  S2 +0.0469  Rg 0.3523
+  e03_w0.25: healthy True (eps tag ok True, rc 0, t/tau 6.0)  J 0.0000  S2 +0.1719  Rg 0.3947
+  e03_w0.75: healthy True (eps tag ok True, rc 0, t/tau 6.0)  J 0.5694  S2 +0.1406  Rg 0.3776
+
+G1 EPS_MIN 0.003: S2(w0.75) 0.0469 < 0.1 <= S2(w0.25) 0.1719  PASS
+G2 EPS_MIN 0.03: gap +0.0312 vs half the default 0.0625  PASS
+READING (fixed in the prereg): S2 is a signature of the jammed-vs-thickened VISCOSITY CONTRAST
