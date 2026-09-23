@@ -313,6 +313,8 @@ including `shapechi`'s window ×1.85 — carries that caveat; the overlap-volume
 χ values survive (≤ 0.0017), the forces do not.
 
 **Net, for the question:** at realistic friction, turning a suspension of singlets into doublets of
-the same primary widens the shear-jamming window by half and lowers the onset stress by a fifth,
-without changing how sharply friction switches on. In the DNS the window channel alone takes a
+the same primary widens the shear-jamming window by half and lowers the onset stress by a fifth.
+Under SHEAR it also softens the activation (δ −15 %), which lowers the stress to jam deep in the
+window (×0.67 at f_c 0.1) and slightly raises it at the very edge (×1.05 at f_c 0.9); at fixed φ the
+window opening moves the operating point away from that edge, so the net is toward jamming. In the DNS the window channel alone takes a
 fixed-φ drop from spreading to jamming.
