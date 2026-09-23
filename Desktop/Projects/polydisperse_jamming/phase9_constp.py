@@ -79,6 +79,8 @@ def main() -> int:
     ap.add_argument("--mus", default="")
     ap.add_argument("--gamma-max", type=float, default=GAMMA_MAX)
     ap.add_argument("--shear-steps", type=int, default=SHEAR_STEPS)
+    ap.add_argument("--doublet-w", type=float, default=0.0,
+                    help="PREREG_SHEARKMER: doublet solid-volume fraction (needs cv 0)")
     ap.add_argument("--dump-dir", default="",
                     help="write per-contact arrays to <dir>/<key>.npz (PREREG_ACTSHAPE)")
     args = ap.parse_args()
@@ -126,12 +128,15 @@ def main() -> int:
             continue
         key = cell_key(family, cv, mu, seed, phi0, ncell, p_star, gain,
                        args.gamma_max, args.shear_steps)
+        if args.doublet_w > 0:
+            key += f"_w2{args.doublet_w:.3f}"
         if key in done:
             continue
         try:
             st = shear_at_constant_pressure(
                 cv=cv, mu_p=mu, p_hat_target=p_star, n=ncell, seed=seed,
                 phi_start_target=phi0, family=family, servo_gain=gain,
+                doublet_w=args.doublet_w,
                 gamma_max=args.gamma_max, shear_steps=args.shear_steps, verbose=True,
                 dump_path=(os.path.join(args.dump_dir, key + ".npz")
                            if args.dump_dir else None),

@@ -215,6 +215,7 @@ class ShearState:
     phi_target: float
     seed: int
     family: str = "lognormal"
+    doublet_w: float = 0.0            # PREREG_SHEARKMER: tangent doublets of ONE primary
     young: float = 1.0
     gamma_max: float = 1.0
     shear_steps: int = 0
@@ -647,6 +648,7 @@ def shear_at_constant_pressure(cv: float, mu_p: float, p_hat_target: float, n: i
                                gamma_max: float = 3.0, shear_steps: int = 900_000,
                                servo_gain: float = SERVO_GAIN,
                                dump_path: str | None = None,
+                               doublet_w: float = 0.0,
                                verbose: bool = True) -> ShearState:
     """Insert, compress to `phi_start_target`, then shear at CONSTANT PRESSURE.
 
@@ -676,6 +678,7 @@ def shear_at_constant_pressure(cv: float, mu_p: float, p_hat_target: float, n: i
     st = ShearState(n_requested=n, cv=cv, mu_p=mu_p, phi_target=phi_start_target,
                     seed=seed, family=family, young=young, gamma_max=gamma_max,
                     shear_steps=shear_steps)
+    st.doublet_w = float(doublet_w)
     st.protocol = "cp-shear-v1"
     st.p_hat_target = float(p_hat_target)
     st.servo_gain = float(servo_gain)

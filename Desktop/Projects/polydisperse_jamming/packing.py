@@ -543,7 +543,9 @@ def insert_packing(st: "PackingState", *, truncate: tuple[float, float] | None,
     kmer = {}
     # getattr: `shear.ShearState` also comes through here and has no multiplet fields
     if getattr(st, "doublet_w", 0.0) > 0.0 or getattr(st, "triplet_w", 0.0) > 0.0:
-        if st.cv != 0.0 or alpha != 1.0:
+        # `is_clump` (alpha > 1), not `alpha != 1`: shear.ShearState.alpha is a DILATANCY
+        # coefficient (NaN at insert time), not an aspect ratio
+        if st.cv != 0.0 or is_clump:
             raise ValueError("multiplets are built from ONE primary: need cv = 0, alpha = 1")
         w2, w3 = float(st.doublet_w), float(st.triplet_w)
         w1 = 1.0 - w2 - w3
