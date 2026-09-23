@@ -1,0 +1,27 @@
+Resume the polydisperse_jamming / multiplet work (drop-impact jamming vs inertial-dilatant).
+
+Read first, in order:
+  1. C:\Users\compl\Documents\Obsidian Vault\Status\Drop Impact — Polydispersity Jamming Model.md
+     §2 "OVERNIGHT BLOCK" and §3 "2026-09-23 (overnight)".
+  2. ANSWER_2026-09-23.md (the synthesis; every number cites its graded artifact).
+  3. derivations/multiplet_knobs_2026-09-22.md RESULT BOX (refereed, passes 1-5; §10 carries the
+     kmermap and kmerdecomp results added after pass 5).
+
+State at hand-off (2026-09-23 ~01:30 CDT):
+  - kmermap (18 DNS cells, clean mu_p 0.3 inputs): R1 PASS -- doublets jam at x 0.88, singlets cannot;
+    R4 PASS on 4/9 surviving pairs; R2/R3 INCOMPLETE (L9 deaths). Footprint does not discriminate.
+  - kmerdecomp: the DNS effect is almost entirely the window (chi). D1, D3, E1 PASS.
+    Amendment 2 (L10 rung, 5 cells, campaign kmerdecompL10_2026-09-23) was RUNNING at hand-off.
+    Grade it: from PowerShell
+      wsl bash /mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming/scripts/pull_jamwin.sh kmerdecompL10 2026-09-23
+      python grade_kmerdecomp.py
+    If F2 prints UNRESOLVED BY THE GRID, withdraw the 0.08 % / 2.9 % activation figures downstream.
+  - kmu: U1 DIRTY (clumps interpenetrate from mu_p 0.6). kmix: M1 FAIL (chains mix +0.005), M2 PASS.
+  - kmerdrop Amendment 1: INCOMPLETE (all_w1.00 SIGFPE); post-hoc truncated ratio 0.998.
+
+Conventions: x = phi/phi0, chi = phim/phi0, window chi <= x < 1, f_c = (1-x)/(1-chi); K4 overlap gate
+u/r = fn/0.25 > 0.05 on > 0.1 % of contacts; PHI_SCALE 0.0021; seeds paired; stress-controlled
+activation scope; clean chi is mu_m 0.3. Launch WSL scripts from PowerShell by file path only.
+
+Next action: §3 item 1 (grade L10 if not done), then item 2 (a DNS discriminator of jam vs thicken,
+pre-registered, on existing cells). Items 0(a)(b) are the author's calls.
