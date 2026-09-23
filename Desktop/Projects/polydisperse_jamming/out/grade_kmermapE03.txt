@@ -41,3 +41,8 @@ R5' health: 18/18
   X1 ('w1', 0.88, '4.0'): default J+ (0.1958)  e03 J+ (0.6730)
   X1 ('w1', 0.92, '4.0'): default J+ (0.6362)  e03 J+ (0.9280)
 X1 cross-cap class: 12/12 unchanged  PASS
+
+Amendment 1 (R1 at LEVEL 10, EPS_MIN 0.03):
+  L10 w1 x 0.88 U0 2.0: healthy True (tag/eps ok True, rc 0, t/tau 6.0)  J 0.3863  (L9 0.3567, ratio 1.083)
+  L10 w1 x 0.88 U0 4.0: healthy True (tag/eps ok True, rc 0, t/tau 6.0)  J 0.6716  (L9 0.6730, ratio 0.998)
+R1L10: PASS  healthy J [0.3863, 0.6716]

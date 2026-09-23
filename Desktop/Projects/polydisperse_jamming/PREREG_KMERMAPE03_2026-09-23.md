@@ -56,3 +56,9 @@ cap-robust (X1 12/12). Two LEVEL-10 cells, otherwise identical to `kmermapE03` w
 - Reported, no bar: J(L10)/J(L9) per U₀ (J is an f̂ quantity, which lessons.md records as
   grid-sensitive in this solver family, so only the class is registered).
 - Health: rc 0, t/τ ≥ 5.9, banner tag `_L10_` and eps_min 0.03.
+
+### Amendment 1 — RESULT (commit time is the record)
+Both L10 cells healthy (tag `_L10_`, eps_min 0.03 verified). **R1L10 PASS**: J = 0.386 (U₀ 2) and
+0.672 (U₀ 4) against L9 0.357 / 0.673, ratios 1.083 / 0.998. The headline class holds at L10, and at
+this cap J is grid-converged to within 8 % (U₀ 2) and 0.2 % (U₀ 4). That is better than the f̂-family
+grid sensitivity recorded for this solver elsewhere, but it is measured on these two cells only.
