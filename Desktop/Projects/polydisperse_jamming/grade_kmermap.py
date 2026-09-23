@@ -81,6 +81,31 @@ def main():
     say(f"R4 beta(doublets) <= beta(singlets) + one quantum: {sum(r4)}/{len(r4)}"
         + ("  PASS" if r4 and all(r4) else "  FAIL" if r4 else "  INCOMPLETE"))
     say(f"R5 health: {len(ok)}/{len(c)}")
+
+    # ---- POST-HOC (added after the data; does NOT change any verdict above) ------------------
+    # A dead cell's J_max is a max over a TRUNCATED record, so it is a LOWER BOUND on the
+    # full-run max (a running max can only rise). A healthy cell's J_max is exact. So an
+    # ordering "A > B" is decided when lower(A) > exact-or-upper(B); B dead has no upper bound.
+    say("")
+    say("POST-HOC censored reading (dead cells as lower bounds; registered verdicts unchanged):")
+    for u in US:
+        a, b = c.get(("w1", 0.92, u)), c.get(("w0", 0.92, u))
+        if not (a and b and a["prov"] and b["prov"]):
+            continue
+        a_ok, b_ok = a["healthy"], b["healthy"]
+        if b_ok and a["J"] > b["J"]:
+            v = "doublet > singlet DECIDED" + ("" if a_ok else " (doublet J is a lower bound)")
+        elif a_ok and b_ok:
+            v = "doublet <= singlet"
+        else:
+            v = "UNDECIDABLE (singlet dead: no upper bound)"
+        say(f"  R2' x 0.92 U0 {u}: J doublet {a['J']:.4f}{'' if a_ok else ' (>=)'}"
+            f" vs singlet {b['J']:.4f}{'' if b_ok else ' (>=)'}: {v}")
+    for w, x in (("w0", 0.92), ("w1", 0.88), ("w1", 0.92)):
+        cs = [c.get((w, x, u)) for u in US]
+        if all(v and v["prov"] for v in cs):
+            say(f"  R3' {w} x {x}: J over U0 1/2/4 = "
+                + ", ".join(f"{v['J']:.4f}{'' if v['healthy'] else '(>=)'}" for v in cs))
     with open(os.path.join(HERE, "out", "kmermap_cells.json"), "w", encoding="utf-8") as fh:
         json.dump([dict(w=k[0], x=k[1], U0=float(k[2]), **v) for k, v in sorted(c.items())], fh,
                   indent=1)

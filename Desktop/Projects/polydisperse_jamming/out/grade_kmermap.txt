@@ -1,0 +1,35 @@
+grade_kmermap -- PREREG_KMERMAP_2026-09-23.md
+cells: 18 of 18; provenance 18/18
+  w   x     U0   healthy  J(f_c)   beta_max  Rg_max  <fhat>max
+  w0  0.85  1.0  True    0.0000   1.4844   0.5043  0.241
+  w0  0.85  2.0  True    0.0000   1.5781   0.5326  0.647
+  w0  0.85  4.0  True    0.0000   1.7031   0.5742  0.882
+  w0  0.88  1.0  True    0.0000   1.2656   0.4133  0.445
+  w0  0.88  2.0  True    0.0000   1.2344   0.4092  0.768
+  w0  0.88  4.0  True    0.0000   1.2969   0.4292  0.918
+  w0  0.92  1.0  False   0.0556   1.0469   0.3409  0.545   [EXCLUDED rc 0 t 1.05]
+  w0  0.92  2.0  True    0.0621   1.0469   0.3423  0.684
+  w0  0.92  4.0  True    0.1378   1.0781   0.3464  0.765
+  w1  0.85  1.0  False   0.0000   1.2656   0.4176  0.489   [EXCLUDED rc 0 t 1.825]
+  w1  0.85  2.0  False   0.0000   1.2031   0.3934  0.797   [EXCLUDED rc 0 t 2.7]
+  w1  0.85  4.0  True    0.0000   1.2031   0.3963  0.916
+  w1  0.88  1.0  False   0.0583   1.0781   0.3544  0.605   [EXCLUDED rc 0 t 2.425]
+  w1  0.88  2.0  True    0.0579   1.0781   0.3513  0.742
+  w1  0.88  4.0  True    0.1958   1.0781   0.3534  0.811
+  w1  0.92  1.0  False   0.1664   1.0156   0.3310  0.471   [EXCLUDED rc 2 t 0.6]
+  w1  0.92  2.0  False   0.3859   1.0156   0.3326  0.557   [EXCLUDED rc 134 t 0.85]
+  w1  0.92  4.0  True    0.6362   1.0469   0.3366  0.645
+
+R1 x 0.88: doublets J = [0.0579, 0.1958]  PASS
+R2 x 0.92: (U0, J doublet, J singlet) [('4.0', 0.6362, 0.1378)]  INCOMPLETE (deaths)
+R3: 0/0 non-decreasing  INCOMPLETE
+R4 beta(doublets) <= beta(singlets) + one quantum: 4/4  PASS
+R5 health: 12/18
+
+POST-HOC censored reading (dead cells as lower bounds; registered verdicts unchanged):
+  R2' x 0.92 U0 1.0: J doublet 0.1664 (>=) vs singlet 0.0556 (>=): UNDECIDABLE (singlet dead: no upper bound)
+  R2' x 0.92 U0 2.0: J doublet 0.3859 (>=) vs singlet 0.0621: doublet > singlet DECIDED (doublet J is a lower bound)
+  R2' x 0.92 U0 4.0: J doublet 0.6362 vs singlet 0.1378: doublet > singlet DECIDED
+  R3' w0 x 0.92: J over U0 1/2/4 = 0.0556(>=), 0.0621, 0.1378
+  R3' w1 x 0.88: J over U0 1/2/4 = 0.0583(>=), 0.0579, 0.1958
+  R3' w1 x 0.92: J over U0 1/2/4 = 0.1664(>=), 0.3859(>=), 0.6362
