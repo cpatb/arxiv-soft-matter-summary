@@ -142,6 +142,45 @@ def main():
     say("F1 (|act cut| < 0.05 at U0 1 and 4; |win| > 5|act| at U0 4): "
         + ("PASS" if len(f1) == 3 and all(f1) else "FAIL" if f1 and not all(f1) else "INCOMPLETE")
         + f"  ({sum(f1)}/{len(f1)})")
+    # ---- Amendment 3: the split at EPS_MIN 0.03 (registered before its cells) ---------------
+    say("")
+    say("Amendment 3 (EPS_MIN 0.03; references from kmermapE03):")
+    ROOT = os.path.join(HERE, "out", "kmerdecompE03")
+    e3 = {}
+    for lab, par in list(CELLS.items())[:4]:
+        v = read(lab, par)
+        if v is None:
+            say(f"  {lab}: not run yet")
+            continue
+        banp = os.path.join(ROOT, lab, "banner.txt")
+        em = re.search(r"eps_min=([\d.e+-]+)", open(banp, encoding="utf-8", errors="replace").read())
+        v["prov"] = v["prov"] and bool(em) and math.isclose(float(em.group(1)), 0.03, rel_tol=1e-9)
+        e3[lab] = v
+        say(f"  {lab}: J {v['J']:.4f}  Rg {v['rg']:.4f}" + ("" if v["healthy"] and v["prov"] else
+                                                             f"  [EXCLUDED rc {v['rc']} t {v['t']} prov {v['prov']}]"))
+    ref3 = {}
+    for d in ("w0_x0.85_U4.0", "w1_x0.85_U4.0", "w1_x0.88_U2.0", "w1_x0.88_U4.0"):
+        p = os.path.join(HERE, "out", "kmermapE03", d, "spread.dat")
+        if os.path.exists(p):
+            a3 = np.loadtxt(p, comments="#", ndmin=2)
+            ref3[d] = dict(J=float(a3[:, 7].max()), rg=float(a3[:, 11].max()))
+    ok3 = {k: v for k, v in e3.items() if v["healthy"] and v["prov"]}
+    j3 = [ok3[k]["J"] for k in ("win_x0.88_U2.0", "win_x0.88_U4.0") if k in ok3]
+    say("D1'' window alone jams at x 0.88: " + ("PASS" if any(j > 0.01 for j in j3) else
+                                                "FAIL" if len(j3) == 2 else "INCOMPLETE") + f"  {[round(j, 4) for j in j3]}")
+    for u in ("2.0", "4.0"):
+        k, r = f"win_x0.88_U{u}", ref3.get(f"w1_x0.88_U{u}")
+        if k in ok3 and r:
+            say(f"D2'' x 0.88 U0 {u}: J(window) - J(all) = {ok3[k]['J'] - r['J']:+.4f} ({ok3[k]['J']:.4f} vs {r['J']:.4f})")
+    w0r, alr = ref3.get("w0_x0.85_U4.0"), ref3.get("w1_x0.85_U4.0")
+    if w0r and alr and "win_x0.85_U4.0" in ok3 and "act_x0.85_U4.0" in ok3:
+        lw = math.log(ok3["win_x0.85_U4.0"]["rg"] / w0r["rg"])
+        la = math.log(ok3["act_x0.85_U4.0"]["rg"] / w0r["rg"])
+        lall = math.log(alr["rg"] / w0r["rg"])
+        say(f"D3'' x 0.85 U0 4: ln cut window {lw:+.4f}, activation {la:+.4f}, all {lall:+.4f}  "
+            + ("PASS" if lw < la else "FAIL") + f"; additivity residual {lall - (lw + la):+.4f}")
+    else:
+        say("D3'': INCOMPLETE")
     with open(os.path.join(HERE, "out", "grade_kmerdecomp.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")
     return 0

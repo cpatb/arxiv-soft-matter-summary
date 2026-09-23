@@ -101,3 +101,14 @@ f̂-adjacent L9 number is quoted. Five cells at LEVEL 10, otherwise identical to
 0.0006 in ln Rg; the window cut grows 5 % at L10. The absolute Rg values move 0.2–1.9 % between
 levels, but the cuts are differences at matched level and move much less. The L9 percentages may
 be quoted.
+
+## Amendment 3 — the channel split under the softer cap (registered before its cells; commit time is the record)
+Referee (2026-09-23, on `epssig`): the kmerdecomp D1/D3 equalities are default-cap only. Four cells at
+EPS_MIN 0.03 (campaign `kmerdecompE03_2026-09-23`), otherwise identical to their default twins:
+`win_x0.88_U2.0`, `win_x0.88_U4.0`, `win_x0.85_U4.0`, `act_x0.85_U4.0`. References: `kmermapE03`
+(w0/w1 at the same cap, all healthy).
+- **D1″** the window alone jams at x 0.88: J > 0.01 in ≥ 1 of U₀ 2/4.
+- **D2″** (reported) J(window) − J(all) at x 0.88, U₀ 2 and 4.
+- **D3″** at x 0.85 U₀ 4, the window cut exceeds the activation cut in ln Rg (the default gave −0.372 vs
+  −0.0008; the all-channel cut at this cap is −0.329 from `kmermapE03`).
+- Health as D5 plus a banner eps_min = 0.03 check.
