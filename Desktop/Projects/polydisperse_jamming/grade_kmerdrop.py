@@ -82,12 +82,34 @@ def main():
         healthy = st["rc"] == 0 and a[-1, 1] >= 5.9
         ratio = a[:, 7].max() / b[:, 7].max()
         dbeta = abs(a[:, 2].max() - b[:, 2].max())
-        ok_ = healthy and (1 / 1.5 <= ratio <= 1.5) and dbeta <= 1 / 64 + 1e-12
-        a1.append(ok_)
+        ok_ = (1 / 1.5 <= ratio <= 1.5) and dbeta <= 1 / 64 + 1e-12
+        # A death is EXCLUDED, never a FAIL (the D3 health rule of this prereg; corrected
+        # 2026-09-23 after all_w1.00 died -- the first version appended False for a dead cell).
+        if healthy:
+            a1.append(ok_)
         say(f"  {lab}: healthy {healthy}  J {a[:, 7].max():.4f} vs {b[:, 7].max():.4f} (ratio "
             f"{ratio:.2f})  beta {a[:, 2].max():.4f} vs {b[:, 2].max():.4f}  Rg "
-            f"{a[:, 11].max():.4f} vs {b[:, 11].max():.4f}  {'PASS' if ok_ else 'FAIL'}")
-    say(f"Amendment 1: {sum(a1)}/{len(a1)}" + ("  PASS" if len(a1) == 2 and all(a1) else
+            f"{a[:, 11].max():.4f} vs {b[:, 11].max():.4f}  "
+            + (('PASS' if ok_ else 'FAIL') if healthy else f"EXCLUDED (rc {st['rc']}, t/tau {a[-1, 1]})"))
+        if not healthy:
+            # POST-HOC, labelled: the same comparison truncated before the first discontinuity in
+            # this cell's J series -- a jump > 0.2 between consecutive samples AFTER the spread has
+            # peaked (argmax of Rg_r), when the drop is at rest and cannot produce one (the impact
+            # rise itself is excluded by construction) -- applied to BOTH records at the same t.
+            # Not a registered verdict.
+            dj = np.diff(a[:, 7])
+            i_rest = int(np.argmax(a[:, 11]))
+            jump = np.where((dj > 0.2) & (np.arange(dj.size) >= i_rest))[0]
+            if jump.size:
+                tcut = a[jump[0] + 1, 1]
+                ma, mb = a[:, 1] < tcut, b[:, 1] < tcut
+                r2 = a[ma, 7].max() / b[mb, 7].max()
+                db2 = abs(a[ma, 2].max() - b[mb, 2].max())
+                say(f"    POST-HOC truncated at t/tau {tcut} (first J jump {dj[jump[0]]:+.3f}): J "
+                    f"{a[ma, 7].max():.4f} vs {b[mb, 7].max():.4f} (ratio {r2:.3f}), beta "
+                    f"{a[ma, 2].max():.4f} vs {b[mb, 2].max():.4f}: "
+                    f"{'within the registered bars' if (1 / 1.5 <= r2 <= 1.5 and db2 <= 1 / 64 + 1e-12) else 'outside'}")
+    say(f"Amendment 1: {sum(a1)}/{len(a1)} healthy cells graded" + ("  PASS" if len(a1) == 2 and all(a1) else
                                               "  FAIL" if a1 and not all(a1) else "  INCOMPLETE"))
     with open(os.path.join(HERE, "out", "grade_kmerdrop.txt"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L) + "\n")

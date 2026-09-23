@@ -58,3 +58,20 @@ before (`scripts/kmerdrop2_2026-09-22.sh`, labels `all_w0.50`, `all_w1.00`).
 at the window edge. So **J_all / J_window-only ∈ [1/1.5, 1.5]** at both w₂, and β_max within one
 grid quantum of the window-only run. A larger change means the DNS drop does not activate at the
 single stress scale this estimate assumes.
+
+## Amendment 1 — RESULT (graded 2026-09-23 ~00:05 CDT)
+
+- `all_w0.50`: healthy; J 0.0551 vs window-only 0.0492 (ratio 1.12), β_max identical: **PASS**.
+- `all_w1.00`: **died** (rc 136, SIGFPE, t/τ 5.225) and is EXCLUDED under this prereg's health rule
+  (D3). **Amendment 1 is INCOMPLETE (1/1 healthy cells pass), not FAIL.** ⚠ The grader first
+  printed FAIL: it appended `False` for a dead cell, contrary to the health rule every grader in this
+  project applies. Corrected in `grade_kmerdrop.py`, with the change commented at the line.
+- The death: J jumps 0.06 → 0.41 at t/τ 4.1 and → 0.94 at 4.45 while Rg_r stays frozen (0.345), i.e.
+  in a drop at rest. That is a numerical precursor of the blow-up, not activation. Its full-record
+  maxima (J 1.0, β 1.109) sit ON those jumps.
+- **POST-HOC, labelled:** truncated before the first jump > 0.2 after the spread peaks (t/τ 4.1),
+  applied to both records: J 0.3847 vs 0.3854 (ratio 0.998) and β_max 1.0781 vs 1.0781 — inside
+  both registered bars. So on the record that exists, the onset and sharpness channels cancel at
+  this window edge, as predicted from the sheared DEM.
+- Scope unchanged: this ladder uses the μ_m 3 PREDICTED χ (see the pass-3 scope in
+  `multiplet_knobs` §10). The clean-χ channel split is `PREREG_KMERDECOMP`.

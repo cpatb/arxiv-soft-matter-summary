@@ -7,3 +7,10 @@ grade_kmerdrop -- PREREG_KMERDROP_2026-09-22.md (x = 0.85, sigma* 300, delta 1.3
 D3 health: 5/5 (of 5)
 D1 beta_max monotone falling in w: [1.391, 1.172, 1.109, 1.078, 1.078]  FAIL
 D2 J at w 0.5/0.75/1 = [0.0492, 0.2197, 0.3854] (w 0, 0.25: 0.0, 0.0)  PASS
+
+=== Amendment 1: all doublet channels vs window-only ===
+   registered: J_all / J_window in [1/1.5, 1.5]; beta_max within one grid quantum (1/64)
+  all_w0.50: healthy True  J 0.0551 vs 0.0492 (ratio 1.12)  beta 1.1094 vs 1.1094  Rg 0.3622 vs 0.3631  PASS
+  all_w1.00: healthy False  J 1.0000 vs 0.3854 (ratio 2.59)  beta 1.1094 vs 1.0781  Rg 0.3463 vs 0.3476  EXCLUDED (rc 136, t/tau 5.225)
+    POST-HOC truncated at t/tau 4.1 (first J jump +0.352): J 0.3847 vs 0.3854 (ratio 0.998), beta 1.0781 vs 1.0781: within the registered bars
+Amendment 1: 1/1 healthy cells graded  INCOMPLETE
