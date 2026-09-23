@@ -3,25 +3,26 @@ Resume the polydisperse_jamming / multiplet work (drop-impact jamming vs inertia
 Read first, in order:
   1. C:\Users\compl\Documents\Obsidian Vault\Status\Drop Impact — Polydispersity Jamming Model.md
      §2 "OVERNIGHT BLOCK" and §3 "2026-09-23 (overnight)".
-  2. ANSWER_2026-09-23.md (the synthesis; every number cites its graded artifact).
-  3. derivations/multiplet_knobs_2026-09-22.md RESULT BOX (refereed, passes 1-5; §10 carries the
-     kmermap and kmerdecomp results added after pass 5).
+  2. ANSWER_2026-09-23.md -- the synthesis; every number cites its graded artifact.
+  3. derivations/multiplet_knobs_2026-09-22.md, RESULT BOX and §10 (passes 1-5, and later additions).
 
-State at hand-off (written 2026-09-23 00:05 CDT; superseded by the Status card):
-  - kmermap (18 DNS cells, clean mu_p 0.3 inputs): R1 PASS -- doublets jam at x 0.88, singlets cannot;
-    R4 PASS on 4/9 surviving pairs; R2/R3 INCOMPLETE (L9 deaths). Footprint does not discriminate.
-  - kmerdecomp: the DNS effect is almost entirely the window (chi). D1, D3, E1 PASS.
-    Amendment 2 (L10 rung, 5 cells, campaign kmerdecompL10_2026-09-23) was RUNNING at hand-off.
-    Grade it: from PowerShell
-      wsl bash /mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming/scripts/pull_jamwin.sh kmerdecompL10 2026-09-23
-      python grade_kmerdecomp.py
-    If F2 prints UNRESOLVED BY THE GRID, withdraw the 0.08 % / 2.9 % activation figures downstream.
-  - kmu: U1 DIRTY (clumps interpenetrate from mu_p 0.6). kmix: M1 FAIL (chains mix +0.005), M2 PASS.
-  - kmerdrop Amendment 1: INCOMPLETE (all_w1.00 SIGFPE); post-hoc truncated ratio 0.998.
+State (the git log is the time record; the overnight session ran from 21:30 CDT 09-22):
+  - kmermap (clean mu_p 0.3 inputs): doublets jam at x 0.88 where singlets cannot (R1 PASS).
+    At EPS_MIN 0.03 (kmermapE03) all 18 cells live and R1'-R4' PASS; X1 12/12 classes cap-robust.
+  - kmerdecomp: the DNS effect is almost entirely the window (chi). Holds at L10 (Am. 2) and at the
+    softer cap (Am. 3). The activation channel is minor: <= 3 % in Rg over U0 1-4.
+  - jamsig/epssig: apex recoil (S2) is the candidate camera-visible jam-vs-thicken signature. It reads
+    the jammed-vs-thickened viscosity contrast (holds at a 10x stiffer cap, collapses at a 10x softer
+    one). Out-of-sample/L10 tests were blocked by deaths.
+  - IMPORTANT: the DNS jammed viscosity IS the EPS_MIN cap; J magnitudes are cap-dependent, while
+    classes and orderings are what is robust.
+  - kmu: U1 DIRTY. kmix: M1 FAIL (chains mix +0.005), M2 PASS. kmerdrop Am. 1: INCOMPLETE.
 
-Conventions: x = phi/phi0, chi = phim/phi0, window chi <= x < 1, f_c = (1-x)/(1-chi); K4 overlap gate
-u/r = fn/0.25 > 0.05 on > 0.1 % of contacts; PHI_SCALE 0.0021; seeds paired; stress-controlled
-activation scope; clean chi is mu_m 0.3. Launch WSL scripts from PowerShell by file path only.
+Conventions: x = phi/phi0, chi = phim/phi0, window chi <= x < 1, f_c = (1-x)/(1-chi); K4 overlap gate;
+PHI_SCALE 0.0021; seeds paired; stress-controlled activation scope; clean chi is mu_m 0.3. Launch WSL
+scripts from PowerShell by file path only (scripts/run_*.sh); pull DNS with
+  scripts/pull_jamwin.sh <campaign> <date>.
 
-Next action: §3 item 1 (grade L10 if not done), then item 2 (a DNS discriminator of jam vs thicken,
-pre-registered, on existing cells). Items 0(a)(b) are the author's calls.
+Next: Status §3. The author's calls come first (can the bench count doublets; is a high-speed side view
+of apex recoil feasible). Then the S2 held-out test on cells that do not die (e.g. at a softer cap,
+where recoil does NOT separate, so it needs the default cap with a solver fix for the L9 deaths).
