@@ -74,3 +74,14 @@ Campaign `kmermapRG_2026-09-23`: `rg_d_x0.91_U2.0_e03`, `rg_d_x0.91_U4.0_e03` (E
 `rg_d_x0.91_U2.0_e01`, `rg_d_x0.91_U4.0_e01` (default, reported).
 - **RG1:** at EPS_MIN 0.03, J > 0.01 in ≥ 1 healthy doublet cell. FAIL if both are healthy with J ≤ 0.01.
 - Default-cap cells reported only (deaths expected).
+
+### Amendment 2 — RESULT (commit time is the record)
+| cell (doublets, x 0.91, χ from p̂ 1e-3) | health | J |
+|---|---|---|
+| U₀ 2, EPS_MIN 0.03 | healthy | 0.318 |
+| U₀ 4, EPS_MIN 0.03 | healthy | 0.624 |
+| U₀ 2, default | healthy | 0.061 |
+| U₀ 4, default | died t/τ 2.6 | ≥ 0.122 |
+**RG1 PASS.** With χ from the other DEM pressure rung, doublets jam inside that rung's switch
+window, where singlets cannot (0.91 < 0.9284). A healthy default-cap cell agrees (J 0.061). **The
+existence of a doublet-opened switch window is rung-robust; only its position in x is a convention.**
