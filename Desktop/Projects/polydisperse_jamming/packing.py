@@ -783,7 +783,9 @@ def build_and_compress(cv: float, mu_p: float, p_hat: float, n: int, seed: int,
     # a bit-identity reproduction of the sphere through a CLUMP built at alpha = 1 --
     # cannot be met by any correct implementation: the density that makes the mass right
     # makes the timestep 0.7071x, which is a different trajectory.
-    O.dt = DT_SAFETY * utils.PWaveTimeStep()
+    # PJ_DT_SAFETY (diagnostic, 2026-09-22): unset -> DT_SAFETY, bit-identical. Added to test whether
+    # the deep inter-grain overlaps in frictional clump packs are a time-step artefact.
+    O.dt = float(os.getenv("PJ_DT_SAFETY", DT_SAFETY)) * utils.PWaveTimeStep()
     st.dt = float(O.dt)
     cap = max_iter()
     st.max_iter = cap
