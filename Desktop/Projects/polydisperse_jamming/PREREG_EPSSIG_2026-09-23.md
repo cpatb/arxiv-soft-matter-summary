@@ -61,12 +61,16 @@ CONTRAST.** At a jammed-region viscosity of 10⁴ or 1.1e5 η_s the jammed drop 
   at EPS_MIN 0.003 / 0.01 / 0.03 (×5.9 over one decade). A stiffer jammed region deforms less,
   shears less and activates less. The J+/J0 CLASS held at all three caps for this pair. **Every
   quoted J value in this project's DNS (kmerdrop, kmermap, kmerdecomp) is a default-EPS_MIN number
-  whose magnitude is regularisation-dependent; the classes and orderings are what has been
-  tested.** The x 0.88 kmermap J (0.058 at U₀ 2) is the one most at risk of flipping class at a
+  whose magnitude is regularisation-dependent. Under the cap only TWO class facts have been retested
+  (this pair, and kmermap R1's doublet arm in Amendment 1). Every other ordering (x 0.92 doublet >
+  singlet, R4, the kmerdrop w₂ ladder, kmerdecomp D1/D3) is default-cap only** until
+  `PREREG_KMERMAPE03` lands (referee 2026-09-23, MATERIAL). The x 0.88 kmermap J (0.058 at U₀ 2) is the one most at risk of flipping class at a
   stiffer cap, and is untested.
 - Reading for the bench (REASONING, not measured): a real jammed suspension is a yield-stress solid,
   i.e. stiffer than any finite cap, so the recoil contrast should be at least as large on the bench
-  as at the default cap. That is the direction G1 tested.
+  as at the default cap. That is the direction G1 tested. The gap is already SATURATED between
+  EPS_MIN 0.01 and 0.003 (0.125 at both), so the infinitely stiff limit is likely near 0.125, not
+  much above it.
 
 ## Amendment 1 — does the HEADLINE (kmermap R1) survive the cap? (committed 2026-09-23 01:15 CDT (git commit time), before its cells)
 Four cells re-run `kmermap` w1_x0.88 (pure doublets, clean μ_p 0.3 inputs: φ 0.5456, φ_m 0.53512,
@@ -91,5 +95,8 @@ rests on one dead cell, and its J(t) was checked for the kmerdrop2 failure mode:
 monotone rise from t/τ 0.075 (J 0.022) to 0.0816, no jump, Rg frozen at 0.3507 from t/τ 0.075.
 That is not a death precursor.
 ⚠ The cap effect on J's magnitude is **not monotone across cases**. At w₂ 0.75 (x 0.85) a stiffer
-cap LOWERED J (0.220 → 0.096); here, at matched t/τ 0.625, it RAISED it (0.056 → 0.082). Only the
+cap LOWERED J (0.220 → 0.096, whole-run maxima); here, at matched t/τ 0.625 (the 0.003 cell's death),
+it RAISED it (0.056 → 0.082). The 0.03 cell's max (0.357) is an early impact spike; at t/τ 0.625
+it reads 0.0425, below both. So the three caps' J(t) have different SHAPES, and max-vs-max and
+matched-time comparisons must not be mixed. Only the
 class is robust. Softening the cap raises J strongly in both cases (×2.6 / ×6.2).

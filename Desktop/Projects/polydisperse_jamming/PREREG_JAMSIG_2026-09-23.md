@@ -40,7 +40,11 @@ kmermap (12 healthy), kmerdecomp (5 healthy L9), kmerdrop (w0.00…w1.00 + all_w
 | **J3** signature also at shared x (kmerdrop ladder) | **S2 only** | S2 J+ 0.016–0.078 vs J0 0.172–0.469 (no overlap, ×6.8) |
 
 **S2 (apex recoil) separates everywhere it was tested**: after the apex height reaches its minimum,
-J0 drops (thickened, cannot jam) rise again by h/D0 0.125–0.586, J+ drops by 0–0.078. Reading
+J0 drops (thickened, cannot jam) rise again by h/D0 0.125–0.586, J+ drops by 0–0.078. (S2 = 0 means
+no rise of ≥ 1 grid quantum was resolved, not a measured zero. Referee: in S2 = 0 cells h is pinned
+for 235 samples while Rg and J keep evolving, so the solver is live and the apex genuinely does not
+move; J0 traces show a real multi-quantum rise-then-relax, e.g. 30 quanta. So it is an arrested
+vs oscillating apex, not a flicker.) Reading
 (HYPOTHESIS): a thickened liquid still retracts under surface tension; a drop with a jammed core
 does not. This is the first candidate camera-visible discriminator between jamming and thickening
 in this DNS.
@@ -84,4 +88,7 @@ impact. Every healthy new cell fell on its predicted side (3/3); no cell contrad
 **Verdict: S2 (apex recoil) stays a CANDIDATE signature**, consistent with every healthy cell seen
 (23 + 3), but its out-of-sample test is undecided on the J0 side and its grid test on the J+ side.
 The deaths are the L9/L10 high-viscosity failure again; they are what blocks this, as they block
-kmermap R2/R3 (Status §3 item 3).
+kmermap R2/R3 (Status §3 item 3). ⚠ Survivorship: the J0 death came late (t/τ 3.6, inside the
+recoil window) and the J+ deaths at impact. If large recoils crash the solver preferentially,
+surviving cells are biased toward gentle cases, so K1/K2 must not later be read as 'resolved by
+attrition' without addressing that.
