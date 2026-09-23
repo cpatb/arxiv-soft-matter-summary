@@ -295,3 +295,24 @@ At x = 0.85: Θ = 13.6 at w₂ = 0 (χ 0.886) and **205** at w₂ = 0.25 (χ 0.8
 fully-activated drop from a quarter of the volume in doublets, with no jamming anywhere. That is
 the K2 drop in spreading between w₂ 0 and 0.25. ⚠ Θ is quoted WITH its exponent (lessons.md);
 at MP_EXPO = 5 the same step is ×877.
+
+## 11. What the DEM then measured (`PREREG_KMER` RESULT, 126 + 36 cells, graded 2026-09-22)
+
+| prediction (§6) | outcome |
+|---|---|
+| P-χ (window opens with doublets) | ✅ at realistic friction μ_p 0.3, clean: χ 0.908 → 0.863 (window ×1.49), on the ideal-mixing curve within ±0.005. At μ_m 3 UNDETERMINED: those clump packs interpenetrate (below). |
+| P-mix (ideal specific-volume mixing) | ✅ 12/12 clean cells within 2·PHI_SCALE, no systematic excess; the μ 3 half excluded. |
+| P-Z (isostatic counting) | ✅ rough Z ≈ 4; frictionless Z linear in doublet number fraction; frictionless dumbbells and chains hypostatic. |
+| P-σ\* (onset falls) | ✅ σ\*(pure doublets)/σ\*(singlets) = 0.783 at μ_p 0.3 (isotropic packs). |
+| P-δ (sharpness) | ❌ unchanged (+0.004, t 0.05) — so the δ channel does NOT offset σ\* for doublets, and the §3 cancellation worry does not arise at this friction. |
+| chains vs dumbbells | a straight trimer widens the μ 0.3 window no more than a dumbbell at the quoted rung (0.8638 vs 0.8631). |
+
+🔴 **Frictional (μ_p 3) clump packs lock in genuine interpenetration** (penetration depth up to
+0.74 radius, not a time-step artefact, worse at lower pressure). Every μ_m 3 clump number —
+including `shapechi`'s window ×1.85 — carries that caveat; the overlap-volume sensitivity says the
+χ values survive (≤ 0.0017), the forces do not.
+
+**Net, for the question:** at realistic friction, turning a suspension of singlets into doublets of
+the same primary widens the shear-jamming window by half and lowers the onset stress by a fifth,
+without changing how sharply friction switches on. In the DNS the window channel alone takes a
+fixed-φ drop from spreading to jamming.
