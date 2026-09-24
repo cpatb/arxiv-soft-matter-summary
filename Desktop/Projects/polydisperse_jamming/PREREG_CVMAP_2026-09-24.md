@@ -92,8 +92,9 @@ here. No bar is loosened; each change separates a question the original wording 
 ## RESULT (default cap; graded 2026-09-24, `grade_cvmap.py` → `out/grade_cvmap.txt`)
 26/27 cells landed with provenance 26/26. 19 are healthy. The one unlanded cell (A x₀ 0.950) cannot
 decide anything because its CV-0 partner died. **All 7 deaths are in-window jammed cells**: all six
-CV 0 cells except x₀ 0.932 U₀ 4, one CV 0.2 cell at x₀ 0.95, and A at x₀ 0.92. This is the known L9
-failure at the jammed viscosity floor. Every CV 0.5 cell (12 of 12, including W and D) is healthy.
+CV 0 cells except x₀ 0.932 U₀ 4, one CV 0.2 cell at x₀ 0.95, and A at x₀ 0.92. They are read as the known L9
+failure at the jammed viscosity floor (exits: rc 2, rc 134, and rc 0 with an early stop, the same mix
+kmermap/jamsig recorded); their mechanism was not re-diagnosed cell by cell here. Every CV 0.5 cell (12 of 12, including W and D) is healthy.
 
 | gate | verdict | numbers |
 |---|---|---|
@@ -156,9 +157,11 @@ EPS_MIN 0.03. Everything else is identical, including the cell list and JAM_FHAT
 1. **The founding observation, as the author wrote it, is reproduced at every point of the grid.** At a
    fixed weighed φ, CV 0 → 0.5 turns a drop that jams on impact (J 0.29–0.91) and arrests within
    t/τ ≈ 0.1 into one that cannot jam and spreads far further first (peak Rg +35 % to +67 %). It then
-   RETRACTS, and by t/τ ≈ 2 its footprint is back near the jammed drop's (figure C1). That is
-   "spreading and inertial-dominated **for some time**". The registered terminal gate FAILED because
-   the terminal footprint does not separate the two: the difference lives in the transient.
+   RETRACTS by 30–39 % of its peak (figure C1). That is "spreading and inertial-dominated **for some time**".
+   The registered terminal gate FAILED 2/6: the terminal (t/τ 5.5–6) difference is SIGN-MIXED, from −8.5 %
+   (x₀ 0.950 U₀ 4; the fluid drop over-retracts) to +14.4 % (x₀ 0.920 U₀ 4), and at x₀ 0.920 / 0.932 U₀ 4
+   the fluid drop's Rg is still rising at TEND (not converged). The robust, one-signed difference is the
+   transient peak (+35 … +67 %); the terminal footprint is not a reliable separator on this record.
 2. **The DNS carries this effect entirely through the window.** W reproduces 99.5–101.8 % of the full CV-0.5
    log-change in peak Rg at all three x₀. CV 0.5's lower σ\* and softer δ alone (arm A) move Rg by < 0.05 %
    of the effect. This extends `kmerdecomp`'s doublet result to the size-distribution axis.
