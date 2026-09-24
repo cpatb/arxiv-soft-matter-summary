@@ -1,0 +1,37 @@
+predict_cvmap -- inputs and blind predictions for PREREG_CVMAP_2026-09-24.md
+window endpoints at p_hat = 3e-05, converged records, mu_m = 0.3 (the clean branch)
+   CV   phi_0 (sd, n)            phi_m(mu .3) (sd, n)     chi      delta ratio  sigma* ratio (d10)
+  0.0  0.63182 (0.00124, 3)   0.57535 (0.00125, 3)   0.91063   1.000        1.000
+  0.2  0.64413 (0.00234, 3)   0.58755 (0.00044, 3)   0.91215   0.938        0.957
+  0.5  0.69428 (nan, 1)   0.63667 (0.00323, 3)   0.91702   0.815        0.735
+   sigma* ratio CV 0.5 at fixed d32 instead: 1.145  (the convention bracket; H2)
+   ⚠ phi_0(CV 0.5) has n = 1 converged seed (the frictionless arm caps); a capped cell reads
+     LOW, so the CV shift below is if anything UNDER-stated.
+
+=== 1. CLOSED FORM: can a CV 0.5 suspension jam at the weighed phi of a CV 0 one? ===
+   At fixed weighed phi, x(CV) = x0 * phi_0(0)/phi_0(CV). A CV-0 suspension that flows at rest
+   has x0 < 1, so the CV-0.5 one can jam somewhere only if phi_0(0)/phi_0(0.5) > chi(0.5).
+   phi_0(0)/phi_0(0.5) = 0.91004   chi(0.5) = 0.91702   margin chi - ratio = +0.00698
+   margin / (PHI_SCALE propagated, 0.00579) = 1.21   (phi_0(0.5) enters both terms with the same sign, so this sum-in-quadrature is conservative)
+   => at mu_m 0.3 NO weighed phi exists at which a CV-0-fluid suspension, re-made at CV 0.5, can
+      shear-jam: the whole CV-0 window maps below chi(0.5). The founding observation, in closed form.
+   contrast at mu_m 3: chi(0.5) = 0.88201 < ratio 0.91004, so a band x0 in [0.9692, 1) CAN still jam -- the claim is friction-scoped.
+
+=== 2. THE GRID (fixed weighed phi per x0; DNS phi_0 = 0.62, so PHI = x*0.62, PHIM = chi*0.62) ===
+   x0     CV   x        chi      in window  f_c      Theta(n=2)  delta     sigma*
+  0.920  0.0  0.92000  0.91063  yes        0.8952         inf   1.3169   300.0
+  0.920  0.2  0.90241  0.91215  no         1.0000       83.58   1.2353   287.1
+  0.920  0.5  0.83723  0.91702  no         1.0000        3.50   1.0733   220.5
+  0.932  0.0  0.93200  0.91063  yes        0.7609         inf   1.3169   300.0
+  0.932  0.2  0.91418  0.91215  yes        0.9768         inf   1.2353   287.1
+  0.932  0.5  0.84815  0.91702  no         1.0000        4.09   1.0733   220.5
+  0.950  0.0  0.95000  0.91063  yes        0.5595         inf   1.3169   300.0
+  0.950  0.2  0.93184  0.91215  yes        0.7759         inf   1.2353   287.1
+  0.950  0.5  0.86453  0.91702  no         1.0000        5.60   1.0733   220.5
+
+=== 3. CHANNEL SPLIT (U0 4, CV 0 -> 0.5, every x0) ===
+   W (window only): x, chi from CV 0.5; delta, sigma* from CV 0.
+   A (activation only): x, chi from CV 0; delta, sigma* (d10) from CV 0.5.
+   D (full, d32 convention): as the full CV 0.5 cell but sigma* at fixed d32.
+
+27 cells written to out/cvmap_cells.txt (label PHI DELTA SIGMA_STAR JAM_FHAT PHIM U0)
