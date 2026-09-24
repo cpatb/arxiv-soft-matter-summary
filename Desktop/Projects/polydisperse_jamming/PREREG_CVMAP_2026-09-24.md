@@ -88,3 +88,44 @@ here. No bar is loosened; each change separates a question the original wording 
    Reason: at x₀ 0.920 the CV-0.2 cell sits 0.0097 below its χ with Θ 83.6, near the closure's
    divergence, so C2b can fail on a near-singular thickening that is not evidence against the window
    mechanism — and C2b failing there would be a finding about thickening, not a reason to drop it.
+
+## RESULT (default cap; graded 2026-09-24, `grade_cvmap.py` → `out/grade_cvmap.txt`)
+26/27 cells landed with provenance 26/26. 19 are healthy. The one unlanded cell (A x₀ 0.950) cannot
+decide anything because its CV-0 partner died. **All 7 deaths are in-window jammed cells**: all six
+CV 0 cells except x₀ 0.932 U₀ 4, one CV 0.2 cell at x₀ 0.95, and A at x₀ 0.92. This is the known L9
+failure at the jammed viscosity floor. Every CV 0.5 cell (12 of 12, including W and D) is healthy.
+
+| gate | verdict | numbers |
+|---|---|---|
+| C1 (by construction) | recorded | CV 0.5 J ≡ 0 on 6/6 |
+| **C2a** CV 0 → 0.5 spreads further | **NOT INFORMATIVE** (1 of the 2 required pairs decided) | the one decided pair, x₀ 0.932 U₀ 4: **Rg 0.3405 → 0.6154 (ln +0.592), β 1.047 → 1.797** |
+| C2b monotone through CV 0.2 | NOT INFORMATIVE | same pair, monotone (Rg 0.3537 at CV 0.2) |
+| **C3** (a) and (b) | **PASS** 1/1 (x₀ 0.932) | window share **1.009**, activation share **0.000** (A: Rg 0.3406 against 0.3405) |
+| C3c d32 convention | PASS 1/1 | 0.077 |
+| **C4** apex recoil | **FAIL** 17/19 | the two wrong-side cells are the CV 0.2 x₀ 0.920 cells: OUTSIDE the window, J ≡ 0, Θ 83.6, **S2 0.047 / 0.062** |
+| C5 health | 19/27 | deaths listed above |
+
+**What it says.** (1) At the one (x₀, U₀) the solver can integrate, raising CV from 0 to 0.5 at fixed
+weighed φ takes a jammed drop (J 0.33) to one that cannot jam and spreads 81 % further in Rg. The
+window channel carries all of it: W reproduces the full CV 0.5 cell to 0.6 %, and CV 0.5's softer
+activation alone moves Rg by 0.03 %. This is the founding observation reproduced in the DNS, with the
+mechanism the closure names. It is one decided pair, so the registered C2 is not informative, and
+Amendment 2 exists to decide it. (2) **Apex recoil FAILS on the new knob.** A drop that is thickened
+but NOT jammed, sitting 0.0097 below its χ, does not recoil (S2 0.05–0.06). The referee flagged
+this as the hardest J0 case before any data. The failure fits `epssig`, which showed that S2 reads
+the VISCOSITY CONTRAST: a near-divergent thickened drop is dynamically as stiff as a jammed one. So
+S2 separates "stiff" from "fluid". **It is not a jam-vs-thicken discriminator** near the window
+edge, and its standing drops from "passed one out-of-sample test" to "refuted as a jamming
+signature; retained as a stiffness signature". The footprint cannot tell either: that cell's Rg of
+0.365 sits beside the jammed cells' 0.34.
+
+## Amendment 2: decide C2 at the softer cap (registered before its cells; commit time is the record)
+The deaths are the default cap's (EPS_MIN 0.01) jammed floor. `kmermapE03` showed EPS_MIN 0.03 keeps
+18/18 cells healthy with classes and orderings unchanged (X1 12/12). J magnitudes are not unchanged.
+Campaign `cvmapE03_2026-09-24`: the 18 grid cells, plus W and A at every x₀ (6 cells), all at
+EPS_MIN 0.03. Everything else is identical, including the cell list and JAM_FHAT. 24 cells in total.
+- **C2a′ / C2b′**: the C2a / C2b bars, unchanged, on these cells.
+- **C3′**: the C3 (a) and (b) bars and the Δ floor, unchanged, at every decided x₀.
+- **X2 (class robustness)**: every cell healthy at both caps keeps its J+/J0 class.
+- C4 is NOT re-graded here: at the softer cap the recoil contrast collapses by design (`epssig` G2).
+- Health: rc 0 and t/τ ≥ 5.9. The run tag must carry EPS_MIN 0.03.

@@ -10,13 +10,16 @@ import json
 import math
 import os
 import re
+import sys
 
 import numpy as np
 
 from grade_jamsig import sig
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.join(HERE, "out", "cvmap")
+MODE = sys.argv[1] if len(sys.argv) > 1 else ""      # "" (default cap) or "E03" (Amendment 2)
+ROOT = os.path.join(HERE, "out", "cvmap" + MODE)
+EPS = {"": 0.01, "E03": 0.03}[MODE]
 CELLS = os.path.join(HERE, "out", "cvmap_cells.txt")
 Q = 1 / 64              # one beta quantum at L9
 S2_STAR = 0.1           # pre-fixed in PREREG_JAMSIG Amendment 1, unchanged
@@ -32,6 +35,8 @@ def load():
     for line in open(CELLS, encoding="utf-8"):
         f = line.split()
         if f:
+            if MODE == "E03" and f[0].startswith("D_"):
+                continue        # Am. 2 does not re-run the d32 arms
             reg[f[0]] = dict(phi=float(f[1]), d=float(f[2]), ss=float(f[3]), jf=float(f[4]),
                              pm=float(f[5]), u0=float(f[6]))
     c = {}
@@ -45,7 +50,8 @@ def load():
         m = re.search(r"U0=([\d.]+) .*phi=([\d.]+) phi0=([\d.]+) phiM=([\d.]+) sigma\*=([\d.e+]+) "
                       r"Pa delta=([\d.]+)", ban)
         jb = re.search(r"JAM_FHAT=([\d.]+)", ban)
-        prov = bool(m and jb) and all(
+        em = re.search(r"eps_min=([\d.e+-]+)", ban)
+        prov = bool(m and jb and em) and math.isclose(float(em.group(1)), EPS, rel_tol=1e-9) and all(
             math.isclose(float(v), t, rel_tol=1e-6)
             for v, t in zip(m.groups(), (r["u0"], r["phi"], 0.62, r["pm"], r["ss"], r["d"]))) \
             and math.isclose(float(jb.group(1)), r["jf"], rel_tol=1e-6)
@@ -70,7 +76,8 @@ def main():
 
     c = load()
     ok = {k: v for k, v in c.items() if v["healthy"] and v["prov"]}
-    say("grade_cvmap -- PREREG_CVMAP_2026-09-24.md")
+    say("grade_cvmap -- PREREG_CVMAP_2026-09-24.md" + (" Amendment 2 (EPS_MIN 0.03; primes = the same bars)"
+                                                     if MODE else "") + f"; provenance includes eps_min {EPS}")
     say(f"cells landed {sum(not v['missing'] for v in c.values())}/{len(c)}; provenance "
         f"{sum(v['prov'] for v in c.values())}; healthy+provenance {len(ok)}")
     say("  label               window  healthy  J        beta_max  Rg_max   S2")
@@ -149,10 +156,10 @@ def main():
     say(f"C3c (d32 convention, Am. 1): {sum(c3c)}/{len(c3c)}  " + ("PASS" if c3c and all(c3c) else
                                                                  "FAIL" if c3c else "INCOMPLETE"))
 
-    # C4 -- apex recoil
+    # C4 -- apex recoil (default cap only)
     say("")
-    jp = [(k, v["s2"]) for k, v in ok.items() if v["J"] > J_ON]
-    j0 = [(k, v["s2"]) for k, v in ok.items() if v["J"] <= J_ON]
+    jp = [(k, v["s2"]) for k, v in ok.items() if v["J"] > J_ON] if not MODE else []
+    j0 = [(k, v["s2"]) for k, v in ok.items() if v["J"] <= J_ON] if not MODE else []
     right = [s < S2_STAR for _, s in jp] + [s >= S2_STAR for _, s in j0]
     say(f"C4 J+ (n {len(jp)}): {[(k, round(s, 3)) for k, s in jp]}")
     say(f"   J0 (n {len(j0)}): S2 range [{min(s for _, s in j0):.3f}, {max(s for _, s in j0):.3f}]"
@@ -169,7 +176,24 @@ def main():
     say("")
     say(f"C5 health: {len(ok)}/{len(c)} healthy with provenance; excluded: "
         f"{[k for k in c if k not in ok]}")
-    with open(os.path.join(HERE, "out", "grade_cvmap.txt"), "w", encoding="utf-8", newline="\n") as f:
+    if MODE == "E03":
+        say("")
+        say("C4 is not re-graded at EPS_MIN 0.03 (recoil contrast collapses by design, epssig G2).")
+        base = os.path.join(HERE, "out", "cvmap")
+        x2 = []
+        for lab, v in ok.items():
+            pth = os.path.join(base, lab, "spread.dat")
+            st = os.path.join(base, lab, "RUN_STATUS.json")
+            if not (os.path.exists(pth) and os.path.exists(st)):
+                continue
+            a = np.loadtxt(pth, comments="#", ndmin=2)
+            if not (json.load(open(st, encoding="utf-8"))["rc"] == 0 and a[-1, 1] >= 5.9):
+                continue
+            same = (a[:, 7].max() > J_ON) == (v["J"] > J_ON)
+            x2.append((lab, same))
+        say(f"X2 class robustness (cells healthy at both caps): {sum(s for _, s in x2)}/{len(x2)}  "
+            + ("PASS" if x2 and all(s for _, s in x2) else f"FAIL {[l for l, s in x2 if not s]}" if x2 else "EMPTY"))
+    with open(os.path.join(HERE, "out", "grade_cvmap" + MODE + ".txt"), "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(L) + "\n")
 
 
