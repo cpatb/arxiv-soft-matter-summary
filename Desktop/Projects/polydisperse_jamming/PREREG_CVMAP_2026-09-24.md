@@ -139,3 +139,35 @@ EPS_MIN 0.03. Everything else is identical, including the cell list and JAM_FHAT
   t/τ 5.5–6) of CV 0.5 > that of CV 0, strictly; ≥ 2 decided pairs. Stricter in kind than C2a′: it cannot
   pass on a splash peak that then retracts. C2a′/C2b′ stay graded as registered, beside it.
 - Both peak and terminal Rg are printed for every cell.
+
+## RESULT, Amendments 2 and 3 (EPS_MIN 0.03; `python grade_cvmap.py E03` → `out/grade_cvmapE03.txt`; figure C1)
+24/24 cells healthy, provenance (incl. eps_min 0.03) 24/24.
+
+| gate | verdict | numbers |
+|---|---|---|
+| **C2a′** CV 0 → 0.5, peak spread | **PASS 6/6** | ln Rg_max +0.30 … +0.52; β_max 1.11–1.20 → 1.45–1.92 at every (x₀, U₀) |
+| **C2b′** monotone through CV 0.2 | **PASS 6/6** | |
+| **C2t′** terminal spread (Am. 3) | **FAIL 2/6** | terminal Rg rises at x₀ 0.920 / 0.932 U₀ 4 (+0.135 / +0.063 in ln); falls or ties elsewhere (−0.003 … −0.085) |
+| **C3′** (a) and (b) | **PASS 3/3** | window share 1.018 / 1.012 / 0.995; activation share 0.000 at every x₀ |
+| X2 class robustness | PASS 16/16 | every cell healthy at both caps keeps its J+/J0 class |
+| C5 health | 24/24 | |
+
+**What it says.**
+1. **The founding observation, as the author wrote it, is reproduced at every point of the grid.** At a
+   fixed weighed φ, CV 0 → 0.5 turns a drop that jams on impact (J 0.29–0.91) and arrests within
+   t/τ ≈ 0.1 into one that cannot jam and spreads far further first (peak Rg +35 % to +67 %). It then
+   RETRACTS, and by t/τ ≈ 2 its footprint is back near the jammed drop's (figure C1). That is
+   "spreading and inertial-dominated **for some time**". The registered terminal gate FAILED because
+   the terminal footprint does not separate the two: the difference lives in the transient.
+2. **The DNS carries this effect entirely through the window.** W reproduces 99.5–101.8 % of the full CV-0.5
+   log-change in peak Rg at all three x₀. CV 0.5's lower σ\* and softer δ alone (arm A) move Rg by < 0.05 %
+   of the effect. This extends `kmerdecomp`'s doublet result to the size-distribution axis.
+   ⚠ Scope: outside the window the drop cannot jam, and its thickening is set by Θ(x, χ). So W ≈ full
+   says the activation parameters barely move a thickened-but-unjammable drop at these x. That was
+   predicted by `jam_map` §4, and it is not independent of the window picture.
+3. **Class robustness.** Every CV-0 cell jams at both caps and every CV-0.5 cell cannot. The default-cap
+   deaths are the solver's jammed floor, not a different regime.
+4. Terminal footprint vs cap: at x₀ 0.932 U₀ 4 the terminal Rg change is +0.174 in ln at the default
+   cap and +0.063 at 0.03. Its SIGN varies over the grid. **The terminal footprint is not a usable
+   observable of this switch; the peak spread and its time course are, but for STIFF vs FLUID, not jammed vs
+   thickened**: the unjammed CV-0.2 x₀ 0.920 cell peaks at Rg 0.4023, beside the jammed CV-0 cell's 0.3967.

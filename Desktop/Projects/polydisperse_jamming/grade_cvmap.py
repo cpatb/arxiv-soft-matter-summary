@@ -164,7 +164,7 @@ def main():
             c3c.append(pc)
         say(f"  C3 x0 {x}: Delta ln Rg {D:+.4f}; (a) window share {share:.3f} [{pa}]; (b) activation "
             f"|share| {act:.3f} [{pb}]; (c) d32 convention |share| "
-            + (f"{conv:.3f} [{pc}]" if conv is not None else "undecided (D dead)"))
+            + (f"{conv:.3f} [{pc}]" if conv is not None else ("not run at this cap (Am. 2)" if MODE else "undecided (D dead)")))
     say(f"C3 (a and b): {sum(c3)}/{len(c3)} decided x0  " + ("PASS" if c3 and all(c3) else
                                                             "FAIL" if c3 else "INCOMPLETE"))
     say(f"C3c (d32 convention, Am. 1): {sum(c3c)}/{len(c3c)}  " + ("PASS" if c3c and all(c3c) else

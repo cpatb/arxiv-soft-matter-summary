@@ -1,0 +1,61 @@
+grade_cvmap -- PREREG_CVMAP_2026-09-24.md Amendment 2 (EPS_MIN 0.03; primes = the same bars); provenance includes eps_min 0.03
+cells landed 24/24; provenance 24; healthy+provenance 24
+  label               window  healthy  J        beta_max  Rg_max   S2       Rg_term
+  c0.0_x0.920_U2.0    in      True     0.2899   1.1094    0.3674   +0.031   0.3578
+  c0.0_x0.920_U4.0    in      True     0.5890   1.2031    0.3967   +0.078   0.3766
+  c0.2_x0.920_U2.0    out     True     0.0000   1.1406    0.3762   +0.078   0.3560
+  c0.2_x0.920_U4.0    out     True     0.0000   1.2344    0.4023   +0.172   0.3514
+  c0.5_x0.920_U2.0    out     True     0.0000   1.7031    0.5871   +0.531   0.3568
+  c0.5_x0.920_U4.0    out     True     0.0000   1.9219    0.6640   +0.375   0.4308
+  c0.0_x0.932_U2.0    in      True     0.5020   1.1094    0.3641   +0.047   0.3549
+  c0.0_x0.932_U4.0    in      True     0.7918   1.2031    0.3947   +0.047   0.3803
+  c0.2_x0.932_U2.0    in      True     0.0246   1.1406    0.3698   +0.047   0.3556
+  c0.2_x0.932_U4.0    in      True     0.1720   1.2031    0.3982   +0.094   0.3722
+  c0.5_x0.932_U2.0    out     True     0.0000   1.6094    0.5486   +0.516   0.3490
+  c0.5_x0.932_U4.0    out     True     0.0000   1.7969    0.6154   +0.406   0.4052
+  c0.0_x0.950_U2.0    in      True     0.7046   1.1094    0.3610   +0.016   0.3581
+  c0.0_x0.950_U4.0    in      True     0.9088   1.2031    0.3928   +0.047   0.3810
+  c0.2_x0.950_U2.0    in      True     0.4771   1.1094    0.3643   +0.031   0.3563
+  c0.2_x0.950_U4.0    in      True     0.7687   1.2031    0.3948   +0.047   0.3804
+  c0.5_x0.950_U2.0    out     True     0.0000   1.4531    0.4877   +0.453   0.3429
+  c0.5_x0.950_U4.0    out     True     0.0000   1.6094    0.5368   +0.469   0.3498
+  W_x0.920_U4.0       out     True     0.0000   1.9219    0.6702   +0.375   0.4322
+  A_x0.920_U4.0       in      True     0.5711   1.2031    0.3966   +0.078   0.3745
+  W_x0.932_U4.0       out     True     0.0000   1.7969    0.6188   +0.406   0.4051
+  A_x0.932_U4.0       in      True     0.7868   1.2031    0.3947   +0.047   0.3811
+  W_x0.950_U4.0       out     True     0.0000   1.6094    0.5360   +0.469   0.3489
+  A_x0.950_U4.0       in      True     0.9088   1.2031    0.3928   +0.047   0.3811
+
+C1 (by construction): CV 0.5 max J = 0 over 6 landed cells (outside the window, JAM_FHAT 1.0)
+   CV 0 healthy cells and their J: [('0.920', '2.0', 0.2899), ('0.920', '4.0', 0.589), ('0.932', '2.0', 0.502), ('0.932', '4.0', 0.7918), ('0.950', '2.0', 0.7046), ('0.950', '4.0', 0.9088)]
+
+  C2 x0 0.920 U0 2.0: Rg 0.3674 -> 0.5871 (ln +0.4689); beta 1.1094 -> 1.7031  Rg(0.2) 0.3762  monotone True  -> ok
+  C2 x0 0.920 U0 4.0: Rg 0.3967 -> 0.6640 (ln +0.5152); beta 1.2031 -> 1.9219  Rg(0.2) 0.4023  monotone True  -> ok
+  C2 x0 0.932 U0 2.0: Rg 0.3641 -> 0.5486 (ln +0.4099); beta 1.1094 -> 1.6094  Rg(0.2) 0.3698  monotone True  -> ok
+  C2 x0 0.932 U0 4.0: Rg 0.3947 -> 0.6154 (ln +0.4441); beta 1.2031 -> 1.7969  Rg(0.2) 0.3982  monotone True  -> ok
+  C2 x0 0.950 U0 2.0: Rg 0.3610 -> 0.4877 (ln +0.3008); beta 1.1094 -> 1.4531  Rg(0.2) 0.3643  monotone True  -> ok
+  C2 x0 0.950 U0 4.0: Rg 0.3928 -> 0.5368 (ln +0.3123); beta 1.2031 -> 1.6094  Rg(0.2) 0.3948  monotone True  -> ok
+C2a (Am. 1, endpoints CV 0 -> 0.5): 6/6 decided pairs  PASS
+C2b (as registered, incl. 0 -> 0.2 -> 0.5 monotone where CV 0.2 is healthy): 6/6  PASS
+  C2t x0 0.920 U0 2.0: terminal Rg 0.3578 -> 0.3568 (ln -0.0030)
+  C2t x0 0.920 U0 4.0: terminal Rg 0.3766 -> 0.4308 (ln +0.1346)
+  C2t x0 0.932 U0 2.0: terminal Rg 0.3549 -> 0.3490 (ln -0.0167)
+  C2t x0 0.932 U0 4.0: terminal Rg 0.3803 -> 0.4052 (ln +0.0633)
+  C2t x0 0.950 U0 2.0: terminal Rg 0.3581 -> 0.3429 (ln -0.0432)
+  C2t x0 0.950 U0 4.0: terminal Rg 0.3810 -> 0.3498 (ln -0.0854)
+C2t (Am. 3, terminal Rg): 2/6  FAIL
+
+  C3 x0 0.920: Delta ln Rg +0.5152; (a) window share 1.018 [True]; (b) activation |share| 0.000 [True]; (c) d32 convention |share| not run at this cap (Am. 2)
+  C3 x0 0.932: Delta ln Rg +0.4441; (a) window share 1.012 [True]; (b) activation |share| 0.000 [True]; (c) d32 convention |share| not run at this cap (Am. 2)
+  C3 x0 0.950: Delta ln Rg +0.3123; (a) window share 0.995 [True]; (b) activation |share| 0.000 [True]; (c) d32 convention |share| not run at this cap (Am. 2)
+C3 (a and b): 3/3 decided x0  PASS
+C3c (d32 convention, Am. 1): 0/0  INCOMPLETE
+
+C4 J+ (n 0): []
+   J0: none
+C4: 0/0 on the predicted side of S2* = 0.1  NOT INFORMATIVE (a class is empty)
+
+C5 health: 24/24 healthy with provenance; excluded: []
+
+C4 is not re-graded at EPS_MIN 0.03 (recoil contrast collapses by design, epssig G2).
+X2 class robustness (cells healthy at both caps): 16/16  PASS
