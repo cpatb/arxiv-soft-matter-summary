@@ -68,7 +68,10 @@ Stress-controlled activation (jamwin P2), L9, default cap (J magnitudes are cap 
 orderings are what `epssig` showed robust), DEM → DNS transfer of χ, σ\*, δ, the DEM φ axis is not
 the bench's (only x transfers).
 
-## Amendment 1 — pre-data referee (registered 06:28 CDT 2026-09-24, before any cell landed; commit time is the record)
+## Amendment 1 — pre-data referee (committed 06:28:06 CDT 2026-09-24; commit time is the record)
+⚠ Timing, stated exactly: two cells (c0.5_x0.920_U2.0 / U4.0) had FINISHED inside WSL at ~06:27:39 and
+~06:28:03, seconds before this commit; neither had been pulled or read (the first pull is after this
+note). Neither cell can move C3 (x₀ 0.920 C3 needs U₀-4 c0.0, W, A) or C2 on its own.
 A physics-referee pass on this file and `grade_cvmap.py` returned no FATAL and 3 MATERIAL, all acted on
 here. No bar is loosened; each change separates a question the original wording had merged.
 1. **C3(c) is graded separately.** The registered "decided" list for C3 is (c0.0, c0.5, W, A) at U₀ 4,
