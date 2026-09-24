@@ -44,3 +44,22 @@ h ≤ D₀; the gate added after `cvmap`'s 27th cell). N is printed before and a
 - The same H1/H2 on S̄ are reported beside, not graded.
 - **Scope:** this is one solver and one closure. H passing says the DNS cannot tell the two states apart
   BY CONSTRUCTION of its constitutive law. It says nothing about real suspensions.
+
+## RESULT (graded 2026-09-24; `out/stiffness_collapse.txt`)
+N: 191 cell dirs → 177 matching config → 135 healthy → 130 admissible → 130 classed; 14 campaigns.
+
+| gate | verdict | numbers |
+|---|---|---|
+| **H1** collapse on peak viscosity S | **PASS 3/3** | Spearman ρ = −0.850 (U₀ 1, n 9), −0.819 (U₀ 2, n 69), −0.968 (U₀ 4, n 52) |
+| **H2** class-blind at matched S | **FAIL 1/3** | median residual of jammed cells −0.165 (U₀ 1, n 3), −0.056 (U₀ 2, n 12), −0.033 (U₀ 4, n 14, pass). All three are on the H0 side |
+
+**Reading.** Peak viscosity orders most of the peak spread across 130 cells, 14 campaigns and three caps. At
+MATCHED peak viscosity, though, the drops that jam spread 3–17 % less, with the same sign at all three U₀.
+Every interior J+ cell sits at the EPS_MIN 0.03 cap (S = 7.013). So "jammed" is not reducible to the peak
+viscosity: something else that the class carries matters.
+**Post-hoc (labelled; not a verdict).** Several J0 cells ALSO reach the cap at EPS_MIN 0.03 without jamming
+(the floor binds at f̂_cap = (1 − x/(1−EPS_MIN))/(1−χ) < 1 while x < χ). Among at-cap cells at matched U₀, the
+spread falls continuously with J. At U₀ 2, for example: J0 at-cap −0.92 … −0.98, J 0.025 −0.995,
+J 0.29/0.50/0.70 −1.001/−1.010/−1.019. In this closure, jamming and reaching the cap are the same event, the ε
+floor binding. The natural class-blind variable is therefore the CAPPED VOLUME, which no run has recorded.
+→ `PREREG_CAPVOL_2026-09-24.md`.
