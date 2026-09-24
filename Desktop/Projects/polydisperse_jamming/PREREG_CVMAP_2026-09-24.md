@@ -106,8 +106,12 @@ failure at the jammed viscosity floor. Every CV 0.5 cell (12 of 12, including W 
 | C5 health | 19/27 | deaths listed above |
 
 **What it says.** (1) At the one (x₀, U₀) the solver can integrate, raising CV from 0 to 0.5 at fixed
-weighed φ takes a jammed drop (J 0.33) to one that cannot jam and spreads 81 % further in Rg. The
-window channel carries all of it: W reproduces the full CV 0.5 cell to 0.6 %, and CV 0.5's softer
+weighed φ takes a jammed drop (J 0.33) to one that cannot jam. ⚠ **Corrected after referee:** the max-Rg
+comparison (0.3405 → 0.6154) sets a drop that ARRESTS at impact (its max IS its terminal state) against
+the transient splash peak of a drop that then recoils 34 %. The comparable TERMINAL state (mean over
+t/τ 5.5–6) is **Rg 0.3405 → 0.4052 (+19 %), β 1.047 → 1.266 (+21 %)**. The registered C2 bar reads the
+max, so it is unchanged; the magnitude to quote is the terminal one. The
+window channel carries all of it: W reproduces the full CV 0.5 cell to 0.6 % at the peak and to 0.02 % terminally (0.4051 vs 0.4052; W tracks it over the whole trajectory), and CV 0.5's softer
 activation alone moves Rg by 0.03 %. This is the founding observation reproduced in the DNS, with the
 mechanism the closure names. It is one decided pair, so the registered C2 is not informative, and
 Amendment 2 exists to decide it. (2) **Apex recoil FAILS on the new knob.** A drop that is thickened
@@ -129,3 +133,9 @@ EPS_MIN 0.03. Everything else is identical, including the cell list and JAM_FHAT
 - **X2 (class robustness)**: every cell healthy at both caps keeps its J+/J0 class.
 - C4 is NOT re-graded here: at the softer cap the recoil contrast collapses by design (`epssig` G2).
 - Health: rc 0 and t/τ ≥ 5.9. The run tag must carry EPS_MIN 0.03.
+
+## Amendment 3 — a terminal-state spreading gate (referee on the RESULT; registered at 09:05 CDT, when 3 of the 24 E03 cells had finished, UNREAD: c0.5_x0.920_U4.0, c0.5_x0.950_U4.0, W_x0.920_U4.0 — none of them a CV-0 partner, which is what decides the gate)
+- **C2t′**: at every (x₀, U₀) where CV 0 and CV 0.5 are both healthy at EPS_MIN 0.03, terminal Rg (mean over
+  t/τ 5.5–6) of CV 0.5 > that of CV 0, strictly; ≥ 2 decided pairs. Stricter in kind than C2a′: it cannot
+  pass on a splash peak that then retracts. C2a′/C2b′ stay graded as registered, beside it.
+- Both peak and terminal Rg are printed for every cell.

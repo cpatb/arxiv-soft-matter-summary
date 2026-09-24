@@ -63,6 +63,7 @@ def load():
                       J=float(a[:, 7].max()) if a.size else math.nan,
                       beta=float(a[:, 2].max()) if a.size else math.nan,
                       rg=float(a[:, 11].max()) if a.size else math.nan,
+                      rgT=float(a[(a[:, 1] >= 5.5) & (a[:, 1] <= 6.0), 11].mean()) if healthy else math.nan,
                       s2=sig(a, r["u0"])[1] if healthy else math.nan)
     return c
 
@@ -80,7 +81,7 @@ def main():
                                                      if MODE else "") + f"; provenance includes eps_min {EPS}")
     say(f"cells landed {sum(not v['missing'] for v in c.values())}/{len(c)}; provenance "
         f"{sum(v['prov'] for v in c.values())}; healthy+provenance {len(ok)}")
-    say("  label               window  healthy  J        beta_max  Rg_max   S2")
+    say("  label               window  healthy  J        beta_max  Rg_max   S2       Rg_term")
     for lab in c:
         v = c[lab]
         if v["missing"]:
@@ -88,7 +89,7 @@ def main():
             continue
         tag = "" if lab in ok else f"   [EXCLUDED rc {v['rc']} t/tau {v['t']:.3g}; prov {v['prov']}]"
         say(f"  {lab:18s}  {'in ' if v['inside'] else 'out'}     {str(v['healthy']):5s}    "
-            f"{v['J']:.4f}   {v['beta']:.4f}    {v['rg']:.4f}   {v['s2']:+.3f}{tag}")
+            f"{v['J']:.4f}   {v['beta']:.4f}    {v['rg']:.4f}   {v['s2']:+.3f}   {v['rgT']:.4f}{tag}")
 
     # C1 -- by construction, recorded
     c05 = [c[f"c0.5_x{x}_U{u}"] for x in X0S for u in US if not c[f"c0.5_x{x}_U{u}"]["missing"]]
@@ -123,6 +124,19 @@ def main():
         + ("PASS" if dec >= 2 and good_a == dec else "FAIL" if good_a < dec else "NOT INFORMATIVE (< 2 decided)"))
     say(f"C2b (as registered, incl. 0 -> 0.2 -> 0.5 monotone where CV 0.2 is healthy): {good}/{dec}  "
         + ("PASS" if dec >= 2 and good == dec else "FAIL" if good < dec else "NOT INFORMATIVE (< 2 decided)"))
+
+    # C2t (Am. 3) -- terminal-state spreading
+    t_dec, t_ok = 0, 0
+    for x in X0S:
+        for u in US:
+            a_, b_ = f"c0.0_x{x}_U{u}", f"c0.5_x{x}_U{u}"
+            if a_ in ok and b_ in ok:
+                t_dec += 1
+                t_ok += ok[b_]["rgT"] > ok[a_]["rgT"]
+                say(f"  C2t x0 {x} U0 {u}: terminal Rg {ok[a_]['rgT']:.4f} -> {ok[b_]['rgT']:.4f} "
+                    f"(ln {math.log(ok[b_]['rgT'] / ok[a_]['rgT']):+.4f})")
+    say(f"C2t (Am. 3, terminal Rg): {t_ok}/{t_dec}  " + ("PASS" if t_dec >= 2 and t_ok == t_dec else
+                                                      "FAIL" if t_ok < t_dec else "NOT INFORMATIVE (< 2 decided)"))
 
     # C3 -- channel split
     say("")
