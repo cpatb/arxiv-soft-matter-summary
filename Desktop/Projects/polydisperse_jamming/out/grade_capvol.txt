@@ -1,0 +1,65 @@
+grade_capvol -- PREREG_CAPVOL_2026-09-24.md
+  cv_c0.0_x0.950_U4.0: MISSING
+  km_w1_x0.92_U1.0: MISSING
+G0 wiring (non-diagnostic columns identical to the original): 22/22  PASS
+G1 V >= J on J+ reruns: 17/17  PASS
+
+  label                   U0  class  src    healthy  V (capped)  J(orig)  ln Rg_max
+  km_w0_x0.85_U1.0        1   J0     orig   True     0.0000      0.000    -0.6845
+  km_w0_x0.88_U1.0        1   J0     orig   True     0.0000      0.000    -0.8835
+  km_w1_x0.85_U1.0        1   J0     rerun  True     0.0477      0.000    -0.8727
+  km_w1_x0.88_U1.0        1   J+     rerun  True     0.4750      0.041    -1.0134
+  km_w0_x0.92_U1.0        1   J+     rerun  True     0.5196      0.058    -1.0453
+  cv_c0.5_x0.920_U2.0     2   J0     orig   True     0.0000      0.000    -0.5325
+  cv_c0.5_x0.932_U2.0     2   J0     orig   True     0.0000      0.000    -0.6003
+  cv_c0.5_x0.950_U2.0     2   J0     orig   True     0.0000      0.000    -0.7182
+  km_w0_x0.85_U2.0        2   J0     orig   True     0.0000      0.000    -0.6300
+  km_w0_x0.88_U2.0        2   J0     orig   True     0.0000      0.000    -0.8935
+  km_w1_x0.85_U2.0        2   J0     rerun  True     0.3621      0.000    -0.9247
+  new_s_x0.89_U2.0        2   J0     rerun  True     0.4023      0.000    -0.9529
+  new_d_x0.86_U2.0        2   J0     rerun  True     0.5941      0.000    -0.9539
+  cv_c0.2_x0.920_U2.0     2   J0     rerun  True     0.5987      0.000    -0.9776
+  new_s_x0.90_U2.0        2   J0     rerun  True     0.6214      0.000    -0.9777
+  cv_c0.2_x0.932_U2.0     2   J+     rerun  True     0.7322      0.025    -0.9948
+  km_w1_x0.88_U2.0        2   J+     rerun  True     0.7624      0.357    -0.9848
+  cv_c0.0_x0.920_U2.0     2   J+     rerun  True     0.7945      0.290    -1.0014
+  km_w0_x0.92_U2.0        2   J+     rerun  True     0.8072      0.338    -1.0022
+  cv_c0.2_x0.950_U2.0     2   J+     rerun  True     0.8583      0.477    -1.0098
+  cv_c0.0_x0.932_U2.0     2   J+     rerun  True     0.8600      0.502    -1.0102
+  km_w1_x0.92_U2.0        2   J+     rerun  True     0.9075      0.739    -1.0112
+  cv_c0.0_x0.950_U2.0     2   J+     rerun  True     0.9383      0.705    -1.0189
+  cv_c0.5_x0.920_U4.0     4   J0     orig   True     0.0000      0.000    -0.4095
+  cv_c0.5_x0.932_U4.0     4   J0     orig   True     0.0000      0.000    -0.4854
+  cv_c0.5_x0.950_U4.0     4   J0     orig   True     0.0000      0.000    -0.6221
+  km_w0_x0.85_U4.0        4   J0     orig   True     0.0000      0.000    -0.5547
+  km_w0_x0.88_U4.0        4   J0     orig   True     0.0000      0.000    -0.8457
+  new_s_x0.89_U4.0        4   J0     rerun  True     0.7132      0.000    -0.8958
+  km_w1_x0.85_U4.0        4   J0     rerun  True     0.7188      0.000    -0.8835
+  new_d_x0.86_U4.0        4   J0     rerun  True     0.8403      0.000    -0.8998
+  cv_c0.2_x0.920_U4.0     4   J0     rerun  True     0.8446      0.000    -0.9106
+  new_s_x0.90_U4.0        4   J0     rerun  True     0.8551      0.000    -0.9110
+  cv_c0.2_x0.932_U4.0     4   J+     rerun  True     0.9198      0.172    -0.9208
+  km_w1_x0.88_U4.0        4   J+     rerun  True     0.9327      0.673    -0.9163
+  cv_c0.0_x0.920_U4.0     4   J+     rerun  True     0.9512      0.589    -0.9247
+  km_w0_x0.92_U4.0        4   J+     rerun  True     0.9543      0.646    -0.9251
+  cv_c0.2_x0.950_U4.0     4   J+     rerun  True     0.9689      0.769    -0.9293
+  cv_c0.0_x0.932_U4.0     4   J+     rerun  True     0.9700      0.792    -0.9296
+  km_w1_x0.92_U4.0        4   J+     rerun  True     0.9808      0.928    -0.9302
+
+healthy+admissible+classed: 40/40
+  U0 1: n 5 < 6, H3 not graded
+     H4 J0-at-cap km_w1_x0.85_U1.0: V 0.0477 OUTSIDE J+ range [0.4750, 0.5196] (not graded)
+  U0 2: H3 Spearman rho(V, ln Rg_max) = -0.988 (n 18)  PASS
+     H4 J0-at-cap cv_c0.2_x0.920_U2.0: V 0.5987 OUTSIDE J+ range [0.7322, 0.9383] (not graded)
+     H4 J0-at-cap km_w1_x0.85_U2.0: V 0.3621 OUTSIDE J+ range [0.7322, 0.9383] (not graded)
+     H4 J0-at-cap new_s_x0.89_U2.0: V 0.4023 OUTSIDE J+ range [0.7322, 0.9383] (not graded)
+     H4 J0-at-cap new_s_x0.90_U2.0: V 0.6214 OUTSIDE J+ range [0.7322, 0.9383] (not graded)
+     H4 J0-at-cap new_d_x0.86_U2.0: V 0.5941 OUTSIDE J+ range [0.7322, 0.9383] (not graded)
+  U0 4: H3 Spearman rho(V, ln Rg_max) = -0.983 (n 17)  PASS
+     H4 J0-at-cap cv_c0.2_x0.920_U4.0: V 0.8446 OUTSIDE J+ range [0.9198, 0.9808] (not graded)
+     H4 J0-at-cap km_w1_x0.85_U4.0: V 0.7188 OUTSIDE J+ range [0.9198, 0.9808] (not graded)
+     H4 J0-at-cap new_s_x0.89_U4.0: V 0.7132 OUTSIDE J+ range [0.9198, 0.9808] (not graded)
+     H4 J0-at-cap new_s_x0.90_U4.0: V 0.8551 OUTSIDE J+ range [0.9198, 0.9808] (not graded)
+     H4 J0-at-cap new_d_x0.86_U4.0: V 0.8403 OUTSIDE J+ range [0.9198, 0.9808] (not graded)
+H3: 2/2 groups  PASS
+H4: 0 interior J0-at-cap cells, median residual +nan  NOT INFORMATIVE (< 3)

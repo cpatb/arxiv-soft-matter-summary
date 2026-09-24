@@ -37,3 +37,23 @@ V = max over t/τ ≤ 0.5 of jam_frac(JAM_FHAT = f̂_cap). Class as before: J+ i
 One closure, one cap (0.03), L9. If HV passes, then in this DNS "jammed" has NO dynamical content beyond the
 volume of fluid at the viscosity cap. The closure has no yield stress and no elasticity, so a bench signature of
 jamming as a SOLID (rather than a very viscous liquid) cannot come from this DNS.
+
+## RESULT (28/30 cells landed; graded 2026-09-24 12:05 CDT, `out/grade_capvol.txt`)
+Two cells were still running when the author had to travel: cv_c0.0_x0.950_U4.0 and km_w1_x0.92_U1.0, both J+.
+Neither can make H4 informative (both are J+). The second would bring U₀ 1 to n = 6 and let H3 be graded there.
+
+| gate | verdict | numbers |
+|---|---|---|
+| **G0** wiring | **PASS 22/22** | every non-diagnostic column is identical to the original run, so JAM_FHAT is diagnostic-only |
+| **G1** V ≥ J | **PASS 17/17** | |
+| **H3** V orders the spread | **PASS 2/2** | Spearman ρ = −0.988 (U₀ 2, n 18), −0.983 (U₀ 4, n 17); U₀ 1 n 5, not graded |
+| **H4** class-blind at matched V | **NOT INFORMATIVE** | 0 interior J0 cells: every at-cap J0 cell has a SMALLER capped volume than every J+ cell (U₀ 2: J0 ≤ 0.62, J+ ≥ 0.73; U₀ 4: J0 ≤ 0.86, J+ ≥ 0.92) |
+
+**Reading (post-hoc, labelled; the registered H4 did not decide).** The class boundary coincides with a gap
+in V: a drop that can jam caps more of its volume than any unjammable drop tested. Sorted by V, ln Rg_max is
+one monotone sequence across the class boundary. At U₀ 2 there is one inversion of 0.010, at U₀ 4 one of
+0.005, and none at the J0 → J+ step. The 6 NEW out-of-sample J0 cells fall in sequence with the old ones.
+This fits the view that in this closure "jammed" = "a larger volume at the viscosity cap". It is not
+a test of it: the registered comparison needs J0 and J+ cells at overlapping V, and none exist here. To
+make H4 decidable, an unjammable cell would need V ≥ 0.73 (U₀ 2). A higher U₀ or x just under χ is the
+place to look; the V ranges show where.
