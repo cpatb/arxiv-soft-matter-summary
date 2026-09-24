@@ -11,5 +11,5 @@ which uses CV 0.5's x and χ with CV 0's σ\* and δ. Left panel: default EPS_MI
 EPS_MIN 0.03, where every cell of the grid survives. L9, cs_fit base, DEM inputs at μ_p 0.3.
 Reading: the jammed drops arrest within t/τ ≈ 0.1. The CV-0.5 drop spreads to Rg ≈ 0.62, retracts
 by t/τ ≈ 2, and ends 6.5 % (default cap: 19 %) above the jammed footprint, still creeping up at t/τ = 6.
-Across the whole grid the terminal gap is sign-mixed (−8.5 % … +14.4 %); only the peak is one-signed. W overlies the full CV-0.5 curve, so the window
+Across the whole grid the terminal gap is sign-mixed (−8.2 % … +14.4 %); only the peak is one-signed. W overlies the full CV-0.5 curve, so the window
 carries the effect. Data in `C1_cvmap_spread.csv`.

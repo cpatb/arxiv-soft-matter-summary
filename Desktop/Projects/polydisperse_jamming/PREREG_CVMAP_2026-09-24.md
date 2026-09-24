@@ -158,7 +158,7 @@ EPS_MIN 0.03. Everything else is identical, including the cell list and JAM_FHAT
    fixed weighed φ, CV 0 → 0.5 turns a drop that jams on impact (J 0.29–0.91) and arrests within
    t/τ ≈ 0.1 into one that cannot jam and spreads far further first (peak Rg +35 % to +67 %). It then
    RETRACTS by 30–39 % of its peak (figure C1). That is "spreading and inertial-dominated **for some time**".
-   The registered terminal gate FAILED 2/6: the terminal (t/τ 5.5–6) difference is SIGN-MIXED, from −8.5 %
+   The registered terminal gate FAILED 2/6: the terminal (t/τ 5.5–6) difference is SIGN-MIXED, from −8.2 %
    (x₀ 0.950 U₀ 4; the fluid drop over-retracts) to +14.4 % (x₀ 0.920 U₀ 4), and at x₀ 0.920 / 0.932 U₀ 4
    the fluid drop's Rg is still rising at TEND (not converged). The robust, one-signed difference is the
    transient peak (+35 … +67 %); the terminal footprint is not a reliable separator on this record.
