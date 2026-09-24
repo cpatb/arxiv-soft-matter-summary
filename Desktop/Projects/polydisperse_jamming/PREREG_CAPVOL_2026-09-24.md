@@ -57,3 +57,8 @@ This fits the view that in this closure "jammed" = "a larger volume at the visco
 a test of it: the registered comparison needs J0 and J+ cells at overlapping V, and none exist here. To
 make H4 decidable, an unjammable cell would need V ≥ 0.73 (U₀ 2). A higher U₀ or x just under χ is the
 place to look; the V ranges show where.
+
+### Final (30/30 landed, regraded 2026-09-24)
+The two remaining cells finished healthy. **G0 24/24, G1 19/19, H3 PASS 3/3** (ρ −0.899 at U₀ 1 with n 6,
+−0.988, −0.985). **H4 is still NOT INFORMATIVE**: the new cells are both J+ and do not create overlap. 42/42
+healthy and admissible.
