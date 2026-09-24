@@ -67,3 +67,21 @@ In-window cells: CV 0 at all three x₀ (f_c 0.895 / 0.761 / 0.560); CV 0.2 at x
 Stress-controlled activation (jamwin P2), L9, default cap (J magnitudes are cap numbers; classes and
 orderings are what `epssig` showed robust), DEM → DNS transfer of χ, σ\*, δ, the DEM φ axis is not
 the bench's (only x transfers).
+
+## Amendment 1 — pre-data referee (registered 06:28 CDT 2026-09-24, before any cell landed; commit time is the record)
+A physics-referee pass on this file and `grade_cvmap.py` returned no FATAL and 3 MATERIAL, all acted on
+here. No bar is loosened; each change separates a question the original wording had merged.
+1. **C3(c) is graded separately.** The registered "decided" list for C3 is (c0.0, c0.5, W, A) at U₀ 4,
+   but the original grader counted a DEAD D arm as a FAIL of C3. Now: C3 = (a) AND (b) over decided x₀;
+   **C3c** (d32 convention, bar unchanged ≤ 0.2) is graded over the x₀ where D is also healthy, and a
+   dead D is "undecided", never a fail.
+2. **A floor on Δ.** C3's shares divide by Δ = ln Rg(c0.5)/Rg(c0.0). An x₀ with |Δ| < 0.05 is
+   UNDECIDED for C3 (printed with its numbers, not graded). 0.05 is set before data from the only
+   prior scale on record: kmerdecomp's activation-only arms moved ln Rg by ≤ 0.03 (≤ 3 %), so a Δ
+   below 0.05 cannot separate a window share of 1 from the activation channel's own size.
+3. **C2 split into C2a and C2b.** C2a (the author's observation, the headline): CV 0 → 0.5 endpoints,
+   Rg strictly larger and β not smaller by more than 1/64, at every decided (x₀, U₀), ≥ 2 decided.
+   C2b (unchanged strict 0 → 0.2 → 0.5 monotonicity) is graded as registered and reported beside it.
+   Reason: at x₀ 0.920 the CV-0.2 cell sits 0.0097 below its χ with Θ 83.6, near the closure's
+   divergence, so C2b can fail on a near-singular thickening that is not evidence against the window
+   mechanism — and C2b failing there would be a finding about thickening, not a reason to drop it.

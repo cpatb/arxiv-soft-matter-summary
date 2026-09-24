@@ -21,6 +21,7 @@ CELLS = os.path.join(HERE, "out", "cvmap_cells.txt")
 Q = 1 / 64              # one beta quantum at L9
 S2_STAR = 0.1           # pre-fixed in PREREG_JAMSIG Amendment 1, unchanged
 J_ON = 0.01             # "jams" (kmermap R1 convention)
+DELTA_FLOOR = 0.05      # Am. 1: |Delta ln Rg| below this leaves C3 undecided (kmerdecomp activation <= 0.03)
 X0S = ("0.920", "0.932", "0.950")
 CVS = ("0.0", "0.2", "0.5")
 US = ("2.0", "4.0")
@@ -92,7 +93,7 @@ def main():
 
     # C2 -- spreading
     say("")
-    dec, good = 0, 0
+    dec, good, good_a = 0, 0, 0
     for x in X0S:
         for u in US:
             a, b, m = (f"c0.0_x{x}_U{u}", f"c0.5_x{x}_U{u}", f"c0.2_x{x}_U{u}")
@@ -101,6 +102,7 @@ def main():
                 continue
             dec += 1
             s = ok[b]["rg"] > ok[a]["rg"] and ok[b]["beta"] >= ok[a]["beta"] - Q
+            good_a += s
             chain = ""
             if m in ok:
                 mono = ok[a]["rg"] <= ok[m]["rg"] <= ok[b]["rg"]
@@ -110,12 +112,14 @@ def main():
             say(f"  C2 x0 {x} U0 {u}: Rg {ok[a]['rg']:.4f} -> {ok[b]['rg']:.4f} "
                 f"(ln {math.log(ok[b]['rg'] / ok[a]['rg']):+.4f}); beta {ok[a]['beta']:.4f} -> "
                 f"{ok[b]['beta']:.4f}{chain}  -> {'ok' if s else 'VIOLATED'}")
-    say(f"C2: {good}/{dec} decided pairs  " + ("PASS" if dec >= 2 and good == dec else
-                                             "FAIL" if good < dec else "NOT INFORMATIVE (< 2 decided)"))
+    say(f"C2a (Am. 1, endpoints CV 0 -> 0.5): {good_a}/{dec} decided pairs  "
+        + ("PASS" if dec >= 2 and good_a == dec else "FAIL" if good_a < dec else "NOT INFORMATIVE (< 2 decided)"))
+    say(f"C2b (as registered, incl. 0 -> 0.2 -> 0.5 monotone where CV 0.2 is healthy): {good}/{dec}  "
+        + ("PASS" if dec >= 2 and good == dec else "FAIL" if good < dec else "NOT INFORMATIVE (< 2 decided)"))
 
     # C3 -- channel split
     say("")
-    c3 = []
+    c3, c3c = [], []
     for x in X0S:
         need = [f"c0.0_x{x}_U4.0", f"c0.5_x{x}_U4.0", f"W_x{x}_U4.0", f"A_x{x}_U4.0"]
         if not all(k in ok for k in need):
@@ -123,6 +127,10 @@ def main():
             continue
         r0, r5, rw, ra = (ok[k]["rg"] for k in need)
         D = math.log(r5 / r0)
+        if abs(D) < DELTA_FLOOR:
+            say(f"  C3 x0 {x}: UNDECIDED |Delta ln Rg| = {abs(D):.4f} < {DELTA_FLOOR} (Am. 1); "
+                f"Rg c0 {r0:.4f} c0.5 {r5:.4f} W {rw:.4f} A {ra:.4f}")
+            continue
         share = math.log(rw / r0) / D
         act = abs(math.log(ra / r0)) / abs(D)
         pa, pb = 0.8 <= share <= 1.2, act <= 0.2
@@ -130,12 +138,16 @@ def main():
         if f"D_x{x}_U4.0" in ok:
             conv = abs(math.log(ok[f"D_x{x}_U4.0"]["rg"] / r5)) / abs(D)
         pc = conv is not None and conv <= 0.2
-        c3.append(pa and pb and pc)
+        c3.append(pa and pb)
+        if conv is not None:
+            c3c.append(pc)
         say(f"  C3 x0 {x}: Delta ln Rg {D:+.4f}; (a) window share {share:.3f} [{pa}]; (b) activation "
             f"|share| {act:.3f} [{pb}]; (c) d32 convention |share| "
             + (f"{conv:.3f} [{pc}]" if conv is not None else "undecided (D dead)"))
-    say(f"C3: {sum(c3)}/{len(c3)} decided x0  " + ("PASS" if c3 and all(c3) else
-                                                  "FAIL" if c3 else "INCOMPLETE"))
+    say(f"C3 (a and b): {sum(c3)}/{len(c3)} decided x0  " + ("PASS" if c3 and all(c3) else
+                                                            "FAIL" if c3 else "INCOMPLETE"))
+    say(f"C3c (d32 convention, Am. 1): {sum(c3c)}/{len(c3c)}  " + ("PASS" if c3c and all(c3c) else
+                                                                 "FAIL" if c3c else "INCOMPLETE"))
 
     # C4 -- apex recoil
     say("")
