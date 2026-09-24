@@ -174,3 +174,14 @@ EPS_MIN 0.03. Everything else is identical, including the cell list and JAM_FHAT
    cap and +0.063 at 0.03. Its SIGN varies over the grid. **The terminal footprint is not a usable
    observable of this switch; the peak spread and its time course are, but for STIFF vs FLUID, not jammed vs
    thickened**: the unjammed CV-0.2 x₀ 0.920 cell peaks at Rg 0.4023, beside the jammed CV-0 cell's 0.3967.
+
+## Late addendum — the 27th default-cap cell (A x₀ 0.950 U₀ 4) landed after the RESULT was written
+It passes the registered health rule (rc 0, t/τ 6), so as registered: **cells 27/27, healthy 20/27, C4 17/20
+FAIL** (the new cell, J 1.0, has S2 0.312: a "jammed drop that recoils"). C3 at x₀ 0.950 stays undecided
+(c0.0 died). **Post-hoc, labelled, verdicts above unchanged:** the cell is physically INADMISSIBLE. Long after
+arrest (t/τ 1.3–1.8), umax reaches 12.1 U₀, the drop grows taller than D₀ (h 1.164), its centre of mass rises
+above release (zc 0.509 > 0.5), and J jumps 0.47 → 1.0. A passive drop cannot gain energy, so this is the
+late-jump precursor seen in `kmerdrop2`, not a rebound. An admissibility scan (late umax > U₀, zc > 0.5 or
+h > D₀ after t/τ 0.5) over EVERY healthy cell of both campaigns flags this cell and no other. Excluding it on
+admissibility leaves C4 at 17/19 with the same two genuine failures. **The registered health rule (rc, t/τ)
+cannot see an energy-injecting cell; future graders should add the admissibility gate.**

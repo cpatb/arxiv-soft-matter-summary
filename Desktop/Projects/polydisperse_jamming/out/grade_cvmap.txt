@@ -1,5 +1,5 @@
 grade_cvmap -- PREREG_CVMAP_2026-09-24.md; provenance includes eps_min 0.01
-cells landed 26/27; provenance 26; healthy+provenance 19
+cells landed 27/27; provenance 27; healthy+provenance 20
   label               window  healthy  J        beta_max  Rg_max   S2       Rg_term
   c0.0_x0.920_U2.0    in      False    0.0589   1.0469    0.3433   +nan   nan   [EXCLUDED rc 0 t/tau 3.5; prov True]
   c0.0_x0.920_U4.0    in      False    0.0581   1.0781    0.3475   +nan   nan   [EXCLUDED rc 2 t/tau 0.875; prov True]
@@ -26,7 +26,7 @@ cells landed 26/27; provenance 26; healthy+provenance 19
   A_x0.932_U4.0       in      True     0.3248   1.0469    0.3406   +0.000   0.3406
   D_x0.932_U4.0       out     True     0.0000   1.8594    0.6443   +0.406   0.4061
   W_x0.950_U4.0       out     True     0.0000   1.6094    0.5360   +0.469   0.3489
-  A_x0.950_U4.0       MISSING
+  A_x0.950_U4.0       in      True     1.0000   1.0156    0.3341   +0.312   0.2896
   D_x0.950_U4.0       out     True     0.0000   1.6406    0.5579   +0.500   0.3531
 
 C1 (by construction): CV 0.5 max J = 0 over 6 landed cells (outside the window, JAM_FHAT 1.0)
@@ -45,12 +45,12 @@ C2t (Am. 3, terminal Rg): 1/1  NOT INFORMATIVE (< 2 decided)
 
   C3 x0 0.920: undecided (healthy: ['c0.5_x0.920_U4.0', 'W_x0.920_U4.0'])
   C3 x0 0.932: Delta ln Rg +0.5919; (a) window share 1.009 [True]; (b) activation |share| 0.000 [True]; (c) d32 convention |share| 0.077 [True]
-  C3 x0 0.950: undecided (healthy: ['c0.5_x0.950_U4.0', 'W_x0.950_U4.0'])
+  C3 x0 0.950: undecided (healthy: ['c0.5_x0.950_U4.0', 'W_x0.950_U4.0', 'A_x0.950_U4.0'])
 C3 (a and b): 1/1 decided x0  PASS
 C3c (d32 convention, Am. 1): 1/1  PASS
 
-C4 J+ (n 5): [('c0.0_x0.932_U4.0', 0.0), ('c0.2_x0.932_U2.0', 0.031), ('c0.2_x0.932_U4.0', 0.016), ('c0.2_x0.950_U4.0', 0.0), ('A_x0.932_U4.0', 0.0)]
+C4 J+ (n 6): [('c0.0_x0.932_U4.0', 0.0), ('c0.2_x0.932_U2.0', 0.031), ('c0.2_x0.932_U4.0', 0.016), ('c0.2_x0.950_U4.0', 0.0), ('A_x0.932_U4.0', 0.0), ('A_x0.950_U4.0', 0.312)]
    J0 (n 14): S2 range [0.047, 0.531]
-C4: 17/19 on the predicted side of S2* = 0.1  FAIL (wrong side: ['c0.2_x0.920_U2.0', 'c0.2_x0.920_U4.0'])
+C4: 17/20 on the predicted side of S2* = 0.1  FAIL (wrong side: ['A_x0.950_U4.0', 'c0.2_x0.920_U2.0', 'c0.2_x0.920_U4.0'])
 
-C5 health: 19/27 healthy with provenance; excluded: ['c0.0_x0.920_U2.0', 'c0.0_x0.920_U4.0', 'c0.0_x0.932_U2.0', 'c0.0_x0.950_U2.0', 'c0.0_x0.950_U4.0', 'c0.2_x0.950_U2.0', 'A_x0.920_U4.0', 'A_x0.950_U4.0']
+C5 health: 20/27 healthy with provenance; excluded: ['c0.0_x0.920_U2.0', 'c0.0_x0.920_U4.0', 'c0.0_x0.932_U2.0', 'c0.0_x0.950_U2.0', 'c0.0_x0.950_U4.0', 'c0.2_x0.950_U2.0', 'A_x0.920_U4.0']
