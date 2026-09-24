@@ -1,0 +1,8 @@
+margin_cv05 -- D = phi_m(CV 0.5, mu 0.3) - phi_0(CV 0, mu 0), rung p_hat 3e-5, converged seeds
+  phi_m(0.5, mu .3) per seed: [(1, 0.63804), (2, 0.63898), (3, 0.63298)]
+  phi_0(0.0, mu 0)  per seed: [(1, 0.63133), (2, 0.6309), (3, 0.63324)]
+  paired seeds [1, 2, 3]: D per seed [np.float64(0.00671), np.float64(0.00809), np.float64(-0.00025)]
+  mean D = +0.00485;  se (paired) 0.00258;  protocol floor PHI_SCALE*sqrt(2/n) 0.00171
+  t = D/max(se, floor) = +1.88  against t_crit(df 2) = 4.303
+  unpaired (hypot of per-arm se): t = +2.43
+  => NOT RESOLVED at 95 %: the sign of D is the point estimate only
