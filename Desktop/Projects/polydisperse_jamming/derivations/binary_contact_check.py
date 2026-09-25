@@ -8,7 +8,7 @@ from 2026-09-24 (sigma_star_geometry §5b, rattler_closure §3b-§4):
   T3 rattling ~ surface area: Poisson(Z a^2/<a^2>) per class, P(k < 2), against the per-class iterated
      rattler fractions rat_S_k2, rat_L_k2 (and the size-blind null, Poisson(Z)).
 
-Records: out/phase12*.jsonl with a `by_class` block and both classes populated (0 < x_small_vol < 1),
+Records: out/phase12*.jsonl with mu_p 0.3 (explicit filter) and a `by_class` block and both classes populated (0 < x_small_vol < 1),
 converged, deduplicated by key. Diameters from psd.BinaryPSD(d10=1, ratio, x_small).
 
     python derivations/binary_contact_check.py  ->  out/binary_contact_check.txt
@@ -78,7 +78,7 @@ def main() -> int:
             bc = r.get("by_class")
             if (not bc or not r.get("converged") or "mix_ratio" not in r or "x_small_vol" not in r
                     or not (0.0 < r["x_small_vol"] < 1.0) or r["mix_ratio"] <= 1.0
-                    or not bc.get("n_S") or not bc.get("n_L")):
+                    or not bc.get("n_S") or not bc.get("n_L") or r.get("mu_p") != 0.3):
                 continue
             recs[r["key"]] = r
     say(f"binary records (converged, both classes, dedup by key): {len(recs)}")

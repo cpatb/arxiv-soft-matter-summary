@@ -148,26 +148,6 @@ Reading, with the model's known bias stated first: the model UNDER-predicts f_r 
   shrinks to +0.002 … +0.006.
 - This is conditional on the model's ψ; a per-particle dump (id, radius, contacts) would measure ψ directly.
 
-## 4d. Out of sample on BINARY mixtures (`derivations/binary_contact_check.py` → `out/binary_contact_check.txt`)
-135 converged binary packs (phase12 campaigns: `ug`, `kl`, `extr4/5`, …; size ratio 1.25–5, μ_p 0.3,
-isotropic), which record per-class contact numbers, SS/SL/LL contact counts and per-class iterated rattler
-fractions. Bookkeeping check: 2n_SS + n_SL = n_S z_S etc. to 1.8e-12. Diameters from `psd.BinaryPSD`.
-- **Configuration model (T1):** measured/predicted SL contacts, random pairing of the measured class degrees,
-  median 1.011 (IQR 1.000–1.027); by size ratio 1.007 / 1.008 / 1.022 / 1.057 / 1.016 at 1.25 / 1.41 / 1.5 /
-  4 / 5, with SS and LL correspondingly 0.95–0.99. Same result as the lognormals: random pairing given degrees,
-  plus a small disassortative (mixed-pair) excess that is largest at large size ratio.
-- **Rattling ∝ surface area (T3):** Poisson(Z a²/⟨a²⟩) per class gives rms 0.017 (small class) and 0.018
-  (large class) against the measured per-class rattler fractions; size-blind Poisson(Z) gives 0.133 and
-  0.346. No parameter adjusted. By size ratio the a² rms is ≤ 0.016 (small) / ≤ 0.005 (large) at ratios
-  1.25–1.5 (108 records) and 0.033 / 0.024 at ratio 4, 0.012 / 0.061 at ratio 5 (the large class
-  over-predicted by +0.055 there). **Ternary 1 : 2 : 4 packs** (36 records, `by_design_class`; no pair counts,
-  so T1 cannot run) are worse: rms 0.108, UNDER-predicting rattling by 0.084 on average (size-blind 0.384).
-  So a² is a good law at moderate size ratio and a first approximation (errors up to ~0.1) at wide spans.
-- **Mean-degree exponent (T2) is NOT universal:** p = ln(z_L/z_S)/ln(d_L/d_S) is 1.44–1.48 (median) at
-  ratios 1.25–1.5 — close to the 1.55–1.70 of the lognormal dumps — but 2.39 and 2.86 at ratios 4 and 5,
-  where the small grains are mostly rattlers and z_S collapses. So the σ\* chain's transferred p ≈ 1.6
-  (σ\* §5c) is a moderate-polydispersity number, not a law.
-
 ## 4c. What this says about χ's CV-invariance (model-conditional; `out/backbone_psi_compare.txt`, second table)
 The project measures χ = φ_m/φ₀ barely moving with CV. With φ = φ_B/(1−ψ) exactly, each rise splits as
 d ln φ = d ln φ_B − d ln(1−ψ), and d ln χ = (backbone part difference) + (rattler part difference) between a
@@ -186,6 +166,27 @@ frictional arm and the frictionless arm of the same family.
   for the densification a frictionless backbone gets from the same fines.** That is a mechanism for χ's
   CV-invariance, conditional on ψ; a measured rattler VOLUME (per-grain dumps of frictional AND frictionless
   packs at the same CV) would test it directly.
+
+## 4d. Out of sample on BINARY mixtures (`derivations/binary_contact_check.py` → `out/binary_contact_check.txt`)
+135 converged binary packs (phase12 campaigns: `ug`, `kl`, `extr4/5`, …; size ratio 1.25–5, μ_p 0.3,
+isotropic), which record per-class contact numbers, SS/SL/LL contact counts and per-class iterated rattler
+fractions. Bookkeeping check: 2n_SS + n_SL = n_S z_S etc. to 1.8e-12. Diameters from `psd.BinaryPSD`.
+- **Configuration model (T1):** measured/predicted SL contacts, random pairing of the measured class degrees,
+  median 1.011 (IQR 1.000–1.027); by size ratio 1.007 / 1.008 / 1.022 / 1.057 / 1.016 at 1.25 / 1.41 / 1.5 /
+  4 / 5, with SS and LL correspondingly 0.95–0.99. Same result as the lognormals: random pairing given degrees,
+  plus a small disassortative (mixed-pair) excess that grows through ratio 4 (1.007 → 1.057); the
+  thinly sampled ratio-5 group (n = 9, SL range 0.94–1.13) does not continue it (1.016).
+- **Rattling ∝ surface area (T3):** Poisson(Z a²/⟨a²⟩) per class gives rms 0.017 (small class) and 0.018
+  (large class) against the measured per-class rattler fractions; size-blind Poisson(Z) gives 0.133 and
+  0.346. No parameter adjusted. By size ratio the a² rms is ≤ 0.016 (small) / ≤ 0.005 (large) at ratios
+  1.25–1.5 (108 records) and 0.033 / 0.024 at ratio 4, 0.012 / 0.061 at ratio 5 (the large class
+  over-predicted by +0.055 there). **Ternary 1 : 2 : 4 packs** (36 records, `by_design_class`; no pair counts,
+  so T1 cannot run) are worse: rms 0.108, UNDER-predicting rattling by 0.084 on average (size-blind 0.384).
+  So a² is a good law at moderate size ratio and a first approximation (errors up to ~0.1) at wide spans.
+- **Mean-degree exponent (T2) is NOT universal:** p = ln(z_L/z_S)/ln(d_L/d_S) is 1.44–1.48 (median) at
+  ratios 1.25–1.5 — close to the 1.55–1.70 of the lognormal dumps — but 2.39 and 2.86 at ratios 4 and 5,
+  where the small grains are mostly rattlers and z_S collapses. So the σ\* chain's transferred p ≈ 1.6
+  (σ\* §5c) is a moderate-polydispersity number, not a law.
 
 ## 5. What it means for σ\* (written for closure C; the Z_nr → Z step has not been redone with a²)
 With eq. 13 of the σ\* derivation, σ\*/κ ≈ Zφ/(8π⟨a⟩)·C/q, and Z is now a function of (Z_nr, PSD): the
