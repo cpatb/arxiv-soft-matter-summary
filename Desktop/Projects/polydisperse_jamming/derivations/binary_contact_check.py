@@ -40,20 +40,42 @@ def ternary_block() -> None:
     """T3 on TERNARY packs (phase12_tern*: `by_design_class` c0..c2 with d, n, z_mean, rattler_frac); only
     records with all three classes populated. No pair counts are recorded there, so T1 cannot be run."""
     recs = {}
-    for f in sorted(glob.glob(os.path.join(ROOT, "out", "phase12_tern*.jsonl"))):
+    files = sorted(glob.glob(os.path.join(ROOT, "out", "phase12_tern*.jsonl")))
+    files += sorted(glob.glob(os.path.join(ROOT, "out", "phase12_kl*.jsonl")))
+    for f in files:
         for line in open(f, encoding="utf-8"):
             try:
                 r = json.loads(line)
             except json.JSONDecodeError:
                 continue
             bd = r.get("by_design_class")
-            if not r.get("converged") or not bd or len(bd) != 3 or any(not bd[c]["n"] for c in bd):
+            if (not r.get("converged") or not bd or r.get("mu_p") != 0.3
+                    or sum(1 for c in bd if bd[c]["n"]) < 3):
                 continue
-            recs[r["key"]] = r
-    say(f"\nTERNARY (T3 only): {len(recs)} converged records with three populated classes")
+            # dedup by PHYSICAL cell: tern and kl share 6 cells under different keys
+            recs[(r["family"], r["seed"], r["p_hat_target"], r["n_placed"])] = r
+    say(f"\nDISCRETE K-CLASS packs (tern*, kl*; T3 only): {len(recs)} converged records with >= 3 populated classes")
+    byK = {}
+    for r in recs.values():
+        cl = [c for c in r["by_design_class"].values() if c["n"]]
+        byK.setdefault((len(cl), r["key"].split("_")[0]), []).append(cl)
+    for (K, camp), cls in sorted(byK.items()):
+        e_, e0_ = [], []
+        for cl in cls:
+            n = np.array([c["n"] for c in cl], float)
+            d = np.array([c["d"] for c in cl], float)
+            z = np.array([c["z_mean"] for c in cl], float)
+            fr = np.array([c["rattler_frac"] for c in cl], float)
+            Z = np.sum(n * z) / n.sum()
+            a2 = np.sum(n * d**2) / n.sum()
+            e_ += list(poisson.cdf(1, Z * d**2 / a2) - fr)
+            e0_ += list(poisson.cdf(1, Z) - fr)
+        e_, e0_ = np.array(e_), np.array(e0_)
+        say(f"  {camp:5s} K={K}: {len(cls):3d} records  a^2 rms {np.sqrt(np.mean(e_**2)):.4f} (mean {e_.mean():+.4f})  "
+            f"size-blind rms {np.sqrt(np.mean(e0_**2)):.4f}")
     err, err0 = [], []
     for r in recs.values():
-        cl = list(r["by_design_class"].values())
+        cl = [c for c in r["by_design_class"].values() if c["n"]]
         n = np.array([c["n"] for c in cl], float)
         d = np.array([c["d"] for c in cl], float)
         z = np.array([c["z_mean"] for c in cl], float)
