@@ -92,7 +92,7 @@
 Closures A and B fail (⟨aa⟩/⟨a³⟩ ratio 0.80 and 1.25 at CV 0.5 against a measured 1.01–1.08); C is
 within 2.4 % for μ 0 and within 8.9 % for μ 0.3 in every single cell — 7.1 % without the p̂ 1e-4 rung, which
 also carries all 4 reconstruction exceptions (the p̂ 1e-4 cells unjam intermittently, §7). These are the
-worst CELLS from the printed [min, max] brackets; the row means are 2.2 / 7.7 / 6.0 % (referee passes 2–3,
+worst CELLS from the printed [min, max] brackets; the row means are 2.2 % (μ 0), 6.0 % (μ 0.3 reliable rungs), 7.7 % (μ 0.3 incl. p̂ 1e-4) (referee passes 2–3,
 N2, N4: an earlier version quoted the means as bounds). The parameter-free BMCSL weighting (eq. 12b) gives
 1.00–1.03 — near-invariance as well — and, like C, misses the +5–8 % excess at μ 0.3, CV 0.5, which is
 where half the grains are rattlers (a backbone that is a size-biased subset would show exactly this sign).
