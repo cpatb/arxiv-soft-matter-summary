@@ -115,7 +115,7 @@ def cell_factors(r: dict, d) -> dict | None:
     V = N * math.pi / 6.0 * m3d / r["phi_ss"]
     E = float(d["young"])
     edges = np.concatenate([[0], np.cumsum(d["n"])])
-    lw, Nc, aa, C, q, ss = [], [], [], [], [], []
+    lw, Nc, aa, C, q, ss, cfg = [], [], [], [], [], [], []
     for k in range(len(d["n"])):
         sl = slice(edges[k], edges[k + 1])
         fn, r1, r2 = d["fn"][sl], d["r1"][sl], d["r2"][sl]
@@ -124,6 +124,8 @@ def cell_factors(r: dict, d) -> dict | None:
         lw.append(float(np.sum(fn[ok] * (r1[ok] + r2[ok])) / (3 * V * p)))
         g = A.g_values(fn, r1, r2, p, "derjaguin")
         prod = (r1 * r2)[ok]
+        ends = np.concatenate([r1[ok], r2[ok]])        # contact-end radii: mean = sum k a / sum k
+        cfg.append(float(prod.mean() / ends.mean() ** 2))
         Nc.append(int(ok.sum()))
         aa.append(float(prod.mean()))
         C.append(float(np.mean(g * prod) / (g.mean() * prod.mean())))
@@ -133,7 +135,7 @@ def cell_factors(r: dict, d) -> dict | None:
            "ncV": float(np.mean(Nc)) / V, "aa": float(np.mean(aa)), "C": float(np.mean(C)),
            "q": float(np.mean(q)), "sstar": float(np.mean(ss)), "phi": r["phi_ss"],
            "z": r.get("z_ss"), "cv": r["cv"], "cvr": cv, "a3": m3d / 8.0,
-           "N": N, "Z": 2.0 * float(np.mean(Nc)) / N}
+           "N": N, "Z": 2.0 * float(np.mean(Nc)) / N, "cfg": float(np.mean(cfg))}
     # realised radius moments (radius = d/2): m1..m4
     m1, m2, m3 = d10 / 2, m2d / 4, m3d / 8
     out["aaC"] = m3 / m1                                 # eq. (12): P(i,j) ~ a_i a_j (a_i+a_j)
@@ -173,6 +175,14 @@ def data_checks() -> None:
         say(f"  {r['mu_p']:.1f} {r['p_hat_target']:.0e} {r['cv']:.1f} {r['seed']:3d}   "
             f"{f['LW']:.4f} [{f['LWmin']:.4f},{f['LWmax']:.4f}]  {f['ncV']:.5f}  {f['aa']:.5f}  "
             f"{f['C']:.4f}  {f['q']:.4f}  {f['sstar']:.5g}  {f['recon']:.5g}")
+    # configuration-model test (5b): <r1 r2>_c / <r_end>^2 = 1 iff partner radii are uncorrelated given degree
+    say("  configuration-model test <r1 r2>_c/<r_end>^2 by (mu, p, CV): mean [min, max] over seeds")
+    cg = {}
+    for r, f in rows:
+        cg.setdefault((r["mu_p"], r["p_hat_target"], r["cv"]), []).append(f["cfg"])
+    for kk in sorted(cg):
+        v = np.array(cg[kk])
+        say(f"    {kk}: {v.mean():.4f} [{v.min():.4f}, {v.max():.4f}]  n {v.size}")
     # referee M4: count reconstruction exceptions instead of quoting them
     exc = [(r["key"], f["recon"] / f["sstar"] - 1) for r, f in rows if abs(f["recon"] / f["sstar"] - 1) > 0.003]
     say()

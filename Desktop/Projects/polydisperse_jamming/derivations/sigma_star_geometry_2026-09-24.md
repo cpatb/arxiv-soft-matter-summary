@@ -126,6 +126,10 @@ radius. Substituting in eq. 8 (an identity once that holds):
 **σ\*/κ = Zφ ā_k² / (8π⟨a³⟩) · C/(qΛ)** (eq. 15)
 
 so the size distribution enters σ\* only through φ, Z, ⟨a³⟩ and ā_k — i.e. through the degree law k(a).
+**Tested on the 52 sheared dumps themselves** without grain ids (ā_k is the mean radius over contact ENDS):
+⟨r₁r₂⟩_c/⟨r_end⟩² = 0.998–0.999 at CV 0.2 and 0.973–0.982 at CV 0.5, every (μ_p, p̂) (printed in
+`out/sigma_star_geometry.txt`; CV 0 is 1 identically, so it tests nothing). Eq. 15 therefore holds to
+≤ 2.7 % on the data eq. 7 was checked on, with a small consistent disassortative tilt at CV 0.5.
 Closure C's pair weight aᵢaⱼ(aᵢ+aⱼ) does not factorise, so it is NOT of this form; it matched the sheared
 dumps' ⟨aᵢaⱼ⟩_c to ≤ 8 % without being the mechanism. With k ∝ a² (the law that predicts rattlers best)
 ā_k = m₃/m₂ and eq. 15 gives ⟨aᵢaⱼ⟩_c = (m₃/m₂)²; with the measured degrees the isotropic CV-0.5 cell gives
