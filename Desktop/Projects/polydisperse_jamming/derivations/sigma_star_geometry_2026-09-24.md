@@ -8,13 +8,13 @@
 >
 > **σ\*/κ = (N_c/V)·⟨aᵢaⱼ⟩_c · C / (3 q Λ)** (eq. 7)
 >
-> and, with a pair-statistics closure that holds to ≤ 2 % (μ_p 0) and ≤ 8 % (μ_p 0.3) on 52 sheared DEM
+> and, with a pair-statistics closure that holds to ≤ 2.3 % (μ_p 0) and ≤ 7.8 % (μ_p 0.3) on 52 sheared DEM
 > cells, **σ\*/κ ≈ Z φ / (8π⟨a⟩) · C/q**. At fixed NUMBER-mean radius, polydispersity therefore
 > acts on σ\* through the contact density Zφ alone (plus two O(5 %) corrections). CV 0 → 0.5 cuts σ\*
 > by ×0.73–0.79; the geometric factor Zφ alone is ×0.60–0.71, and the force-size correlation C and the
-> distribution shape q each push BACK by 5–10 %. **The reduction is geometric (fewer load-bearing
-> contacts per volume), not a flattening of the force tail** — the tail-shape factor moves σ\* the
-> other way.
+> distribution shape q each push BACK by 4–10 % (ranges are ACROSS (μ_p, p̂) conditions, not error
+> bars). **Under the Derjaguin normalisation, in sheared packs, the reduction is geometric (fewer
+> load-bearing contacts per volume), and the tail-shape factor moves σ\* the other way.**
 
 ## 1. Frame
 
@@ -48,25 +48,32 @@
    - **C: w ∝ aᵢaⱼ(aᵢ+aⱼ) = R*(aᵢ+aⱼ)²** → `⟨aa⟩ = 2m₃m₂/(2m₂m₁) = m₃/m₁`, so
      **`⟨aa⟩_c/⟨a³⟩ = 1/⟨a⟩` for ANY PSD** (eq. 12). A, B, C are the three terms of the
      Boublík–Mansoori–Carnahan–Starling–Leland hard-sphere-mixture contact value
-     (g_ij ∝ const + R*·… + R*²·…) `[UNVERIFIED — structure recalled, not looked up; used here only as
-     motivation, the closure is tested on data, not on that paper]`.
+     (g_ij = 1/(1−ξ₃) + 3ξ₂/(1−ξ₃)²·σᵢσⱼ/(σᵢ+σⱼ) + 2ξ₂²/(1−ξ₃)³·(σᵢσⱼ/(σᵢ+σⱼ))²; verified by a citation
+     agent against Santos, Yuste & López de Haro, J. Chem. Phys. 117, 5785 (2002), doi:10.1063/1.1502247,
+     Eq. 7 with λ_BGHLL = 1/2; originals Boublík, doi:10.1063/1.1673824; Mansoori et al.,
+     doi:10.1063/1.1675048). Weighting pairs by (aᵢ+aⱼ)²g_ij at the MEASURED φ gives a parameter-free
+     closure (eq. 12b), printed beside C.
 8. With C: **`σ*/κ = Zφ/(8π⟨a⟩) · C/(qΛ)`** (eq. 13). Monodisperse: `Zφ/(8πa)·C/q`, with C = 1.
 9. Z decomposes as `Z = (1−f_r) Z_nr` (f_r rattler NUMBER fraction, Z_nr the backbone count) (eq. 14).
    `geom_isostatic_backbone_2026-09-19.md` shows z_iso contains no length, so Z_nr is forced nearly
    flat in CV; eq. 13 then predicts σ\*(CV)/σ\*(0) ≈ (1−f_r) ratio × φ ratio × C/q ratio.
 
-## 3. Checks (outputs in `out/sigma_star_geometry.txt`)
+## 3. Checks (outputs in `out/sigma_star_geometry.txt`; referee pass 1 findings M1–M5, m1–m4 acted on)
 
-- **SymPy**: eq. 3 → 0; eq. 9 → 0; monodisperse ⟨aa⟩ = a²; lognormal eq. 10 = 1/s. PASS.
-- **Monte Carlo** (2×10⁶ weighted pairs): eq. 9 to ≤ 1.6e-3 at CV 0.2/0.35/0.5. PASS.
+- **SymPy**: eq. 3 → 0; eq. 9 → 0; eq. 12 (closure C, general moments) → 0; monodisperse ⟨aa⟩ = a²;
+  lognormal eq. 10 = 1/s. PASS.
+- **Monte Carlo** (2×10⁶ weighted pairs): eq. 9 to ≤ 1.6e-3 and eq. 12 to ≤ 2.9e-3 at CV 0.2/0.35/0.5. PASS.
 - **External anchor (mechanics identity, not this code):** Λ = 0.9994–1.0042 on all 52 cells
   (snapshot range 0.9935–1.0103). The residual rises with p̂ (1.0003 → 1.0029 at μ 0, 1e-4 → 1e-3), the
   sign and scaling expected from contact overlap shortening ℓ below aᵢ+aⱼ. This also validates V,
   the units of p̂·E, and the dump bookkeeping.
-- **Reconstruction:** eq. 7 from snapshot means reproduces the measured σ\*/κ to ≤ 0.3 % except two
-  low-p̂ μ 0.3 cells (0.8 %, 1.9 %) where the mean of a ratio differs from the ratio of means.
-- **Limiting case:** CV 0 → C = 1 identically, ⟨aa⟩ = a², eq. 13 = Zφ/(8πa)/q: 0.1932 predicted vs
-  0.1932 measured (μ 0.3, p̂ 3e-4, seed 1).
+- **Reconstruction:** eq. 7 from snapshot means reproduces the measured σ\*/κ to ≤ 0.3 % on 48 of 52
+  cells; the 4 exceptions (all μ 0.3, p̂ 1e-4: −0.74 %, +1.88 %, +0.61 %, +0.43 %)
+  are the mean of a ratio differing from the ratio of means. (Referee pass 1 corrected my earlier
+  "two exceptions".)
+- **Limiting case:** CV 0 → C = 1 identically, ⟨aa⟩ = a², eq. 13 = Zφ/(8πa)/(qΛ); printed for all 18
+  CV-0 cells, agreement ≤ 0.02 % (e.g. 0.23581 vs 0.23583). This is the identity at C = 1, so it checks
+  bookkeeping (V, units, pairing), not physics.
 - **Dimensions:** N_c/V [L⁻³] · ⟨aa⟩ [L²] = L⁻¹ = σ\*/κ ([F L⁻²]/[F L⁻¹]). PASS.
 
 ## 4. What the data say (seed-paired, (seed, N) matched, d₁₀-rescaled)
@@ -81,7 +88,15 @@
 
 (all 11 rows in the output file). The product reproduces R_meas to ≤ 1.1 % (exact identity).
 Closures A and B fail (⟨aa⟩/⟨a³⟩ ratio 0.80 and 1.25 at CV 0.5 against a measured 1.01–1.08); C is
-within 2 % for μ 0 and within 8 % for μ 0.3.
+within 2.3 % for μ 0 and within 7.8 % for μ 0.3. The parameter-free BMCSL weighting (eq. 12b) gives
+1.00–1.03 — near-invariance as well — and, like C, misses the +5–8 % excess at μ 0.3, CV 0.5, which is
+where half the grains are rattlers (a backbone that is a size-biased subset would show exactly this sign).
+
+**Health-filter attrition (referee M1).** μ_p 0, CV 0.5 keeps 4 of 12 attempted cells (1/3, 3/6, 0/3 at
+p̂ 1e-4 / 3e-4 / 1e-3), almost all on `servo_held` (the constant-pressure servo unjamming frictionless
+packs near jamming, the 2026-09-12 failure mode). Every other (μ_p, p̂, CV) combination is 100 % healthy.
+The μ_p 0 CV-0.5 rows therefore rest on survivors; the headline range is set by the fully populated
+μ_p 0.3 rows.
 
 **The Z split (qualitative only).** From the records' own `rattler_frac_ss`, `z_nr_ss`: at CV 0.5 the
 (1−f_r) ratio is 0.50–0.68 while Z_nr moves 0.85–1.01 — the rattler fraction carries the drop
@@ -93,9 +108,11 @@ thresholded differently from the dumps (not traced). Only the dump Zφ enters th
 
 1. **σ\* is naturally a d₁₀ quantity**, and eq. 13 says why: with closure C the PSD enters only through
    ⟨a⟩ and Zφ. The "d₃₂ convention" bracket (`predict_cvmap` H2, ×1.145) has no geometric basis here.
-2. **The earlier reading "polydispersity flattens the force tail, hence lowers σ\*"
-   (`three_knobs` §6, card 2026-09-22) is the wrong mechanism.** The tail factor q moves σ\* UP by
-   4–7 % at CV 0.5; the whole reduction is contact density.
+2. **Scope of the correction to `three_knobs` §6.** That lead measured the tail of the SIZE-BLIND f/⟨f⟩ in
+   ISOTROPIC packs and flagged itself as a lead. Here, with the Derjaguin g in SHEARED packs, the tail
+   factor q moves σ\* UP by 4–7 % at CV 0.5 and the reduction is contact density. Two things changed at
+   once (norm and protocol), so this does not say which one flips the sign; it says that for the
+   solver's own σ\* convention the tail is not the mechanism (referee M5).
 3. Transfer to the bench: σ\*(CV)/σ\*(0) ≈ [Zφ]_CV/[Zφ]_0 at fixed number-mean size, and Z is set by
    the rattler population under shear. A measurement of Z (or rattler fraction) in a sheared
    polydisperse pack is a σ\* measurement.
@@ -105,14 +122,17 @@ thresholded differently from the dumps (not traced). Only the dump Zφ enters th
 In LF_DEM the activated fraction at stress σ is the fraction of interacting pairs with gap h < 0, and
 the threshold is exactly Derjaguin (`RepulsiveForce.cpp`: contact force = F_R·R*). Prediction: the
 ratio of rheological onsets R_LF = σ\*_η(CV 0.5)/σ\*_η(CV 0.2) (PREREG_LFSIG P1) equals
-[Z_c φ]_{0.5}/[Z_c φ]_{0.2} × 1.05 within ×1.2, with Z_c the LF_DEM contact number per particle
+[Z_c φ]_{0.5}/[Z_c φ]_{0.2} × (C/q ratio) within ×1.2, with Z_c the LF_DEM contact number per particle
 (`data_*` col 19) averaged over the σ = 30 and 100 cells at the same x_m, and 1.05 the Yade C/q ratio
-for CV 0.5 vs 0.2 at μ 0.3 (≈ (1.070·1.070)/(1.016·1.006)·… rounded; recomputed exactly in the grader
-from `out/sigma_star_geometry.txt`).
+for CV 0.5 vs 0.2 at μ 0.3, = (1.0701·1.0700)/(1.0157·1.0055) = 1.1211, parsed by the grader from
+`out/sigma_star_geometry.txt`. (First written as "1.05" — an arithmetic slip, recorded as an erratum in
+PREREG_LFSIG before any cell finished.)
 
 ## 7. Open
 
 - A derivation of the rattler fraction f_r(CV) under shear (the only non-geometric input left).
 - Whether closure C's 5–8 % residual at μ 0.3 is the rattlers being small (the backbone is a
   size-biased subset); a per-particle dump would decide it.
-- The BMCSL attribution in step 7 is unverified.
+- The record fields `z_ss`, `rattler_frac_ss` do not reproduce the dump-exact Zφ (up to ~30 % apart);
+  their sampling was not traced (referee m4).
+- Rattler fraction: see `derivations/rattler_closure_2026-09-24.md`.

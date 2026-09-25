@@ -1,13 +1,17 @@
 === 1. SymPy ===
   R*(a_i+a_j) - a_i a_j = 0   (eq. 3)
   <aa>_c (model A) - (m3 m1 + m2^2)/(m2 + m1^2) = 0   (eq. 9)
+  <aa>_c (closure C) - m3/m1 = 0   (eq. 12, any PSD)
   monodisperse <aa>_c = a**2  (expect a^2)
   lognormal <aa>_c/<a^3> (model A) = 1/s   (eq. 10)
 
 === 2. Monte Carlo, eq. (9) vs weighted pair sampling (lognormal, <a> = 1) ===
   CV 0.20: MC 1.08114  closed 1.08160  rel err -4.30e-04
+           closure C: MC 1.12427  m3/m1 = s^3 = 1.12486  rel err -5.27e-04
   CV 0.35: MC 1.25930  closed 1.26001  rel err -5.64e-04
+           closure C: MC 1.41368  m3/m1 = s^3 = 1.41436  rel err -4.80e-04
   CV 0.50: MC 1.56497  closed 1.56250  rel err +1.58e-03
+           closure C: MC 1.95869  m3/m1 = s^3 = 1.95312  rel err +2.85e-03
 
 === 3. Love-Weber decomposition on the actshape dumps (Derjaguin g, snapshot means) ===
   healthy cells with dumps: 52
@@ -65,6 +69,50 @@
   0.3 1e-03 0.5   2   1.0040 [0.9997,1.0103]  0.82468  0.54730  1.1160  1.0053  0.16648  0.16635
   0.3 1e-03 0.5   3   1.0036 [1.0007,1.0060]  0.88980  0.52139  1.0752  1.0367  0.15983  0.15981
 
+  eq. 7 reconstruction |recon/meas - 1| > 0.3 %: 4 of 52 cells
+    lognormal_cv0.000_mu0.300_s3_phi00.5500_N1000_p1.000e-04_K0.15_g3.00_st204000: -0.0074
+    lognormal_cv0.200_mu0.300_s2_phi00.5500_N1000_p1.000e-04_K0.15_g3.00_st400000: +0.0188
+    lognormal_cv0.200_mu0.300_s3_phi00.5500_N1000_p1.000e-04_K0.15_g3.00_st400000: +0.0061
+    lognormal_cv0.500_mu0.300_s2_phi00.5500_N1000_p1.000e-04_K0.15_g3.00_st960000: +0.0043
+  limiting case CV 0 (eq. 13, C = 1): Z phi/(8 pi a) / (q Lambda) vs measured sigma*/kappa
+    mu 0.0 p 1e-04 seed 1: 0.23581 vs 0.23583  (-0.0001)
+    mu 0.0 p 1e-04 seed 2: 0.23689 vs 0.23689  (+0.0000)
+    mu 0.0 p 1e-04 seed 3: 0.22915 vs 0.22917  (-0.0001)
+    mu 0.0 p 3e-04 seed 1: 0.24626 vs 0.24630  (-0.0002)
+    mu 0.0 p 3e-04 seed 2: 0.24695 vs 0.24700  (-0.0002)
+    mu 0.0 p 3e-04 seed 3: 0.25018 vs 0.25019  (-0.0000)
+    mu 0.0 p 1e-03 seed 1: 0.27394 vs 0.27399  (-0.0002)
+    mu 0.0 p 1e-03 seed 2: 0.27443 vs 0.27451  (-0.0003)
+    mu 0.0 p 1e-03 seed 3: 0.27404 vs 0.27406  (-0.0001)
+    mu 0.3 p 1e-04 seed 1: 0.17580 vs 0.17548  (+0.0018)
+    mu 0.3 p 1e-04 seed 2: 0.15158 vs 0.15157  (+0.0001)
+    mu 0.3 p 1e-04 seed 3: 0.15332 vs 0.15446  (-0.0074)
+    mu 0.3 p 3e-04 seed 1: 0.19311 vs 0.19315  (-0.0002)
+    mu 0.3 p 3e-04 seed 2: 0.19357 vs 0.19362  (-0.0003)
+    mu 0.3 p 3e-04 seed 3: 0.19633 vs 0.19637  (-0.0002)
+    mu 0.3 p 1e-03 seed 1: 0.20924 vs 0.20928  (-0.0002)
+    mu 0.3 p 1e-03 seed 2: 0.21097 vs 0.21100  (-0.0001)
+    mu 0.3 p 1e-03 seed 3: 0.21081 vs 0.21086  (-0.0002)
+  health-filter attrition (attempted -> healthy with dump), by (mu, p, CV):
+    (0.0, 0.0001, 0.0): 3 -> 3
+    (0.0, 0.0001, 0.2): 3 -> 3
+    (0.0, 0.0001, 0.5): 3 -> 1
+    (0.0, 0.0003, 0.0): 3 -> 3
+    (0.0, 0.0003, 0.2): 3 -> 3
+    (0.0, 0.0003, 0.5): 6 -> 3
+    (0.0, 0.001, 0.0): 3 -> 3
+    (0.0, 0.001, 0.2): 3 -> 3
+    (0.0, 0.001, 0.5): 3 -> 0
+    (0.3, 0.0001, 0.0): 3 -> 3
+    (0.3, 0.0001, 0.2): 3 -> 3
+    (0.3, 0.0001, 0.5): 3 -> 3
+    (0.3, 0.0003, 0.0): 3 -> 3
+    (0.3, 0.0003, 0.2): 3 -> 3
+    (0.3, 0.0003, 0.5): 6 -> 6
+    (0.3, 0.001, 0.0): 3 -> 3
+    (0.3, 0.001, 0.2): 3 -> 3
+    (0.3, 0.001, 0.5): 3 -> 3
+
   CV ratio of sigma*/kappa split into factors (seed-paired means; lengths rescaled to d10 = 1)
   sigma*/kappa ~ length^-1 (kappa is force/length), so at fixed d10: multiply by d10(CV)/d10(0)
    mu   p      CV   n  R_meas   = [Nc/V ratio x <aa> ratio]_geom  x  C ratio  x  1/q ratio   (L^-1 rescale folded into geom)
@@ -82,18 +130,18 @@
 
   geometric factor split: G = [Z phi ratio] x [(<aa>_c/<a^3>) ratio, d10 = 1]  (eq. 8)
   pair closures for <aa>_c/<a^3>: A = (a_i+a_j)^2-weighted (eq. 9), B = a_i^2 a_j^2-weighted (eq. 11)
-   mu   p      CV   n  Zphi     <aa>/<a3>(meas)  A        B        | product  G(direct)
-  0.0 1e-04  0.2  3  0.9741   0.9804           0.9609   1.0409   | 0.9551   0.9552   C-closure: <aa>_meas/<aa>_C = 0.9804 [0.9791,0.9820]
-  0.0 1e-04  0.5  1  0.7122   1.0137           0.8028   1.2444   | 0.7219   0.7228   C-closure: <aa>_meas/<aa>_C = 1.0137 [1.0137,1.0137]
-  0.0 3e-04  0.2  3  0.9752   0.9806           0.9609   1.0409   | 0.9563   0.9563   C-closure: <aa>_meas/<aa>_C = 0.9806 [0.9793,0.9822]
-  0.0 3e-04  0.5  2  0.7126   1.0088           0.8077   1.2361   | 0.7188   0.7192   C-closure: <aa>_meas/<aa>_C = 1.0088 [1.0078,1.0098]
-  0.0 1e-03  0.2  3  0.9839   0.9777           0.9609   1.0409   | 0.9620   0.9622   C-closure: <aa>_meas/<aa>_C = 0.9777 [0.9758,0.9792]
-  0.3 1e-04  0.2  3  0.9190   1.0026           0.9609   1.0409   | 0.9214   0.9214   C-closure: <aa>_meas/<aa>_C = 1.0026 [1.0018,1.0034]
-  0.3 1e-04  0.5  3  0.6503   1.0772           0.7991   1.2522   | 0.7005   0.7005   C-closure: <aa>_meas/<aa>_C = 1.0772 [1.0687,1.0887]
-  0.3 3e-04  0.2  3  0.9437   0.9906           0.9609   1.0409   | 0.9349   0.9347   C-closure: <aa>_meas/<aa>_C = 0.9906 [0.9887,0.9924]
-  0.3 3e-04  0.5  3  0.6040   1.0603           0.7991   1.2522   | 0.6405   0.6399   C-closure: <aa>_meas/<aa>_C = 1.0603 [1.0542,1.0712]
-  0.3 1e-03  0.2  3  0.9461   0.9896           0.9609   1.0409   | 0.9362   0.9363   C-closure: <aa>_meas/<aa>_C = 0.9896 [0.9879,0.9915]
-  0.3 1e-03  0.5  3  0.6463   1.0476           0.7991   1.2522   | 0.6770   0.6769   C-closure: <aa>_meas/<aa>_C = 1.0476 [1.0384,1.0597]
+   mu   p      CV   n  Zphi     <aa>/<a3>(meas)  A        B        | product  G(direct)   (ranges quoted in the .md are ACROSS conditions, not error bars)
+  0.0 1e-04  0.2  3  0.9741   0.9804           0.9609   1.0409   | 0.9551   0.9552   C-closure: <aa>_meas/<aa>_C = 0.9804 [0.9791,0.9820]   BMCSL ratio 1.0037
+  0.0 1e-04  0.5  1  0.7122   1.0137           0.8028   1.2444   | 0.7219   0.7228   C-closure: <aa>_meas/<aa>_C = 1.0137 [1.0137,1.0137]   BMCSL ratio 1.0259
+  0.0 3e-04  0.2  3  0.9752   0.9806           0.9609   1.0409   | 0.9563   0.9563   C-closure: <aa>_meas/<aa>_C = 0.9806 [0.9793,0.9822]   BMCSL ratio 1.0039
+  0.0 3e-04  0.5  2  0.7126   1.0088           0.8077   1.2361   | 0.7188   0.7192   C-closure: <aa>_meas/<aa>_C = 1.0088 [1.0078,1.0098]   BMCSL ratio 1.0257
+  0.0 1e-03  0.2  3  0.9839   0.9777           0.9609   1.0409   | 0.9620   0.9622   C-closure: <aa>_meas/<aa>_C = 0.9777 [0.9758,0.9792]   BMCSL ratio 1.0046
+  0.3 1e-04  0.2  3  0.9190   1.0026           0.9609   1.0409   | 0.9214   0.9214   C-closure: <aa>_meas/<aa>_C = 1.0026 [1.0018,1.0034]   BMCSL ratio 1.0007
+  0.3 1e-04  0.5  3  0.6503   1.0772           0.7991   1.2522   | 0.7005   0.7005   C-closure: <aa>_meas/<aa>_C = 1.0772 [1.0687,1.0887]   BMCSL ratio 1.0075
+  0.3 3e-04  0.2  3  0.9437   0.9906           0.9609   1.0409   | 0.9349   0.9347   C-closure: <aa>_meas/<aa>_C = 0.9906 [0.9887,0.9924]   BMCSL ratio 1.0008
+  0.3 3e-04  0.5  3  0.6040   1.0603           0.7991   1.2522   | 0.6405   0.6399   C-closure: <aa>_meas/<aa>_C = 1.0603 [1.0542,1.0712]   BMCSL ratio 1.0083
+  0.3 1e-03  0.2  3  0.9461   0.9896           0.9609   1.0409   | 0.9362   0.9363   C-closure: <aa>_meas/<aa>_C = 0.9896 [0.9879,0.9915]   BMCSL ratio 1.0012
+  0.3 1e-03  0.5  3  0.6463   1.0476           0.7991   1.2522   | 0.6770   0.6769   C-closure: <aa>_meas/<aa>_C = 1.0476 [1.0384,1.0597]   BMCSL ratio 1.0118
   (closure C, eq. 12, predicts (<aa>_c/<a^3>) ratio = 1 exactly at fixed <a>, for ANY PSD)
 
   contact density from the RECORDS: Z = (1 - f_r) Z_nr (eq. 14); ratios CV / CV 0

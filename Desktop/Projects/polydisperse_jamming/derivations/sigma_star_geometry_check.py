@@ -58,6 +58,16 @@ def sympy_checks() -> None:
     aaA = sp.simplify(avg(num) / avg(den))
     target = (m3 * m1 + m2 ** 2) / (m2 + m1 ** 2)
     say(f"  <aa>_c (model A) - (m3 m1 + m2^2)/(m2 + m1^2) = {sp.simplify(aaA - target)}   (eq. 9)")
+    # closure C: P(i,j) ~ a_i a_j (a_i + a_j)  (referee pass 1, m2: check it too)
+    mm4 = sp.symbols("m4", positive=True)
+    numC = sp.expand(ai * aj * ai * aj * (ai + aj))
+    denC = sp.expand(ai * aj * (ai + aj))
+
+    def avg4(expr):
+        expr = sp.Poly(expr, ai, aj)
+        mm = {0: 1, 1: m1, 2: m2, 3: m3, 4: mm4}
+        return sp.simplify(sum(c * mm[p] * mm[q] for (p, q), c in expr.terms()))
+    say(f"  <aa>_c (closure C) - m3/m1 = {sp.simplify(avg4(numC) / avg4(denC) - m3 / m1)}   (eq. 12, any PSD)")
     # monodisperse: m_n = a^n
     a = sp.symbols("a", positive=True)
     say(f"  monodisperse <aa>_c = {sp.simplify(target.subs({m1: a, m2: a**2, m3: a**3}))}  (expect a^2)")
@@ -81,6 +91,9 @@ def mc_check() -> None:
         s = 1 + cv * cv
         cf = (s ** 3 + s ** 2) / (s + 1)
         say(f"  CV {cv:.2f}: MC {mc:.5f}  closed {cf:.5f}  rel err {mc/cf-1:+.2e}")
+        wC = a[0] * a[1] * (a[0] + a[1])
+        mcC = float(np.sum(wC * a[0] * a[1]) / np.sum(wC))
+        say(f"           closure C: MC {mcC:.5f}  m3/m1 = s^3 = {s**3:.5f}  rel err {mcC/s**3-1:+.2e}")
 
 
 # ---------------------------------------------------------------- 3. data
@@ -126,6 +139,14 @@ def cell_factors(r: dict, d) -> dict | None:
     out["aaC"] = m3 / m1                                 # eq. (12): P(i,j) ~ a_i a_j (a_i+a_j)
     out["aaA"] = (m3 * m1 + m2 ** 2) / (m2 + m1 ** 2)   # eq. (9): P(i,j) ~ (a_i+a_j)^2
     out["aaB"] = (m3 / m2) ** 2                          # eq. (11): P(i,j) ~ a_i^2 a_j^2
+    # BMCSL (Santos, Yuste & Lopez de Haro 2002, doi:10.1063/1.1502247, Eq. 7 with lambda = 1/2):
+    # w = (a+b)^2 g_ab, g_ab = 1/(1-phi) + 3 xi2/(1-phi)^2 (2R*) + 2 xi2^2/(1-phi)^3 (2R*)^2, xi2 = phi m2/(2 m3)
+    ph = r["phi_ss"]
+    xi2 = ph * m2 / (2 * m3)
+    c0, c1, c2 = 1 / (1 - ph), 3 * xi2 / (1 - ph) ** 2, 2 * xi2 ** 2 / (1 - ph) ** 3
+    num = c0 * (2 * m3 * m1 + 2 * m2 ** 2) + 2 * c1 * (2 * m3 * m2) + 4 * c2 * m3 ** 2
+    den = c0 * (2 * m2 + 2 * m1 ** 2) + 2 * c1 * (2 * m2 * m1) + 4 * c2 * m2 ** 2
+    out["aaBM"] = num / den                              # eq. (12b): hard-sphere-liquid weighting, no parameter
     # reconstructed sigma*/kappa from eq. (7), per snapshot means (not exact for the mean of a ratio)
     out["recon"] = out["ncV"] * out["aa"] * out["C"] / (3 * out["q"] * out["LW"])
     return out
@@ -152,6 +173,28 @@ def data_checks() -> None:
         say(f"  {r['mu_p']:.1f} {r['p_hat_target']:.0e} {r['cv']:.1f} {r['seed']:3d}   "
             f"{f['LW']:.4f} [{f['LWmin']:.4f},{f['LWmax']:.4f}]  {f['ncV']:.5f}  {f['aa']:.5f}  "
             f"{f['C']:.4f}  {f['q']:.4f}  {f['sstar']:.5g}  {f['recon']:.5g}")
+    # referee M4: count reconstruction exceptions instead of quoting them
+    exc = [(r["key"], f["recon"] / f["sstar"] - 1) for r, f in rows if abs(f["recon"] / f["sstar"] - 1) > 0.003]
+    say()
+    say(f"  eq. 7 reconstruction |recon/meas - 1| > 0.3 %: {len(exc)} of {len(rows)} cells")
+    for k, e in exc:
+        say(f"    {k}: {e:+.4f}")
+    # referee M3: the monodisperse limiting check, printed
+    say("  limiting case CV 0 (eq. 13, C = 1): Z phi/(8 pi a) / (q Lambda) vs measured sigma*/kappa")
+    for r, f in rows:
+        if r["cv"] == 0.0:
+            pred = f["Z"] * f["phi"] / (8 * math.pi * r["d10_realised"] / 2) / (f["q"] * f["LW"])
+            say(f"    mu {r['mu_p']} p {r['p_hat_target']:.0e} seed {r['seed']}: {pred:.5f} vs {f['sstar']:.5f}  ({pred/f['sstar']-1:+.4f})")
+    # referee M1: attrition by condition
+    say("  health-filter attrition (attempted -> healthy with dump), by (mu, p, CV):")
+    att = {}
+    for key, r in recs.items():
+        kk = (r.get("mu_p"), r.get("p_hat_target"), r.get("cv"))
+        att.setdefault(kk, [0, 0])[0] += 1
+    for r, f in rows:
+        att[(r["mu_p"], r["p_hat_target"], r["cv"])][1] += 1
+    for kk in sorted(att, key=lambda t: tuple(-1 if v is None else v for v in t)):
+        say(f"    {kk}: {att[kk][0]} -> {att[kk][1]}")
     # ratios CV -> 0, seed-paired where seeds match
     say("\n  CV ratio of sigma*/kappa split into factors (seed-paired means; lengths rescaled to d10 = 1)")
     say("  sigma*/kappa ~ length^-1 (kappa is force/length), so at fixed d10: multiply by d10(CV)/d10(0)")
@@ -169,7 +212,7 @@ def data_checks() -> None:
             seeds = sorted(set(byc[0.0]) & set(byc[cv]))   # (seed, N) pairs: same seed AND same N
             if not seeds:
                 continue
-            Rm, G, Cr, Qr, ZP, AA, MA, MB, RC, FR, ZN, PH = [], [], [], [], [], [], [], [], [], [], [], []
+            Rm, G, Cr, Qr, ZP, AA, MA, MB, RC, FR, ZN, PH, BM = [], [], [], [], [], [], [], [], [], [], [], [], []
             for s in seeds:
                 r0, f0 = byc[0.0][s]
                 r1_, f1 = byc[cv][s]
@@ -184,22 +227,23 @@ def data_checks() -> None:
                 AA.append((f1["aa"] / f1["a3"]) / (f0["aa"] / f0["a3"]) * lam)
                 MA.append((f1["aaA"] / f1["a3"]) / (f0["aaA"] / f0["a3"]) * lam)
                 MB.append((f1["aaB"] / f1["a3"]) / (f0["aaB"] / f0["a3"]) * lam)
+                BM.append((f1["aaBM"] / f1["a3"]) / (f0["aaBM"] / f0["a3"]) * lam)
                 RC.append(f1["aa"] / f1["aaC"])
                 FR.append((1 - r1_["rattler_frac_ss"]) / (1 - r0["rattler_frac_ss"]))
                 ZN.append(r1_["z_nr_ss"] / r0["z_nr_ss"])
                 PH.append(r1_["phi_ss"] / r0["phi_ss"])
             Rm, G, Cr, Qr = map(np.array, (Rm, G, Cr, Qr))
-            geo_rows.append((mu, p, cv, len(seeds), np.mean(ZP), np.mean(AA), np.mean(MA), np.mean(MB), G.mean(), np.mean(RC), np.min(RC), np.max(RC)))
+            geo_rows.append((mu, p, cv, len(seeds), np.mean(ZP), np.mean(AA), np.mean(MA), np.mean(MB), G.mean(), np.mean(RC), np.min(RC), np.max(RC), np.mean(BM)))
             zrows.append((mu, p, cv, len(seeds), np.mean(FR), np.mean(ZN), np.mean(PH), np.mean(ZP), Rm.mean()))
             say(f"  {mu:.1f} {p:.0e}  {cv:.1f}  {len(seeds)}  {Rm.mean():.4f}   = {G.mean():.4f}  x  "
                 f"{Cr.mean():.4f}  x  {Qr.mean():.4f}   (product {np.mean(G*Cr*Qr):.4f})")
     say()
     say("  geometric factor split: G = [Z phi ratio] x [(<aa>_c/<a^3>) ratio, d10 = 1]  (eq. 8)")
     say("  pair closures for <aa>_c/<a^3>: A = (a_i+a_j)^2-weighted (eq. 9), B = a_i^2 a_j^2-weighted (eq. 11)")
-    say("   mu   p      CV   n  Zphi     <aa>/<a3>(meas)  A        B        | product  G(direct)")
-    for mu, p, cv, n, zp, aa, ma, mb, g, rc, rcmin, rcmax in geo_rows:
+    say("   mu   p      CV   n  Zphi     <aa>/<a3>(meas)  A        B        | product  G(direct)   (ranges quoted in the .md are ACROSS conditions, not error bars)")
+    for mu, p, cv, n, zp, aa, ma, mb, g, rc, rcmin, rcmax, bm in geo_rows:
         say(f"  {mu:.1f} {p:.0e}  {cv:.1f}  {n}  {zp:.4f}   {aa:.4f}           {ma:.4f}   {mb:.4f}   | {zp*aa:.4f}   {g:.4f}"
-            f"   C-closure: <aa>_meas/<aa>_C = {rc:.4f} [{rcmin:.4f},{rcmax:.4f}]")
+            f"   C-closure: <aa>_meas/<aa>_C = {rc:.4f} [{rcmin:.4f},{rcmax:.4f}]   BMCSL ratio {bm:.4f}")
     say("  (closure C, eq. 12, predicts (<aa>_c/<a^3>) ratio = 1 exactly at fixed <a>, for ANY PSD)")
     say()
     say("  contact density from the RECORDS: Z = (1 - f_r) Z_nr (eq. 14); ratios CV / CV 0")
