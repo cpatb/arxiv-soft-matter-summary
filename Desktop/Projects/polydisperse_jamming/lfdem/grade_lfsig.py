@@ -250,7 +250,9 @@ def post_hoc_zc(cells_all: list) -> None:
             say(f"  x_m {xm}: sigma*_Z(0.5)/sigma*_Z(0.2) = {R:.3f}   (dry-DEM Yade prediction {R_YADE:.3f})")
     # referee pass 1: the ratio depends on the normalisation; print three, each with a block-s.e. propagated band
     say("  normalisation sensitivity (crossing sigma at which Z_c reaches the threshold; ratio CV 0.5 / CV 0.2),")
-    say("  band = 16-84 % over 2000 resamples of each Z_c within its block s.e. (seed 20260925):")
+    say("  band = 16-84 % over 2000 resamples of each Z_c within its block s.e. (seed 20260925); each resampled")
+    say("  series is made monotone by its running maximum so the crossing is defined, which can only NARROW the band")
+    say("  slightly (downward excursions are clipped); it is used here only for the one-sided 'never near 0.768' claim.")
     rng = np.random.default_rng(20260925)
 
     def crossing(z, thr):

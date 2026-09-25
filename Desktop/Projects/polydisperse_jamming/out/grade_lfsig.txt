@@ -107,7 +107,9 @@ cells with data: 28 of 28 registered
   x_m 0.9: sigma*_Z(0.5)/sigma*_Z(0.2) = 0.956   (dry-DEM Yade prediction 0.768)
   x_m 0.95: sigma*_Z(0.5)/sigma*_Z(0.2) = 1.000   (dry-DEM Yade prediction 0.768)
   normalisation sensitivity (crossing sigma at which Z_c reaches the threshold; ratio CV 0.5 / CV 0.2),
-  band = 16-84 % over 2000 resamples of each Z_c within its block s.e. (seed 20260925):
+  band = 16-84 % over 2000 resamples of each Z_c within its block s.e. (seed 20260925); each resampled
+  series is made monotone by its running maximum so the crossing is defined, which can only NARROW the band
+  slightly (downward excursions are clipped); it is used here only for the one-sided 'never near 0.768' claim.
     self (Z_c = 0.5 Z_c(100) of the arm)   x_m 0.9: R = 0.956  [0.891, 1.018]
     self (Z_c = 0.5 Z_c(100) of the arm)   x_m 0.95: R = 1.000  [0.955, 1.042]
     absolute Z_c = 1.0                     x_m 0.9: R = 1.107  [1.023, 1.187]
