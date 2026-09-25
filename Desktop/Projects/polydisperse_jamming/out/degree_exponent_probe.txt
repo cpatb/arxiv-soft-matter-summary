@@ -1,0 +1,2 @@
+zb_cv0.2_mu0.3_s1_p3e-05.npz: best p (per-grain rms of k) 1.55 (rms 1.780; p=2 rms 1.829)  a_k: measured 0.5282, p_best 0.5274, p=2 0.5370
+zb_cv0.5_mu0.3_s1_p3e-05.npz: best p (per-grain rms of k) 1.70 (rms 1.622; p=2 rms 1.712)  a_k: measured 0.7321, p_best 0.7095, p=2 0.7559
