@@ -64,8 +64,10 @@ def load_cell(d: str) -> dict | None:
     else:
         c["eta"] = c["zc"] = c["overlap"] = float("nan")
     c["complete"] = c["smax"] >= W1 - 0.05
-    c["healthy_reg"] = (rc == 0) and c["smax"] >= 3.0 and c["overlap"] < MAX_OVERLAP
-    c["healthy_ph"] = c["healthy_reg"] or (rc == 124 and c["complete"] and c["overlap"] < MAX_OVERLAP)
+    # Amendment 3: window complete, overlap bounded, rc 0 or rc 124 (wall cap after the window)
+    c["healthy_reg"] = rc in (0, 124) and c["complete"] and c["overlap"] < MAX_OVERLAP
+    # the original rule, printed for the record: rc 0 and strain >= 3
+    c["healthy_ph"] = (rc == 0) and c["smax"] >= 3.0 and c["overlap"] < MAX_OVERLAP
     return c
 
 
@@ -108,7 +110,7 @@ def main() -> int:
         say(f"  {c['label']:16s} {c['cv_real']:.3f}  {str(c['rc']):5s} {c['smax']:6.2f}  {c['n_win']:5d}  "
             f"{c['eta']:9.3f} ({c.get('eta_se', float('nan')):.3f})  {c['zc']:6.3f} ({c.get('zc_se', float('nan')):.3f})  "
             f"{c['overlap']:.4f}  {int(c['healthy_reg'])}    {int(c['healthy_ph'])}")
-    for key, name in (("healthy_reg", "REGISTERED health rule"), ("healthy_ph", "POST-HOC: rc 124 with a complete window admitted")):
+    for key, name in (("healthy_reg", "REGISTERED health rule (Amendment 3)"), ("healthy_ph", "ORIGINAL rule (rc 0, strain >= 3), for the record")):
         cells = {(c["cv"], c["xm"], c["sig"]): c for c in cells_all if c[key]}
         say(f"\n==== {name}: {len(cells)} healthy ====")
         ss = {}

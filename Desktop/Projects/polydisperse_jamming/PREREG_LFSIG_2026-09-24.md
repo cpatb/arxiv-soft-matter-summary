@@ -90,3 +90,11 @@ committed now) parses it from that file. The ×1.2 bar is unchanged.
   with η_r > 1.1 × η_r(0.1)) lies in [0.1, 1] σ₀; (b) the CV-0.2 low-stress inversion φ₀ lies within
   0.02 of 0.646; (c) φ_m(μ 0.3) lies between 0.562 (μ = ∞) and 0.646. My λ = 0.02 a; the citation agent
   reports Mari's ERM used λ = 0.05 a — onset stress depends on λ, so (a) is a loose check.
+
+## Amendment 3 (2026-09-24 ~22:05 CDT, before any cell finished)
+The five σ ≥ 30 cells launched before Amendment 1 run to strain 6; at the observed rate
+(c20_x95_s100: strain 0.8 after 38 min) at least one will hit the 4 h wall cap near strain 5 — after the
+graded window [1.5, 4] is complete. Health rule, for every cell: **the window is complete (strain ≥ 4)
+and max overlap < 0.05; rc 0 OR rc 124 (wall cap after the window).** A cell capped before strain 4 is
+censored. (Replaces "rc 0, strain ≥ 3"; the registered-vs-post-hoc split in the grader becomes this
+single rule. Nothing else changes.)
