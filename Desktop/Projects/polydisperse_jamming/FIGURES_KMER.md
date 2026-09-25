@@ -2,6 +2,10 @@
 
 Built by `python make_kmer_figures.py` (`--check` rebuilds K1 and compares md5).
 
+⚠ **Every DNS panel here (K2–K5): jammed-volume MAGNITUDES are viscosity-cap numbers.** J moves ×5.9 per
+decade of EPS_MIN at fixed class (`PREREG_EPSSIG`); read classes (J0 / J+) and orderings, not J values,
+and compare J only between panels at the same EPS_MIN. (Added 2026-09-25 from the programme critique.)
+
 ## K1 — the doublet window (PREREG_KMER)
 (a) χ = φ(μ_m)/φ(μ 0) against doublet volume fraction w₂ at p̂ 3e-5, seed-paired, for μ_m = 3
 and 0.3; dashed = ideal specific-volume mixing of the campaign's own endpoints. (b) σ\*(w₂)/σ\*(0)
