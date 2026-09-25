@@ -184,8 +184,9 @@ fractions. Bookkeeping check: 2n_SS + n_SL = n_S z_S etc. to 1.8e-12. Diameters 
   cells after merging 6 that two campaigns share under different keys; `by_design_class`, no pair counts, so
   T1 cannot run) are worse: rms 0.108 / 0.109 (K = 3, two campaigns), 0.120 (K = 4), 0.123 (K = 5), all
   UNDER-predicting rattling by 0.083–0.098, against size-blind rms 0.37–0.39. The two-size ratio-4 binaries do
-  not show this (they are over-predicted, +0.027 / +0.012), so it is the INTERMEDIATE sizes of a wide
-  multi-class distribution that rattle more than a² says. a² is a good law at moderate size ratio and a first
+  not show this (they are over-predicted, +0.027 / +0.012), and by class rank the
+  mean error is −0.087 (smallest), −0.147 (intermediate), −0.004 (largest): the INTERMEDIATE sizes of a wide
+  multi-class distribution rattle most in excess of a², the smallest somewhat, the largest not at all. a² is a good law at moderate size ratio and a first
   approximation (errors ~0.1) for wide multi-class spans.
 - **Mean-degree exponent (T2) is NOT universal:** p = ln(z_L/z_S)/ln(d_L/d_S) is 1.44–1.48 (median) at
   ratios 1.25–1.5 — close to the 1.55–1.70 of the lognormal dumps — but 2.39 and 2.86 at ratios 4 and 5,

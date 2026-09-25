@@ -73,6 +73,24 @@ def ternary_block() -> None:
         e_, e0_ = np.array(e_), np.array(e0_)
         say(f"  {camp:5s} K={K}: {len(cls):3d} records  a^2 rms {np.sqrt(np.mean(e_**2)):.4f} (mean {e_.mean():+.4f})  "
             f"size-blind rms {np.sqrt(np.mean(e0_**2)):.4f}")
+    say("  mean a^2 error by class rank (0 = smallest; last = largest), pooled over K:")
+    rank = {}
+    for cls in byK.values():
+        for cl in cls:
+            cl = sorted(cl, key=lambda c: c["d"])
+            n = np.array([c["n"] for c in cl], float)
+            d = np.array([c["d"] for c in cl], float)
+            z = np.array([c["z_mean"] for c in cl], float)
+            Z = np.sum(n * z) / n.sum()
+            a2 = np.sum(n * d**2) / n.sum()
+            pr = poisson.cdf(1, Z * d**2 / a2)
+            K = len(cl)
+            for i, c in enumerate(cl):
+                lab = "smallest" if i == 0 else ("largest" if i == K - 1 else "intermediate")
+                rank.setdefault(lab, []).append(pr[i] - c["rattler_frac"])
+    for lab in ("smallest", "intermediate", "largest"):
+        v = np.array(rank.get(lab, []))
+        say(f"    {lab:12s}: mean {v.mean():+.4f}  rms {np.sqrt(np.mean(v**2)):.4f}  n {v.size}")
     err, err0 = [], []
     for r in recs.values():
         cl = [c for c in r["by_design_class"].values() if c["n"]]
