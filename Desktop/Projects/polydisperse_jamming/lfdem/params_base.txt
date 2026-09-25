@@ -1,0 +1,24 @@
+/* lfsig base parameters, 2026-09-24. Repulsive-force + Coulomb friction model
+ * (the Mari/Seto/Morris/Denn 2014 construction): F_R exp(-h/lambda) scaled by the
+ * reduced radius a0 a1/(a0+a1) (RepulsiveForce.cpp), contacts frictional once h<0.
+ * Stress in units F_R/a^2 with a = 1 = number-mean radius (make_conf.py). */
+lubrication_model = tangential;
+lub_max_gap = 0.5;
+lub_reduce_parameter = 1e-3;
+repulsive_length = 0.02;
+friction_model = 1;
+mu_static = MU;
+mu_dynamic = MU;
+kn = KNr;
+kt = 0.5kn;
+contact_relaxation_time = 1e-3r;
+contact_relaxation_time_tan = -1r;
+integration_method = 1;
+fixed_dt = false;
+disp_max = 2e-3;
+time_end = STRAINh;
+time_interval_output_data = 0.05h;
+time_interval_output_config = 1h;
+out_data_particle = false;
+out_data_interaction = false;
+origin_zero_flow = true;
