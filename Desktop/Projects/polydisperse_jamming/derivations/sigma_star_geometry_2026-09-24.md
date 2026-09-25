@@ -8,7 +8,7 @@
 >
 > **σ\*/κ = (N_c/V)·⟨aᵢaⱼ⟩_c · C / (3 q Λ)** (eq. 7)
 >
-> and, with a pair-statistics closure that holds to ≤ 2.3 % (μ_p 0) and ≤ 6.0 % (μ_p 0.3) on the reliable
+> and, with a pair-statistics closure that holds to ≤ 2.3 % (μ_p 0) and ≤ 6.1 % (μ_p 0.3) on the reliable
 > rungs p̂ 3e-4 and 1e-3 of 52 sheared DEM cells (≤ 7.8 % if the intermittently unjamming p̂ 1e-4 rung is
 > included, §7), **σ\*/κ ≈ Z φ / (8π⟨a⟩) · C/q**. At fixed NUMBER-mean radius, polydispersity therefore
 > acts on σ\* through the contact density Zφ alone (plus two O(5 %) corrections). CV 0 → 0.5 cuts σ\*
@@ -90,7 +90,7 @@
 
 (all 11 rows in the output file). The product reproduces R_meas to ≤ 1.1 % (exact identity).
 Closures A and B fail (⟨aa⟩/⟨a³⟩ ratio 0.80 and 1.25 at CV 0.5 against a measured 1.01–1.08); C is
-within 2.3 % for μ 0 and within 7.8 % for μ 0.3 — 6.0 % without the p̂ 1e-4 rung, which also carries all
+within 2.3 % for μ 0 and within 7.8 % for μ 0.3 — 6.1 % (worst 1.0603) without the p̂ 1e-4 rung, which also carries all
 4 reconstruction exceptions (referee pass 2, N2; the p̂ 1e-4 cells unjam intermittently, §7). The parameter-free BMCSL weighting (eq. 12b) gives
 1.00–1.03 — near-invariance as well — and, like C, misses the +5–8 % excess at μ 0.3, CV 0.5, which is
 where half the grains are rattlers (a backbone that is a size-biased subset would show exactly this sign).
