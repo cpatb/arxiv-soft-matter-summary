@@ -91,6 +91,21 @@ def ternary_block() -> None:
     for lab in ("smallest", "intermediate", "largest"):
         v = np.array(rank.get(lab, []))
         say(f"    {lab:12s}: mean {v.mean():+.4f}  rms {np.sqrt(np.mean(v**2)):.4f}  n {v.size}")
+    say("  mean a^2 error by EXACT rank within each K (rank 0 = smallest):")
+    exact = {}
+    for (K, camp), cls in byK.items():
+        for cl in cls:
+            cl = sorted(cl, key=lambda c: c["d"])
+            n = np.array([c["n"] for c in cl], float)
+            d = np.array([c["d"] for c in cl], float)
+            z = np.array([c["z_mean"] for c in cl], float)
+            Z = np.sum(n * z) / n.sum()
+            a2 = np.sum(n * d**2) / n.sum()
+            pr = poisson.cdf(1, Z * d**2 / a2)
+            for i, c in enumerate(cl):
+                exact.setdefault((K, i), []).append(pr[i] - c["rattler_frac"])
+    for K in sorted({k for k, _ in exact}):
+        say("    K=%d: " % K + "  ".join(f"r{i} {np.mean(exact[(K, i)]):+.3f}" for i in range(K)))
     err, err0 = [], []
     for r in recs.values():
         cl = [c for c in r["by_design_class"].values() if c["n"]]

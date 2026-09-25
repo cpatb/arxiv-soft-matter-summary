@@ -36,4 +36,8 @@ DISCRETE K-CLASS packs (tern*, kl*; T3 only): 129 converged records with >= 3 po
     smallest    : mean -0.0869  rms 0.0933  n 129
     intermediate: mean -0.1467  rms 0.1564  n 207
     largest     : mean -0.0044  rms 0.0097  n 129
+  mean a^2 error by EXACT rank within each K (rank 0 = smallest):
+    K=3: r0 -0.083  r1 -0.164  r2 -0.005
+    K=4: r0 -0.082  r1 -0.171  r2 -0.122  r3 -0.005
+    K=5: r0 -0.108  r1 -0.183  r2 -0.152  r3 -0.047  r4 -0.001
   per-class rattler fraction: a^2 rms 0.1154 (mean -0.0906); size-blind rms 0.3796 (mean -0.0490); n 465 class-records
