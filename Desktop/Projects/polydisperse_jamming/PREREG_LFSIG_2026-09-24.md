@@ -118,3 +118,10 @@ too, cells that had finished never got `rc=` written to META. Rule, fixed before
 Ran to completion: c20_x90_s10/s30/s100, c20_x95_s30, c50_x90_s10/s30/s100, c50_x95_s30. Never started
 (driver killed at ~23:05): every σ ≤ 3 cell except c50_x90_s3, and c20_x90_s3 … So P1–P5 are INCOMPLETE
 until the queue is relaunched with the author's OK.
+
+## Event 2 (2026-09-25 ~07:00 CDT) — relaunch
+The author's standing instruction for this session was all-night work (recorded as feedback in the other session:
+an all-night request is itself the OK to relaunch after a harness reap). Windows memory had recovered (13.5 GB free,
+WSL page cache ~1 GB). `lfdem/relaunch_lfsig.sh` relaunched at P = 8: it re-runs the four cells killed before
+strain 4 (their partial directories moved aside to `<label>.killed_<time>`) and every never-started cell, and skips
+the nine finished/complete-window cells. Nothing in the design, gates or predictions changes.
