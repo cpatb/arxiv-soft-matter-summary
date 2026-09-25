@@ -174,7 +174,9 @@ monotonically, so SOME p had to help; but the exponent p\* that zeroes each row'
 last column) is 1.614 / 1.672 / 1.625 on the three reliable CV-0.5 rows — independent (μ_p, p̂) conditions
 all wanting the value the isotropic dumps gave (CV-0.2 rows: 1.39–1.63, weakly constrained because the
 ratio barely depends on p there). The source exponents are single-seed fits on a 0.05 grid, and their
-uncertainty is not propagated. The picture: **rattling follows a² (the low-k tail), the mean degree follows ≈ a^1.6,
+uncertainty is not propagated. The exponent is also not universal: on 135 binary packs ln(z_L/z_S)/ln(d_L/d_S) is 1.44–1.48 at
+size ratios 1.25–1.5 but 2.39 / 2.86 at ratios 4 / 5 (rattler_closure §4d), so p ≈ 1.6 belongs to moderate
+polydispersity (the CV ≤ 0.5 lognormals here), not to wide spans. The picture: **rattling follows a² (the low-k tail), the mean degree follows ≈ a^1.6,
 and σ\*(CV) follows from the mean degree through eq. 15.**
 
 ## 6. Registered for `lfsig` (P4, before any lfsig cell is read)
