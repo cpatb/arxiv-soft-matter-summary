@@ -1,0 +1,37 @@
+ball -> hybrid scaling: four candidate groups (impact_stress modules; see docstring)
+eta_0 bracket for the shear-activation group: (0.01, 0.1) Pa s (declared, not measured)
+
+=== 1. the two lab materials at their lab operating points ===
+  silica phi 0.44: a 0.80 um, dphi 0.020, kappa 3.23e-15 m^2, K_p 590 Pa [197, 5.9e+03]
+     De (contact drainage) 7.26e+05 [7.26e+04, 2.18e+06]   S = ceiling/rho U0^2 = 26.8/7.62e+03 = 0.00352 [0.00117, 0.0352]   ID 5.52e-05
+     <tau_wall>(t*=1) = 425 .. 1.34e+03 Pa over the eta bracket
+  silica phi 0.50: a 0.80 um, dphi 0.080, kappa 1.78e-15 m^2, K_p 590 Pa [197, 5.9e+03]
+     De (contact drainage) 1.32e+06 [1.32e+05, 3.95e+06]   S = ceiling/rho U0^2 = 94.4/7.93e+03 = 0.0119 [0.00396, 0.119]   ID 7.13e-06
+     <tau_wall>(t*=1) = 434 .. 1.37e+03 Pa over the eta bracket
+  cornstarch phi 0.42: a 10.00 um, dphi 0.050, kappa 6.14e-13 m^2, K_p 1.1e+06 Pa [2.38e+05, 5.13e+06]
+     De (contact drainage) 7.22 [1.56, 33.5]   S = ceiling/rho U0^2 = 1.32e+05/3.2e+04 = 4.11 [0.885, 19.1]   ID 0.00473
+     <tau_wall>(t*=1) = 1.03e+03 .. 3.24e+03 Pa over the eta bracket
+  silica sigma* bracket (19.1, 44.2, 100.0) Pa (dilatancy.SIGMA_STAR_LITERATURE); cornstarch sigma* is NOT on disk as a measured value, so G_act is printed only for silica:
+     sigma*   19.1 Pa: G_act = 22.3 .. 70.4
+     sigma*   44.2 Pa: G_act = 9.62 .. 30.4
+     sigma*  100.0 Pa: G_act = 4.25 .. 13.4
+
+=== 2. size ladder at FIXED chemistry (silica anchor a0 = 0.8 um, phi 0.44, dphi 0.02; lab impact) ===
+  conventions (each printed, none chosen):
+    sigma*: [F] fixed repulsive force F* -> sigma* ~ a^-2 ;  [D] Derjaguin F* ~ a -> sigma* ~ a^-1
+    K_p   : EDL K_p = P_conf a/(6 lambda_D) with P_conf = sigma* (silica_poro's own rule) -> K_p ~ a sigma*
+    drainage length: contact patch 0.49 D0 (PORE_PHYSICS §3's choice for this question)
+  a/um   kappa       |  [F]: sigma*  K_p     De        S         |  [D]: sigma*  K_p     De        S
+    0.4  8.06e-16  |      177 1.18e+03  1.45e+06   0.00703 |     88.4     589  2.91e+06   0.00352
+    0.8  3.23e-15  |     44.2     589  7.26e+05   0.00352 |     44.2     589  7.26e+05   0.00352
+    2.0  2.02e-14  |     7.07     236  2.91e+05   0.00141 |     17.7     589  1.16e+05   0.00352
+    5.0  1.26e-13  |     1.13    94.3  1.16e+05  0.000563 |     7.07     589  1.86e+04   0.00352
+   10.0  5.04e-13  |    0.283    47.1  5.81e+04  0.000281 |     3.54     589  4.65e+03   0.00352
+   20.0  2.02e-12  |   0.0707    23.6  2.91e+04  0.000141 |     1.77     589  1.16e+03   0.00352
+  exponents (d ln / d ln a): kappa +2; [F] sigma* -2, K_p -1, De = L^2 mu/(kappa K_p) tau_i^-1 ~ a^-1, S ~ K_p ~ a^-1;  [D] sigma* -1, K_p 0, De ~ a^-2, S ~ a^0
+
+=== 3. CV at fixed number-mean size (d10), same chemistry ===
+  kappa uses d32 (Carman-Kozeny): d32/d10 = (1+CV^2)^2 -> kappa x (1+CV^2)^4; sigma* x 0.735 at CV 0.5
+  (sigma_star_geometry, fixed d10); K_p's CV dependence is not measured and is held fixed here.
+  CV 0.2: kappa x1.170 -> De x0.855, ID x1.170; window: x = phi/phi_0 falls (cvmap)
+  CV 0.5: kappa x2.441 -> De x0.410, ID x2.441; window: x = phi/phi_0 falls (cvmap)
