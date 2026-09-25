@@ -11,10 +11,16 @@ eta_0 bracket for the shear-activation group: (0.01, 0.1) Pa s (declared, not me
   cornstarch phi 0.42: a 10.00 um, dphi 0.050, kappa 6.14e-13 m^2, K_p 1.1e+06 Pa [2.38e+05, 5.13e+06]
      De (contact drainage) 7.22 [1.56, 33.5]   S = ceiling/rho U0^2 = 1.32e+05/3.2e+04 = 4.11 [0.885, 19.1]   ID 0.00473
      <tau_wall>(t*=1) = 1.03e+03 .. 3.24e+03 Pa over the eta bracket
-  silica sigma* bracket (19.1, 44.2, 100.0) Pa (dilatancy.SIGMA_STAR_LITERATURE); cornstarch sigma* is NOT on disk as a measured value, so G_act is printed only for silica:
+  silica sigma* bracket (19.1, 44.2327, 100.0) Pa (dilatancy.SIGMA_STAR_LITERATURE); cornstarch sigma* is NOT on disk as a measured value, so G_act is printed only for silica:
      sigma*   19.1 Pa: G_act = 22.3 .. 70.4
-     sigma*   44.2 Pa: G_act = 9.62 .. 30.4
+     sigma*   44.2 Pa: G_act = 9.61 .. 30.4
      sigma*  100.0 Pa: G_act = 4.25 .. 13.4
+  silica phi 0.44, De and S with P_conf (the pressure in K_p) set to each sigma* of the bracket:
+     P_conf   19.1 Pa: K_p 255 Pa, De 1.68e+06, S 0.00152
+     P_conf   44.2 Pa: K_p 590 Pa, De 7.26e+05, S 0.00352
+     P_conf  100.0 Pa: K_p 1.33e+03 Pa, De 3.21e+05, S 0.00796
+  NOTE: P_conf = sigma* equates a SHEAR onset stress with a particle PRESSURE; the two differ by an O(1)
+  friction coefficient (dilatancy.py), which moves K_p, De and S by that O(1) factor, not by decades.
 
 === 2. size ladder at FIXED chemistry (silica anchor a0 = 0.8 um, phi 0.44, dphi 0.02; lab impact) ===
   conventions (each printed, none chosen):
@@ -22,12 +28,12 @@ eta_0 bracket for the shear-activation group: (0.01, 0.1) Pa s (declared, not me
     K_p   : EDL K_p = P_conf a/(6 lambda_D) with P_conf = sigma* (silica_poro's own rule) -> K_p ~ a sigma*
     drainage length: contact patch 0.49 D0 (PORE_PHYSICS §3's choice for this question)
   a/um   kappa       |  [F]: sigma*  K_p     De        S         |  [D]: sigma*  K_p     De        S
-    0.4  8.06e-16  |      177 1.18e+03  1.45e+06   0.00703 |     88.4     589  2.91e+06   0.00352
-    0.8  3.23e-15  |     44.2     589  7.26e+05   0.00352 |     44.2     589  7.26e+05   0.00352
-    2.0  2.02e-14  |     7.07     236  2.91e+05   0.00141 |     17.7     589  1.16e+05   0.00352
-    5.0  1.26e-13  |     1.13    94.3  1.16e+05  0.000563 |     7.07     589  1.86e+04   0.00352
-   10.0  5.04e-13  |    0.283    47.1  5.81e+04  0.000281 |     3.54     589  4.65e+03   0.00352
-   20.0  2.02e-12  |   0.0707    23.6  2.91e+04  0.000141 |     1.77     589  1.16e+03   0.00352
+    0.4  8.06e-16  |      177 1.18e+03  1.45e+06   0.00704 |     88.5     590   2.9e+06   0.00352
+    0.8  3.23e-15  |     44.2     590  7.26e+05   0.00352 |     44.2     590  7.26e+05   0.00352
+    2.0  2.02e-14  |     7.08     236   2.9e+05   0.00141 |     17.7     590  1.16e+05   0.00352
+    5.0  1.26e-13  |     1.13    94.4  1.16e+05  0.000563 |     7.08     590  1.86e+04   0.00352
+   10.0  5.04e-13  |    0.283    47.2  5.81e+04  0.000282 |     3.54     590  4.65e+03   0.00352
+   20.0  2.02e-12  |   0.0708    23.6   2.9e+04  0.000141 |     1.77     590  1.16e+03   0.00352
   exponents (d ln / d ln a): kappa +2; [F] sigma* -2, K_p -1, De = L^2 mu/(kappa K_p) tau_i^-1 ~ a^-1, S ~ K_p ~ a^-1;  [D] sigma* -1, K_p 0, De ~ a^-2, S ~ a^0
 
 === 3. CV at fixed number-mean size (d10), same chemistry ===

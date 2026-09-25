@@ -81,3 +81,25 @@ difference needs the jammed state's stress capacity to depend on drainage, e.g. 
 μ_eff·min(p_Darcy(De), K_pΔφ/φ) instead of the fixed viscosity cap. It would be a new solver term with its own
 reduction gate and pre-registration. The bench measurements that would pin its inputs are K_p for the lab silica
 (the λ_D series) and whether the observed size trend is at fixed chemistry.
+
+## Amendment 1 (2026-09-25, pre-data referee acted on; no cell has run)
+- **F1 — class rule replaced.** A first-crossing t_95 called a drop that jams, UNJAMS and oscillates a BALL
+  (the referee's on-disk counterexample, `out/jamwin/N_s300_d1.3169`: J 0.318 → 0 by t/τ 0.3, Rg retracting to 46 %
+  of its peak and oscillating). The rule is now `dilsize_classify.py` (committed with this amendment):
+  FLUID J_max ≤ 0.01; **TRANSIENT** J_max > 0.01 but J_end ≤ 0.01 (mean over the last 0.5 τ); BALL J_end > 0.01 and
+  Rg_end ≥ 0.9 Rg_peak and t_95 ≤ 0.5; HYBRID J_end > 0.01 otherwise. Checked before any dilsize cell exists, on
+  on-disk cells: the counterexample → TRANSIENT; `cvmapE03` c0.0_x0.932_U4.0 and c0.0_x0.950_U2.0 → BALL;
+  c0.5_x0.932_U4.0 and c0.5_x0.920_U2.0 → FLUID; c0.2_x0.932_U4.0 → TRANSIENT (jams, then unjams). ⚠ BALL cells'
+  J_end is small (0.031, 0.061: the rest clock relaxes f̂ after arrest), so J_end > 0.01 has a factor ~3–6 of
+  margin; every Arm C cell's full J and Rg series is plotted and looked at before its class is quoted.
+  P1–P3 are restated on these classes; P3's "moves from BALL toward HYBRID or FLUID" now reads "toward HYBRID,
+  TRANSIENT or FLUID".
+- **M2 — health gate corrected to the project's own** (`grade_capvol.py`): after t/τ 0.5, umax ≤ U₀, zc ≤ 0.5 D₀
+  and h ≤ D₀ (the registration had typed "≤ 2 U₀" and dropped h). In `dilsize_classify.py`.
+- **M1 — a DIL-off control ladder (Arm C0, +8 cells, 29 total).** Arm C varies σ\* and DIL_COEFF together, so a
+  P3 PASS could be σ\*'s size scaling alone. Arm C0 repeats Arm C's σ\*(a) schedule with DIL_COEFF = 0 and no
+  ceiling. P3 is graded on Arm C as registered AND reported per arm; the dilatancy contribution is Arm C minus
+  Arm C0, cell by cell. **The registration's claim is restated as "the WC closure's size handles (σ\* and the
+  dilatant activation term, separately and together)", not "dilatancy".**
+- m4: Arm C holds PHI, PHI0, PHIM fixed, so the loss of (φ, φ₀, φ_m) covariance with DIL_COEFF > 0 (PHI_REF is
+  fixed at 0.49) never enters; extending the ladder in φ would need it handled.

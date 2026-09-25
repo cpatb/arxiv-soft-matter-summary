@@ -19,8 +19,6 @@ from __future__ import annotations
 import os
 import sys
 
-import numpy as np
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 IMPACT = os.path.join(os.path.dirname(ROOT), "impact_stress")
@@ -29,6 +27,7 @@ import inertial_dilatant as idm  # noqa: E402
 import pore_relaxation as pr     # noqa: E402
 import stress as st              # noqa: E402
 from materials import Fluid      # noqa: E402
+from dilatancy import SIGMA_STAR_LITERATURE  # noqa: E402
 
 lines: list[str] = []
 
@@ -41,7 +40,10 @@ def say(s: str = "") -> None:
 # lab operating points (impact_stress/run_pore_relaxation.py; cornstarch = [M26])
 LAB = {"silica": dict(D0=2.5e-3, U0=2.3), "cornstarch": dict(D0=4.0e-3, U0=5.1)}
 ETA_BRACKET = (0.01, 0.1)          # Pa s, declared bracket for eta_0 of the unthickened suspension
-SIGMA_STAR_SILICA = (19.1, 44.2, 100.0)   # Pa: dilatancy.SIGMA_STAR_LITERATURE min / repo / max
+# Pa: min / repo / max of dilatancy.SIGMA_STAR_LITERATURE, read not retyped. The middle 'repo' value is the
+# retracted si_fit (failed fit gate); it is kept only because silica_poro uses it for P_conf.
+_SS = SIGMA_STAR_LITERATURE
+SIGMA_STAR_SILICA = (min(_SS.values()), next(v for k, v in _SS.items() if "repo" in k), max(_SS.values()))
 
 
 def tau_wall(rho: float, eta: float, U0: float, D0: float) -> float:
@@ -85,6 +87,15 @@ def main() -> int:
     g = groups(pr.silica_poro(phi=0.44), **LAB["silica"])
     for ss in SIGMA_STAR_SILICA:
         say(f"     sigma* {ss:6.1f} Pa: G_act = {g['tw'][0] / ss:.3g} .. {g['tw'][1] / ss:.3g}")
+    say("  silica phi 0.44, De and S with P_conf (the pressure in K_p) set to each sigma* of the bracket:")
+    p0 = pr.silica_poro(phi=0.44)
+    for ss in SIGMA_STAR_SILICA:
+        K = pr.network_modulus_edl(ss, p0.sys.a)
+        pp = pr.PoroSystem(sys=p0.sys, K_p=K, K_p_low=K, K_p_high=K, K_p_origin="sigma* bracket")
+        gg = groups(pp, **LAB["silica"])
+        say(f"     P_conf {ss:6.1f} Pa: K_p {K:.3g} Pa, De {gg['De']:.3g}, S {gg['S']:.3g}")
+    say("  NOTE: P_conf = sigma* equates a SHEAR onset stress with a particle PRESSURE; the two differ by an O(1)")
+    say("  friction coefficient (dilatancy.py), which moves K_p, De and S by that O(1) factor, not by decades.")
 
     say("\n=== 2. size ladder at FIXED chemistry (silica anchor a0 = 0.8 um, phi 0.44, dphi 0.02; lab impact) ===")
     say("  conventions (each printed, none chosen):")

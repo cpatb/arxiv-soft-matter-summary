@@ -46,7 +46,10 @@ not retyped). Companion registration: `PREREG_DILSIZE_2026-09-25.md`.
 | ID | 5.5e-5 | 7.1e-6 | 4.7e-3 |
 | ⟨τ_wall⟩, η₀ 0.01–0.1 Pa s | 425–1340 Pa | 434–1370 Pa | 1030–3240 Pa |
 G_act for silica (σ\* 19 / 44 / 100 Pa, literature bracket): 22–70 / 10–30 / 4–13. No measured cornstarch σ\* is on
-disk, so its G_act is not given.
+disk, so its G_act is not given. With the network's confining pressure set to each σ\* of that bracket instead of
+the retracted 44 Pa fit, silica stays deeply undrained: De 1.7×10⁶ / 7.3×10⁵ / 3.2×10⁵ and S 0.0015 / 0.0035 /
+0.008. ⚠ `silica_poro` sets the confining pressure equal to σ\*, which equates a SHEAR onset stress with a particle
+PRESSURE; they differ by an O(1) friction coefficient, which moves K_p, De and S by that factor, not by decades.
 
 ## 3. Size ladder at fixed silica chemistry (anchor 0.8 µm, φ 0.44), both σ\* conventions
 Exponents (d ln/d ln a): κ +2. [F] fixed repulsive force: σ\* −2, K_p (= σ\* a/6λ_D, `silica_poro`'s rule) −1,
