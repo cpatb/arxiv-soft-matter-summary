@@ -76,3 +76,17 @@ first 5 cells at strain ≤ 0.85 — transient values, not graded observables.
 with "recomputed exactly in the grader". The exact value from `out/sigma_star_geometry.txt`
 (μ 0.3, p̂ 3e-4: (1.0701·1.0700)/(1.0157·1.0055)) is **1.1211**; the grader (`lfdem/grade_lfsig.py`,
 committed now) parses it from that file. The ×1.2 bar is unchanged.
+
+## Amendment 2 (2026-09-24, before any cell finished) — stress unit, and an external anchor
+- **Unit correction.** The `-s` input is in σ₀ = F_R/(6πa²), not F_R/a² (`Simulation.cpp:446`,
+  `SimulationInit.cpp:289`: `target_stress = input/6/M_PI`). This is the Mari et al. (2014) unit. Ratios
+  (P1, P4) are unaffected.
+- **P5 (external anchor, graded descriptively).** Sources resolved by a citation agent (full text read):
+  Mari, Seto, Morris & Denn, J. Rheol. 58, 1693 (2014), doi:10.1122/1.4890747 — onset of thickening
+  "σ_ST/(η₀γ̇₀) ≈ 0.3 … roughly independent of the volume fraction" (bidisperse 1:1.4, equal volumes);
+  Singh, Mari, Denn & Morris, J. Rheol. 62, 457 (2018), doi:10.1122/1.4999237 — Table I φ_J⁰ = 0.646,
+  φ_J^∞ = 0.562; f = exp(−σ̃*/σ̃) with σ̃* = 1.45. The closest of my arms is CV 0.2 (realised 0.184;
+  1:1.4 at equal volumes has number CV ≈ 0.17). Anchor, printed not gated: (a) the CV-0.2 onset (first σ
+  with η_r > 1.1 × η_r(0.1)) lies in [0.1, 1] σ₀; (b) the CV-0.2 low-stress inversion φ₀ lies within
+  0.02 of 0.646; (c) φ_m(μ 0.3) lies between 0.562 (μ = ∞) and 0.646. My λ = 0.02 a; the citation agent
+  reports Mari's ERM used λ = 0.05 a — onset stress depends on λ, so (a) is a loose check.
