@@ -1,0 +1,22 @@
+binary records (converged, both classes, dedup by key): 135
+bookkeeping: |2 nc_SS + nc_SL - n_S z_S| + |2 nc_LL + nc_SL - n_L z_L| worst over records = 1.82e-12
+
+T1 configuration model, measured/predicted contact counts by pair type, grouped by size ratio
+  ratio   n    SL: median [min,max]        SS: median          LL: median
+  1.25    27   1.007 [0.949, 1.034]     0.990            0.996
+  1.41    54   1.008 [0.972, 1.039]     0.994            0.995
+  1.50    27   1.022 [0.989, 1.072]     0.977            0.979
+  4.00    18   1.057 [0.948, 1.179]     0.960            0.970
+  5.00     9   1.016 [0.943, 1.131]     0.952            0.998
+  ALL: SL measured/predicted median 1.011, IQR [1.000, 1.027]
+
+T2 mean-degree exponent p = ln(z_L/z_S)/ln(d_L/d_S), grouped by size ratio (median [IQR])
+  ratio 1.25: p 1.442 [1.394, 1.517]  n 27
+  ratio 1.41: p 1.454 [1.397, 1.509]  n 54
+  ratio 1.50: p 1.481 [1.425, 1.564]  n 27
+  ratio 4.00: p 2.389 [1.990, 2.805]  n 18
+  ratio 5.00: p 2.863 [2.719, 3.023]  n 9
+
+T3 per-class rattler fraction: Poisson with a^2 mean vs size-blind, rms error over records
+  class S: a^2 rms 0.0174 (mean +0.0053); size-blind rms 0.1329 (mean -0.1052); n 135
+  class L: a^2 rms 0.0184 (mean +0.0064); size-blind rms 0.3456 (mean +0.1810); n 135
