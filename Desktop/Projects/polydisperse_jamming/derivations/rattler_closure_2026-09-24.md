@@ -13,9 +13,10 @@ fraction f_r as the only non-geometric input to σ\*(CV).
 > A direct per-grain dump (§3b) agrees on the rattler probability P(rattler | a) (a²: rms 0.017 and 0.035
 > at CV 0.2 and 0.5) while the MEAN ⟨k | a⟩ lies between a² and the closure-C form.
 > **Small grains rattle because a grain's contact count scales with its surface area, not because they fit
-> in holes.** Combined with ⟨aᵢaⱼ⟩_c ≈ ⟨a³⟩/⟨a⟩ (σ\* derivation), which is BELOW the uncorrelated a²b²
-> value (m₃/m₂)², the contact network is DISASSORTATIVE: large grains touch small ones more than size-blind
-> partner choice would give.
+> in holes.** Who touches whom carries no further size structure: in a pair-resolved dump (CV 0.5, μ_p 0.3)
+> ⟨aᵢaⱼ⟩_c = 0.532 against 0.536 for a configuration model with the MEASURED degrees, (Σkᵢaᵢ/Σkᵢ)², and a
+> size assortativity r = −0.04 (§3b). ⚠ An earlier line here inferred a DISASSORTATIVE network by comparing
+> sheared-pack pair statistics with isotropic-pack degrees; the same-cell test refutes it.
 >
 > First version (kept for the record): the closure-C form λ(a) = Z·a(a⟨a⟩+⟨a²⟩)/(2⟨a⟩⟨a²⟩) — the degree law
 > of the pair weight that fits ⟨aᵢaⱼ⟩_c — gives rms 0.022 on the 52 sheared packs (null 0.100) and 0.041 out
@@ -72,6 +73,13 @@ quantile bins in d; each λ shape normalised to the measured Z:
 |---|---|---|---|
 | CV 0.2 (Z 3.89) | **0.18** / 0.48 / 0.38 | 0.058 / 0.096 / **0.017** | 0.137 / 0.163 (0.169) |
 | CV 0.5 (Z 2.22) | 0.52 / 1.03 / **0.40** | 0.088 / 0.167 / **0.035** | 0.472 / 0.534 (0.517) |
+
+**Pairs (CV-0.5 cell, rebuilt with pairs; φ again bit-identical to the record).** 1662 contacts:
+⟨aᵢaⱼ⟩_c = 0.5319; configuration model with the measured degrees (Σkᵢaᵢ/Σkᵢ)² = 0.5360 (−0.8 %);
+closure C m₃/m₁ = 0.4612 (+15 % below measured); uncorrelated a²b², (m₃/m₂)² = 0.5714; Newman size
+assortativity r = −0.041. So in this isotropic pack the pair statistics follow from the degree law alone.
+(In the SHEARED packs of the σ\* derivation ⟨aᵢaⱼ⟩_c sat within 8 % of m₃/m₁ — a different state; whether
+the configuration model also holds there needs a pair dump with degrees, which `actshape` does not have.)
 
 The smallest CV-0.5 bin (d/⟨d⟩ 0.42) has ⟨k⟩ = 0.17 — below even a² (0.32): small grains are close to
 contact-free, a threshold rather than a smooth power. The mean-degree law is not a clean power; the

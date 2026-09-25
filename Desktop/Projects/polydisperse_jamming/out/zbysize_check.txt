@@ -27,3 +27,4 @@ zb_cv0.5_mu0.3_s1_p3e-05.npz: N 1500, phi 0.638037, converged True, Z 2.216, f_r
    C  : <k|d> weighted rms err 0.523;  P(rat|d) weighted rms err 0.088;  f_r pred 0.472 (meas 0.517)
    a1 : <k|d> weighted rms err 1.034;  P(rat|d) weighted rms err 0.167;  f_r pred 0.413 (meas 0.517)
    a2 : <k|d> weighted rms err 0.399;  P(rat|d) weighted rms err 0.035;  f_r pred 0.534 (meas 0.517)
+   pairs 1662: <aa>_c 0.5319 | closure C m3/m1 0.4612 | uncorrelated a^2b^2 (m3/m2)^2 0.5714 | configuration model (measured degrees) 0.5360 | size assortativity r -0.0413
