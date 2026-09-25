@@ -204,3 +204,8 @@ PREREG_LFSIG before any cell finished.)
   printed by the check script, added after referee pass 3), so the intermittent unjamming is a frictional,
   lowest-pressure effect; the μ_p 0 CV-0.5 p̂ 1e-4 row is fragile for the other reason (n = 1 servo survivor).
 - Rattler fraction: see `derivations/rattler_closure_2026-09-24.md`.
+- **C, the last measured input of the chain (exploratory, `derivations/force_size_probe.py` →
+  `out/force_size_probe.txt`).** The Derjaguin-reduced force rises with pair size, ⟨g | aᵢaⱼ⟩ ∝ (aᵢaⱼ)^β with
+  β = 0.30 ± 0.08 over 34 non-monodisperse cells (range 0.15–0.51; 0.20–0.25 frictionless, 0.32–0.38 at
+  μ_p 0.3), i.e. large pairs carry MORE than their Derjaguin share. The pure power law over-predicts C by
+  1–4 %, and β is not universal (it depends on μ_p), so C is not yet predictable; q (tail shape) is untouched.
