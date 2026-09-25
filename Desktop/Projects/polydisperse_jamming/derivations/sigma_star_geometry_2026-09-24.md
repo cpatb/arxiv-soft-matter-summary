@@ -169,5 +169,7 @@ PREREG_LFSIG before any cell finished.)
   (e.g. μ 0.3 CV 0 seed 2: min 0.73), i.e. the packs intermittently UNJAM at the lowest pressure even though
   `servo_held` is True, so the p̂ 1e-4 rows average jammed and unjammed states. At p̂ 3e-4 and 1e-3 the
   snapshot spread is ≤ ±0.3 in Z. The headline row (μ 0.3, p̂ 3e-4) is unaffected; the p̂ 1e-4 rows should
-  not be quoted on their own.
+  not be quoted on their own. The healthy μ_p 0 cells do NOT unjam inside the window (snapshot Z ≥ 3.0 everywhere; spread ±0.5 at p̂ 1e-4 vs
+  ±0.15 at 1e-3; checked 2026-09-24 after referee pass 3), so the intermittent unjamming is a frictional,
+  lowest-pressure effect; the μ_p 0 CV-0.5 p̂ 1e-4 row is fragile for the other reason (n = 1 servo survivor).
 - Rattler fraction: see `derivations/rattler_closure_2026-09-24.md`.
