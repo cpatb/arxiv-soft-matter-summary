@@ -163,9 +163,9 @@ the MEAN degree fits ⟨k|a⟩ ∝ a^p best at p = 1.55 (CV 0.2) and 1.70 (CV 0.
 reproduces the measured contact-weighted radius (0.527 vs 0.528; 0.710 vs 0.732). For a lognormal at ⟨a⟩ = 1,
 ā_k²/⟨a³⟩ = (1+CV²)^{2p−3}: p = 2 gives 1.25 at CV 0.5, p ≈ 1.6 gives ≈ 1.05 — the SHEARED packs' measured
 ⟨aᵢaⱼ⟩_c/⟨a³⟩ ratio (1.05–1.08, §4). Using p = 1.625 (the mean of the two, fixed, not tuned on σ\*) for ā_k
-and keeping the a² law for Z, the chain gives predicted/measured σ\* ratio **1.000–1.036 on every row at
-p̂ 3e-4 and 1e-3** (CV 0.2 and 0.5, μ_p 0 and 0.3), 0.94 / 0.71 at the unjamming μ 0.3 p̂ 1e-4 rung (last
-column of `out/sigma_star_chain.txt`). Caveats: the exponent comes from two isotropic cells and is transferred
+and keeping the a² law for Z, the chain gives predicted/measured σ\* ratio **0.980–1.018 on every row at
+p̂ 3e-4 and 1e-3** (CV 0.2 and 0.5, μ_p 0 and 0.3); at p̂ 1e-4 it is 1.04 / 1.03 (μ 0) and 0.94 / 0.71 at the
+unjamming μ 0.3 rung (last column of `out/sigma_star_chain.txt`). Caveats: the exponent comes from two isotropic cells and is transferred
 to sheared packs; the C/q ratio (≈ 1.05–1.12 at CV 0.5) is still taken measured, and with it set to 1 the
 prediction is ~10 % low. The picture: **rattling follows a² (the low-k tail), the mean degree follows ≈ a^1.6,
 and σ\*(CV) follows from the mean degree through eq. 15.**
