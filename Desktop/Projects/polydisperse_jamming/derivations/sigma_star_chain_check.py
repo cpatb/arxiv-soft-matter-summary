@@ -90,9 +90,17 @@ def main() -> int:
             R, cq = meas[(mu, p, cv)]
             G = g / g0
             Gp = np.mean([geo(a, z, ph, P_MEAN) for z, _, ph in zs]) / g0p
+
+            def resid(pp):
+                g0x = np.mean([geo(radii(0.0), z_from_znr(radii(0.0), r["z_nr_ss"]), r["phi_ss"], pp) for r in byc[0.0]])
+                return np.mean([geo(a, z, ph, pp) for z, _, ph in zs]) / g0x * cq - R
+            try:
+                pstar = brentq(resid, 0.0, 3.0, xtol=1e-4)
+            except ValueError:
+                pstar = float("nan")
             say(f"  {mu:.1f} {p:.0e}  {cv:.1f}  {G:.4f}   {G * cq:.4f}        {R:.4f}   {G * cq / R:.4f}     | "
                 f"{np.mean([z / zm for z, zm, _ in zs]):.3f}   drop captured (1-pred)/(1-R) {(1 - G * cq) / (1 - R):.2f}"
-                f"   | a_k with p={P_MEAN:.3f}: pred {Gp * cq:.4f} pred/meas {Gp * cq / R:.4f}")
+                f"   | a_k with p={P_MEAN:.3f}: pred {Gp * cq:.4f} pred/meas {Gp * cq / R:.4f}   | p* (exact) {pstar:.3f}")
     with open(os.path.join(ROOT, "out", "sigma_star_chain.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")
     return 0

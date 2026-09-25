@@ -151,11 +151,13 @@ Z from the backbone Z_nr with the a² Poisson degree law (rattler_closure), ⟨a
 the configuration model, eq. 15, and the MEASURED C/q ratio:
 - Z is predicted well: Z_pred/Z_meas = 0.95–1.01 on every CV-0.2 and CV-0.5 row.
 - CV 0.2: predicted/measured σ\* ratio 1.03–1.07 (0.97 at the unjamming μ 0.3 p̂ 1e-4 rung).
-- **CV 0.5: over-predicted by 15–21 %** (0.84–0.94 against a measured 0.73–0.79; again excepting p̂ 1e-4).
+- **CV 0.5: over-predicted by 15.1–18.0 %** (0.84–0.93 against a measured 0.73–0.79) on the three rows at
+  p̂ 3e-4 and 1e-3; both p̂ 1e-4 rows are excluded (μ 0.3 unjams; μ 0 is the n = 1 servo survivor) —
+  an earlier version silently kept the μ 0 one in these ranges (referee pass 5).
 The miss is in ā_k: k ∝ a² is the right law for WHO RATTLES but over-weights large grains in the MEAN degree
 (the per-grain dump already showed ⟨k|a⟩ is shallower than a² at CV 0.2), so (m₃/m₂)² over-states ⟨aᵢaⱼ⟩_c
-at CV 0.5. The chain therefore gives the sign and 29–58 % (typically a third) of the CV-0.5 drop from length-free
-Z_nr, φ and the PSD alone (column "drop captured"); closing it needs the mean degree law ⟨k|a⟩ under shear, which needs a sheared dump with grain ids.
+at CV 0.5. The chain therefore gives the sign and 35–58 % of the CV-0.5 drop from length-free Z_nr, φ and the PSD
+alone on the reliable rows (column "drop captured"); closing it needs the mean degree law ⟨k|a⟩ under shear, which needs a sheared dump with grain ids.
 
 **Closing it with one transferred exponent (added the same night).** On the two isotropic per-grain dumps
 the MEAN degree fits ⟨k|a⟩ ∝ a^p best at p = 1.55 (CV 0.2) and 1.70 (CV 0.5)
@@ -167,7 +169,12 @@ and keeping the a² law for Z, the chain gives predicted/measured σ\* ratio **0
 p̂ 3e-4 and 1e-3** (CV 0.2 and 0.5, μ_p 0 and 0.3); at p̂ 1e-4 it is 1.04 / 1.03 (μ 0) and 0.94 / 0.71 at the
 unjamming μ 0.3 rung (last column of `out/sigma_star_chain.txt`). Caveats: the exponent comes from two isotropic cells and is transferred
 to sheared packs; the C/q ratio (≈ 1.05–1.12 at CV 0.5) is still taken measured, and with it set to 1 the
-prediction is ~10 % low. The picture: **rattling follows a² (the low-k tail), the mean degree follows ≈ a^1.6,
+prediction is ~10 % low. Two checks on "transferred, not tuned" (referee pass 5): lowering p below 2 lowers the prediction
+monotonically, so SOME p had to help; but the exponent p\* that zeroes each row's residual exactly (printed,
+last column) is 1.614 / 1.672 / 1.625 on the three reliable CV-0.5 rows — independent (μ_p, p̂) conditions
+all wanting the value the isotropic dumps gave (CV-0.2 rows: 1.39–1.63, weakly constrained because the
+ratio barely depends on p there). The source exponents are single-seed fits on a 0.05 grid, and their
+uncertainty is not propagated. The picture: **rattling follows a² (the low-k tail), the mean degree follows ≈ a^1.6,
 and σ\*(CV) follows from the mean degree through eq. 15.**
 
 ## 6. Registered for `lfsig` (P4, before any lfsig cell is read)
