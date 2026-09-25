@@ -50,7 +50,8 @@ SHAPE_TAG = "shp"
 
 
 def cell_key(cv: float, mu: float, seed: int, p_hat: float, n: int,
-             family: str, alpha: float, kmer: tuple[float, float] = (0.0, 0.0)) -> str:
+             family: str, alpha: float, kmer: tuple[float, float] = (0.0, 0.0),
+             eta_roll: float | None = None) -> str:
     """Resume key. `alpha` is ALWAYS in it, including at alpha = 1.
 
     Deliberately NOT backward-compatible with `phase2_phiJ.cell_key`: the alpha = 1
@@ -64,6 +65,8 @@ def cell_key(cv: float, mu: float, seed: int, p_hat: float, n: int,
         base += f"_w2{kmer[0]:.3f}_w3{kmer[1]:.3f}"
         if len(kmer) > 2 and kmer[2]:
             base += "_chain"
+    if eta_roll is not None:                 # PREREG_ROLLCHI; absent -> the historical key
+        base += f"_er{eta_roll:.3f}"
     key = base if family == "lognormal" else f"{base}_{family}"
     cap = packing.max_iter()
     return key if cap == packing.MAX_ITER else f"{key}_it{cap}"
@@ -87,7 +90,13 @@ def main() -> int:
                     help="PREREG_KMER: ';'-separated w2:w3 solid-volume fractions of tangent "
                          "doublets and triangle triplets of ONE primary (needs cv 0, alpha 1)")
     ap.add_argument("--dump-dir", default="", help="per-contact (fn, k1, k2) npz per cell")
+    ap.add_argument("--eta-rolls", default="",
+                    help="PREREG_ROLLCHI: comma-separated etaRoll values (CohFrictMat path, "
+                         "rolling AND twisting resistance); 'none' = the FrictMat path. "
+                         "Absent -> FrictMat only, historical keys unchanged")
     args = ap.parse_args()
+    etas = ([None if e.strip().lower() == "none" else float(e)
+             for e in args.eta_rolls.split(",")] if args.eta_rolls else [None])
     # "w2:w3" or "w2:w3:c" (triplets as straight chains)
     kmers = ([(float(c.split(":")[0]), float(c.split(":")[1]),
                len(c.split(":")) > 2 and c.split(":")[2] == "c")
@@ -110,7 +119,7 @@ def main() -> int:
         suffix += f"_shard{args.shard:02d}of{args.nshards:02d}"
     path = os.path.join(OUT_DIR, f"phase2{suffix}.jsonl")
     done = load_done(path)
-    total = len(kmers) * len(alphas) * len(cvs) * len(mus) * len(seeds) * len(ladder)
+    total = len(kmers) * len(etas) * len(alphas) * len(cvs) * len(mus) * len(seeds) * len(ladder)
     mine = (total + args.nshards - 1 - args.shard) // args.nshards
     # N before and after every filter, printed, not inferred.
     print(f"shape: N_cells_total={total} N_on_this_shard={mine} "
@@ -123,7 +132,7 @@ def main() -> int:
     n_run = 0
     n_skipped = 0
     n_failed = 0
-    for kmer in kmers:
+    for kmer, eta in [(k, e) for k in kmers for e in etas]:
      for alpha in alphas:
         for cv in cvs:
             for mu in mus:
@@ -132,7 +141,8 @@ def main() -> int:
                         idx += 1
                         if (idx - 1) % args.nshards != args.shard:
                             continue
-                        key = cell_key(cv, mu, seed, p_hat, n, args.family, alpha, kmer)
+                        key = cell_key(cv, mu, seed, p_hat, n, args.family, alpha, kmer,
+                                       eta_roll=eta)
                         if key in done:
                             n_skipped += 1
                             continue
@@ -141,7 +151,8 @@ def main() -> int:
                                                     seed=seed, verbose=True,
                                                     family=args.family, alpha=alpha,
                                                     doublet_w=kmer[0], triplet_w=kmer[1],
-                                                    triplet_chain=kmer[2])
+                                                    triplet_chain=kmer[2],
+                                                    eta_roll=eta)
                             rec = json.loads(st.to_json())
                             n_run += 1
                             if args.dump_dir:
