@@ -1,12 +1,12 @@
 Resume polydisperse_jamming (2026-09-24/25 overnight block).
 
 Read first: Status card "Drop Impact — Polydispersity Jamming Model" §2 top block and §3 top block, then
-CLAIMS_SIGMA_GEOMETRY_2026-09-24.md (10 claims, each with status, evidence file, referee state).
+CLAIMS_SIGMA_GEOMETRY_2026-09-24.md (11 claims, each with status, evidence file, referee state).
 
 State:
 - sigma* is contact geometry: exact Love-Weber identity (derivations/sigma_star_geometry_2026-09-24.md, 6
   referee passes, converged). Contact pairs follow a configuration model in the grain degrees; rattling
-  follows a^2 (rattler_closure_2026-09-24.md, 3 passes, converged); the mean degree follows ~a^1.6, and with
+  follows a^2 (rattler_closure_2026-09-24.md, 10 passes, converged); the mean degree follows ~a^1.6, and with
   that the chain Z_nr, phi, PSD -> sigma*(CV) matches the dry-DEM ratio to 2 % (C/q still measured).
 - Out of sample on 135 binary + 129 discrete K=3-5 packs (derivations/binary_contact_check.py): configuration
   model holds (binary SL 1.011x); rattling ~ a^2 per class (binary rms 0.017/0.018; multi-class span-4 packs
