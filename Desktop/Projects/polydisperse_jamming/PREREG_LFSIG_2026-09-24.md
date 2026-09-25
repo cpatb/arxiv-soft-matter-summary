@@ -60,3 +60,13 @@ the project has.
 ## What would change the plan
 If > 1/3 of cells are censored by the wall cap, the strain window is shortened to what landed and the
 change is written here as an amendment before grading.
+
+## Amendment 1 (2026-09-24, ~22:10 CDT, before any cell finished or was graded)
+Cost at launch: σ = 100 cells advance 0.3–0.85 strain per 11 min with the machine at load 24/22
+(shared with the basilisk session), so strain 6 would reach the 4 h wall cap and the 28-cell queue
+would need > 10 h. Seen before this amendment: the progress lines (strain, η, Z_c, min gap) of the
+first 5 cells at strain ≤ 0.85 — transient values, not graded observables.
+- Cells that have not started get STRAIN = 4 (override file read at cell start); the 5 running
+  σ ≥ 30 cells keep time_end 6 and are graded on the SAME window as everything else.
+- Averaging window for EVERY cell: strain [1.5, 4]. Health: strain reached ≥ 3 (was ≥ 4).
+- Nothing else changes (grids, predictions, P1–P4 bars).

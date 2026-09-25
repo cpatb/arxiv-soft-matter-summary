@@ -4,6 +4,8 @@
 # PREREG_LFSIG_2026-09-24.md. Wall cap TMAX (default 4 h): rc 124 = censored, never imputed. kn rule (registered): kn = max(1e4, 1000*sigma) F_R/a.
 set -u
 LABEL=$1; CV=$2; PHI=$3; SIG=$4; MU=$5; SEED=$6; STRAIN=$7
+# Amendment 1: an override file, read at cell start, replaces the queued strain
+[ -f ~/lfdem/STRAIN_OVERRIDE ] && STRAIN=$(cat ~/lfdem/STRAIN_OVERRIDE)
 N=${N:-500}
 cd ~/pj && source scripts/env.sh >/dev/null 2>&1
 B=~/lfdem/LF_DEM/LF_DEM/LF_DEM
