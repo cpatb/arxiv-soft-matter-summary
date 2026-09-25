@@ -81,6 +81,13 @@ assortativity r = −0.041. So in this isotropic pack the pair statistics follow
 (In the SHEARED packs of the σ\* derivation ⟨aᵢaⱼ⟩_c sat within 8 % of m₃/m₁ — a different state; whether
 the configuration model also holds there needs a pair dump with degrees, which `actshape` does not have.)
 
+**The same test on LUBRICATED sheared suspensions (post hoc; `lfdem/decomp_lfsig.py` → `out/decomp_lfsig.txt`,
+12 LF_DEM cells of PREREG_LFSIG, 1–3 int_ snapshots each in strain [1.5, 4], contacts = touching surfaces).**
+⟨aᵢaⱼ⟩_c / configuration model = 0.999–1.003 at CV 0.2 (6 cells) and 0.960–0.999 at CV 0.5 (6 cells), with
+size assortativity r between −0.15 and +0.09: the configuration-model statement holds to ≤ 4 %, with a
+slight disassortative tilt at CV 0.5 and high stress. Closure C is within 2 % at CV 0.2 and 3–7 % HIGH at
+CV 0.5, σ ≥ 30 σ₀. Few snapshots per cell; not a registered test.
+
 The smallest CV-0.5 bin (d/⟨d⟩ 0.42) has ⟨k⟩ = 0.17 — below even a² (0.32): small grains are close to
 contact-free, a threshold rather than a smooth power. The mean-degree law is not a clean power; the
 rattler probability is, to within these errors, the a² one.
