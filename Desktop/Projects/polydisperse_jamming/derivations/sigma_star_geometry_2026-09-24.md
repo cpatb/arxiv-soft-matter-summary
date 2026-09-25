@@ -133,8 +133,8 @@ so the size distribution enters σ\* only through φ, Z, ⟨a³⟩ and ā_k — 
 Closure C's pair weight aᵢaⱼ(aᵢ+aⱼ) does not factorise, so it is NOT of this form; it matched the sheared
 dumps' ⟨aᵢaⱼ⟩_c to ≤ 8 % without being the mechanism. With k ∝ a² (the law that predicts rattlers best)
 ā_k = m₃/m₂ and eq. 15 gives ⟨aᵢaⱼ⟩_c = (m₃/m₂)²; with the measured degrees the isotropic CV-0.5 cell gives
-ā_k² = 0.536 against ⟨aᵢaⱼ⟩_c = 0.532. Which degree law
-holds under SHEAR in the dry DEM is not measured (the actshape dumps have pairs but no grain ids).
+ā_k² = 0.536 against ⟨aᵢaⱼ⟩_c = 0.532. The configuration model is tested under shear above; the degree
+law k(a) itself under shear is not (the actshape dumps have no grain ids).
 
 ## 6. Registered for `lfsig` (P4, before any lfsig cell is read)
 
