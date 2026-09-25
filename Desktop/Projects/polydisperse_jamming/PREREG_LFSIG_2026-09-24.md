@@ -70,3 +70,9 @@ first 5 cells at strain ≤ 0.85 — transient values, not graded observables.
   σ ≥ 30 cells keep time_end 6 and are graded on the SAME window as everything else.
 - Averaging window for EVERY cell: strain [1.5, 4]. Health: strain reached ≥ 3 (was ≥ 4).
 - Nothing else changes (grids, predictions, P1–P4 bars).
+
+## Erratum to P4 (2026-09-24, before any cell finished)
+`derivations/sigma_star_geometry_2026-09-24.md` §6 wrote the Yade C/q ratio for CV 0.5 vs 0.2 as "1.05",
+with "recomputed exactly in the grader". The exact value from `out/sigma_star_geometry.txt`
+(μ 0.3, p̂ 3e-4: (1.0701·1.0700)/(1.0157·1.0055)) is **1.1211**; the grader (`lfdem/grade_lfsig.py`,
+committed now) parses it from that file. The ×1.2 bar is unchanged.
