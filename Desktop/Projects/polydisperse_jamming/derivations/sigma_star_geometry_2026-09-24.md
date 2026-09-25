@@ -146,6 +146,17 @@ dumps' ⟨aᵢaⱼ⟩_c to ≤ 9 % per cell without being the mechanism. With k 
 ā_k² = 0.536 against ⟨aᵢaⱼ⟩_c = 0.532. The configuration model is tested under shear above; the degree
 law k(a) itself under shear is not (the actshape dumps have no grain ids).
 
+## 5c. The closed chain: σ\*(CV) from Z_nr, φ and the PSD (`derivations/sigma_star_chain_check.py` → `out/sigma_star_chain.txt`)
+Z from the backbone Z_nr with the a² Poisson degree law (rattler_closure), ⟨aᵢaⱼ⟩_c = ā_k² = (m₃/m₂)² from
+the configuration model, eq. 15, and the MEASURED C/q ratio:
+- Z is predicted well: Z_pred/Z_meas = 0.95–1.01 on every CV-0.2 and CV-0.5 row.
+- CV 0.2: predicted/measured σ\* ratio 1.03–1.07 (0.97 at the unjamming μ 0.3 p̂ 1e-4 rung).
+- **CV 0.5: over-predicted by 15–21 %** (0.84–0.94 against a measured 0.73–0.79; again excepting p̂ 1e-4).
+The miss is in ā_k: k ∝ a² is the right law for WHO RATTLES but over-weights large grains in the MEAN degree
+(the per-grain dump already showed ⟨k|a⟩ is shallower than a² at CV 0.2), so (m₃/m₂)² over-states ⟨aᵢaⱼ⟩_c
+at CV 0.5. The chain therefore gives the sign and 29–58 % (typically a third) of the CV-0.5 drop from length-free
+Z_nr, φ and the PSD alone (column "drop captured"); closing it needs the mean degree law ⟨k|a⟩ under shear, which needs a sheared dump with grain ids.
+
 ## 6. Registered for `lfsig` (P4, before any lfsig cell is read)
 
 In LF_DEM the activated fraction at stress σ is the fraction of interacting pairs with gap h < 0, and

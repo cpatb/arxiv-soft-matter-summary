@@ -1,0 +1,13 @@
+closed chain: Z_nr, phi, PSD -> Z (a^2 Poisson) -> configuration model -> sigma* ratio vs CV 0
+  mu   p      CV   G_pred   x C/q(meas)   R_meas   pred/meas  | Z_pred/Z_meas(CV)
+  0.0 1e-04  0.2  1.0194   1.0428        0.9770   1.0673     | 0.986   drop captured (1-pred)/(1-R) -1.86
+  0.0 1e-04  0.5  0.8716   0.9353        0.7755   1.2061     | 0.953   drop captured (1-pred)/(1-R) 0.29
+  0.0 3e-04  0.2  0.9850   0.9964        0.9673   1.0301     | 0.989   drop captured (1-pred)/(1-R) 0.11
+  0.0 3e-04  0.5  0.8485   0.9254        0.7845   1.1796     | 0.977   drop captured (1-pred)/(1-R) 0.35
+  0.0 1e-03  0.2  1.0090   1.0337        0.9855   1.0489     | 0.984   drop captured (1-pred)/(1-R) -2.32
+  0.3 1e-04  0.2  0.8815   0.9108        0.9416   0.9673     | 1.010   drop captured (1-pred)/(1-R) 1.53
+  0.3 1e-04  0.5  0.5803   0.6602        0.7935   0.8320     | 0.971   drop captured (1-pred)/(1-R) 1.65
+  0.3 3e-04  0.2  0.9626   0.9831        0.9547   1.0297     | 0.997   drop captured (1-pred)/(1-R) 0.37
+  0.3 3e-04  0.5  0.7372   0.8441        0.7334   1.1509     | 1.009   drop captured (1-pred)/(1-R) 0.58
+  0.3 1e-03  0.2  0.9739   1.0127        0.9736   1.0401     | 0.985   drop captured (1-pred)/(1-R) -0.48
+  0.3 1e-03  0.5  0.7946   0.9257        0.7884   1.1742     | 0.966   drop captured (1-pred)/(1-R) 0.35
