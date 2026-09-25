@@ -1,0 +1,15 @@
+records after dedup: 799
+by CV (all families, mu):
+  CV 0.00: 164/168 converged (97.6 %)
+  CV 0.10: 57/60 converged (95.0 %)
+  CV 0.20: 122/132 converged (92.4 %)
+  CV 0.30: 88/96 converged (91.7 %)
+  CV 0.40: 109/127 converged (85.8 %)
+  CV 0.50: 162/216 converged (75.0 %)
+by (family, CV >= 0.4): converged / total, mean f_r converged vs not
+  lognormal  CV 0.4: 28/36 converged; f_r 0.2716 (conv) vs 0.2164 (not conv, n 8)
+  lognormal  CV 0.5: 82/108 converged; f_r 0.4908 (conv) vs 0.4988 (not conv, n 26)
+  uniform    CV 0.4: 49/55 converged; f_r 0.3225 (conv) vs 0.3004 (not conv, n 6)
+  uniform    CV 0.5: 35/60 converged; f_r 0.4105 (conv) vs 0.5991 (not conv, n 25)
+  bidisperse CV 0.4: 32/36 converged; f_r 0.3438 (conv) vs 0.3197 (not conv, n 4)
+  bidisperse CV 0.5: 45/48 converged; f_r 0.4597 (conv) vs 0.4520 (not conv, n 3)

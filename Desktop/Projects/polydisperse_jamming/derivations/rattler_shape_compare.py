@@ -32,11 +32,12 @@ def say(s: str = "") -> None:
 
 def shape(a, which):
     m1, m2 = a.mean(), (a * a).mean()
-    s = {"C": a * (a * m1 + m2), "a1": a, "a2": a * a, "a3": a ** 3, "blind": np.ones_like(a)}[which]
+    s = {"C": a * (a * m1 + m2), "a05": np.sqrt(a), "a1": a, "a2": a * a, "a3": a ** 3, "a4": a ** 4,
+         "blind": np.ones_like(a)}[which]
     return s / s.mean()
 
 
-WH = ("C", "a1", "a2", "a3", "blind")
+WH = ("C", "a05", "a1", "a2", "a3", "a4", "blind")
 
 
 def fr(a, Z, which):

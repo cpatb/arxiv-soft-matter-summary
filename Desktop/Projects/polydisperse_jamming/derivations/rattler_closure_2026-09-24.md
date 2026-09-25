@@ -11,11 +11,13 @@ fraction f_r as the only non-geometric input to σ\*(CV).
 > against 0.041 for the pair-closure form below and 0.128 for a size-blind null. A power sweep
 > λ ∝ aᵖ has a sharp optimum at p = 2 (rms 0.114 / 0.079 / 0.016 / 0.091 / 0.157 at p = 0.5 / 1 / 2 / 3 / 4).
 > A direct per-grain dump (§3b) agrees on the rattler probability P(rattler | a) (a²: rms 0.017 and 0.035
-> at CV 0.2 and 0.5) while the MEAN ⟨k | a⟩ lies between a² and the closure-C form.
+> at CV 0.2 and 0.5); for the MEAN ⟨k | a⟩ the rms ranking flips by cell (closure C better at CV 0.2, a² at
+> CV 0.5), so the mean degree law is not a clean power.
 > **Small grains rattle because a grain's contact count scales with its surface area, not because they fit
-> in holes.** Who touches whom carries no further size structure: in a pair-resolved dump (CV 0.5, μ_p 0.3)
-> ⟨aᵢaⱼ⟩_c = 0.532 against 0.536 for a configuration model with the MEASURED degrees, (Σkᵢaᵢ/Σkᵢ)², and a
-> size assortativity r = −0.04 (§3b). ⚠ An earlier line here inferred a DISASSORTATIVE network by comparing
+> in holes.** In a pair-resolved dump (one cell: CV 0.5, μ_p 0.3, isotropic), who touches whom carries no
+> further size structure: ⟨aᵢaⱼ⟩_c = 0.532 against 0.536 for a configuration model with the MEASURED degrees,
+> (Σkᵢaᵢ/Σkᵢ)², size assortativity r = −0.04 (§3b); the sheared dry-DEM and lubricated LF_DEM contacts agree
+> to ≤ 4 % (σ\* derivation §5b; §3b below). ⚠ An earlier line here inferred a DISASSORTATIVE network by comparing
 > sheared-pack pair statistics with isotropic-pack degrees; the same-cell test refutes it.
 >
 > First version (kept for the record): the closure-C form λ(a) = Z·a(a⟨a⟩+⟨a²⟩)/(2⟨a⟩⟨a²⟩) — the degree law
@@ -78,8 +80,9 @@ quantile bins in d; each λ shape normalised to the measured Z:
 ⟨aᵢaⱼ⟩_c = 0.5319; configuration model with the measured degrees (Σkᵢaᵢ/Σkᵢ)² = 0.5360 (−0.8 %);
 closure C m₃/m₁ = 0.4612 (+15 % below measured); uncorrelated a²b², (m₃/m₂)² = 0.5714; Newman size
 assortativity r = −0.041. So in this isotropic pack the pair statistics follow from the degree law alone.
-(In the SHEARED packs of the σ\* derivation ⟨aᵢaⱼ⟩_c sat within 8 % of m₃/m₁ — a different state; whether
-the configuration model also holds there needs a pair dump with degrees, which `actshape` does not have.)
+(For the SHEARED packs, the σ\* derivation §5b runs the id-free version of this test on load-bearing
+contact ends: 0.973–0.982 at CV 0.5 against a finite-size null of 0.9999 — a small disassortative tilt. The
+degree law k(a) under shear still needs a dump with grain ids.)
 
 **The same test on LUBRICATED sheared suspensions (post hoc; `lfdem/decomp_lfsig.py` → `out/decomp_lfsig.txt`,
 12 LF_DEM cells of PREREG_LFSIG, 1–3 int_ snapshots each in strain [1.5, 4], contacts = touching surfaces).**
@@ -106,9 +109,12 @@ bidisperse, μ_p 0–3, all p̂ rungs, group-mean f_r 0.012–0.563. Closure (i)
   still ~3× better than the null.
 - **Shape sweep (referee pass 1, reproduced in `derivations/rattler_shape_compare.py` →
   `out/rattler_shape_compare.txt`):** λ ∝ a² gives rms 0.016 (mean +0.009), best of every form tried.
-- **Attrition (referee M2).** Convergence falls with CV (97.9 % at CV 0 → 75.0 % at CV 0.5; uniform CV 0.5
-  keeps 41 of 84), and the non-converged cells rattle MORE (uniform CV 0.5: f_r 0.599 vs 0.411 for the
-  survivors). The per-group f_r in this section are therefore survivor-biased LOW at CV 0.5. The model
+- **Attrition (referee M2; `derivations/rattler_attrition_check.py` → `out/rattler_attrition.txt`).**
+  Convergence falls with CV (97.6 % at CV 0 → 75.0 % at CV 0.5, deduplicated). The bias is FAMILY-SPECIFIC:
+  uniform CV 0.5 keeps 35 of 60 and its non-converged cells rattle more (f_r 0.599 vs 0.411), so the uniform
+  CV-0.5 f_r here is survivor-biased LOW; lognormal (82/108; 0.499 vs 0.491) and bidisperse (45/48; 0.452 vs
+  0.460) show no such difference. (The first version said "41 of 84", carrying an arithmetic slip from the
+  referee's pass-1 report; corrected by pass 2 and now printed by the script.) The model
   comparison is not: on the 97 excluded records alone, closure C still beats the null by > 3× (rms 0.047 vs
   0.157, referee's computation).
 

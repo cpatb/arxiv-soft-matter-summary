@@ -8,8 +8,9 @@
 >
 > **σ\*/κ = (N_c/V)·⟨aᵢaⱼ⟩_c · C / (3 q Λ)** (eq. 7)
 >
-> and, with a pair-statistics closure that holds to ≤ 2.3 % (μ_p 0) and ≤ 7.8 % (μ_p 0.3) on 52 sheared DEM
-> cells, **σ\*/κ ≈ Z φ / (8π⟨a⟩) · C/q**. At fixed NUMBER-mean radius, polydispersity therefore
+> and, with a pair-statistics closure that holds to ≤ 2.3 % (μ_p 0) and ≤ 6.0 % (μ_p 0.3) on the reliable
+> rungs p̂ 3e-4 and 1e-3 of 52 sheared DEM cells (≤ 7.8 % if the intermittently unjamming p̂ 1e-4 rung is
+> included, §7), **σ\*/κ ≈ Z φ / (8π⟨a⟩) · C/q**. At fixed NUMBER-mean radius, polydispersity therefore
 > acts on σ\* through the contact density Zφ alone (plus two O(5 %) corrections). CV 0 → 0.5 cuts σ\*
 > by ×0.73–0.79; the geometric factor Zφ alone is ×0.60–0.71, and the force-size correlation C and the
 > distribution shape q each push BACK by 4–10 % (ranges are ACROSS (μ_p, p̂) conditions, not error
@@ -72,7 +73,8 @@
   are the mean of a ratio differing from the ratio of means. (Referee pass 1 corrected my earlier
   "two exceptions".)
 - **Limiting case:** CV 0 → C = 1 identically, ⟨aa⟩ = a², eq. 13 = Zφ/(8πa)/(qΛ); printed for all 18
-  CV-0 cells, agreement ≤ 0.02 % (e.g. 0.23581 vs 0.23583). This is the identity at C = 1, so it checks
+  CV-0 cells, agreement ≤ 0.02 % on 17 of 18; the exception, μ 0.3 p̂ 1e-4 seed 3 (−0.74 %), is the same cell
+  as the first reconstruction exception (referee pass 2, N1). This is the identity at C = 1, so it checks
   bookkeeping (V, units, pairing), not physics.
 - **Dimensions:** N_c/V [L⁻³] · ⟨aa⟩ [L²] = L⁻¹ = σ\*/κ ([F L⁻²]/[F L⁻¹]). PASS.
 
@@ -88,7 +90,8 @@
 
 (all 11 rows in the output file). The product reproduces R_meas to ≤ 1.1 % (exact identity).
 Closures A and B fail (⟨aa⟩/⟨a³⟩ ratio 0.80 and 1.25 at CV 0.5 against a measured 1.01–1.08); C is
-within 2.3 % for μ 0 and within 7.8 % for μ 0.3. The parameter-free BMCSL weighting (eq. 12b) gives
+within 2.3 % for μ 0 and within 7.8 % for μ 0.3 — 6.0 % without the p̂ 1e-4 rung, which also carries all
+4 reconstruction exceptions (referee pass 2, N2; the p̂ 1e-4 cells unjam intermittently, §7). The parameter-free BMCSL weighting (eq. 12b) gives
 1.00–1.03 — near-invariance as well — and, like C, misses the +5–8 % excess at μ 0.3, CV 0.5, which is
 where half the grains are rattlers (a backbone that is a size-biased subset would show exactly this sign).
 
@@ -126,10 +129,15 @@ radius. Substituting in eq. 8 (an identity once that holds):
 **σ\*/κ = Zφ ā_k² / (8π⟨a³⟩) · C/(qΛ)** (eq. 15)
 
 so the size distribution enters σ\* only through φ, Z, ⟨a³⟩ and ā_k — i.e. through the degree law k(a).
-**Tested on the 52 sheared dumps themselves** without grain ids (ā_k is the mean radius over contact ENDS):
-⟨r₁r₂⟩_c/⟨r_end⟩² = 0.998–0.999 at CV 0.2 and 0.973–0.982 at CV 0.5, every (μ_p, p̂) (printed in
-`out/sigma_star_geometry.txt`; CV 0 is 1 identically, so it tests nothing). Eq. 15 therefore holds to
-≤ 2.7 % on the data eq. 7 was checked on, with a small consistent disassortative tilt at CV 0.5.
+**A necessary check on the 52 sheared dumps, without grain ids.** The mean radius over LOAD-BEARING contact
+ends equals ā_k for the load-bearing degree (fn > 0), so ⟨r₁r₂⟩_c/⟨r_end⟩² = 1 under a configuration model in
+that degree, and exceeds 1 under size-assortative pairing (Cauchy–Schwarz; referee pass 2 checked it is not 1
+by construction). Measured: 0.998–0.999 at CV 0.2 and 0.973–0.982 at CV 0.5, every (μ_p, p̂) (printed in
+`out/sigma_star_geometry.txt`; CV 0 is 1 identically). The finite-contact-number null of a TRUE configuration
+model (random stub matching without replacement, printed beside it) is 0.9999, so the 1.8–2.7 % CV-0.5
+deficit is ~200× finite-size: a real, small DISASSORTATIVE tilt. This does not identify the mechanism — any
+contact rule with no size correlation beyond k(a) passes — and it cannot test the degree law itself.
+Eq. 15 holds to ≤ 2.7 % on these data. The worst row (μ 0, p̂ 1e-4, CV 0.5, 2.7 %) is the n = 1 servo survivor.
 Closure C's pair weight aᵢaⱼ(aᵢ+aⱼ) does not factorise, so it is NOT of this form; it matched the sheared
 dumps' ⟨aᵢaⱼ⟩_c to ≤ 8 % without being the mechanism. With k ∝ a² (the law that predicts rattlers best)
 ā_k = m₃/m₂ and eq. 15 gives ⟨aᵢaⱼ⟩_c = (m₃/m₂)²; with the measured degrees the isotropic CV-0.5 cell gives
