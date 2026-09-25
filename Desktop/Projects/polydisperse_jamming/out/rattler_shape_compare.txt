@@ -1,12 +1,16 @@
 === sheared actshape (52) ===
   C    : rms 0.0220 mean -0.0093 | CV>=0.4: rms 0.0371 mean -0.0313
+  a05  : rms 0.0882 mean -0.0547 | CV>=0.4: rms 0.1544 mean -0.1484
   a1   : rms 0.0582 mean -0.0351 | CV>=0.4: rms 0.1014 mean -0.0965
   a2   : rms 0.0269 mean +0.0212 | CV>=0.4: rms 0.0432 mean +0.0418
   a3   : rms 0.1080 mean +0.0826 | CV>=0.4: rms 0.1766 mean +0.1747
+  a4   : rms 0.1813 mean +0.1405 | CV>=0.4: rms 0.2868 mean +0.2836
   blind: rms 0.0999 mean -0.0622 | CV>=0.4: rms 0.1753 mean -0.1687
 === isotropic phase2 (702) ===
   C    : rms 0.0407 mean -0.0281 | CV>=0.4: rms 0.0591 mean -0.0531
+  a05  : rms 0.1138 mean -0.0838 | CV>=0.4: rms 0.1703 mean -0.1635
   a1   : rms 0.0789 mean -0.0583 | CV>=0.4: rms 0.1163 mean -0.1109
   a2   : rms 0.0163 mean +0.0091 | CV>=0.4: rms 0.0214 mean +0.0140
   a3   : rms 0.0917 mean +0.0722 | CV>=0.4: rms 0.1199 mean +0.1111
+  a4   : rms 0.1580 mean +0.1249 | CV>=0.4: rms 0.1982 mean +0.1798
   blind: rms 0.1279 mean -0.0939 | CV>=0.4: rms 0.1926 mean -0.1850

@@ -9,7 +9,7 @@ fraction f_r as the only non-geometric input to σ\*(CV).
 > predicted best, with no fitted parameter, by a mean proportional to the grain's SURFACE AREA,
 > λ(a) = Z a²/⟨a²⟩**: out of sample on 702 isotropic packs (three PSD families, μ_p 0–3) rms 0.016,
 > against 0.041 for the pair-closure form below and 0.128 for a size-blind null. A power sweep
-> λ ∝ aᵖ has a sharp optimum at p = 2 (rms 0.114 / 0.079 / 0.016 / 0.091 / 0.157 at p = 0.5 / 1 / 2 / 3 / 4).
+> λ ∝ aᵖ has a sharp optimum at p = 2 (rms 0.114 / 0.079 / 0.016 / 0.092 / 0.158 at p = 0.5 / 1 / 2 / 3 / 4; `derivations/rattler_shape_compare.py`).
 > A direct per-grain dump (§3b) agrees on the rattler probability P(rattler | a) (a²: rms 0.017 and 0.035
 > at CV 0.2 and 0.5); for the MEAN ⟨k | a⟩ the rms ranking flips by cell (closure C better at CV 0.2, a² at
 > CV 0.5), so the mean degree law is not a clean power.
