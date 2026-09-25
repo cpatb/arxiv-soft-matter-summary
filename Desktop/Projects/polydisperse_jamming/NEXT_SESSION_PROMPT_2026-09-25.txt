@@ -1,0 +1,26 @@
+Resume polydisperse_jamming (2026-09-24/25 overnight block).
+
+Read first: Status card "Drop Impact — Polydispersity Jamming Model" §2 top block and §3 top block, then
+CLAIMS_SIGMA_GEOMETRY_2026-09-24.md (10 claims, each with status, evidence file, referee state).
+
+State:
+- sigma* is contact geometry: exact Love-Weber identity (derivations/sigma_star_geometry_2026-09-24.md, 6
+  referee passes, converged). Contact pairs follow a configuration model in the grain degrees; rattling
+  follows a^2 (rattler_closure_2026-09-24.md, 3 passes, converged); the mean degree follows ~a^1.6, and with
+  that the chain Z_nr, phi, PSD -> sigma*(CV) matches the dry-DEM ratio to 2 % (C/q still measured).
+- cv05margin: UNDETERMINED (n=9, t 0.99).
+- LF-DEM built (~/lfdem, conda env lfdem). lfsig: 13 of 28 cells ran, P1-P5 INCOMPLETE. The harness reaped
+  the queue driver for low Windows memory (~23:05) and all remaining LF_DEM processes stopped ~23:31.
+  Relaunch ONLY with the author's OK: from PowerShell, backgrounded:
+     wsl.exe -e bash /mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming/lfdem/relaunch_lfsig.sh
+  (reruns cells killed before strain 4, skips finished ones). Then: bash ~/lfdem/sync_lfsig.sh (WSL),
+  python lfdem/grade_lfsig.py, python lfdem/make_lfsig_figures.py, python lfdem/decomp_lfsig.py.
+  Core budget: share with the basilisk session (it asked for 12 of 22).
+- Paper now cites Guy 2020, Koeze 2016, Pednekar 2018 (verified), builds clean.
+
+Next, in order: (1) relaunch lfsig (author OK); (2) one SHEARED dump with grain ids (extend actshape's dump
+with ids, or run zbysize_dump-style after shear) to measure the mean degree law under shear -- it is the
+one transferred input left in the chain; (3) derive or at least bound C/q so the chain needs no measured
+force statistic.
+Landmines tonight: heredoc Python mangles backslash escapes (\n, \a) -- use the Edit tool; git commit -a in
+the shared Projects repo can sweep other sessions' files -- stage paths explicitly.
