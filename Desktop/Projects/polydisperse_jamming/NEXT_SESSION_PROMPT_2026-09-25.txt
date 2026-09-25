@@ -8,6 +8,10 @@ State:
   referee passes, converged). Contact pairs follow a configuration model in the grain degrees; rattling
   follows a^2 (rattler_closure_2026-09-24.md, 3 passes, converged); the mean degree follows ~a^1.6, and with
   that the chain Z_nr, phi, PSD -> sigma*(CV) matches the dry-DEM ratio to 2 % (C/q still measured).
+- Out of sample on 135 binary + 129 discrete K=3-5 packs (derivations/binary_contact_check.py): configuration
+  model holds (binary SL 1.011x); rattling ~ a^2 per class (binary rms 0.017/0.018; multi-class span-4 packs
+  rms 0.11-0.12, intermediates under-predicted, worst one step above the smallest). Mean-degree exponent is
+  NOT universal (1.45 at ratio <= 1.5, 2.4-2.9 at 4-5). Figures G1, G2 (make_geometry_figures*.py).
 - cv05margin: UNDETERMINED (n=9, t 0.99).
 - LF-DEM built (~/lfdem, conda env lfdem). lfsig: 13 of 28 cells ran, P1-P5 INCOMPLETE. The harness reaped
   the queue driver for low Windows memory (~23:05) and all remaining LF_DEM processes stopped ~23:31.
