@@ -103,3 +103,13 @@ reduction gate and pre-registration. The bench measurements that would pin its i
   dilatant activation term, separately and together)", not "dilatancy".**
 - m4: Arm C holds PHI, PHI0, PHIM fixed, so the loss of (φ, φ₀, φ_m) covariance with DIL_COEFF > 0 (PHI_REF is
   fixed at 0.49) never enters; extending the ladder in φ would need it handled.
+
+## Amendment 2 (2026-09-25, referee pass 2; no cell has run)
+J_end > 0.01 is not a robust BALL test: the rest clock (τ_rest_code = 160–320 ≫ TEND = 6) keeps f̂ relaxing
+through every run, so a BALL cell's end value is wherever that decay has got to (0.019–0.061 on the on-disk cells,
+the lowest still falling). Replaced by the qualitative signature the data actually show: **J_floor = 5th percentile
+of jam_frac over t/τ ≥ 1**, which on 15 on-disk jammed cells is exactly 0 for every unjamming cell and ≥ 0.018 for
+every persistent one. TRANSIENT iff J_max > 0.01 and J_floor ≤ 0.005; BALL / HYBRID require J_floor > 0.005, then
+split by Rg as before. A stationarity ratio (mean J over the last 0.5 τ ÷ the 0.5 τ before) is printed, and a
+BALL/HYBRID cell outside [0.5, 2] is reported PROVISIONAL and its series is examined before it is quoted. Checked
+on all 25 `cvmapE03` cells plus the counterexample: classes as in Amendment 1, none provisional.

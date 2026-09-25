@@ -5,10 +5,14 @@ Health (the project's admissibility gate, grade_capvol.py): rc 0, t/tau reaches 
 umax <= 1, zc/D0 <= 0.5, h/D0 <= 1.
 Class:
   FLUID      J_max <= J_ON
-  TRANSIENT  J_max > J_ON but J_end <= J_ON (jammed, then unjammed: the referee's counterexample)
-  BALL       J_end > J_ON, Rg_end >= 0.9 Rg_peak and t_95 <= 0.5 (arrests near its peak and stays)
-  HYBRID     J_end > J_ON otherwise (stays jammed yet keeps spreading or retracts)
-J_end = mean jam_frac over t/tau >= TEND - 0.5; Rg_end likewise.
+  TRANSIENT  J_max > J_ON but J_floor <= J_FLOOR (jam collapses to the ~0 attractor after impact)
+  BALL       J_floor > J_FLOOR, Rg_end >= 0.9 Rg_peak and t_95 <= 0.5 (arrests near its peak and stays)
+  HYBRID     J_floor > J_FLOOR otherwise (stays jammed yet keeps spreading or retracts)
+J_floor = 5th percentile of jam_frac over t/tau >= 1 (Amendment 2: on 15 on-disk jammed cells it is exactly 0
+for every unjamming cell and >= 0.018 for every persistent one, so it does not depend on where the slow rest
+clock, tau_rest_code 160-320 >> TEND, happens to be at TEND). J_end, Rg_end = means over t/tau >= TEND - 0.5.
+STATIONARITY = mean J over the last 0.5 tau / mean over the 0.5 tau before; outside [0.5, 2] the class is
+reported PROVISIONAL and the series must be looked at.
 """
 from __future__ import annotations
 
@@ -17,6 +21,7 @@ import sys
 import numpy as np
 
 J_ON = 0.01
+J_FLOOR = 0.005          # anywhere in the measured gap (0, 0.018); Amendment 2
 T_IMPACT = 0.5          # grade_capvol.py:17
 
 
@@ -27,21 +32,25 @@ def classify(path: str) -> dict:
     end = t >= t[-1] - 0.5
     adm = bool(t[-1] >= 5.9 and um[late].max() <= 1.0 and zc[late].max() <= 0.5 and h[late].max() <= 1.0)
     jmax, jend = float(J.max()), float(J[end].mean())
+    jfloor = float(np.percentile(J[t >= 1.0], 5))
+    prev = (t >= t[-1] - 1.0) & ~end
+    stat = float(J[end].mean() / J[prev].mean()) if J[prev].mean() > 0 else float("nan")
     rpk, rend = float(rg.max()), float(rg[end].mean())
     t95 = float(t[np.argmax(rg >= 0.95 * rpk)])
     if jmax <= J_ON:
         c = "FLUID"
-    elif jend <= J_ON:
+    elif jfloor <= J_FLOOR:
         c = "TRANSIENT"
     elif rend >= 0.9 * rpk and t95 <= 0.5:
         c = "BALL"
     else:
         c = "HYBRID"
-    return dict(cls=c, adm=adm, J_max=jmax, J_end=jend, Rg_peak=rpk, Rg_end=rend, t95=t95, t_last=float(t[-1]))
+    prov = c in ("BALL", "HYBRID") and not (0.5 <= stat <= 2.0)
+    return dict(cls=c, provisional=prov, stationarity=stat, J_floor=jfloor, adm=adm, J_max=jmax, J_end=jend, Rg_peak=rpk, Rg_end=rend, t95=t95, t_last=float(t[-1]))
 
 
 if __name__ == "__main__":
     for p in sys.argv[1:]:
         r = classify(p)
-        print(f"{r['cls']:9s} adm {int(r['adm'])}  J_max {r['J_max']:.3f} J_end {r['J_end']:.3f}  Rg_peak {r['Rg_peak']:.3f} "
+        print(f"{r['cls']:9s}{'*' if r['provisional'] else ' '} adm {int(r['adm'])}  J_max {r['J_max']:.3f} J_floor {r['J_floor']:.4f} stat {r['stationarity']:.2f}  Rg_peak {r['Rg_peak']:.3f} "
               f"Rg_end {r['Rg_end']:.3f} t95 {r['t95']:.2f}  <- {p}")
