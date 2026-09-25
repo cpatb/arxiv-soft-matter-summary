@@ -32,3 +32,17 @@ dropping the files there would silently change every analysis that reads it.
   extrapolated to φ_J. That is the convention of the window endpoints in `jam_map.py` and `predict_cvmap.py`
   (§1 "window endpoints at the quoted rung"). The question is therefore about those rung-defined endpoints.
   The rung-convention caveat that already travels with every χ (ANSWER §6) applies unchanged.
+
+## RESULT (2026-09-24, `python grade_cv05margin.py` → `out/grade_cv05margin.txt`)
+- Launched 2026-09-24 ~21:00 CDT; seeds 8, 9 were stopped seconds after start (core budget shared with the
+  basilisk session) and re-run from scratch in the lfsig queue ~21:25. Same code, same cells; a sampling
+  delay, not a change.
+- **W1 PASS**: seed-1 re-runs reproduce the existing φ to 1.0e-15 (μ .3, CV .5) and 1.2e-14 (μ 0, CV 0).
+- 14/14 new records converged; none excluded.
+- n = 9 paired seeds: D per seed +0.0067 +0.0081 −0.0003 +0.0014 +0.0009 −0.0011 +0.0048 +0.0059 −0.0101.
+  mean D = +0.0018, se paired 0.0018 (floor 0.0010), **t = +0.99 vs t_crit(8) 2.306 → UNDETERMINED.**
+- The n = 3 point estimate (+0.0049, t 1.88) did not hold up: the six new seeds average +0.0006.
+- Statement licensed: at μ_m 0.3 and the p̂ 3e-5 rung, CV 0.5's frictional jamming point φ_m sits within
+  ±0.0061 of monodisperse frictionless φ₀. Whether a weighed φ exists where CV 0 flows and CV 0.5 can
+  shear-jam is below this protocol's resolution; `predict_cvmap`'s "no such φ" closed form is not
+  supported, and neither is its opposite.

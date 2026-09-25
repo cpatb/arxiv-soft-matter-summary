@@ -1,0 +1,22 @@
+grade_cv05margin -- PREREG_CV05MARGIN_2026-09-24.md
+new records: 14 (registered: 2 cells x seeds 1,4..9 = 14)
+existing converged: phi_m(0.5, mu .3) seeds [1, 2, 3]; phi_0(0, mu 0) seeds [1, 2, 3]
+  W1 mu 0.3 cv 0.5: new 0.638036986332 old 0.638036986332 dphi +9.99e-16 converged True
+  W1 mu 0.0 cv 0.0: new 0.631327162855 old 0.631327162855 dphi -1.21e-14 converged True
+  W1 verdict: PASS
+  mu 0.0 cv 0.0 seed 4: phi 0.63079 converged True iters 196336
+  mu 0.0 cv 0.0 seed 5: phi 0.63196 converged True iters 151151
+  mu 0.0 cv 0.0 seed 6: phi 0.63281 converged True iters 153301
+  mu 0.0 cv 0.0 seed 7: phi 0.63259 converged True iters 141656
+  mu 0.0 cv 0.0 seed 8: phi 0.63162 converged True iters 135806
+  mu 0.0 cv 0.0 seed 9: phi 0.63582 converged True iters 235251
+  mu 0.3 cv 0.5 seed 4: phi 0.63219 converged True iters 607186
+  mu 0.3 cv 0.5 seed 5: phi 0.63285 converged True iters 405441
+  mu 0.3 cv 0.5 seed 6: phi 0.63173 converged True iters 369336
+  mu 0.3 cv 0.5 seed 7: phi 0.63736 converged True iters 263026
+  mu 0.3 cv 0.5 seed 8: phi 0.63755 converged True iters 499836
+  mu 0.3 cv 0.5 seed 9: phi 0.62576 converged True iters 404661
+
+paired seeds [1, 2, 3, 4, 5, 6, 7, 8, 9] (n 9): D per seed [np.float64(0.00671), np.float64(0.00809), np.float64(-0.00025), np.float64(0.00141), np.float64(0.00089), np.float64(-0.00108), np.float64(0.00477), np.float64(0.00593), np.float64(-0.01006)]
+mean D +0.00182; se paired 0.00184; floor 0.00099; t +0.99 vs t_crit(df 8) 2.306
+VERDICT: UNDETERMINED: |D| is below what this protocol resolves; CV 0.5 moves the frictional jamming point to within +-0.0061 of monodisperse frictionless jamming

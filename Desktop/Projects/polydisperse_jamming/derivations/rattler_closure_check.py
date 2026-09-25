@@ -31,7 +31,7 @@ from scipy.stats import poisson
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
-from psd import LogNormalPSD  # noqa: E402
+from psd import BidispersePSD, LogNormalPSD, UniformPSD  # noqa: E402
 
 K_MIN = 2           # measure.RATTLER_MIN_CONTACTS
 lines: list[str] = []
@@ -78,6 +78,95 @@ def from_Znr(a, Znr, sizeblind=False):
     return Z, fr_from_Z(a, Z, sizeblind)
 
 
+_fam_cache: dict = {}
+
+
+def radii_family(family: str, cv: float) -> np.ndarray:
+    """Radii (number mean 1/2 of d10 = 1) for the three phase-2 families, via psd.py samplers."""
+    key = (family, cv)
+    if key not in _fam_cache:
+        rng = np.random.default_rng(20260925)
+        if family == "lognormal":
+            d = LogNormalPSD(d10=1.0, cv=cv).sample(200_000, rng)
+        elif family == "uniform":
+            d = UniformPSD(d10=1.0, cv=cv).sample(200_000, rng)
+        elif family == "bidisperse":
+            d = BidispersePSD(d10=1.0, cv=cv).sample(200_000, rng)
+        else:
+            raise ValueError(family)
+        _fam_cache[key] = d / 2.0
+    return _fam_cache[key]
+
+
+def isotropic_block() -> None:
+    """OUT OF SAMPLE: isotropically compressed phase-2 packs (a different protocol from the sheared
+    actshape packs the closure was found on), three PSD families, rattler = iterated k < 2 (measure.py).
+    Closure (i) only (from the record's own z_all). Converged, alpha 1, no multiplets, CV > 0."""
+    say("\n=== OUT OF SAMPLE: isotropic phase-2 records, closure (i) from z_all ===")
+    recs = []
+    for f in sorted(glob.glob(os.path.join(ROOT, "out", "phase2*.jsonl"))):
+        for line in open(f, encoding="utf-8"):
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if ("error" in r or not r.get("converged") or r.get("family") not in ("lognormal", "uniform", "bidisperse")
+                    or r.get("alpha", 1.0) != 1.0 or r.get("doublet_w", 0) or r.get("triplet_w", 0)
+                    or "z_all" not in r or "rattler_frac" not in r):
+                continue
+            recs.append(r)
+    # dedupe by key (a key can repeat across shards; keep the last, as the loaders do)
+    recs = list({r["key"]: r for r in recs}.values())
+    say(f"  records: {len(recs)}")
+    say("  family      mu   cv    n    fr_meas(mean)  (i) C: mean err  rms     null: mean err  rms")
+    groups: dict = {}
+    for r in recs:
+        groups.setdefault((r["family"], r["mu_p"], round(r["cv"], 3)), []).append(r)
+    allC, all0 = [], []
+    for (fam, mu, cv), rs in sorted(groups.items()):
+        a = radii_family(fam, cv)
+        eC = [fr_from_Z(a, r["z_all"]) - r["rattler_frac"] for r in rs]
+        e0 = [fr_from_Z(a, r["z_all"], True) - r["rattler_frac"] for r in rs]
+        allC += eC
+        all0 += e0
+        eC, e0 = np.array(eC), np.array(e0)
+        say(f"  {fam:10s} {mu:.1f} {cv:.2f} {len(rs):4d}  {np.mean([r['rattler_frac'] for r in rs]):.4f}"
+            f"         {eC.mean():+.4f}  {np.sqrt(np.mean(eC**2)):.4f}   {e0.mean():+.4f}  {np.sqrt(np.mean(e0**2)):.4f}")
+    allC, all0 = np.array(allC), np.array(all0)
+    say(f"  ALL: closure C rms {np.sqrt(np.mean(allC**2)):.4f} (mean {allC.mean():+.4f});  size-blind null rms "
+        f"{np.sqrt(np.mean(all0**2)):.4f} (mean {all0.mean():+.4f})")
+    backbone_block(groups)
+
+
+def psi_from_Z(a: np.ndarray, Z: float) -> float:
+    """Model rattler VOLUME share: <a^3 P(k<2 | lam(a))>/<a^3>."""
+    pr = poisson.cdf(K_MIN - 1, Z * shape(a, False))
+    return float(np.sum(a**3 * pr) / np.sum(a**3))
+
+
+def backbone_block(groups: dict) -> None:
+    """geom_rattler_decomposition_2026-09-19 left backbone invariance UNDETERMINED because no shard records
+    the rattler VOLUME share psi. The count-validated model supplies it: phi_B = phi (1 - psi_model).
+    Printed per (family, mu, CV) at the p_hat 3e-5 rung (jam_map.RUNG, the window convention), seed means.
+    This is a MODEL-derived psi, not a measurement; its validation is the count test above."""
+    say("\n=== backbone solid fraction phi_B = phi (1 - psi_model), p_hat 3e-5 rung, seed means ===")
+    say("  family      mu   cv    n   phi      f_r(meas)  psi_model  phi_B     d(phi_B) vs CV 0")
+    base = {}
+    for (fam, mu, cv), rs in sorted(groups.items()):
+        rs = [r for r in rs if abs(r["p_hat_target"] - 3e-5) < 1e-9]
+        if not rs:
+            continue
+        a = radii_family(fam, cv)
+        phi = np.mean([r["phi"] for r in rs])
+        psi = np.mean([psi_from_Z(a, r["z_all"]) for r in rs])
+        pb = np.mean([r["phi"] * (1 - psi_from_Z(a, r["z_all"])) for r in rs])
+        if cv == 0.0:
+            base[(fam, mu)] = pb
+        d = pb - base.get((fam, mu), np.nan)
+        say(f"  {fam:10s} {mu:.1f} {cv:.2f} {len(rs):4d}  {phi:.4f}   {np.mean([r['rattler_frac'] for r in rs]):.4f}     "
+            f"{psi:.4f}     {pb:.4f}    {d:+.4f}")
+
+
 def main() -> int:
     rows = []
     for f in sorted(glob.glob(os.path.join(ROOT, "out", "phase9_actshape_*.jsonl"))):
@@ -115,6 +204,7 @@ def main() -> int:
         for k in ("ii", "ii0"):
             e = np.array(res[k])[idx]
             say(f"    CV {cv}: {k:4s} mean {e.mean():+.4f}  rms {np.sqrt(np.mean(e**2)):.4f}  (n {len(idx)})")
+    isotropic_block()
     with open(os.path.join(ROOT, "out", "rattler_closure.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")
     return 0

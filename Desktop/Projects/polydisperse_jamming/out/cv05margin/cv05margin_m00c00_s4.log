@@ -1,0 +1,5 @@
+phase2: 1 cells total, 1 on shard 0/1, N=1500, 0 already done -> /home/cpb/pj/out/phase2_cv05margin_m00c00_s4.jsonl
+Using python version: 3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]
+[logn] a=1.00 eps=0.000 dup=0.000 nraw=4445 phi_por=0.630788 cv=0.00 mu=0.00 phat_t=3.0e-05 N=1500 s=4 -> phi=0.6308 phat=2.996e-05 Zall=5.927 rat(k2/3/4)=0.010/0.011/0.015 Znr(k2/3/4)=5.99/5.99/5.99 conv=True it=196336 1180.8s
+  [1/1] elapsed 19.7 min
+phase2 done in 19.7 min

@@ -9,6 +9,7 @@ for d in */; do
   d=${d%/}; mkdir -p $DST/$d
   cp -p $d/META $d/conf.json $d/params.txt $DST/$d/ 2>/dev/null
   cp -p $d/data_*.dat $DST/$d/ 2>/dev/null
+  cp -p $d/conf.dat $d/int_*.dat $DST/$d/ 2>/dev/null
   [ -f $d/DONE ] && touch $DST/$d/DONE
 done
 ls $DST | wc -l

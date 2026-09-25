@@ -159,3 +159,38 @@
   doi     = {10.3390/nano11061414},
   annote  = {verified 2026-09-16 (Crossref + PMC8227337 full text; author list re-fetched from Crossref 2026-09-17; equations re-read from the Europe PMC MathML 2026-09-17): SUPPORTS -- prints the compressible-packing-model wall function b(x) = 1 - (1 - x)^1.5 (its eq. 26) and loosening function a(x) = sqrt(1 - (1 - x)^1.02) (its eq. 33), and attributes them to de Larrard. CORRECTION 2026-09-17: this annote previously recorded eq. 33 as a(x) = 1 - (1 - x)^1.02, WITHOUT the square root. The exponent 1.02 was right and the functional form was not. mixture_model.py has always implemented the square-root form (its module docstring and a_loosening() both carry it), so no shipped number is affected; the error was in this note. What main.tex cites this reference for is the two EXPONENTS, 1.02 and 1.50, and those are correct. ATTRIBUTION, still open: at these equations diaz2021packing does not cite the CRC Press book; its de Larrard references are a 1999 LCPC monograph (Structures Granulaires et Formulation des Betons) and a 1988 LPC report, and it gives no inline citation number at eq. 33 itself -- so even this source does not pin the loosening exponent to a year}
 }
+
+@article{guy2020testing,
+  author  = {Guy, Ben M. and Ness, Christopher and Hermes, Michiel and Sawiak, Laura J. and Sun, Jin and Poon, Wilson C. K.},
+  title   = {Testing the {Wyart}--{Cates} model for non-{Brownian} shear thickening using bidisperse suspensions},
+  journal = {Soft Matter},
+  volume  = {16},
+  pages   = {229--237},
+  year    = {2020},
+  doi     = {10.1039/c9sm00041k},
+  annote  = {verified 2026-09-24 by a citation agent (Crossref DOI + arXiv:1901.02066 abstract). SUPPORTS: abstract, "the WC model applies only in the monodisperse limit and fails when substantial bidispersity is introduced. We trace the failure of the model to its inability to distinguish large-large, large-small and small-small frictional contacts". Cited only for that.}
+}
+
+@article{koeze2016mapping,
+  author  = {Koeze, D. J. and V{\aa}gberg, D. and Tjoa, B. B. T. and Tighe, B. P.},
+  title   = {Mapping the jamming transition of bidisperse mixtures},
+  journal = {EPL (Europhysics Letters)},
+  volume  = {113},
+  number  = {5},
+  pages   = {54001},
+  year    = {2016},
+  doi     = {10.1209/0295-5075/113/54001},
+  annote  = {verified 2026-09-24 by a citation agent (Crossref DOI + abstract). SUPPORTS: 2D frictionless bidisperse disks; critical volume fraction varies with composition and size ratio; "two local minima in the critical volume fraction". Cited only for that; abstract-level.}
+}
+
+@article{pednekar2018bidisperse,
+  author  = {Pednekar, Sidhant and Chun, Jaehun and Morris, Jeffrey F.},
+  title   = {Bidisperse and polydisperse suspension rheology at large solid fraction},
+  journal = {Journal of Rheology},
+  volume  = {62},
+  number  = {2},
+  pages   = {513--526},
+  year    = {2018},
+  doi     = {10.1122/1.5011353},
+  annote  = {verified 2026-09-24 by two citation agents (Crossref DOI; full text read by one). SUPPORTS: bidisperse suspensions "statistically equivalent with these polydisperse cases up to third moment of the size distribution" have similar phi_m and rheology; LF-DEM method, mu = 0.2, no repulsive force. Cited only for the moment-matching statement.}
+}

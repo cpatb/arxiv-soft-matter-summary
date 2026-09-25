@@ -50,7 +50,7 @@ The jamming shift tracks how volume is distributed across size pairs, which no w
 
 The packing fraction at which a dense suspension of frictional particles jams, $\phiJ$, is the quantity a stress-dependent constitutive model needs before it can predict a viscosity: in the Wyart--Cates picture the viscosity diverges at a jamming fraction that interpolates, with stress, between a frictionless and a frictional value \cite{wyart2014discontinuous}.
 For monodisperse spheres both limits are well characterised \cite{ohern2003jamming,silbert2010jamming,vanhecke2010jamming}.
-Real suspensions are polydisperse.
+Real suspensions are polydisperse, and even bidispersity breaks the single frictional-contact fraction of the Wyart--Cates model, which cannot distinguish large--large, large--small and small--small contacts \cite{guy2020testing}.
 The usual practice is to summarise the size distribution by one number, its width as a coefficient of variation, and to treat $\phiJ$ as a function of that.
 
 For the frictionless random-close-packing problem, one number has been known to be insufficient for some time.
@@ -87,7 +87,7 @@ Three families are compared at matched number mean and matched number coefficien
 \end{itemize}
 The last family deserves a warning that the results depend on.
 Because it is symmetric by \emph{number}, its size ratio $(1+\CV)/(1-\CV)$ and its fines \emph{volume} fraction $(1-\CV)^3/[(1-\CV)^3+(1+\CV)^3]$ both move with $\CV$: at $\CV=0.5$ the size ratio is $\bidiRatioHalf$ and the small species carries only $\bidiFinesVolHalf$ of the volume.
-The bidisperse family is therefore a one-parameter \emph{path} through the (size ratio, composition) plane of binary mixtures, and its $\CV=0.5$ member is a fines-poor mixture, not a representative bidisperse packing.
+The bidisperse family is therefore a one-parameter \emph{path} through the (size ratio, composition) plane of binary mixtures, and its $\CV=0.5$ member is a fines-poor mixture, not a representative bidisperse packing; for frictionless disks in two dimensions the jamming fraction varies richly over that plane, with two local minima \cite{koeze2016mapping}.
 The composition sweep of Sec.~\ref{sec:binaries} exists to see the rest of that plane.
 
 \subsection{Observables}
@@ -226,6 +226,7 @@ It is seed-paired, because the two families draw the same radii at a given seed;
 On that bar the pair separates at $\zeroSkewNResolved$ of the $\zeroSkewNCv$ non-zero $\CV$ levels; on the seed-paired standard error alone it would appear to separate at $\zeroSkewNResolvedSeedOnly$, and that reading is not supported by the reproducibility of the quantity being compared.
 Two families that agree on width and on skewness and still differ in $\phiJ$ at the widest width exclude any closure written in those two moments alone.
 What the pair does show is that the filling account, which uses the volume composition and not the skewness, predicts the separation.
+The same pair bears on the ``statistically equivalent'' bidisperse mapping of sheared-suspension simulations, in which bidisperse and polydisperse suspensions matched up to the third moment of the size distribution have similar maximum packing fractions and rheology \cite{pednekar2018bidisperse}: the uniform and bidisperse families here are matched to exactly that order, and under isotropic compression they separate at the widest $\CV$. Whether the mapping also fails under shear at that width is not tested here.
 
 This agrees with the frictionless literature: Desmond and Weeks found skewness to matter as much as width \cite{desmond2014influence}, and Farr and Groot's predictive model takes the entire distribution as input for the same reason \cite{farr2009close}.
 It also removes an apparent conflict with a recent two-dimensional study whose abstract reports the shear-jamming point varying non-monotonically with polydispersity \cite{singh2025rigidity}: that study's distributions are normal, i.e.\ of zero skewness, and the zero-skewness families here also show the weakest and, for the bidisperse case, non-monotone response.
