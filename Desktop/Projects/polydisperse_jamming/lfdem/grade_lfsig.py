@@ -50,6 +50,10 @@ def load_cell(d: str) -> dict | None:
     a = np.loadtxt(files[0], comments="#", ndmin=2)
     conf = json.load(open(os.path.join(d, "conf.json"), encoding="utf-8"))
     rc = int(kv["rc"]) if "rc" in kv else None
+    if rc is None:  # Amendment 4: runner killed; read LF_DEM's own completion line
+        logp = os.path.join(d, "run.log")
+        done = os.path.exists(logp) and "Job done ok" in open(logp, encoding="utf-8", errors="replace").read()[-400:]
+        rc = 0 if done else 124
     strain = a[:, 1]
     w = (strain >= W0) & (strain <= W1)
     c = {"label": kv["LABEL"], "cv": float(kv["CV"]), "phi": float(kv["PHI"]), "sig": float(kv["SIG"]),

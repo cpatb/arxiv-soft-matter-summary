@@ -1,0 +1,72 @@
+
+LF_DEM version 00fa7cc0
+
+  Simulation::	Simulation setup starting... 
+  Simulation::	simulation_mode = 0
+  Simulation::	basic simulation
+  Simulation::	Forces used:
+  Simulation::		Repulsive force (in "repulsion" units): 1
+  Simulation::		Normal contact stiffness (in "repulsion" units): 10000
+  Simulation::		Sliding contact stiffness (in "repulsion" units): 5000
+  Simulation::		Rolling contact stiffness (in "repulsion" units): 0
+  Simulation::	internal_unit_scales = repulsion
+Warning : use of the Predictor-Corrector method for the stress controlled simulation is experimental.
+  System::	Setting up System... 
+  System::	friction model: Coulomb
+  System::	Setting up System... [ok]
+  System::	lx = 18.2827 lz = 18.2827 ly = 18.2827
+  BoxSet::	Setting up Cell List System ...  [ok]
+  Simulation::	filename: conf_params_stress3r_shear
+  Simulation::	Simulation setup [ok]
+  Simulation::	Time evolution started
+
+time: 0 , strain: 0 / 4
+time: 0.62621 , strain: 0.05 / 4
+time: 1.44755 , strain: 0.1 / 4
+time: 2.32846 , strain: 0.15 / 4
+time: 3.09611 , strain: 0.2 / 4
+time: 3.76632 , strain: 0.25 / 4
+time: 4.3797 , strain: 0.3 / 4
+time: 5.04087 , strain: 0.35 / 4
+time: 5.80102 , strain: 0.4 / 4
+time: 6.64926 , strain: 0.45 / 4
+time: 7.46617 , strain: 0.5 / 4
+time: 8.16738 , strain: 0.55 / 4
+time: 8.8139 , strain: 0.6 / 4
+time: 9.47751 , strain: 0.65 / 4
+time: 10.1687 , strain: 0.7 / 4
+time: 10.8901 , strain: 0.75 / 4
+time: 11.6809 , strain: 0.8 / 4
+time: 12.3902 , strain: 0.85 / 4
+time: 13.2338 , strain: 0.9 / 4
+time: 14.0231 , strain: 0.95 / 4
+time: 14.6495 , strain: 1 / 4
+time: 15.215 , strain: 1.05 / 4
+time: 15.769 , strain: 1.1 / 4
+time: 16.4686 , strain: 1.15 / 4
+time: 17.1519 , strain: 1.2 / 4
+time: 17.7162 , strain: 1.25 / 4
+time: 18.2548 , strain: 1.3 / 4
+time: 18.8013 , strain: 1.35 / 4
+time: 19.3694 , strain: 1.4 / 4
+time: 19.9424 , strain: 1.45 / 4
+time: 20.5769 , strain: 1.5 / 4
+time: 21.1263 , strain: 1.55 / 4
+time: 21.6339 , strain: 1.6 / 4
+time: 22.1485 , strain: 1.65 / 4
+time: 22.6564 , strain: 1.7 / 4
+time: 23.2836 , strain: 1.75 / 4
+time: 23.8961 , strain: 1.8 / 4
+time: 24.575 , strain: 1.85 / 4
+time: 25.3536 , strain: 1.9 / 4
+time: 26.2357 , strain: 1.95 / 4
+time: 27.0845 , strain: 2 / 4
+time: 27.9246 , strain: 2.05 / 4
+time: 28.8291 , strain: 2.1 / 4
+time: 29.6891 , strain: 2.15 / 4
+time: 30.5449 , strain: 2.2 / 4
+time: 31.3274 , strain: 2.25 / 4
+time: 32.0908 , strain: 2.3 / 4
+time: 33.0998 , strain: 2.35 / 4
+time: 34.4883 , strain: 2.4 / 4
+time: 36.1544 , strain: 2.45 / 4

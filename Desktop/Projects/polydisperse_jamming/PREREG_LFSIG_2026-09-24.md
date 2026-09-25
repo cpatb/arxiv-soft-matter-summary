@@ -106,3 +106,15 @@ SURVIVED (vmIdleTimeout keeps the VM up) and will finish; the xargs driver died,
 (σ ≤ 3 for most arms) will not start until relaunched. The harness instruction is not to restart it
 without the author's OK; `lfdem/relaunch_lfsig.sh` relaunches only cells whose run directory does not
 exist. Nothing about the design, gates or data changes; cells that did run are unaffected.
+
+## Amendment 4 (2026-09-24 ~23:50 CDT, before grading) — reading cells whose runner was killed
+At ~23:31 every remaining LF_DEM process stopped (all live data files' last write is 23:31; the WSL VM
+was not restarted; cause not identified from inside the session). Because the `run_cell.sh` shells died
+too, cells that had finished never got `rc=` written to META. Rule, fixed before any cell is graded:
+- a cell whose `run.log` ends with LF_DEM's own "Job done ok" is treated as rc 0;
+- a cell killed mid-run is treated as the wall-cap case (rc 124): healthy iff its window is complete
+  (strain ≥ 4, Amendment 3) and overlap < 0.05. That admits c50_x95_s100 (killed at strain 5.4) and
+  censors c20_x95_s10 (2.9), c20_x95_s100 (3.05), c50_x90_s3 (2.45), c50_x95_s10 (2.2).
+Ran to completion: c20_x90_s10/s30/s100, c20_x95_s30, c50_x90_s10/s30/s100, c50_x95_s30. Never started
+(driver killed at ~23:05): every σ ≤ 3 cell except c50_x90_s3, and c20_x90_s3 … So P1–P5 are INCOMPLETE
+until the queue is relaunched with the author's OK.

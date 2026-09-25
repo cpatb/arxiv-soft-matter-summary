@@ -1,0 +1,106 @@
+
+LF_DEM version 00fa7cc0
+
+  Simulation::	Simulation setup starting... 
+  Simulation::	simulation_mode = 0
+  Simulation::	basic simulation
+  Simulation::	Forces used:
+  Simulation::		Repulsive force (in "repulsion" units): 1
+  Simulation::		Normal contact stiffness (in "repulsion" units): 10000
+  Simulation::		Sliding contact stiffness (in "repulsion" units): 5000
+  Simulation::		Rolling contact stiffness (in "repulsion" units): 0
+  Simulation::	internal_unit_scales = repulsion
+Warning : use of the Predictor-Corrector method for the stress controlled simulation is experimental.
+  System::	Setting up System... 
+  System::	friction model: Coulomb
+  System::	Setting up System... [ok]
+  System::	lx = 18.2827 lz = 18.2827 ly = 18.2827
+  BoxSet::	Setting up Cell List System ...  [ok]
+  Simulation::	filename: conf_params_stress10r_shear
+  Simulation::	Simulation setup [ok]
+  Simulation::	Time evolution started
+
+time: 0 , strain: 0 / 4
+time: 0.213195 , strain: 0.05 / 4
+time: 0.486064 , strain: 0.1 / 4
+time: 0.791769 , strain: 0.15 / 4
+time: 1.09474 , strain: 0.2 / 4
+time: 1.40889 , strain: 0.25 / 4
+time: 1.66889 , strain: 0.3 / 4
+time: 1.94218 , strain: 0.35 / 4
+time: 2.35344 , strain: 0.4 / 4
+time: 3.02391 , strain: 0.45 / 4
+time: 3.52939 , strain: 0.5 / 4
+time: 3.91541 , strain: 0.55 / 4
+time: 4.24423 , strain: 0.6 / 4
+time: 4.55657 , strain: 0.65 / 4
+time: 4.89104 , strain: 0.7 / 4
+time: 5.2363 , strain: 0.75 / 4
+time: 5.57155 , strain: 0.8 / 4
+time: 5.93367 , strain: 0.85 / 4
+time: 6.26812 , strain: 0.9 / 4
+time: 6.61358 , strain: 0.95 / 4
+time: 6.93498 , strain: 1 / 4
+time: 7.2837 , strain: 1.05 / 4
+time: 7.65598 , strain: 1.1 / 4
+time: 7.98791 , strain: 1.15 / 4
+time: 8.29242 , strain: 1.2 / 4
+time: 8.69273 , strain: 1.25 / 4
+time: 9.05846 , strain: 1.3 / 4
+time: 9.42354 , strain: 1.35 / 4
+time: 9.73722 , strain: 1.4 / 4
+time: 10.0221 , strain: 1.45 / 4
+time: 10.3243 , strain: 1.5 / 4
+time: 10.6431 , strain: 1.55 / 4
+time: 10.9719 , strain: 1.6 / 4
+time: 11.2762 , strain: 1.65 / 4
+time: 11.5271 , strain: 1.7 / 4
+time: 11.8365 , strain: 1.75 / 4
+time: 12.2742 , strain: 1.8 / 4
+time: 12.6972 , strain: 1.85 / 4
+time: 13.0743 , strain: 1.9 / 4
+time: 13.3329 , strain: 1.95 / 4
+time: 13.632 , strain: 2 / 4
+time: 13.8996 , strain: 2.05 / 4
+time: 14.2523 , strain: 2.1 / 4
+time: 14.6245 , strain: 2.15 / 4
+time: 14.9706 , strain: 2.2 / 4
+time: 15.2253 , strain: 2.25 / 4
+time: 15.4774 , strain: 2.3 / 4
+time: 15.7278 , strain: 2.35 / 4
+time: 15.99 , strain: 2.4 / 4
+time: 16.2801 , strain: 2.45 / 4
+time: 16.6065 , strain: 2.5 / 4
+time: 16.9729 , strain: 2.55 / 4
+time: 17.2998 , strain: 2.6 / 4
+time: 17.5709 , strain: 2.65 / 4
+time: 17.8416 , strain: 2.7 / 4
+time: 18.1888 , strain: 2.75 / 4
+time: 18.6051 , strain: 2.8 / 4
+time: 19.0292 , strain: 2.85 / 4
+time: 19.4061 , strain: 2.9 / 4
+time: 19.7806 , strain: 2.95 / 4
+time: 20.1771 , strain: 3 / 4
+time: 20.5622 , strain: 3.05 / 4
+time: 20.8892 , strain: 3.1 / 4
+time: 21.2996 , strain: 3.15 / 4
+time: 21.6895 , strain: 3.2 / 4
+time: 22.0513 , strain: 3.25 / 4
+time: 22.3595 , strain: 3.3 / 4
+time: 22.7101 , strain: 3.35 / 4
+time: 23.0704 , strain: 3.4 / 4
+time: 23.4592 , strain: 3.45 / 4
+time: 23.8481 , strain: 3.5 / 4
+time: 24.2397 , strain: 3.55 / 4
+time: 24.5773 , strain: 3.6 / 4
+time: 24.916 , strain: 3.65 / 4
+time: 25.2431 , strain: 3.7 / 4
+time: 25.5798 , strain: 3.75 / 4
+time: 25.9668 , strain: 3.8 / 4
+time: 26.4323 , strain: 3.85 / 4
+time: 26.8304 , strain: 3.9 / 4
+time: 27.1682 , strain: 3.95 / 4
+time: 27.4663 , strain: 4 / 4
+  Simulation::	Time evolution done
+
+ Job done ok
