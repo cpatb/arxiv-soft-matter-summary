@@ -125,3 +125,27 @@ an all-night request is itself the OK to relaunch after a harness reap). Windows
 WSL page cache ~1 GB). `lfdem/relaunch_lfsig.sh` relaunched at P = 8: it re-runs the four cells killed before
 strain 4 (their partial directories moved aside to `<label>.killed_<time>`) and every never-started cell, and skips
 the nine finished/complete-window cells. Nothing in the design, gates or predictions changes.
+
+## RESULT (2026-09-25, `python lfdem/grade_lfsig.py` → `out/grade_lfsig.txt`; figure `figures/L1_lfsig_flowcurves`)
+28/28 cells healthy under the registered rule (Amendment 3), overlap ≤ 1.9 %.
+- **P1 (Yade σ\* ratio 0.768): NOT COMPUTABLE as registered.** The registered readout σ\*_η needs ln η_r monotone in
+  σ within 2 block s.e.; it is not on 3 of 4 arms: mild shear THINNING at the low-stress end (CV 0.2: η_r 17.6 → 16.3,
+  30.7 → 26.4 from σ₀ 0.1 to 0.3) and a high-stress dip at CV 0.5 (x_m 0.90: 68.6 → 64.2 → 59.3 from 10 to 100).
+  The readout was ill-posed for repulsive suspensions that thin before they thicken; the bar is not changed.
+- **P2: NOT USABLE** (CV 0.2's two φ give φ₀ 0.6945 / 0.6810, disagreeing by 0.013 > 0.01: the prefactor-1 WC form
+  does not hold here). χ_LF is printed (0.910 / 0.912) but not graded.
+- **P3: PASS** — Z_c(σ 0.1) = 0.000 at x_m 0.90 for both CV (repulsion keeps surfaces apart), and η_r rises from
+  σ 0.1 to 100 on every arm (×2.4 … ×3.4).
+- **P4: NOT COMPUTABLE** (needs σ\*_η).
+- **P5 (descriptive):** onset σ ≈ 3 σ₀ (Mari 2014: ≈ 0.3 σ₀ at λ = 0.05 a; ours λ = 0.02 a, so a later onset is the
+  expected direction); low-stress inversion φ₀ 0.68–0.69 vs Singh's 0.646 (different PSD, and the inversion itself
+  failed P2's consistency check); φ_m 0.625 inside [0.562, 0.646].
+
+**POST HOC, NOT REGISTERED** (same grader, labelled section): the contact-number curve Z_c(σ) IS monotone on every
+arm. Its half-activation stress σ\*_Z (Z_c = ½ Z_c(100)) is 4.69 / 4.92 σ₀ (CV 0.2, x_m 0.90 / 0.95) and 4.48 /
+4.91 σ₀ (CV 0.5): **ratio 0.956 and 1.000**, against the dry-DEM prediction 0.768. The high-stress contact number does
+fall with CV (Z_c(100) ×0.83 / ×0.81), as in the dry DEM, but the stress at which contacts switch on does not move.
+Read with care: σ\*_Z normalises out exactly the contact-density factor that carries the dry-DEM quantile σ\*'s CV
+dependence (`derivations/sigma_star_geometry_2026-09-24.md`), so the two estimators are not the same quantity; which
+one the WC closure's σ\* should be is the open point. It agrees with the DNS finding that the CV effect runs ~100 %
+through the window and < 0.05 % through activation (`cvmap` C3′).

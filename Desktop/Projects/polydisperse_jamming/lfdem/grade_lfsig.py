@@ -213,9 +213,41 @@ def main() -> int:
             pm = hi["phi"] / (1 - hi["eta"] ** -0.5) if hi else float("nan")
             say(f"    CV 0.2 x_m {xm}: onset sigma {onset} (in [0.1, 1]: {onset is not None and onset <= 1})  "
                 f"phi_0 {p0:.4f} (|-0.646| {abs(p0 - 0.646):.4f})  phi_m {pm:.4f} (in [0.562, 0.646]: {0.562 <= pm <= 0.646})")
+    post_hoc_zc(cells_all)
     with open(os.path.join(OUT, "grade_lfsig.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")
     return 0
+
+
+def post_hoc_zc(cells_all: list) -> None:
+    """POST HOC, NOT REGISTERED (added after the registered sigma*_eta readout came back UNDEFINED on 3 of 4
+    arms because ln eta is non-monotone). Activation read off the contact-number S-curve instead:
+    f_Z(sigma) = Z_c(sigma)/Z_c(100), and sigma*_Z = the stress where f_Z = 1/2, by linear interpolation in
+    (ln sigma, f_Z) between the bracketing ladder points. Z_c is monotone in sigma on every arm (checked and
+    printed). In LF_DEM surfaces touch only once the pair load exceeds the Derjaguin repulsion, so f_Z is the
+    Wyart-Cates activated fraction relative to its high-stress value."""
+    cells = {(c["cv"], c["xm"], c["sig"]): c for c in cells_all if c["healthy_reg"]}
+    say("\n==== POST HOC (not registered): activation midpoint from the contact-number S-curve ====")
+    sz = {}
+    for cv in CVS:
+        for xm in XMS:
+            pts = [(s, cells[(cv, xm, s)]["zc"]) for s in SIGMAS if (cv, xm, s) in cells]
+            if len(pts) < len(SIGMAS):
+                say(f"  CV {cv} x_m {xm}: incomplete")
+                continue
+            z = np.array([p[1] for p in pts])
+            mono = bool(np.all(np.diff(z) > 0))
+            f = z / z[-1]
+            i = int(np.argmax(f >= 0.5))
+            t = (0.5 - f[i - 1]) / (f[i] - f[i - 1])
+            s = math.exp(math.log(SIGMAS[i - 1]) + t * (math.log(SIGMAS[i]) - math.log(SIGMAS[i - 1])))
+            sz[(cv, xm)] = s
+            say(f"  CV {cv} x_m {xm}: Z_c monotone {mono}; Z_c(100) {z[-1]:.3f}; f_Z = " +
+                " ".join(f"{v:.3f}" for v in f) + f"; sigma*_Z {s:.3f} sigma_0")
+    for xm in XMS:
+        if (0.5, xm) in sz and (0.2, xm) in sz:
+            R = sz[(0.5, xm)] / sz[(0.2, xm)]
+            say(f"  x_m {xm}: sigma*_Z(0.5)/sigma*_Z(0.2) = {R:.3f}   (dry-DEM Yade prediction {R_YADE:.3f})")
 
 
 if __name__ == "__main__":

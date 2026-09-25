@@ -1,0 +1,39 @@
+# LF_DEM version 00fa7cc0
+# np 500
+# VF 0.55817
+# Lx 15.9055
+# Ly 15.9055
+# Lz 15.9055
+# flow_type shear
+# data in repulsion units.
+#1: time
+#2: cumulated shear strain
+#3: shear rate
+#4: viscosity
+#5: Viscosity(contact)
+#6: Viscosity(dashpot)
+#7: Viscosity(hydro)
+#8: Viscosity(repulsion)
+#9: inviscid function 0th
+#10: inviscid function 3rd
+#11: N1 viscosity
+#12: N2 viscosity
+#13: particle pressure
+#14: particle pressure contact
+#15: energy
+#16: min gap
+#17: max tangential displacement
+#18: max rolling displacement
+#19: contact number
+#20: frictional contact number
+#21: number of interaction
+#22: max velocity
+#23: max angular velocity
+#24: dt
+#25: kn
+#26: kt
+#27: kr
+#28-30: shear strain
+
+0 0 0.103169 29.0786 0 0 29.1794 -0.100728 -0.272778 -0.19154 1.85657 1.05471 0.653855 -0 9.82678 4.94945e-07 0 0 0 0 2247 0.254522 0.106115 0.0001 10000 5000 0 0 0 0 
+0.499007 0.05 0.0844097 35.5409 17.657 0.699347 15.6015 1.58308 0.870558 -0.291194 3.44977 -9.45999 3.59816 2.63444 9.02117 -0.00257737 0.00106174 0 0.584 0.584 2256 0.599551 0.961045 0.00415839 10000 5000 0 0.05 0 0 

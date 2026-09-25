@@ -70,3 +70,37 @@ time: 32.0908 , strain: 2.3 / 4
 time: 33.0998 , strain: 2.35 / 4
 time: 34.4883 , strain: 2.4 / 4
 time: 36.1544 , strain: 2.45 / 4
+time: 37.7202 , strain: 2.5 / 4
+time: 39.2685 , strain: 2.55 / 4
+time: 40.6244 , strain: 2.6 / 4
+time: 42.1866 , strain: 2.65 / 4
+time: 43.391 , strain: 2.7 / 4
+time: 44.3908 , strain: 2.75 / 4
+time: 45.2069 , strain: 2.8 / 4
+time: 45.8021 , strain: 2.85 / 4
+time: 46.353 , strain: 2.9 / 4
+time: 46.8781 , strain: 2.95 / 4
+time: 47.3898 , strain: 3 / 4
+time: 47.9056 , strain: 3.05 / 4
+time: 48.4201 , strain: 3.1 / 4
+time: 48.9551 , strain: 3.15 / 4
+time: 49.5212 , strain: 3.2 / 4
+time: 50.0839 , strain: 3.25 / 4
+time: 50.603 , strain: 3.3 / 4
+time: 51.1374 , strain: 3.35 / 4
+time: 51.616 , strain: 3.4 / 4
+time: 52.2107 , strain: 3.45 / 4
+time: 53.0142 , strain: 3.5 / 4
+time: 53.6495 , strain: 3.55 / 4
+time: 54.2057 , strain: 3.6 / 4
+time: 54.6565 , strain: 3.65 / 4
+time: 55.0865 , strain: 3.7 / 4
+time: 55.5234 , strain: 3.75 / 4
+time: 55.987 , strain: 3.8 / 4
+time: 56.6321 , strain: 3.85 / 4
+time: 57.2888 , strain: 3.9 / 4
+time: 58.0428 , strain: 3.95 / 4
+time: 58.6941 , strain: 4 / 4
+  Simulation::	Time evolution done
+
+ Job done ok

@@ -1,25 +1,40 @@
 grade_lfsig -- PREREG_LFSIG_2026-09-24.md (+ Amendment 1)
-cells with data: 13 of 28 registered
+cells with data: 28 of 28 registered
   label            CVreal  rc    strain  n_win  eta (se)            Zc (se)          overlap  reg  ph
+  c20_x90_s0.1     0.184  0       4.00     51     17.571 (0.281)   0.000 (0.000)  -0.0073  1    1
+  c20_x90_s0.3     0.184  0       4.00     51     16.307 (0.426)   0.001 (0.000)  0.0001  1    1
+  c20_x90_s1       0.184  0       4.00     51     17.744 (0.252)   0.071 (0.001)  0.0012  1    1
+  c20_x90_s3       0.184  0       4.00     51     23.384 (0.708)   0.841 (0.018)  0.0026  1    1
   c20_x90_s10      0.184  0       4.00     51     35.529 (1.211)   2.229 (0.033)  0.0050  1    1
   c20_x90_s30      0.184  0       4.00     51     35.765 (0.713)   2.615 (0.029)  0.0047  1    1
   c20_x90_s100     0.184  0       6.00     51     41.608 (1.098)   2.712 (0.025)  0.0186  1    1
-  c20_x95_s10      0.184  124     2.90     29     57.938 (1.957)   2.679 (0.038)  0.0039  0    0
+  c20_x95_s0.1     0.184  0       4.00     51     30.730 (0.598)   0.000 (0.000)  -0.0089  1    1
+  c20_x95_s0.3     0.184  0       4.00     51     26.384 (0.637)   0.001 (0.000)  0.0001  1    1
+  c20_x95_s1       0.184  0       4.00     51     26.638 (0.686)   0.101 (0.003)  0.0011  1    1
+  c20_x95_s3       0.184  0       4.00     51     37.526 (0.748)   0.936 (0.017)  0.0023  1    1
+  c20_x95_s10      0.184  0       4.00     51     56.031 (1.669)   2.661 (0.009)  0.0045  1    1
   c20_x95_s30      0.184  0       4.00     51     63.154 (2.646)   3.036 (0.031)  0.0049  1    1
-  c20_x95_s100     0.184  124     3.05     32     78.053 (6.220)   3.276 (0.056)  0.0085  0    0
-  c50_x90_s3       0.468  124     2.45     20     50.270 (8.107)   0.885 (0.078)  0.0037  0    0
+  c20_x95_s100     0.184  0       4.00     51     86.473 (6.858)   3.288 (0.034)  0.0122  1    1
+  c50_x90_s0.1     0.468  0       4.00     51     22.221 (0.516)   0.000 (0.000)  -0.0000  1    1
+  c50_x90_s0.3     0.468  0       4.00     51     23.495 (0.734)   0.002 (0.000)  0.0001  1    1
+  c50_x90_s1       0.468  0       4.00     51     25.528 (1.225)   0.072 (0.005)  0.0010  1    1
+  c50_x90_s3       0.468  0       4.00     51     45.077 (8.416)   0.819 (0.069)  0.0037  1    1
   c50_x90_s10      0.468  0       4.00     51     68.610 (3.280)   1.727 (0.019)  0.0109  1    1
   c50_x90_s30      0.468  0       6.00     51     64.201 (5.518)   2.034 (0.044)  0.0071  1    1
   c50_x90_s100     0.468  0       6.00     51     59.310 (2.628)   2.243 (0.031)  0.0080  1    1
-  c50_x95_s10      0.468  124     2.20     15    135.514 (5.925)   2.020 (0.050)  0.0050  0    0
+  c50_x95_s0.1     0.468  0       4.00     51     37.162 (1.169)   0.000 (0.000)  -0.0000  1    1
+  c50_x95_s0.3     0.468  0       4.00     51     38.124 (1.262)   0.002 (0.000)  0.0004  1    1
+  c50_x95_s1       0.468  0       4.00     51     51.855 (6.117)   0.103 (0.005)  0.0034  1    1
+  c50_x95_s3       0.468  0       4.00     51     66.778 (5.629)   0.864 (0.050)  0.0022  1    1
+  c50_x95_s10      0.468  0       4.00     51    122.142 (5.765)   1.987 (0.029)  0.0148  1    1
   c50_x95_s30      0.468  0       4.00     51    107.748 (3.972)   2.412 (0.017)  0.0074  1    1
   c50_x95_s100     0.468  124     5.40     51    124.649 (5.354)   2.648 (0.043)  0.0079  1    0
 
-==== REGISTERED health rule (Amendment 3): 9 healthy ====
-  sigma*_eta CV 0.2 x_m 0.9: nan  [INCOMPLETE (3/7 healthy)]
-  sigma*_eta CV 0.2 x_m 0.95: nan  [INCOMPLETE (1/7 healthy)]
-  sigma*_eta CV 0.5 x_m 0.9: nan  [INCOMPLETE (3/7 healthy)]
-  sigma*_eta CV 0.5 x_m 0.95: nan  [INCOMPLETE (2/7 healthy)]
+==== REGISTERED health rule (Amendment 3): 28 healthy ====
+  sigma*_eta CV 0.2 x_m 0.9: nan  [UNDEFINED (non-monotone ln eta)]
+  sigma*_eta CV 0.2 x_m 0.95: nan  [UNDEFINED (non-monotone ln eta)]
+  sigma*_eta CV 0.5 x_m 0.9: 1.975  [ok]
+  sigma*_eta CV 0.5 x_m 0.95: nan  [UNDEFINED (non-monotone ln eta)]
 
   P1: R = sigma*(0.5)/sigma*(0.2), Yade point 0.768, PASS iff R < 1 and |ln R - ln 0.768| < ln 1.3 at BOTH x_m
     x_m 0.9: not computable
@@ -27,11 +42,51 @@ cells with data: 13 of 28 registered
   P1 verdict: INCOMPLETE
 
   P2: WC inversion phi_J = phi/(1 - eta^-1/2); phi_0 from sigma 0.1, phi_m from sigma 100
-    CV 0.2: incomplete
+    CV 0.2: phi_0 0.6945/0.6810  phi_m 0.6258/0.6254  two-phi agreement NO  chi_LF 0.9097
+    CV 0.5: phi_0 0.7273/0.7235  phi_m 0.6585/0.6643  two-phi agreement yes  chi_LF 0.9118
+  P2 verdict: NOT USABLE (the two phi disagree: the prefactor-1 WC form fails, inversion not used)
+
+  P3: Zc(sigma 0.1) < 1 at x_m 0.90, and eta rises sigma 0.1 -> 100 at every (CV, x_m)
+    CV 0.2 x_m 0.90: Zc(0.1) = 0.000
+    CV 0.2 x_m 0.9: eta 17.57 -> 41.61
+    CV 0.2 x_m 0.95: eta 30.73 -> 86.47
+    CV 0.5 x_m 0.90: Zc(0.1) = 0.000
+    CV 0.5 x_m 0.9: eta 22.22 -> 59.31
+    CV 0.5 x_m 0.95: eta 37.16 -> 124.65
+  P3 verdict: PASS
+
+  P4: R_LF vs [Zc phi]_0.5/[Zc phi]_0.2 x (C/q ratio, Yade mu .3 p 3e-4 = 1.1211); PASS iff within x1.2 at both x_m
+      (the registered text rounded the C/q ratio to 1.05; it also said 'recomputed exactly in the grader', which is what is used)
+    x_m 0.9: not computable
+    x_m 0.95: not computable
+  P4 verdict: INCOMPLETE
+
+  P5 anchor (descriptive; Mari 2014 onset ~0.3 sigma_0; Singh 2018 phi_J^0 0.646, phi_J^inf 0.562)
+    CV 0.2 x_m 0.9: onset sigma 3.0 (in [0.1, 1]: False)  phi_0 0.6945 (|-0.646| 0.0485)  phi_m 0.6258 (in [0.562, 0.646]: True)
+    CV 0.2 x_m 0.95: onset sigma 3.0 (in [0.1, 1]: False)  phi_0 0.6810 (|-0.646| 0.0350)  phi_m 0.6254 (in [0.562, 0.646]: True)
+
+==== ORIGINAL rule (rc 0, strain >= 3), for the record: 27 healthy ====
+  sigma*_eta CV 0.2 x_m 0.9: nan  [UNDEFINED (non-monotone ln eta)]
+  sigma*_eta CV 0.2 x_m 0.95: nan  [UNDEFINED (non-monotone ln eta)]
+  sigma*_eta CV 0.5 x_m 0.9: 1.975  [ok]
+  sigma*_eta CV 0.5 x_m 0.95: nan  [INCOMPLETE (6/7 healthy)]
+
+  P1: R = sigma*(0.5)/sigma*(0.2), Yade point 0.768, PASS iff R < 1 and |ln R - ln 0.768| < ln 1.3 at BOTH x_m
+    x_m 0.9: not computable
+    x_m 0.95: not computable
+  P1 verdict: INCOMPLETE
+
+  P2: WC inversion phi_J = phi/(1 - eta^-1/2); phi_0 from sigma 0.1, phi_m from sigma 100
+    CV 0.2: phi_0 0.6945/0.6810  phi_m 0.6258/0.6254  two-phi agreement NO  chi_LF 0.9097
     CV 0.5: incomplete
   P2 verdict: INCOMPLETE
 
   P3: Zc(sigma 0.1) < 1 at x_m 0.90, and eta rises sigma 0.1 -> 100 at every (CV, x_m)
+    CV 0.2 x_m 0.90: Zc(0.1) = 0.000
+    CV 0.2 x_m 0.9: eta 17.57 -> 41.61
+    CV 0.2 x_m 0.95: eta 30.73 -> 86.47
+    CV 0.5 x_m 0.90: Zc(0.1) = 0.000
+    CV 0.5 x_m 0.9: eta 22.22 -> 59.31
   P3 verdict: INCOMPLETE
 
   P4: R_LF vs [Zc phi]_0.5/[Zc phi]_0.2 x (C/q ratio, Yade mu .3 p 3e-4 = 1.1211); PASS iff within x1.2 at both x_m
@@ -41,34 +96,13 @@ cells with data: 13 of 28 registered
   P4 verdict: INCOMPLETE
 
   P5 anchor (descriptive; Mari 2014 onset ~0.3 sigma_0; Singh 2018 phi_J^0 0.646, phi_J^inf 0.562)
-    CV 0.2 x_m 0.9: no sigma 0.1 cell
-    CV 0.2 x_m 0.95: no sigma 0.1 cell
+    CV 0.2 x_m 0.9: onset sigma 3.0 (in [0.1, 1]: False)  phi_0 0.6945 (|-0.646| 0.0485)  phi_m 0.6258 (in [0.562, 0.646]: True)
+    CV 0.2 x_m 0.95: onset sigma 3.0 (in [0.1, 1]: False)  phi_0 0.6810 (|-0.646| 0.0350)  phi_m 0.6254 (in [0.562, 0.646]: True)
 
-==== ORIGINAL rule (rc 0, strain >= 3), for the record: 8 healthy ====
-  sigma*_eta CV 0.2 x_m 0.9: nan  [INCOMPLETE (3/7 healthy)]
-  sigma*_eta CV 0.2 x_m 0.95: nan  [INCOMPLETE (1/7 healthy)]
-  sigma*_eta CV 0.5 x_m 0.9: nan  [INCOMPLETE (3/7 healthy)]
-  sigma*_eta CV 0.5 x_m 0.95: nan  [INCOMPLETE (1/7 healthy)]
-
-  P1: R = sigma*(0.5)/sigma*(0.2), Yade point 0.768, PASS iff R < 1 and |ln R - ln 0.768| < ln 1.3 at BOTH x_m
-    x_m 0.9: not computable
-    x_m 0.95: not computable
-  P1 verdict: INCOMPLETE
-
-  P2: WC inversion phi_J = phi/(1 - eta^-1/2); phi_0 from sigma 0.1, phi_m from sigma 100
-    CV 0.2: incomplete
-    CV 0.5: incomplete
-  P2 verdict: INCOMPLETE
-
-  P3: Zc(sigma 0.1) < 1 at x_m 0.90, and eta rises sigma 0.1 -> 100 at every (CV, x_m)
-  P3 verdict: INCOMPLETE
-
-  P4: R_LF vs [Zc phi]_0.5/[Zc phi]_0.2 x (C/q ratio, Yade mu .3 p 3e-4 = 1.1211); PASS iff within x1.2 at both x_m
-      (the registered text rounded the C/q ratio to 1.05; it also said 'recomputed exactly in the grader', which is what is used)
-    x_m 0.9: not computable
-    x_m 0.95: not computable
-  P4 verdict: INCOMPLETE
-
-  P5 anchor (descriptive; Mari 2014 onset ~0.3 sigma_0; Singh 2018 phi_J^0 0.646, phi_J^inf 0.562)
-    CV 0.2 x_m 0.9: no sigma 0.1 cell
-    CV 0.2 x_m 0.95: no sigma 0.1 cell
+==== POST HOC (not registered): activation midpoint from the contact-number S-curve ====
+  CV 0.2 x_m 0.9: Z_c monotone True; Z_c(100) 2.712; f_Z = 0.000 0.000 0.026 0.310 0.822 0.964 1.000; sigma*_Z 4.689 sigma_0
+  CV 0.2 x_m 0.95: Z_c monotone True; Z_c(100) 3.288; f_Z = 0.000 0.000 0.031 0.285 0.809 0.924 1.000; sigma*_Z 4.916 sigma_0
+  CV 0.5 x_m 0.9: Z_c monotone True; Z_c(100) 2.243; f_Z = 0.000 0.001 0.032 0.365 0.770 0.907 1.000; sigma*_Z 4.482 sigma_0
+  CV 0.5 x_m 0.95: Z_c monotone True; Z_c(100) 2.648; f_Z = 0.000 0.001 0.039 0.326 0.750 0.911 1.000; sigma*_Z 4.914 sigma_0
+  x_m 0.9: sigma*_Z(0.5)/sigma*_Z(0.2) = 0.956   (dry-DEM Yade prediction 0.768)
+  x_m 0.95: sigma*_Z(0.5)/sigma*_Z(0.2) = 1.000   (dry-DEM Yade prediction 0.768)
