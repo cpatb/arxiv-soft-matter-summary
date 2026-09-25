@@ -133,6 +133,12 @@ PREREG_LFSIG before any cell finished.)
 - A derivation of the rattler fraction f_r(CV) under shear (the only non-geometric input left).
 - Whether closure C's 5–8 % residual at μ 0.3 is the rattlers being small (the backbone is a
   size-biased subset); a per-particle dump would decide it.
-- The record fields `z_ss`, `rattler_frac_ss` do not reproduce the dump-exact Zφ (up to ~30 % apart);
-  their sampling was not traced (referee m4).
+- ~~The record fields `z_ss`, `rattler_frac_ss` do not reproduce the dump-exact Zφ; sampling not traced
+  (referee m4).~~ **Traced 2026-09-24:** `z_ss` is ONE snapshot — in every μ 0.3 cell it equals the minimum or
+  maximum of the dump's 10 snapshot Z values — while this derivation pools all 10. The finding that came
+  with it matters more: **at p̂ 1e-4 the dump's own Z ranges 0.43–4.53 inside the "steady" window**
+  (e.g. μ 0.3 CV 0 seed 2: min 0.73), i.e. the packs intermittently UNJAM at the lowest pressure even though
+  `servo_held` is True, so the p̂ 1e-4 rows average jammed and unjammed states. At p̂ 3e-4 and 1e-3 the
+  snapshot spread is ≤ ±0.3 in Z. The headline row (μ 0.3, p̂ 3e-4) is unaffected; the p̂ 1e-4 rows should
+  not be quoted on their own.
 - Rattler fraction: see `derivations/rattler_closure_2026-09-24.md`.
