@@ -42,7 +42,11 @@ def main() -> int:
     os.makedirs(out, exist_ok=True)
     rec = json.loads(st.to_json())
     fn = os.path.join(out, f"zb_cv{a.cv}_mu{a.mu}_s{a.seed}_p{a.phat:g}.npz")
-    np.savez(fn, d=d, k=k, rattler=r, phi=rec["phi"], converged=rec["converged"],
+    pos = {i: n for n, i in enumerate(ids)}
+    pairs = np.array(sorted({(min(pos[i], pos[j]), max(pos[i], pos[j])) for i in ids for j in neigh[i]}),
+                     dtype=int).reshape(-1, 2)
+    assert 2 * len(pairs) == int(k.sum()), (len(pairs), int(k.sum()))
+    np.savez(fn, d=d, k=k, rattler=r, pairs=pairs, phi=rec["phi"], converged=rec["converged"],
              z_all=rec.get("z_all", np.nan), rattler_frac=rec.get("rattler_frac", np.nan),
              max_iter=packing.max_iter())
     print(json.dumps({"file": fn, "phi": rec["phi"], "converged": rec["converged"], "N": len(ids),

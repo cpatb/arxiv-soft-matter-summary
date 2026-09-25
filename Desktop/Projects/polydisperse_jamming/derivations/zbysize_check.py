@@ -71,6 +71,20 @@ def main() -> int:
             say(f"   {mm:3s}: <k|d> weighted rms err {np.sqrt(np.sum(w * e**2) / w.sum()):.3f};  "
                 f"P(rat|d) weighted rms err {np.sqrt(np.sum(w * er**2) / w.sum()):.3f};  "
                 f"f_r pred {np.mean(poisson.cdf(1, Z * sh[mm])):.3f} (meas {rat.mean():.3f})")
+        if "pairs" in z.files and len(z["pairs"]):
+            p = z["pairs"]
+            ai, aj = a[p[:, 0]], a[p[:, 1]]
+            aa = float(np.mean(ai * aj))
+            m1, m2, m3 = a.mean(), (a**2).mean(), (a**3).mean()
+            # configuration model with the MEASURED degrees: partner size is degree-weighted
+            conf = float((np.sum(k * a) / np.sum(k)) ** 2)
+            # Newman assortativity of the size attribute over edges (symmetrised)
+            x = np.concatenate([ai, aj])
+            y = np.concatenate([aj, ai])
+            r_as = float(np.corrcoef(x, y)[0, 1])
+            say(f"   pairs {len(p)}: <aa>_c {aa:.4f} | closure C m3/m1 {m3 / m1:.4f} | uncorrelated a^2b^2 "
+                f"(m3/m2)^2 {(m3 / m2) ** 2:.4f} | configuration model (measured degrees) {conf:.4f} | "
+                f"size assortativity r {r_as:+.4f}")
     with open(os.path.join(ROOT, "out", "zbysize_check.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")
     return 0

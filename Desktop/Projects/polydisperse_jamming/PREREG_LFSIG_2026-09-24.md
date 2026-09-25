@@ -98,3 +98,11 @@ graded window [1.5, 4] is complete. Health rule, for every cell: **the window is
 and max overlap < 0.05; rc 0 OR rc 124 (wall cap after the window).** A cell capped before strain 4 is
 censored. (Replaces "rc 0, strain ≥ 3"; the registered-vs-post-hoc split in the grader becomes this
 single rule. Nothing else changes.)
+
+## Event (2026-09-24 ~23:05 CDT) — queue driver killed by the harness (low Windows memory)
+Claude Code stopped the backgrounded `wsl.exe` launcher because Windows was critically low on memory
+(0.9 GB free of 31; the WSL VM held 14.8 GB, mostly page cache). Inside WSL the nine running LF_DEM cells
+SURVIVED (vmIdleTimeout keeps the VM up) and will finish; the xargs driver died, so the unstarted cells
+(σ ≤ 3 for most arms) will not start until relaunched. The harness instruction is not to restart it
+without the author's OK; `lfdem/relaunch_lfsig.sh` relaunches only cells whose run directory does not
+exist. Nothing about the design, gates or data changes; cells that did run are unaffected.
