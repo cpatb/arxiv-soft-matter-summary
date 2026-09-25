@@ -127,25 +127,34 @@ strain 4 (their partial directories moved aside to `<label>.killed_<time>`) and 
 the nine finished/complete-window cells. Nothing in the design, gates or predictions changes.
 
 ## RESULT (2026-09-25, `python lfdem/grade_lfsig.py` → `out/grade_lfsig.txt`; figure `figures/L1_lfsig_flowcurves`)
+(Revised after referee pass 1 the same morning: one mis-cited arm, the post-hoc normalisation dependence, and an
+unsupported λ-direction claim were corrected.)
 28/28 cells healthy under the registered rule (Amendment 3), overlap ≤ 1.9 %.
-- **P1 (Yade σ\* ratio 0.768): NOT COMPUTABLE as registered.** The registered readout σ\*_η needs ln η_r monotone in
-  σ within 2 block s.e.; it is not on 3 of 4 arms: mild shear THINNING at the low-stress end (CV 0.2: η_r 17.6 → 16.3,
-  30.7 → 26.4 from σ₀ 0.1 to 0.3) and a high-stress dip at CV 0.5 (x_m 0.90: 68.6 → 64.2 → 59.3 from 10 to 100).
-  The readout was ill-posed for repulsive suspensions that thin before they thicken; the bar is not changed.
-- **P2: NOT USABLE** (CV 0.2's two φ give φ₀ 0.6945 / 0.6810, disagreeing by 0.013 > 0.01: the prefactor-1 WC form
-  does not hold here). χ_LF is printed (0.910 / 0.912) but not graded.
-- **P3: PASS** — Z_c(σ 0.1) = 0.000 at x_m 0.90 for both CV (repulsion keeps surfaces apart), and η_r rises from
-  σ 0.1 to 100 on every arm (×2.4 … ×3.4).
-- **P4: NOT COMPUTABLE** (needs σ\*_η).
-- **P5 (descriptive):** onset σ ≈ 3 σ₀ (Mari 2014: ≈ 0.3 σ₀ at λ = 0.05 a; ours λ = 0.02 a, so a later onset is the
-  expected direction); low-stress inversion φ₀ 0.68–0.69 vs Singh's 0.646 (different PSD, and the inversion itself
-  failed P2's consistency check); φ_m 0.625 inside [0.562, 0.646].
+- **P1 (Yade σ\* ratio 0.768): INCOMPLETE (the grader's word) — not computable as registered.** The readout σ\*_η
+  needs ln η_r monotone in σ within 2 block s.e.; three arms fail it: CV 0.2 x_m 0.90 (σ₀ 0.1 → 0.3: η_r 17.57 →
+  16.31) and CV 0.2 x_m 0.95 (30.73 → 26.38) — shear THINNING before thickening — and CV 0.5 x_m 0.95 (σ₀ 10 → 30:
+  122.1 → 107.7, a marginal failure, 5 % over tolerance). CV 0.5 x_m 0.90 passes (σ\*_η 1.975 σ₀). The readout was
+  ill-posed for repulsive suspensions that thin before they thicken; the bar is not changed.
+- **P2: NOT USABLE** (CV 0.2's two φ give φ₀ 0.6945 / 0.6810, disagreeing by 0.014 > 0.01: the prefactor-1 WC form does
+  not hold here). χ_LF 0.910 / 0.912 is printed, not graded.
+- **P3: PASS** — Z_c(σ 0.1) = 0.000 at x_m 0.90 for both CV, and η_r rises from σ 0.1 to 100 on every arm (×2.4 … ×3.4).
+- **P4: INCOMPLETE** (needs σ\*_η).
+- **P5 (descriptive):** onset σ ≈ 3 σ₀ against Mari 2014's ≈ 0.3 σ₀ (λ = 0.05 a there, 0.02 a here; how onset depends on
+  λ was not derived and is [UNVERIFIED] — the earlier "expected direction" sentence is withdrawn); low-stress inversion
+  φ₀ 0.68–0.69 vs Singh's 0.646 (different PSD, and the inversion failed P2's consistency check); φ_m 0.625 inside
+  [0.562, 0.646].
 
-**POST HOC, NOT REGISTERED** (same grader, labelled section): the contact-number curve Z_c(σ) IS monotone on every
-arm. Its half-activation stress σ\*_Z (Z_c = ½ Z_c(100)) is 4.69 / 4.92 σ₀ (CV 0.2, x_m 0.90 / 0.95) and 4.48 /
-4.91 σ₀ (CV 0.5): **ratio 0.956 and 1.000**, against the dry-DEM prediction 0.768. The high-stress contact number does
-fall with CV (Z_c(100) ×0.83 / ×0.81), as in the dry DEM, but the stress at which contacts switch on does not move.
-Read with care: σ\*_Z normalises out exactly the contact-density factor that carries the dry-DEM quantile σ\*'s CV
-dependence (`derivations/sigma_star_geometry_2026-09-24.md`), so the two estimators are not the same quantity; which
-one the WC closure's σ\* should be is the open point. It agrees with the DNS finding that the CV effect runs ~100 %
-through the window and < 0.05 % through activation (`cvmap` C3′).
+**POST HOC, NOT REGISTERED** (labelled section of the same grader). The contact-number curve Z_c(σ) is monotone on every
+arm, so the activation stress can be read from it — but the CV ratio of that stress DEPENDS ON THE NORMALISATION
+(16–84 % band from resampling each Z_c within its block s.e.):
+| threshold | x_m 0.90 | x_m 0.95 |
+|---|---|---|
+| each arm's own ½ Z_c(100) | 0.956 [0.891, 1.018] | 1.000 [0.955, 1.042] |
+| absolute Z_c = 1.0 | 1.107 [1.023, 1.187] | 1.107 [1.053, 1.159] |
+| common ½ min Z_c(100) | 1.171 [1.096, 1.240] | 1.158 [1.107, 1.208] |
+**What survives every normalisation:** no reading comes near the dry-DEM prediction 0.768 (lowest band edge 0.89), so the
+lubricated suspension does NOT show the CV-lowered onset. Whether CV leaves the onset unchanged (self-normalised) or
+raises it by ~10–17 % (absolute thresholds) depends on which activated fraction the WC σ\* is taken to be, and cannot
+be settled here. What also survives: the high-stress contact number falls with CV (Z_c(100) ×0.83 / ×0.81). Caveats:
+one configuration per (CV, x_m), so configuration-to-configuration scatter between the two CVs is unbounded; the
+half-activation crossing always falls in the unsampled σ₀ 3 → 10 decade and rests on log-linear interpolation.

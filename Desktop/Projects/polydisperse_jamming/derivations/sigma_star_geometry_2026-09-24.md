@@ -206,10 +206,11 @@ PREREG_LFSIG before any cell finished.)
   printed by the check script, added after referee pass 3), so the intermittent unjamming is a frictional,
   lowest-pressure effect; the μ_p 0 CV-0.5 p̂ 1e-4 row is fragile for the other reason (n = 1 servo survivor).
 - Rattler fraction: see `derivations/rattler_closure_2026-09-24.md`.
-- **LF_DEM (lubricated, post hoc, 2026-09-25):** the half-activation stress of the contact-number S-curve is
-  CV-independent (CV 0.5/0.2 ratio 0.956 / 1.000) while Z_c at high stress falls ×0.82. So in a lubricated suspension
-  the CV effect found here appears as fewer contacts, not as a shifted onset; which of the two the WC closure's σ\*
-  should represent is open (`PREREG_LFSIG` RESULT).
+- **LF_DEM (lubricated, post hoc, 2026-09-25):** read from the contact-number curve, the CV 0.5/0.2 onset ratio is
+  0.96–1.17 depending on normalisation (resampling bands 0.89–1.24), never near the 0.768 this derivation's dry-DEM
+  quantile σ\* gives, while Z_c at high stress falls ×0.82. So in a lubricated suspension the contact-density loss is
+  present but does not lower the onset; which quantity the WC closure's σ\* should represent is open
+  (`PREREG_LFSIG` RESULT, one configuration per cell).
 - **C, the last measured input of the chain (exploratory, `derivations/force_size_probe.py` →
   `out/force_size_probe.txt`).** The Derjaguin-reduced force rises with pair size, ⟨g | aᵢaⱼ⟩ ∝ (aᵢaⱼ)^β with
   β = 0.30 ± 0.08 over 34 non-monodisperse cells (range 0.15–0.51; 0.20–0.25 frictionless, 0.32–0.38 at

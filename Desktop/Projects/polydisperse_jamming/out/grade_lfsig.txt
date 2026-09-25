@@ -106,3 +106,11 @@ cells with data: 28 of 28 registered
   CV 0.5 x_m 0.95: Z_c monotone True; Z_c(100) 2.648; f_Z = 0.000 0.001 0.039 0.326 0.750 0.911 1.000; sigma*_Z 4.914 sigma_0
   x_m 0.9: sigma*_Z(0.5)/sigma*_Z(0.2) = 0.956   (dry-DEM Yade prediction 0.768)
   x_m 0.95: sigma*_Z(0.5)/sigma*_Z(0.2) = 1.000   (dry-DEM Yade prediction 0.768)
+  normalisation sensitivity (crossing sigma at which Z_c reaches the threshold; ratio CV 0.5 / CV 0.2),
+  band = 16-84 % over 2000 resamples of each Z_c within its block s.e. (seed 20260925):
+    self (Z_c = 0.5 Z_c(100) of the arm)   x_m 0.9: R = 0.956  [0.891, 1.018]
+    self (Z_c = 0.5 Z_c(100) of the arm)   x_m 0.95: R = 1.000  [0.955, 1.042]
+    absolute Z_c = 1.0                     x_m 0.9: R = 1.107  [1.023, 1.187]
+    absolute Z_c = 1.0                     x_m 0.95: R = 1.107  [1.053, 1.159]
+    common 0.5 min_arms Z_c(100)           x_m 0.9: R = 1.171  [1.096, 1.240]
+    common 0.5 min_arms Z_c(100)           x_m 0.95: R = 1.158  [1.107, 1.208]

@@ -248,6 +248,41 @@ def post_hoc_zc(cells_all: list) -> None:
         if (0.5, xm) in sz and (0.2, xm) in sz:
             R = sz[(0.5, xm)] / sz[(0.2, xm)]
             say(f"  x_m {xm}: sigma*_Z(0.5)/sigma*_Z(0.2) = {R:.3f}   (dry-DEM Yade prediction {R_YADE:.3f})")
+    # referee pass 1: the ratio depends on the normalisation; print three, each with a block-s.e. propagated band
+    say("  normalisation sensitivity (crossing sigma at which Z_c reaches the threshold; ratio CV 0.5 / CV 0.2),")
+    say("  band = 16-84 % over 2000 resamples of each Z_c within its block s.e. (seed 20260925):")
+    rng = np.random.default_rng(20260925)
+
+    def crossing(z, thr):
+        if not (z[0] < thr <= z[-1]):
+            return float("nan")
+        i = int(np.argmax(z >= thr))
+        t = (thr - z[i - 1]) / (z[i] - z[i - 1])
+        return math.exp(math.log(SIGMAS[i - 1]) + t * (math.log(SIGMAS[i]) - math.log(SIGMAS[i - 1])))
+
+    series = {}
+    for cv in CVS:
+        for xm in XMS:
+            if all((cv, xm, s) in cells for s in SIGMAS):
+                series[(cv, xm)] = (np.array([cells[(cv, xm, s)]["zc"] for s in SIGMAS]),
+                                    np.array([cells[(cv, xm, s)]["zc_se"] for s in SIGMAS]))
+    if len(series) == 4:
+        zmin100 = min(v[0][-1] for v in series.values())
+        rules = {"self (Z_c = 0.5 Z_c(100) of the arm)": lambda z: 0.5 * z[-1],
+                 "absolute Z_c = 1.0": lambda z: 1.0,
+                 "common 0.5 min_arms Z_c(100)": lambda z: 0.5 * zmin100}
+        for name, thr in rules.items():
+            for xm in XMS:
+                z2, e2 = series[(0.2, xm)]
+                z5, e5 = series[(0.5, xm)]
+                R = crossing(z5, thr(z5)) / crossing(z2, thr(z2))
+                bs = []
+                for _ in range(2000):
+                    a = np.maximum.accumulate(z2 + rng.normal(0, e2))
+                    b = np.maximum.accumulate(z5 + rng.normal(0, e5))
+                    bs.append(crossing(b, thr(b)) / crossing(a, thr(a)))
+                bs = np.array(bs)[np.isfinite(bs)]
+                say(f"    {name:38s} x_m {xm}: R = {R:.3f}  [{np.percentile(bs, 16):.3f}, {np.percentile(bs, 84):.3f}]")
 
 
 if __name__ == "__main__":
