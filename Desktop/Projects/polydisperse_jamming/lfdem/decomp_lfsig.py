@@ -55,7 +55,7 @@ def main() -> int:
     say("decomp_lfsig -- POST HOC geometry on LF_DEM contacts (not registered; strain [1.5, 4])")
     say("  label           snaps  Z_c    <aa>_c  /C      /a2b2   /config  r_assort  s*/k(quantile)  n_contacts")
     res = {}
-    for d in sorted(glob.glob(os.path.join(OUT, "lfsig", "c*"))):
+    for d in [x for x in sorted(glob.glob(os.path.join(OUT, "lfsig", "c*"))) if ".killed_" not in x]:
         ints = glob.glob(os.path.join(d, "int_*.dat"))
         conf = os.path.join(d, "conf.dat")
         if not ints or not os.path.exists(conf):

@@ -28,7 +28,7 @@ COL = {0.2: "#1f77b4", 0.5: "#ff7f0e"}
 
 def main() -> int:
     import glob
-    cells = [c for c in (G.load_cell(d) for d in sorted(glob.glob(os.path.join(G.OUT, "lfsig", "c*"))))
+    cells = [c for c in (G.load_cell(d) for d in sorted(glob.glob(os.path.join(G.OUT, "lfsig", "c*"))) if ".killed_" not in d)
              if c is not None and c["healthy_reg"]]
     fig, ax = plt.subplots(1, 2, figsize=(6.8, 2.8), constrained_layout=True)
     rows = []

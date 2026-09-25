@@ -106,7 +106,7 @@ def yade_cq_ratio() -> float:
 
 def main() -> int:
     say("grade_lfsig -- PREREG_LFSIG_2026-09-24.md (+ Amendment 1)")
-    cells_all = [c for c in (load_cell(d) for d in sorted(glob.glob(os.path.join(OUT, "lfsig", "c*"))))
+    cells_all = [c for c in (load_cell(d) for d in sorted(glob.glob(os.path.join(OUT, "lfsig", "c*"))) if ".killed_" not in d)
                  if c is not None]
     say(f"cells with data: {len(cells_all)} of {len(CVS) * len(XMS) * len(SIGMAS)} registered")
     say("  label            CVreal  rc    strain  n_win  eta (se)            Zc (se)          overlap  reg  ph")
