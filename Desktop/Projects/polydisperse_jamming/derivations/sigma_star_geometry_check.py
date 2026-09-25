@@ -142,6 +142,7 @@ def cell_factors(r: dict, d) -> dict | None:
            "q": float(np.mean(q)), "sstar": float(np.mean(ss)), "phi": r["phi_ss"],
            "z": r.get("z_ss"), "cv": r["cv"], "cvr": cv, "a3": m3d / 8.0,
            "N": N, "Z": 2.0 * float(np.mean(Nc)) / N, "cfg": float(np.mean(cfg)), "cfg0": float(np.mean(cfg0))}
+    out["Zmin"], out["Zmax"] = 2.0 * min(Nc) / N, 2.0 * max(Nc) / N
     # realised radius moments (radius = d/2): m1..m4
     m1, m2, m3 = d10 / 2, m2d / 4, m3d / 8
     out["aaC"] = m3 / m1                                 # eq. (12): P(i,j) ~ a_i a_j (a_i+a_j)
@@ -203,6 +204,12 @@ def data_checks() -> None:
             pred = f["Z"] * f["phi"] / (8 * math.pi * r["d10_realised"] / 2) / (f["q"] * f["LW"])
             say(f"    mu {r['mu_p']} p {r['p_hat_target']:.0e} seed {r['seed']}: {pred:.5f} vs {f['sstar']:.5f}  ({pred/f['sstar']-1:+.4f})")
     # referee M1: attrition by condition
+    say("  snapshot Z range within the steady window, by (mu, p): min over cells of Z_min, max of Z_max")
+    zr = {}
+    for r, f in rows:
+        zr.setdefault((r["mu_p"], r["p_hat_target"]), []).append((f["Zmin"], f["Zmax"]))
+    for kk in sorted(zr):
+        say(f"    {kk}: Z_min {min(t[0] for t in zr[kk]):.2f}  Z_max {max(t[1] for t in zr[kk]):.2f}")
     say("  health-filter attrition (attempted -> healthy with dump), by (mu, p, CV):")
     att = {}
     for key, r in recs.items():

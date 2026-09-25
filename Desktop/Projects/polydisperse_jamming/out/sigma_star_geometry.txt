@@ -111,6 +111,13 @@
     mu 0.3 p 1e-03 seed 1: 0.20924 vs 0.20928  (-0.0002)
     mu 0.3 p 1e-03 seed 2: 0.21097 vs 0.21100  (-0.0001)
     mu 0.3 p 1e-03 seed 3: 0.21081 vs 0.21086  (-0.0002)
+  snapshot Z range within the steady window, by (mu, p): min over cells of Z_min, max of Z_max
+    (0.0, 0.0001): Z_min 3.04  Z_max 5.54
+    (0.0, 0.0003): Z_min 3.25  Z_max 5.66
+    (0.0, 0.001): Z_min 5.65  Z_max 6.23
+    (0.3, 0.0001): Z_min 0.43  Z_max 4.53
+    (0.3, 0.0003): Z_min 2.19  Z_max 4.59
+    (0.3, 0.001): Z_min 2.58  Z_max 4.97
   health-filter attrition (attempted -> healthy with dump), by (mu, p, CV):
     (0.0, 0.0001, 0.0): 3 -> 3
     (0.0, 0.0001, 0.2): 3 -> 3
