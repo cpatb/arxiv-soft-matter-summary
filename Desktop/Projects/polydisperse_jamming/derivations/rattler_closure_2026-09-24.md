@@ -155,9 +155,13 @@ frictional arm and the frictionless arm of the same family.
 - ⚠ **What is NOT a finding:** the two parts cancel (backbone −0.007 … −0.079, rattler +0.004 … +0.074,
   net −0.010 … +0.016 over 17 frictional (family, μ_p, CV) rows). Because the net is measured to be small,
   ANY ψ model splits it into two nearly cancelling parts. The cancellation is forced by the data.
-- **What is:** the SIZE of the split, which rests on the count-validated a² ψ. At CV 0.5 (lognormal) the
-  frictional pack carries +0.049 (μ 0.3) to +0.074 (μ 3) more rattler loading, in ln φ, than the
-  frictionless one, and its backbone is correspondingly less dense. In words: **friction stops the
+- **What is:** the SIZE of the split, which depends on the ψ model. At CV 0.5 (lognormal) the frictional
+  pack carries more rattler loading, in ln φ, than the frictionless one by +0.049 / +0.068 / +0.071 / +0.074
+  (μ_p 0.3 / 0.6 / 1 / 3) with the a² ψ and +0.060 / +0.090 / +0.099 / +0.104 with the closure-C ψ (both
+  columns printed); its backbone is correspondingly LESS DENSIFIED by CV than the frictionless one (a
+  differential statement, not an absolute density). Robust under both: the sign, and the monotone rise with
+  friction. Not robust: the magnitude (C/a² ratio 1.2–1.4 for lognormal, ~3 for bidisperse μ 0.3 CV
+  0.4–0.5); read it as "order 0.05–0.10 in ln φ" (referee pass 4). In words: **friction stops the
   backbone from absorbing the fines, which then rattle; the extra rattler volume stands in, almost exactly,
   for the densification a frictionless backbone gets from the same fines.** That is a mechanism for χ's
   CV-invariance, conditional on ψ; a measured rattler VOLUME (per-grain dumps of frictional AND frictionless
