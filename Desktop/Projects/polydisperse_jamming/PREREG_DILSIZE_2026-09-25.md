@@ -113,3 +113,5 @@ every persistent one. TRANSIENT iff J_max > 0.01 and J_floor ≤ 0.005; BALL / H
 split by Rg as before. A stationarity ratio (mean J over the last 0.5 τ ÷ the 0.5 τ before) is printed, and a
 BALL/HYBRID cell outside [0.5, 2] is reported PROVISIONAL and its series is examined before it is quoted. Checked
 on all 25 `cvmapE03` cells plus the counterexample: classes as in Amendment 1, none provisional.
+
+Amendment 2 addendum (referee pass 3, minor): PROVISIONAL also fires if Rg over the last 0.5 τ moves more than 5 % against the 0.5 τ before; on the 25 on-disk cells no BALL cell is flagged.

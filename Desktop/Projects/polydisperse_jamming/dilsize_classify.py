@@ -12,7 +12,8 @@ J_floor = 5th percentile of jam_frac over t/tau >= 1 (Amendment 2: on 15 on-disk
 for every unjamming cell and >= 0.018 for every persistent one, so it does not depend on where the slow rest
 clock, tau_rest_code 160-320 >> TEND, happens to be at TEND). J_end, Rg_end = means over t/tau >= TEND - 0.5.
 STATIONARITY = mean J over the last 0.5 tau / mean over the 0.5 tau before; outside [0.5, 2] the class is
-reported PROVISIONAL and the series must be looked at.
+reported PROVISIONAL and the series must be looked at; the same holds if Rg over the last 0.5 tau differs
+from the 0.5 tau before by more than 5 % (referee pass 3: Rg_end/Rg_peak could otherwise pass by phase luck).
 """
 from __future__ import annotations
 
@@ -35,6 +36,7 @@ def classify(path: str) -> dict:
     jfloor = float(np.percentile(J[t >= 1.0], 5))
     prev = (t >= t[-1] - 1.0) & ~end
     stat = float(J[end].mean() / J[prev].mean()) if J[prev].mean() > 0 else float("nan")
+    rstat = float(rg[end].mean() / rg[prev].mean())
     rpk, rend = float(rg.max()), float(rg[end].mean())
     t95 = float(t[np.argmax(rg >= 0.95 * rpk)])
     if jmax <= J_ON:
@@ -45,7 +47,7 @@ def classify(path: str) -> dict:
         c = "BALL"
     else:
         c = "HYBRID"
-    prov = c in ("BALL", "HYBRID") and not (0.5 <= stat <= 2.0)
+    prov = c in ("BALL", "HYBRID") and not (0.5 <= stat <= 2.0 and 0.95 <= rstat <= 1.05)
     return dict(cls=c, provisional=prov, stationarity=stat, J_floor=jfloor, adm=adm, J_max=jmax, J_end=jend, Rg_peak=rpk, Rg_end=rend, t95=t95, t_last=float(t[-1]))
 
 
