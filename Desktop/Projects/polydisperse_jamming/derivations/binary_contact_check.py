@@ -36,6 +36,37 @@ def say(s: str = "") -> None:
     lines.append(s)
 
 
+def ternary_block() -> None:
+    """T3 on TERNARY packs (phase12_tern*: `by_design_class` c0..c2 with d, n, z_mean, rattler_frac); only
+    records with all three classes populated. No pair counts are recorded there, so T1 cannot be run."""
+    recs = {}
+    for f in sorted(glob.glob(os.path.join(ROOT, "out", "phase12_tern*.jsonl"))):
+        for line in open(f, encoding="utf-8"):
+            try:
+                r = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            bd = r.get("by_design_class")
+            if not r.get("converged") or not bd or len(bd) != 3 or any(not bd[c]["n"] for c in bd):
+                continue
+            recs[r["key"]] = r
+    say(f"\nTERNARY (T3 only): {len(recs)} converged records with three populated classes")
+    err, err0 = [], []
+    for r in recs.values():
+        cl = list(r["by_design_class"].values())
+        n = np.array([c["n"] for c in cl], float)
+        d = np.array([c["d"] for c in cl], float)
+        z = np.array([c["z_mean"] for c in cl], float)
+        fr = np.array([c["rattler_frac"] for c in cl], float)
+        Z = np.sum(n * z) / n.sum()
+        a2 = np.sum(n * d**2) / n.sum()
+        err += list(poisson.cdf(1, Z * d**2 / a2) - fr)
+        err0 += list(poisson.cdf(1, Z) - fr)
+    e, e0 = np.array(err), np.array(err0)
+    say(f"  per-class rattler fraction: a^2 rms {np.sqrt(np.mean(e**2)):.4f} (mean {e.mean():+.4f}); size-blind rms "
+        f"{np.sqrt(np.mean(e0**2)):.4f} (mean {e0.mean():+.4f}); n {e.size} class-records")
+
+
 def main() -> int:
     recs = {}
     for f in sorted(glob.glob(os.path.join(ROOT, "out", "phase12*.jsonl"))):
@@ -98,6 +129,14 @@ def main() -> int:
         ok = np.isfinite(m)
         say(f"  class {cls}: a^2 rms {np.sqrt(np.mean((pa[ok] - m[ok]) ** 2)):.4f} (mean {np.mean(pa[ok] - m[ok]):+.4f}); "
             f"size-blind rms {np.sqrt(np.mean((pn[ok] - m[ok]) ** 2)):.4f} (mean {np.mean(pn[ok] - m[ok]):+.4f}); n {ok.sum()}")
+    say("  by size ratio (a^2 rms S / L):")
+    for ratio in sorted({x["ratio"] for x in rows}):
+        g = [x for x in rows if x["ratio"] == ratio]
+        eS = np.array([x["predS"] - x["ratS"] for x in g])
+        eL = np.array([x["predL"] - x["ratL"] for x in g])
+        say(f"    ratio {ratio:4.2f}: S {np.sqrt(np.mean(eS**2)):.4f} (mean {eS.mean():+.4f})   "
+            f"L {np.sqrt(np.mean(eL**2)):.4f} (mean {eL.mean():+.4f})   n {len(g)}")
+    ternary_block()
     with open(os.path.join(ROOT, "out", "binary_contact_check.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")
     return 0

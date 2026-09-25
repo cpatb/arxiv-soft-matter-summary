@@ -158,7 +158,11 @@ fractions. Bookkeeping check: 2n_SS + n_SL = n_S z_S etc. to 1.8e-12. Diameters 
   plus a small disassortative (mixed-pair) excess that is largest at large size ratio.
 - **Rattling ∝ surface area (T3):** Poisson(Z a²/⟨a²⟩) per class gives rms 0.017 (small class) and 0.018
   (large class) against the measured per-class rattler fractions; size-blind Poisson(Z) gives 0.133 and
-  0.346. No parameter adjusted. The a² law, found on continuous PSDs, holds on two-size packs out to ratio 5.
+  0.346. No parameter adjusted. By size ratio the a² rms is ≤ 0.016 (small) / ≤ 0.005 (large) at ratios
+  1.25–1.5 (108 records) and 0.033 / 0.024 at ratio 4, 0.012 / 0.061 at ratio 5 (the large class
+  over-predicted by +0.055 there). **Ternary 1 : 2 : 4 packs** (36 records, `by_design_class`; no pair counts,
+  so T1 cannot run) are worse: rms 0.108, UNDER-predicting rattling by 0.084 on average (size-blind 0.384).
+  So a² is a good law at moderate size ratio and a first approximation (errors up to ~0.1) at wide spans.
 - **Mean-degree exponent (T2) is NOT universal:** p = ln(z_L/z_S)/ln(d_L/d_S) is 1.44–1.48 (median) at
   ratios 1.25–1.5 — close to the 1.55–1.70 of the lognormal dumps — but 2.39 and 2.86 at ratios 4 and 5,
   where the small grains are mostly rattlers and z_S collapses. So the σ\* chain's transferred p ≈ 1.6

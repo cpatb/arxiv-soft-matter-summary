@@ -20,3 +20,12 @@ T2 mean-degree exponent p = ln(z_L/z_S)/ln(d_L/d_S), grouped by size ratio (medi
 T3 per-class rattler fraction: Poisson with a^2 mean vs size-blind, rms error over records
   class S: a^2 rms 0.0174 (mean +0.0053); size-blind rms 0.1329 (mean -0.1052); n 135
   class L: a^2 rms 0.0184 (mean +0.0064); size-blind rms 0.3456 (mean +0.1810); n 135
+  by size ratio (a^2 rms S / L):
+    ratio 1.25: S 0.0158 (mean -0.0006)   L 0.0053 (mean +0.0038)   n 27
+    ratio 1.41: S 0.0120 (mean +0.0024)   L 0.0037 (mean +0.0008)   n 54
+    ratio 1.50: S 0.0143 (mean +0.0014)   L 0.0040 (mean +0.0003)   n 27
+    ratio 4.00: S 0.0330 (mean +0.0268)   L 0.0244 (mean +0.0122)   n 18
+    ratio 5.00: S 0.0116 (mean +0.0093)   L 0.0606 (mean +0.0546)   n 9
+
+TERNARY (T3 only): 36 converged records with three populated classes
+  per-class rattler fraction: a^2 rms 0.1085 (mean -0.0841); size-blind rms 0.3843 (mean +0.0341); n 108 class-records
