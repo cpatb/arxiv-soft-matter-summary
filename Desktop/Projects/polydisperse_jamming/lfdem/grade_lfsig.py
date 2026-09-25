@@ -193,6 +193,20 @@ def main() -> int:
                 ok4.append(None)
                 say(f"    x_m {xm}: not computable")
         say(f"  P4 verdict: {'INCOMPLETE' if None in ok4 else ('PASS' if all(ok4) else 'FAIL')}")
+        # P5 (Amendment 2): literature anchor, printed not gated
+        say("\n  P5 anchor (descriptive; Mari 2014 onset ~0.3 sigma_0; Singh 2018 phi_J^0 0.646, phi_J^inf 0.562)")
+        for xm in XMS:
+            base = cells.get((0.2, xm, 0.1))
+            if not base:
+                say(f"    CV 0.2 x_m {xm}: no sigma 0.1 cell")
+                continue
+            onset = next((s for s in SIGMAS[1:] if (0.2, xm, s) in cells
+                          and cells[(0.2, xm, s)]["eta"] > 1.1 * base["eta"]), None)
+            p0 = base["phi"] / (1 - base["eta"] ** -0.5)
+            hi = cells.get((0.2, xm, 100.0))
+            pm = hi["phi"] / (1 - hi["eta"] ** -0.5) if hi else float("nan")
+            say(f"    CV 0.2 x_m {xm}: onset sigma {onset} (in [0.1, 1]: {onset is not None and onset <= 1})  "
+                f"phi_0 {p0:.4f} (|-0.646| {abs(p0 - 0.646):.4f})  phi_m {pm:.4f} (in [0.562, 0.646]: {0.562 <= pm <= 0.646})")
     with open(os.path.join(OUT, "grade_lfsig.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")
     return 0
