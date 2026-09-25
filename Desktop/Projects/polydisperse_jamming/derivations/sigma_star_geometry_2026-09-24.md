@@ -117,6 +117,21 @@ thresholded differently from the dumps (not traced). Only the dump Zφ enters th
    the rattler population under shear. A measurement of Z (or rattler fraction) in a sheared
    polydisperse pack is a σ\* measurement.
 
+## 5b. Configuration-model form (added later the same night)
+A pair-resolved per-grain dump (`rattler_closure_2026-09-24.md` §3b; isotropic Yade, CV 0.5, μ_p 0.3) and the
+post-hoc LF_DEM contacts (lubricated shear, CV 0.2 and 0.5) both show the contact pairs are, to ≤ 4 %, a
+configuration model in the grain degrees: ⟨aᵢaⱼ⟩_c = ā_k² with ā_k ≡ Σkᵢaᵢ/Σkᵢ, the CONTACT-WEIGHTED mean
+radius. Substituting in eq. 8 (an identity once that holds):
+
+**σ\*/κ = Zφ ā_k² / (8π⟨a³⟩) · C/(qΛ)** (eq. 15)
+
+so the size distribution enters σ\* only through φ, Z, ⟨a³⟩ and ā_k — i.e. through the degree law k(a).
+Closure C's pair weight aᵢaⱼ(aᵢ+aⱼ) does not factorise, so it is NOT of this form; it matched the sheared
+dumps' ⟨aᵢaⱼ⟩_c to ≤ 8 % without being the mechanism. With k ∝ a² (the law that predicts rattlers best)
+ā_k = m₃/m₂ and eq. 15 gives ⟨aᵢaⱼ⟩_c = (m₃/m₂)²; with the measured degrees the isotropic CV-0.5 cell gives
+ā_k² = 0.536 against ⟨aᵢaⱼ⟩_c = 0.532. Which degree law
+holds under SHEAR in the dry DEM is not measured (the actshape dumps have pairs but no grain ids).
+
 ## 6. Registered for `lfsig` (P4, before any lfsig cell is read)
 
 In LF_DEM the activated fraction at stress σ is the fraction of interacting pairs with gap h < 0, and
