@@ -148,6 +148,21 @@ Reading, with the model's known bias stated first: the model UNDER-predicts f_r 
   shrinks to +0.002 … +0.006.
 - This is conditional on the model's ψ; a per-particle dump (id, radius, contacts) would measure ψ directly.
 
+## 4c. What this says about χ's CV-invariance (model-conditional; `out/backbone_psi_compare.txt`, second table)
+The project measures χ = φ_m/φ₀ barely moving with CV. With φ = φ_B/(1−ψ) exactly, each rise splits as
+d ln φ = d ln φ_B − d ln(1−ψ), and d ln χ = (backbone part difference) + (rattler part difference) between a
+frictional arm and the frictionless arm of the same family.
+- ⚠ **What is NOT a finding:** the two parts cancel (backbone −0.007 … −0.079, rattler +0.004 … +0.074,
+  net −0.010 … +0.016 over 17 frictional (family, μ_p, CV) rows). Because the net is measured to be small,
+  ANY ψ model splits it into two nearly cancelling parts. The cancellation is forced by the data.
+- **What is:** the SIZE of the split, which rests on the count-validated a² ψ. At CV 0.5 (lognormal) the
+  frictional pack carries +0.049 (μ 0.3) to +0.074 (μ 3) more rattler loading, in ln φ, than the
+  frictionless one, and its backbone is correspondingly less dense. In words: **friction stops the
+  backbone from absorbing the fines, which then rattle; the extra rattler volume stands in, almost exactly,
+  for the densification a frictionless backbone gets from the same fines.** That is a mechanism for χ's
+  CV-invariance, conditional on ψ; a measured rattler VOLUME (per-grain dumps of frictional AND frictionless
+  packs at the same CV) would test it directly.
+
 ## 5. What it means for σ\* (written for closure C; the Z_nr → Z step has not been redone with a²)
 With eq. 13 of the σ\* derivation, σ\*/κ ≈ Zφ/(8π⟨a⟩)·C/q, and Z is now a function of (Z_nr, PSD): the
 whole CV-dependence of σ\* at fixed ⟨a⟩ reduces to the PSD, φ, the isostatic Z_nr (length-free) and two

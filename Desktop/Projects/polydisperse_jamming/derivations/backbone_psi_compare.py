@@ -59,6 +59,7 @@ def main() -> int:
     say("backbone phi_B = phi (1 - psi_model), p_hat 3e-5, seed means; d = change vs CV 0 of the same (family, mu)")
     say("  family      mu   cv    n   phi     dphi    | C: psi   dphi_B  | a2: psi  dphi_B")
     base = {}
+    store = {}
     for (fam, mu, cv), rs in sorted(groups.items()):
         a = radii_family(fam, cv)
         phi = np.mean([r["phi"] for r in rs])
@@ -72,6 +73,23 @@ def main() -> int:
         b = base.get((fam, mu), (np.nan, np.nan, np.nan))
         say(f"  {fam:10s} {mu:.1f} {cv:.2f} {len(rs):4d}  {phi:.4f}  {phi - b[0]:+.4f}  | {out['C'][0]:.4f}  "
             f"{out['C'][1] - b[1]:+.4f} | {out['a2'][0]:.4f}  {out['a2'][1] - b[2]:+.4f}")
+        store[(fam, mu, cv)] = (phi, out["a2"][0], out["a2"][1])
+    # d ln phi = d ln phi_B - d ln(1 - psi): backbone vs rattler-loading share of each rise (a^2 psi), and the
+    # implied change of chi = phi(mu)/phi(0) between a frictional arm and the frictionless arm of one family.
+    say("\nsplit of d ln phi (CV 0 -> CV) into backbone d ln phi_B and rattler loading -d ln(1-psi), a^2 psi")
+    say("  family      mu   cv   dln phi   backbone  rattler   | d ln chi vs mu 0 (backbone part, rattler part)")
+    for (fam, mu, cv), (phi, ps, pb) in sorted(store.items()):
+        if cv == 0.0 or (fam, mu, 0.0) not in store:
+            continue
+        phi0, ps0, pb0 = store[(fam, mu, 0.0)]
+        dl, db, dr = np.log(phi / phi0), np.log(pb / pb0), -np.log((1 - ps) / (1 - ps0))
+        extra = ""
+        if mu > 0 and (fam, 0.0, cv) in store and (fam, 0.0, 0.0) in store:
+            f1, s1, b1 = store[(fam, 0.0, cv)]
+            f0, s0, b0 = store[(fam, 0.0, 0.0)]
+            dl0, db0, dr0 = np.log(f1 / f0), np.log(b1 / b0), -np.log((1 - s1) / (1 - s0))
+            extra = f"| {dl - dl0:+.4f} ({db - db0:+.4f}, {dr - dr0:+.4f})"
+        say(f"  {fam:10s} {mu:.1f} {cv:.2f}  {dl:+.4f}   {db:+.4f}   {dr:+.4f}   {extra}")
     with open(os.path.join(ROOT, "out", "backbone_psi_compare.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")
     return 0
