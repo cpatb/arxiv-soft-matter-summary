@@ -69,6 +69,32 @@ bidisperse, μ_p 0–3, all p̂ rungs, group-mean f_r 0.012–0.563. Closure (i)
 - Bidisperse (two sizes only, where a Poisson count per size is least plausible) is the worst family and
   still ~3× better than the null.
 
+## 4b. The rattler VOLUME share, and backbone invariance (closes an UNDETERMINED item, model-conditionally)
+`geom_rattler_decomposition_2026-09-19.md` could not decide whether polydispersity only adds rattlers to an
+unchanged backbone (φ = φ_B/(1−ψ), φ_B fixed) because no record carries the rattler VOLUME share ψ. The
+count-validated model supplies it: ψ = ⟨a³ P(k<2|λ(a))⟩/⟨a³⟩. At the p̂ 3e-5 rung (seed means):
+
+| family, μ_p | Δφ (CV 0 → 0.5) | Δφ_B | f_r → | ψ_model → |
+|---|---|---|---|---|
+| lognormal, 0.3 | +0.062 | +0.007 | 0.08 → 0.52 | 0.07 → 0.15 |
+| lognormal, 1 | +0.053 | −0.019 | 0.14 → 0.60 | 0.13 → 0.24 |
+| lognormal, 3 | +0.052 | −0.022 | 0.14 → 0.60 | 0.14 → 0.25 |
+| uniform, 0.3 | +0.026 | −0.009 | 0.08 → 0.47 | 0.07 → 0.13 |
+| bidisperse, 0.3 | +0.012 | −0.023 | 0.08 → 0.50 | 0.07 → 0.13 |
+| lognormal, 0 | +0.063 | +0.041 | 0.02 → 0.35 | 0.02 → 0.05 |
+
+Reading, with the model's known bias stated first: the model UNDER-predicts f_r (by up to ~0.1 at CV 0.5,
+μ 0), so ψ_model is low and φ_B is over-estimated at high CV; correcting it would push every Δφ_B DOWN.
+- **Frictional (μ_p ≥ 0.3): the backbone does not densify.** |Δφ_B| ≤ 0.023 against Δφ up to 0.062; the
+  CV-driven rise in φ is carried by rattler volume sitting in the backbone's pores. (With the bias, the
+  frictional backbone if anything LOSES solid.) Rattlers are ~half the grains but only 13–25 % of the solid.
+- **Frictionless: the backbone densifies** (lognormal Δφ_B +0.041 of +0.063, 2/3 of the rise; the CV-0.5
+  cell is n = 1 converged seed). Removing that would need ψ ≈ 0.108 at CV 0.5, twice the model's 0.049,
+  while the model's f_r miss there is −0.075 of 0.35 — so the bias shrinks the frictionless Δφ_B but does
+  not plausibly remove it. The uniform and bidisperse frictionless rows (Δφ_B +0.013, +0.012 at CV 0.3–0.4)
+  say the same with more seeds.
+- This is conditional on the model's ψ; a per-particle dump (id, radius, contacts) would measure ψ directly.
+
 ## 5. What it means for σ\*
 With eq. 13 of the σ\* derivation, σ\*/κ ≈ Zφ/(8π⟨a⟩)·C/q, and Z is now a function of (Z_nr, PSD): the
 whole CV-dependence of σ\* at fixed ⟨a⟩ reduces to the PSD, φ, the isostatic Z_nr (length-free) and two
