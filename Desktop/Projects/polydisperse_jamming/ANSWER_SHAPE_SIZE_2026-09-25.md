@@ -48,30 +48,30 @@ jam" rests on a 0.007 margin, 1.2× its uncertainty (ANSWER_2026-09-23 §3b).
 
 ## 3. Question 2 — sphericity and cornstarch
 
-### 3a. Sphericity matters, in the opposite direction: spheres have the narrowest window of every shape tested
-- **Why, geometrically.** A sphere is the one body whose rotations cost nothing when it is frictionless: a normal
-  force through its centre exerts no torque. So frictionless spheres need 6 contacts each, and any non-sphere needs
-  more (its rotations must be pinned too). Friction pins rotation for every shape, so the frictional count is 4
-  regardless. A non-sphere therefore has a bigger gap between its frictionless and frictional states, which is
-  what the shear-jamming window is.
-- **Measured (DEM clumps, μ_p 0.3, p̂ 1e-3):** 1 − χ = 0.072 for spheres and 0.10–0.11 for every aspect ratio from
-  1.1 to 2.0 — most of the widening is already there at 10 % elongation (the α-to-α differences are within noise
-  and three frictional points (α 1.1, 1.2, 1.5 at this rung) are single seeds, so the shape of the curve beyond 1.1
-  is not resolved. The α 1.1 opening itself holds within the 1e-3 rung by a bound: frictionless φ₀ rises +0.032 (n 3),
-  and even allowing the single-seed frictional value 2·PHI_SCALE of error, χ(1.1) ≤ 0.901 against 0.928; the registered test at the
-  jamming rung did not finish). Pure
-  doublets at the jamming rung: ×1.49. External, weaker: same-paper fits give χ 0.833 for 1.5 µm silica spheres
-  (Royer et al. 2016) and 0.762 for cornstarch (Han et al. 2018; convention unverified).
-- **But not every shape lowers the onset.** Mild asphericity (α ≤ 1.5) makes grains pack *denser* on both
-  branches (φ_m 0.575 → 0.599 at p̂ 3e-5; frictionless φ₀ up to ~0.70, as for Donev's ellipsoids and Baule's dimers).
-  Only concavity lowers φ_m: as a clump's neck closes (α 1.75 → 2.0) φ_m falls continuously to 0.541, because
-  filling worsens (w 1.12 → 1.38). In absolute φ, a mildly aspherical grain's window is wider mainly by extending
-  upward, not by starting lower.
-- ⚠ The clumps have a neck that neighbours nestle into (32 % double contacts at α 1.1, frictionless), and a
-  convex faceted grain does not. Facets instead carry contact lever arms (0.2–0.8 of the radius for polyhedra).
-  Spheres given an equivalent contact moment limit lose up to 0.035 in φ_m at μ_p 0.3 and saturate by a lever arm
-  of ~0.3 — a separate mechanism (it removes contacts rather than worsening filling) that also opens the window.
-  Cornstarch's actual facet geometry is not in this project; which of the two effects dominates for it is open.
+### 3a. Sphericity matters — but the sign depends on WHICH non-sphericity
+- **The geometric rule (counting).** The shear-jamming window is the gap between how many contacts a grain needs to
+  be locked without friction and with it. A frictionless sphere needs 6: its rotations are free, since a normal force
+  through its centre exerts no torque. With friction every shape needs 4. Shape can move the frictionless count
+  either way:
+  - **it can add rotational freedom** that frictionless point contacts must pin: elongation, a concave neck. The
+    frictionless count rises, the gap grows, and **the window widens**;
+  - **it can let a single contact pin rotation by itself:** a flat face resists tipping even without friction, like
+    a box on a table. The frictionless pack then jams "frictional-like", the gap shrinks, and **the window narrows**.
+- **Measured, elongation/concavity (two-sphere clumps and doublets, μ_p 0.3).** At the jamming rung (p̂ 3e-5, 3 seeds)
+  1 − χ = 0.092 (sphere) → 0.131 (α 1.1) → 0.131 (α 1.75) → 0.138 (α 2); pure doublets ×1.49. Most of the widening
+  is already there at 10 % elongation. ⚠ At α 1.1, frictionless neighbours nestle into the clump's shallow neck (32 %
+  double contacts), so this family mixes elongation with concavity.
+- **Measured, convex facets (level-set rounded cubes; PILOT: N 100, 2–3 seeds, p̂ 1e-3).** Window 0.07–0.10 (sphere)
+  → 0.08–0.09 (ε 0.7, within scatter) → 0.04–0.05 (ε 0.5). The frictionless φ₀ falls by 0.027 while φ_m holds.
+  Faceting narrows the window. This reverses the expectation I registered, and the earlier stand-in (spheres with a
+  contact moment limit, which lower φ_m) does not describe convex facets.
+- **The onset.** Mild convex elongation makes grains pack *denser* on both branches (φ_m 0.575 → 0.599 at α 1.5;
+  frictionless φ₀ up to ~0.70, as for Donev's ellipsoids and Baule's dimers). A closing neck lowers φ_m continuously
+  (0.583 → 0.541 from α 1.75 to 2, registered N1 GRADUAL), because filling worsens.
+- **So Stöber spheres are not at an extreme of the window: they sit between the elongated/concave family (wider) and
+  the faceted family (narrower).** Cornstarch granules are faceted AND irregular, so on geometry alone its window
+  could go either way. The published same-paper fits (cornstarch χ 0.76, 1.5 µm silica spheres χ 0.83; Han et al. 2018,
+  Royer et al. 2016) say wider, but they differ in lab, size, friction and φ convention and cannot isolate shape.
 
 ### 3b. What filtering cornstarch would change
 - **Narrowing CV** raises w toward the monodisperse value: φ₀ falls, x rises at fixed φ, and the window
@@ -105,11 +105,11 @@ weak-network ball unless its contacts are softened.**
 1. **Polydisperse spheres fail to jam solidly** because a size distribution is a *filling* change, not a
    *constraint* change: small grains fill voids and rattle, raising φ₀ (w 1.00 → 0.76 at CV 0.5) and slightly
    narrowing the window, so a fixed weighed φ lands below χ. They can still thicken; they cannot shear-jam.
-2. **Filtered cornstarch:** narrowing its CV raises x, which favours jamming (the size result, measured on spheres).
-   On shape, both mechanisms this project can simulate — a non-spherical clump and a contact moment limit standing
-   in for facets — WIDEN the window, and the published cornstarch χ (0.76) is below the silica-sphere one (0.83),
-   the same direction. Neither mechanism has been measured on a convex faceted grain, so "cornstarch jams at least
-   as readily as silica" is the expectation, not a result. What would stop it looking like the
+2. **Filtered cornstarch:** narrowing its CV raises x, which favours jamming (the size result, measured on
+   spheres). On shape the project's two DEM families point OPPOSITE ways — elongation/concavity widens the
+   window, convex faceting narrows it (pilot) — so whether a size-matched cornstarch shear-jams more or less
+   readily than silica is not decided by geometry here; it needs the rheometer's χ on the fractionated
+   powder. What would stop it looking like the
    silica *ball* is not shape but drainage and contact stiffness: at ~10 µm it is near the drained/undrained
    crossover with a stiff, strong contact network, and fractionation barely moves either. The sharpest bench test
    is fractionated cornstarch in glycerol–water, which moves drainage toward silica's range (De ×10³ at 1 Pa s, still ~2 decades short of silica's 7×10⁵) and
