@@ -1,0 +1,32 @@
+C1  SymPy: d ln(gammadot)/d ln(sigma) = 1 - H(u)
+   slope - (1 - H) simplifies to: 0
+
+C2  brute force: criterion vs direct flow curve (non-monotone gammadot(sigma))
+   chi 0.908 delta 1.254 n 2.0: x_DST = 0.87895; flow curve non-monotone at x_DST - 0.002: False, + 0.002: True
+   chi 0.863 delta 1.063 n 2.0: x_DST = 0.83608; flow curve non-monotone at x_DST - 0.002: False, + 0.002: True
+   chi 0.908 delta 1.254 n 5.0: x_DST = 0.78811; flow curve non-monotone at x_DST - 0.002: False, + 0.002: True
+   chi 0.8 delta 2.0 n 2.0: x_DST = 0.68696; flow curve non-monotone at x_DST - 0.002: False, + 0.002: True
+
+C3  the CST / DST / SJ bands in x = phi/phi_0 for measured (chi, delta)  [chi, delta sources in the .md]
+   n = 2.0:
+      spheres, mu_p 0.3, CV 0 (sheared delta)                        x_DST 0.8790  DST band 0.0290  SJ band 0.0920
+      pure doublets, mu_p 0.3 (sheared delta)                        x_DST 0.8361  DST band 0.0269  SJ band 0.1370
+      spheres, CV 0.5 (delta x0.81 of CV 0)                          x_DST 0.9010  DST band 0.0160  SJ band 0.0830
+      clumps alpha 1.1-2.0, p 1e-3 chi (delta not measured: sphere value) x_DST 0.8614  DST band 0.0326  SJ band 0.1060
+   n = 5.0:
+      spheres, mu_p 0.3, CV 0 (sheared delta)                        x_DST 0.7881  DST band 0.1199  SJ band 0.0920
+      pure doublets, mu_p 0.3 (sheared delta)                        x_DST 0.7329  DST band 0.1301  SJ band 0.1370
+      spheres, CV 0.5 (delta x0.81 of CV 0)                          x_DST 0.8315  DST band 0.0855  SJ band 0.0830
+      clumps alpha 1.1-2.0, p 1e-3 chi (delta not measured: sphere value) x_DST 0.7612  DST band 0.1328  SJ band 0.1060
+
+C4  limits
+   delta -> 0 (no activation contrast): no DST at all (nan = never crosses 1): delta 0.05: nan (chi 0.9)
+   delta large: x_DST at delta 20: 0.3798
+   chi -> 1 (no frictional drop): H -> 0, no DST: Hmax(x 0.99, chi 0.999999) = 9.11e-05
+   x -> chi: for small u, J - x ~ (chi - x) + (1 - chi) u, so sup_u H -> n*delta*x/J -> n*delta. Numerically:
+      n*delta 0.800: sup H at x = chi - 1e-7 (chi 0.9) = 0.7987
+      n*delta 1.200: sup H at x = chi - 1e-7 (chi 0.9) = 1.1981
+      n*delta 2.508: sup H at x = chi - 1e-7 (chi 0.9) = 2.5041
+      n*delta 1.500: sup H at x = chi - 1e-7 (chi 0.9) = 1.4977
+   => a DST band below chi exists IFF n*delta > 1; for n*delta < 1 the suspension goes CST -> SJ directly
+   scaling: H is LINEAR in n*delta, so x_DST depends on n and delta only through n*delta: x_DST(chi .9, delta 2, n 2) = 0.829005 vs (delta 1, n 4) = 0.829005
