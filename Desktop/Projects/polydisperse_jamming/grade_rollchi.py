@@ -180,8 +180,11 @@ def main() -> int:
         a = list(phis(0.3, 1.0, 0.0, rung).values())
         b = [r["phi"] for r in refphi(1.0, 0.3, rung, w2=1.0, tag="kmer").values()]
         sph = [r["phi"] for r in refphi(1.0, 0.3, rung).values()]
-        if len(a) < 2 or len(b) < 2:
+        if len(a) < 3 or len(b) < 3:
             r3.append(None)
+            say(f"   p {rung:.0e}: INCOMPLETE (rolling n {len(a)}, doublet n {len(b)})")
+            continue
+        if False:
             say(f"   p {rung:.0e}: missing")
             continue
         d, se, t, tc = welch(a, b)
@@ -205,9 +208,9 @@ def main() -> int:
             seq.append(m)
             say(f"   p {rung:.0e} mu {mu:<4}: Delta_roll {m:+.4f} +- {se:.4f} (n {n})")
         mono = all(seq[i + 1] <= seq[i] for i in range(len(seq) - 1)) and not any(math.isnan(x) for x in seq)
-        r4.append(mono and seq[0] == 0.0)
+        r4.append(None if any(math.isnan(x) for x in seq) else (mono and seq[0] == 0.0))
         say(f"   p {rung:.0e}: monotone non-increasing {mono}, Delta_roll(0) == 0 exactly {seq[0] == 0.0}")
-    say(f"R4: {'PASS' if len(r4) == 2 and all(r4) else 'FAIL'}")
+    say(f"R4: {'INCOMPLETE' if None in r4 else ('PASS' if all(r4) else 'FAIL')}")
 
     # ---------------- R5 / R6 -------------------------------------------------------
     say("\n=== R5 (geometric Z -> phi map): phi = Z/(Z + 2 sqrt 3), Z = z_nr, all converged CV-0 sphere cells of arm R ===")
@@ -228,7 +231,7 @@ def main() -> int:
         say("   by " + key + ": " + ", ".join(f"{k}: {np.mean(v):+.4f}" for k, v in sorted(groups.items())))
     zz = np.array([x[4] for x in res5])
     say(f"   Z range {zz.min():.2f} - {zz.max():.2f}; spearman(residual, Z) = {stats.spearmanr(res, zz)[0]:+.3f}")
-    say(f"R5: {'PASS' if within >= 0.9 else 'FAIL'}")
+    say(f"R5: {('PASS' if within >= 0.9 else 'FAIL') if len(res) >= 156 else f'INCOMPLETE ({len(res)}/156 cells)'}")
 
     say("\n=== R6 (separability): one filling factor w(CV) from mu_p 0 cells, phi = Z/(Z + 2 sqrt3 w), predicts the rest ===")
     r6 = []
@@ -245,7 +248,22 @@ def main() -> int:
         r6.append(fr >= 0.9)
         say(f"   CV {cv}: w = {w:.4f} (sd over {len(w0)} mu-0 cells {np.std(w0, ddof=1):.4f}); N predicted {len(pr)}, "
             f"residual mean {pr.mean():+.4f} sd {pr.std(ddof=1):.4f} range [{pr.min():+.4f}, {pr.max():+.4f}]; within 0.015: {fr:.3f}")
-    say(f"R6: {'PASS' if len(r6) == 3 and all(r6) else 'FAIL'}")
+    r6_complete = all(len([1 for (mu, e, c, rg), d in R.items() if mu == 0.0 and c == cv for _ in d]) >= 12 for cv in (0.0, 0.2, 0.5))
+    say(f"R6 (as registered, w pooled over rungs): {('PASS' if len(r6) == 3 and all(r6) else 'FAIL') if r6_complete else 'INCOMPLETE'}"
+        + ("" if all(len([1 for (mu, e, c, rg), d in R.items() if mu == 0.0 and c == cv for _ in d]) >= 12 for cv in (0.0, 0.2, 0.5)) else "  (INCOMPLETE: mu-0 cells missing)"))
+    say("   POST HOC (referee pass 1 found w drifts with p_hat, so pooling rungs confounds R6): the same test with w per (CV, rung)")
+    for cv in (0.0, 0.2, 0.5):
+        for rung in RUNGS:
+            w0 = [r["z_nr"] * (1 - r["phi"]) / (SQ3 * r["phi"])
+                  for (mu, eta, c, rg), d in R.items() if mu == 0.0 and c == cv and rg == rung for r in d.values()]
+            if not w0:
+                continue
+            w = float(np.mean(w0))
+            pr = np.array([(r["phi"] - r["z_nr"] / (r["z_nr"] + SQ3 * w))
+                           for (mu, eta, c, rg), d in R.items() if mu > 0.0 and c == cv and rg == rung for r in d.values()])
+            if len(pr):
+                say(f"      CV {cv} p {rung:.0e}: w {w:.4f} (n {len(w0)}); N {len(pr)} residual mean {pr.mean():+.4f} sd {pr.std(ddof=1) if len(pr) > 1 else 0:.4f} "
+                    f"range [{pr.min():+.4f}, {pr.max():+.4f}]; within 0.015 {np.mean(np.abs(pr) < 0.015):.3f}")
 
     # ---------------- R7 ------------------------------------------------------------
     say("\n=== R7 (size x constraint interaction, the discriminator): rho = D(eta 1)/D(eta 0), D = phi(CV .5) - phi(CV 0), mu_p 0.3 ===")
@@ -331,7 +349,7 @@ def main() -> int:
                 row.append(f"{a}: {np.mean(list(v.values())):.4f}({len(v)})" if v else f"{a}: --")
             say(f"   p {rung:.0e} mu {mu}: " + "  ".join(row))
 
-    a1 = False
+    a1, a1_complete = False, False
     say("\n=== A1 (orientational filling): phi_0(alpha) (mu 0) exceeds the sphere by > 2 PHI_SCALE somewhere in 1.1-1.75, p 3e-5 ===")
     for rung in RUNGS:
         base = np.mean(list(aphi(1.0, 0.0, 0.0, rung).values()))
@@ -340,8 +358,10 @@ def main() -> int:
         say(f"   p {rung:.0e}: sphere {base:.4f}; max {vals[amax]:.4f} at alpha {amax} (excess {vals[amax]-base:+.4f})"
             + ("  <- graded" if rung == 3e-5 else ""))
         if rung == 3e-5:
-            a1 = max(v - base for a, v in vals.items() if 1.05 < a < 1.8) > 2 * PHI_SCALE
-    say(f"A1: {'PASS' if a1 else 'FAIL'}")
+            mids = [v - base for a, v in vals.items() if 1.05 < a < 1.8]
+            a1_complete = all(len(aphi(a, 0.0, 0.0, rung)) == 3 for a in ALPHAS)
+            a1 = bool(mids) and max(mids) > 2 * PHI_SCALE
+    say(f"A1: {('PASS' if a1 else 'FAIL') if a1_complete else 'INCOMPLETE'}")
 
     say("\n=== A2 (where the window opens): chi(alpha) = phi(mu .3)/phi(mu 0) ===")
     chi = {}
