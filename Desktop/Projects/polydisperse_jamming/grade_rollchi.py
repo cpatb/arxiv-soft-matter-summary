@@ -397,7 +397,9 @@ def main() -> int:
             if rung == 3e-5 and a < 2.0:
                 a3.append(abs(dlt) < 0.015)
             say(f"   p {rung:.0e} alpha {a}: eta_eff {eta_eff:.3f}  chi_clump {chi[(a, rung)]:.4f}  chi_roll {cr:.4f}  d {dlt:+.4f}")
-    say(f"A3: {'PASS' if a3 and all(a3) else ('INCOMPLETE' if not a3 else 'FAIL')} ({sum(a3)}/{len(a3)})")
+    # registered set: alpha 1.2, 1.3, 1.5, 1.75 at p 3e-5; missing cells -> INCOMPLETE (never graded on a subset)
+    a3_v = ("INCOMPLETE" if len(a3) < 4 else ("PASS" if all(a3) else "FAIL"))
+    say(f"A3: {a3_v} ({sum(a3)}/{len(a3)} landed within +-0.015; registered 4)")
 
     say("\n=== POST HOC: the (G) decomposition per clump population, phi = Z/(Z + 2 sqrt3 w), CV 0 ===")
     say("   alpha  mu   rung    n   phi     Z     w      dup_contact_frac  rattler_frac  r_neck/r_s")
