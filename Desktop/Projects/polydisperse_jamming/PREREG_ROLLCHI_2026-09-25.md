@@ -125,3 +125,6 @@ finish in the session. `phase2_shape.py` gains `--also-done <glob>` (keys only; 
 any matched file is skipped, re-checked before every cell). When the mu_p 0.3 rolling queue (rchiA) lands,
 the sphere pool is switched to a second arm-A pool (tag achiR) running the SAME grid in reverse order.
 Grid, gates and tests unchanged; duplicates are resolved by key in the grader.
+Executed 19:20 (before any grading): G2 (10 sphere workers) replaced by pool X (5: mu 0.3 rolling, eta 1.0/0.3/0.1
+first, then 0.03/0.01/0, then the remaining sphere waves; tag rchiX...) and pool Y (5: arm A CV 0 reverse, then
+CV 0.5 reverse; tags achiR, achiBR). achiA (7), rchi0A/B (2), rchiB (2) unchanged. `scripts/switch_to_achiR.sh`.
