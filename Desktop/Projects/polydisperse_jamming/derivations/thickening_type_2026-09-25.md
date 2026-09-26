@@ -20,6 +20,13 @@ brute-force flow curves at 4 points, limits). Companion: `derivations/geometric_
 > **CV 0.5 shrinks BOTH (0.016, 0.083) while lowering x by 9 %**; pure doublets keep DST (0.027) and widen SJ (0.137).
 > At n = 5 (the cornstarch fit's exponent) the DST band is ~4× wider (0.12 for spheres).
 
+**Literature status (citation check 2026-09-26).** The three-band CST / DST / SJ structure in φ is stated by Singh,
+Mari, Denn & Morris, J. Rheol. 62, 457 (2018), doi:10.1122/1.4999237, Fig. 1 (their φ_C ≈ φ₀x_DST, φ_J^μ = φ_m).
+The closed form (T), the nδ-only dependence and the "DST iff nδ > 1" criterion were **derived here** and were NOT
+found in Wyart & Cates, PRL 112, 098302 (2014), doi:10.1103/PhysRevLett.112.098302 (which fixes n = 2 and δ = 1 and
+gives a related large-stress bound on 1 − f) nor in Singh et al. 2018; Guy/Hermes/Poon, Royer et al., Mari et al.,
+Morris 2020 and Ness et al. 2022 were NOT checked. Treat novelty as unestablished.
+
 ## 1. Frame
 Closure (`wc_drop_impact.c` header, steady limit fhat = fss): f(σ) = exp[−(σ*/σ)^δ]; φ_J = f φ_m + (1 − f) φ₀;
 η = η_s (1 − φ/φ_J)^−n (n = MP_EXPO; 2 in the shipped presets, ~5 fitted to cornstarch, solver header). Steady simple
