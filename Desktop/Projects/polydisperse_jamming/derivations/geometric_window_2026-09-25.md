@@ -27,12 +27,10 @@ Every number below is printed by one of those three.
 >   geometric crowding that counting does not demand (Z counts DISTINCT neighbours — `packing.contact_graph`
 >   deduplicates by grain pair — so it is not contact multiplicity either; see §5), and φ_m falls (−5.8 % for doublets
 >   at μ_p 0.3). Net Z_m/Z₀ 0.775 → 0.705, window ×1.49.
-> - **Every shape family tested here (doublets, α 2 clumps, their mixtures) has a wider window than spheres.**
->   Sphericity is not what lets silica jam into a ball; in these packs non-sphericity makes shear jamming
->   *easier*. Mild asphericity and real facets are open (§6, §9). External, weaker corroboration: same-paper
->   fits give χ = 0.833 for 1.5 µm silica spheres (Royer, Blair & Hudson, PRL 116, 188301 (2016),
->   doi:10.1103/PhysRevLett.116.188301) and 0.762 for cornstarch (Han, Wyart, Peters & Jaeger, PRF 3, 073301
->   (2018), doi:10.1103/PhysRevFluids.3.073301; φ convention not verified) — different labs and conventions.
+> - **The sign of the shape effect depends on the feature.** Elongation and concavity (clumps, doublets) widen the
+>   window (×1.4–1.5 at the jamming rung, replicated); convex flat faces (level-set rounded cubes) NARROW it
+>   (PILOT, `PREREG_LSPILOT`): a face resists tipping without friction, so the frictionless branch jams
+>   'frictional-like'. Spheres are therefore NOT the narrowest-window shape; they sit between the two families.
 >
 > ⚠ (G) is an empirical-geometric closure: SWM derive it for monodisperse spheres with Z ∈ [4, 6]; its use
 > with w ≠ 1 and Z outside [4, 6] is this project's extension and is tested, not assumed (§4, §5).
@@ -215,7 +213,7 @@ was not checked in the primary text).
   (they run 2–4 h each under the shared load). At 1e-3, A3's eccentricity map sits within ±0.0134 of every α
   (report only; not the registered rung).
 
-**What the campaign changes in the argument.** (i) The "sphericity is singular" hypothesis of §5 is supported
+**What the campaign changes in the argument.** (0) Superseded in part by the convex-facet pilot (§7, `PREREG_LSPILOT`): the widening below is a property of elongated/concave grains, not of non-sphericity in general. (i) The "sphericity is singular" hypothesis of §5 is supported
 at p̂ 1e-3 for clumps: every α from 1.1 to 2.0 gives 1 − χ clustered at 0.10–0.11, ~1.5× the sphere's. The
 point-to-point differences (≤ 0.011) are the size of the propagated PHI_SCALE noise and α 1.2 / 1.5 rest on single
 seeds (and so is φ_m(1.1) at this rung), so the ladder is NOT resolved point-to-point. "Opens by α 1.1" is
@@ -238,11 +236,12 @@ Monte Carlo agrees with (π/4)(α − 1)(d_s/d_eq) to < 5e-4).
 
 Against the measured rolling scales (§6, μ_p 0.3): half the rolling effect by η ≈ 0.04–0.05, saturation by η ≈ 0.3.
 Sharp polyhedra (0.35–0.76) and an icosahedron rounded to half its radius (0.22) sit at or near saturation; one
-rounded to 75 % (0.11) is part-way. **If** a faceted grain's lever arms act like a contact moment limit, cornstarch's
-frictional φ_m would drop by up to the saturated rolling shift (−0.028 to −0.035 at μ_p 0.3). R7 says that channel
-leaves the size effect alone, and the (G) decomposition says it works by removing contacts, not by changing filling
-— a different mechanism from the clumps'. This is an inference from spheres with a moment law, not a measurement on
-polyhedra; the project has no polyhedral DEM.
+rounded to 75 % (0.11) is part-way. ~~If a faceted grain's lever arms act like a contact moment limit, φ_m would drop ...~~ **Tested and NOT what
+happens** (`PREREG_LSPILOT`, level-set rounded cubes, 1000 nodes): convex facets leave φ_m about unchanged
+(0.580 → 0.585 at ε 0.5) and LOWER φ₀ (0.639 → 0.611), narrowing the window. The lever arm acts through the
+FRICTIONLESS branch: a face contact pins tilt with no friction, so the frictionless count drops toward the
+frictional one (Z₀ ≈ 6.4 against 12 for point contacts on a general body). The moment-limit stand-in, which
+needs friction to act, was the wrong analogue.
 
 ## 8. Drainage: why size, not shape, carries ball vs hybrid (C5)
 

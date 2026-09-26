@@ -94,8 +94,9 @@ weak-network ball unless its contacts are softened.**
 ⚠ This half is a scaling estimate on the project's poroelastic model; it is not a DEM or DNS result.
 
 ## 4. What the bench could do to separate the two halves
-1. Fractionate cornstarch to CV < 0.15 and measure φ₀, φ_m on the rheometer: the relation predicts χ below the
-   sphere value (window wider than Stöber's) and φ₀ lower than the native powder.
+1. Fractionate cornstarch to CV < 0.15 and measure φ₀, φ_m on the rheometer. The size result predicts φ₀ LOWER
+   than the native powder (worse filling). χ itself decides the shape question: below Stöber's χ, the
+   elongation/irregularity family wins; above it, the facet family (a flat-face count) wins.
 2. The same fraction in glycerol–water (µ_w ×10–100): De rises to ~70–700 — firmly undrained, though still far
    below silica's 7×10⁵ — while S does not move. If the drop then forms a ball, S is not the discriminant and the
    (De, S) reading is wrong.
