@@ -109,7 +109,7 @@ def run(eps: float, mu: float, phat: float, n: int, seed: int, spacing_frac: flo
     unb = utils.unbalancedForce()
     s = utils.getStress()
     p = -float(s[0, 0] + s[1, 1] + s[2, 2]) / 3.0
-    v_ls = float(np.mean([b.shape.volume() for b in O.bodies]))
+    v_ls = float(np.mean([b.shape.getVolume() for b in O.bodies]))
     return dict(eps=eps, mu_p=mu, p_hat_target=phat, p_hat=p / YOUNG, n=n, seed=seed, r_extent=r,
                 v_grain_analytic=v_grain, v_grain_levelset=v_ls, phi=n * v_grain / vol,
                 phi_ls_volume=n * v_ls / vol, z_all=2.0 * nc / n, z_nr=z_nonrattler(neigh, 2),
