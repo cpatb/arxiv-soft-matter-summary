@@ -190,15 +190,18 @@ twice and the grid extended once (Amendments 1–3), all before grading and all 
 
 φ_m at μ_p 0.3 (seed means, n in brackets where < 3):
 
-| α | 1.0 | 1.1 | 1.2 | 1.5 | 1.75 | 1.9 | 1.95 | 2.0 |
-|---|---|---|---|---|---|---|---|---|
-| p̂ 1e-3 | 0.5940 | 0.6013 (1) | 0.6151 (1) | 0.6289 (1) | 0.6086 | 0.5861 | 0.5769 | 0.5665 |
-| p̂ 3e-5 | 0.5747 | 0.5792 | 0.5852 (1) | 0.5993 (2) | 0.5834 | 0.5606 | 0.5517 | 0.5407 |
+| α | 1.0 | 1.1 | 1.2 | 1.3 | 1.5 | 1.75 | 1.9 | 1.95 | 2.0 |
+|---|---|---|---|---|---|---|---|---|---|
+| p̂ 1e-3 | 0.5940 | 0.6024 | 0.6151 (1) | 0.6240 (2) | 0.6275 | 0.6086 | 0.5861 | 0.5769 | 0.5665 |
+| p̂ 3e-5 | 0.5747 | 0.5792 | 0.5827 | 0.5954 (2) | 0.5997 | 0.5834 | 0.5606 | 0.5517 | 0.5407 |
 
-and at p̂ 1e-3 the window 1 − χ is **0.072 (sphere) → 0.106 / 0.112 / 0.101 / 0.101 / 0.108** at α 1.1 / 1.2 /
-1.5 / 1.75 / 2.0 (frictionless φ₀ 0.672 / 0.693 (1) / 0.700 (1) / 0.677 / 0.635; Baule et al.'s mean-field maximum
-for dimers is 0.707, Nat. Commun. 4, 2194 (2013), doi:10.1038/ncomms3194 — the abstract value; the peak location
-was not checked in the primary text).
+(final sync 2026-09-26 ~05:00; `out/grade_rollchi.txt`). The window 1 − χ:
+- **at the registered jamming rung p̂ 3e-5: 0.092 (sphere) → 0.131 (α 1.1, n 3) → 0.134 (α 1.5; its frictionless
+  value is n 1) → 0.131 (α 1.75, n 3) → 0.138 (α 2.0, n 3)**;
+- at p̂ 1e-3: 0.072 → 0.104 / 0.111 / 0.110 / 0.102 / 0.101 / 0.108 at α 1.1 / 1.2 / 1.3 / 1.5 / 1.75 / 2.0
+  (frictionless φ₀ 0.672 / 0.692 / 0.702 (2) / 0.699 (2) / 0.677 / 0.635; Baule et al.'s mean-field maximum for dimers
+  is 0.707, Nat. Commun. 4, 2194 (2013), doi:10.1038/ncomms3194 — the abstract value; the peak location was not checked).
+The registered A1/A2 remain INCOMPLETE (the frictionless p̂ 3e-5 cells at α 1.2 and 1.3 never finished).
 - **N1 (Amendment 3): GRADUAL** at both rungs. φ_m falls continuously as the neck closes (r_neck/r_s 0.66 → 0.44
   → 0.31 → 0 at α 1.75 → 2.0), every step > PHI_SCALE. The collapse toward α = 2 is a smooth function of how
   concave the grain is, not an event at tangency.
