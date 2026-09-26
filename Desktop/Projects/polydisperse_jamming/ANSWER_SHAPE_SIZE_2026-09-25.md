@@ -48,8 +48,26 @@ jam" rests on a 0.007 margin, 1.2× its uncertainty (ANSWER_2026-09-23 §3b).
 
 ## 3. Question 2 — sphericity and cornstarch
 
-### 3a. Sphericity does not make jamming easier; it makes the window as narrow as it can be
-[filled from the registered campaign, §5]
+### 3a. Sphericity matters, in the opposite direction: spheres have the narrowest window of every shape tested
+- **Why, geometrically.** A sphere is the one body whose rotations cost nothing when it is frictionless: a normal
+  force through its centre exerts no torque. So frictionless spheres need 6 contacts each, and any non-sphere needs
+  more (its rotations must be pinned too). Friction pins rotation for every shape, so the frictional count is 4
+  regardless. A non-sphere therefore has a bigger gap between its frictionless and frictional states, which is
+  what the shear-jamming window is.
+- **Measured (DEM clumps, μ_p 0.3, p̂ 1e-3):** 1 − χ = 0.072 for spheres and 0.10–0.11 for every aspect ratio from
+  1.1 to 2.0 — most of the widening is already there at 10 % elongation, and the window then stays flat. Pure
+  doublets at the jamming rung: ×1.49. External, weaker: same-paper fits give χ 0.833 for 1.5 µm silica spheres
+  (Royer et al. 2016) and 0.762 for cornstarch (Han et al. 2018; convention unverified).
+- **But not every shape lowers the onset.** Mild asphericity (α ≤ 1.5) makes grains pack *denser* on both
+  branches (φ_m 0.575 → 0.599 at p̂ 3e-5; frictionless φ₀ up to ~0.70, as for Donev's ellipsoids and Baule's dimers).
+  Only concavity lowers φ_m: as a clump's neck closes (α 1.75 → 2.0) φ_m falls continuously to 0.541, because
+  filling worsens (w 1.12 → 1.38). In absolute φ, a mildly aspherical grain's window is wider mainly by extending
+  upward, not by starting lower.
+- ⚠ The clumps have a neck that neighbours nestle into (32 % double contacts at α 1.1, frictionless), and a
+  convex faceted grain does not. Facets instead carry contact lever arms (0.2–0.8 of the radius for polyhedra).
+  Spheres given an equivalent contact moment limit lose up to 0.035 in φ_m at μ_p 0.3 and saturate by a lever arm
+  of ~0.3 — a separate mechanism (it removes contacts rather than worsening filling) that also opens the window.
+  Cornstarch's actual facet geometry is not in this project; which of the two effects dominates for it is open.
 
 ### 3b. What filtering cornstarch would change
 - **Narrowing CV** raises w toward the monodisperse value: φ₀ falls, x rises at fixed φ, and the window
@@ -76,4 +94,19 @@ but on this estimate it will not form the same undrained, weak-network ball unle
 2. The same fraction in glycerol–water (µ_w ×10–100): De moves into the silica range, S does not. If the drop
    then forms a ball, S is not the discriminant and the (De, S) reading is wrong.
 
-## 5. The registered test of the shape half — [filled from out/grade_rollchi.txt]
+## 5. Bottom line for the two questions
+
+1. **Polydisperse spheres fail to jam solidly** because a size distribution is a *filling* change, not a
+   *constraint* change: small grains fill voids and rattle, raising φ₀ (w 1.00 → 0.76 at CV 0.5) and slightly
+   narrowing the window, so a fixed weighed φ lands below χ. They can still thicken; they cannot shear-jam.
+2. **Filtered cornstarch:** geometry is on its side. Its non-sphericity gives it a wider window than Stöber spheres,
+   and narrowing its CV raises x. So it should shear-jam at least as readily. What would stop it looking like the
+   silica *ball* is not shape but drainage and contact stiffness: at ~10 µm it is near the drained/undrained
+   crossover with a stiff, strong contact network, and fractionation barely moves either. The sharpest bench test
+   is fractionated cornstarch in glycerol–water, which moves drainage into silica's range and leaves the network
+   strength where it is.
+
+## 6. The registered DEM test (`PREREG_ROLLCHI_2026-09-25.md`, `out/grade_rollchi.txt`)
+Partly complete (shared machine): R3 PASS, R7 (p̂ 1e-3) NOT CLUMP-LIKE, N1 GRADUAL, R2 FAIL; the rest INCOMPLETE.
+Details, caveats and every number in `derivations/geometric_window_2026-09-25.md` §6. Figure R1
+(`make_rollchi_figures.py`, `FIGURES_ROLLCHI.md`).

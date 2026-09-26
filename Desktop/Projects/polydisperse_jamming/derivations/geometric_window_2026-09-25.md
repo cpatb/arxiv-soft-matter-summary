@@ -36,7 +36,12 @@ Every number below is printed by one of those three.
 >
 > ⚠ (G) is an empirical-geometric closure: SWM derive it for monodisperse spheres with Z ∈ [4, 6]; its use
 > with w ≠ 1 and Z outside [4, 6] is this project's extension and is tested, not assumed (§4, §5).
-> [RESULTS OF THE REGISTERED CAMPAIGN: §6, filled from out/grade_rollchi.txt]
+> **Registered campaign (§6, partly complete):** a new aspect-ratio ladder puts the window at 1 − χ = 0.072 for
+> spheres and 0.10–0.11 for every clump from α 1.1 to 2.0 (p̂ 1e-3; the registered 3e-5 grade is INCOMPLETE).
+> Mild asphericity (α ≤ 1.5) RAISES the frictional onset φ_m (more neighbours, same w); a closing neck lowers it,
+> continuously (N1 GRADUAL). Spheres with a saturated contact moment limit reproduce the doublet's φ_m at μ_p 0.3
+> (R3) but through the opposite geometry (Z ↓, w unchanged) and without the size interaction (R7 not clump-like);
+> rolling resistance saturates near η ≈ 0.3, not 0.1 (R2 FAIL).
 
 ---
 
