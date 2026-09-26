@@ -16,3 +16,13 @@ sign alone does not discriminate them; the pilot reports W, phi_0 and phi_m sepa
 **P0 (method control):** the level-set sphere reproduces the FrictMat sphere at the same N and rung within 0.01 on
 each branch (a loose bar: N 100, one seed). If P0 fails, P1 is reported as method-limited.
 Health: converged (unbalanced < 0.02 before the cap); an unconverged cell is reported, never graded.
+
+## Amendment 1 (2026-09-25 ~23:55, after P0 FAILED on the three landed cells; registered before these runs)
+P0 failed: level-set sphere phi 0.6576 / 0.5985 vs FrictMat 0.6332 / 0.5800 (mu 0 / 0.3, N 100, p 1e-3), +0.024 / +0.019.
+Two-body probe (`scripts/ls_stiffness_probe.py`): kn uses the extent radius (0.499 sphere, 0.435 eps 0.5 — a 13 %
+stiffness difference, negligible for phi at fixed p_hat), but for a true overlap of 0.010 the level-set SPHERE reports a
+penetration of 0.0035 (102 surface nodes, node spacing ~0.17 d, the deepest point falls between nodes) while a face-on
+eps-0.5 contact reports 0.0116. The artefact is SHAPE-DEPENDENT, so P1's comparison is method-limited as registered.
+**N-test (node convergence):** eps 1.0, mu 0.3, same cell, with 400 and 1000 surface nodes. Prediction if the artefact is
+node resolution: phi falls monotonically toward the FrictMat 0.5800 (|phi(1000) - 0.5800| < |phi(102) - 0.5800| / 2).
+If it does, eps 0.5 at mu 0 / 0.3 is re-run at the node count that passes P0 (within 0.01) and P1 is graded on those.
