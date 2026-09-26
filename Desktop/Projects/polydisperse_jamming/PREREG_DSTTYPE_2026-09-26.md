@@ -29,3 +29,12 @@ EXCLUDED and reported, never a FAIL)
 - **D3 (recoil).** DST cells S2 ≤ 0.2 and CST cells S2 ≥ 0.3 (the gap seen in cvmap; S2 as `grade_jamsig.sig`). Report
   the count.
 - **D4 (ordering, report only).** Is Rg monotone decreasing in Θ across ALL 10 cells at each U₀? (Θ reading predicts yes.)
+
+## Amendment 1 (2026-09-25 ~23:45 CDT, before ANY cell landed; referee 2026-09-26 MATERIAL #2)
+D1's control pair spans two input sets that also differ in delta (23 %) and sigma* (36 %), and its Theta match is 6.7 %
+(P16: 1.5 %), so a D1 "TYPE" could come from unequal sensitivity to the residual mismatch. Added, graded beside D1:
+**D1' (within-set, no cross-set confound).** Per input set and U0, fit ln Rg = a + b ln Theta on that set's three CST
+cells, extrapolate to the Theta of its FIRST DST cell (C0: x 0.8842, Theta 15.9, extrapolation x1.7 in Theta from
+9.5; C5: x 0.9035, Theta 43.1, x2.7 from 16.2), and take the residual r = ln Rg(DST) - prediction.
+**TYPE** if r < -0.10; **THETA** if |r| < 0.05; otherwise UNDETERMINED. Primary for D1' is set C0 (shorter
+extrapolation); C5 is reported. The registered D1 is unchanged and still graded.

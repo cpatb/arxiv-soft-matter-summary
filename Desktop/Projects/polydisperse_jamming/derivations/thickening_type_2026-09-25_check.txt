@@ -29,4 +29,6 @@ C4  limits
       n*delta 2.508: sup H at x = chi - 1e-7 (chi 0.9) = 2.5041
       n*delta 1.500: sup H at x = chi - 1e-7 (chi 0.9) = 1.4977
    => a DST band below chi exists IFF n*delta > 1; for n*delta < 1 the suspension goes CST -> SJ directly
+   broad scan (referee 2026-09-26): sup over x in (0, chi) and u of H / (n*delta), must be <= 1:
+      max H/(n delta) over chi {0.5,0.7,0.9,0.99} x n*delta {0.5..6} x 400 x-values x 4001 u-values = 0.999226
    scaling: H is LINEAR in n*delta, so x_DST depends on n and delta only through n*delta: x_DST(chi .9, delta 2, n 2) = 0.829005 vs (delta 1, n 4) = 0.829005

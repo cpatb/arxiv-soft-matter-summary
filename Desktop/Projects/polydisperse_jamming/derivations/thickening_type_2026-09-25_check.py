@@ -105,6 +105,17 @@ for dv, nv in ((0.4, 2.0), (0.6, 2.0), (1.254, 2.0), (0.3, 5.0)):
     hm = float((nv * dv * (0.9 - 1e-7) * 0.1 * uu * np.exp(-uu) / (Jv * (Jv - (0.9 - 1e-7)))).max())
     say(f"      n*delta {nv*dv:.3f}: sup H at x = chi - 1e-7 (chi 0.9) = {hm:.4f}")
 say("   => a DST band below chi exists IFF n*delta > 1; for n*delta < 1 the suspension goes CST -> SJ directly")
+say("   broad scan (referee 2026-09-26): sup over x in (0, chi) and u of H / (n*delta), must be <= 1:")
+worst = 0.0
+for chiv in (0.5, 0.7, 0.9, 0.99):
+    for ndv in (0.5, 0.9, 1.0, 1.01, 2.0, 6.0):
+        for xv in np.linspace(0.01, chiv * (1 - 1e-7), 400):
+            uu = np.logspace(-8, 3, 4001)
+            Jv = 1 - (1 - chiv) * np.exp(-uu)
+            h = (ndv * xv * (1 - chiv) * uu * np.exp(-uu) / (Jv * (Jv - xv))).max() / ndv
+            worst = max(worst, float(h))
+say(f"      max H/(n delta) over chi {{0.5,0.7,0.9,0.99}} x n*delta {{0.5..6}} x 400 x-values x 4001 u-values = {worst:.6f}")
+assert worst <= 1.0 + 1e-9
 say(f"   scaling: H is LINEAR in n*delta, so x_DST depends on n and delta only through n*delta:"
     f" x_DST(chi .9, delta 2, n 2) = {x_dst(0.9, 2.0, 2.0):.6f} vs (delta 1, n 4) = {x_dst(0.9, 1.0, 4.0):.6f}")
 
