@@ -62,3 +62,8 @@ phi_0 is 0.005-0.010 in this campaign) rather than a drift -- but that is a read
 What survives it: the highest eps-0.5 phi_0 at >= 400 nodes (0.6197) is still 0.017 below the LOWEST sphere seed
 (0.6370), so the SIGN of the reversal is robust to the node count; its MAGNITUDE (phi_0 drop 0.017-0.031, W 0.04-0.06
 against the sphere's 0.07-0.10) is uncertain by about a third.
+
+## Amendment 5 (2026-09-26 ~04:15, before these cells run)
+Additional seeds 4 and 5 at 1000 nodes, N 100, p 1e-3, for eps {1.0, 0.5} x mu_p {0, 0.3} (8 cells, tag extra). REPORTED
+beside the registered 3-seed REVERSAL test, never substituted for it: the seed-paired W(1.0) - W(0.5) over every
+available seed with its standard error, and the count of seeds on which W(0.5) < W(1.0).
