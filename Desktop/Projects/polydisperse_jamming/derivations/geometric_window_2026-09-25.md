@@ -213,8 +213,10 @@ The registered A1/A2 remain INCOMPLETE (the frictionless p̂ 3e-5 cells at α 1.
   nestle into the shallow neck. A convex near-sphere (a faceted grain) has no neck. The 1.1 point therefore shows
   that a *clump* at 10 % asphericity already has most of the window-opening; it does not show that a convex
   faceted grain does.
-- A1, A2, A3 (graded at p̂ 3e-5) are INCOMPLETE: no frictionless clump cell at 3e-5 finished in the session
-  (they run 2–4 h each under the shared load). At 1e-3, A3's eccentricity map sits within ±0.0134 of every α
+- A1, A2, A3 (graded at p̂ 3e-5) are INCOMPLETE: the frictionless clump cells at 3e-5 run 2–4 h each under the
+  shared load, and by the final sync only α 1.1, 1.5 (n 1) and 1.75 had landed — not the registered coverage.
+  On what landed, A1's excess is +0.0602 (φ₀ 0.6929 at α 1.5 vs 0.6327 sphere) and A3 has two points, both outside
+  ±0.015 (d +0.016 at α 1.5, +0.019 at α 1.75). At 1e-3, A3's eccentricity map sits within ±0.0134 of every α
   (report only; not the registered rung).
 
 **What the campaign changes in the argument.** (0) Superseded in part by the convex-facet pilot (§7, `PREREG_LSPILOT`): the widening below is a property of elongated/concave grains, not of non-sphericity in general. (i) The "sphericity is singular" hypothesis of §5 is supported
