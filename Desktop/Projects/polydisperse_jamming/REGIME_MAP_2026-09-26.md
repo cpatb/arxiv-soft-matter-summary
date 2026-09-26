@@ -13,12 +13,16 @@ With x = φ/φ₀, χ = φ_m/φ₀ and the activation sharpness δ, divergence e
 
 | x range | steady-shear type | drop impact, if the impact stress reaches the thickened branch |
 |---|---|---|
-| x < x_DST(χ, nδ) | CST — continuous thickening, bounded (Θ = [(1−x)/(1−x/χ)]^n) | stiffens, spreads, retracts |
-| x_DST ≤ x < χ | DST — S-shaped flow curve, discontinuous jump | stiffens abruptly; still cannot jam |
+| x < x_DST(χ, nδ) | CST — continuous thickening, bounded (Θ = [(1−x)/(1−x/χ)]^n) | stiffens by Θ, spreads, retracts |
+| x_DST ≤ x < χ | DST — S-shaped flow curve, discontinuous jump | **the same as CST in the drop**: stiffens by Θ, cannot jam |
 | χ ≤ x < 1 | SJ — shear jamming | a jammed solid region forms (arrests within t/τ ≈ 0.1 in the DNS) |
 | x ≥ 1 | jammed at rest | a paste |
 
-A DST band exists only if nδ > 1. x_DST depends on n and δ only through nδ.
+A DST band exists only if nδ > 1; x_DST depends on n and δ only through nδ. **But the drop does not see the CST/DST
+line** (`PREREG_DSTTYPE_2026-09-26` RESULT: 20 drops, peak spread strictly monotone in Θ, no jump at x_DST, D1 THETA).
+So for drop impact the classification is two-way: **jammable (x ≥ χ) or stiffening by Θ(x, χ)**, and with the cvmap
+finding that activation carries < 0.05 % of the effect, the particles act on the outcome ONLY through x and χ (and n).
+Spheres at x 0.90 (χ 0.911): Θ = 74; the same weighed φ at CV 0.5 (x 0.819, χ 0.917): Θ = 2.9.
 
 **Gate B — whether the impact actually gets there.** A material point in the SJ band jams where the local stress
 exceeds σ_jam = σ*[ln(1/f_c)]^(−1/δ), f_c = (1 − x)/(1 − χ) (`derivations/jam_stress_2026-09-22.md`,

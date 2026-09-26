@@ -79,3 +79,14 @@ Bands (C3), in x:
   lesson on Θ, again).
 - **Surface potential and mean size do not appear**: they set σ* (where on the stress axis), not the type. They decide
   whether an impact's stress reaches the S or the jam at all (`jam_stress_2026-09-22` §(8)).
+
+## 6. What the DROP sees (registered DNS test, `PREREG_DSTTYPE_2026-09-26` RESULT)
+The steady-shear type above is a rheometer classification. In the drop solver (same closure, n = 2, L9) it has **no
+signature**: 20 drops straddling x_DST on two input sets show peak spread strictly monotone in the thickening ratio
+Θ = [(1−x)/(1−x/χ)]^n, with no jump at x_DST (D2 FAIL 0/4) and matched-Θ drops of different type equal within the
+same-type control (D1 THETA). With the cvmap result that activation (σ*, δ) carries < 0.05 % of the CV effect, the
+drop's outcome in this closure depends on the particles ONLY through (x, χ) and n: **shear-jams if x ≥ χ; otherwise
+stiffens by Θ(x, χ)**. Example: spheres at a weighed φ giving x = 0.90 (χ 0.9106) have Θ = 74; the same weighed φ as
+a CV-0.5 population (x 0.819, χ 0.917) has Θ = 2.9 — a ×26 weaker thickening, which is the founding observation's
+extra spreading. Scope: one solver, one resolution, n = 2; the rheometer CST/DST distinction is real in the closure,
+it just does not reach the drop's spread.
