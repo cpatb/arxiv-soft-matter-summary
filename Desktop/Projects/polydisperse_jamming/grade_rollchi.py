@@ -399,6 +399,21 @@ def main() -> int:
             say(f"   p {rung:.0e} alpha {a}: eta_eff {eta_eff:.3f}  chi_clump {chi[(a, rung)]:.4f}  chi_roll {cr:.4f}  d {dlt:+.4f}")
     say(f"A3: {'PASS' if a3 and all(a3) else ('INCOMPLETE' if not a3 else 'FAIL')} ({sum(a3)}/{len(a3)})")
 
+    say("\n=== N1 (Amendment 3, the neck-closing question): phi(alpha) at mu_p 0.3 near tangency ===")
+    n1 = []
+    for rung in RUNGS:
+        v = {a: aphi(a, 0.3, 0.0, rung) for a in (1.75, 1.9, 1.95, 2.0)}
+        say(f"   p {rung:.0e}: " + "  ".join(f"{a}: {np.mean(list(x.values())):.4f}(n {len(x)})" if x else f"{a}: --"
+                                      for a, x in v.items()))
+        if any(len(x) < 3 for x in v.values()):
+            n1.append(None)
+            continue
+        m = {a: float(np.mean(list(x.values()))) for a, x in v.items()}
+        flat = abs(m[1.95] - m[1.75]) < 2 * PHI_SCALE
+        grad = all(m[a] - m[b] > PHI_SCALE for a, b in ((1.75, 1.9), (1.9, 1.95), (1.95, 2.0)))
+        n1.append("FLAT-THEN-DROP" if flat else ("GRADUAL" if grad else "NEITHER"))
+    say(f"N1: {'INCOMPLETE' if None in n1 else (n1[0] if len(set(n1)) == 1 else 'SPLIT ' + '/'.join(n1))}")
+
     say("\n=== A4 (size x aspect, report only): D(alpha)/D(1), D = phi(CV .5) - phi(CV 0); alpha-1 CV .5 reference = arm R CohFrict eta 0 (R1-path) ===")
     for rung in RUNGS:
         for mu in (0.0, 0.3):
