@@ -238,7 +238,7 @@ Against the measured rolling scales (§6, μ_p 0.3): half the rolling effect by 
 Sharp polyhedra (0.35–0.76) and an icosahedron rounded to half its radius (0.22) sit at or near saturation; one
 rounded to 75 % (0.11) is part-way. ~~If a faceted grain's lever arms act like a contact moment limit, φ_m would drop ...~~ **Tested and NOT what
 happens** (`PREREG_LSPILOT`, level-set rounded cubes, 1000 nodes): convex facets leave φ_m about unchanged
-(0.580 → 0.585 at ε 0.5) and LOWER φ₀ (0.639 → 0.611), narrowing the window. The lever arm acts through the
+(seed means 0.583 → 0.585 at ε 0.5, N 100) and LOWER φ₀ (0.639 → 0.611), narrowing the window. The lever arm acts through the
 FRICTIONLESS branch: a face contact pins tilt with no friction, so the frictionless count drops toward the
 frictional one (Z₀ ≈ 6.4 against 12 for point contacts on a general body). The moment-limit stand-in, which
 needs friction to act, was the wrong analogue.
