@@ -38,3 +38,17 @@ cells, extrapolate to the Theta of its FIRST DST cell (C0: x 0.8842, Theta 15.9,
 9.5; C5: x 0.9035, Theta 43.1, x2.7 from 16.2), and take the residual r = ln Rg(DST) - prediction.
 **TYPE** if r < -0.10; **THETA** if |r| < 0.05; otherwise UNDETERMINED. Primary for D1' is set C0 (shorter
 extrapolation); C5 is reported. The registered D1 is unchanged and still graded.
+
+## RESULT (2026-09-26 ~01:25; `out/grade_dsttype.txt`, 20/20 healthy with provenance)
+- **D1: THETA** at both U0. Matched-Theta pair across the type boundary: Delta16 = -0.0213 (U0 2) / -0.0160 (U0 4), smaller
+  than the SAME-type control pair's Delta10 = -0.0457 / -0.0399.
+- **D1' (Am. 1): UNDETERMINED** on all four (set, U0): the DST drop sits ABOVE its set's CST ln Rg - ln Theta trend by
+  r = +0.075 / +0.077 (C0) and +0.130 / +0.183 (C5) -- the trend saturates; it is never a sub-trend drop (TYPE needs r < -0.10).
+- **D2: FAIL 0/4** -- no jump at x_DST; the step across the boundary is never larger than the steps within a type.
+- **D3: 14/20** on their registered recoil side.
+- **D4 (report): peak spread is strictly monotone in Theta across all 10 cells at each U0**, collapsing the two input
+  sets (delta 1.07 vs 1.32, sigma* 220 vs 300) onto one curve: U0 4: Rg 0.562 (Theta 5.5) ... 0.400 (Theta 159).
+**Reading.** The post-hoc cvmap pattern (DST drops spread like jammed ones) was Theta, not type: DST-band drops are
+simply the ones with large Theta. In this closure at L9, an impacting drop that cannot jam is controlled by the
+maximum thickening ratio Theta = [(1-x)/(1-x/chi)]^n, continuously; the steady-shear CST/DST boundary x_DST has no
+signature in the drop. The registered TYPE hypothesis is refuted; THETA is supported.
