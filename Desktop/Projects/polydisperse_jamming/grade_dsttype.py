@@ -96,6 +96,29 @@ def main():
         say(f"   U0 {u}: Delta16 (C5 CST - C0 DST) = {d16:+.4f}; Delta10 (both CST) = {d10:+.4f} -> {v}")
     say(f"D1: {'INCOMPLETE' if None in d1 else (d1[0] if d1[0] == d1[1] else 'SPLIT ' + '/'.join(d1))}")
 
+    say("\n=== D1' (Amendment 1): within-set residual of the first DST cell from its set's CST ln Rg - ln Theta trend ===")
+    d1p = {}
+    first_dst = {"C0": 0.8842, "C5": 0.9035}
+    csts = {"C0": (0.8542, 0.8642, 0.8732), "C5": (0.8735, 0.8835, 0.8925)}
+    for s in ("C0", "C5"):
+        for u in (2.0, 4.0):
+            pts = [c.get(f"{s}_x{x:.4f}_U{u:.1f}") for x in csts[s]]
+            dv = c.get(f"{s}_x{first_dst[s]:.4f}_U{u:.1f}")
+            if not dv or not dv["healthy"] or any(p is None or not p["healthy"] for p in pts):
+                say(f"   {s} U0 {u}: INCOMPLETE")
+                d1p[(s, u)] = None
+                continue
+            b, a = np.polyfit([math.log(p["theta"]) for p in pts], [math.log(p["rg"]) for p in pts], 1)
+            pred = a + b * math.log(dv["theta"])
+            r = math.log(dv["rg"]) - pred
+            v = "TYPE" if r < -0.10 else ("THETA" if abs(r) < 0.05 else "UNDETERMINED")
+            d1p[(s, u)] = v
+            say(f"   {s} U0 {u}: CST slope d lnRg/d lnTheta {b:+.4f}; DST Theta {dv['theta']:.1f}: ln Rg {math.log(dv['rg']):+.4f} "
+                f"vs trend {pred:+.4f} -> r {r:+.4f} -> {v}")
+    prim = [d1p.get(("C0", u)) for u in (2.0, 4.0)]
+    say(f"D1' (primary: set C0): {'INCOMPLETE' if None in prim else (prim[0] if prim[0] == prim[1] else 'SPLIT ' + '/'.join(prim))}"
+        f";  set C5 (reported): {[d1p.get(('C5', u)) for u in (2.0, 4.0)]}")
+
     say("\n=== D2: a jump at x_DST (step across > 2x the largest same-type step) ===")
     passed, n = 0, 0
     xs = {"C5": (0.8735, 0.8835, 0.8925, 0.9035, 0.9105), "C0": (0.8542, 0.8642, 0.8732, 0.8842, 0.8912)}
