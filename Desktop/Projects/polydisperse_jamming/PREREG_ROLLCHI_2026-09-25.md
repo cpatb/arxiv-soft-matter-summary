@@ -128,3 +128,14 @@ Grid, gates and tests unchanged; duplicates are resolved by key in the grader.
 Executed 19:20 (before any grading): G2 (10 sphere workers) replaced by pool X (5: mu 0.3 rolling, eta 1.0/0.3/0.1
 first, then 0.03/0.01/0, then the remaining sphere waves; tag rchiX...) and pool Y (5: arm A CV 0 reverse, then
 CV 0.5 reverse; tags achiR, achiBR). achiA (7), rchi0A/B (2), rchiB (2) unchanged. `scripts/switch_to_achiR.sh`.
+
+## Amendment 3 (2026-09-25 20:22, registered BEFORE these cells run) — the neck-closing question
+Seen in arm-A cells already landed (a DISCLOSED peek, not graded): at mu_p 0.3, overlapping clumps at alpha 1.1 and
+1.75 pack DENSER than spheres (p 1e-3: 0.6013 / ~0.6086 vs 0.5940; p 3e-5 alpha 1.75 ~0.583 vs 0.5747), while the
+tangent dumbbell alpha 2 (shapechi, G0 bit-identical builder) sits at 0.5665 / 0.5407. Added cells: alpha {1.9, 1.95}
+x mu_p 0.3 x CV 0 x rungs {1e-3, 3e-5} x seeds {1,2,3} (12 cells, tag achiN, contact dumps for K4).
+**N1 (two-sided, registered):** if the collapse is tied to the neck CLOSING (a crevice forming at tangency), then
+phi(1.95) - phi(1.75) is within 2*PHI_SCALE at both rungs (flat until tangency); if it is a smooth function of alpha,
+phi(1.9) and phi(1.95) lie monotonically between the 1.75 and 2.0 values with phi(1.95) - phi(2.0) < -2*PHI_SCALE ...
+i.e. graded: FLAT-THEN-DROP if |phi(1.95) - phi(1.75)| < 2 PHI_SCALE at both rungs; GRADUAL if phi(1.75) > phi(1.9) >
+phi(1.95) > phi(2.0) with each step > PHI_SCALE at both rungs; otherwise NEITHER (reported with the numbers).
