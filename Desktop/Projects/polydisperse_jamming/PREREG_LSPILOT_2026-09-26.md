@@ -26,3 +26,13 @@ eps-0.5 contact reports 0.0116. The artefact is SHAPE-DEPENDENT, so P1's compari
 **N-test (node convergence):** eps 1.0, mu 0.3, same cell, with 400 and 1000 surface nodes. Prediction if the artefact is
 node resolution: phi falls monotonically toward the FrictMat 0.5800 (|phi(1000) - 0.5800| < |phi(102) - 0.5800| / 2).
 If it does, eps 0.5 at mu 0 / 0.3 is re-run at the node count that passes P0 (within 0.01) and P1 is graded on those.
+
+## Amendment 2 (2026-09-26 ~00:10, after the N-test; before these cells run)
+N-test RESULT: eps 1.0, mu 0.3 phi = 0.5985 / 0.5929 / 0.5797 at 102 / 400 / 1000 surface nodes vs FrictMat 0.5800:
+monotone, and |phi(1000) - 0.5800| = 0.0003 < 0.0185/2 -> **PASS; the P0 failure was node resolution.**
+All further level-set cells use **1000 nodes**. Ladder (seed 1, N 100, p 1e-3, max 300000 iterations): eps {1.0, 0.7,
+0.5, 0.35} x mu_p {0, 0.3} (eps 1.0 mu 0.3 at 1000 nodes already exists). P0 is re-graded at 1000 nodes on both branches
+(bar 0.01 vs FrictMat 0.6332 / 0.5800). P1 as registered, on these cells: W(eps) = 1 - phi(mu .3)/phi(mu 0); expectation
+W(eps < 1) > W(1). Also reported: phi_0(eps), phi_m(eps) and the (G) decomposition (Z, w) per cell, and whether
+the window at eps 0.7 (a mildly faceted near-sphere) already carries most of the eps-0.35 opening. One seed: every
+difference is reported against the FrictMat seed scatter at N 100 (not measured here) — i.e. as a pilot.
