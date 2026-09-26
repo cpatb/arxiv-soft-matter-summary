@@ -72,3 +72,8 @@ available seed with its standard error, and the count of seeds on which W(0.5) <
 Hit the 300000-iteration cap after 8.9 h (unbalanced 0.452 vs 0.02; p_hat 1.70e-3 vs target 1e-3). Excluded as registered
 (health rule); its phi 0.554 is not a measurement. eps 0.35 remains INCOMPLETE. Sharper cubes relax much more slowly in
 this protocol; a rerun needs a higher cap.
+
+## Note (2026-09-26 ~10:00): the last replication cell (eps 0.5, mu 0, seed 3) did NOT converge
+Unbalanced 0.0319 vs 0.02 at the iteration cap (phi 0.6207, not a measurement). Excluded by the health rule, so the
+registered Amendment-3 REVERSAL test is final at **INCOMPLETE** (seed 3 missing at eps 0.5). The standing reading is
+unchanged: phi_0 drop resolved (4 converged eps-0.5 seeds), window change not resolved (Amendment 5, 2/4).
