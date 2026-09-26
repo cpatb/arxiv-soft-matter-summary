@@ -26,7 +26,7 @@ def load(name):
 def main():
     say("grade_lspilot -- PREREG_LSPILOT_2026-09-26.md (pilot: seed 1, N 100, p_hat 1e-3)")
     ref = {r["mu_p"]: r for r in load("phase2_lsref_lognormal.jsonl") if r.get("converged")}
-    say(f"FrictMat N100 references: " + ", ".join(f"mu {m}: phi {r['phi']:.4f} Z {r['z_nr']:.2f}" for m, r in sorted(ref.items())))
+    say("FrictMat N100 references: " + ", ".join(f"mu {m}: phi {r['phi']:.4f} Z {r['z_nr']:.2f}" for m, r in sorted(ref.items())))
     cells = {}
     for r in load("ls_nodes.jsonl") + load("ls_ladder.jsonl"):
         if r["nodes"] == 1000:
