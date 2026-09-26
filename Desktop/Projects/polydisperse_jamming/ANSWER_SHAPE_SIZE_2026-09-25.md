@@ -56,23 +56,24 @@ jam" rests on a 0.007 margin, 1.2× its uncertainty (ANSWER_2026-09-23 §3b).
   - **it can add rotational freedom** that frictionless point contacts must pin: elongation, a concave neck. The
     frictionless count rises, the gap grows, and **the window widens**;
   - **it can let a single contact pin rotation by itself:** a flat face resists tipping even without friction, like
-    a box on a table. The frictionless pack then jams "frictional-like", the gap shrinks, and **the window narrows**.
+    a box on a table. The frictionless pack then jams at a lower density: **the frictionless edge drops**, which
+    narrows the window if the frictional edge holds.
 - **Measured, elongation/concavity (two-sphere clumps and doublets, μ_p 0.3).** At the jamming rung (p̂ 3e-5, 3 seeds)
   1 − χ = 0.092 (sphere) → 0.131 (α 1.1) → 0.131 (α 1.75) → 0.138 (α 2); pure doublets ×1.49. Most of the widening
   is already there at 10 % elongation. ⚠ At α 1.1, frictionless neighbours nestle into the clump's shallow neck (32 %
   double contacts), so this family mixes elongation with concavity.
 - **Measured, convex facets (level-set rounded cubes; PILOT: N 100, 2–3 seeds, p̂ 1e-3).** Window 0.07–0.10 (sphere)
-  → 0.08–0.09 (ε 0.7, within scatter) → 0.04–0.05 (ε 0.5). The frictionless φ₀ falls by 0.027 while φ_m holds.
-  In both available seeds faceting narrows the window (the registered 3-seed + N-200 replication and an ε-0.5
-  node-convergence check came back node-limited: at 2000 surface nodes φ₀(ε 0.5) = 0.620 against 0.611 at 1000 —
-  the sign survives, since every ε-0.5 value is ≥ 0.017 below the lowest sphere seed, but the magnitude is
-  uncertain by about a third). This reverses the expectation I registered, and the earlier stand-in (spheres with a
-  contact moment limit, which lower φ_m) does not describe convex facets.
+  → 0.08–0.09 (ε 0.7, within scatter) → 0.04–0.05 (ε 0.5) on the first two seeds; with seeds 4–5 the window change is
+  NOT resolved (+0.022 ± 0.018, narrower on 2/4 seeds), because the sphere's frictional φ_m scatters by 0.015 at
+  N 100. What IS resolved: the frictionless φ₀ falls by 0.026 (t 17.5).
+  This lowered frictionless edge is what the face-contact reading predicts; the earlier stand-in (spheres with a
+  contact moment limit, which lower φ_m and need friction to act) does not describe convex facets. The node check
+  came back node-limited (±0.009 on φ₀), smaller than the 0.026 drop.
 - **The onset.** Mild convex elongation makes grains pack *denser* on both branches (φ_m 0.575 → 0.599 at α 1.5;
   frictionless φ₀ up to ~0.70, as for Donev's ellipsoids and Baule's dimers). A closing neck lowers φ_m continuously
   (0.583 → 0.541 from α 1.75 to 2, registered N1 GRADUAL), because filling worsens.
 - **So Stöber spheres are not at an extreme of the window: they sit between the elongated/concave family (wider) and
-  the faceted family (narrower).** Cornstarch granules are faceted AND irregular, so on geometry alone its window
+  the faceted family (lower frictionless edge; window change unresolved).** Cornstarch granules are faceted AND irregular, so on geometry alone its window
   could go either way. The published same-paper fits (cornstarch χ 0.76, 1.5 µm silica spheres χ 0.83; Han et al. 2018,
   Royer et al. 2016) say wider, but they differ in lab, size, friction and φ convention and cannot isolate shape.
 
@@ -99,7 +100,8 @@ weak-network ball unless its contacts are softened.**
 ## 4. What the bench could do to separate the two halves
 1. Fractionate cornstarch to CV < 0.15 and measure φ₀, φ_m on the rheometer. The size result predicts φ₀ LOWER
    than the native powder (worse filling). χ itself decides the shape question: below Stöber's χ, the
-   elongation/irregularity family wins; above it, the facet family (a flat-face count) wins.
+   elongation/irregularity family wins; above it, the facet family wins — and a LOWER frictionless-branch
+   φ₀ than an equal-CV sphere suspension is the facet signature the pilot predicts robustly.
 2. The same fraction in glycerol–water (µ_w ×10–100): De rises to ~70–700 — firmly undrained, though still far
    below silica's 7×10⁵ — while S does not move. If the drop then forms a ball, S is not the discriminant and the
    (De, S) reading is wrong.
@@ -111,7 +113,7 @@ weak-network ball unless its contacts are softened.**
    narrowing the window, so a fixed weighed φ lands below χ. They can still thicken; they cannot shear-jam.
 2. **Filtered cornstarch:** narrowing its CV raises x, which favours jamming (the size result, measured on
    spheres). On shape the project's two DEM families point OPPOSITE ways — elongation/concavity widens the
-   window, convex faceting narrows it (pilot) — so whether a size-matched cornstarch shear-jams more or less
+   window, convex faceting lowers the frictionless edge φ₀ with the window change unresolved (pilot) — so whether a size-matched cornstarch shear-jams more or less
    readily than silica is not decided by geometry here; it needs the rheometer's χ on the fractionated
    powder. What would stop it looking like the
    silica *ball* is not shape but drainage and contact stiffness: at ~10 µm it is near the drained/undrained

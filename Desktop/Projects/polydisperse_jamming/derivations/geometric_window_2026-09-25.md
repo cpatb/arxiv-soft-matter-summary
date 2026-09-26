@@ -28,9 +28,10 @@ Every number below is printed by one of those three.
 >   deduplicates by grain pair — so it is not contact multiplicity either; see §5), and φ_m falls (−5.8 % for doublets
 >   at μ_p 0.3). Net Z_m/Z₀ 0.775 → 0.705, window ×1.49.
 > - **The sign of the shape effect depends on the feature.** Elongation and concavity (clumps, doublets) widen the
->   window (×1.4–1.5 at the jamming rung, replicated); convex flat faces (level-set rounded cubes) narrowed it in the PILOT's 2/2 available seeds (replication incomplete)
+>   window (×1.4–1.5 at the jamming rung, replicated); convex flat faces (level-set rounded cubes) LOWER THE FRICTIONLESS EDGE φ₀ by 0.026 (resolved, 4–5 seeds), but whether
+>   they narrow the window is unresolved (φ_m scatter at N 100; narrower on 2/4 seeds)
 >   (PILOT, `PREREG_LSPILOT`): a face resists tipping without friction, so the frictionless branch jams
->   'frictional-like'. Spheres are therefore NOT the narrowest-window shape; they sit between the two families.
+>   at a lower density. Spheres are therefore not established as the narrowest-window shape.
 >
 > ⚠ (G) is an empirical-geometric closure: SWM derive it for monodisperse spheres with Z ∈ [4, 6]; its use
 > with w ≠ 1 and Z outside [4, 6] is this project's extension and is tested, not assumed (§4, §5).
@@ -237,8 +238,8 @@ Monte Carlo agrees with (π/4)(α − 1)(d_s/d_eq) to < 5e-4).
 Against the measured rolling scales (§6, μ_p 0.3): half the rolling effect by η ≈ 0.04–0.05, saturation by η ≈ 0.3.
 Sharp polyhedra (0.35–0.76) and an icosahedron rounded to half its radius (0.22) sit at or near saturation; one
 rounded to 75 % (0.11) is part-way. ~~If a faceted grain's lever arms act like a contact moment limit, φ_m would drop ...~~ **Tested in the pilot and
-not what happened** (2 seeds at ε 0.5; registered replication and node check incomplete) (`PREREG_LSPILOT`, level-set rounded cubes, 1000 nodes): convex facets leave φ_m about unchanged
-(seed means 0.583 → 0.585 at ε 0.5, N 100) and LOWER φ₀ (0.639 → 0.611), narrowing the window. The lever arm acts through the
+not what happened** (4–5 seeds at ε 0.5: φ_m unchanged within scatter, φ₀ down 0.026) (`PREREG_LSPILOT`, level-set rounded cubes, 1000 nodes): convex facets leave φ_m about unchanged
+(seed means 0.591 → 0.581, t 1.4, unresolved) and LOWER φ₀ (0.637 → 0.611, t 17.5). The lever arm acts through the
 FRICTIONLESS branch: a face contact pins tilt with no friction, so the frictionless count drops toward the
 frictional one (Z₀ ≈ 6.4 against 12 for point contacts on a general body). The moment-limit stand-in, which
 needs friction to act, was the wrong analogue.
