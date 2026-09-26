@@ -1,0 +1,23 @@
+cornstarch_fraction -- (De, S) for fractionated cornstarch; silica 'ball' corner for reference
+  silica 800 nm phi 0.44 (lab point): De 7.26e+05, S 0.00352   <- the ball corner
+  cornstarch a 10 um phi 0.42 ([M26] point): De 7.22, S 4.11
+
+1. size fraction at fixed chemistry (Hertz K_p recomputed; E_p bracket 1e7 / default / 1e9 Pa)
+   a/um   kappa      K_p(default)   De [lo, def, hi E_p]            S [lo, def, hi]
+     5.0  1.54e-13  1.1e+06        134 / 28.9 / 6.23        0.885 / 4.11 / 19.1
+     7.0  3.01e-13  1.1e+06        68.3 / 14.7 / 3.18        0.885 / 4.11 / 19.1
+    10.0  6.14e-13  1.1e+06        33.5 / 7.22 / 1.56        0.885 / 4.11 / 19.1
+    14.0  1.20e-12  1.1e+06        17.1 / 3.68 / 0.794        0.885 / 4.11 / 19.1
+    20.0  2.46e-12  1.1e+06        8.37 / 1.8 / 0.389        0.885 / 4.11 / 19.1
+
+2. solvent viscosity at a = 10 um (K_p, S unchanged by mu_w in this model)
+   NOTE: bhs.groups() calls pore_relaxation_time WITHOUT mu_f (water default), so it is inert to mu_w;
+   tau_p is recomputed here with mu_f passed explicitly (checked: mu_w 1e-3 reproduces groups()).
+   mu_w   0.001 Pa s: De 7.22, S 4.11
+   mu_w    0.01 Pa s: De 72.2, S 4.11
+   mu_w     0.1 Pa s: De 722, S 4.11
+   mu_w       1 Pa s: De 7.22e+03, S 4.11
+
+reading: the ball corner is De >> 1 AND S << 1. Fractionation moves De as a^-2 at most and leaves S
+at O(1) (Hertz K_p is nearly size-free at fixed P_conf); a viscous solvent moves De but not S. Neither
+reaches S << 1, which in this model needs a SOFT contact network (EDL-like K_p), i.e. surface chemistry.
