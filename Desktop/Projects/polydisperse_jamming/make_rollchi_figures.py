@@ -85,7 +85,7 @@ def build():
         if r["p_hat_target"] == RUNG:
             g[(pop(r), r["cv"], r["mu_p"])].append((r["phi"], r["z_nr"]))
     rows = []
-    fig, ax = plt.subplots(1, 2, figsize=(6.8, 2.8))
+    fig, ax = plt.subplots(1, 3, figsize=(9.6, 2.8))
     # (a)
     style = {"sphere": (COL[0], "o"), "roll": (COL[1], "s"), "clump": (COL[3], "^"), "doublet": (COL[4], "v")}
     w_meas = {}
@@ -109,42 +109,48 @@ def build():
     ax[0].set_ylim(0, 0.75)
     ax[0].set_xlabel("non-rattler coordination $Z$")
     ax[0].set_ylabel(r"$\phi$ at $\hat p = 3\times10^{-5}$")
-    # (b)
-    phi0 = defaultdict(list)
-    for r in recs:
-        if r["p_hat_target"] == RUNG and r["cv"] == 0.0 and r["mu_p"] == 0.0:
-            phi0[pop(r) if pop(r).startswith(("clump", "doublet")) else "sphere"].append(r["phi"])
-    f0 = {k: np.mean(v) for k, v in phi0.items()}
-    sph3 = [r["phi"] for r in recs if r["p_hat_target"] == RUNG and r["cv"] == 0.0 and r["mu_p"] == 0.3 and pop(r) == "sphere"]
-    base = 1 - np.mean(sph3) / f0["sphere"] if sph3 and "sphere" in f0 else np.nan
-    ax[1].axhline(base, color=COL[0], lw=0.8)
-    for kind, c, m in (("roll", COL[1], "s"), ("clump", COL[3], "^")):
-        xs, ys, es = [], [], []
-        for (p, cv, mu), v in sorted(g.items()):
-            if not p.startswith(kind) or cv != 0.0 or mu != 0.3:
-                continue
-            val = float(p.split()[1])
-            if kind == "roll":
-                x, den = val, f0.get("sphere")
-            else:
-                x, den = (math.pi / 4) * (val - 1) * sub_sphere_diameter(1.0, val), f0.get(p)
-            if den is None:
-                continue
-            ph = np.array(v)[:, 0]
-            xs.append(x)
-            ys.append(1 - ph.mean() / den)
-            es.append(ph.std(ddof=1) / den if len(ph) > 1 else 0)
-            rows.append({"panel": "b", "population": p, "cv": 0.0, "mu_p": 0.3, "Z": "", "phi": "", "lever": x,
-                         "window": ys[-1], "n": len(ph)})
-        if xs:
-            o = np.argsort(xs)
-            ax[1].errorbar(np.array(xs)[o], np.array(ys)[o], yerr=np.array(es)[o], fmt=m + "-", ms=3.5,
-                           color=c, lw=0.8, elinewidth=0.6)
-    ax[1].set_xscale("log")
-    ax[1].set_ylim(0, None)
-    ax[1].set_xlabel(r"contact lever arm $\eta$ or $\langle e\rangle/r_{eq}$")
-    ax[1].set_ylabel(r"window $1-\chi$ ($\mu_p$ 0.3)")
-    for a_, lab in zip(ax, "ab"):
+    # (b) phi_m(alpha) at mu_p 0.3, both rungs; rolling-saturated sphere and pure doublet as references
+    def seedmean(sel):
+        v = [r["phi"] for r in recs if sel(r)]
+        return (float(np.mean(v)), float(np.std(v, ddof=1)) if len(v) > 1 else 0.0, len(v)) if v else None
+    for rung, c, m in ((1e-3, COL[2], "o"), (3e-5, COL[3], "^")):
+        pts = []
+        for a in (1.0, 1.1, 1.2, 1.3, 1.5, 1.75, 1.9, 1.95, 2.0):
+            v = seedmean(lambda r, a=a: r["p_hat_target"] == rung and r["cv"] == 0.0 and r["mu_p"] == 0.3
+                         and r.get("doublet_w", 0) == 0 and abs(r.get("alpha", 1.0) - a) < 1e-9
+                         and r.get("eta_roll") in (None, 0.0))
+            if v:
+                pts.append((a,) + v)
+                rows.append({"panel": "b", "population": f"clump {a}", "cv": 0.0, "mu_p": 0.3, "Z": "", "phi": v[0],
+                             "lever": "", "window": "", "n": v[2]})
+        a_, mm, sd, _ = zip(*pts)
+        ax[1].errorbar(a_, mm, yerr=sd, fmt=m + "-", color=c, ms=3.5, lw=0.8, elinewidth=0.6)
+        roll = seedmean(lambda r: r["p_hat_target"] == rung and r["cv"] == 0.0 and r["mu_p"] == 0.3
+                        and r.get("alpha", 1.0) == 1.0 and r.get("eta_roll") == 1.0)
+        if roll:
+            ax[1].axhline(roll[0], color=c, lw=0.7, ls="--")
+    ax[1].set_xlim(0.95, 2.05)
+    ax[1].set_ylim(0, 0.7)
+    ax[1].set_xlabel(r"aspect ratio $\alpha$")
+    ax[1].set_ylabel(r"$\phi_m$ ($\mu_p$ 0.3)")
+    # (c) window width 1 - chi(alpha) at p_hat 1e-3 (the rung where both branches exist for every alpha)
+    wx, wy = [], []
+    for a in (1.0, 1.1, 1.2, 1.3, 1.5, 1.75, 2.0):
+        f3 = seedmean(lambda r, a=a: r["p_hat_target"] == 1e-3 and r["cv"] == 0.0 and r["mu_p"] == 0.3
+                      and r.get("doublet_w", 0) == 0 and abs(r.get("alpha", 1.0) - a) < 1e-9 and r.get("eta_roll") in (None, 0.0))
+        f0 = seedmean(lambda r, a=a: r["p_hat_target"] == 1e-3 and r["cv"] == 0.0 and r["mu_p"] == 0.0
+                      and r.get("doublet_w", 0) == 0 and abs(r.get("alpha", 1.0) - a) < 1e-9 and r.get("eta_roll") in (None, 0.0))
+        if f3 and f0:
+            wx.append(a)
+            wy.append(1 - f3[0] / f0[0])
+            rows.append({"panel": "c", "population": f"clump {a}", "cv": 0.0, "mu_p": 0.3, "Z": "", "phi": "",
+                         "lever": "", "window": wy[-1], "n": min(f3[2], f0[2])})
+    ax[2].plot(wx, wy, "o-", color=COL[0], ms=3.5, lw=0.8)
+    ax[2].set_xlim(0.95, 2.05)
+    ax[2].set_ylim(0, None)
+    ax[2].set_xlabel(r"aspect ratio $\alpha$")
+    ax[2].set_ylabel(r"window $1-\chi$ ($\hat p = 10^{-3}$)")
+    for a_, lab in zip(ax, "abc"):
         a_.text(0.02, 0.97, f"({lab})", transform=a_.transAxes, va="top")
     fig.tight_layout()
     save(fig, "R1_geometric_window", rows,
