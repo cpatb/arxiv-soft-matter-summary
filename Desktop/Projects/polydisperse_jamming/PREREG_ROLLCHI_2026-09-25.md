@@ -118,3 +118,10 @@ rolling in their own queues. The GRID, gates and tests are unchanged. Wave tags 
 achiA..C) keep resume files apart; the grader selects by tag prefix and deduplicates by cell key (a cell
 re-run after the stop is deterministic and must be bit-identical; any that is not is reported). Tests
 whose cells have not landed at grading time are reported INCOMPLETE, never graded on a subset silently.
+
+## Amendment 2 (2026-09-25 ~19:10, before any graded test was computed) — execution only
+Past shapechi timings put a frictionless clump cell at p̂ 3e-5 near 1900 s unloaded, so arm A would not
+finish in the session. `phase2_shape.py` gains `--also-done <glob>` (keys only; a cell whose key appears in
+any matched file is skipped, re-checked before every cell). When the mu_p 0.3 rolling queue (rchiA) lands,
+the sphere pool is switched to a second arm-A pool (tag achiR) running the SAME grid in reverse order.
+Grid, gates and tests unchanged; duplicates are resolved by key in the grader.

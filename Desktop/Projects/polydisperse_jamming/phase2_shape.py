@@ -94,6 +94,9 @@ def main() -> int:
                     help="PREREG_ROLLCHI: comma-separated etaRoll values (CohFrictMat path, "
                          "rolling AND twisting resistance); 'none' = the FrictMat path. "
                          "Absent -> FrictMat only, historical keys unchanged")
+    ap.add_argument("--also-done", default="",
+                    help="glob of other shard files whose keys also count as done (keys only; "
+                         "re-checked before every cell)")
     args = ap.parse_args()
     etas = ([None if e.strip().lower() == "none" else float(e)
              for e in args.eta_rolls.split(",")] if args.eta_rolls else [None])
@@ -119,6 +122,11 @@ def main() -> int:
         suffix += f"_shard{args.shard:02d}of{args.nshards:02d}"
     path = os.path.join(OUT_DIR, f"phase2{suffix}.jsonl")
     done = load_done(path)
+    if args.also_done:                         # PREREG_ROLLCHI Am. 2: a second pool skips cells any pool finished
+        import glob as _glob
+        for f in sorted(_glob.glob(args.also_done)):
+            if os.path.abspath(f) != os.path.abspath(path):
+                done |= load_done(f)
     total = len(kmers) * len(etas) * len(alphas) * len(cvs) * len(mus) * len(seeds) * len(ladder)
     mine = (total + args.nshards - 1 - args.shard) // args.nshards
     # N before and after every filter, printed, not inferred.
@@ -143,6 +151,10 @@ def main() -> int:
                             continue
                         key = cell_key(cv, mu, seed, p_hat, n, args.family, alpha, kmer,
                                        eta_roll=eta)
+                        if args.also_done and key not in done:
+                            import glob as _glob
+                            for f in _glob.glob(args.also_done):
+                                done |= load_done(f)
                         if key in done:
                             n_skipped += 1
                             continue
