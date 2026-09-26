@@ -46,3 +46,10 @@ project's inference (facets ~ contact moment limit ~ lower phi_m), it is replica
 **Registered bar (REVERSAL confirmed):** W(0.5) < W(1.0) on every seed at N 100 AND at N 200, with the seed-mean
 difference W(1.0) - W(0.5) > 3x its seed standard error. **Mechanism check (registered):** the reversal is carried by
 the FRICTIONLESS branch -- phi_0(1.0) - phi_0(0.5) > |phi_m(1.0) - phi_m(0.5)| on the seed means.
+
+## Amendment 4 (2026-09-26 ~03:45; referee MATERIAL 2; before these cells run)
+The node-convergence test (Am. 1-2) was run only on the sphere, but the reversal rests on phi_0(eps 0.5), and the
+102-node artefact was shape-dependent. **N-test at eps 0.5, mu 0, seed 1, N 100:** existing 102 nodes 0.6354 (pilot,
+converged) and 1000 nodes 0.6105; added 400 and 2000 nodes. Registered: the reversal's phi_0 is node-converged if
+|phi_0(2000) - phi_0(1000)| < 0.005 (a quarter of the 0.027 sphere-to-eps-0.5 drop). If not, the reversal is reported
+as node-limited.
