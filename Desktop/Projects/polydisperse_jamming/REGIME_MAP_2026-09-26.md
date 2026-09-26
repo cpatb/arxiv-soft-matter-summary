@@ -47,7 +47,7 @@ jamming), "→ SJ" = toward shear jamming, "→ ball"/"→ hybrid" = Gate C.
 | **distribution SHAPE** (family at fixed CV) | w at CV 0.5: lognormal 0.76, uniform 0.91 — the family moves x as much as CV does; two binaries matched in CV pack 0.0635 apart (filling functional) | via Zφ | via d₃₂ | measured |
 | **mild asphericity** (convex-ish, α ≤ 1.5) | window opens: 1 − χ 0.072 → ~0.10 (clumps, p̂ 1e-3); φ₀ AND φ_m rise (φ₀ ≈ 0.70 near α 1.2–1.5) ⇒ at fixed weighed φ, x falls. Net: wider SJ band, starting higher. [convex faceted grains: level-set campaign, §4] | not measured | κ × ψ² (≥ 0.64) — minor | measured (clumps; neck-confounded at α 1.1) |
 | **concavity / interlocking** (necks, doublets, aggregates) | φ_m falls continuously as a neck closes (w ↑ 1.12 → 1.38); pure doublets window ×1.49 at the jamming rung; δ ×0.85 sheared → **→ SJ at lower φ** | ×0.78 (doublets, every contact primary–primary) | — | measured; DNS: doublets jam where singlets cannot (`kmermap` R1), entirely through χ |
-| **facets / contact lever arms** | (spheres with a contact moment limit as the stand-in) φ_m −0.028 … −0.035 at μ_p 0.3, half by η ≈ 0.04–0.05, saturated by ≈ 0.3; by removing contacts, not by filling; leaves the CV effect intact (R7 ρ 0.97) | — | — | measured on the stand-in only; polyhedra [§4] |
+| **convex facets** (rounded cubes, level-set DEM) | **the window NARROWS**: W 0.07–0.10 (sphere) → 0.04–0.05 (ε 0.5), because φ₀ falls (−0.027) while φ_m holds — flat faces resist tipping without friction, so the frictionless branch jams 'frictional-like'. ⚠ The earlier stand-in (spheres with a contact moment limit, which lower φ_m by up to 0.035 at μ_p 0.3) is NOT what convex facets do | — | κ × ψ² — minor | pilot (N 100, 2–3 seeds, one rung; §4) |
 | **friction μ_p** (roughness, surface chemistry) | window 0.09 (μ 0.3) → 0.11 (μ 3) at CV 0; δ −0.22 from μ 0 → 0.3 | — | — | measured |
 | **surface potential** (charge, Debye length, salt) | none directly; indirectly if it aggregates (→ concavity row) or lubricates/roughens contacts (→ friction row) | σ* ∝ F_rep: the lab salt series (onset ×0.31 at 100 mM, arrested state ×1.28 of ×6.35) reads as screening | **K_p**: a double-layer network is soft (silica K_p ≈ 590 Pa) → S ≪ 1 → ball; bare Hertzian contacts (cornstarch K_p ≈ 1.1×10⁶ Pa) → S ~ 4 → hybrid. The largest single lever between the two lab materials (×1870). Across the lab salt range (λ_D 30 → 1 nm) silica's K_p rises ×10–31 but S stays 0.001–0.04 and De ≥ 7×10⁴ (`derivations/potential_ladder_2026-09-26.txt`): salt moves the onset, not the ball | scaling; bench reading |
 | **fluid viscosity** μ_f | η_s only | — | De ∝ μ_f (×10–1000 with glycerol–water); S unchanged | scaling |
@@ -58,13 +58,44 @@ jamming), "→ SJ" = toward shear jamming, "→ ball"/"→ hybrid" = Gate C.
   jammed state drains (De ∝ a⁻²). Bigger grains: easier onset, more drained → toward the hybrid.
 - **Size variance.** Acts on filling. Every channel it touches (x, χ, x_DST) pushes toward CST; it is the reason a
   polydisperse suspension at the same weighed φ thickens and spreads where a monodisperse one jams.
-- **Shape.** Acts on counting and filling. Spheres are the one shape with free frictionless rotation, so they have
-  the narrowest window; any asphericity widens it. Concavity (necks, aggregates) additionally lowers the jamming
-  onset; mild convex asphericity raises it. Shape barely touches drainage.
+- **Shape.** Acts on counting and filling, and its SIGN depends on which geometric feature it adds. Features that
+  add rotational freedom a frictionless contact must pin (elongation, a concave neck: clumps, doublets) WIDEN the
+  window (×1.4–1.5 at the jamming rung, already at 10 % elongation). Features that let a frictionless contact pin
+  rotation by itself (flat faces) NARROW it (convex rounded cubes, pilot). Concavity additionally lowers the
+  jamming onset φ_m; mild convex elongation raises it. Spheres sit between the two families, not at an extreme.
+  Shape barely touches drainage.
 - **Surface potential.** Does not decide the type; decides the onset stress σ* and, through the double layer's
   softness, whether the jammed drop is a weak undrained ball (silica) or a stiff dilatant hybrid (cornstarch).
-- **Across the two lab materials:** Gate A favours cornstarch (non-spherical, wider window; published χ 0.76 vs 0.83);
+- **Across the two lab materials:** Gate A does NOT clearly favour either on shape alone — cornstarch is both
+  faceted (narrows) and mildly elongated/irregular (widens); the published χ 0.76 vs 0.83 says wider but mixes lab,
+  size, friction and φ convention;
   Gate C separates them by contact mechanics first (K_p ×1870), size second (κ ×190).
 
-## 4. Convex faceted grains (level-set superellipsoids) — [in progress]
+## 4. Convex faceted grains (level-set superellipsoids) — PILOT (`PREREG_LSPILOT_2026-09-26`, `out/grade_lspilot.txt`)
+
+The clump ladder cannot speak for cornstarch, because a two-sphere clump has a concave neck. A superellipsoid with
+equal axes goes continuously from a sphere (ε = 1) to a rounded cube (ε → 0) while staying convex. Level-set DEM, N 100,
+p̂ 1e-3, 1000 surface nodes. The method control reproduces the FrictMat sphere to 0.0003 (μ_p 0.3) and 0.008 (μ_p 0),
+after a 102-node version failed it by +0.02 (node under-resolution of penetration, diagnosed and fixed).
+
+| ε | seeds | φ₀ | φ_m | window W = 1 − φ_m/φ₀ |
+|---|---|---|---|---|
+| 1.0 (sphere) | 3 | 0.6416 / 0.6374 / 0.6370 | 0.5797 / 0.5756 / 0.5927 | 0.097 / 0.097 / 0.070 |
+| 0.7 | 3 | 0.6297 / 0.6399 / 0.6293 | 0.5781 / 0.5808 / 0.5775 | 0.082 / 0.092 / 0.082 |
+| 0.5 (rounded cube) | 2 | 0.6105 / 0.6124 | 0.5871 / 0.5826 | 0.038 / 0.049 |
+
+**Convex faceting NARROWS the window**, the opposite of elongation or concavity. The frictionless branch falls
+(φ₀ −0.027 at ε 0.5) while the frictional branch holds. Counting gives a geometric reason: a flat face resists tipping
+even without friction, because the contact point jumps to the face's edge, as for a box on a table. Face contacts
+therefore supply the rotational constraints that only friction supplies to spheres, and a faceted pack jams
+"frictional-like" already at μ_p 0 (Z₀ ≈ 6.4, far below the Z_iso = 12 point contacts on a general body would need).
+ε 0.7 (mild faceting) is within the seed scatter of the sphere. **Status: the registered replication (3 seeds + N 200)
+is [see grade_lspilot.txt: REVERSAL line]; one rung, N 100–200; the face-contact mechanism is a counting reading,
+not a measured contact census.**
+
+**What this does to the cornstarch expectation.** Two DEM shape families now point opposite ways. Elongated and
+concave grains (clumps, doublets) widen the window ×1.4–1.5; convex faceted grains narrow it. Cornstarch granules
+are faceted polyhedra with modest elongation, so geometry alone does not decide whether its window is wider or
+narrower than Stöber silica's. The published same-paper fits (cornstarch χ 0.76 vs silica spheres 0.83) say wider,
+but they differ in lab, size, friction and φ convention, and cannot isolate shape.
 
