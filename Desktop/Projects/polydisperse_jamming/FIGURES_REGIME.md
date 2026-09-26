@@ -17,5 +17,7 @@ the impact stress) against drainage Deborah number De = τ_pore/τ_impact (≫ 1
 Reading: the materials are separated HORIZONTALLY — by the contact network's modulus (double layer vs Hertzian contact,
 ×1870 in K_p) — and every size, salt, fractionation or viscosity knob moves them VERTICALLY. None crosses S = 1.
 ⚠ The silica K_p rule ties P_conf to σ* (silica_poro's declared choice, the most model-laden line); σ* for silica is a
-literature bracket, the repo value is a retracted fit kept for comparability; cornstarch's E_p bracket (10⁷–10⁹ Pa)
-moves its S by ×0.2–×4.6 (`cornstarch_fraction_2026-09-25.txt`), not across S = 1 at the low end only marginally (0.9).
+literature bracket, the repo value is a retracted fit kept for comparability; cornstarch's particle-modulus bracket
+(E_p 10⁷–10⁹ Pa) spans S = 0.89–19 (`cornstarch_fraction_2026-09-25.txt`), so at its soft end cornstarch sits just
+below S = 1 — the plotted default (4.1) is not a sharp position, and S ~ 1 is a crossover, not a boundary. Silica's
+S stays ≤ 0.04 across every knob plotted: the separation between the materials is 1.4 decades even at the closest ends.
