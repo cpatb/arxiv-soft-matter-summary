@@ -1,6 +1,6 @@
 # PREREG_DSTTYPE_2026-09-26 — does the steady-shear TYPE (CST vs DST) decide what an impacting drop does?
 
-Written 2026-09-26 ~00:10 CDT, before any cell ran. Solver: `wc_drop_impact.c`, the G0-gated binary md5 db413e87dd21
+Written 2026-09-25 ~23:10 CDT (the commit timestamp is authoritative), before any cell ran. Solver: `wc_drop_impact.c`, the G0-gated binary md5 db413e87dd21
 (same as cvmap), L9, EPS_MIN 0.03, TEND 6, CFL 0.10, THETA0 5, WC_CLOCK 1, PHI0 0.62, MP_EXPO 2 (n = 2). Launcher
 `scripts/dsttype_2026-09-26.sh` (via `scripts/run_dsttype.sh`); cells `out/dsttype_cells.txt`; grader `grade_dsttype.py`.
 
