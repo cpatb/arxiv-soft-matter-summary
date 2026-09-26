@@ -1,6 +1,7 @@
 grade_lspilot -- PREREG_LSPILOT_2026-09-26.md (pilot: seed 1, N 100, p_hat 1e-3)
 FrictMat N100 references: mu 0.0: phi 0.6332 Z 6.24, mu 0.3: phi 0.5800 Z 5.18
-1000-node cells landed: 7 of 8 registered
+1000-node cells landed: 8 of 8 registered
+   NOT CONVERGED eps 0.35 mu 0.3: unbalanced 0.452 iters 300000 -- reported, not graded
 
 === P0 at 1000 nodes: level-set sphere vs FrictMat (bar 0.01) ===
    mu 0.0: LS 0.6416 vs FrictMat 0.6332  d +0.0084  ok

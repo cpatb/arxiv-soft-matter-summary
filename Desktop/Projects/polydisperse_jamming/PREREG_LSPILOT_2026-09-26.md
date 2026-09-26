@@ -67,3 +67,8 @@ against the sphere's 0.07-0.10) is uncertain by about a third.
 Additional seeds 4 and 5 at 1000 nodes, N 100, p 1e-3, for eps {1.0, 0.5} x mu_p {0, 0.3} (8 cells, tag extra). REPORTED
 beside the registered 3-seed REVERSAL test, never substituted for it: the seed-paired W(1.0) - W(0.5) over every
 available seed with its standard error, and the count of seeds on which W(0.5) < W(1.0).
+
+## Note (2026-09-26 ~09:00): the eps 0.35, mu 0.3 ladder cell did NOT converge
+Hit the 300000-iteration cap after 8.9 h (unbalanced 0.452 vs 0.02; p_hat 1.70e-3 vs target 1e-3). Excluded as registered
+(health rule); its phi 0.554 is not a measurement. eps 0.35 remains INCOMPLETE. Sharper cubes relax much more slowly in
+this protocol; a rerun needs a higher cap.
