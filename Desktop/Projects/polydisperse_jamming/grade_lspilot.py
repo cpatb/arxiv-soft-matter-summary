@@ -100,6 +100,17 @@ def main():
             f"{'carried by the FRICTIONLESS branch' if d0 > abs(dm) else 'NOT carried by the frictionless branch'}")
     else:
         say(f"REVERSAL: INCOMPLETE (seed pairs at N 100: {seeds}; N 200 pair: {n200})")
+    say("\n=== Amendment 4: node convergence at eps 0.5, mu 0, seed 1, N 100 ===")
+    lad = {}
+    for r in load("ls_pilot.jsonl") + load("ls_ladder.jsonl") + load("ls_nodes05.jsonl"):
+        if r["eps"] == 0.5 and r["mu_p"] == 0.0 and r["seed"] == 1 and r["n"] == 100 and r["converged"]:
+            lad[r["nodes"]] = r["phi"]
+    say("   " + "  ".join(f"{k} nodes: {v:.4f}" for k, v in sorted(lad.items())))
+    if 1000 in lad and 2000 in lad:
+        d = abs(lad[2000] - lad[1000])
+        say(f"NODE CHECK eps 0.5: |phi(2000) - phi(1000)| = {d:.4f} (bar 0.005) -> {'CONVERGED' if d < 0.005 else 'NODE-LIMITED'}")
+    else:
+        say("NODE CHECK eps 0.5: INCOMPLETE")
     with open(os.path.join(HERE, "out", "grade_lspilot.txt"), "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(L) + "\n")
 
