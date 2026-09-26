@@ -24,7 +24,8 @@ Every number below is printed by one of those three.
 >   of freedom that must be constrained (counting: Z_iso 6 → 10–12; measured Z₀ 5.97 → 7.95, hypostatic), and
 >   the extra contacts offset the worse filling, so φ₀ barely moves (−0.9 %). Frictional counting is shape-blind
 >   (Z_iso = 4 for any shape), so no compensating contacts are required; the measured Z_m rise (+1.0) is
->   contact multiplicity (`geom_shape_2026-09-19` E1), not a counting demand, and φ_m falls (−5.8 % for doublets
+>   geometric crowding that counting does not demand (Z counts DISTINCT neighbours — `packing.contact_graph`
+>   deduplicates by grain pair — so it is not contact multiplicity either; see §5), and φ_m falls (−5.8 % for doublets
 >   at μ_p 0.3). Net Z_m/Z₀ 0.775 → 0.705, window ×1.49.
 > - **Every shape family tested here (doublets, α 2 clumps, their mixtures) has a wider window than spheres.**
 >   Sphericity is not what lets silica jam into a ball; in these packs non-sphericity makes shear jamming
@@ -132,11 +133,15 @@ Same inversion on the doublet ladder and α = 2 clumps (N 1700, CV 0):
 - The two changes on the FRICTIONLESS branch cancel (w up: worse filling; Z₀ up: more contacts, as counting
   demands for a body with real rotational DOF), which is why φ₀ barely moves (−0.9 %, shapechi).
 - On the FRICTIONAL branch counting is shape-blind (Z_iso = 12/(3 − x_m) for any shape, E1), so nothing
-  demands extra contacts; the measured +1.0 in Z_m is the double-contact multiplicity E1 identified
-  (dup_contact_frac 0.11–0.19), not a counting requirement. The worse filling is therefore not compensated
-  and φ_m falls. ⚠ Referee pass 1 (FATAL, acted on): an earlier draft explained the +1.0 as partially released
-  rotational DOF, which E1 had already refuted. What counting explains is the ASYMMETRY (compensation on one
-  branch only); the size of Z₀'s rise (+2.0, short of the +4 DOF count) is measured, not predicted.
+  demands extra contacts. The worse filling is therefore not compensated and φ_m falls.
+- ⚠ Referee pass 1 (FATAL, acted on) rejected an earlier draft that explained the frictional +1.0 as partially
+  released rotational DOF. Its proposed replacement ("the +1.0 is double-contact multiplicity, E1") is ALSO wrong
+  on this code: Z = z_nr counts DISTINCT non-rattler neighbours (`packing.contact_graph` deduplicates every grain
+  pair; `dup_contact_frac` is reported beside it and never enters Z). A doubly-touching pair supplies MORE
+  constraints per neighbour, which, if anything, lowers the count rigidity needs. So the frictional rise is
+  geometric crowding — an elongated grain touches more distinct neighbours — that counting neither demands nor
+  forbids. What counting explains is the ASYMMETRY (the frictionless branch MUST add contacts; the frictional
+  one need not); the SIZE of each rise (Z₀ +2.0, short of the +4 DOF count; Z_m +1.0) is measured, not predicted.
 
 **Sphericity is a singular point (hypothesis).** Counting says Z₀ jumps from 6 to ≥ 10 at *infinitesimal* asphericity
 (Donev's singularity), while frictional Z_iso = 4 does not move. If the DEM follows the counting, the window

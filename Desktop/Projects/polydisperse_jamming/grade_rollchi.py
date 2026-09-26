@@ -399,6 +399,23 @@ def main() -> int:
             say(f"   p {rung:.0e} alpha {a}: eta_eff {eta_eff:.3f}  chi_clump {chi[(a, rung)]:.4f}  chi_roll {cr:.4f}  d {dlt:+.4f}")
     say(f"A3: {'PASS' if a3 and all(a3) else ('INCOMPLETE' if not a3 else 'FAIL')} ({sum(a3)}/{len(a3)})")
 
+    say("\n=== POST HOC: the (G) decomposition per clump population, phi = Z/(Z + 2 sqrt3 w), CV 0 ===")
+    say("   alpha  mu   rung    n   phi     Z     w      dup_contact_frac  rattler_frac  r_neck/r_s")
+    for rung in RUNGS:
+        for mu in (0.0, 0.3):
+            for a in ALPHAS + (1.9, 1.95):
+                d = A.get((a, mu, 0.0, rung), {})
+                d = {s: r for s, r in d.items() if r["key"] not in k4_bad}
+                if not d:
+                    continue
+                ph = np.mean([r["phi"] for r in d.values()])
+                z = np.mean([r["z_nr"] for r in d.values()])
+                w = np.mean([r["z_nr"] * (1 - r["phi"]) / (SQ3 * r["phi"]) for r in d.values()])
+                dup = np.mean([r.get("dup_contact_frac", 0.0) for r in d.values()])
+                rat = np.mean([r["rattler_frac"] for r in d.values()])
+                neck = math.sqrt(max(0.0, 1 - (a - 1) ** 2)) if a > 1 else float("nan")
+                say(f"   {a:<5} {mu:<4} {rung:.0e} {len(d)}   {ph:.4f}  {z:.2f}  {w:.3f}  {dup:.3f}             {rat:.3f}         {neck:.3f}")
+
     say("\n=== N1 (Amendment 3, the neck-closing question): phi(alpha) at mu_p 0.3 near tangency ===")
     n1 = []
     for rung in RUNGS:
