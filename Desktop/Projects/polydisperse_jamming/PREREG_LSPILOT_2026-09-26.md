@@ -53,3 +53,12 @@ The node-convergence test (Am. 1-2) was run only on the sphere, but the reversal
 converged) and 1000 nodes 0.6105; added 400 and 2000 nodes. Registered: the reversal's phi_0 is node-converged if
 |phi_0(2000) - phi_0(1000)| < 0.005 (a quarter of the 0.027 sphere-to-eps-0.5 drop). If not, the reversal is reported
 as node-limited.
+
+## Amendment 4 RESULT (2026-09-26 ~04:00)
+eps 0.5, mu 0, seed 1, N 100: phi_0 = 0.6354 / 0.6112 / 0.6105 / 0.6197 at 102 / 400 / 1000 / 2000 nodes.
+|phi(2000) - phi(1000)| = 0.0092 > 0.005 -> **NODE-LIMITED as registered.** The sequence is non-monotone above 102
+nodes, which reads as trajectory scatter (a different node set is a different trajectory; the N-100 seed scatter of
+phi_0 is 0.005-0.010 in this campaign) rather than a drift -- but that is a reading, and the bar stays failed.
+What survives it: the highest eps-0.5 phi_0 at >= 400 nodes (0.6197) is still 0.017 below the LOWEST sphere seed
+(0.6370), so the SIGN of the reversal is robust to the node count; its MAGNITUDE (phi_0 drop 0.017-0.031, W 0.04-0.06
+against the sphere's 0.07-0.10) is uncertain by about a third.

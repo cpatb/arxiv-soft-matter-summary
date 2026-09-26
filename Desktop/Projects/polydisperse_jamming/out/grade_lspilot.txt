@@ -32,5 +32,5 @@ P1: INCOMPLETE (0/2) -- pilot, one seed
 REVERSAL: INCOMPLETE (seed pairs at N 100: [1, 2]; N 200 pair: False)
 
 === Amendment 4: node convergence at eps 0.5, mu 0, seed 1, N 100 ===
-   102 nodes: 0.6354  400 nodes: 0.6112  1000 nodes: 0.6105
-NODE CHECK eps 0.5: INCOMPLETE
+   102 nodes: 0.6354  400 nodes: 0.6112  1000 nodes: 0.6105  2000 nodes: 0.6197
+NODE CHECK eps 0.5: |phi(2000) - phi(1000)| = 0.0092 (bar 0.005) -> NODE-LIMITED

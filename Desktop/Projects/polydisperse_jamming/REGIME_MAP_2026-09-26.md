@@ -89,7 +89,9 @@ after a 102-node version failed it by +0.02 (node under-resolution of penetratio
 
 **In the pilot's two available seeds, convex faceting narrows the window** — the opposite of elongation or concavity;
 the registered replication (3 seeds + N 200, Amendment 3) and the ε-0.5 node-convergence check (Amendment 4) decide
-whether it stands (status in `out/grade_lspilot.txt`). The frictionless branch falls
+whether it stands (status in `out/grade_lspilot.txt`). The node check came back NODE-LIMITED (φ₀(ε 0.5) = 0.6105 at
+1000 nodes, 0.6197 at 2000; bar 0.005): the sign survives — every ε-0.5 value at ≥ 400 nodes is ≥ 0.017 below the
+lowest sphere seed — but the size of the narrowing is uncertain by about a third. The frictionless branch falls
 (φ₀ −0.027 at ε 0.5) while the frictional branch holds. Counting gives a geometric reason: a flat face resists tipping
 even without friction, because the contact point jumps to the face's edge, as for a box on a table. Face contacts
 therefore supply the rotational constraints that only friction supplies to spheres, and a faceted pack jams
