@@ -1,0 +1,7 @@
+shape: N_cells_total=2 N_on_this_shard=2 N_already_done=0 shard=0/1 family=lognormal alphas=(1.0,) cvs=(0.0,) seeds=(1,) phats=(0.001,) N_grains=100 -> /home/cpb/pj/out/phase2_lsref_lognormal.jsonl
+Using python version: 3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]
+[logn] a=1.00 eps=0.000 dup=0.000 nraw=312 phi_por=0.633197 cv=0.00 mu=0.00 phat_t=1.0e-03 N=100 s=1 -> phi=0.6332 phat=9.994e-04 Zall=6.240 rat(k2/3/4)=0.000/0.000/0.010 Znr(k2/3/4)=6.24/6.24/6.24 conv=True it=6526 11.5s
+  [1/2] elapsed 0.3 min
+[logn] a=1.00 eps=0.000 dup=0.000 nraw=254 phi_por=0.579982 cv=0.00 mu=0.30 phat_t=1.0e-03 N=100 s=1 -> phi=0.5800 phat=9.993e-04 Zall=5.080 rat(k2/3/4)=0.020/0.040/0.240 Znr(k2/3/4)=5.18/5.21/5.00 conv=True it=3081 4.2s
+  [2/2] elapsed 0.4 min
+shape done in 0.4 min: N_run=2 N_skipped_already_done=0 N_failed=0

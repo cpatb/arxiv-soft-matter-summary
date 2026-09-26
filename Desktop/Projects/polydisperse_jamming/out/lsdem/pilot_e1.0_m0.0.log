@@ -1,0 +1,2 @@
+Using python version: 3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]
+{"eps": 1.0, "mu_p": 0.0, "p_hat_target": 0.001, "p_hat": 0.001000270976007912, "n": 100, "seed": 1, "r_extent": 0.5, "v_grain_analytic": 0.5235987755982987, "v_grain_levelset": 0.523487718936946, "phi": 0.6575507527251795, "phi_ls_volume": 0.6574112845012821, "z_all": 6.26, "z_nr": 6.3232323232323235, "rattler_frac": 0.010000000000000009, "unbalanced": 0.00510662815156983, "iters": 12676, "converged": true, "dt": 0.25, "spacing_frac": 0.05, "nodes": 102, "wall_s": 1055.521632194519, "tag": "pilot"}
