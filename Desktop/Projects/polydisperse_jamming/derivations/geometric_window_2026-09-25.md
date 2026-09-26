@@ -219,8 +219,10 @@ was not checked in the primary text).
 at p̂ 1e-3 for clumps: every α from 1.1 to 2.0 gives 1 − χ clustered at 0.10–0.11, ~1.5× the sphere's. The
 point-to-point differences (≤ 0.011) are the size of the propagated PHI_SCALE noise and α 1.2 / 1.5 rest on single
 seeds (and so is φ_m(1.1) at this rung), so the ladder is NOT resolved point-to-point. "Opens by α 1.1" is
-supported on replicated cells: it is carried by φ₀(1.1) − φ₀(1) = +0.032 (n 3 each, ~15 PHI_SCALE), while the
-frictional side at the replicated rung moves only +0.0045 (φ_m(1.1) = 0.5792 vs 0.5747 at p̂ 3e-5, n 3 each); "then flat" is not tested (the
+supported WITHIN the 1e-3 rung by a bound, not by replication on both branches: φ₀(1.1) − φ₀(1) = +0.032 (n 3 each,
+~15 PHI_SCALE), and even if the single-seed φ_m(1.1) = 0.6013 were 2·PHI_SCALE high or low, χ(1.1) ≤ 0.901 against the
+sphere's 0.928. No rung has both branches of α 1.1 replicated (referee pass 3: an earlier wording spliced 1e-3 and
+3e-5); the one replicated frictional comparison (p̂ 3e-5, 0.5792 vs 0.5747, n 3) agrees in direction; "then flat" is not tested (the
 registered 3e-5 grade A2 is INCOMPLETE; referee pass 2). (ii) What lowers the ONSET
 φ_m is concavity (a closing neck), continuously; mild asphericity RAISES φ_m. (iii) A contact moment limit
 (rolling resistance) reproduces the doublet's φ_m at μ_p 0.3 but not its geometry and not its interaction with
