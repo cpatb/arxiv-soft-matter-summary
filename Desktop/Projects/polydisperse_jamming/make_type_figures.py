@@ -48,21 +48,33 @@ def build():
         xd = [x_dst(c_, nd) for c_ in chis]
         ax[0].plot(chis, xd, ls, color=c, lw=0.9)
         rows += [{"panel": "a", "n_delta": nd, "chi": float(ch), "x_dst": float(x)} for ch, x in zip(chis, xd)]
-    # (b) cvmap drops: peak spread against the distance from each drop's OWN DST boundary
-    txt = open(os.path.join(HERE, "derivations", "cvmap_by_type_2026-09-26.txt"), encoding="utf-8").read()
-    pts = re.findall(r"^(\S+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s+(SJ|DST|CST)\s+\|\s+([\d.]+)\s+([\d.]+)",
-                     txt, re.M)
-    mk = {"SJ": ("s", COL[0]), "DST": ("D", COL[2]), "CST": ("o", COL[1])}
-    for t in ("SJ", "DST", "CST"):
-        sel = [p for p in pts if p[5] == t]
-        m, c = mk[t]
-        ax[1].plot([float(p[1]) - float(p[4]) for p in sel], [float(p[7]) for p in sel], m, color=c, ms=4,
-                   mfc=c, mec="k", mew=0.4, lw=0)
-        rows += [{"panel": "b", "label": p[0], "chi": float(p[2]), "x": float(p[1]), "type": p[5],
-                  "Rg_max": float(p[7])} for p in sel]
-    ax[1].axvline(0.0, color="0.5", lw=0.7, ls="--")
-    ax[1].set_ylim(0, 0.75)
-    ax[1].set_xlabel(r"$x - x_{DST}$")
+    # (b) the registered DNS test PREREG_DSTTYPE: peak spread against the thickening ratio Theta, by type
+    import json
+    reg = {}
+    for line in open(os.path.join(HERE, "out", "dsttype_cells.txt"), encoding="utf-8"):
+        f = line.split()
+        if f:
+            reg[f[0]] = f
+    xdst = {"C5": 0.89854, "C0": 0.87919}
+    for lab, f in sorted(reg.items()):
+        d = os.path.join(HERE, "out", "dsttype", lab)
+        st = json.load(open(os.path.join(d, "RUN_STATUS.json"), encoding="utf-8"))
+        a = np.loadtxt(os.path.join(d, "spread.dat"), comments="#", ndmin=2)
+        if st["rc"] != 0 or a[-1, 1] < 5.9:
+            continue
+        x = float(lab.split("_x")[1].split("_")[0])
+        chi = float(f[5]) / 0.62
+        theta = ((1 - x) / (1 - x / chi)) ** 2
+        typ = "DST" if x >= xdst[lab[:2]] else "CST"
+        u0 = float(f[6])
+        c = COL[2] if typ == "DST" else COL[1]
+        m = ("D" if typ == "DST" else "o") if u0 == 4.0 else ("d" if typ == "DST" else ".")
+        ax[1].plot(theta, float(a[:, 11].max()), m, color=c, ms=5 if u0 == 4.0 else 7, mec="k", mew=0.3)
+        rows.append({"panel": "b", "label": lab, "chi": chi, "x": x, "type": typ, "Rg_max": float(a[:, 11].max()),
+                     "theta": theta, "u0": u0})
+    ax[1].set_xscale("log")
+    ax[1].set_ylim(0, 0.65)
+    ax[1].set_xlabel(r"thickening ratio $\Theta = [(1-x)/(1-x/\chi)]^n$")
     ax[1].set_ylabel(r"peak spread $R_g/D_0$")
     ax[0].set_xlim(0.70, 0.99)
     ax[0].set_ylim(0.0, 1.0)
@@ -71,11 +83,11 @@ def build():
     for a_, lab in zip(ax, "ab"):
         a_.text(0.02, 0.97, f"({lab})", transform=a_.transAxes, va="top")
     fig.tight_layout()
-    keys = ["panel", "n_delta", "chi", "x_dst", "label", "x", "type", "Rg_max"]
+    keys = ["panel", "n_delta", "chi", "x_dst", "label", "x", "type", "Rg_max", "theta", "u0"]
     rows = [{k: r.get(k, "") for k in keys} for r in rows]
     save(fig, "T1_thickening_type", rows,
-         "make_type_figures.py; x_DST from the closed form (T); cvmap drops from out/grade_cvmapE03.txt via "
-         "derivations/cvmap_by_type_2026-09-26.txt; phi_0 0.62, n 2")
+         "make_type_figures.py; x_DST from the closed form (T); panel b = PREREG_DSTTYPE drops from out/dsttype "
+         "(spread.dat col 11 max); phi_0 0.62, n 2")
 
 
 def main():

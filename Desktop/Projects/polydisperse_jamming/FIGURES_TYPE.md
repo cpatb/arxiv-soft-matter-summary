@@ -9,9 +9,9 @@ Broken curves: the DST onset x_DST(χ, nδ) for nδ = 2.147 (blue dashed; the CV
 Between a broken curve and the black line the steady flow curve is S-shaped (DST); below it thickening is continuous
 (CST). The DST band shrinks to nothing as χ → 1 and widens with nδ; it exists only for nδ > 1.
 
-**(b) The 24 cvmap DNS drops** (EPS_MIN 0.03, `out/grade_cvmapE03.txt`; POST HOC classification
-`derivations/cvmap_by_type_2026-09-26.txt`): peak spread Rg_max/D₀ against each drop's distance from ITS OWN DST
-boundary, x − x_DST(χ, nδ) with its own χ and δ (φ₀ 0.62, n 2). Squares: SJ (x ≥ χ); diamonds: DST; circles: CST.
-Every drop on the DST/SJ side spreads to 0.36–0.40; every CST drop to 0.49–0.67. ⚠ Only two DST drops, and no drop
-lies within −0.022 … +0.017 of the boundary — the registered test `PREREG_DSTTYPE_2026-09-26` fills that gap and pairs
-drops of matched thickening ratio across it.
+**(b) The registered DNS test (`PREREG_DSTTYPE_2026-09-26`, 20/20 healthy):** peak spread Rg_max/D₀ against the
+thickening ratio Θ = [(1−x)/(1−x/χ)]^n (n 2) for two input sets (δ 1.07/σ* 220 and δ 1.32/σ* 300) at U₀ 4 (large
+markers) and 2 (small). Blue circles: CST (x < x_DST); orange diamonds: DST (x_DST ≤ x < χ). All points fall on one
+monotone curve per U₀ with no break at the type boundary: the drop follows Θ, not the steady-shear type (D1 THETA,
+D2 FAIL). The earlier post-hoc reading of the 24 cvmap drops ("DST drops spread like jammed ones",
+`derivations/cvmap_by_type_2026-09-26.txt`) was Θ in disguise — DST-band drops are the ones with large Θ.
