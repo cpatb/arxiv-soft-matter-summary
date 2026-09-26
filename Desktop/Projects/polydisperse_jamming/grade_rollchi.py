@@ -133,7 +133,7 @@ def main() -> int:
             if a and b:
                 live_n += 1
                 d = np.mean(list(a.values())) - np.mean(list(b.values()))
-                live_ok += abs(d) > 2 * PHI_SCALE
+                live_ok += bool(abs(d) > 2 * PHI_SCALE)
                 say(f"   live half cv {cv} p {rung:.0e}: phi(eta 1) - phi(eta 0) = {d:+.4f}  (bar |d| > {2*PHI_SCALE:.4f})")
     r0 = n_pair == 18 and n_bit == n_pair and live_n == 6 and live_ok == live_n
     say(f"R0: {'PASS' if r0 else ('INCOMPLETE' if n_pair < 18 or live_n < 6 else 'FAIL')}")
@@ -150,7 +150,7 @@ def main() -> int:
                 r1.append(None)
                 continue
             d = np.mean(list(a.values())) - np.mean(list(b.values()))
-            r1.append(abs(d) < 2 * PHI_SCALE)
+            r1.append(bool(abs(d) < 2 * PHI_SCALE) if len(a) == 3 else None)
             say(f"   mu {mu} p {rung:.0e}: coh {np.mean(list(a.values())):.4f} (n {len(a)}) frict {np.mean(list(b.values())):.4f} (n {len(b)})  d {d:+.4f}  {'ok' if r1[-1] else 'OUT'}")
     say(f"R1: {'PASS' if all(x is True for x in r1) else ('INCOMPLETE' if None in r1 else 'FAIL')}")
 
@@ -168,10 +168,10 @@ def main() -> int:
             m, se, n = mean_se(dd)
             tag = ""
             if eta in (0.1, 0.3):
-                r2.append(abs(m) < PHI_SCALE and n == 3)
+                r2.append(bool(abs(m) < PHI_SCALE) if n == 3 else None)
                 tag = "  <- graded " + ("ok" if r2[-1] else "OUT")
             say(f"   p {rung:.0e} eta {eta:<5}: phi {np.mean(list(a.values())):.4f}  paired d vs eta 1 = {m:+.4f} +- {se:.4f} (n {n}){tag}")
-    say(f"R2: {'PASS' if len(r2) == 4 and all(r2) else ('INCOMPLETE' if len(r2) < 4 else 'FAIL')}")
+    say(f"R2: {'INCOMPLETE' if len(r2) < 4 or None in r2 else ('PASS' if all(r2) else 'FAIL')}")
 
     # ---------------- R3 ------------------------------------------------------------
     say("\n=== R3 (H_roll, CONFIRMATORY after the seed-99 peek): saturated rolling sphere vs pure doublet, mu_p 0.3, CV 0 ===")
@@ -189,7 +189,7 @@ def main() -> int:
             continue
         d, se, t, tc = welch(a, b)
         frac = (np.mean(a) - np.mean(sph)) / (np.mean(b) - np.mean(sph))
-        r3.append(abs(d) < 2 * PHI_SCALE)
+        r3.append(bool(abs(d) < 2 * PHI_SCALE))
         say(f"   p {rung:.0e}: rolling {np.mean(a):.4f}  doublet {np.mean(b):.4f}  sphere {np.mean(sph):.4f}  "
             f"d {d:+.4f} +- {se:.4f} (t {t:+.2f}, t_crit {tc:.2f})  fraction of doublet shift carried by rolling = {frac:.3f}  "
             f"{'ok' if r3[-1] else 'OUT'} (bar {2*PHI_SCALE:.4f})")
@@ -245,7 +245,7 @@ def main() -> int:
               for (mu, eta, c, rung), d in R.items() if mu > 0.0 and c == cv for r in d.values()]
         pr = np.array(pr)
         fr = float(np.mean(np.abs(pr) < 0.015))
-        r6.append(fr >= 0.9)
+        r6.append(bool(fr >= 0.9))
         say(f"   CV {cv}: w = {w:.4f} (sd over {len(w0)} mu-0 cells {np.std(w0, ddof=1):.4f}); N predicted {len(pr)}, "
             f"residual mean {pr.mean():+.4f} sd {pr.std(ddof=1):.4f} range [{pr.min():+.4f}, {pr.max():+.4f}]; within 0.015: {fr:.3f}")
     r6_complete = all(len([1 for (mu, e, c, rg), d in R.items() if mu == 0.0 and c == cv for _ in d]) >= 12 for cv in (0.0, 0.2, 0.5))
