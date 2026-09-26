@@ -36,3 +36,13 @@ All further level-set cells use **1000 nodes**. Ladder (seed 1, N 100, p 1e-3, m
 W(eps < 1) > W(1). Also reported: phi_0(eps), phi_m(eps) and the (G) decomposition (Z, w) per cell, and whether
 the window at eps 0.7 (a mildly faceted near-sphere) already carries most of the eps-0.35 opening. One seed: every
 difference is reported against the FrictMat seed scatter at N 100 (not measured here) — i.e. as a pilot.
+
+## Amendment 3 (2026-09-26 ~01:20, after 7 of 8 ladder cells landed -- disclosed -- and before these cells run)
+Seed-1 pilot (out/grade_lspilot.txt): W = 0.0965 / 0.0819 / 0.0383 at eps 1.0 / 0.7 / 0.5 -- convex faceting NARROWS the
+window, P1 fails in the direction of a REVERSAL (0/2 so far). Because this reverses the registered expectation and the
+project's inference (facets ~ contact moment limit ~ lower phi_m), it is replicated before it is quoted:
+**R-seeds:** seeds 2 and 3 for eps {1.0, 0.7, 0.5} x mu_p {0, 0.3}, N 100, 1000 nodes (12 cells).
+**R-size:** seed 1, N 200, eps {1.0, 0.5} x mu_p {0, 0.3} (4 cells).
+**Registered bar (REVERSAL confirmed):** W(0.5) < W(1.0) on every seed at N 100 AND at N 200, with the seed-mean
+difference W(1.0) - W(0.5) > 3x its seed standard error. **Mechanism check (registered):** the reversal is carried by
+the FRICTIONLESS branch -- phi_0(1.0) - phi_0(0.5) > |phi_m(1.0) - phi_m(0.5)| on the seed means.
