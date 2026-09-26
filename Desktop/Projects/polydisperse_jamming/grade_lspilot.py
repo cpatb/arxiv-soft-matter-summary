@@ -100,6 +100,27 @@ def main():
             f"{'carried by the FRICTIONLESS branch' if d0 > abs(dm) else 'NOT carried by the frictionless branch'}")
     else:
         say(f"REVERSAL: INCOMPLETE (seed pairs at N 100: {seeds}; N 200 pair: {n200})")
+    say("\n=== Amendment 5 (reported, not the registered test): every available N-100 seed, 1000 nodes ===")
+    for r in load("ls_extra.jsonl"):
+        if r["nodes"] == 1000 and r["converged"]:
+            allc[(r["eps"], r["mu_p"], r["seed"], r["n"])] = r
+    pairs = []
+    for s in range(1, 10):
+        w = {}
+        for e in (1.0, 0.5):
+            a, b = allc.get((e, 0.0, s, 100)), allc.get((e, 0.3, s, 100))
+            if a and b:
+                w[e] = 1 - b["phi"] / a["phi"]
+        if len(w) == 2:
+            pairs.append((s, w[1.0], w[0.5]))
+    for s, w1, w5 in pairs:
+        say(f"   seed {s}: W(1.0) {w1:.4f}  W(0.5) {w5:.4f}  diff {w1 - w5:+.4f}")
+    if len(pairs) >= 2:
+        dd = [w1 - w5 for _, w1, w5 in pairs]
+        m = sum(dd) / len(dd)
+        se = (sum((x - m) ** 2 for x in dd) / (len(dd) - 1)) ** 0.5 / len(dd) ** 0.5
+        say(f"   seed-paired W(1.0) - W(0.5) = {m:+.4f} +- {se:.4f} (n {len(dd)}); W(0.5) < W(1.0) on {sum(x > 0 for x in dd)}/{len(dd)} seeds")
+
     say("\n=== Amendment 4: node convergence at eps 0.5, mu 0, seed 1, N 100 ===")
     lad = {}
     for r in load("ls_pilot.jsonl") + load("ls_ladder.jsonl") + load("ls_nodes05.jsonl"):
