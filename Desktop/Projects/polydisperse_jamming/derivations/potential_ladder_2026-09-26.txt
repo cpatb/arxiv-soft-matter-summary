@@ -1,0 +1,12 @@
+potential_ladder -- silica 800 nm, phi 0.44, lab impact point (D0 2.5 mm, U0 2.3 m/s)
+   sigma*(0 mM) = 44.2327 Pa (silica_poro's P_conf); bench onset ratio at 100 mM = 0.31
+   salt/mM  lambda_D/nm | [fixed sigma*] K_p/Pa   De        S       | [bench sigma*] sigma*/Pa  K_p/Pa   De        S
+   ~0 (resid.)    30.00    |       197  2.18e+06  0.00117 |     44.2         197  2.18e+06  0.00117
+   1               9.53    |       619  6.92e+05  0.00369 |     29.8         417  1.03e+06  0.00249
+   10              3.01    |  1.96e+03  2.19e+05   0.0117 |     20.1         887  4.83e+05  0.00529
+   100             0.95    |  6.19e+03  6.92e+04   0.0369 |     13.7    1.92e+03  2.23e+05   0.0114
+   (1 nm end)      1.00    |   5.9e+03  7.26e+04   0.0352 |     13.7    1.83e+03  2.34e+05   0.0109
+
+reading: across the whole lab salt range S stays << 1 and De >> 1 under both conventions -- salt moves the
+ONSET (sigma*, ~x0.31) and stiffens the network ~x10-30, but does not reach the hybrid corner. That is consistent
+with the bench reading that the ARRESTED state barely moves with salt (x1.28 against a x6.35 total range).
