@@ -18,13 +18,20 @@ Every number below is printed by one of those three.
 > - **size (CV) is a filling knob**: it lowers w (1.00 → 0.76, lognormal CV 0 → 0.5), which raises φ₀ and,
 >   by the algebra of (G), also *narrows* the window slightly. At fixed weighed φ a polydisperse sphere
 >   suspension drops out of the window from both ends.
-> - **shape is a counting knob that also changes filling**: a sphere is the unique body whose rotations are
->   free when frictionless (Z_iso = 6); any non-sphere must constrain them (Z_iso → 10–12), but friction
->   constrains rotation for EVERY shape (frictional Z_iso = 4, shape-blind). Friction therefore removes a
->   larger fraction of the contacts a non-sphere needs, and the window opens. Measured: Z_m/Z₀ = 0.775
->   (spheres) → 0.705 (pure doublets), with w the same at μ_p 0 and 0.3 for each grain type.
-> - **Stöber spheres have the narrowest window any shape can have.** Sphericity is not what lets silica jam
->   into a ball; making grains non-spherical makes shear jamming *easier*.
+>   (Referee pass 1 corrected the shape bullet below; see §5.)
+> - **shape worsens filling on both branches and counting compensates on only one.** An elongated grain
+>   raises w (1.00 → 1.37, the same at μ_p 0 and 0.3). Frictionless, a non-sphere's rotations are real degrees
+>   of freedom that must be constrained (counting: Z_iso 6 → 10–12; measured Z₀ 5.97 → 7.95, hypostatic), and
+>   the extra contacts offset the worse filling, so φ₀ barely moves (−0.9 %). Frictional counting is shape-blind
+>   (Z_iso = 4 for any shape), so no compensating contacts are required; the measured Z_m rise (+1.0) is
+>   contact multiplicity (`geom_shape_2026-09-19` E1), not a counting demand, and φ_m falls (−5.8 % for doublets
+>   at μ_p 0.3). Net Z_m/Z₀ 0.775 → 0.705, window ×1.49.
+> - **Every shape family tested here (doublets, α 2 clumps, their mixtures) has a wider window than spheres.**
+>   Sphericity is not what lets silica jam into a ball; in these packs non-sphericity makes shear jamming
+>   *easier*. Mild asphericity and real facets are open (§6, §9). External, weaker corroboration: same-paper
+>   fits give χ = 0.833 for 1.5 µm silica spheres (Royer, Blair & Hudson, PRL 116, 188301 (2016),
+>   doi:10.1103/PhysRevLett.116.188301) and 0.762 for cornstarch (Han, Wyart, Peters & Jaeger, PRF 3, 073301
+>   (2018), doi:10.1103/PhysRevFluids.3.073301; φ convention not verified) — different labs and conventions.
 >
 > ⚠ (G) is an empirical-geometric closure: SWM derive it for monodisperse spheres with Z ∈ [4, 6]; its use
 > with w ≠ 1 and Z outside [4, 6] is this project's extension and is tested, not assumed (§4, §5).
@@ -90,7 +97,7 @@ Invert (G) per cell: w = Z(1 − φ)/(a φ). Over the 70 existing (family, CV, r
 μ_p 0.3 at N 1500 (`filling_factor_posthoc_2026-09-25.txt`):
 - monodisperse spheres satisfy SWM with **no fitted number**: w = 1.001 (μ 0) and 0.989–0.992 (μ 0.3) at p̂ 3e-5.
 - w falls monotonically with CV: lognormal 1.00 / 0.95 / 0.90 / 0.84 / 0.76 at CV 0 / .2 / .3 / .4 / .5
-  (3e-5); uniform falls less (0.91 at CV 0.5) — the family dependence is the project's known "filling
+  (3e-5); uniform falls less (0.908 at CV 0.5, p̂ 1e-4 — no 3e-5 row exists) — the family dependence is the project's known "filling
   functional" result (`jamming-shift-is-a-filling-functional`), now expressed as one number per population.
 - w is nearly friction-independent: median spread across μ_p 0 / 0.3 (/ 3) 0.026.
 - **As a prediction it is approximate, not exact**: w from the μ_p 0 cell plus the measured Z at μ_p 0.3
@@ -101,7 +108,7 @@ Invert (G) per cell: w = Z(1 − φ)/(a φ). Over the 70 existing (family, CV, r
 
 **Why polydisperse spheres fail to jam (the geometric statement).** At fixed weighed φ, x = φ/φ₀ and
 φ₀ = Z₀/(Z₀ + a w). CV 0 → 0.5 takes w 1.00 → 0.76, so φ₀ 0.632 → 0.694 and x falls by 9 %; by (4) the
-window's lower edge rises (χ 0.908 → 0.917 measured). A suspension sitting at x 0.95 as monodisperse spheres
+window's lower edge rises (χ 0.9109 → 0.9170, both N 1500, lognormal, p̂ 3e-5; referee pass 1 caught a splice with the N 1700 value 0.908). A suspension sitting at x 0.95 as monodisperse spheres
 (inside [0.908, 1)) sits at x ≈ 0.865 as a CV-0.5 population — below its χ — and can then only thicken.
 Physically: small grains sit in the Voronoi cells of large ones and add solid volume without adding the
 contacts rigidity is counted in (the rattler result, rattling ∝ a², `rattler_closure_2026-09-24`); the
@@ -122,11 +129,16 @@ Same inversion on the doublet ladder and α = 2 clumps (N 1700, CV 0):
 - **w is set by the grain, not the friction**, for shape too (1.36 vs 1.37–1.38).
 - **Z₀ rises by 2.0** (toward the frictionless DOF count 10, not reaching it: hypostatic, as for ellipsoids),
   **Z_m by only 1.0** — so Z_m/Z₀ falls 0.775 → 0.705 and the window opens ×1.49 (the `kmer` result).
-- The two changes on the FRICTIONLESS branch cancel (w up: worse filling; Z₀ up: more contacts), which is why
-  φ₀ barely moves (−0.9 %, shapechi). On the FRICTIONAL branch Z_m cannot rise as much, because friction
-  already constrained the sphere's rotations: the extra rotational DOF are "free" there. So φ_m falls.
+- The two changes on the FRICTIONLESS branch cancel (w up: worse filling; Z₀ up: more contacts, as counting
+  demands for a body with real rotational DOF), which is why φ₀ barely moves (−0.9 %, shapechi).
+- On the FRICTIONAL branch counting is shape-blind (Z_iso = 12/(3 − x_m) for any shape, E1), so nothing
+  demands extra contacts; the measured +1.0 in Z_m is the double-contact multiplicity E1 identified
+  (dup_contact_frac 0.11–0.19), not a counting requirement. The worse filling is therefore not compensated
+  and φ_m falls. ⚠ Referee pass 1 (FATAL, acted on): an earlier draft explained the +1.0 as partially released
+  rotational DOF, which E1 had already refuted. What counting explains is the ASYMMETRY (compensation on one
+  branch only); the size of Z₀'s rise (+2.0, short of the +4 DOF count) is measured, not predicted.
 
-**Sphericity is a singular point.** Counting says Z₀ jumps from 6 to ≥ 10 at *infinitesimal* asphericity
+**Sphericity is a singular point (hypothesis).** Counting says Z₀ jumps from 6 to ≥ 10 at *infinitesimal* asphericity
 (Donev's singularity), while frictional Z_iso = 4 does not move. If the DEM follows the counting, the window
 should open most steeply right at α → 1, i.e. a slightly non-spherical grain (cornstarch-like) already has most
 of the doublet's window. If it follows the lever arm (the eccentricity of contacts grows ∝ (α − 1)), the
@@ -154,3 +166,7 @@ contact modulus K_p (EDL vs Hertzian, ×1870) the larger lever. Shape moves neit
 - (G)'s w for mild asphericity (arm A) and for real facets (no polyhedral DEM in this project).
 - Why frictional packs sit systematically ~1 % denser than (G) with the frictionless w.
 - The DEM φ axis is not the bench's; only ratios (x, χ) transfer (ANSWER §6).
+- **w drifts with the DEM pressure rung** (lognormal CV 0 μ 0: 1.001 / 1.010 / 1.022 / 1.040 / 1.064 at
+  p̂ 3e-5 … 3e-3; referee pass 1): (G) is a jamming-point relation, so every comparison here is at a FIXED
+  rung, with 3e-5 the jamming stand-in. The drift (0.063 over two decades) is larger than the CV 0 → 0.2 step,
+  so a cross-rung comparison of w would be meaningless.

@@ -83,6 +83,16 @@ for k in sorted(base):
     if 0.0 in base[k]:
         say(f"      CV {k[1]:.2f} rung {k[2]:.0e} N {k[3]}: w {base[k][0.0][2]:.3f}")
 
+say("\nRUNG DRIFT (referee pass 1): w against p_hat at fixed (family, CV, mu)")
+for fam in ("lognormal", "uniform"):
+    for cv in (0.0, 0.5):
+        for mu in (0.0, 0.3):
+            pts = [(k[2], d[mu][2]) for k, d in rows.items() if k[0] == fam and k[1] == cv and mu in d]
+            if pts:
+                pts.sort()
+                say(f"   {fam:9s} CV {cv} mu {mu}: " + "  ".join(f"{p:.0e}: {w:.3f}" for p, w in pts))
+say("   -> (G) is a jamming-point relation; w drifts upward with p_hat, so every comparison is at FIXED rung")
+
 say("\nSEPARABILITY AS A PREDICTION: w from the mu-0 cell of each group, measured Z at mu 0.3 -> phi_m")
 res = []
 for k, _, d in spread:
