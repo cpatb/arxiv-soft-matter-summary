@@ -168,7 +168,8 @@ twice and the grid extended once (Amendments 1–3), all before grading and all 
 - **R2 FAIL (as registered).** Rolling resistance does NOT saturate by η = 0.1 at μ_p 0.3: φ(0.1) − φ(1) =
   +0.0037 ± 0.0004 (1e-3) and +0.0062 ± 0.0034 (3e-5), both above PHI_SCALE; η 0.3 is within 0.0025 of η 1. The
   2026-09-13 scoping probe (N 600, one seed, p̂ 3e-4) had said "saturates by 0.1". The half-effect scale is
-  η ≈ 0.01–0.03: at p̂ 1e-3, φ(0.01) sits 0.0244 (n 3) and φ(0.03) 0.0157 (n 2) above φ(1) of a 0.0282 total
+  between η 0.03 and 0.1 (≈ 0.04–0.05): at p̂ 1e-3, φ(0.01) sits 0.0244 (n 3), φ(0.03) 0.0157 (n 2) and φ(0.1)
+  0.0037 (n 3) above φ(1) of a 0.0282 total, i.e. 13 % / 44 % / 87 % of the effect relieved
   (the 3e-5 η 0.01 / 0.03 cells are single seeds; referee pass 2).
 - **R3 PASS (confirmatory — seen at seed 99 before registration).** Saturated rolling spheres land on the pure
   doublet's φ_m: 0.5674 vs 0.5693 (1e-3), 0.5399 vs 0.5414 (3e-5); the rolling channel carries 1.05–1.08 of the
@@ -217,7 +218,9 @@ was not checked in the primary text).
 **What the campaign changes in the argument.** (i) The "sphericity is singular" hypothesis of §5 is supported
 at p̂ 1e-3 for clumps: every α from 1.1 to 2.0 gives 1 − χ clustered at 0.10–0.11, ~1.5× the sphere's. The
 point-to-point differences (≤ 0.011) are the size of the propagated PHI_SCALE noise and α 1.2 / 1.5 rest on single
-seeds, so the ladder is NOT resolved point-to-point: "opens by α 1.1" is supported, "then flat" is not tested (the
+seeds (and so is φ_m(1.1) at this rung), so the ladder is NOT resolved point-to-point. "Opens by α 1.1" is
+supported on replicated cells: it is carried by φ₀(1.1) − φ₀(1) = +0.032 (n 3 each, ~15 PHI_SCALE), while the
+frictional side at the replicated rung moves only +0.0045 (φ_m(1.1) = 0.5792 vs 0.5747 at p̂ 3e-5, n 3 each); "then flat" is not tested (the
 registered 3e-5 grade A2 is INCOMPLETE; referee pass 2). (ii) What lowers the ONSET
 φ_m is concavity (a closing neck), continuously; mild asphericity RAISES φ_m. (iii) A contact moment limit
 (rolling resistance) reproduces the doublet's φ_m at μ_p 0.3 but not its geometry and not its interaction with
@@ -231,7 +234,7 @@ orientations, the lever arm ⟨e⟩/r_eq is 0.35 (dodecahedron), 0.44 (icosahedr
 leaves 0.22 / 0.11 / 0.04 (icosahedron). A two-sphere clump reaches 0.075 at α 1.1 and 0.62 at α 2 (C3,
 Monte Carlo agrees with (π/4)(α − 1)(d_s/d_eq) to < 5e-4).
 
-Against the measured rolling scales (§6, μ_p 0.3): half the rolling effect by η ≈ 0.01–0.03, saturation by η ≈ 0.3.
+Against the measured rolling scales (§6, μ_p 0.3): half the rolling effect by η ≈ 0.04–0.05, saturation by η ≈ 0.3.
 Sharp polyhedra (0.35–0.76) and an icosahedron rounded to half its radius (0.22) sit at or near saturation; one
 rounded to 75 % (0.11) is part-way. **If** a faceted grain's lever arms act like a contact moment limit, cornstarch's
 frictional φ_m would drop by up to the saturated rolling shift (−0.028 to −0.035 at μ_p 0.3). R7 says that channel

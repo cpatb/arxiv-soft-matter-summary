@@ -21,4 +21,4 @@ rises for mild asphericity (more neighbours at unchanged filling) and falls cont
 
 **(c) Window width 1 − χ = 1 − φ(μ_p 0.3)/φ(μ_p 0) against α at p̂ 1e-3** — the rung at which both branches exist for
 every α (the frictionless clump cells at 3e-5 did not finish in the session). Spheres 0.072; every clump 0.10–0.11.
-The window opens by α 1.1; beyond it the points cluster at 0.10–0.11 and are not resolved from one another. ⚠ Linear axis from zero; α 1.2 and 1.5 rest on single seeds.
+The window opens by α 1.1; beyond it the points cluster at 0.10–0.11 and are not resolved from one another. ⚠ Linear axis from zero; the μ_p 0.3 values at α 1.1, 1.2, 1.5 and the μ_p 0 values at α 1.5 rest on single seeds (n per point in the CSV); the α 1.1 opening is carried by φ₀ (+0.032, n 3).

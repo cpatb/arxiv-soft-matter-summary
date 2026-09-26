@@ -56,7 +56,9 @@ jam" rests on a 0.007 margin, 1.2× its uncertainty (ANSWER_2026-09-23 §3b).
   what the shear-jamming window is.
 - **Measured (DEM clumps, μ_p 0.3, p̂ 1e-3):** 1 − χ = 0.072 for spheres and 0.10–0.11 for every aspect ratio from
   1.1 to 2.0 — most of the widening is already there at 10 % elongation (the α-to-α differences are within noise
-  and two points are single seeds, so the shape of the curve beyond 1.1 is not resolved; the registered test at the
+  and three frictional points (α 1.1, 1.2, 1.5 at this rung) are single seeds, so the shape of the curve beyond 1.1
+  is not resolved. The α 1.1 opening itself rests on replicated cells: frictionless φ₀ +0.032 (n 3) against a
+  frictional change of +0.0045 at the jamming rung (n 3); the registered test at the
   jamming rung did not finish). Pure
   doublets at the jamming rung: ×1.49. External, weaker: same-paper fits give χ 0.833 for 1.5 µm silica spheres
   (Royer et al. 2016) and 0.762 for cornstarch (Han et al. 2018; convention unverified).
