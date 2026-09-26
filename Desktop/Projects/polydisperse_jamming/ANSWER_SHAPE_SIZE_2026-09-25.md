@@ -63,7 +63,8 @@ jam" rests on a 0.007 margin, 1.2× its uncertainty (ANSWER_2026-09-23 §3b).
   double contacts), so this family mixes elongation with concavity.
 - **Measured, convex facets (level-set rounded cubes; PILOT: N 100, 2–3 seeds, p̂ 1e-3).** Window 0.07–0.10 (sphere)
   → 0.08–0.09 (ε 0.7, within scatter) → 0.04–0.05 (ε 0.5). The frictionless φ₀ falls by 0.027 while φ_m holds.
-  Faceting narrows the window. This reverses the expectation I registered, and the earlier stand-in (spheres with a
+  In both available seeds faceting narrows the window (the registered 3-seed + N-200 replication and an ε-0.5
+  node-convergence check are still running). This reverses the expectation I registered, and the earlier stand-in (spheres with a
   contact moment limit, which lower φ_m) does not describe convex facets.
 - **The onset.** Mild convex elongation makes grains pack *denser* on both branches (φ_m 0.575 → 0.599 at α 1.5;
   frictionless φ₀ up to ~0.70, as for Donev's ellipsoids and Baule's dimers). A closing neck lowers φ_m continuously

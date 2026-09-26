@@ -19,9 +19,11 @@ With x = φ/φ₀, χ = φ_m/φ₀ and the activation sharpness δ, divergence e
 | x ≥ 1 | jammed at rest | a paste |
 
 A DST band exists only if nδ > 1; x_DST depends on n and δ only through nδ. **But the drop does not see the CST/DST
-line** (`PREREG_DSTTYPE_2026-09-26` RESULT: 20 drops, peak spread strictly monotone in Θ, no jump at x_DST, D1 THETA).
+line** (`PREREG_DSTTYPE_2026-09-26` RESULT: 20 drops, peak spread strictly monotone in Θ, no jump at x_DST — D4, the cleanest evidence; D1 THETA; the confound-free within-set D1′ is UNDETERMINED, the DST drops sitting slightly ABOVE the CST trend, i.e. saturation, never a type drop).
 So for drop impact the classification is two-way: **jammable (x ≥ χ) or stiffening by Θ(x, χ)**, and with the cvmap
-finding that activation carries < 0.05 % of the effect, the particles act on the outcome ONLY through x and χ (and n).
+finding that, ON THE CV AXIS, activation (σ*, δ) carries < 0.05 % of the effect, the particles act on a drop that is
+past onset through x and χ (at the fixed n = 2 of every DNS cell here — n was never varied; one closure, L9). Whether
+friction, shape and potential also collapse onto (x, χ) in the drop was not tested directly.
 Spheres at x 0.90 (χ 0.911): Θ = 74; the same weighed φ at CV 0.5 (x 0.819, χ 0.917): Θ = 2.9.
 
 **Gate B — whether the impact actually gets there.** A material point in the SJ band jams where the local stress
@@ -45,7 +47,7 @@ jamming), "→ SJ" = toward shear jamming, "→ ball"/"→ hybrid" = Gate C.
 | **mean size a** | none: the dry DEM is scale-free in size (only ratios transfer) | σ* ∝ a^(m−2): a⁻² at fixed repulsive force, a⁻¹ Derjaguin → bigger grains thicken at lower stress | κ ∝ a² → De ↓ (∝ a⁻² with Hertz contacts) → hybrid; S: size-free (Hertz) or ↓ (EDL) | algebra + scaling |
 | **size variance (CV)** | better filling: w 1.00 → 0.76 (lognormal CV 0.5) ⇒ φ₀ +9.9 %, x ×0.91; χ 0.911 → 0.917; δ ×0.81 ⇒ x_DST ↑. **All three → CST** | dry DEM: ×0.73–0.79 at fixed d₁₀ via Zφ; lubricated LF_DEM: 0.96–1.17 — **contested** | κ via d₃₂: ×(1+CV²)⁴ ⇒ De ×0.41 at CV 0.5 → toward drained | measured (A); DNS: at fixed weighed φ CV 0 jams, CV 0.5 cannot and spreads 35–67 % further (window carries 99.5–101.8 %) |
 | **distribution SHAPE** (family at fixed CV) | w at CV 0.5: lognormal 0.76, uniform 0.91 — the family moves x as much as CV does; two binaries matched in CV pack 0.0635 apart (filling functional) | via Zφ | via d₃₂ | measured |
-| **mild asphericity** (convex-ish, α ≤ 1.5) | window opens: 1 − χ 0.072 → ~0.10 (clumps, p̂ 1e-3); φ₀ AND φ_m rise (φ₀ ≈ 0.70 near α 1.2–1.5) ⇒ at fixed weighed φ, x falls. Net: wider SJ band, starting higher. [convex faceted grains: level-set campaign, §4] | not measured | κ × ψ² (≥ 0.64) — minor | measured (clumps; neck-confounded at α 1.1) |
+| **mild asphericity** (convex-ish, α ≤ 1.5) | window opens: 1 − χ 0.092 → 0.131 at α 1.1 (clumps, jamming rung p̂ 3e-5, n 3); φ₀ AND φ_m rise (φ₀ ≈ 0.70 near α 1.2–1.5 at p̂ 1e-3, where α 1.5's frictionless value and α 1.2–1.3's frictional values are n = 1–2) ⇒ at fixed weighed φ, x falls. Net: wider SJ band, starting higher. [convex faceted grains: level-set campaign, §4] | not measured | κ × ψ² (≥ 0.64) — minor | measured (clumps; neck-confounded at α 1.1) |
 | **concavity / interlocking** (necks, doublets, aggregates) | φ_m falls continuously as a neck closes (w ↑ 1.12 → 1.38); pure doublets window ×1.49 at the jamming rung; δ ×0.85 sheared → **→ SJ at lower φ** | ×0.78 (doublets, every contact primary–primary) | — | measured; DNS: doublets jam where singlets cannot (`kmermap` R1), entirely through χ |
 | **convex facets** (rounded cubes, level-set DEM) | **the window NARROWS**: W 0.07–0.10 (sphere) → 0.04–0.05 (ε 0.5), because φ₀ falls (−0.027) while φ_m holds — flat faces resist tipping without friction, so the frictionless branch jams 'frictional-like'. ⚠ The earlier stand-in (spheres with a contact moment limit, which lower φ_m by up to 0.035 at μ_p 0.3) is NOT what convex facets do | — | κ × ψ² — minor | pilot (N 100, 2–3 seeds, one rung; §4) |
 | **friction μ_p** (roughness, surface chemistry) | window 0.09 (μ 0.3) → 0.11 (μ 3) at CV 0; δ −0.22 from μ 0 → 0.3 | — | — | measured |
@@ -61,7 +63,8 @@ jamming), "→ SJ" = toward shear jamming, "→ ball"/"→ hybrid" = Gate C.
 - **Shape.** Acts on counting and filling, and its SIGN depends on which geometric feature it adds. Features that
   add rotational freedom a frictionless contact must pin (elongation, a concave neck: clumps, doublets) WIDEN the
   window (×1.4–1.5 at the jamming rung, already at 10 % elongation). Features that let a frictionless contact pin
-  rotation by itself (flat faces) NARROW it (convex rounded cubes, pilot). Concavity additionally lowers the
+  rotation by itself (flat faces) narrowed it in the pilot's 2/2 available seeds (convex rounded cubes; the registered
+  replication is incomplete). Concavity additionally lowers the
   jamming onset φ_m; mild convex elongation raises it. Spheres sit between the two families, not at an extreme.
   Shape barely touches drainage.
 - **Surface potential.** Does not decide the type; decides the onset stress σ* and, through the double layer's
@@ -84,7 +87,9 @@ after a 102-node version failed it by +0.02 (node under-resolution of penetratio
 | 0.7 | 3 | 0.6297 / 0.6399 / 0.6293 | 0.5781 / 0.5808 / 0.5775 | 0.082 / 0.092 / 0.082 |
 | 0.5 (rounded cube) | 2 | 0.6105 / 0.6124 | 0.5871 / 0.5826 | 0.038 / 0.049 |
 
-**Convex faceting NARROWS the window**, the opposite of elongation or concavity. The frictionless branch falls
+**In the pilot's two available seeds, convex faceting narrows the window** — the opposite of elongation or concavity;
+the registered replication (3 seeds + N 200, Amendment 3) and the ε-0.5 node-convergence check (Amendment 4) decide
+whether it stands (status in `out/grade_lspilot.txt`). The frictionless branch falls
 (φ₀ −0.027 at ε 0.5) while the frictional branch holds. Counting gives a geometric reason: a flat face resists tipping
 even without friction, because the contact point jumps to the face's edge, as for a box on a table. Face contacts
 therefore supply the rotational constraints that only friction supplies to spheres, and a faceted pack jams
