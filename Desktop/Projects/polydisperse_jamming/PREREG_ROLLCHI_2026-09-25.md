@@ -107,3 +107,14 @@ two-sided 95 % t_crit; seed-paired ones use the paired t. A bar and a t are both
 
 Every verdict is printed beside the numbers it rests on. A test whose candidates are closer than
 their resolving power is reported NOT INFORMATIVE, whatever its nominal outcome.
+
+## Amendment 1 (2026-09-25 ~19:05, before any graded test was computed) — execution order only
+The laptop CPU runs cells 10-20x slower under 21-way load than in the shakeout (a frictionless N 1700 cell
+400 s; no clump cell finished in 11 min), and the first launch's loop order put every eta = 1.0 cell last.
+After 28 rchi + 1 rchi0 + 1 achig cells it was stopped and relaunched as worker QUEUES
+(`scripts/launch_rollchi.sh`): clump ladder at mu 0/0.3 CV 0 first, then CV 0.5, then mu 3; rolling
+spheres at mu 0.3 (CV 0, 0.5) first, then mu 0.1/1.0, mu 3 CV 0.5, CV 0.2; mu-0 controls and mu-3 CV-0
+rolling in their own queues. The GRID, gates and tests are unchanged. Wave tags (rchiA..F, rchi0A/B,
+achiA..C) keep resume files apart; the grader selects by tag prefix and deduplicates by cell key (a cell
+re-run after the stop is deterministic and must be bit-identical; any that is not is reported). Tests
+whose cells have not landed at grading time are reported INCOMPLETE, never graded on a subset silently.

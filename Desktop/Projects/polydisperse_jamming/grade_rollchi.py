@@ -106,7 +106,7 @@ def main() -> int:
     # ---------------- arm R index --------------------------------------------------------
     R = defaultdict(dict)   # (mu, eta, cv, rung) -> {seed: rec}
     for r in ok:
-        if r["tag"] in ("rchi", "rchi0"):
+        if r["tag"].startswith("rchi"):
             R[(r["mu_p"], r["eta_roll"], r["cv"], r["p_hat_target"])][r["seed"]] = r
 
     def phis(mu, eta, cv, rung):
@@ -283,7 +283,7 @@ def main() -> int:
     say("\n=== ARM A: two-sphere clumps ===")
     A = defaultdict(dict)   # (alpha, mu, cv, rung) -> {seed: rec}
     for r in ok:
-        if r["tag"] in ("achi", "achi5"):
+        if r["tag"].startswith("achi") and r["tag"] != "achig":
             A[(r["alpha"], r["mu_p"], r["cv"], r["p_hat_target"])][r["seed"]] = r
     for alpha in (1.0, 2.0):
         for mu in (0.0, 0.3, 3.0):
