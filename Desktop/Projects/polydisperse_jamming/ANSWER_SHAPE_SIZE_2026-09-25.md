@@ -55,7 +55,9 @@ jam" rests on a 0.007 margin, 1.2× its uncertainty (ANSWER_2026-09-23 §3b).
   regardless. A non-sphere therefore has a bigger gap between its frictionless and frictional states, which is
   what the shear-jamming window is.
 - **Measured (DEM clumps, μ_p 0.3, p̂ 1e-3):** 1 − χ = 0.072 for spheres and 0.10–0.11 for every aspect ratio from
-  1.1 to 2.0 — most of the widening is already there at 10 % elongation, and the window then stays flat. Pure
+  1.1 to 2.0 — most of the widening is already there at 10 % elongation (the α-to-α differences are within noise
+  and two points are single seeds, so the shape of the curve beyond 1.1 is not resolved; the registered test at the
+  jamming rung did not finish). Pure
   doublets at the jamming rung: ×1.49. External, weaker: same-paper fits give χ 0.833 for 1.5 µm silica spheres
   (Royer et al. 2016) and 0.762 for cornstarch (Han et al. 2018; convention unverified).
 - **But not every shape lowers the onset.** Mild asphericity (α ≤ 1.5) makes grains pack *denser* on both
@@ -84,27 +86,32 @@ corners of drainage Deborah number De and dilatant-strength ratio S: 800 nm sili
 - **solvent viscosity** (water → 1 Pa s at 10 µm): De 7 → 7×10³, S unchanged;
 - **sphericity** enters drainage only as ψ² ≥ 0.64 (Kozeny–Carman), against ×100–220 from size.
 Neither handle reaches the silica corner, because S ≪ 1 needs a soft (double-layer-like) contact network,
-i.e. surface chemistry. **So: size-matched cornstarch should jam at least as readily as silica (geometry),
-but on this estimate it will not form the same undrained, weak-network ball unless its contacts are softened.**
+i.e. surface chemistry. **So: both shape mechanisms this project can simulate open the window, and neither has been shown to transfer
+to a real convex faceted grain; on the drainage/stiffness estimate, cornstarch will not form the same undrained,
+weak-network ball unless its contacts are softened.**
 ⚠ This half is a scaling estimate on the project's poroelastic model; it is not a DEM or DNS result.
 
 ## 4. What the bench could do to separate the two halves
 1. Fractionate cornstarch to CV < 0.15 and measure φ₀, φ_m on the rheometer: the relation predicts χ below the
    sphere value (window wider than Stöber's) and φ₀ lower than the native powder.
-2. The same fraction in glycerol–water (µ_w ×10–100): De moves into the silica range, S does not. If the drop
-   then forms a ball, S is not the discriminant and the (De, S) reading is wrong.
+2. The same fraction in glycerol–water (µ_w ×10–100): De rises to ~70–700 — firmly undrained, though still far
+   below silica's 7×10⁵ — while S does not move. If the drop then forms a ball, S is not the discriminant and the
+   (De, S) reading is wrong.
 
 ## 5. Bottom line for the two questions
 
 1. **Polydisperse spheres fail to jam solidly** because a size distribution is a *filling* change, not a
    *constraint* change: small grains fill voids and rattle, raising φ₀ (w 1.00 → 0.76 at CV 0.5) and slightly
    narrowing the window, so a fixed weighed φ lands below χ. They can still thicken; they cannot shear-jam.
-2. **Filtered cornstarch:** geometry is on its side. Its non-sphericity gives it a wider window than Stöber spheres,
-   and narrowing its CV raises x. So it should shear-jam at least as readily. What would stop it looking like the
+2. **Filtered cornstarch:** narrowing its CV raises x, which favours jamming (the size result, measured on spheres).
+   On shape, both mechanisms this project can simulate — a non-spherical clump and a contact moment limit standing
+   in for facets — WIDEN the window, and the published cornstarch χ (0.76) is below the silica-sphere one (0.83),
+   the same direction. Neither mechanism has been measured on a convex faceted grain, so "cornstarch jams at least
+   as readily as silica" is the expectation, not a result. What would stop it looking like the
    silica *ball* is not shape but drainage and contact stiffness: at ~10 µm it is near the drained/undrained
    crossover with a stiff, strong contact network, and fractionation barely moves either. The sharpest bench test
-   is fractionated cornstarch in glycerol–water, which moves drainage into silica's range and leaves the network
-   strength where it is.
+   is fractionated cornstarch in glycerol–water, which moves drainage toward silica's range (De ×10³ at 1 Pa s, still ~2 decades short of silica's 7×10⁵) and
+   leaves the network strength where it is.
 
 ## 6. The registered DEM test (`PREREG_ROLLCHI_2026-09-25.md`, `out/grade_rollchi.txt`)
 Partly complete (shared machine): R3 PASS, R7 (p̂ 1e-3) NOT CLUMP-LIKE, N1 GRADUAL, R2 FAIL; the rest INCOMPLETE.
