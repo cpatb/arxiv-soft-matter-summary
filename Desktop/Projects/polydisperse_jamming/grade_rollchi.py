@@ -151,7 +151,7 @@ def main() -> int:
                 continue
             d = np.mean(list(a.values())) - np.mean(list(b.values()))
             r1.append(bool(abs(d) < 2 * PHI_SCALE) if len(a) == 3 else None)
-            say(f"   mu {mu} p {rung:.0e}: coh {np.mean(list(a.values())):.4f} (n {len(a)}) frict {np.mean(list(b.values())):.4f} (n {len(b)})  d {d:+.4f}  {'ok' if r1[-1] else 'OUT'}")
+            say(f"   mu {mu} p {rung:.0e}: coh {np.mean(list(a.values())):.4f} (n {len(a)}) frict {np.mean(list(b.values())):.4f} (n {len(b)})  d {d:+.4f}  {'n<3' if r1[-1] is None else ('ok' if r1[-1] else 'OUT')}")
     say(f"R1: {'PASS' if all(x is True for x in r1) else ('INCOMPLETE' if None in r1 else 'FAIL')}")
 
     # ---------------- R2 ------------------------------------------------------------

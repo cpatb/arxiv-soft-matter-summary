@@ -149,7 +149,70 @@ should open most steeply right at α → 1, i.e. a slightly non-spherical grain 
 of the doublet's window. If it follows the lever arm (the eccentricity of contacts grows ∝ (α − 1)), the
 opening is gradual. That is `PREREG_ROLLCHI` A2 — [§6].
 
-## 6. The registered campaign — [to be filled from out/grade_rollchi.txt]
+## 6. The registered campaign (`PREREG_ROLLCHI_2026-09-25.md` → `out/grade_rollchi.txt`)
+
+Run on a VM shared with ~26 solver processes of another session, so the grid did not complete in the session;
+every test whose cells had not landed is INCOMPLETE, never graded on a subset. Execution order was changed
+twice and the grid extended once (Amendments 1–3), all before grading and all committed.
+
+**Arm R — spheres given a contact moment limit η (rolling + twisting), N 1700.**
+- R0 inert half (μ_p 0: η 1 vs η 0 bit-identical): holds on every pair that has landed; live half: η 1 moves φ
+  by −0.028 / −0.035 / −0.030 (CV 0 at 1e-3, 3e-5; CV 0.5 at 1e-3) against a 0.0042 bar. Registered verdict
+  INCOMPLETE on pair count only.
+- R1 (CohFrict η 0 = FrictMat): |Δφ| ≤ 0.0016 on every row with n = 3.
+- **R2 FAIL (as registered).** Rolling resistance does NOT saturate by η = 0.1 at μ_p 0.3: φ(0.1) − φ(1) =
+  +0.0037 ± 0.0004 (1e-3) and +0.0062 ± 0.0034 (3e-5), both above PHI_SCALE; η 0.3 is within 0.0025 of η 1. The
+  2026-09-13 scoping probe (N 600, one seed, p̂ 3e-4) had said "saturates by 0.1". The half-effect scale is
+  η ≈ 0.03 (φ(0.03) sits 0.0157 above φ(1) of a 0.035 total at 3e-5).
+- **R3 PASS (confirmatory — seen at seed 99 before registration).** Saturated rolling spheres land on the pure
+  doublet's φ_m: 0.5674 vs 0.5693 (1e-3), 0.5399 vs 0.5414 (3e-5); the rolling channel carries 1.05–1.08 of the
+  doublet's shift.
+- **But not by the same geometry (POST HOC, (G) decomposition).** Rolling spheres keep w ≈ 1 (0.94–1.00) and
+  reach that φ by LOWERING Z below the sliding-only count (Z 3.82 at η 1, p̂ 3e-5; rattlers 29 %). Doublets reach it
+  with w 1.37 and Z 5.61. Same φ, opposite changes in Z. R3 therefore decides nothing about mechanism: φ alone
+  cannot tell the two apart, and (G) can.
+- **R7 at p̂ 1e-3: NOT CLUMP-LIKE** (the registered discriminator). ρ = D(η 1)/D(η 0) = 0.966, 95 % CI
+  [0.809, 1.123] (n 3; informative, half-width 0.157 < 0.165), against 0.62 for α 2 clumps and a separable
+  prediction of 0.953. Rolling resistance leaves the size effect intact; shape does not. 3e-5: INCOMPLETE.
+- R5 (SWM with w = 1 on CV-0 spheres, all μ and η): 92.8 % of the 69 landed cells within 0.015 (mean residual
+  +0.0004, sd 0.0085), including Z down to 3.15 — i.e. below the [4, 6] range SWM state it for. Registered verdict
+  INCOMPLETE (69/156 cells). R4, R6 INCOMPLETE; R6's post-hoc per-rung variant repeats §4's systematic
+  (+0.009 to +0.016: frictional packs sit denser than (G) with the frictionless w predicts).
+  **Reading:** "shape is blocked rolling" is TRUE AS A NUMBER at realistic friction and FALSE AS A MECHANISM.
+
+**Arm A — the aspect-ratio ladder, CV 0, N 1700 (0 of 34 checked cells K4-excluded).**
+
+φ_m at μ_p 0.3 (seed means, n in brackets where < 3):
+
+| α | 1.0 | 1.1 | 1.2 | 1.5 | 1.75 | 1.9 | 1.95 | 2.0 |
+|---|---|---|---|---|---|---|---|---|
+| p̂ 1e-3 | 0.5940 | 0.6013 (1) | 0.6151 (1) | 0.6289 (1) | 0.6086 | 0.5861 | 0.5769 | 0.5665 |
+| p̂ 3e-5 | 0.5747 | 0.5792 | 0.5852 (1) | 0.5993 (2) | 0.5834 | 0.5606 | 0.5517 | 0.5407 |
+
+and at p̂ 1e-3 the window 1 − χ is **0.072 (sphere) → 0.106 / 0.112 / 0.101 / 0.101 / 0.108** at α 1.1 / 1.2 /
+1.5 / 1.75 / 2.0 (frictionless φ₀ 0.672 / 0.693 (1) / 0.700 (1) / 0.677 / 0.635; Baule et al.'s mean-field maximum
+for dimers is 0.707, Nat. Commun. 4, 2194 (2013), doi:10.1038/ncomms3194 — the abstract value; the peak location
+was not checked in the primary text).
+- **N1 (Amendment 3): GRADUAL** at both rungs. φ_m falls continuously as the neck closes (r_neck/r_s 0.66 → 0.44
+  → 0.31 → 0 at α 1.75 → 2.0), every step > PHI_SCALE. The collapse toward α = 2 is a smooth function of how
+  concave the grain is, not an event at tangency.
+- **The (G) decomposition splits shape into two regimes** (POST HOC): for α ≤ 1.5, w stays at the sphere value
+  (0.995–1.008 at μ_p 0.3) and Z rises (4.63 → 5.22 at 3e-5) — denser packing through more neighbours at unchanged
+  filling. For α ≥ 1.75, w climbs with neck closure (1.12 → 1.24 → 1.38) while Z saturates (5.4–5.6) — worse
+  filling, looser packing. The window opens in both regimes (Z_m/Z₀ falls on the frictionless-branch rise alone).
+- ⚠ **Neck confound.** At α 1.1, 32 % of frictionless neighbour pairs touch both lobes (10 % frictional): grains
+  nestle into the shallow neck. A convex near-sphere (a faceted grain) has no neck. The 1.1 point therefore shows
+  that a *clump* at 10 % asphericity already has most of the window-opening; it does not show that a convex
+  faceted grain does.
+- A1, A2, A3 (graded at p̂ 3e-5) are INCOMPLETE: no frictionless clump cell at 3e-5 finished in the session
+  (they run 2–4 h each under the shared load). At 1e-3, A3's eccentricity map sits within ±0.0134 of every α
+  (report only; not the registered rung).
+
+**What the campaign changes in the argument.** (i) The "sphericity is singular" hypothesis of §5 is supported
+at p̂ 1e-3 for clumps: the window is ~flat from α 1.1 to 2.0 and 1.5× the sphere's. (ii) What lowers the ONSET
+φ_m is concavity (a closing neck), continuously; mild asphericity RAISES φ_m. (iii) A contact moment limit
+(rolling resistance) reproduces the doublet's φ_m at μ_p 0.3 but not its geometry and not its interaction with
+size — so a faceted grain's lever arms (§7) are a separate mechanism from a clump's shape, not a proxy for it.
 
 ## 7. Faceted grains (cornstarch proxy; C4)
 
@@ -157,8 +220,15 @@ A faceted grain's contact normals miss its centroid. For vertex-on-face contacts
 orientations, the lever arm ⟨e⟩/r_eq is 0.35 (dodecahedron), 0.44 (icosahedron), 0.65 (cube), 0.76
 (octahedron); rounding the edges with a sphere of radius equal to 50 % / 75 % / 90 % of the grain radius
 leaves 0.22 / 0.11 / 0.04 (icosahedron). A two-sphere clump reaches 0.075 at α 1.1 and 0.62 at α 2 (C3,
-Monte Carlo agrees with (π/4)(α − 1)(d_s/d_eq) to < 5e-4). [Where the rolling-resistance ladder saturates
-decides whether these lever arms are "large": §6.]
+Monte Carlo agrees with (π/4)(α − 1)(d_s/d_eq) to < 5e-4).
+
+Against the measured rolling scales (§6, μ_p 0.3): half the rolling effect by η ≈ 0.03, saturation by η ≈ 0.3.
+Sharp polyhedra (0.35–0.76) and an icosahedron rounded to half its radius (0.22) sit at or near saturation; one
+rounded to 75 % (0.11) is part-way. **If** a faceted grain's lever arms act like a contact moment limit, cornstarch's
+frictional φ_m would drop by up to the saturated rolling shift (−0.028 to −0.035 at μ_p 0.3). R7 says that channel
+leaves the size effect alone, and the (G) decomposition says it works by removing contacts, not by changing filling
+— a different mechanism from the clumps'. This is an inference from spheres with a moment law, not a measurement on
+polyhedra; the project has no polyhedral DEM.
 
 ## 8. Drainage: why size, not shape, carries ball vs hybrid (C5)
 
