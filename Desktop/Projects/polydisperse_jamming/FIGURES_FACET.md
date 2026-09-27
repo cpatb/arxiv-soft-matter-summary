@@ -23,5 +23,6 @@ body frame) for BOTH grains, divided by its uniform-surface-area null (`facet_ce
 point is one N-200 cell with ~6 face–face contacts, i.e. scatter.
 
 ⚠ Node-discretisation torque noise densifies every rotating-grain pack (a live-torque sphere: +0.018 at 1000 nodes,
-+0.0099 at 4000 on the registered readout, which did not pass its halving bar); the superball points carry it and the sphere reference does not. At ε 0.5 the frictional gap to
-the sphere (+0.04–0.05) exceeds it; at ε 0.9 it does not.
++0.0105 at 4000 where it converges; the registered halving check did not pass); the superball points carry it and the sphere reference does not. At ε 0.5 the frictional gap to
+the sphere (+0.027 to +0.050 across seeds and node counts) exceeds it; at ε 0.9 it does not. The figure regenerates from
+whatever has landed; the numbers quoted in `FACET_RESULT_2026-09-27.md` are frozen to `out/grade_facet_snapshot_2026-09-27_1510.txt`.
