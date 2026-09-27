@@ -261,6 +261,52 @@ def trajectories():
         print(f"   eps {e}: " + "  ".join(f"it {i}: phi {p:.4f} unb {u:.2f}" for i, p, u in sel))
 
 
+LIVE_SPHERE_1000 = 0.5977   # Am. 5: live-torque sphere, mu 0.3, seed 1, 1000 nodes, cell volume 87.61 at 4500 it (probe)
+FREE_SPHERE_1000 = 0.5797   # torque-free sphere, same seed (ls_nodes)
+
+
+def node_control(recs):
+    """Am. 5: node refinement of the torque-noise densification, mu 0.3, seed 1, N 100."""
+    print("\n=== Am. 5 node-noise control (mu_p 0.3, seed 1, N 100, rotations live) ===")
+    import ls_pack
+    rows = {}
+    for e, nodes in ((0.5, 2000), (0.5, 4000), (0.9, 4000), (1.0, 4000)):
+        fp = os.path.join(LSDIR, f"facet2nodes_e{e}_n{nodes}.log")
+        if not os.path.exists(fp):
+            print(f"   eps {e} nodes {nodes}: no log yet")
+            continue
+        r = ls_pack.R_EQ * ((4.0 / 3.0) * math.pi / ls_pack.superellipsoid_volume(1.0, e)) ** (1.0 / 3.0)
+        v = ls_pack.superellipsoid_volume(r, e)
+        pr = [ln.split() for ln in open(fp, encoding="utf-8") if ln.startswith("PROGRESS")]
+        rec = None
+        for line in open(fp, encoding="utf-8"):
+            if line.startswith("{"):
+                rec = json.loads(line)
+        if rec is not None and rec["converged"]:
+            rows[(e, nodes)] = (rec["phi"], "stop-rule")
+        elif len(pr) >= 4:
+            q = pr[3 * len(pr) // 4:]
+            rows[(e, nodes)] = (float(np.mean([100 * v / float(x[2]) for x in q])),
+                                f"last-quarter mean of {len(pr)} logs, unb {float(pr[-1][3]):.3f}, it {pr[-1][1]}")
+        else:
+            print(f"   eps {e} nodes {nodes}: {len(pr)} progress lines, too early")
+            continue
+        print(f"   eps {e} nodes {nodes}: phi {rows[(e, nodes)][0]:.4f} ({rows[(e, nodes)][1]})")
+    if (1.0, 4000) in rows:
+        gap0 = LIVE_SPHERE_1000 - FREE_SPHERE_1000
+        gap1 = rows[(1.0, 4000)][0] - FREE_SPHERE_1000
+        ok = gap1 < gap0 / 2
+        print(f"   noise model: live-sphere excess over torque-free {gap0:+.4f} (1000 nodes) -> {gap1:+.4f} (4000): "
+              + ("SHRINKS by >= half, node spacing drives it" if ok else "does NOT shrink by half -- control uninformative"))
+    ref1000 = {0.5: cellphi(recs, 100, 0.5, 0.3, 1), 0.9: cellphi(recs, 100, 0.9, 0.3, 1)}
+    for e in (0.5, 0.9):
+        if (e, 4000) in rows and isinstance(ref1000[e], float):
+            d = rows[(e, 4000)][0] - ref1000[e]
+            print(f"   N1 eps {e}: phi_m(4000) - phi_m(1000) = {d:+.4f} (bar |d| < {2 * PHI_SCALE:.4f})  "
+                  + ("PASS -- not a node-noise artefact" if abs(d) < 2 * PHI_SCALE else
+                     ("FAIL, falls -- correct F6 by this shift" if d < 0 else "FAIL, rises")))
+
+
 def census(recs):
     print(f"\n=== F5 contact census: face-face fraction f_ff (m > {C_FACE} on both grains) vs area null ===")
     nulls = {e: facet_census.area_null(e) for e in EPS_LADDER}
@@ -307,6 +353,7 @@ def main() -> int:
         window_test(recs, 100, (1, 2, 3), "F1-F3 second size (Block 1)")
         branch_tests(recs)
         trajectories()
+        node_control(recs)
         census(recs)
     out = buf.getvalue()
     sys.stdout.write(out)

@@ -156,3 +156,10 @@ superball cells carry that noise and the sphere reference does not, so part of F
   0.5 and 0.9 (stop-rule φ if the cell converges, else the last-quarter mean at target pressure, labelled). Pass →
   F6 is not a node-noise artefact at that eps. Fail with φ falling → F6 is corrected by the 4000-node shift and the
   corrected Δ is what is quoted.
+
+## Amendment 6 (2026-09-27 ~13:45 CDT) — a reporting rule for cells still unconverged at session end (not a verdict)
+Disclosed: interim progress logs of the μ_p 0.1 superball cells were read before writing this (unbalanced 0.04–0.14 at
+11–12k iterations; target pressure reached). Registered verdicts are unchanged: a test with an unconverged member is
+INCOMPLETE. For the session write-up only, an unconverged cell's φ is REPORTED as the mean over the last quarter of its
+progress log at target pressure, labelled "unconverged, descriptive", with its final unbalanced force and iteration.
+The same readout is applied to the sphere where needed, so the comparison at least uses one rule on both arms.
