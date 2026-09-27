@@ -57,10 +57,10 @@ registered cells landed: 17 of 50; unconverged (excluded): []
 
 === Am. 6 descriptive: mu 0.1 and 0.3 edges incl. unconverged cells (u = unconverged, log readout) ===
    eps 1.0: phi(0.1) / phi(0.3): s1: 0.6167 / 0.5797 W 0.0600  s2: 0.6173 / 0.5756 W 0.0676  s3: 0.6244 / 0.5927 W 0.0506   mean W_0.1 0.0594
-   eps 0.9: phi(0.1) / phi(0.3): s1: 0.6419u0.13 / 0.6003 W 0.0648  s2: 0.6500u0.13 / nanmissing W nan  s3: 0.6412u0.12 / 0.5950 W 0.0721   mean W_0.1 0.0685
-   eps 0.8: phi(0.1) / phi(0.3): s1: 0.6582u0.07 / 0.6205 W 0.0573  s2: 0.6526u0.12 / 0.6055 W 0.0722  s3: 0.6421u0.10 / nanmissing W nan   mean W_0.1 0.0647
-   eps 0.7: phi(0.1) / phi(0.3): s1: 0.6587u0.04 / nanmissing W nan  s2: 0.6626u0.06 / nanmissing W nan  s3: 0.6637 / nanmissing W nan   mean W_0.1 nan
-   eps 0.5: phi(0.1) / phi(0.3): s1: 0.6854u0.05 / 0.6193 W 0.0965  s2: 0.6807u0.04 / 0.6234 W 0.0843  s3: 0.6885u0.03 / nanmissing W nan   mean W_0.1 0.0904
+   eps 0.9: phi(0.1) / phi(0.3): s1: 0.6424u0.11 / 0.6003 W 0.0655  s2: 0.6505u0.14 / nanmissing W nan  s3: 0.6431u0.13 / 0.5950 W 0.0748   mean W_0.1 0.0702
+   eps 0.8: phi(0.1) / phi(0.3): s1: 0.6585u0.05 / 0.6205 W 0.0577  s2: 0.6560u0.15 / 0.6055 W 0.0771  s3: 0.6433u0.10 / nanmissing W nan   mean W_0.1 0.0674
+   eps 0.7: phi(0.1) / phi(0.3): s1: 0.6591u0.05 / nanmissing W nan  s2: 0.6630u0.06 / nanmissing W nan  s3: 0.6637 / nanmissing W nan   mean W_0.1 nan
+   eps 0.5: phi(0.1) / phi(0.3): s1: 0.6861u0.05 / 0.6193 W 0.0973  s2: 0.6811u0.04 / 0.6234 W 0.0847  s3: 0.6886u0.04 / nanmissing W nan   mean W_0.1 0.0910
 
 === F5 contact census: face-face fraction f_ff (m > 0.95 on both grains) vs area null ===
    N    eps   mu    contacts  P(m>c) meas/null   f_ff meas / null      E_ff   per-seed E_ff     lever arm med (arm/r)
