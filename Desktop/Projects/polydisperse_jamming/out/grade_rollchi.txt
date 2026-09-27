@@ -1,7 +1,7 @@
 grade_rollchi -- PREREG_ROLLCHI_2026-09-25.md
-N raw records in out/rollchi: 678
-N unique keys: 611 (duplicates dropped: 67)
-G1 HEALTH: 580 converged, 15 not converged (EXCLUDED), 16 failed (EXCLUDED)
+N raw records in out/rollchi: 697
+N unique keys: 618 (duplicates dropped: 79)
+G1 HEALTH: 587 converged, 15 not converged (EXCLUDED), 16 failed (EXCLUDED)
    excluded cv0.500_mu0.000_s2_p3.000e-05_N1700_a1.500_it1000000  not converged
    excluded cv0.500_mu0.000_s3_p3.000e-05_N1700_a1.300_it1000000  not converged
    excluded cv0.500_mu0.000_s1_p3.000e-05_N1700_a1.200_it1000000  not converged
@@ -33,10 +33,10 @@ G1 HEALTH: 580 converged, 15 not converged (EXCLUDED), 16 failed (EXCLUDED)
    excluded cv0.500_mu0.300_s1_p3.000e-05_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=4.029 spans 5.678 at this alpha and needs a final cell edge >= 14.196 but phi=0.72 gives 13.207. Use N >= 2112, or tighten `truncate`.')
    excluded cv0.500_mu0.000_s2_p1.000e-03_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=3.887 spans 5.478 at this alpha and needs a final cell edge >= 13.696 but phi=0.72 gives 13.185. Use N >= 1906, or tighten `truncate`.')
    excluded cv0.500_mu0.000_s3_p1.000e-03_N1700_a1.500_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.5, truncate=(0.2, 5.0): largest grain d_max=4.298 spans 5.415 at this alpha and needs a final cell edge >= 13.538 but phi=0.72 gives 13.434. Use N >= 1740, or tighten `truncate`.')
-   converged per tag: {'achiA': 25, 'achiB': 28, 'achiBR': 5, 'achiC': 13, 'achiN': 12, 'achiR': 35, 'achig': 1, 'rchi': 28, 'rchi0': 1, 'rchi0A': 4, 'rchi0C': 8, 'rchi0D': 18, 'rchiA': 14, 'rchiB': 33, 'rchiC': 63, 'rchiD': 35, 'rchiE': 134, 'rchiF': 71, 'rchiX': 35, 'rchiX2': 17}  (registered: rchi 432, rchi0 36, achi 90, achi5 60, achig 1)
+   converged per tag: {'achiA': 25, 'achiB': 31, 'achiBR': 2, 'achiC': 17, 'achiN': 12, 'achiR': 35, 'achig': 1, 'rchi': 28, 'rchi0': 1, 'rchi0A': 4, 'rchi0C': 8, 'rchi0D': 21, 'rchiA': 14, 'rchiB': 33, 'rchiC': 63, 'rchiD': 35, 'rchiE': 134, 'rchiF': 71, 'rchiX': 35, 'rchiX2': 17}  (registered: rchi 432, rchi0 36, achi 90, achi5 60, achig 1)
 
 === R0 (control, two-sided): mu_p 0 inert, mu_p 0.3 live ===
-   inert half: 14/14 pairs bit-identical in (phi, iters)  (registered 18)
+   inert half: 17/17 pairs bit-identical in (phi, iters)  (registered 18)
    live half cv 0.0 p 1e-03: phi(eta 1) - phi(eta 0) = -0.0282  (bar |d| > 0.0042)
    live half cv 0.0 p 3e-05: phi(eta 1) - phi(eta 0) = -0.0346  (bar |d| > 0.0042)
    live half cv 0.2 p 1e-03: phi(eta 1) - phi(eta 0) = -0.0250  (bar |d| > 0.0042)
@@ -99,14 +99,14 @@ R5: FAIL
 
 === R6 (separability): one filling factor w(CV) from mu_p 0 cells, phi = Z/(Z + 2 sqrt3 w), predicts the rest ===
    CV 0.0: w = 1.0291 (sd over 12 mu-0 cells 0.0293); N predicted 144, residual mean +0.0141 sd 0.0199 range [-0.0064, +0.0862]; within 0.015: 0.701
-   CV 0.2: w = 0.9755 (sd over 9 mu-0 cells 0.0157); N predicted 144, residual mean +0.0132 sd 0.0182 range [-0.0102, +0.0901]; within 0.015: 0.729
+   CV 0.2: w = 0.9708 (sd over 12 mu-0 cells 0.0167); N predicted 144, residual mean +0.0120 sd 0.0182 range [-0.0114, +0.0889]; within 0.015: 0.785
    CV 0.5: w = 0.7947 (sd over 10 mu-0 cells 0.0223); N predicted 142, residual mean +0.0040 sd 0.0156 range [-0.0470, +0.0680]; within 0.015: 0.754
 R6 (as registered, w pooled over rungs): INCOMPLETE  (INCOMPLETE: mu-0 cells missing)
    POST HOC (referee pass 1 found w drifts with p_hat, so pooling rungs confounds R6): the same test with w per (CV, rung)
       CV 0.0 p 1e-03: w 1.0571 (n 6); N 72 residual mean +0.0121 sd 0.0047 range [+0.0044, +0.0246]; within 0.015 0.708
       CV 0.0 p 3e-05: w 1.0011 (n 6); N 72 residual mean +0.0160 sd 0.0250 range [-0.0131, +0.0794]; within 0.015 0.625
       CV 0.2 p 1e-03: w 0.9850 (n 6); N 72 residual mean +0.0073 sd 0.0050 range [-0.0078, +0.0180]; within 0.015 0.917
-      CV 0.2 p 3e-05: w 0.9565 (n 3); N 72 residual mean +0.0167 sd 0.0223 range [-0.0088, +0.0853]; within 0.015 0.625
+      CV 0.2 p 3e-05: w 0.9565 (n 6); N 72 residual mean +0.0167 sd 0.0223 range [-0.0088, +0.0853]; within 0.015 0.625
       CV 0.5 p 1e-03: w 0.8093 (n 6); N 72 residual mean +0.0010 sd 0.0128 range [-0.0424, +0.0226]; within 0.015 0.806
       CV 0.5 p 3e-05: w 0.7728 (n 4); N 70 residual mean +0.0049 sd 0.0145 range [-0.0234, +0.0610]; within 0.015 0.814
 
@@ -118,15 +118,15 @@ R6 (as registered, w pooled over rungs): INCOMPLETE  (INCOMPLETE: mu-0 cells mis
 G0 wiring (alpha 2, mu .3, p 1e-3, s1 vs shapechi): BIT-IDENTICAL phi 0.5661483888248483 vs 0.5661483888248483, iters 15671 vs 15671
    K4 EXCLUDED a 1.75 mu 3.0 p 1e-03 s3: 0.42% of contacts deeper than 0.05 r
    K4 EXCLUDED a 1.75 mu 3.0 p 1e-03 s2: 0.54% of contacts deeper than 0.05 r
-K4: 85 CV-0 clump cells checked, 2 excluded (CV 0.5 clump cells: member radii not in the dump -> K4 not computable, reported only)
+K4: 89 CV-0 clump cells checked, 2 excluded (CV 0.5 clump cells: member radii not in the dump -> K4 not computable, reported only)
 
 --- phi(alpha) table, CV 0 (mean over seeds, n) ---
    p 1e-03 mu 0.0: 1.0: 0.6399(3)  1.1: 0.6722(3)  1.2: 0.6919(3)  1.3: 0.7010(3)  1.5: 0.6992(3)  1.75: 0.6770(3)  2.0: 0.6353(3)
    p 1e-03 mu 0.3: 1.0: 0.5940(3)  1.1: 0.6024(3)  1.2: 0.6139(3)  1.3: 0.6249(3)  1.5: 0.6275(3)  1.75: 0.6086(3)  2.0: 0.5665(3)
-   p 1e-03 mu 3.0: 1.0: 0.5598(3)  1.1: 0.5628(2)  1.2: --  1.3: 0.5667(3)  1.5: --  1.75: --  2.0: 0.4963(3)
+   p 1e-03 mu 3.0: 1.0: 0.5598(3)  1.1: 0.5620(3)  1.2: 0.5665(2)  1.3: 0.5667(3)  1.5: --  1.75: --  2.0: 0.4963(3)
    p 3e-05 mu 0.0: 1.0: 0.6327(3)  1.1: 0.6668(3)  1.2: 0.6879(3)  1.3: 0.6944(3)  1.5: 0.6931(3)  1.75: 0.6710(3)  2.0: 0.6272(3)
    p 3e-05 mu 0.3: 1.0: 0.5747(3)  1.1: 0.5792(3)  1.2: 0.5827(3)  1.3: 0.5940(3)  1.5: 0.5997(3)  1.75: 0.5834(3)  2.0: 0.5407(3)
-   p 3e-05 mu 3.0: 1.0: 0.5603(3)  1.1: 0.5571(1)  1.2: 0.5657(2)  1.3: --  1.5: 0.5591(3)  1.75: --  2.0: 0.4945(3)
+   p 3e-05 mu 3.0: 1.0: 0.5603(3)  1.1: 0.5595(2)  1.2: 0.5657(2)  1.3: --  1.5: 0.5591(3)  1.75: --  2.0: 0.4945(3)
 
 === A1 (orientational filling): phi_0(alpha) (mu 0) exceeds the sphere by > 2 PHI_SCALE somewhere in 1.1-1.75, p 3e-5 ===
    p 1e-03: sphere 0.6399; max 0.7010 at alpha 1.3 (excess +0.0611)
@@ -135,9 +135,9 @@ A1: PASS
 
 === A2 (where the window opens): chi(alpha) = phi(mu .3)/phi(mu 0) ===
    p 1e-03: 1.0: 0.9284  1.1: 0.8961  1.2: 0.8873  1.3: 0.8915  1.5: 0.8974  1.75: 0.8989  2.0: 0.8917
-   p 1e-03 (mu_m 3, K4-clean only, secondary): 1.0: 0.8749  1.1: 0.8372  1.3: 0.8085  2.0: 0.7812
+   p 1e-03 (mu_m 3, K4-clean only, secondary): 1.0: 0.8749  1.1: 0.8361  1.2: 0.8188  1.3: 0.8085  2.0: 0.7812
    p 3e-05: 1.0: 0.9083  1.1: 0.8686  1.2: 0.8470  1.3: 0.8554  1.5: 0.8653  1.75: 0.8694  2.0: 0.8620
-   p 3e-05 (mu_m 3, K4-clean only, secondary): 1.0: 0.8856  1.1: 0.8354  1.2: 0.8223  1.5: 0.8067  2.0: 0.7884
+   p 3e-05 (mu_m 3, K4-clean only, secondary): 1.0: 0.8856  1.1: 0.8391  1.2: 0.8223  1.5: 0.8067  2.0: 0.7884
    graded (p 3e-5): chi(1.2) = 0.8470 vs early-opening line chi(1) - (chi(1)-chi(2))/2 = 0.8852
 A2: PASS (early opening)
 
