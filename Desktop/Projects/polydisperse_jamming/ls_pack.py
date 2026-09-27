@@ -32,6 +32,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "out", "lsdem")
 R_EQ = 0.5          # volume-equivalent radius (d_eq = 1, as in packing.py)
 RHO = 1.0
+# Yade's Law2 default sphericalBodies=True computes torques from RADII, so a NORMAL force never torques a grain:
+# right for spheres, wrong for any other shape (Yade's own examples/levelSet/levelSetBody.py: 'sphericalBodies=False
+# is required in the general case'). Every level-set record before 2026-09-27 ran with the default, so frictionless
+# grains could NOT ROTATE (scripts/ls_facepair.py: a 5-deg tilt stays 5.00 deg with True, relaxes to 0.02 with False).
+SPHERICAL_BODIES = False
 YOUNG = 1.0
 
 
@@ -59,8 +64,49 @@ def z_nonrattler(neigh: dict[int, set[int]], k: int = 2) -> float:
     return sum(len(neigh[i] & alive) for i in alive) / len(alive)
 
 
+def contact_census(O) -> dict:
+    """Per-contact geometry, read AFTER the run (no effect on the trajectory).
+
+    For each real contact: the contact normal n expressed in each grain's BODY frame, whose largest |component|
+    (m1, m2) is 1 for a contact dead-centre on a cube face and ~0.58 on a corner diagonal; for a sphere the
+    orientation is arbitrary, so the eps = 1 cells give the random-orientation NULL of the same statistic. Also
+    the torque lever |(c - x_k) x n| of the normal force about each centre (0 for a sphere), with c the contact
+    point wrapped to the minimum image of the (diagonal) periodic cell, and |F_n|."""
+    L = np.array([O.cell.hSize[k, k] for k in range(3)])
+    rows = []
+    for i in O.interactions:
+        if not i.isReal:
+            continue
+        n = i.geom.normal
+        c = np.array(i.geom.contactPoint)
+        rec = [i.id1, i.id2]
+        for bid, sgn in ((i.id1, 1.0), (i.id2, -1.0)):
+            st = O.bodies[bid].state
+            nb = st.ori.conjugate() * (n * sgn)
+            rec.append(max(abs(nb[0]), abs(nb[1]), abs(nb[2])))
+            d = c - np.array(st.pos)
+            d -= L * np.round(d / L)
+            rec.append(float(np.linalg.norm(np.cross(d, np.array(n)))))
+        rec.append(float(i.phys.normalForce.norm()))
+        rows.append(rec)
+    a = np.array(rows, dtype=float).reshape(-1, 7)
+    return dict(id1=a[:, 0].astype(int), id2=a[:, 1].astype(int), m1=a[:, 2], arm1=a[:, 3], m2=a[:, 4],
+                arm2=a[:, 5], fn=a[:, 6], cell=L)
+
+
+def _state(O, n: int, v_grain: float, utils) -> dict:
+    """phi, pressure, force imbalance and TORQUE imbalance: mean |torque| per body over (mean |F_n| * R_EQ)."""
+    fns = [i.phys.normalForce.norm() for i in O.interactions if i.isReal]
+    tq = [O.forces.t(b.id).norm() for b in O.bodies]
+    s = utils.getStress()
+    return dict(iter=int(O.iter), phi=n * v_grain / O.cell.volume, p_hat=-float(s[0, 0] + s[1, 1] + s[2, 2]) / 3.0 / YOUNG,
+                unbalanced=float(utils.unbalancedForce()),
+                torque_unb=float(np.mean(tq) / (np.mean(fns) * R_EQ)) if fns else float("nan"),
+                z_all=2.0 * len(fns) / n)
+
+
 def run(eps: float, mu: float, phat: float, n: int, seed: int, spacing_frac: float, nodes: int,
-        max_iter: int) -> dict:
+        max_iter: int, dump_path: str | None = None, post_iters: int = 0) -> dict:
     from yade import O, Quaternion, Vector3, utils
     levelSetBody = utils.levelSetBody
     t0 = time.time()
@@ -90,7 +136,7 @@ def run(eps: float, mu: float, phat: float, n: int, seed: int, spacing_frac: flo
         utils.InsertionSortCollider([utils.Bo1_LevelSet_Aabb()], verletDist=0.0),
         utils.InteractionLoop([utils.Ig2_LevelSet_LevelSet_ScGeom()],
                               [utils.Ip2_FrictMat_FrictMat_FrictPhys()],
-                              [utils.Law2_ScGeom_FrictPhys_CundallStrack()]),
+                              [utils.Law2_ScGeom_FrictPhys_CundallStrack(sphericalBodies=SPHERICAL_BODIES)]),
         utils.PeriTriaxController(label="triax", goal=(goal, goal, goal), stressMask=7, dynCell=True,
                                   maxUnbalanced=packing.UNBALANCED_TOL, relStressTol=packing.REL_STRESS_TOL,
                                   growDamping=0.4, doneHook="O.pause()"),
@@ -98,6 +144,15 @@ def run(eps: float, mu: float, phat: float, n: int, seed: int, spacing_frac: flo
     ]
     O.dt = packing.DT_SAFETY * R_EQ * math.sqrt(RHO / YOUNG)
     O.run(max_iter, wait=True)
+    post = []
+    if post_iters > 0:
+        # The stop rule above balances FORCES only; a non-sphere can stop with unrelaxed TORQUES. Keep the same
+        # stress control running (doneHook disabled) and record phi, force and torque imbalance per chunk.
+        post.append(_state(O, n, v_grain, utils))
+        O.engines[3].doneHook = ""
+        for _ in range(10):
+            O.run(post_iters // 10, wait=True)
+            post.append(_state(O, n, v_grain, utils))
     vol = O.cell.volume
     neigh: dict[int, set[int]] = {b.id: set() for b in O.bodies}
     nc = 0
@@ -106,6 +161,9 @@ def run(eps: float, mu: float, phat: float, n: int, seed: int, spacing_frac: flo
             neigh[i.id1].add(i.id2)
             neigh[i.id2].add(i.id1)
             nc += 1
+    census = contact_census(O) if dump_path else None
+    if census is not None:
+        np.savez_compressed(dump_path, **census)
     unb = utils.unbalancedForce()
     s = utils.getStress()
     p = -float(s[0, 0] + s[1, 1] + s[2, 2]) / 3.0
@@ -115,7 +173,7 @@ def run(eps: float, mu: float, phat: float, n: int, seed: int, spacing_frac: flo
                 phi_ls_volume=n * v_ls / vol, z_all=2.0 * nc / n, z_nr=z_nonrattler(neigh, 2),
                 rattler_frac=1.0 - sum(1 for i in neigh if len(neigh[i]) >= 2) / n,
                 unbalanced=float(unb), iters=int(O.iter), converged=bool(unb < packing.UNBALANCED_TOL and O.iter < max_iter),
-                dt=float(O.dt), spacing_frac=spacing_frac, nodes=nodes, wall_s=time.time() - t0)
+                dt=float(O.dt), spherical_bodies=SPHERICAL_BODIES, spacing_frac=spacing_frac, nodes=nodes, wall_s=time.time() - t0, post=post)
 
 
 def main() -> int:
@@ -129,10 +187,14 @@ def main() -> int:
     ap.add_argument("--nodes", type=int, default=102)
     ap.add_argument("--max-iter", type=int, default=400000)
     ap.add_argument("--tag", default="probe")
+    ap.add_argument("--post-iters", type=int, default=0, help="extra stress-controlled iterations after convergence")
+    ap.add_argument("--census", action="store_true", help="write per-contact geometry to an npz beside the jsonl")
     a = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
-    rec = run(a.eps, a.mu, a.phat, a.n, a.seed, a.spacing, a.nodes, a.max_iter)
+    dump = (os.path.join(OUT, f"contacts_{a.tag}_e{a.eps}_m{a.mu}_n{a.n}_s{a.seed}.npz") if a.census else None)
+    rec = run(a.eps, a.mu, a.phat, a.n, a.seed, a.spacing, a.nodes, a.max_iter, dump, a.post_iters)
     rec["tag"] = a.tag
+    rec["census"] = os.path.basename(dump) if dump else None
     with open(os.path.join(OUT, f"ls_{a.tag}.jsonl"), "a", encoding="utf-8") as fh:
         fh.write(json.dumps(rec, sort_keys=True) + "\n")
     print(json.dumps(rec), flush=True)
