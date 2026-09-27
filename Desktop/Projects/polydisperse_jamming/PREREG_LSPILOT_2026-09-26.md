@@ -1,5 +1,7 @@
 # PREREG_LSPILOT_2026-09-26 — PILOT: does a convex faceted grain (rounded cube) widen the shear-jamming window?
 
+⚠ **WITHDRAWN 2026-09-27 — method artefact.** Every level-set pack behind this paragraph ran with Yade's default `Law2_ScGeom_FrictPhys_CundallStrack(sphericalBodies=True)`, under which a normal force exerts no torque, so the frictionless grains could NOT ROTATE (proof: `scripts/ls_facepair.py`, a 5° tilt stays 5.00° with the default and relaxes to 0.02° with `sphericalBodies=False`). The φ₀ drop (and Z₀ ≈ 6.4 = the translational isostatic count) describes orientation-frozen grains, and it contradicts the published superball result (frictionless φ RISES away from the sphere: Jiao, Stillinger & Torquato, PRE 81, 041304 (2010), doi:10.1103/PhysRevE.81.041304). Redone with rotations live: `PREREG_FACET_2026-09-27.md` (+Am. 1).
+
 Written 2026-09-25 ~23:25 CDT before these cells ran. **A pilot, not a measurement**: one seed, N = 100, one rung.
 Script `ls_pack.py` (level-set superellipsoids, eps_e = eps_n = eps, volume-equivalent to d = 1; volume formula
 anchored at eps = 1, 1e-3 and by Monte Carlo at 0.5); launcher `scripts/ls_pilot.sh`.

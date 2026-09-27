@@ -1,0 +1,7 @@
+uniform-sphere law P(m > 0.95) = 0.1501 (Gaussian draw, independent anchor)
+eps 1.0: P_area(m > 0.95) = 0.1493  f_ff0 = 0.02230  (shell points 118348, |<n>| 2.8e-03)
+eps 0.9: P_area(m > 0.95) = 0.2198  f_ff0 = 0.04832  (shell points 130389, |<n>| 1.7e-03)
+eps 0.8: P_area(m > 0.95) = 0.3028  f_ff0 = 0.09171  (shell points 143439, |<n>| 2.1e-03)
+eps 0.7: P_area(m > 0.95) = 0.3885  f_ff0 = 0.15092  (shell points 156510, |<n>| 2.1e-03)
+eps 0.5: P_area(m > 0.95) = 0.5670  f_ff0 = 0.32147  (shell points 182644, |<n>| 1.4e-03)
+anchors: PASS

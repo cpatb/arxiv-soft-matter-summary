@@ -35,7 +35,7 @@ Every number below is printed by one of those three.
 >   deduplicates by grain pair — so it is not contact multiplicity either; see §5), and φ_m falls (−5.8 % for doublets
 >   at μ_p 0.3). Net Z_m/Z₀ 0.775 → 0.705, window ×1.49.
 > - **The sign of the shape effect depends on the feature.** Elongation and concavity (clumps, doublets) widen the
->   window (×1.4–1.7 at the jamming rung, replicated); convex flat faces (level-set rounded cubes) LOWER THE FRICTIONLESS EDGE φ₀ by 0.026 (resolved, 4–5 seeds), but whether
+>   window (×1.4–1.7 at the jamming rung, replicated); convex flat faces (level-set rounded cubes) LOWER THE FRICTIONLESS EDGE φ₀ by 0.026 (resolved, 4–5 seeds) ⚠ *(level-set facet result WITHDRAWN 2026-09-27: frozen rotations, see PREREG_FACET Am. 1)*, but whether
 >   they narrow the window is unresolved (φ_m scatter at N 100; narrower on 2/4 seeds)
 >   (PILOT, `PREREG_LSPILOT`): a face resists tipping without friction, so the frictionless branch jams
 >   at a lower density. Spheres are therefore not established as the narrowest-window shape.
@@ -242,6 +242,8 @@ registered 3e-5 grade A2 is INCOMPLETE; referee pass 2). (ii) What lowers the ON
 size — so a faceted grain's lever arms (§7) are a separate mechanism from a clump's shape, not a proxy for it.
 
 ## 7. Faceted grains (cornstarch proxy; C4)
+
+⚠ **WITHDRAWN 2026-09-27 — method artefact.** Every level-set pack behind this paragraph ran with Yade's default `Law2_ScGeom_FrictPhys_CundallStrack(sphericalBodies=True)`, under which a normal force exerts no torque, so the frictionless grains could NOT ROTATE (proof: `scripts/ls_facepair.py`, a 5° tilt stays 5.00° with the default and relaxes to 0.02° with `sphericalBodies=False`). The φ₀ drop (and Z₀ ≈ 6.4 = the translational isostatic count) describes orientation-frozen grains, and it contradicts the published superball result (frictionless φ RISES away from the sphere: Jiao, Stillinger & Torquato, PRE 81, 041304 (2010), doi:10.1103/PhysRevE.81.041304). Redone with rotations live: `PREREG_FACET_2026-09-27.md` (+Am. 1).
 
 A faceted grain's contact normals miss its centroid. For vertex-on-face contacts over isotropic
 orientations, the lever arm ⟨e⟩/r_eq is 0.35 (dodecahedron), 0.44 (icosahedron), 0.65 (cube), 0.76

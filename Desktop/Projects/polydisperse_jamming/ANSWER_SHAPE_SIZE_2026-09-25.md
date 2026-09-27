@@ -68,6 +68,8 @@ jam" rests on a 0.007 margin, 1.2× its uncertainty (ANSWER_2026-09-23 §3b).
   1 − χ = 0.092 (sphere) → 0.131 (α 1.1) → 0.131 (α 1.75) → 0.138 (α 2); pure doublets ×1.49. Most of the widening
   is already there at 10 % elongation. ⚠ At α 1.1, frictionless neighbours nestle into the clump's shallow neck (32 %
   double contacts), so this family mixes elongation with concavity.
+⚠ **WITHDRAWN 2026-09-27 — method artefact.** Every level-set pack behind this paragraph ran with Yade's default `Law2_ScGeom_FrictPhys_CundallStrack(sphericalBodies=True)`, under which a normal force exerts no torque, so the frictionless grains could NOT ROTATE (proof: `scripts/ls_facepair.py`, a 5° tilt stays 5.00° with the default and relaxes to 0.02° with `sphericalBodies=False`). The φ₀ drop (and Z₀ ≈ 6.4 = the translational isostatic count) describes orientation-frozen grains, and it contradicts the published superball result (frictionless φ RISES away from the sphere: Jiao, Stillinger & Torquato, PRE 81, 041304 (2010), doi:10.1103/PhysRevE.81.041304). Redone with rotations live: `PREREG_FACET_2026-09-27.md` (+Am. 1).
+
 - **Measured, convex facets (level-set rounded cubes; PILOT: N 100, 2–3 seeds, p̂ 1e-3).** Window 0.07–0.10 (sphere)
   → 0.08–0.09 (ε 0.7, within scatter) → 0.04–0.05 (ε 0.5) on the first two seeds; with seeds 4–5 the window change is
   NOT resolved (+0.022 ± 0.018, narrower on 2/4 seeds), because the sphere's frictional φ_m scatters by 0.015 at
