@@ -1,0 +1,5 @@
+Using python version: 3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]
+PROGRESS 1000 186.546 0.1763 3.22752241005422e-05
+PROGRESS 2000 84.1276 0.1937 0.0006818726101587859
+PROGRESS 3000 83.1605 0.0226 0.0009592454838131067
+{"eps": 0.5, "mu_p": 0.3, "p_hat_target": 0.001, "p_hat": 0.0009994309592613816, "n": 100, "seed": 1, "r_extent": 0.4322783459310043, "v_grain_analytic": 0.5235987755982988, "v_grain_levelset": 0.5213205768344158, "phi": 0.6298771814052233, "phi_ls_volume": 0.627136561138425, "z_all": 5.02, "z_nr": 5.28421052631579, "rattler_frac": 0.050000000000000044, "unbalanced": 0.018722172745865708, "iters": 3611, "converged": true, "dt": 0.25, "spherical_bodies": false, "spacing_frac": 0.05, "nodes": 4000, "wall_s": 1038.073758840561, "post": [], "tag": "facet2nodes", "census": "contacts_facet2nodes_e0.5_m0.3_n100_s1.npz"}
