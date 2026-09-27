@@ -37,6 +37,12 @@ scaling). Drainage Deborah number De = τ_pore/τ_impact and dilatant-strength r
 De ≫ 1 with S ≪ 1 is undrained with a weak contact network (the 800 nm silica: De ≈ 7×10⁵, S ≈ 0.004 — the ball);
 De ~ 1–30 with S ~ 1–20 has drainage, dilatancy and inertia all O(1) (10 µm cornstarch: De ≈ 7, S ≈ 4 — the hybrid).
 
+⚠ **Scope, from the final registered grade (`PREREG_ROLLCHI` R5 FAIL, 2026-09-26 19:45):** with w = 1 the relation
+holds on 83 % of 156 CV-0 sphere cells (registered bar 90 %); it fails where friction and rolling resistance push Z
+below 4 — residual +0.018 at μ_p 1, +0.014 at μ_p 3, +0.013–0.014 at rolling η ≥ 0.3, up to +0.08 — i.e. outside the
+[4, 6] range SWM state it for. The per-(CV, rung) separability test predicts within 0.015 on only 62–92 % of cells.
+So (G) with one filling factor is a good description at REALISTIC friction (μ_p ≤ 0.3, no rolling resistance),
+not a general law.
 ## 2. The knobs
 
 Arrows: ↑/↓ = raises/lowers the quantity; "→ CST" = pushes the material toward continuous thickening (away from
@@ -62,7 +68,7 @@ jamming), "→ SJ" = toward shear jamming, "→ ball"/"→ hybrid" = Gate C.
   polydisperse suspension at the same weighed φ thickens and spreads where a monodisperse one jams.
 - **Shape.** Acts on counting and filling, and its SIGN depends on which geometric feature it adds. Features that
   add rotational freedom a frictionless contact must pin (elongation, a concave neck: clumps, doublets) WIDEN the
-  window (×1.4–1.5 at the jamming rung, already at 10 % elongation). Features that let a frictionless contact pin
+  window (×1.4–1.7 at the jamming rung, already at 10 % elongation). Features that let a frictionless contact pin
   rotation by itself (flat faces) lower the frictionless edge φ₀ (convex rounded cubes, resolved); whether the window
   narrows is not resolved (4 seeds, N 100). Concavity additionally lowers the
   jamming onset φ_m; mild convex elongation raises it. Spheres sit between the two families, not at an extreme.
@@ -100,7 +106,7 @@ Seed means (sphere 5 seeds, rounded cube ε 0.5 4–5 seeds; Welch t):
   narrowing way (0.084 vs 0.044). ε 0.7 is within scatter of the sphere on every branch.
 
 **What this does to the cornstarch expectation.** Elongated and concave grains (clumps, doublets) widen the window
-×1.4–1.5 at the jamming rung (replicated). Convex faceting moves the frictionless edge down by a resolved 0.026. It
+×1.4–1.7 at the jamming rung (replicated). Convex faceting moves the frictionless edge down by a resolved 0.026. It
 therefore pushes the other way if φ_m holds, but that is unresolved. Cornstarch granules are faceted polyhedra with
 modest irregularity, so on geometry alone this project cannot say whether their window is wider or narrower than
 Stöber silica's. The published same-paper fits (cornstarch χ 0.76 vs 1.5 µm silica spheres 0.83) say wider, but they

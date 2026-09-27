@@ -1,25 +1,58 @@
 grade_rollchi -- PREREG_ROLLCHI_2026-09-25.md
-N raw records in out/rollchi: 260
-N unique keys: 246 (duplicates dropped: 14)
-G1 HEALTH: 246 converged, 0 not converged (EXCLUDED), 0 failed (EXCLUDED)
-   converged per tag: {'achiA': 23, 'achiN': 12, 'achiR': 23, 'achig': 1, 'rchi': 28, 'rchi0': 1, 'rchi0A': 4, 'rchi0C': 6, 'rchi0D': 6, 'rchiA': 14, 'rchiB': 33, 'rchiC': 38, 'rchiD': 5, 'rchiX': 35, 'rchiX2': 17}  (registered: rchi 432, rchi0 36, achi 90, achi5 60, achig 1)
+N raw records in out/rollchi: 678
+N unique keys: 611 (duplicates dropped: 67)
+G1 HEALTH: 580 converged, 15 not converged (EXCLUDED), 16 failed (EXCLUDED)
+   excluded cv0.500_mu0.000_s2_p3.000e-05_N1700_a1.500_it1000000  not converged
+   excluded cv0.500_mu0.000_s3_p3.000e-05_N1700_a1.300_it1000000  not converged
+   excluded cv0.500_mu0.000_s1_p3.000e-05_N1700_a1.200_it1000000  not converged
+   excluded cv0.500_mu0.000_s1_p3.000e-05_N1700_a1.500_it1000000  not converged
+   excluded cv0.500_mu0.000_s2_p3.000e-05_N1700_a1.300_it1000000  not converged
+   excluded cv0.500_mu0.000_s1_p3.000e-05_N1700_a1.100_it1000000  not converged
+   excluded cv0.500_mu0.000_s1_p3.000e-05_N1700_a1.300_it1000000  not converged
+   excluded cv0.500_mu0.000_s2_p3.000e-05_N1700_a1.200_it1000000  not converged
+   excluded cv0.500_mu0.000_s2_p3.000e-05_N1700_a1.100_it1000000  not converged
+   excluded cv0.500_mu0.000_s3_p3.000e-05_N1700_a1.200_it1000000  not converged
+   excluded cv0.500_mu0.000_s3_p3.000e-05_N1700_a1.100_it1000000  not converged
+   excluded cv0.500_mu0.000_s1_p3.000e-05_N1700_a1.000_er0.000_it1000000  not converged
+   excluded cv0.500_mu0.000_s1_p3.000e-05_N1700_a1.000_er1.000_it1000000  not converged
+   excluded cv0.500_mu3.000_s3_p3.000e-05_N1700_a1.000_er0.000_it1000000  not converged
+   excluded cv0.500_mu1.000_s2_p3.000e-05_N1700_a1.000_er0.000_it1000000  not converged
+   excluded cv0.500_mu0.300_s3_p3.000e-05_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=4.298 spans 6.058 at this alpha and needs a final cell edge >= 15.145 but phi=0.72 gives 13.434. Use N >= 2436, or tighten `truncate`.')
+   excluded cv0.500_mu0.300_s1_p1.000e-03_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=4.029 spans 5.678 at this alpha and needs a final cell edge >= 14.196 but phi=0.72 gives 13.207. Use N >= 2112, or tighten `truncate`.')
+   excluded cv0.500_mu0.000_s1_p3.000e-05_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=4.029 spans 5.678 at this alpha and needs a final cell edge >= 14.196 but phi=0.72 gives 13.207. Use N >= 2112, or tighten `truncate`.')
+   excluded cv0.500_mu0.300_s3_p1.000e-03_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=4.298 spans 6.058 at this alpha and needs a final cell edge >= 15.145 but phi=0.72 gives 13.434. Use N >= 2436, or tighten `truncate`.')
+   excluded cv0.500_mu0.000_s3_p3.000e-05_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=4.298 spans 6.058 at this alpha and needs a final cell edge >= 15.145 but phi=0.72 gives 13.434. Use N >= 2436, or tighten `truncate`.')
+   excluded cv0.500_mu0.000_s1_p1.000e-03_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=4.029 spans 5.678 at this alpha and needs a final cell edge >= 14.196 but phi=0.72 gives 13.207. Use N >= 2112, or tighten `truncate`.')
+   excluded cv0.500_mu0.300_s2_p3.000e-05_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=3.887 spans 5.478 at this alpha and needs a final cell edge >= 13.696 but phi=0.72 gives 13.185. Use N >= 1906, or tighten `truncate`.')
+   excluded cv0.500_mu0.000_s3_p1.000e-03_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=4.298 spans 6.058 at this alpha and needs a final cell edge >= 15.145 but phi=0.72 gives 13.434. Use N >= 2436, or tighten `truncate`.')
+   excluded cv0.500_mu0.300_s3_p3.000e-05_N1700_a1.500_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.5, truncate=(0.2, 5.0): largest grain d_max=4.298 spans 5.415 at this alpha and needs a final cell edge >= 13.538 but phi=0.72 gives 13.434. Use N >= 1740, or tighten `truncate`.')
+   excluded cv0.500_mu0.300_s2_p1.000e-03_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=3.887 spans 5.478 at this alpha and needs a final cell edge >= 13.696 but phi=0.72 gives 13.185. Use N >= 1906, or tighten `truncate`.')
+   excluded cv0.500_mu0.000_s2_p3.000e-05_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=3.887 spans 5.478 at this alpha and needs a final cell edge >= 13.696 but phi=0.72 gives 13.185. Use N >= 1906, or tighten `truncate`.')
+   excluded cv0.500_mu0.300_s3_p1.000e-03_N1700_a1.500_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.5, truncate=(0.2, 5.0): largest grain d_max=4.298 spans 5.415 at this alpha and needs a final cell edge >= 13.538 but phi=0.72 gives 13.434. Use N >= 1740, or tighten `truncate`.')
+   excluded cv0.500_mu0.000_s3_p3.000e-05_N1700_a1.500_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.5, truncate=(0.2, 5.0): largest grain d_max=4.298 spans 5.415 at this alpha and needs a final cell edge >= 13.538 but phi=0.72 gives 13.434. Use N >= 1740, or tighten `truncate`.')
+   excluded cv0.500_mu0.300_s1_p3.000e-05_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=4.029 spans 5.678 at this alpha and needs a final cell edge >= 14.196 but phi=0.72 gives 13.207. Use N >= 2112, or tighten `truncate`.')
+   excluded cv0.500_mu0.000_s2_p1.000e-03_N1700_a1.750_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.75, truncate=(0.2, 5.0): largest grain d_max=3.887 spans 5.478 at this alpha and needs a final cell edge >= 13.696 but phi=0.72 gives 13.185. Use N >= 1906, or tighten `truncate`.')
+   excluded cv0.500_mu0.000_s3_p1.000e-03_N1700_a1.500_it1000000  ValueError('cell too small for the periodic collider at cv=0.5, N=1700, alpha=1.5, truncate=(0.2, 5.0): largest grain d_max=4.298 spans 5.415 at this alpha and needs a final cell edge >= 13.538 but phi=0.72 gives 13.434. Use N >= 1740, or tighten `truncate`.')
+   converged per tag: {'achiA': 25, 'achiB': 28, 'achiBR': 5, 'achiC': 13, 'achiN': 12, 'achiR': 35, 'achig': 1, 'rchi': 28, 'rchi0': 1, 'rchi0A': 4, 'rchi0C': 8, 'rchi0D': 18, 'rchiA': 14, 'rchiB': 33, 'rchiC': 63, 'rchiD': 35, 'rchiE': 134, 'rchiF': 71, 'rchiX': 35, 'rchiX2': 17}  (registered: rchi 432, rchi0 36, achi 90, achi5 60, achig 1)
 
 === R0 (control, two-sided): mu_p 0 inert, mu_p 0.3 live ===
-   inert half: 5/5 pairs bit-identical in (phi, iters)  (registered 18)
+   inert half: 14/14 pairs bit-identical in (phi, iters)  (registered 18)
    live half cv 0.0 p 1e-03: phi(eta 1) - phi(eta 0) = -0.0282  (bar |d| > 0.0042)
    live half cv 0.0 p 3e-05: phi(eta 1) - phi(eta 0) = -0.0346  (bar |d| > 0.0042)
+   live half cv 0.2 p 1e-03: phi(eta 1) - phi(eta 0) = -0.0250  (bar |d| > 0.0042)
+   live half cv 0.2 p 3e-05: phi(eta 1) - phi(eta 0) = -0.0425  (bar |d| > 0.0042)
    live half cv 0.5 p 1e-03: phi(eta 1) - phi(eta 0) = -0.0300  (bar |d| > 0.0042)
    live half cv 0.5 p 3e-05: phi(eta 1) - phi(eta 0) = -0.0481  (bar |d| > 0.0042)
 R0: INCOMPLETE
 
 === R1 (path control): CohFrictMat eta 0 vs FrictMat records, CV 0, N 1700 ===
    mu 0.0 p 1e-03: coh 0.6399 (n 3) frict 0.6399 (n 3)  d +0.0000  ok
-   mu 0.0 p 3e-05: coh 0.6327 (n 1) frict 0.6327 (n 3)  d +0.0001  n<3
+   mu 0.0 p 3e-05: coh 0.6327 (n 3) frict 0.6327 (n 3)  d +0.0000  ok
    mu 0.3 p 1e-03: coh 0.5956 (n 3) frict 0.5940 (n 3)  d +0.0016  ok
    mu 0.3 p 3e-05: coh 0.5745 (n 3) frict 0.5747 (n 3)  d -0.0002  ok
    mu 3.0 p 1e-03: coh 0.5610 (n 3) frict 0.5598 (n 3)  d +0.0012  ok
    mu 3.0 p 3e-05: coh 0.5595 (n 3) frict 0.5603 (n 3)  d -0.0008  ok
-R1: INCOMPLETE
+R1: PASS
 
 === R2 (saturation at mu_p 0.3, CV 0): |phi(eta) - phi(1.0)| < PHI_SCALE for eta 0.1, 0.3 ===
    p 1e-03 eta 0.0  : phi 0.5956  paired d vs eta 1 = +0.0282 +- 0.0009 (n 3)
@@ -43,37 +76,39 @@ R3: PASS
 
 === R4 (friction dependence): Delta_roll(mu) = phi(eta 1) - phi(eta 0) monotone non-increasing in mu, CV 0 ===
    p 1e-03 mu 0.0 : Delta_roll +0.0000 +- 0.0000 (n 3)
-   p 1e-03 mu 0.1 : Delta_roll -0.0081 +- 0.0003 (n 2)
+   p 1e-03 mu 0.1 : Delta_roll -0.0083 +- 0.0003 (n 3)
    p 1e-03 mu 0.3 : Delta_roll -0.0282 +- 0.0009 (n 3)
-   p 1e-03 mu 1.0 : Delta_roll -0.0624 +- 0.0031 (n 2)
+   p 1e-03 mu 1.0 : Delta_roll -0.0619 +- 0.0019 (n 3)
    p 1e-03 mu 3.0 : Delta_roll -0.0879 +- 0.0004 (n 3)
    p 1e-03: monotone non-increasing True, Delta_roll(0) == 0 exactly True
-   p 3e-05 mu 0.0 : Delta_roll +0.0000 +- nan (n 1)
-   p 3e-05 mu 0.1 : Delta_roll -0.0244 +- 0.0015 (n 2)
+   p 3e-05 mu 0.0 : Delta_roll +0.0000 +- 0.0000 (n 3)
+   p 3e-05 mu 0.1 : Delta_roll -0.0212 +- 0.0033 (n 3)
    p 3e-05 mu 0.3 : Delta_roll -0.0346 +- 0.0040 (n 3)
-   p 3e-05 mu 1.0 : Delta_roll -0.0467 +- nan (n 1)
+   p 3e-05 mu 1.0 : Delta_roll -0.0457 +- 0.0020 (n 3)
    p 3e-05 mu 3.0 : Delta_roll -0.0681 +- 0.0025 (n 3)
    p 3e-05: monotone non-increasing True, Delta_roll(0) == 0 exactly True
 R4: PASS
 
 === R5 (geometric Z -> phi map): phi = Z/(Z + 2 sqrt 3), Z = z_nr, all converged CV-0 sphere cells of arm R ===
-   N cells 129: residual phi - SWM mean +0.0055, sd 0.0183, min -0.0133, max +0.0751; within 0.015: 0.837 (bar 0.90)
-   by mu: 0.0: -0.0077, 0.1: -0.0076, 0.3: +0.0040, 1.0: +0.0142, 3.0: +0.0140
-   by eta: 0.0: +0.0006, 0.01: +0.0020, 0.03: +0.0014, 0.1: +0.0045, 0.3: +0.0141, 1.0: +0.0110
-   by rung: 3e-05: +0.0139, 0.001: -0.0025
-   Z range 2.45 - 6.52; spearman(residual, Z) = -0.705
-R5: INCOMPLETE (129/156 cells)
+   N cells 156: residual phi - SWM mean +0.0060, sd 0.0195, min -0.0133, max +0.0792; within 0.015: 0.827 (bar 0.90)
+   by mu: 0.0: -0.0065, 0.1: -0.0074, 0.3: +0.0040, 1.0: +0.0177, 3.0: +0.0140
+   by eta: 0.0: +0.0012, 0.01: +0.0016, 0.03: +0.0003, 0.1: +0.0056, 0.3: +0.0127, 1.0: +0.0141
+   by rung: 3e-05: +0.0145, 0.001: -0.0024
+   Z range 2.45 - 6.52; spearman(residual, Z) = -0.740
+R5: FAIL
 
 === R6 (separability): one filling factor w(CV) from mu_p 0 cells, phi = Z/(Z + 2 sqrt3 w), predicts the rest ===
-   CV 0.0: w = 1.0347 (sd over 10 mu-0 cells 0.0289); N predicted 119, residual mean +0.0150 sd 0.0186 range [-0.0051, +0.0834]; within 0.015: 0.672
-   CV 0.2: w = 0.9850 (sd over 3 mu-0 cells 0.0027); N predicted 10, residual mean +0.0066 sd 0.0031 range [+0.0009, +0.0116]; within 0.015: 1.000
-   CV 0.5: w = 0.8125 (sd over 4 mu-0 cells 0.0123); N predicted 41, residual mean +0.0152 sd 0.0084 range [-0.0073, +0.0323]; within 0.015: 0.561
+   CV 0.0: w = 1.0291 (sd over 12 mu-0 cells 0.0293); N predicted 144, residual mean +0.0141 sd 0.0199 range [-0.0064, +0.0862]; within 0.015: 0.701
+   CV 0.2: w = 0.9755 (sd over 9 mu-0 cells 0.0157); N predicted 144, residual mean +0.0132 sd 0.0182 range [-0.0102, +0.0901]; within 0.015: 0.729
+   CV 0.5: w = 0.7947 (sd over 10 mu-0 cells 0.0223); N predicted 142, residual mean +0.0040 sd 0.0156 range [-0.0470, +0.0680]; within 0.015: 0.754
 R6 (as registered, w pooled over rungs): INCOMPLETE  (INCOMPLETE: mu-0 cells missing)
    POST HOC (referee pass 1 found w drifts with p_hat, so pooling rungs confounds R6): the same test with w per (CV, rung)
-      CV 0.0 p 1e-03: w 1.0571 (n 6); N 60 residual mean +0.0122 sd 0.0045 range [+0.0047, +0.0224]; within 0.015 0.700
-      CV 0.0 p 3e-05: w 1.0012 (n 4); N 59 residual mean +0.0152 sd 0.0233 range [-0.0131, +0.0754]; within 0.015 0.644
-      CV 0.2 p 1e-03: w 0.9850 (n 3); N 10 residual mean +0.0066 sd 0.0031 range [+0.0009, +0.0116]; within 0.015 1.000
-      CV 0.5 p 1e-03: w 0.8125 (n 4); N 22 residual mean +0.0111 sd 0.0070 range [-0.0073, +0.0235]; within 0.015 0.727
+      CV 0.0 p 1e-03: w 1.0571 (n 6); N 72 residual mean +0.0121 sd 0.0047 range [+0.0044, +0.0246]; within 0.015 0.708
+      CV 0.0 p 3e-05: w 1.0011 (n 6); N 72 residual mean +0.0160 sd 0.0250 range [-0.0131, +0.0794]; within 0.015 0.625
+      CV 0.2 p 1e-03: w 0.9850 (n 6); N 72 residual mean +0.0073 sd 0.0050 range [-0.0078, +0.0180]; within 0.015 0.917
+      CV 0.2 p 3e-05: w 0.9565 (n 3); N 72 residual mean +0.0167 sd 0.0223 range [-0.0088, +0.0853]; within 0.015 0.625
+      CV 0.5 p 1e-03: w 0.8093 (n 6); N 72 residual mean +0.0010 sd 0.0128 range [-0.0424, +0.0226]; within 0.015 0.806
+      CV 0.5 p 3e-05: w 0.7728 (n 4); N 70 residual mean +0.0049 sd 0.0145 range [-0.0234, +0.0610]; within 0.015 0.814
 
 === R7 (size x constraint interaction, the discriminator): rho = D(eta 1)/D(eta 0), D = phi(CV .5) - phi(CV 0), mu_p 0.3 ===
    p 1e-03: D(eta 0) +0.0528  D(eta 1) +0.0510  rho 0.966, 95% CI [0.809, 1.123] (n 3, delta method, t_crit 4.30); separable prediction phi_m(1)/phi_m(0) = 0.953; informative True (half-width 0.157 vs 0.165) -> NOT CLUMP-LIKE
@@ -81,52 +116,57 @@ R6 (as registered, w pooled over rungs): INCOMPLETE  (INCOMPLETE: mu-0 cells mis
 
 === ARM A: two-sphere clumps ===
 G0 wiring (alpha 2, mu .3, p 1e-3, s1 vs shapechi): BIT-IDENTICAL phi 0.5661483888248483 vs 0.5661483888248483, iters 15671 vs 15671
-K4: 58 CV-0 clump cells checked, 0 excluded (CV 0.5 clump cells: member radii not in the dump -> K4 not computable, reported only)
+   K4 EXCLUDED a 1.75 mu 3.0 p 1e-03 s3: 0.42% of contacts deeper than 0.05 r
+   K4 EXCLUDED a 1.75 mu 3.0 p 1e-03 s2: 0.54% of contacts deeper than 0.05 r
+K4: 85 CV-0 clump cells checked, 2 excluded (CV 0.5 clump cells: member radii not in the dump -> K4 not computable, reported only)
 
 --- phi(alpha) table, CV 0 (mean over seeds, n) ---
-   p 1e-03 mu 0.0: 1.0: 0.6399(3)  1.1: 0.6722(3)  1.2: 0.6919(3)  1.3: 0.7015(2)  1.5: 0.6988(2)  1.75: 0.6770(3)  2.0: 0.6353(3)
-   p 1e-03 mu 0.3: 1.0: 0.5940(3)  1.1: 0.6024(3)  1.2: 0.6151(1)  1.3: 0.6240(2)  1.5: 0.6275(3)  1.75: 0.6086(3)  2.0: 0.5665(3)
-   p 1e-03 mu 3.0: 1.0: 0.5598(3)  1.1: --  1.2: --  1.3: --  1.5: --  1.75: --  2.0: 0.4963(3)
-   p 3e-05 mu 0.0: 1.0: 0.6327(3)  1.1: 0.6668(3)  1.2: --  1.3: --  1.5: 0.6929(1)  1.75: 0.6710(3)  2.0: 0.6272(3)
-   p 3e-05 mu 0.3: 1.0: 0.5747(3)  1.1: 0.5792(3)  1.2: 0.5827(3)  1.3: 0.5954(2)  1.5: 0.5997(3)  1.75: 0.5834(3)  2.0: 0.5407(3)
-   p 3e-05 mu 3.0: 1.0: 0.5603(3)  1.1: --  1.2: --  1.3: --  1.5: --  1.75: --  2.0: 0.4945(3)
+   p 1e-03 mu 0.0: 1.0: 0.6399(3)  1.1: 0.6722(3)  1.2: 0.6919(3)  1.3: 0.7010(3)  1.5: 0.6992(3)  1.75: 0.6770(3)  2.0: 0.6353(3)
+   p 1e-03 mu 0.3: 1.0: 0.5940(3)  1.1: 0.6024(3)  1.2: 0.6139(3)  1.3: 0.6249(3)  1.5: 0.6275(3)  1.75: 0.6086(3)  2.0: 0.5665(3)
+   p 1e-03 mu 3.0: 1.0: 0.5598(3)  1.1: 0.5628(2)  1.2: --  1.3: 0.5667(3)  1.5: --  1.75: --  2.0: 0.4963(3)
+   p 3e-05 mu 0.0: 1.0: 0.6327(3)  1.1: 0.6668(3)  1.2: 0.6879(3)  1.3: 0.6944(3)  1.5: 0.6931(3)  1.75: 0.6710(3)  2.0: 0.6272(3)
+   p 3e-05 mu 0.3: 1.0: 0.5747(3)  1.1: 0.5792(3)  1.2: 0.5827(3)  1.3: 0.5940(3)  1.5: 0.5997(3)  1.75: 0.5834(3)  2.0: 0.5407(3)
+   p 3e-05 mu 3.0: 1.0: 0.5603(3)  1.1: 0.5571(1)  1.2: 0.5657(2)  1.3: --  1.5: 0.5591(3)  1.75: --  2.0: 0.4945(3)
 
 === A1 (orientational filling): phi_0(alpha) (mu 0) exceeds the sphere by > 2 PHI_SCALE somewhere in 1.1-1.75, p 3e-5 ===
-   p 1e-03: sphere 0.6399; max 0.7015 at alpha 1.3 (excess +0.0616)
-   p 3e-05: sphere 0.6327; max 0.6929 at alpha 1.5 (excess +0.0602)  <- graded
-A1: INCOMPLETE
+   p 1e-03: sphere 0.6399; max 0.7010 at alpha 1.3 (excess +0.0611)
+   p 3e-05: sphere 0.6327; max 0.6944 at alpha 1.3 (excess +0.0617)  <- graded
+A1: PASS
 
 === A2 (where the window opens): chi(alpha) = phi(mu .3)/phi(mu 0) ===
-   p 1e-03: 1.0: 0.9284  1.1: 0.8961  1.2: 0.8889  1.3: 0.8896  1.5: 0.8979  1.75: 0.8989  2.0: 0.8917
-   p 1e-03 (mu_m 3, K4-clean only, secondary): 1.0: 0.8749  2.0: 0.7812
-   p 3e-05: 1.0: 0.9083  1.1: 0.8686  1.5: 0.8656  1.75: 0.8694  2.0: 0.8620
-   p 3e-05 (mu_m 3, K4-clean only, secondary): 1.0: 0.8856  2.0: 0.7884
-A2: INCOMPLETE
+   p 1e-03: 1.0: 0.9284  1.1: 0.8961  1.2: 0.8873  1.3: 0.8915  1.5: 0.8974  1.75: 0.8989  2.0: 0.8917
+   p 1e-03 (mu_m 3, K4-clean only, secondary): 1.0: 0.8749  1.1: 0.8372  1.3: 0.8085  2.0: 0.7812
+   p 3e-05: 1.0: 0.9083  1.1: 0.8686  1.2: 0.8470  1.3: 0.8554  1.5: 0.8653  1.75: 0.8694  2.0: 0.8620
+   p 3e-05 (mu_m 3, K4-clean only, secondary): 1.0: 0.8856  1.1: 0.8354  1.2: 0.8223  1.5: 0.8067  2.0: 0.7884
+   graded (p 3e-5): chi(1.2) = 0.8470 vs early-opening line chi(1) - (chi(1)-chi(2))/2 = 0.8852
+A2: PASS (early opening)
 
 === A3 (eccentricity map): chi_clump(alpha) vs chi_roll(eta_eff(alpha)), alpha >= 1.2, p 3e-5 ===
-   p 1e-03 alpha 1.2: eta_eff 0.144  chi_clump 0.8889  chi_roll 0.8900  d -0.0011
-   p 1e-03 alpha 1.3: eta_eff 0.209  chi_clump 0.8896  chi_roll 0.8876  d +0.0020
-   p 1e-03 alpha 1.5: eta_eff 0.330  chi_clump 0.8979  chi_roll 0.8853  d +0.0126
+   p 1e-03 alpha 1.2: eta_eff 0.144  chi_clump 0.8873  chi_roll 0.8900  d -0.0028
+   p 1e-03 alpha 1.3: eta_eff 0.209  chi_clump 0.8915  chi_roll 0.8876  d +0.0039
+   p 1e-03 alpha 1.5: eta_eff 0.330  chi_clump 0.8974  chi_roll 0.8853  d +0.0121
    p 1e-03 alpha 1.75: eta_eff 0.474  chi_clump 0.8989  chi_roll 0.8858  d +0.0132
    p 1e-03 alpha 2.0: eta_eff 0.623  chi_clump 0.8917  chi_roll 0.8861  d +0.0056
-   p 3e-05 alpha 1.5: eta_eff 0.330  chi_clump 0.8656  chi_roll 0.8495  d +0.0160
-   p 3e-05 alpha 1.75: eta_eff 0.474  chi_clump 0.8694  chi_roll 0.8507  d +0.0187
-   p 3e-05 alpha 2.0: eta_eff 0.623  chi_clump 0.8620  chi_roll 0.8516  d +0.0103
-A3: INCOMPLETE (0/2 landed within +-0.015; registered 4)
+   p 3e-05 alpha 1.2: eta_eff 0.144  chi_clump 0.8470  chi_roll 0.8585  d -0.0115
+   p 3e-05 alpha 1.3: eta_eff 0.209  chi_clump 0.8554  chi_roll 0.8538  d +0.0016
+   p 3e-05 alpha 1.5: eta_eff 0.330  chi_clump 0.8653  chi_roll 0.8496  d +0.0157
+   p 3e-05 alpha 1.75: eta_eff 0.474  chi_clump 0.8694  chi_roll 0.8508  d +0.0186
+   p 3e-05 alpha 2.0: eta_eff 0.623  chi_clump 0.8620  chi_roll 0.8517  d +0.0103
+A3: FAIL (2/4 landed within +-0.015; registered 4)
 
 === POST HOC: the (G) decomposition per clump population, phi = Z/(Z + 2 sqrt3 w), CV 0 ===
    alpha  mu   rung    n   phi     Z     w      dup_contact_frac  rattler_frac  r_neck/r_s
    1.0   0.0  1e-03 3   0.6399  6.51  1.057  0.000             0.006         nan
    1.1   0.0  1e-03 3   0.6722  7.51  1.057  0.316             0.001         0.995
    1.2   0.0  1e-03 3   0.6919  7.99  1.027  0.267             0.000         0.980
-   1.3   0.0  1e-03 2   0.7015  8.30  1.019  0.234             0.001         0.954
-   1.5   0.0  1e-03 2   0.6988  8.49  1.056  0.221             0.000         0.866
+   1.3   0.0  1e-03 3   0.7010  8.27  1.018  0.237             0.001         0.954
+   1.5   0.0  1e-03 3   0.6992  8.53  1.059  0.219             0.000         0.866
    1.75  0.0  1e-03 3   0.6770  8.50  1.171  0.214             0.000         0.661
    2.0   0.0  1e-03 3   0.6353  8.52  1.411  0.213             0.000         0.000
    1.0   0.3  1e-03 3   0.5940  5.11  1.007  0.000             0.041         nan
    1.1   0.3  1e-03 3   0.6024  5.26  1.002  0.097             0.039         0.995
-   1.2   0.3  1e-03 1   0.6151  5.51  0.995  0.113             0.038         0.980
-   1.3   0.3  1e-03 2   0.6240  5.68  0.988  0.135             0.037         0.954
+   1.2   0.3  1e-03 3   0.6139  5.47  0.993  0.112             0.036         0.980
+   1.3   0.3  1e-03 3   0.6249  5.69  0.986  0.134             0.036         0.954
    1.5   0.3  1e-03 3   0.6275  5.99  1.026  0.131             0.028         0.866
    1.75  0.3  1e-03 3   0.6086  6.26  1.163  0.130             0.020         0.661
    2.0   0.3  1e-03 3   0.5665  6.39  1.411  0.132             0.015         0.000
@@ -134,13 +174,15 @@ A3: INCOMPLETE (0/2 landed within +-0.015; registered 4)
    1.95  0.3  1e-03 3   0.5769  6.34  1.341  0.135             0.017         0.312
    1.0   0.0  3e-05 3   0.6327  5.97  1.001  0.000             0.018         nan
    1.1   0.0  3e-05 3   0.6668  7.11  1.026  0.273             0.002         0.995
-   1.5   0.0  3e-05 1   0.6929  8.00  1.024  0.190             0.002         0.866
+   1.2   0.0  3e-05 3   0.6879  7.66  1.003  0.225             0.001         0.980
+   1.3   0.0  3e-05 3   0.6944  7.86  0.999  0.205             0.001         0.954
+   1.5   0.0  3e-05 3   0.6931  8.05  1.030  0.188             0.001         0.866
    1.75  0.0  3e-05 3   0.6710  8.01  1.134  0.186             0.000         0.661
    2.0   0.0  3e-05 3   0.6272  7.92  1.359  0.196             0.001         0.000
    1.0   0.3  3e-05 3   0.5747  4.63  0.989  0.000             0.087         nan
    1.1   0.3  3e-05 3   0.5792  4.72  0.990  0.020             0.091         0.995
    1.2   0.3  3e-05 3   0.5827  4.87  1.006  0.056             0.081         0.980
-   1.3   0.3  3e-05 2   0.5954  5.01  0.984  0.086             0.085         0.954
+   1.3   0.3  3e-05 3   0.5940  5.03  0.993  0.085             0.081         0.954
    1.5   0.3  3e-05 3   0.5997  5.21  1.004  0.107             0.080         0.866
    1.75  0.3  3e-05 3   0.5834  5.42  1.117  0.113             0.063         0.661
    2.0   0.3  3e-05 3   0.5407  5.63  1.381  0.112             0.050         0.000
@@ -153,7 +195,7 @@ A3: INCOMPLETE (0/2 landed within +-0.015; registered 4)
 N1: GRADUAL
 
 === A4 (size x aspect, report only): D(alpha)/D(1), D = phi(CV .5) - phi(CV 0); alpha-1 CV .5 reference = arm R CohFrict eta 0 (R1-path) ===
-   p 1e-03 mu 0.0: D(1) +0.0560; 
-   p 1e-03 mu 0.3: D(1) +0.0528; 
-   p 3e-05 mu 0.0: D(1) +nan; 
-   p 3e-05 mu 0.3: D(1) +0.0632; 
+   p 1e-03 mu 0.0: D(1) +0.0560; 1.1: 0.924  1.2: 0.858  1.3: 0.803  1.5: 0.798
+   p 1e-03 mu 0.3: D(1) +0.0528; 1.1: 1.094  1.2: 1.015  1.3: 0.942  1.5: 0.892
+   p 3e-05 mu 0.0: D(1) +0.0560; 
+   p 3e-05 mu 0.3: D(1) +0.0632; 1.1: 0.887  1.2: 0.957  1.3: 0.905  1.5: 0.778

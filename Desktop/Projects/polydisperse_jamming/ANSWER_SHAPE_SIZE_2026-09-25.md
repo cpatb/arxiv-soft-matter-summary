@@ -24,6 +24,12 @@ packing fraction at which that happens:
   w (lognormal CV 0.5: 0.76); an elongated grain raises it (doublet: 1.37); friction barely changes it
   (median spread 0.026 across friction). w drifts upward with the DEM pressure rung, so it is compared only at a fixed rung (p̂ 3e-5). As a prediction it is approximate: φ_m is predicted within ±0.014,
   biased +0.006 (`derivations/filling_factor_posthoc_2026-09-25.txt`, POST HOC).
+⚠ **Scope, from the final registered grade (`PREREG_ROLLCHI` R5 FAIL, 2026-09-26 19:45):** with w = 1 the relation
+holds on 83 % of 156 CV-0 sphere cells (registered bar 90 %); it fails where friction and rolling resistance push Z
+below 4 — residual +0.018 at μ_p 1, +0.014 at μ_p 3, +0.013–0.014 at rolling η ≥ 0.3, up to +0.08 — i.e. outside the
+[4, 6] range SWM state it for. The per-(CV, rung) separability test predicts within 0.015 on only 62–92 % of cells.
+So (G) with one filling factor is a good description at REALISTIC friction (μ_p ≤ 0.3, no rolling resistance),
+not a general law.
 
 The shear-jamming window is χ ≤ x < 1 with χ = φ_m/φ₀ and x = φ/φ₀. From the relation,
 χ = Z_m(Z₀ + 2√3 w)/[Z₀(Z_m + 2√3 w)], so the window is opened by anything that lowers Z_m/Z₀ and narrowed

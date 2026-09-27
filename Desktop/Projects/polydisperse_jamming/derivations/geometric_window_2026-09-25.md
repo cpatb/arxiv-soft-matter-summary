@@ -10,6 +10,13 @@ Every number below is printed by one of those three.
 >
 > **(G)  φ_J = Z / (Z + 2√3 · w)**
 >
+> ⚠ **Scope, from the final registered grade (`PREREG_ROLLCHI` R5 FAIL, 2026-09-26 19:45):** with w = 1 the relation
+> holds on 83 % of 156 CV-0 sphere cells (registered bar 90 %); it fails where friction and rolling resistance push Z
+> below 4 — residual +0.018 at μ_p 1, +0.014 at μ_p 3, +0.013–0.014 at rolling η ≥ 0.3, up to +0.08 — i.e. outside the
+> [4, 6] range SWM state it for. The per-(CV, rung) separability test predicts within 0.015 on only 62–92 % of cells.
+> So (G) with one filling factor is a good description at REALISTIC friction (μ_p ≤ 0.3, no rolling resistance),
+> not a general law.
+>
 > (Song, Wang & Makse, Nature 453, 629 (2008), doi:10.1038/nature06981, where w = 1 for monodisperse
 > spheres). **Z** is the mechanical coordination the contacts must supply for rigidity; it is set by
 > **constraint counting** — friction, rolling resistance, and the rotational freedom that only a non-sphere
@@ -28,7 +35,7 @@ Every number below is printed by one of those three.
 >   deduplicates by grain pair — so it is not contact multiplicity either; see §5), and φ_m falls (−5.8 % for doublets
 >   at μ_p 0.3). Net Z_m/Z₀ 0.775 → 0.705, window ×1.49.
 > - **The sign of the shape effect depends on the feature.** Elongation and concavity (clumps, doublets) widen the
->   window (×1.4–1.5 at the jamming rung, replicated); convex flat faces (level-set rounded cubes) LOWER THE FRICTIONLESS EDGE φ₀ by 0.026 (resolved, 4–5 seeds), but whether
+>   window (×1.4–1.7 at the jamming rung, replicated); convex flat faces (level-set rounded cubes) LOWER THE FRICTIONLESS EDGE φ₀ by 0.026 (resolved, 4–5 seeds), but whether
 >   they narrow the window is unresolved (φ_m scatter at N 100; narrower on 2/4 seeds)
 >   (PILOT, `PREREG_LSPILOT`): a face resists tipping without friction, so the frictionless branch jams
 >   at a lower density. Spheres are therefore not established as the narrowest-window shape.
@@ -201,7 +208,9 @@ twice and the grid extended once (Amendments 1–3), all before grading and all 
 - at p̂ 1e-3: 0.072 → 0.104 / 0.111 / 0.110 / 0.102 / 0.101 / 0.108 at α 1.1 / 1.2 / 1.3 / 1.5 / 1.75 / 2.0
   (frictionless φ₀ 0.672 / 0.692 / 0.702 (2) / 0.699 (2) / 0.677 / 0.635; Baule et al.'s mean-field maximum for dimers
   is 0.707, Nat. Commun. 4, 2194 (2013), doi:10.1038/ncomms3194 — the abstract value; the peak location was not checked).
-The registered A1/A2 remain INCOMPLETE (the frictionless p̂ 3e-5 cells at α 1.2 and 1.3 never finished).
+FINAL (2026-09-26 19:45): **A1 PASS, A2 PASS (early opening)** — at p̂ 3e-5, χ = 0.908 (sphere) → 0.869 (α 1.1)
+→ **0.847 (α 1.2, the widest window, 1 − χ = 0.153)** → 0.855 / 0.865 / 0.869 / 0.862 at α 1.3 / 1.5 / 1.75 / 2.0;
+A3 FAIL (2/4 within ±0.015). R1 PASS; R5 FAIL (above); R6 per-rung 62–92 %; R7 at 3e-5 NOT INFORMATIVE.
 - **N1 (Amendment 3): GRADUAL** at both rungs. φ_m falls continuously as the neck closes (r_neck/r_s 0.66 → 0.44
   → 0.31 → 0 at α 1.75 → 2.0), every step > PHI_SCALE. The collapse toward α = 2 is a smooth function of how
   concave the grain is, not an event at tangency.
