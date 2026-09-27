@@ -110,3 +110,28 @@ which have no restoring orientation. For a sphere `sphericalBodies=True` is the 
 - The same node noise acts on superball contacts; unlike spheres they have a restoring orientation, and two μ_p 0.3
   superball cells met the stop rule. Whether FRICTIONLESS superballs reach it is being watched (four seed-1 cells
   restarted identically with progress logging, `scripts/ls_facet2_vis.sh`). An unconverged cell stays excluded.
+
+## Amendment 4 (2026-09-27 ~12:55 CDT) — frictionless superballs do not reach the stop rule; a low-friction edge replaces them
+Landed and disclosed at registration (seed-paired, N 100, stop-rule φ): μ_p 0.3: eps 0.9 s1 0.6003; eps 0.5 s1, s2
+0.6214 ± 0.0029; sphere references (Am. 3) μ_p 0 0.6387 ± 0.0025, μ_p 0.3 0.5827 ± 0.0090 (seeds 1–3). No μ_p 0
+superball cell has landed.
+**Observation (progress logs, `facet2vis_*`, seed 1):** frictionless superballs keep the unbalanced force at
+0.26 (eps 0.5), 0.32 (0.7), 0.45 (0.8), 0.60 (0.9) at 10 000 iterations, flat since ~6000, while φ creeps upward
+(eps 0.5: 0.731 → 0.733). Same cause as Am. 3: node-discretisation torque noise (lever arm ~0.03–0.09 r) with only
+Cundall damping to remove it; the nearer the sphere, the weaker the restoring orientation and the worse the plateau.
+At the registered bar these cells would all end unconverged at the 300 000 cap (~10 h), i.e. excluded.
+**Action:** the 12 queued/running frictionless superball cells without logging are stopped (N 100 seeds 2–3 and all
+N 200); the four logged seed-1 cells run on and are reported DESCRIPTIVELY (φ and unbalanced vs iteration), never graded.
+A-lit, F2, F4 and every F1 built on φ₀ are therefore **INCOMPLETE by method**, not failed.
+**Registered replacement (before any of these cells runs):** a low-friction edge **μ_p 0.1**, the lowest friction at
+which the Coulomb torque capacity μ_p r F_n exceeds the noise lever arm (~0.06 r F_n on the census smoke cell), N 100,
+seeds 1–3, eps {0.9, 0.8, 0.7, 0.5} rotations live + eps 1.0 with the torque-free law (Am. 3), no post iterations,
+census on (15 cells, tag `facet2mu01`).
+- **F6 (frictional branch, graded on the μ_p 0.3 Block-1 cells):** Δ_m = φ_m(eps) − φ_m(1.0), seed-paired over seeds 1–3,
+  se_eff as registered: RISE / FALL / UNRESOLVED at 3 se_eff with the sign on 3/3 seeds, per eps.
+- **F7 (low-friction edge):** Δ_0.1 = φ(eps, μ 0.1) − φ(1.0, μ 0.1), same rule, per eps. Literature expectation
+  (sign only): superballs pack denser than spheres at low friction (Jiao 2010, frictionless) and lose density faster
+  with friction (Salerno et al., PRE 98, 050901(R) (2018), doi:10.1103/PhysRevE.98.050901).
+- **F8 (the window proxy):** W_0.1 = 1 − φ(μ 0.3)/φ(μ 0.1), D = W_0.1(eps) − W_0.1(1.0) seed-paired: WIDENS / NARROWS /
+  UNRESOLVED by F1's rule (3 se_eff, sign on all 3 seeds). W_0.1 is NOT the registered window (its low edge is not
+  frictionless); it is reported as "the window between μ_p 0.1 and 0.3", and the frictionless edge stays open.

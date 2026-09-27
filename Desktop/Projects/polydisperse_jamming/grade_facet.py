@@ -33,17 +33,35 @@ QUEUE = {  # the registered queue (Amendment 1): (n, eps, mu, seed)
 }
 
 
+SPHERE_REF_FILES = ("ls_ladder.jsonl", "ls_nodes.jsonl", "ls_repl.jsonl", "ls_extra.jsonl", "ls_n200.jsonl",
+                    "ls_facet2ref.jsonl")
+
+
 def load() -> dict:
+    """Superball cells (eps < 1) from ls_facet2.jsonl, rotations live; sphere references (eps 1) with the torque-free
+    law, which is exact for a sphere (Amendment 3): the pilot's 1000-node records and the new facet2ref cells."""
     recs = {}
     path = os.path.join(LSDIR, "ls_facet2.jsonl")
-    if not os.path.exists(path):
-        return recs
-    for line in open(path, encoding="utf-8"):
-        r = json.loads(line)
-        assert r.get("spherical_bodies") is False, "a facet2 record without live rotations"
-        k = (r["n"], r["eps"], r["mu_p"], r["seed"])
-        assert k not in recs, f"duplicate record {k}"
-        recs[k] = r
+    if os.path.exists(path):
+        for line in open(path, encoding="utf-8"):
+            r = json.loads(line)
+            if r["eps"] == 1.0:
+                continue   # killed before landing (Am. 3); none should exist
+            assert r.get("spherical_bodies") is False, "a facet2 superball record without live rotations"
+            k = (r["n"], r["eps"], r["mu_p"], r["seed"])
+            assert k not in recs, f"duplicate record {k}"
+            recs[k] = r
+    for f in SPHERE_REF_FILES:
+        fp = os.path.join(LSDIR, f)
+        if not os.path.exists(fp):
+            continue
+        for line in open(fp, encoding="utf-8"):
+            r = json.loads(line)
+            if r["eps"] != 1.0 or r["nodes"] != 1000 or r.get("spherical_bodies", True) is not True:
+                continue
+            k = (r["n"], 1.0, r["mu_p"], r["seed"])
+            assert k not in recs, f"duplicate sphere reference {k} ({f})"
+            recs[k] = r
     return recs
 
 
