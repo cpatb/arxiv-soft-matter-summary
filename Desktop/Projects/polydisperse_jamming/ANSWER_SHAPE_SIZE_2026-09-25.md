@@ -70,6 +70,8 @@ jam" rests on a 0.007 margin, 1.2× its uncertainty (ANSWER_2026-09-23 §3b).
   double contacts), so this family mixes elongation with concavity.
 ⚠ **WITHDRAWN 2026-09-27 — method artefact.** Every level-set pack behind this paragraph ran with Yade's default `Law2_ScGeom_FrictPhys_CundallStrack(sphericalBodies=True)`, under which a normal force exerts no torque, so the frictionless grains could NOT ROTATE (proof: `scripts/ls_facepair.py`, a 5° tilt stays 5.00° with the default and relaxes to 0.02° with `sphericalBodies=False`). The φ₀ drop (and Z₀ ≈ 6.4 = the translational isostatic count) describes orientation-frozen grains, and it contradicts the published superball result (frictionless φ RISES away from the sphere: Jiao, Stillinger & Torquato, PRE 81, 041304 (2010), doi:10.1103/PhysRevE.81.041304). Redone with rotations live: `PREREG_FACET_2026-09-27.md` (+Am. 1).
 
+**Corrected 2026-09-27 (rotations live; `FACET_RESULT_2026-09-27.md`, `PREREG_FACET_2026-09-27.md`, figure FC1).** With torques live, convex faceting RAISES the packing fraction on every branch that could be read: at ε 0.5 (p 2) the frictional φ_m is +0.04–0.05 above the sphere on every seed and node count tried, the μ_p 0.1 edge is ~+0.06 (unconverged), and the frictionless trajectories run far above the sphere as Jiao et al. (2010) report. The window between μ_p 0.1 and 0.3 is ~1.5× the sphere's at ε 0.5 (two seeds, one edge unconverged) and unchanged near the sphere (ε 0.8–0.9). The registered tests are INCOMPLETE (the level-set method cannot bring frictionless superballs to equilibrium: node-discretisation torque noise) and the node-refinement control FAILED its bar, so this is descriptive. What it changes: no shape family simulated in this project is now known to NARROW the window.
+
 - **Measured, convex facets (level-set rounded cubes; PILOT: N 100, 2–3 seeds, p̂ 1e-3).** Window 0.07–0.10 (sphere)
   → 0.08–0.09 (ε 0.7, within scatter) → 0.04–0.05 (ε 0.5) on the first two seeds; with seeds 4–5 the window change is
   NOT resolved (+0.022 ± 0.018, narrower on 2/4 seeds), because the sphere's frictional φ_m scatters by 0.015 at
@@ -81,7 +83,7 @@ jam" rests on a 0.007 margin, 1.2× its uncertainty (ANSWER_2026-09-23 §3b).
   frictionless φ₀ up to ~0.70, as for Donev's ellipsoids and Baule's dimers). A closing neck lowers φ_m continuously
   (0.583 → 0.541 from α 1.75 to 2, registered N1 GRADUAL), because filling worsens.
 - **So Stöber spheres are not at an extreme of the window: they sit between the elongated/concave family (wider) and
-  the faceted family (lower frictionless edge; window change unresolved).** Cornstarch granules are faceted AND irregular, so on geometry alone its window
+  the faceted family (lower frictionless edge; window change unresolved).** ⚠ *[withdrawn 2026-09-27: frozen rotations; corrected in §3a — faceting raises φ, the window does not narrow]* Cornstarch granules are faceted AND irregular, so on geometry alone its window
   could go either way. The published same-paper fits (cornstarch χ 0.76, 1.5 µm silica spheres χ 0.83; Han et al. 2018,
   Royer et al. 2016) say wider, but they differ in lab, size, friction and φ convention and cannot isolate shape.
 
@@ -121,7 +123,7 @@ weak-network ball unless its contacts are softened.**
    narrowing the window, so a fixed weighed φ lands below χ. They can still thicken; they cannot shear-jam.
 2. **Filtered cornstarch:** narrowing its CV raises x, which favours jamming (the size result, measured on
    spheres). On shape the project's two DEM families point OPPOSITE ways — elongation/concavity widens the
-   window, convex faceting lowers the frictionless edge φ₀ with the window change unresolved (pilot) — so whether a size-matched cornstarch shear-jams more or less
+   window, convex faceting lowers the frictionless edge φ₀ with the window change unresolved (pilot) ⚠ *[withdrawn 2026-09-27: frozen rotations; corrected in §3a — faceting raises φ, the window does not narrow]* — so whether a size-matched cornstarch shear-jams more or less
    readily than silica is not decided by geometry here; it needs the rheometer's χ on the fractionated
    powder. What would stop it looking like the
    silica *ball* is not shape but drainage and contact stiffness: at ~10 µm it is near the drained/undrained

@@ -165,7 +165,7 @@ def window_test(recs, n, seeds, tag):
 
 def ladder(recs):
     print("\n=== Block 1 ladder (N 100, seeds 1-3): seed means at the registered stop rule ===")
-    print("   eps   mu    phi(mean +- sd)       n   Z_all  Z_nr   rattl  drift_post(phi)  torque_unb stop->end")
+    print("   eps   mu    phi(mean +- sd)       n   Z_all@stop  Z_nr@END(after post)   rattl  drift_post(phi)  torque_unb stop->end   w(G) from Z_nr@END")
     for e in EPS_LADDER:
         for m in (0.0, 0.3):
             rs = [recs.get((100, e, m, s)) for s in (1, 2, 3)]
@@ -178,7 +178,7 @@ def ladder(recs):
             dr = [r["phi"] - phi_primary(r) for r in ok if r.get("post")]
             tq = [(r["post"][0]["torque_unb"], r["post"][-1]["torque_unb"]) for r in ok if r.get("post")]
             print(f"   {e:.1f}   {m:.1f}   {np.mean(ph):.4f} +- {np.std(ph, ddof=1) if len(ph) > 1 else float('nan'):.4f}"
-                  f"   {len(ok)}   {np.mean([r['z_all'] for r in ok]):.2f}   {np.mean([r['z_nr'] for r in ok]):.2f}"
+                  f"   {len(ok)}   {np.mean([(r['post'][0]['z_all'] if r.get('post') else r['z_all']) for r in ok]):.2f}   {np.mean([r['z_nr'] for r in ok]):.2f}"
                   f"   {np.mean([r['rattler_frac'] for r in ok]):.3f}   {np.mean(dr) if dr else float('nan'):+.4f}"
                   f"           {np.mean([a for a, _ in tq]):.3f}->{np.mean([b for _, b in tq]):.3f}"
                   + f"   w(G) {np.mean([r['z_nr'] for r in ok]) * (1 - np.mean(ph)) / (2 * math.sqrt(3) * np.mean(ph)):.3f}"

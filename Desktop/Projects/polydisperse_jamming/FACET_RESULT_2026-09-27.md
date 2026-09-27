@@ -22,16 +22,18 @@ is printed there unless marked). Figure FC1: `python make_facet_figures.py --che
   §3a, `REGIME_MAP_2026-09-26.md`, `derivations/geometric_window_2026-09-25.md` §7 and `PREREG_LSPILOT` (flags in place).
   Clump packs are unaffected (sphere members; a normal force on a sphere acts through its centre).
 
-## 2. What live rotations exposed: node-discretisation torque noise (method, settled)
+## 2. What live rotations exposed: node-discretisation torque noise (method; the refinement checks did NOT pass)
 
 The level-set contact point is the deepest surface NODE, laterally off the ideal point by up to about half a node
 spacing, so with rotations live a normal force acquires a spurious lever arm (median 0.047 r on sphere contacts in the
 census). Consequences, each measured:
 - **A live-torque sphere never reaches the stop rule** (unbalanced 0.12–0.13 through 4500 iterations, against 0.004 for
   the torque-free sphere) and is **densified** by the agitation: φ 0.598 vs 0.580 at μ_p 0.3, seed 1, 1000 nodes.
-  At 4000 nodes the excess is +0.0056 at a matched ~4000–4500 iterations (vs +0.018), so node spacing drives it; but the
-  unconverged live sphere keeps compacting (+0.0099 by 9000 iterations), so the Am.-5 check graded on the log's last
-  quarter is time-dependent and sits at its half-way bar (0.009) — read it as "smaller, not gone". The sphere reference therefore keeps the torque-free law, which is exact for a sphere (Am. 3).
+  The registered Am.-5 noise-model check (`out/grade_facet.txt`) reads: "+0.0180 (1000 nodes) -> +0.0099 (4000): does
+  NOT shrink by half -- control uninformative". It is graded on the last quarter of a run that has not converged and
+  is still compacting, so it does not establish that node spacing drives the densification; the noise mechanism is a
+  reading, supported by the zero-torque probe and the census lever arms but not by this check. The choice of the
+  torque-free law for the sphere reference does not rest on it: for a sphere that law is exact (Am. 3).
 - **Frictionless superballs never reach the stop rule** (unbalanced 0.26–0.60, flat from ~6000 to 12 000 iterations;
   worse the closer to a sphere). The frictionless edge φ₀ is NOT measured by this method (Am. 4). Their trajectories
   are reported descriptively only.
@@ -39,11 +41,11 @@ census). Consequences, each measured:
   0.018–0.019 at the stop, after 8k–82k iterations); φ drifts ≤ 0.0007 over 20 000 further iterations, so the reading
   is stable. **μ_p 0.1** sits at unbalanced 0.04–0.16 at 11–12k iterations.
 - **Node refinement of the superball values (Am. 5 N1): FAIL at both ε as registered** (|Δφ| bar 0.0042): ε 0.5 gives
-  0.6193 / 0.6056 (unconverged) / 0.6299 at 1000 / 2000 / 4000 nodes, ε 0.9 falls 0.6003 → 0.5911 (converged at 4000 nodes). The ε-0.5
+  0.6193 / ~0.606 (unconverged, still creeping; current value in `out/grade_facet.txt`) / 0.6299 at 1000 / 2000 / 4000 nodes, ε 0.9 falls 0.6003 → 0.5911 (converged at 4000 nodes). The ε-0.5
   sequence is non-monotone — a different node set is a different trajectory, as the pilot also found — so single-seed
   φ at N 100 carries ~±0.01 from the node set alone, comparable to the sphere's seed scatter (sd 0.009 at μ_p 0.3).
 
-## 3. Results (grade of 2026-09-27 14:40 CDT; cells still running are listed in `out/grade_facet.txt`)
+## 3. Results (grade of 2026-09-27 ~14:55 CDT; cells still running are listed in `out/grade_facet.txt`)
 
 **Registered verdicts.** A-lit, F1–F4 (frictionless edge): **INCOMPLETE by method** — no frictionless superball
 reaches the stop rule (§2). F5 (census, registered on N 200 frictionless): INCOMPLETE. F6 (μ_p 0.3 branch), F7 (μ_p 0.1
@@ -54,8 +56,8 @@ the session ended. N1 (node robustness): **FAIL** at ε 0.5 and 0.9 (§2). Nothi
 
 | | sphere (ε 1) | ε 0.9 (p 1.11) | ε 0.8 (p 1.25) | ε 0.7 (p 1.43) | ε 0.5 (p 2) |
 |---|---|---|---|---|---|
-| φ at μ_p 0.3, stop rule, 1000 nodes | 0.5827 ± 0.0090 (3) | 0.6003 (1) | 0.6130 ± 0.0107 (2) | — | 0.6214 ± 0.0029 (2) |
-| same, 4000 nodes, seed 1 | (live torques: 0.587 u, noise) | 0.5911 (stop rule) | — | — | 0.6299 (stop rule) |
+| φ at μ_p 0.3, stop rule, 1000 nodes | 0.5827 ± 0.0090 (3) | 0.5976 ± 0.0037 (2) | 0.6130 ± 0.0107 (2) | — | 0.6214 ± 0.0029 (2) |
+| same, 4000 nodes, seed 1 | (live torques: ~0.59 u, noise) | 0.5911 (stop rule) | — | — | 0.6299 (stop rule) |
 | φ at μ_p 0.1 (u = unconverged, log readout) | 0.6167 / 0.6173 / 0.6244 | 0.638–0.644 u | 0.640–0.657 u | 0.658–0.661 u | 0.680–0.687 u |
 | W₀.₁ = 1 − φ(0.3)/φ(0.1) | 0.059 (0.051–0.068) | 0.060 (1 seed, u) | 0.055, 0.067 (u) | — | 0.092, 0.083 (u) |
 | frictionless, seed 1, last log (u) | 0.6387 ± 0.0025 (stop rule) | 0.665 | 0.683 | 0.700 | 0.736 |
@@ -63,8 +65,9 @@ the session ended. N1 (node robustness): **FAIL** at ε 0.5 and 0.9 (§2). Nothi
 
 1. **Convex faceting RAISES the jamming density on every branch that could be read — the opposite of the withdrawn
    pilot.** At ε 0.5 the frictional φ_m is above the sphere on every seed and every node count tried: seed-paired
-   +0.040 / +0.048 (1000 nodes), +0.050 at 4000 nodes (converged), and even the 2000-node unconverged value (0.6058) is
-   +0.026 above its seed's sphere — larger than the whole node-noise densification of a sphere (+0.018 at 1000 nodes).
+   +0.040 / +0.048 (1000 nodes), +0.050 at 4000 nodes (converged), and even the 2000-node unconverged value (~0.606) is
+   +0.026 above its seed's sphere — larger than the whole node-noise densification measured on a sphere (+0.018 at
+   1000 nodes, +0.010 at 4000).
    The low-friction edge rises more (+0.06 at μ_p 0.1, upper-biased because unconverged cells keep creeping upward under
    the noise), and every frictionless trajectory sits far above the sphere, in the direction Jiao et al. report.
 2. **Near the sphere the effect is not resolved.** At ε 0.9 the frictional +0.02 shrinks to +0.011 at 4000 nodes (0.5911 vs the seed's 0.5797 sphere),
@@ -73,9 +76,12 @@ the session ended. N1 (node robustness): **FAIL** at ε 0.5 and 0.9 (§2). Nothi
    with the μ_p 0.1 edge unconverged.** That is suggestive, not established: both superball edges carry node noise and
    the direction of its bias on a RATIO of the two is not measured. The frictionless window (the registered question)
    is not measured at all.
-4. **The frictional rise is a counting effect, not a filling one (post hoc).** In φ = Z/(Z + 2√3 w) with Z = z_nr:
-   sphere Z 4.89, w 1.01; ε 0.8 Z 5.53, w 1.01; ε 0.5 Z 5.55, w 0.98 — faceted grains jam frictionally with ~0.6 more
-   load-bearing contacts at unchanged filling. (z_nr is read at the end of the post-relaxation, not at the stop.)
+4. **Faceted grains carry more contacts at the frictional stop (post hoc; the Z/w split is NOT established).** Mean
+   contacts per grain at the stop rule: sphere 4.63, ε 0.9 5.17, ε 0.8 5.35, ε 0.5 5.14. The (G) split
+   φ = Z/(Z + 2√3 w) needs the non-rattler Z, which `ls_pack.py` reads only AFTER the 20 000 post iterations — during which
+   the same torque-noise agitation adds up to 0.24 contacts per grain (ε 0.5: 5.10 → 5.34 on seed 1) while the sphere
+   references never had post iterations. So "same filling, more contacts" (w 1.01 sphere vs 0.98–1.01 superballs from
+   end-state z_nr) is contaminated by the §2 mechanism and is only a reading.
 5. **Faces do not pair up at ε 0.5.** The fraction of contacts that are face-on for both grains matches the
    uniform-area null (E_ff 1.00–1.14; P(m > 0.95) 0.55–0.58 vs 0.567). Weakly faceted grains (ε 0.8–0.9) DO prefer
    their flattest patches (E_ff 1.7–2.0). The sphere's E_ff 0.56 at μ_p 0.3 is one N-200 cell (6 face–face contacts
@@ -96,7 +102,8 @@ the session ended. N1 (node robustness): **FAIL** at ε 0.5 and 0.9 (§2). Nothi
 
 ## 5. What would close it
 1. A frictionless measurement needs a contact that is torque-exact for convex shapes in a periodic cell: either many
-   more surface nodes (the sphere's noise excess fell from 0.018 to 0.0056 at matched iterations going 1000 → 4000 nodes, and keeps creeping;
+   more surface nodes (on the registered readout the sphere's noise excess went 0.018 → 0.0099 going 1000 → 4000 nodes, which did NOT pass the
+   halving bar;
    cost ∝ nodes),
    or a polyhedral/superquadric code with analytic contact (not available in this Yade build). Until then φ₀(ε) rests
    on Jiao 2010 / Yuan 2019 (sign only).

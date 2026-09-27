@@ -61,6 +61,8 @@ jamming), "→ SJ" = toward shear jamming, "→ ball"/"→ hybrid" = Gate C.
 | **fluid viscosity** μ_f | η_s only | — | De ∝ μ_f (×10–1000 with glycerol–water); S unchanged | scaling |
 | **impact** U₀, D₀ | — | stress scale ρU₀², τ_wall | τ_impact = D₀/U₀; S ∝ U₀⁻² | — |
 
+**Corrected 2026-09-27 (rotations live; `FACET_RESULT_2026-09-27.md`, `PREREG_FACET_2026-09-27.md`, figure FC1).** With torques live, convex faceting RAISES the packing fraction on every branch that could be read: at ε 0.5 (p 2) the frictional φ_m is +0.04–0.05 above the sphere on every seed and node count tried, the μ_p 0.1 edge is ~+0.06 (unconverged), and the frictionless trajectories run far above the sphere as Jiao et al. (2010) report. The window between μ_p 0.1 and 0.3 is ~1.5× the sphere's at ε 0.5 (two seeds, one edge unconverged) and unchanged near the sphere (ε 0.8–0.9). The registered tests are INCOMPLETE (the level-set method cannot bring frictionless superballs to equilibrium: node-discretisation torque noise) and the node-refinement control FAILED its bar, so this is descriptive. What it changes: no shape family simulated in this project is now known to NARROW the window.
+
 ## 3. Reading the map, per question
 - **Size (mean).** Does not change what the packing CAN do (Gate A is scale-free); it shifts WHEN (σ*) and HOW the
   jammed state drains (De ∝ a⁻²). Bigger grains: easier onset, more drained → toward the hybrid.
@@ -69,14 +71,14 @@ jamming), "→ SJ" = toward shear jamming, "→ ball"/"→ hybrid" = Gate C.
 - **Shape.** Acts on counting and filling, and its SIGN depends on which geometric feature it adds. Features that
   add rotational freedom a frictionless contact must pin (elongation, a concave neck: clumps, doublets) WIDEN the
   window (×1.4–1.7 at the jamming rung, already at 10 % elongation). Features that let a frictionless contact pin
-  rotation by itself (flat faces) lower the frictionless edge φ₀ (convex rounded cubes, resolved); whether the window
+  rotation by itself (flat faces) lower the frictionless edge φ₀ (convex rounded cubes, resolved); ⚠ *[withdrawn 2026-09-27: frozen rotations — with rotations live faceting RAISES φ and the window does not narrow; see the corrected note below the table]* whether the window
   narrows is not resolved (4 seeds, N 100). Concavity additionally lowers the
   jamming onset φ_m; mild convex elongation raises it. Spheres sit between the two families, not at an extreme.
   Shape barely touches drainage.
 - **Surface potential.** Does not decide the type; decides the onset stress σ* and, through the double layer's
   softness, whether the jammed drop is a weak undrained ball (silica) or a stiff dilatant hybrid (cornstarch).
 - **Across the two lab materials:** Gate A does NOT clearly favour either on shape alone — cornstarch is both
-  faceted (lowers φ₀; window change unresolved) and mildly elongated/irregular (widens); the published χ 0.76 vs 0.83 says wider but mixes lab,
+  faceted (lowers φ₀; window change unresolved) ⚠ *[withdrawn 2026-09-27: frozen rotations — with rotations live faceting RAISES φ and the window does not narrow; see the corrected note below the table]* and mildly elongated/irregular (widens); the published χ 0.76 vs 0.83 says wider but mixes lab,
   size, friction and φ convention;
   Gate C separates them by contact mechanics first (K_p ×1870), size second (κ ×190).
 

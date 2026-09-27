@@ -49,6 +49,8 @@ Every number below is printed by one of those three.
 > (R3) but through the opposite geometry (Z ↓, w unchanged) and without the size interaction (R7 not clump-like);
 > rolling resistance saturates near η ≈ 0.3, not 0.1 (R2 FAIL).
 
+**Corrected 2026-09-27 (rotations live; `FACET_RESULT_2026-09-27.md`, `PREREG_FACET_2026-09-27.md`, figure FC1).** With torques live, convex faceting RAISES the packing fraction on every branch that could be read: at ε 0.5 (p 2) the frictional φ_m is +0.04–0.05 above the sphere on every seed and node count tried, the μ_p 0.1 edge is ~+0.06 (unconverged), and the frictionless trajectories run far above the sphere as Jiao et al. (2010) report. The window between μ_p 0.1 and 0.3 is ~1.5× the sphere's at ε 0.5 (two seeds, one edge unconverged) and unchanged near the sphere (ε 0.8–0.9). The registered tests are INCOMPLETE (the level-set method cannot bring frictionless superballs to equilibrium: node-discretisation torque noise) and the node-refinement control FAILED its bar, so this is descriptive. What it changes: no shape family simulated in this project is now known to NARROW the window.
+
 ---
 
 ## 1. Frame
