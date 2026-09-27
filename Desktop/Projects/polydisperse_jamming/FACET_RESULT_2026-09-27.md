@@ -101,7 +101,7 @@ snapshot. N1 (node robustness): **FAIL** at ε 0.5 and 0.9 (§2). Nothing below 
 
 ## 5. What would close it
 1. A frictionless measurement needs a contact that is torque-exact for convex shapes in a periodic cell: either many
-   more surface nodes (on the registered readout the sphere's noise excess went 0.018 → 0.0099 going 1000 → 4000 nodes, which did NOT pass the
+   more surface nodes (on the registered readout the sphere's noise excess went 0.0179 → 0.0105 going 1000 → 4000 nodes, which did NOT pass the
    halving bar;
    cost ∝ nodes),
    or a polyhedral/superquadric code with analytic contact (not available in this Yade build). Until then φ₀(ε) rests
