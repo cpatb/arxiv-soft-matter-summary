@@ -135,3 +135,24 @@ census on (15 cells, tag `facet2mu01`).
 - **F8 (the window proxy):** W_0.1 = 1 − φ(μ 0.3)/φ(μ 0.1), D = W_0.1(eps) − W_0.1(1.0) seed-paired: WIDENS / NARROWS /
   UNRESOLVED by F1's rule (3 se_eff, sign on all 3 seeds). W_0.1 is NOT the registered window (its low edge is not
   frictionless); it is reported as "the window between μ_p 0.1 and 0.3", and the frictionless edge stays open.
+- (~13:00) Load control, execution only: the four logged frictionless cells were stopped at 12 000 iterations (their
+  logs are the descriptive record), and the N 200 eps-0.5 μ_p 0.3 cells for seeds 3–5 were stopped along with the N 200
+  sphere references for seeds 3–5, so that Block 1 and the μ_p 0.1 edge finish in the session. The N 200 comparison
+  is therefore seeds 1–2 only and is REPORTED, not graded; the registered F1–F3 on Block 2 are INCOMPLETE.
+
+## Amendment 5 (2026-09-27 ~13:30 CDT) — node-noise confound on the frictional branch; registered node-refinement control
+Landed (stop-rule φ, μ_p 0.3, N 100): eps 0.5 s1 0.6193, s2 0.6234; eps 0.9 s1 0.6003; eps 0.8 s2 0.6055; sphere refs
+0.5827 ± 0.0090. Every superball stop was met at unbalanced 0.018–0.019 after 8k–82k iterations, i.e. by a noise
+fluctuation dipping under the bar. **The confound:** the Am.-3 probe (live-torque SPHERE, μ_p 0.3, seed 1, 1000 nodes)
+sat at φ = 0.598 at target pressure (cell volume 87.61 at 4500 iterations) against 0.5797 for the torque-free sphere on
+the same seed. Node-discretisation torque noise therefore DENSIFIES a frictional pack by ~+0.018 by itself; the
+superball cells carry that noise and the sphere reference does not, so part of F6's rise could be agitation.
+**Control (cells `facet2nodes`, seed 1, N 100, μ_p 0.3, rotations live, LS_PROGRESS logged):** eps 0.5 at 2000 and
+4000 nodes; eps 0.9 at 4000 nodes; eps 1.0 (live torques, deliberately) at 4000 nodes.
+- **Noise model check:** the live sphere's φ at target pressure (mean over its last logged quarter) moves toward the
+  torque-free 0.5797 as nodes go 1000 → 4000 (by at least half the 0.018 gap). If it does not, node spacing is not
+  what drives the densification and the control below is uninformative.
+- **N1 (is the superball rise resolution-robust?):** |φ_m(eps, 4000) − φ_m(eps, 1000)| < 2·PHI_SCALE = 0.0042 at eps
+  0.5 and 0.9 (stop-rule φ if the cell converges, else the last-quarter mean at target pressure, labelled). Pass →
+  F6 is not a node-noise artefact at that eps. Fail with φ falling → F6 is corrected by the 4000-node shift and the
+  corrected Δ is what is quoted.
