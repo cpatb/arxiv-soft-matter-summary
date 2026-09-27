@@ -47,20 +47,20 @@ registered cells landed: 17 of 50; unconverged (excluded): []
    eps 0.5: it 4000: phi 0.7271 unb 0.33  it 6000: phi 0.7314 unb 0.24  it 8000: phi 0.7314 unb 0.28  it 10000: phi 0.7328 unb 0.26  it 12000: phi 0.7364 unb 0.26  it 12000: phi 0.7364 unb 0.26
 
 === Am. 5 node-noise control (mu_p 0.3, seed 1, N 100, rotations live) ===
-   eps 0.5 nodes 2000: phi 0.6063 (last-quarter mean of 30 logs, unb 0.038, it 30000)
+   eps 0.5 nodes 2000: phi 0.6065 (stop-rule)
    eps 0.5 nodes 4000: phi 0.6299 (stop-rule)
    eps 0.9 nodes 4000: phi 0.5911 (stop-rule)
-   eps 1.0 nodes 4000: phi 0.5896 (last-quarter mean of 9 logs, unb 0.048, it 9000)
-   noise model: live-sphere excess over torque-free +0.0180 (1000 nodes) -> +0.0099 (4000): does NOT shrink by half -- control uninformative
+   eps 1.0 nodes 4000: phi 0.5902 (stop-rule)
+   noise model: live-sphere excess over torque-free +0.0179 (1000 nodes) -> +0.0105 (4000): does NOT shrink by half -- control uninformative
    N1 eps 0.5: phi_m(4000) - phi_m(1000) = +0.0106 (bar |d| < 0.0042)  FAIL, rises
    N1 eps 0.9: phi_m(4000) - phi_m(1000) = -0.0092 (bar |d| < 0.0042)  FAIL, falls -- correct F6 by this shift
 
 === Am. 6 descriptive: mu 0.1 and 0.3 edges incl. unconverged cells (u = unconverged, log readout) ===
    eps 1.0: phi(0.1) / phi(0.3): s1: 0.6167 / 0.5797 W 0.0600  s2: 0.6173 / 0.5756 W 0.0676  s3: 0.6244 / 0.5927 W 0.0506   mean W_0.1 0.0594
-   eps 0.9: phi(0.1) / phi(0.3): s1: 0.6408u0.12 / 0.6003 W 0.0632  s2: 0.6475u0.15 / nanmissing W nan  s3: 0.6396u0.13 / 0.5950 W 0.0698   mean W_0.1 0.0665
-   eps 0.8: phi(0.1) / phi(0.3): s1: 0.6571u0.12 / 0.6205 W 0.0557  s2: 0.6506u0.12 / 0.6055 W 0.0693  s3: 0.6408u0.09 / nanmissing W nan   mean W_0.1 0.0625
-   eps 0.7: phi(0.1) / phi(0.3): s1: 0.6584u0.06 / nanmissing W nan  s2: 0.6618u0.05 / nanmissing W nan  s3: 0.6593u0.04 / nanmissing W nan   mean W_0.1 nan
-   eps 0.5: phi(0.1) / phi(0.3): s1: 0.6837u0.07 / 0.6193 W 0.0942  s2: 0.6802u0.05 / 0.6234 W 0.0836  s3: 0.6882u0.04 / nanmissing W nan   mean W_0.1 0.0889
+   eps 0.9: phi(0.1) / phi(0.3): s1: 0.6412u0.15 / 0.6003 W 0.0638  s2: 0.6488u0.17 / nanmissing W nan  s3: 0.6400u0.13 / 0.5950 W 0.0704   mean W_0.1 0.0671
+   eps 0.8: phi(0.1) / phi(0.3): s1: 0.6575u0.10 / 0.6205 W 0.0562  s2: 0.6510u0.14 / 0.6055 W 0.0700  s3: 0.6414u0.10 / nanmissing W nan   mean W_0.1 0.0631
+   eps 0.7: phi(0.1) / phi(0.3): s1: 0.6585u0.04 / nanmissing W nan  s2: 0.6621u0.06 / nanmissing W nan  s3: 0.6610u0.05 / nanmissing W nan   mean W_0.1 nan
+   eps 0.5: phi(0.1) / phi(0.3): s1: 0.6846u0.05 / 0.6193 W 0.0954  s2: 0.6804u0.04 / 0.6234 W 0.0838  s3: 0.6883u0.05 / nanmissing W nan   mean W_0.1 0.0896
 
 === F5 contact census: face-face fraction f_ff (m > 0.95 on both grains) vs area null ===
    N    eps   mu    contacts  P(m>c) meas/null   f_ff meas / null      E_ff   per-seed E_ff     lever arm med (arm/r)

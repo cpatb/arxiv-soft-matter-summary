@@ -299,7 +299,15 @@ def descriptive_mu01(recs):
         print(f"   eps {e}: phi(0.1) / phi(0.3): {txt}   mean W_0.1 {np.mean(ws) if ws else float('nan'):.4f}")
 
 
-LIVE_SPHERE_1000 = 0.5977   # Am. 5: live-torque sphere, mu 0.3, seed 1, 1000 nodes, cell volume 87.61 at 4500 it (probe)
+def _live_sphere_1000() -> float:
+    """Am. 5 baseline: live-torque sphere, mu 0.3, seed 1, 1000 nodes -- last line of its (deterministic, re-run) probe
+    log out/lsdem/probe_livesphere_n1000_m0.3_s1.log; 0.5977 in the session's first run at 4500 iterations."""
+    fp = os.path.join(LSDIR, "probe_livesphere_n1000_m0.3_s1.log")
+    last = [ln.split() for ln in open(fp, encoding="utf-8") if ln.startswith("PROGRESS")][-1]
+    return 100 * (4.0 / 3.0) * math.pi * 0.5 ** 3 / float(last[2])
+
+
+LIVE_SPHERE_1000 = _live_sphere_1000()
 FREE_SPHERE_1000 = 0.5797   # torque-free sphere, same seed (ls_nodes)
 
 
