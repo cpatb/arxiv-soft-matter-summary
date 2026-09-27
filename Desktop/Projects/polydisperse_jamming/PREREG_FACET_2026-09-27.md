@@ -95,3 +95,18 @@ the unbalanced force jittering at 0.03–0.06; the first landed cell (N 100, eps
 stop rule at iteration 8081 (unbalanced 0.0194) and reads `converged False` at the end. As Amendment 1 already defines
 the primary value at the stop rule, the health rule is read there too (`post[0]`: unbalanced < 0.02 before the cap);
 cells without post iterations use `converged` as before. `grade_facet.healthy()`.
+
+## Amendment 3 (2026-09-27 ~12:40 CDT; 3 superball cells landed, none graded) — the sphere reference keeps the torque-free law
+Probe (repo `ls_pack.py` + `LS_PROGRESS`, N 100, eps 1.0, μ_p 0.3, seed 1): with `sphericalBodies=False` a level-set
+SPHERE's unbalanced force plateaus at 0.12–0.13 through 4500 iterations (the frozen version reached the stop rule at
+3416). Cause: the contact point is the deepest surface NODE, laterally off the line of centres by up to ~half a node
+spacing, so a normal force acquires a spurious lever arm (0.03–0.09 r on the census smoke cell) and spins spheres,
+which have no restoring orientation. For a sphere `sphericalBodies=True` is the exact physics, so:
+- **eps 1.0 cells use `--spherical-bodies 1`.** The eps-1.0 facet2 cells (rotations live) were killed at 12:18 before
+  landing (rc 143) and a watcher kills any queued one; none is graded.
+- **The pilot's eps-1.0, 1000-node records are VALID sphere references** (same code otherwise, same seeds, P0-passed):
+  N 100 seeds 1–5 (`ls_ladder`, `ls_nodes`, `ls_repl`, `ls_extra`) and N 200 seed 1 (`ls_n200`). New: N 200 seeds 2–5 ×
+  μ_p {0, 0.3}, tag `facet2ref`, census on (8 cells, `scripts/ls_facet2ref.sh`).
+- The same node noise acts on superball contacts; unlike spheres they have a restoring orientation, and two μ_p 0.3
+  superball cells met the stop rule. Whether FRICTIONLESS superballs reach it is being watched (four seed-1 cells
+  restarted identically with progress logging, `scripts/ls_facet2_vis.sh`). An unconverged cell stays excluded.

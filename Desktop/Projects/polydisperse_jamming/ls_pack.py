@@ -37,6 +37,11 @@ RHO = 1.0
 # is required in the general case'). Every level-set record before 2026-09-27 ran with the default, so frictionless
 # grains could NOT ROTATE (scripts/ls_facepair.py: a 5-deg tilt stays 5.00 deg with True, relaxes to 0.02 with False).
 SPHERICAL_BODIES = False
+# ...except for the SPHERE itself (eps 1), where True is the exact physics (a normal force through the centre has no
+# torque) and False is wrong: the contact point is the deepest surface NODE, laterally off the line of centres by up
+# to ~half a node spacing, so False injects torque noise that spins frictionless and frictional spheres alike and the
+# unbalanced force plateaus at 0.12-0.13 instead of reaching 0.02 (probe 2026-09-27, eps 1 mu 0.3 N 100 seed 1).
+# Pass --spherical-bodies 1 for eps 1 (PREREG_FACET Am. 3).
 YOUNG = 1.0
 
 
@@ -106,7 +111,7 @@ def _state(O, n: int, v_grain: float, utils) -> dict:
 
 
 def run(eps: float, mu: float, phat: float, n: int, seed: int, spacing_frac: float, nodes: int,
-        max_iter: int, dump_path: str | None = None, post_iters: int = 0) -> dict:
+        max_iter: int, dump_path: str | None = None, post_iters: int = 0, sph: bool = SPHERICAL_BODIES) -> dict:
     from yade import O, Quaternion, Vector3, utils
     levelSetBody = utils.levelSetBody
     t0 = time.time()
@@ -136,7 +141,7 @@ def run(eps: float, mu: float, phat: float, n: int, seed: int, spacing_frac: flo
         utils.InsertionSortCollider([utils.Bo1_LevelSet_Aabb()], verletDist=0.0),
         utils.InteractionLoop([utils.Ig2_LevelSet_LevelSet_ScGeom()],
                               [utils.Ip2_FrictMat_FrictMat_FrictPhys()],
-                              [utils.Law2_ScGeom_FrictPhys_CundallStrack(sphericalBodies=SPHERICAL_BODIES)]),
+                              [utils.Law2_ScGeom_FrictPhys_CundallStrack(sphericalBodies=sph)]),
         utils.PeriTriaxController(label="triax", goal=(goal, goal, goal), stressMask=7, dynCell=True,
                                   maxUnbalanced=packing.UNBALANCED_TOL, relStressTol=packing.REL_STRESS_TOL,
                                   growDamping=0.4, doneHook="O.pause()"),
@@ -178,7 +183,7 @@ def run(eps: float, mu: float, phat: float, n: int, seed: int, spacing_frac: flo
                 phi_ls_volume=n * v_ls / vol, z_all=2.0 * nc / n, z_nr=z_nonrattler(neigh, 2),
                 rattler_frac=1.0 - sum(1 for i in neigh if len(neigh[i]) >= 2) / n,
                 unbalanced=float(unb), iters=int(O.iter), converged=bool(unb < packing.UNBALANCED_TOL and O.iter < max_iter),
-                dt=float(O.dt), spherical_bodies=SPHERICAL_BODIES, spacing_frac=spacing_frac, nodes=nodes, wall_s=time.time() - t0, post=post)
+                dt=float(O.dt), spherical_bodies=sph, spacing_frac=spacing_frac, nodes=nodes, wall_s=time.time() - t0, post=post)
 
 
 def main() -> int:
@@ -193,11 +198,14 @@ def main() -> int:
     ap.add_argument("--max-iter", type=int, default=400000)
     ap.add_argument("--tag", default="probe")
     ap.add_argument("--post-iters", type=int, default=0, help="extra stress-controlled iterations after convergence")
+    ap.add_argument("--spherical-bodies", type=int, default=int(SPHERICAL_BODIES), help="Law2 flag; 1 only for eps 1")
     ap.add_argument("--census", action="store_true", help="write per-contact geometry to an npz beside the jsonl")
     a = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
     dump = (os.path.join(OUT, f"contacts_{a.tag}_e{a.eps}_m{a.mu}_n{a.n}_s{a.seed}.npz") if a.census else None)
-    rec = run(a.eps, a.mu, a.phat, a.n, a.seed, a.spacing, a.nodes, a.max_iter, dump, a.post_iters)
+    if a.spherical_bodies and a.eps != 1.0:
+        raise SystemExit("sphericalBodies=True freezes rotation of a non-sphere; refused")
+    rec = run(a.eps, a.mu, a.phat, a.n, a.seed, a.spacing, a.nodes, a.max_iter, dump, a.post_iters, bool(a.spherical_bodies))
     rec["tag"] = a.tag
     rec["census"] = os.path.basename(dump) if dump else None
     with open(os.path.join(OUT, f"ls_{a.tag}.jsonl"), "a", encoding="utf-8") as fh:
