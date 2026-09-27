@@ -181,6 +181,7 @@ def ladder(recs):
                   f"   {len(ok)}   {np.mean([r['z_all'] for r in ok]):.2f}   {np.mean([r['z_nr'] for r in ok]):.2f}"
                   f"   {np.mean([r['rattler_frac'] for r in ok]):.3f}   {np.mean(dr) if dr else float('nan'):+.4f}"
                   f"           {np.mean([a for a, _ in tq]):.3f}->{np.mean([b for _, b in tq]):.3f}"
+                  + f"   w(G) {np.mean([r['z_nr'] for r in ok]) * (1 - np.mean(ph)) / (2 * math.sqrt(3) * np.mean(ph)):.3f}"
                   + (f"   ({nb} unconverged, excluded)" if nb else ""))
 
 
@@ -259,6 +260,43 @@ def trajectories():
         ph = [(int(r[1]), 100 * v / float(r[2]), float(r[3])) for r in rows]
         sel = ph[len(ph) // 4:: max(1, len(ph) // 6)] + [ph[-1]]
         print(f"   eps {e}: " + "  ".join(f"it {i}: phi {p:.4f} unb {u:.2f}" for i, p, u in sel))
+
+
+def log_phi(fp: str, e: float):
+    """Am. 6: last-quarter mean phi of a progress log (unconverged, descriptive), with final unbalanced and iteration."""
+    import ls_pack
+    if not os.path.exists(fp):
+        return None
+    r = ls_pack.R_EQ * ((4.0 / 3.0) * math.pi / ls_pack.superellipsoid_volume(1.0, e)) ** (1.0 / 3.0)
+    v = ls_pack.superellipsoid_volume(r, e)
+    pr = [ln.split() for ln in open(fp, encoding="utf-8") if ln.startswith("PROGRESS")]
+    if len(pr) < 4:
+        return None
+    q = pr[3 * len(pr) // 4:]
+    return float(np.mean([100 * v / float(x[2]) for x in q])), float(pr[-1][3]), int(pr[-1][1])
+
+
+def descriptive_mu01(recs):
+    """Am. 6: phi(eps, mu 0.1) and phi(eps, mu 0.3) with converged cells at the stop rule and unconverged ones read
+    from their logs (labelled), and the resulting W_0.1 per seed. Descriptive; the registered F7/F8 are above."""
+    print("\n=== Am. 6 descriptive: mu 0.1 and 0.3 edges incl. unconverged cells (u = unconverged, log readout) ===")
+    for e in EPS_LADDER:
+        cells = []
+        for s in (1, 2, 3):
+            out = []
+            for mu in (0.1, 0.3):
+                r = recs.get((100, e, mu, s))
+                if r is not None and healthy(r):
+                    out.append((phi_primary(r), ""))
+                    continue
+                name = f"facet2mu01_e{e}_s{s}.log" if mu == 0.1 else None
+                lp = log_phi(os.path.join(LSDIR, name), e) if name else None
+                out.append((lp[0], f"u{lp[1]:.2f}") if lp else (float("nan"), "missing"))
+            w = 1 - out[1][0] / out[0][0]
+            cells.append((s, out, w))
+        txt = "  ".join(f"s{s}: {o[0][0]:.4f}{o[0][1]} / {o[1][0]:.4f}{o[1][1]} W {w:.4f}" for s, o, w in cells)
+        ws = [w for _, _, w in cells if not math.isnan(w)]
+        print(f"   eps {e}: phi(0.1) / phi(0.3): {txt}   mean W_0.1 {np.mean(ws) if ws else float('nan'):.4f}")
 
 
 LIVE_SPHERE_1000 = 0.5977   # Am. 5: live-torque sphere, mu 0.3, seed 1, 1000 nodes, cell volume 87.61 at 4500 it (probe)
@@ -354,6 +392,7 @@ def main() -> int:
         branch_tests(recs)
         trajectories()
         node_control(recs)
+        descriptive_mu01(recs)
         census(recs)
     out = buf.getvalue()
     sys.stdout.write(out)
