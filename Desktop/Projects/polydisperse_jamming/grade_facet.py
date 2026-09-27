@@ -51,6 +51,14 @@ def load() -> dict:
             k = (r["n"], r["eps"], r["mu_p"], r["seed"])
             assert k not in recs, f"duplicate record {k}"
             recs[k] = r
+    fp = os.path.join(LSDIR, "ls_facet2mu01.jsonl")   # Am. 4 low-friction edge
+    if os.path.exists(fp):
+        for line in open(fp, encoding="utf-8"):
+            r = json.loads(line)
+            assert r["spherical_bodies"] is (r["eps"] == 1.0), "mu 0.1 cell with the wrong torque law"
+            k = (r["n"], r["eps"], r["mu_p"], r["seed"])
+            assert k not in recs, f"duplicate record {k}"
+            recs[k] = r
     for f in SPHERE_REF_FILES:
         fp = os.path.join(LSDIR, f)
         if not os.path.exists(fp):
@@ -200,6 +208,59 @@ def anchor_and_f4(recs):
         print(f"   eps {e}: dphi0 {mean:+.4f} (se_eff {se_eff:.4f}; per seed {np.round(vals, 4).tolist()})  {v}{tag}")
 
 
+def branch_tests(recs):
+    """Am. 4: F6 (mu 0.3 branch), F7 (mu 0.1 edge), F8 (window between mu 0.1 and 0.3), seed-paired over seeds 1-3."""
+    print("\n=== Am. 4: F6 (mu_p 0.3), F7 (mu_p 0.1), F8 (W_0.1 = 1 - phi(0.3)/phi(0.1)); N 100, seeds 1-3 ===")
+    for e in (0.9, 0.8, 0.7, 0.5):
+        for name, mu in (("F6", 0.3), ("F7", 0.1)):
+            def d(s, e=e, mu=mu):
+                a, b = cellphi(recs, 100, e, mu, s), cellphi(recs, 100, 1.0, mu, s)
+                return a if a in ("missing", "bad") else (b if b in ("missing", "bad") else a - b)
+            vals, missing, bad = seedpaired(recs, 100, d, (1, 2, 3))
+            if missing or bad:
+                print(f"   {name} eps {e}: INCOMPLETE (missing {missing}, unconverged {bad})"
+                      + (f"; partial {np.round(vals, 4).tolist()}" if vals else ""))
+                continue
+            v, mean, se, se_eff, npos, nneg = verdict_diff(vals, math.sqrt(2) * PHI_SCALE, "RISE", "FALL", frac=1.0)
+            print(f"   {name} eps {e}: dphi {mean:+.4f} (se_eff {se_eff:.4f}; per seed {np.round(vals, 4).tolist()})  {v}")
+
+        def dw(s, e=e):
+            p = [cellphi(recs, 100, ee, m, s) for ee in (1.0, e) for m in (0.1, 0.3)]
+            if "missing" in p:
+                return "missing"
+            if "bad" in p:
+                return "bad"
+            return (1 - p[1] / p[0]) - (1 - p[3] / p[2])   # W(1) - W(eps): positive = NARROWS
+        vals, missing, bad = seedpaired(recs, 100, dw, (1, 2, 3))
+        if missing or bad:
+            print(f"   F8 eps {e}: INCOMPLETE (missing {missing}, unconverged {bad})")
+            continue
+        phi01 = np.mean([cellphi(recs, 100, 1.0, 0.1, s) for s in (1, 2, 3)])
+        v, mean, se, se_eff, npos, nneg = verdict_diff(vals, math.sqrt(2) * PHI_SCALE / phi01, "NARROWS", "WIDENS",
+                                                       frac=1.0)
+        ws = [np.mean([1 - cellphi(recs, 100, ee, 0.3, s) / cellphi(recs, 100, ee, 0.1, s) for s in (1, 2, 3)])
+              for ee in (1.0, e)]
+        print(f"   F8 eps {e}: W_0.1 sphere {ws[0]:.4f} -> {ws[1]:.4f}; D = W(1)-W(eps) {mean:+.4f} (se_eff {se_eff:.4f})  {v}")
+
+
+def trajectories():
+    """Am. 4: the four logged frictionless seed-1 cells, DESCRIPTIVE only (they never met the stop rule)."""
+    print("\n=== Am. 4 descriptive: frictionless superballs (rotations live), seed 1, N 100 -- NOT graded ===")
+    for e in (0.9, 0.8, 0.7, 0.5):
+        fp = os.path.join(LSDIR, f"facet2vis_n100_e{e}_m0.0_s1.log")
+        if not os.path.exists(fp):
+            continue
+        rows = [ln.split() for ln in open(fp, encoding="utf-8") if ln.startswith("PROGRESS")]
+        if not rows:
+            continue
+        import facet_census as fc  # noqa: F401  (volume from ls_pack's formula below)
+        import ls_pack
+        v = ls_pack.superellipsoid_volume(ls_pack.R_EQ * ((4.0 / 3.0) * math.pi / ls_pack.superellipsoid_volume(1.0, e)) ** (1.0 / 3.0), e)
+        ph = [(int(r[1]), 100 * v / float(r[2]), float(r[3])) for r in rows]
+        sel = ph[len(ph) // 4:: max(1, len(ph) // 6)] + [ph[-1]]
+        print(f"   eps {e}: " + "  ".join(f"it {i}: phi {p:.4f} unb {u:.2f}" for i, p, u in sel))
+
+
 def census(recs):
     print(f"\n=== F5 contact census: face-face fraction f_ff (m > {C_FACE} on both grains) vs area null ===")
     nulls = {e: facet_census.area_null(e) for e in EPS_LADDER}
@@ -244,6 +305,8 @@ def main() -> int:
         anchor_and_f4(recs)
         window_test(recs, 200, (1, 2, 3, 4, 5), "F1-F3 REGISTERED (Block 2)")
         window_test(recs, 100, (1, 2, 3), "F1-F3 second size (Block 1)")
+        branch_tests(recs)
+        trajectories()
         census(recs)
     out = buf.getvalue()
     sys.stdout.write(out)
