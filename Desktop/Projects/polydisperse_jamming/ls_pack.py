@@ -142,6 +142,11 @@ def run(eps: float, mu: float, phat: float, n: int, seed: int, spacing_frac: flo
                                   growDamping=0.4, doneHook="O.pause()"),
         utils.NewtonIntegrator(damping=0.4),
     ]
+    if os.environ.get("LS_PROGRESS"):  # diagnostic only: prints state, does not touch the dynamics
+        O.engines = O.engines + [utils.PyRunner(iterPeriod=int(os.environ["LS_PROGRESS"]), command=
+            "from yade import O, utils; print('PROGRESS', O.iter, round(O.cell.volume,4), round(utils.unbalancedForce(),4), "
+            "-sum(utils.getStress()[k,k] for k in range(3))/3, flush=True)")]
+
     O.dt = packing.DT_SAFETY * R_EQ * math.sqrt(RHO / YOUNG)
     O.run(max_iter, wait=True)
     post = []

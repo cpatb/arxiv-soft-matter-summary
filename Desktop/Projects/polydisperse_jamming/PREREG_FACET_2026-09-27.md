@@ -88,3 +88,10 @@ validated for this question and F1–F3 are reported as method-limited.
 **Primary value:** φ, Z are read at the registered stop rule (`post[0]` where post iterations ran). The drift over
 the 20000 post iterations is reported; if |Δφ| > PHI_SCALE on eps < 1 cells, the stop rule (force balance only,
 no torque criterion) is flagged as inadequate for rotating grains.
+
+## Amendment 2 (2026-09-27 ~11:35 CDT; one cell landed, disclosed; nothing graded) — health at the stop rule
+The record-level `converged` in `ls_pack.py` is evaluated after the 20000 post iterations, where the stress servo keeps
+the unbalanced force jittering at 0.03–0.06; the first landed cell (N 100, eps 0.5, μ_p 0.3, seed 2) met the registered
+stop rule at iteration 8081 (unbalanced 0.0194) and reads `converged False` at the end. As Amendment 1 already defines
+the primary value at the stop rule, the health rule is read there too (`post[0]`: unbalanced < 0.02 before the cap);
+cells without post iterations use `converged` as before. `grade_facet.healthy()`.

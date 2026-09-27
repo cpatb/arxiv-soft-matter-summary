@@ -47,6 +47,15 @@ def load() -> dict:
     return recs
 
 
+def healthy(r: dict) -> bool:
+    """Registered health rule at the STOP RULE. Block-1 records ran 20000 post iterations after the stop, and the
+    record-level `converged` is evaluated AFTER them (where the servo keeps unbalanced jittering at 0.03-0.06), so for
+    those the stop state post[0] decides."""
+    if r.get("post"):
+        return bool(r["post"][0]["unbalanced"] < 0.02 and r["post"][0]["iter"] < 300000)
+    return bool(r["converged"])
+
+
 def phi_primary(r: dict) -> float:
     return r["post"][0]["phi"] if r.get("post") else r["phi"]
 
@@ -69,7 +78,7 @@ def cellphi(recs, n, e, m, s):
     r = recs.get((n, e, m, s))
     if r is None:
         return "missing"
-    if not r["converged"]:
+    if not healthy(r):
         return "bad"
     return phi_primary(r)
 
@@ -134,8 +143,8 @@ def ladder(recs):
     for e in EPS_LADDER:
         for m in (0.0, 0.3):
             rs = [recs.get((100, e, m, s)) for s in (1, 2, 3)]
-            ok = [r for r in rs if r is not None and r["converged"]]
-            nb = sum(1 for r in rs if r is not None and not r["converged"])
+            ok = [r for r in rs if r is not None and healthy(r)]
+            nb = sum(1 for r in rs if r is not None and not healthy(r))
             if not ok:
                 print(f"   {e:.1f}   {m:.1f}   none landed" + (f" ({nb} unconverged)" if nb else ""))
                 continue
@@ -180,7 +189,7 @@ def census(recs):
     for n in (100, 200):
         for e in EPS_LADDER:
             for m in (0.0, 0.3):
-                keys = [k for k in recs if k[0] == n and k[1] == e and k[2] == m and recs[k]["converged"]
+                keys = [k for k in recs if k[0] == n and k[1] == e and k[2] == m and healthy(recs[k])
                         and recs[k].get("census")]
                 if not keys:
                     continue
@@ -210,7 +219,7 @@ def main() -> int:
     with redirect_stdout(buf):
         print("grade_facet -- PREREG_FACET_2026-09-27 (+Am. 1): level-set superellipsoids, rotations live, p_hat 1e-3")
         landed = [k for k in QUEUE if k in recs]
-        unconv = [k for k in landed if not recs[k]["converged"]]
+        unconv = [k for k in landed if not healthy(recs[k])]
         print(f"registered cells landed: {len(landed)} of {len(QUEUE)}; unconverged (excluded): "
               f"{[f'N{k[0]} e{k[1]} m{k[2]} s{k[3]}' for k in unconv]}")
         ladder(recs)
