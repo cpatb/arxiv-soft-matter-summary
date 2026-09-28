@@ -1,0 +1,43 @@
+pairtype -- PREREG_LFSIG2 Amendment 7: per-pair-type activation in a binary suspension (ratio 2, x_small 0.5, phi 0.55)
+  cells with dumps: 27 of 27
+  label          rc ok   ovlp  f_SS    f_SL    f_LL     (listed pairs SS/SL/LL)
+  bi_s1_r1        0  1 0.0011  0.0089  0.0105  0.0211   (3699/1995/331)
+  bi_s1.5_r1      0  1 0.0014  0.0268  0.0341  0.0612   (3692/1967/327)
+  bi_s2_r1        0  1 0.0011  0.0646  0.0710  0.1189   (3683/1929/328)
+  bi_s3_r1        0  1 0.0016  0.1264  0.1611  0.2191   (3640/1993/324)
+  bi_s4.5_r1      0  1 0.0027  0.1860  0.2593  0.2556   (3666/2025/313)
+  bi_s7_r1        0  1 0.0051  0.2193  0.2885  0.2894   (3625/2028/311)
+  bi_s10_r1       0  1 0.0060  0.2646  0.2910  0.2752   (3545/2007/327)
+  bi_s15_r1       0  1 0.0068  0.2827  0.3323  0.3311   (3604/2031/302)
+  bi_s100_r1      0  1 0.0076  0.2977  0.3639  0.3170   (3604/2028/306)
+  bi_s1_r2        0  1 0.0012  0.0068  0.0135  0.0322   (3702/2004/311)
+  bi_s1.5_r2      0  1 0.0013  0.0335  0.0449  0.1505   (3642/2050/299)
+  bi_s2_r2        0  1 0.0016  0.0549  0.0612  0.1520   (3622/2027/296)
+  bi_s3_r2        0  1 0.0018  0.1267  0.1337  0.2102   (3599/2019/314)
+  bi_s4.5_r2      0  1 0.0028  0.1860  0.2019  0.2852   (3634/2055/298)
+  bi_s7_r2        0  1 0.0035  0.2309  0.2962  0.3115   (3643/1995/305)
+  bi_s10_r2       0  1 0.0068  0.2535  0.3203  0.3240   (3605/2051/287)
+  bi_s15_r2       0  1 0.0058  0.2817  0.3192  0.3160   (3600/2005/307)
+  bi_s100_r2      0  1 0.0075  0.3315  0.3499  0.3518   (3602/1989/307)
+  bi_s1_r3        0  1 0.0006  0.0099  0.0128  0.0240   (3639/2115/292)
+  bi_s1.5_r3      0  1 0.0009  0.0234  0.0428  0.0956   (3627/2102/293)
+  bi_s2_r3        0  1 0.0015  0.0573  0.0794  0.1178   (3614/2079/297)
+  bi_s3_r3        0  1 0.0017  0.1133  0.1227  0.2027   (3514/2079/291)
+  bi_s4.5_r3      0  1 0.0029  0.1993  0.2156  0.2667   (3558/2096/300)
+  bi_s7_r3        0  1 0.0044  0.2304  0.2922  0.3093   (3546/2081/291)
+  bi_s10_r3       0  1 0.0057  0.2357  0.2988  0.2712   (3547/2068/306)
+  bi_s15_r3       0  1 0.0057  0.3005  0.3253  0.2848   (3514/2087/302)
+  bi_s100_r3      0  1 0.0084  0.3194  0.3583  0.3020   (3547/2107/298)
+  seed 1: sigma_half SS 3.495  SL 3.270  LL nan
+  seed 2: sigma_half SS 3.918  SL nan  LL nan
+  seed 3: sigma_half SS 3.734  SL 3.838  LL nan
+
+  SS/LL: NOT GRADED (0/3 seeds)
+  SL/LL: NOT GRADED (0/3 seeds)
+
+  POST HOC (not registered): first-crossing sigma_half per type (no monotonicity requirement); binomial s.e. of the
+  plateau-normalised LL fraction shown so the size of the dips that void the registered readout can be judged
+    seed 1: SS 3.495  SL 3.270  LL 2.347  -> SS/LL 1.489, SL/LL 1.393  (LL pairs per dump ~319, normalised binomial s.e. ~0.082)
+    seed 2: SS 3.918  SL 3.833  LL 2.362  -> SS/LL 1.659, SL/LL 1.623  (LL pairs per dump ~303, normalised binomial s.e. ~0.078)
+    seed 3: SS 3.734  SL 3.838  LL 2.343  -> SS/LL 1.594, SL/LL 1.638  (LL pairs per dump ~297, normalised binomial s.e. ~0.088)
+    SS/LL first-crossing: ratio 1.579, ln se 0.0315 (n 3); m_eff = ln ratio / ln 2 = 0.66 (Derjaguin 1, constant force 2)

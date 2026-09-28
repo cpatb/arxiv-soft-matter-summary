@@ -336,3 +336,29 @@ unchanged because CV 0, 0.2 and 0.5 pass it on every seed); the x-mismatch brack
 readout-dependence paragraph is tagged as a synthesis; its range is quoted as measured; the S1 miss is quoted unrounded.*
 
 *Referee pass 2 (2026-09-28 ~04:25): converged. All five fixes verified by re-running the graders (outputs byte-identical to the committed ones, figure md5 unchanged); no side effect of the R1 gate on P1-P4, Q1, X2, S3, M3 or the figure.*
+
+## RESULT, Amendment 7 binary arm (2026-09-28 ~05:25 CDT; `python lfdem/pairtype.py` -> `out/grade_lfsig2bi.txt`; POST HOC `python lfdem/binload.py` -> `out/binload_lfsig2bi.txt`)
+
+**Health.** 27/27 cells rc 0, strain 4, overlap <= 0.008.
+
+**Registered verdict B1: NOT GRADED.** The registered readout requires each pair type's plateau-normalised touching
+fraction to be monotone in sigma. The LL series (about 300 pairs per snapshot) dips after it has crossed 1/2 on all three
+seeds (and SL on seed 2) by amounts comparable to its binomial s.e. (~0.08 normalised), so sigma_half(LL) is UNDEFINED
+as registered on every seed. The bar is not changed.
+
+**POST HOC, labelled, not registered.** (1) First-crossing sigma_half (the same log-linear interpolation, without the
+monotonicity requirement; the dips all come after the crossing): SS/LL = **1.579**, ln se 0.0315, n 3 (1.489 / 1.659 / 1.594),
+95 % band [1.38, 1.81]; m_eff = ln ratio / ln 2 = **0.66** [0.46, 0.86]. Both registered candidates are excluded at that
+level: Derjaguin with mean-field load predicts 2 (m 1), a size-independent critical load predicts 4 (m 2). SL/LL 1.39 / 1.62 /
+1.64. (2) Why it is below 1: on NOT-YET-TOUCHING compressive pairs in the activation range (sigma <= 4.5), the load ratio
+LL/SS is 2.6-4.1 (15 cells), i.e. the load-size exponent is **beta = 1.67** (sd 0.19), not the mean-field 2 (it was 1.9-2.1 in
+the lognormal packs). A Derjaguin threshold then predicts m = beta - 1 = **0.67**; the measured 0.66 matches. A constant
+critical load would predict m = beta = 1.67, excluded. This closure was computed AFTER the ratio was seen, on an observable
+(the pre-contact load) that does not involve activation.
+
+**Reading.** The per-pair activation is consistent with a Derjaguin (electrostatic, threshold ~ R*) contact law and not with
+the size-independent critical load of the constant-force picture; the size selectivity is weaker than naive because in this
+binary the load grows slower than the pair area. Scope: one size ratio, one composition, phi 0.55, N 500, 3 seeds; the
+registered readout could not grade it, so this is a strong descriptive result, not a registered one. The next registered
+test should use a readout robust to post-crossing noise (first crossing, or a logistic fit per type) and more LL pairs
+(larger N or a higher large-grain volume fraction).
