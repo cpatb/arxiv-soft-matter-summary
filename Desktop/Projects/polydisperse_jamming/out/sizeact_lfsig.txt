@@ -1,0 +1,39 @@
+sizeact -- POST HOC, descriptive: size-resolved activation in LF_DEM [lfsig], strain [2.0, 4.0], x_m 0.90 arms
+  quartiles Q1 (smallest) .. Q4 (largest) of each configuration's radii; <k> touching contacts per grain;
+  P = fraction of time a grain has >= 1 touching contact; share = the quartile's share of contact ends (area share in brackets);
+  p = slope of ln<k> vs ln(quartile mean radius): 0 is size-blind, 2 is 'contacts follow surface area'
+  c20_x90_s0.1       Zc  0.00 p   nan | Q1 r0.78 <k>0.00 P0.00 sh0.00(0.15)  Q2 r0.92 <k>0.00 P0.00 sh0.00(0.21)  Q3 r1.03 <k>0.00 P0.00 sh0.00(0.26)  Q4 r1.23 <k>0.00 P0.00 sh0.00(0.38)
+  c20_x90_s0.3       Zc  0.00 p   nan | Q1 r0.78 <k>0.00 P0.00 sh0.00(0.15)  Q2 r0.92 <k>0.00 P0.00 sh0.00(0.21)  Q3 r1.03 <k>0.00 P0.00 sh0.00(0.26)  Q4 r1.23 <k>0.00 P0.00 sh0.00(0.38)
+  c20_x90_s1         Zc  0.06 p  2.93 | Q1 r0.78 <k>0.03 P0.03 sh0.13(0.15)  Q2 r0.92 <k>0.04 P0.03 sh0.15(0.21)  Q3 r1.03 <k>0.07 P0.06 sh0.27(0.26)  Q4 r1.23 <k>0.11 P0.11 sh0.46(0.38)
+  c20_x90_s3         Zc  0.83 p  1.98 | Q1 r0.78 <k>0.50 P0.35 sh0.15(0.15)  Q2 r0.92 <k>0.70 P0.47 sh0.21(0.21)  Q3 r1.03 <k>0.90 P0.61 sh0.27(0.26)  Q4 r1.23 <k>1.22 P0.70 sh0.37(0.38)
+  c20_x90_s10        Zc  2.25 p  1.65 | Q1 r0.78 <k>1.51 P0.67 sh0.17(0.15)  Q2 r0.92 <k>1.93 P0.78 sh0.21(0.21)  Q3 r1.03 <k>2.39 P0.87 sh0.27(0.26)  Q4 r1.23 <k>3.17 P0.96 sh0.35(0.38)
+  c20_x90_s30        Zc  2.70 p  1.38 | Q1 r0.78 <k>1.93 P0.83 sh0.18(0.15)  Q2 r0.92 <k>2.38 P0.89 sh0.22(0.21)  Q3 r1.03 <k>2.94 P0.95 sh0.27(0.26)  Q4 r1.23 <k>3.56 P0.96 sh0.33(0.38)
+  c20_x90_s100       Zc  2.74 p  1.51 | Q1 r0.78 <k>1.84 P0.78 sh0.17(0.15)  Q2 r0.92 <k>2.52 P0.88 sh0.23(0.21)  Q3 r1.03 <k>2.90 P0.95 sh0.26(0.26)  Q4 r1.23 <k>3.69 P0.99 sh0.34(0.38)
+  c50_x90_s0.1       Zc  0.00 p   nan | Q1 r0.52 <k>0.00 P0.00 sh0.00(0.06)  Q2 r0.78 <k>0.00 P0.00 sh0.00(0.13)  Q3 r1.01 <k>0.00 P0.00 sh0.00(0.23)  Q4 r1.56 <k>0.00 P0.00 sh0.00(0.58)
+  c50_x90_s0.3       Zc  0.00 p   nan | Q1 r0.52 <k>0.00 P0.00 sh0.50(0.06)  Q2 r0.78 <k>0.00 P0.00 sh0.00(0.13)  Q3 r1.01 <k>0.00 P0.00 sh0.00(0.23)  Q4 r1.56 <k>0.00 P0.00 sh0.50(0.58)
+  c50_x90_s1         Zc  0.08 p  2.52 | Q1 r0.52 <k>0.01 P0.01 sh0.04(0.06)  Q2 r0.78 <k>0.03 P0.02 sh0.09(0.13)  Q3 r1.01 <k>0.06 P0.06 sh0.20(0.23)  Q4 r1.56 <k>0.21 P0.17 sh0.66(0.58)
+  c50_x90_s3         Zc  0.77 p  2.18 | Q1 r0.52 <k>0.17 P0.11 sh0.05(0.06)  Q2 r0.78 <k>0.37 P0.25 sh0.12(0.13)  Q3 r1.01 <k>0.78 P0.42 sh0.25(0.23)  Q4 r1.56 <k>1.77 P0.75 sh0.57(0.58)
+  c50_x90_s10        Zc  1.72 p  1.67 | Q1 r0.52 <k>0.55 P0.26 sh0.08(0.06)  Q2 r0.78 <k>1.15 P0.51 sh0.17(0.13)  Q3 r1.01 <k>1.75 P0.70 sh0.25(0.23)  Q4 r1.56 <k>3.45 P0.92 sh0.50(0.58)
+  c50_x90_s30        Zc  1.98 p  1.47 | Q1 r0.52 <k>0.74 P0.40 sh0.09(0.06)  Q2 r0.78 <k>1.36 P0.63 sh0.17(0.13)  Q3 r1.01 <k>2.17 P0.83 sh0.27(0.23)  Q4 r1.56 <k>3.66 P0.92 sh0.46(0.58)
+  c50_x90_s100       Zc  2.23 p  1.37 | Q1 r0.52 <k>0.94 P0.51 sh0.11(0.06)  Q2 r0.78 <k>1.52 P0.75 sh0.17(0.13)  Q3 r1.01 <k>2.26 P0.88 sh0.25(0.23)  Q4 r1.56 <k>4.21 P0.97 sh0.47(0.58)
+
+  size selectivity P(Q4)/P(Q1) and exponent p vs stress, per CV (mean over seeds present)
+    CV 0.20 sigma    0.1: n 1  P(Q4)/P(Q1)     nan  p   nan  Zc  0.00
+    CV 0.20 sigma    0.3: n 1  P(Q4)/P(Q1)     nan  p   nan  Zc  0.00
+    CV 0.20 sigma    1.0: n 1  P(Q4)/P(Q1)    3.42  p  2.93  Zc  0.06
+    CV 0.20 sigma    3.0: n 1  P(Q4)/P(Q1)    2.02  p  1.98  Zc  0.83
+    CV 0.20 sigma   10.0: n 1  P(Q4)/P(Q1)    1.43  p  1.65  Zc  2.25
+    CV 0.20 sigma   30.0: n 1  P(Q4)/P(Q1)    1.16  p  1.38  Zc  2.70
+    CV 0.20 sigma  100.0: n 1  P(Q4)/P(Q1)    1.26  p  1.51  Zc  2.74
+    CV 0.50 sigma    0.1: n 1  P(Q4)/P(Q1)     nan  p   nan  Zc  0.00
+    CV 0.50 sigma    0.3: n 1  P(Q4)/P(Q1)    1.00  p   nan  Zc  0.00
+    CV 0.50 sigma    1.0: n 1  P(Q4)/P(Q1)   12.80  p  2.52  Zc  0.08
+    CV 0.50 sigma    3.0: n 1  P(Q4)/P(Q1)    7.05  p  2.18  Zc  0.77
+    CV 0.50 sigma   10.0: n 1  P(Q4)/P(Q1)    3.52  p  1.67  Zc  1.72
+    CV 0.50 sigma   30.0: n 1  P(Q4)/P(Q1)    2.30  p  1.47  Zc  1.98
+    CV 0.50 sigma  100.0: n 1  P(Q4)/P(Q1)    1.88  p  1.37  Zc  2.23
+
+  COLLAPSE of activation onto sigma * a^m (logit P vs ln sigma a^m, one line; rms residual, lower is better)
+    pooled   n  29: best m 1.50 (rms 0.679, slope 1.61); rms at m 0 / 1 / 2 = 1.027 / 0.720 / 0.718
+    CV 0.20  n  13: best m 1.05 (rms 0.557, slope 2.00); rms at m 0 / 1 / 2 = 0.655 / 0.557 / 0.629
+    CV 0.50  n  16: best m 1.50 (rms 0.509, slope 1.46); rms at m 0 / 1 / 2 = 1.015 / 0.583 / 0.561

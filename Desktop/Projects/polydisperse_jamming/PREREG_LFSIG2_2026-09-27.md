@@ -196,3 +196,27 @@ sigma*(0.5)/sigma*(0) = **0.735** and sigma*(0.2)/sigma*(0) = 0.957 (`out/predic
   neighbours within 1.2 x contact distance) on each cell's last configuration snapshot, against the same number on the CV 0.2
   arm. If any CV 0 cell has Q6 > 0.3 (random packings sit near 0.03-0.05 for N = 500; fcc is 0.575), that cell is excluded
   from Q1 and reported as ORDERED.
+
+## Amendment 5 (2026-09-27 ~22:40 CDT) -- per-grain activation threshold, found POST HOC on lfsig, registered for lfsig2
+
+**Status of the data at registration:** the lfsig2 dumps synced so far have been read ONLY by the health/P4 grader (data
+rows, not interaction dumps). `lfdem/sizeact.py` has been run on the OLD lfsig seed-1 cells only (`out/sizeact_lfsig.txt`).
+
+**The post-hoc finding (lfsig, one seed per arm, descriptive).** Activation is size-selective at onset: at CV 0.5, sigma_0 1,
+the largest radius quartile is 12.8x more likely than the smallest to carry a touching contact, falling to 1.9x at sigma_0 100;
+the per-quartile mean-degree exponent p falls from ~2.5 at onset to ~1.4 on the plateau. Normalising each quartile's
+activated fraction by its own plateau value (small grains rattle even on the plateau), the activation collapses best onto
+sigma * a^m with **m = 1.05 (CV 0.2) and 1.50 (CV 0.5)**, against a size-blind m = 0 whose residual is 1.2-2.0x larger.
+The Derjaguin argument predicts **m = 1**: the load a stress puts on a contact scales as sigma a^2 and its repulsive threshold
+as R* ~ a, so a grain activates when sigma a exceeds a constant.
+
+**Registered on the lfsig2 dumps (3 seeds, 9 rungs; `python lfdem/sizeact.py lfsig2`, collapse block; the grid and the
+plateau normalisation exactly as in the file at this commit):**
+- **S1 (size selectivity).** The pooled best m lies in [0.5, 2.0], and the residual at m = 0 exceeds the best residual by
+  >= 1.3x, on the pooled set AND on each of CV 0.2 and CV 0.5 separately.
+- **S2 (Derjaguin).** m = 1 is within 1.15x of the best residual on each CV (i.e. the one-parameter Derjaguin law is nearly
+  as good as the free exponent). If S1 passes and S2 fails, the activation is size-selective but NOT by the simple
+  Derjaguin load/threshold ratio, and that is reported.
+- **S3 (does it explain sigma*?, descriptive).** From each arm's measured contact-weighted radius a_k = sum(k a)/sum(k) at
+  sigma_half, the per-grain law predicts sigma*(0.5)/sigma*(0.2) = (a_k(0.2)/a_k(0.5))^m_best. Printed beside the measured
+  R (P1); agreement within the 95 % band would make the per-grain threshold the mechanism of whatever P1 finds.
