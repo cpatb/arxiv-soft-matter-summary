@@ -1,0 +1,30 @@
+q6_order -- Amendment 4 ordering check (global Q6 over bonds with gap < 0.4 at the last snapshot; ORDERED if > 0.3)
+  anchors: random 2000 bonds Q6 0.0230 (expect ~0.022); fcc 12 bonds Q6 0.5745 (textbook 0.5745)
+  lfsig    c20_x90_s0.1         strain  4.0 bonds  2022 Q6 0.0568 (random ~0.022) random
+  lfsig    c20_x90_s0.3         strain  4.0 bonds  1963 Q6 0.0544 (random ~0.023) random
+  lfsig    c20_x90_s1           strain  4.0 bonds  1945 Q6 0.0452 (random ~0.023) random
+  lfsig    c20_x90_s10          strain  4.0 bonds  1913 Q6 0.0492 (random ~0.023) random
+  lfsig    c20_x90_s100         strain  6.0 bonds  1900 Q6 0.0323 (random ~0.023) random
+  lfsig    c20_x90_s3           strain  4.0 bonds  1926 Q6 0.0524 (random ~0.023) random
+  lfsig    c20_x90_s30          strain  4.0 bonds  1924 Q6 0.0551 (random ~0.023) random
+  lfsig    c20_x95_s0.1         strain  4.0 bonds  2195 Q6 0.0291 (random ~0.021) random
+  lfsig    c20_x95_s0.3         strain  4.0 bonds  2133 Q6 0.0437 (random ~0.022) random
+  lfsig    c20_x95_s1           strain  4.0 bonds  2096 Q6 0.0603 (random ~0.022) random
+  lfsig    c20_x95_s10          strain  4.0 bonds  2090 Q6 0.0394 (random ~0.022) random
+  lfsig    c20_x95_s100         strain  4.0 bonds  2067 Q6 0.0377 (random ~0.022) random
+  lfsig    c20_x95_s3           strain  4.0 bonds  2069 Q6 0.0343 (random ~0.022) random
+  lfsig    c20_x95_s30          strain  4.0 bonds  2029 Q6 0.0457 (random ~0.022) random
+  lfsig    c50_x90_s0.1         strain  4.0 bonds  1779 Q6 0.0245 (random ~0.024) random
+  lfsig    c50_x90_s0.3         strain  4.0 bonds  1761 Q6 0.0297 (random ~0.024) random
+  lfsig    c50_x90_s1           strain  4.0 bonds  1724 Q6 0.0256 (random ~0.024) random
+  lfsig    c50_x90_s10          strain  4.0 bonds  1680 Q6 0.0282 (random ~0.024) random
+  lfsig    c50_x90_s100         strain  6.0 bonds  1712 Q6 0.0276 (random ~0.024) random
+  lfsig    c50_x90_s3           strain  4.0 bonds  1720 Q6 0.0228 (random ~0.024) random
+  lfsig    c50_x90_s30          strain  6.0 bonds  1695 Q6 0.0288 (random ~0.024) random
+  lfsig    c50_x95_s0.1         strain  4.0 bonds  1937 Q6 0.0242 (random ~0.023) random
+  lfsig    c50_x95_s0.3         strain  4.0 bonds  1916 Q6 0.0232 (random ~0.023) random
+  lfsig    c50_x95_s1           strain  4.0 bonds  1904 Q6 0.0241 (random ~0.023) random
+  lfsig    c50_x95_s10          strain  4.0 bonds  1843 Q6 0.0232 (random ~0.023) random
+  lfsig    c50_x95_s100         strain  5.0 bonds  1876 Q6 0.0261 (random ~0.023) random
+  lfsig    c50_x95_s3           strain  4.0 bonds  1840 Q6 0.0274 (random ~0.023) random
+  lfsig    c50_x95_s30          strain  4.0 bonds  1866 Q6 0.0263 (random ~0.023) random
