@@ -38,7 +38,9 @@ healthy (registered rule: rc 0/124, strain >= 3.95, overlap < 0.05): 0; excluded
 ==== P1: R = sigma*_WC(0.5)/sigma*_WC(0.2); H_geo 0.768, H_inert 1.000 ====
   P1: NOT GRADED (0/3 seed pairs complete)
 
-==== P2: delta_WC falls with CV (3/3 seeds paired, mean - 2 se < 0); dry-DEM reference 0.869 ====
+==== P2: delta_WC falls with CV (3/3 seeds paired, mean + k se < 0); dry-DEM reference 0.869 ====
+  (the registered text says 'mean - 2 se < 0', which for a FALL is the wrong side: a fall is resolved when the UPPER
+   end of the band is below 0. Amendment 3 fixes the side and the coverage; both readings are printed.)
   P2: NOT GRADED (0/3)
 
 ==== P3: contact share at sigma_half rises with CV, 0.2 -> 0.5, 3/3 seeds paired ====

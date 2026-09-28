@@ -158,3 +158,23 @@ fourth arm is added beside the running queue (second driver, P = 5; `lfdem/make_
 The phi_m,LF values come from the lfsig inversion that failed its own two-phi consistency check for CV 0.2 (P2 NOT USABLE,
 0.6945/0.6810 for phi_0 -- the phi_m halves agreed, 0.6258/0.6254); the x-match is therefore approximate to the ~0.5 %
 those halves differ by, which is far below the 2.9 % shift being tested.
+
+## Amendment 3 (2026-09-27 ~21:50 CDT; physics-referee pass 1 on the registration, acted on before any cell finished or was read)
+
+- **Coverage (referee MATERIAL 1).** The "2 s.e." bands in G0/P1/P2 cover ~82 % at df 2 (t.cdf(2, 2)), not the 95 % the
+  "t_crit 4.303" bullet implied, and T_CRIT was never used. The REGISTERED verdicts are now at 95 %: G0 requires
+  se(ln R) < ln(1/0.768)/(2 x 4.303) = **0.0307** (so the two candidates' 95 % intervals cannot both contain the mean), and
+  P1 CONSISTENT means within 4.303 s.e. The 2-s.e. (82 %) reading is printed beside it as descriptive, never as the verdict.
+  X1's margin uses the same 95 % boundaries. This is STRICTER than what was registered, not looser.
+- **P2's side.** "mean - 2 s.e. < 0" was the wrong side for a predicted FALL (a fall is resolved when the upper end is below 0).
+  Registered now: 3/3 seeds negative AND mean + 4.303 s.e. < 0. The as-written test and the 82 % one are printed beside it.
+- **Size-blind kn (referee MATERIAL 2).** kn is one spring per cell while a pair's activation force scales with R*
+  (x~25 across the PSD), so large-large contacts overlap more at the same load per threshold. M1 (size-selective activation)
+  is graded only beside an overlap check CONDITIONED ON R*: `mech_lfsig.py` prints, per cell, the mean and max -h/R* of
+  touching contacts in the top and bottom R* quartile. If the top quartile's max -h/R* exceeds 0.05 at CV 0.5 on any rung M1
+  uses, M1 is reported CONDITIONAL on the contact stiffness rather than as evidence for size selection.
+- **Minor, fixed:** the loader tolerates a partial last row of a live data file; M3's interpolation refuses to extrapolate
+  (np.interp clamps); the identity-check range is quoted as measured (0.76-1.02; 0.88-1.02 at sigma >= 3).
+- **Unresolved (referee minor 1), carried into the RESULT:** the Design section and params_base.txt call the stress unit
+  F_R/a^2 while Erratum 1 argues F_R0/a. LF_DEM's pair force is F_R0 x R*, so at a = 1 the two coincide numerically; only the
+  printed-not-graded R_d32 factor depends on the exponent.

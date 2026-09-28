@@ -1,7 +1,7 @@
 mech_lfsig -- POST HOC, not registered: the chain's geometry vs the activation stress in LF_DEM [lfsig], snapshots strain [2.0, 4.0]
   identity check: sigma_c from the dump (normal + tangential, 6 pi) vs LF_DEM's Viscosity(contact) x rate at the nearest data row
   columns: sig_c = tangential as written; (norm) = normal part only; (t+) = tangential read as the force on particle 1 -- the
-  (t+) column is the one that matches (0.88-1.02 on lfsig; the residual is the ~0.025-strain offset between dump and data row)
+  (t+) column is the one that matches (0.76-1.02 on lfsig; worst at the low-signal rungs sigma 0.3-1, 0.88-1.02 at sigma >= 3)
   11 cells with interaction dumps in the window
   label                sig sn     Zc    Nc/V  <aa>_c       G    <g>  g_med  g_q90   sig_c  (norm)    (t+) sig_cLF  ratio  fcont n_near  gnear gn_q90
   c20_x90_s1           1.0  3  0.063  0.0037  1.2086  0.0045  2.329  2.020   3.58   0.060   0.065   0.070   0.082  0.851  0.082    647  0.941  1.785
@@ -24,3 +24,17 @@ mech_lfsig -- POST HOC, not registered: the chain's geometry vs the activation s
    10.0    1  0.766  0.533  1.567  0.836  1.297  1.068  1.311  1.093  1.084
    30.0    1  0.735  0.511  1.507  0.768  1.129  0.983  1.477  1.057  0.868
   100.0    1  0.817  0.568  1.498  0.851  0.882  0.728  0.975  0.986  0.750
+
+  Am. 3 overlap per threshold radius -h/R*, touching contacts, by R* quartile (max over snapshots averaged; bar 0.05)
+  label               top max top mean  bot max
+  c20_x90_s1           0.0003   0.0002   0.0002
+  c20_x90_s3           0.0014   0.0003   0.0019
+  c20_x90_s10          0.0050   0.0009   0.0064
+  c20_x90_s30          0.0050   0.0011   0.0052
+  c20_x90_s100         0.0070   0.0013   0.0084
+  c50_x90_s0.3            nan      nan      nan
+  c50_x90_s1           0.0002   0.0001   0.0005
+  c50_x90_s3           0.0016   0.0003   0.0014
+  c50_x90_s10          0.0043   0.0009   0.0097
+  c50_x90_s30          0.0042   0.0009   0.0098
+  c50_x90_s100         0.0046   0.0009   0.0081

@@ -92,6 +92,13 @@ def cell(d: str) -> dict | None:
         if nc == 0:
             continue
         g = fn[t] / rstar[t]
+        # Am. 3: overlap per threshold radius, conditioned on R* (kn is size-blind; large pairs overlap more per load)
+        ov = -h[t] / rstar[t]
+        qlo, qhi = np.quantile(rstar[t], [0.25, 0.75]) if nc >= 8 else (np.nan, np.nan)
+        top, bot = rstar[t] >= qhi, rstar[t] <= qlo
+        ov_top_max = float(ov[top].max()) if top.any() else float("nan")
+        ov_top_mean = float(ov[top].mean()) if top.any() else float("nan")
+        ov_bot_max = float(ov[bot].max()) if bot.any() else float("nan")
         ell = (ai + aj + h)[t]
         # Love-Weber: sigma_ab = (1/V) sum l_a F_b with l = ell n (i -> j) and F the force on j (normal F_n n plus the
         # tangential vector, cols 13-15). LF_DEM's printed stress is in units F_R/(6 pi a^2) (SimulationInit.cpp), so
@@ -111,7 +118,7 @@ def cell(d: str) -> dict | None:
                      "aa": float(np.mean(ai[t] * aj[t])), "G": nc / V * float(np.mean(ai[t] * aj[t])),
                      "g_mean": float(g.mean()), "g_med": float(np.median(g)), "g_q90": float(np.quantile(g, 0.9)),
                      "g_max": float(g.max()), "sig_c": sig_c, "sig_c_n": sig_c_n, "sig_c_zx": sig_c_zx, "sig_c_lf": sig_c_lf, "sig_tot_lf": sig_tot_lf,
-                     "n_near": int(near.sum()), "gnear_mean": float(np.nanmean(gnear)), "gnear_q90": float(np.nanquantile(gnear, 0.9)),
+                     "ov_top_max": ov_top_max, "ov_top_mean": ov_top_mean, "ov_bot_max": ov_bot_max, "n_near": int(near.sum()), "gnear_mean": float(np.nanmean(gnear)), "gnear_q90": float(np.nanquantile(gnear, 0.9)),
                      "a3": float(np.mean(r**3)), "phi": float(np.sum(4 / 3 * np.pi * r**3) / V)})
     if not rows:
         return None
@@ -138,6 +145,9 @@ def grade_m(cells: list) -> None:
             e2 = by[(0.2, sd, 3.0)]["aa"] / by[(0.2, sd, 100.0)]["aa"]
             m1a += int(e5 > 1); m1b += int(e5 > e2)
             say(f"  M1 seed {sd}: <aa>_c(3)/<aa>_c(100) CV 0.2 {e2:.3f}, CV 0.5 {e5:.3f}")
+    bad = [c for (cv, sd, s), c in by.items() if cv == 0.5 and s in (3.0, 100.0) and c["ov_top_max"] > 0.05]
+    say(f"  M1 stiffness caveat: CV 0.5 cells at sigma 3/100 with top-R* max -h/R* > 0.05: {[c['label'] for c in bad] or 'none'}"
+        + (" -> M1 is CONDITIONAL on the contact stiffness" if bad else ""))
     say(f"  M1: {'PASS' if n1 == 3 and m1a == 3 and m1b == 3 else 'NOT GRADED' if n1 < 3 else 'FAIL'} (excess > 1 at CV 0.5: {m1a}/{n1}; larger than CV 0.2: {m1b}/{n1})")
     # M2: G ratio > 1 at sigma 3; < 0.90 at sigma >= 10, on 3/3 seeds each
     say("  M2: G(0.5)/G(0.2) per seed at each sigma")
@@ -167,8 +177,13 @@ def grade_m(cells: list) -> None:
         def g_at(cv, s0):
             pts = sorted((s, by[(cv, sd, s)]["G"]) for (c, d, s) in by if c == cv and d == sd)
             xs = np.log([p[0] for p in pts]); ys = np.log([p[1] for p in pts])
+            if not (xs[0] <= np.log(s0) <= xs[-1]):
+                return float("nan")   # np.interp clamps; refuse instead (lesson 2026-09-18)
             return float(np.exp(np.interp(np.log(s0), xs, ys)))
         ratio = g_at(0.5, r5["shalf"]) / g_at(0.2, r2["shalf"])
+        if not np.isfinite(ratio):
+            say(f"  M3 seed {sd}: sigma_half outside the dumped range -> NOT GRADED for this seed")
+            continue
         vals.append(ratio)
         say(f"  M3 seed {sd}: sigma_half 0.2 {r2['shalf']:.3f}, 0.5 {r5['shalf']:.3f}; G(0.5 at its half)/G(0.2 at its half) = {ratio:.3f}")
     if len(vals) == 3:
@@ -183,7 +198,7 @@ def main() -> int:
     say(f"mech_lfsig -- POST HOC, not registered: the chain's geometry vs the activation stress in LF_DEM [{camp}], snapshots strain [{W0}, {W1}]")
     say("  identity check: sigma_c from the dump (normal + tangential, 6 pi) vs LF_DEM's Viscosity(contact) x rate at the nearest data row")
     say("  columns: sig_c = tangential as written; (norm) = normal part only; (t+) = tangential read as the force on particle 1 -- the")
-    say("  (t+) column is the one that matches (0.88-1.02 on lfsig; the residual is the ~0.025-strain offset between dump and data row)")
+    say("  (t+) column is the one that matches (0.76-1.02 on lfsig; worst at the low-signal rungs sigma 0.3-1, 0.88-1.02 at sigma >= 3)")
     dirs = [x for x in sorted(glob.glob(os.path.join(OUT, camp, "c*"))) if ".killed_" not in x and "_x95_" not in x]
     cells = [c for c in (cell(d) for d in dirs) if c]
     say(f"  {len(cells)} cells with interaction dumps in the window")
@@ -204,6 +219,11 @@ def main() -> int:
         rr = lambda k: c5[k] / c2[k]  # noqa: E731
         say(f"  {sig:5.1f} {sd:4d} {rr('zc'):6.3f} {rr('ncV'):6.3f} {rr('aa'):6.3f} {rr('G'):6.3f} {rr('g_mean'):6.3f} {rr('g_med'):6.3f} "
             f"{rr('sig_c'):6.3f} {c5['sig_c_lf'] / c5['sig_tot_lf'] / (c2['sig_c_lf'] / c2['sig_tot_lf']):6.3f} {rr('G') * rr('g_mean'):6.3f}")
+    say("")
+    say("  Am. 3 overlap per threshold radius -h/R*, touching contacts, by R* quartile (max over snapshots averaged; bar 0.05)")
+    say(f"  {'label':18s} {'top max':>8s} {'top mean':>8s} {'bot max':>8s}")
+    for c in sorted(cells, key=lambda c: (c["cv"], c["seed"], c["sig"])):
+        say(f"  {c['label']:18s} {c['ov_top_max']:8.4f} {c['ov_top_mean']:8.4f} {c['ov_bot_max']:8.4f}")
     if camp == "lfsig2":
         grade_m(cells)
     outp = os.path.join(OUT, f"mech_{camp}.txt")

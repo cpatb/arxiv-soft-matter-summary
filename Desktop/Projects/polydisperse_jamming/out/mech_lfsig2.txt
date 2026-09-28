@@ -1,7 +1,7 @@
 mech_lfsig -- POST HOC, not registered: the chain's geometry vs the activation stress in LF_DEM [lfsig2], snapshots strain [2.0, 4.0]
   identity check: sigma_c from the dump (normal + tangential, 6 pi) vs LF_DEM's Viscosity(contact) x rate at the nearest data row
   columns: sig_c = tangential as written; (norm) = normal part only; (t+) = tangential read as the force on particle 1 -- the
-  (t+) column is the one that matches (0.88-1.02 on lfsig; the residual is the ~0.025-strain offset between dump and data row)
+  (t+) column is the one that matches (0.76-1.02 on lfsig; worst at the low-signal rungs sigma 0.3-1, 0.88-1.02 at sigma >= 3)
   0 cells with interaction dumps in the window
   label                sig sn     Zc    Nc/V  <aa>_c       G    <g>  g_med  g_q90   sig_c  (norm)    (t+) sig_cLF  ratio  fcont n_near  gnear gn_q90
 
@@ -9,7 +9,11 @@ mech_lfsig -- POST HOC, not registered: the chain's geometry vs the activation s
   the contact stress sigma_c and the contact share fcont.  (chain, dry Yade: sigma* ratio 0.768 <=> G ratio at fixed C/q)
     sig seed     Zc   Nc/V <aa>_c      G    <g>  g_med  sig_c  fcont  G*<g>
 
+  Am. 3 overlap per threshold radius -h/R*, touching contacts, by R* quartile (max over snapshots averaged; bar 0.05)
+  label               top max top mean  bot max
+
 ==== Amendment 1: M1-M3 on the lfsig2 dumps (3 seeds) ====
+  M1 stiffness caveat: CV 0.5 cells at sigma 3/100 with top-R* max -h/R* > 0.05: none
   M1: NOT GRADED (excess > 1 at CV 0.5: 0/0; larger than CV 0.2: 0/0)
   M2: G(0.5)/G(0.2) per seed at each sigma
   M2: NOT GRADED (> 1 at 3: 0/0; < 0.90 at every sigma >= 10: 0/0)

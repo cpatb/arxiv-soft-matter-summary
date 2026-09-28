@@ -38,6 +38,7 @@ R_GEO_35 = math.exp(math.log(R_GEO) * (0.35**2 - 0.2**2) / (0.5**2 - 0.2**2))   
 DELTA_GEO = 0.815 / 0.938                        # dry chain delta(0.5)/delta(0.2) (predict_cvmap.txt)
 SE_MAX = 0.25 * math.log(1.0 / R_GEO)            # G0: a quarter of the candidate separation
 T_CRIT = 4.303                                   # df 2, 95 %
+SE_MAX_95 = math.log(1.0 / R_GEO) / (2 * T_CRIT)    # Am. 3: the two 95 % intervals cannot both contain the mean
 X_SENS = {0.2: 0.05 / 0.05, 0.5: 0.09 / 0.05}    # lfsig: d ln sigma_half / d x_m (per unit x_m), stated confound
 X_MISMATCH = 0.025                               # LF-relative x of the CV 0.5 arm above the CV 0.2 arm (lfsig P2)
 
@@ -59,7 +60,12 @@ def load_cell(d: str, legacy: bool) -> dict | None:
     files = glob.glob(os.path.join(d, "data_*.dat"))
     if not files:
         return None
-    a = np.loadtxt(files[0], comments="#", ndmin=2)
+    try:
+        a = np.loadtxt(files[0], comments="#", ndmin=2)
+    except ValueError:   # a data file still being appended can end in a partial row
+        rows = [l.split() for l in open(files[0], encoding="utf-8") if l.strip() and not l.startswith("#")]
+        w0 = max(len(r) for r in rows)
+        a = np.array([[float(x) for x in r] for r in rows if len(r) == w0])
     conf = json.load(open(os.path.join(d, "conf.json"), encoding="utf-8"))
     rc = int(kv["rc"]) if "rc" in kv else None
     if rc is None:   # runner killed: read LF_DEM's own completion line (lfsig Amendment 4 rule)
@@ -225,12 +231,12 @@ def x_arm(cells: dict, arms: dict, con: dict) -> None:
         say(f"  X1: ln[R2(0.5x)/R2(0.5)] = {m:+.4f} se {se:.4f} (ratio {math.exp(m):.3f}, band [{math.exp(m - se):.3f}, {math.exp(m + se):.3f}]); "
             f"predicted {X1_PRED:+.3f}; per seed " + " ".join(f"{x:+.3f}" for x in v))
         p = con.get((0.2, 0.5, "sstar"), {"n": 0})
-        if p["n"] == 3 and p["se"] < SE_MAX:
+        if p["n"] == 3 and p["se"] < SE_MAX_95:
             mR, seR = p["mean"], p["se"]
             # margin from the raw ln R to the nearest candidate boundary (ln R_cand +- 2 se)
             margins = []
             for rc_ in (R_GEO, R_INERT):
-                lo, hi = math.log(rc_) - 2 * seR, math.log(rc_) + 2 * seR
+                lo, hi = math.log(rc_) - T_CRIT * seR, math.log(rc_) + T_CRIT * seR
                 margins.append(min(abs(mR - lo), abs(mR - hi)))
             margin = min(margins)
             say(f"  X1 vs P1 margin: |X1| {abs(m):.4f} vs the raw ln R's distance to the nearest candidate boundary {margin:.4f} -> "
@@ -322,34 +328,48 @@ def main() -> int:
         say(f"  P1: NOT GRADED ({p['n']}/3 seed pairs complete)")
     else:
         se = p["se"]; m = p["mean"]
-        say(f"  G0 resolving power: se(ln R) = {se:.4f} vs bar {SE_MAX:.4f} -> {'INFORMATIVE' if se < SE_MAX else 'NOT INFORMATIVE'}")
-        if se < SE_MAX:
-            geo = abs(m - math.log(R_GEO)) <= 2 * se
-            ine = abs(m - math.log(R_INERT)) <= 2 * se
-            verdict = "BOTH" if geo and ine else "GEO" if geo else "INERT" if ine else "NEITHER"
-            say(f"  R = {math.exp(m):.3f}, 2 se band [{math.exp(m - 2 * se):.3f}, {math.exp(m + 2 * se):.3f}]; "
-                f"|ln R - ln 0.768| = {abs(m - math.log(R_GEO)):.4f} ({abs(m - math.log(R_GEO)) / se:.1f} se); "
-                f"|ln R - ln 1| = {abs(m):.4f} ({abs(m) / se:.1f} se)")
-            say(f"  P1 verdict: {verdict}")
+        say(f"  R = {math.exp(m):.3f}; |ln R - ln 0.768| = {abs(m - math.log(R_GEO)):.4f} ({abs(m - math.log(R_GEO)) / se:.1f} se); "
+            f"|ln R - ln 1| = {abs(m):.4f} ({abs(m) / se:.1f} se)")
+        # Amendment 3: two coverage levels. The originally registered '2 se' band covers only ~82 % at df 2
+        # (t.cdf(2, 2)); the REGISTERED verdict is the t_crit (95 %) one, the 2-se one is printed as descriptive.
+        verdicts = {}
+        for name, k, semax in (("2 se (82 %, descriptive)", 2.0, SE_MAX), ("t_crit 4.303 se (95 %, REGISTERED)", T_CRIT, SE_MAX_95)):
+            inf = se < semax
+            say(f"  G0 [{name}]: se(ln R) = {se:.4f} vs bar {semax:.4f} -> {'INFORMATIVE' if inf else 'NOT INFORMATIVE'}")
+            if inf:
+                geo = abs(m - math.log(R_GEO)) <= k * se
+                ine = abs(m - math.log(R_INERT)) <= k * se
+                verdicts[name] = (geo, ine, "BOTH" if geo and ine else "GEO" if geo else "INERT" if ine else "NEITHER")
+                say(f"    band [{math.exp(m - k * se):.3f}, {math.exp(m + k * se):.3f}] -> verdict {verdicts[name][2]}")
+            else:
+                say("    no candidate graded at this level")
+        reg = verdicts.get("t_crit 4.303 se (95 %, REGISTERED)")
+        say(f"  P1 verdict (registered, 95 %): {reg[2] if reg else 'NOT INFORMATIVE'}")
+        if reg:
+            geo, ine = reg[0], reg[1]
+            k = T_CRIT
             # stated confound: the LF-relative x mismatch
-            dl = (X_SENS[0.5] - 0.0) * X_MISMATCH  # the CV 0.5 arm sits ~0.025 higher in x_LF: its sigma_half is ~ +9 %/0.05 x that
+            dl = X_SENS[0.5] * X_MISMATCH  # the CV 0.5 arm sits ~0.025 higher in x_LF: its sigma_half is ~ +9 %/0.05 x that
             say(f"  stated confound (x_LF mismatch {X_MISMATCH}, lfsig sensitivity {X_SENS[0.5] * 0.05:.2f}/0.05 x_m at CV 0.5): "
                 f"R bracket [{math.exp(m - dl):.3f}, {math.exp(m):.3f}] (verdict is on the raw R)"
-                + ("" if (abs(m - dl - math.log(R_GEO)) <= 2 * se) == geo and (abs(m - dl) <= 2 * se) == ine
+                + ("" if (abs(m - dl - math.log(R_GEO)) <= k * se) == geo and (abs(m - dl) <= k * se) == ine
                    else "  ** the bracket straddles a candidate boundary **"))
-        else:
-            say(f"  R = {math.exp(m):.3f} (se {se:.4f}); no candidate graded")
 
     # ---- P2 ----------------------------------------------------------------------------------------------
-    say("\n==== P2: delta_WC falls with CV (3/3 seeds paired, mean - 2 se < 0); dry-DEM reference 0.869 ====")
+    say("\n==== P2: delta_WC falls with CV (3/3 seeds paired, mean + k se < 0); dry-DEM reference 0.869 ====")
+    say("  (the registered text says 'mean - 2 se < 0', which for a FALL is the wrong side: a fall is resolved when the UPPER")
+    say("   end of the band is below 0. Amendment 3 fixes the side and the coverage; both readings are printed.)")
     p = con.get((0.2, 0.5, "delta"), {"n": 0})
     if p["n"] < 3:
         say(f"  P2: NOT GRADED ({p['n']}/3)")
     else:
         neg = int(np.sum(p["vals"] < 0)); m, se = p["mean"], p["se"]
-        ok = neg == 3 and (m - 2 * se) < 0
-        say(f"  seeds with ln ratio < 0: {neg}/3; mean - 2 se = {m - 2 * se:+.4f}; ratio {math.exp(m):.3f} band [{math.exp(m - 2 * se):.3f}, {math.exp(m + 2 * se):.3f}]")
-        say(f"  P2 verdict: {'PASS' if ok else 'FAIL'}; dry-DEM 0.869 {'CONSISTENT' if abs(m - math.log(DELTA_GEO)) <= 2 * se else 'NOT consistent'} "
+        for name, k in (("as written: 3/3 and mean - 2 se < 0", -2.0), ("Am. 3, 82 %: 3/3 and mean + 2 se < 0", 2.0),
+                        ("Am. 3, 95 % REGISTERED: 3/3 and mean + 4.303 se < 0", T_CRIT)):
+            ok = neg == 3 and (m + k * se) < 0
+            say(f"  [{name}] seeds < 0: {neg}/3; mean + ({k:+.3f}) se = {m + k * se:+.4f} -> {'PASS' if ok else 'FAIL'}")
+        say(f"  ratio {math.exp(m):.3f}, 95 % band [{math.exp(m - T_CRIT * se):.3f}, {math.exp(m + T_CRIT * se):.3f}]; dry-DEM 0.869 "
+            f"{'CONSISTENT' if abs(m - math.log(DELTA_GEO)) <= T_CRIT * se else 'NOT consistent'} at 95 % "
             f"(|ln diff| {abs(m - math.log(DELTA_GEO)):.4f} = {abs(m - math.log(DELTA_GEO)) / se if se > 0 else float('inf'):.1f} se)")
 
     # ---- P3 ----------------------------------------------------------------------------------------------
