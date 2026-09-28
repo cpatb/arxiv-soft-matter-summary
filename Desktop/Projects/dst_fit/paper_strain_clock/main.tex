@@ -186,6 +186,42 @@ chosen so far apart that the inverted $f$ leaves $[0,1]$ in opposite directions.
 inversion, not the gauge. WC's $f$ counts contacts, while $s$ is a fraction of stress, and nothing
 requires them to be affinely related. They are not ($R^2=0.88$ between them).  % R2 0.88: scripts/probe_g11_direct_control.py 'affine to R2 = 0.8797'
 
+\emph{A second protocol on silica: start-up is a threshold, not a relaxation.}
+The deposit of \citet{Richards2019} contains constant-stress start-ups on a comparable
+material: $4\,\mu$m silica in glycerol--water at $\phi=0.574$, with 17 steps of 20\,s,
+each preceded by $\sim$14\,s at zero stress, and the same sample's steady curve. We
+pre-registered the same fit (\texttt{PREREG\_startup\_clock\_2026-09-27.md}) and it
+\emph{failed}. Above the onset ($\sigma\ge\suOnset$\,Pa) the fitted constants span
+more than an order of magnitude across the steps, with $\chi^2_r$ up to $10^4$  % 0.027-0.885 (33x), chi2_r 73-11343: logs/probe_startup_clock.txt
+ A single
+exponential in strain does not describe these records. Figure~\ref{fig:startup}(a) shows
+why. The viscosity does not relax. It stays near its low-stress value and then jumps
+abruptly at $\gamma_j=\suJamLo$--$\suJamHi$ on all
+$\suNAbove$ steps above onset. The fit-free reversal landmark $\gamma_{50}$ on Lin's
+silica is at least $\reversalOverJam\times$ larger [Fig.~\ref{fig:startup}(b)]. The two
+records are different samples, and we cannot tell whether $\gamma_j$ is a material strain
+scale: over a $\suSigSpread\times$ range of stress it spreads $\suJamSpread\times$ in strain
+and $\suTjSpread\times$ in time, so rotor spin-up is not excluded. A registered test that
+$\gamma_j$ tracks the strain the sample recoils during the preceding rest also failed:
+the recoil varies too little between steps to test it, although $\gamma_j$ exceeds it on
+$\suJamAboveR$ steps. What survives is qualitative. On silica, start-up produces an abrupt
+contact network after a strain of order $0.1$. That is the scale reported for start-up
+elsewhere~\cite{Richards2019,Han2018}, and it is not the order-one, gradual recovery that
+reversal produces.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{../figures/fig_startup.pdf}
+\caption{Constant-stress start-up on $4\,\mu$m silica in glycerol--water, $\phi=0.574$,
+from the deposit of Ref.~\cite{Richards2019}. (a) Relative viscosity against strain after
+the step, below (dashed) and above (solid) the steady thickening onset. The first
+$\sim0.05$ in strain includes rotor spin-up. (b) The jam strain $\gamma_j$ (steepest fall
+of the shear rate; filled above onset, open below) and the strain $R$ recovered during
+the preceding rest, against stress. The dotted line marks the onset. The grey band is the
+reversal half-recovery strain $\gamma_{50}$ on Lin's silica (Fig.~\ref{fig:reversal}),
+for scale.}
+\label{fig:startup}
+\end{figure}
+
 \section{Discussion}
 
 Three statements survive every estimator we tried.
@@ -207,7 +243,7 @@ consequence is concrete. A clock taken from a step or a start-up is likely sever
 short for the recovery, and the softening immediately after reversal lies outside the
 model's reach at any $\gamma_0$.
 
-Limitations. Two materials from one laboratory. The exponent $n$ is assumed; it matters at
+Limitations. Two materials from one laboratory for reversal, and a different sample for start-up, where instrument inertia is not excluded. The exponent $n$ is assumed; it matters at
 the $2\%$ level. The single-exponential clock blends at least two processes. The
 definition-dependence is measured on a simulation, not on the experiments. What is needed
 next is reversal and step data on the same sample, with the contact contribution

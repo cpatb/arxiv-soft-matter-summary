@@ -49,6 +49,29 @@ def jam_table():
     return rows, onset
 
 
+def jam_times():
+    """(sigma, gamma_j, t_j) for above-onset steps, t from the 'Interval Time' column.
+
+    Post-hoc confound check (not registered): if the jam were set by rotor spin-up it would
+    collapse in TIME rather than strain. Measured 2026-09-27: spreads 1.90x (strain) vs
+    2.07x (time) over a 2.75x stress range -- indistinguishable, so inertia is not excluded.
+    """
+    files = {int(re.match(r"(\d+)_", p.name).group(1)): p for p in P.D.glob("*_*.csv")}
+    rows, onset = jam_table()
+    out = []
+    for k, sig, _ in P.step_files():
+        if k == 0 or sig < onset:
+            continue
+        r = list(csv.DictReader(open(files[k], encoding="utf-8")))
+        g = np.array([float(x["Shear Strain"]) for x in r])
+        t = np.array([float(x["Interval Time"]) for x in r])
+        gd = np.array([float(x["Shear Rate"]) for x in r])
+        m = g < JAM_WINDOW
+        j = int(np.argmin(np.gradient(gd[m], g[m])))
+        out.append((sig, float(g[m][j]), float(t[m][j])))
+    return np.array(out)
+
+
 def main() -> int:
     rows, onset = jam_table()
     for r in rows:

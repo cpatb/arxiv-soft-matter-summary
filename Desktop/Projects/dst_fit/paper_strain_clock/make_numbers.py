@@ -152,6 +152,23 @@ def main() -> None:
     spreads = re.findall(r"spread ([0-9.]+)x", out)
     assert len(spreads) >= 2, out[:500]
     m["twoClockMOne"], m["twoClockMFour"] = spreads[0], spreads[1]
+    # --- second protocol: constant-stress start-up on silica (Richards 2019 deposit);
+    # PREREG_startup_clock_2026-09-27.md, P1/P3/P4 FAILED as registered.
+    import probe_startup_p4 as S4  # noqa: E402
+    jt = S4.jam_times()
+    rows_j, onset_j = S4.jam_table()
+    m["suOnset"] = f"{onset_j:.1f}"
+    m["suNAbove"] = str(len(jt))
+    m["suJamLo"], m["suJamHi"] = fmt(jt[:, 1].min()), fmt(jt[:, 1].max())
+    m["suTjLo"], m["suTjHi"] = fmt(jt[:, 2].min()), fmt(jt[:, 2].max())
+    m["suJamSpread"] = fmt(jt[:, 1].max() / jt[:, 1].min())
+    m["suTjSpread"] = fmt(jt[:, 2].max() / jt[:, 2].min())
+    m["suSigSpread"] = fmt(jt[:, 0].max() / jt[:, 0].min())
+    m["suJamAboveR"] = f"{sum(r['gamma_j'] > r['R'] for r in rows_j)}/{len(rows_j)}"
+    # fit-free landmark against fit-free landmark: smallest reversal gamma_50 on Lin silica
+    # over the largest start-up jam strain on Richards silica (different samples)
+    g50_si = [x["g50"] for x in cl["Fig_2b"] if x["included"]]
+    m["reversalOverJam"] = f"{min(g50_si) / jt[:, 1].max():.1f}"
     m["solverGammaZero"] = f"{G.SOLVER_GAMMA_0:g}"
     allv = [float(v) for k in ("allLoSi", "allLoPm") for v in [m[k]]]
     m["minOverSolver"] = fmt(min(allv) / G.SOLVER_GAMMA_0, 1)
