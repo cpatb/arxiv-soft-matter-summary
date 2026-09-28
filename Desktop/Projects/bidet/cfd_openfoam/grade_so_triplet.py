@@ -41,23 +41,34 @@ C1_LAST = 0.001   # last two writes
 C1_WIN = 0.002    # +1600 vs +2400
 
 
+def last_traj_dir(case):
+    """Deepest existing continuation <case>_traj[_traj...] (Amendment 5 chaining)."""
+    d, name = None, case
+    while os.path.isdir(os.path.join(HERE, name + "_traj")):
+        name += "_traj"
+        d = name
+    return d
+
+
 def trajectory(case):
-    """QoI at every written time of <case>_traj, via fit_closure.py with FIT_TIME."""
+    """QoI at every written time of <case>_traj and any chained <case>_traj_traj...,
+    concatenated in time, via fit_closure.py with FIT_TIME."""
     import json
     import subprocess
-    d = os.path.join(HERE, case + "_traj")
-    if not os.path.isdir(d):
-        return None
-    pp = os.path.join(d, "postProcessing", "sampleWSS")
-    times = sorted((x for x in os.listdir(pp) if re.fullmatch(r"[0-9]+", x)), key=int) if os.path.isdir(pp) else []
-    out = []
-    for tm in times:
-        env = dict(os.environ, FIT_TIME=tm)
-        r = subprocess.run([sys.executable, os.path.join(HERE, "fit_closure.py"), case + "_traj"],
-                           capture_output=True, text=True, cwd=HERE, env=env)
-        if r.returncode == 0:
-            out.append((int(tm), json.loads(r.stdout.strip().splitlines()[-1])))
-    return out
+    out, name = [], case
+    while os.path.isdir(os.path.join(HERE, name + "_traj")):
+        name += "_traj"
+        pp = os.path.join(HERE, name, "postProcessing", "sampleWSS")
+        times = sorted((x for x in os.listdir(pp) if re.fullmatch(r"[0-9]+", x)), key=int) if os.path.isdir(pp) else []
+        for tm in times:
+            if out and int(tm) <= out[-1][0]:
+                continue
+            env = dict(os.environ, FIT_TIME=tm)
+            r = subprocess.run([sys.executable, os.path.join(HERE, "fit_closure.py"), name],
+                               capture_output=True, text=True, cwd=HERE, env=env)
+            if r.returncode == 0:
+                out.append((int(tm), json.loads(r.stdout.strip().splitlines()[-1])))
+    return out or None
 
 
 def last_residuals(case):
@@ -138,7 +149,13 @@ def main():
             rec.pop(c, None)
             continue
         h2, _ = uz_ratio(c + "_traj")
-        last, prev, win = tr[-1][1], tr[-2][1], tr[-3][1]
+        # OpenFOAM writes at ABSOLUTE multiples of 400 plus the end time, so the last two
+        # writes can be <400 apart. Use the latest write at least 400 (and 800) iterations
+        # before the end: windows equal to or LONGER than registered, never shorter.
+        t_end = tr[-1][0]
+        prev = [rr for tm, rr in tr if tm <= t_end - 400][-1]
+        win = [rr for tm, rr in tr if tm <= t_end - 800][-1]
+        last = tr[-1][1]
         dl = {q: abs(last[q] - prev[q]) / abs(last[q]) for q in QOI}
         dw = {q: abs(last[q] - win[q]) / abs(last[q]) for q in QOI}
         ok = max(dl.values()) < C1_LAST and max(dw.values()) < C1_WIN and h2 < UZ_ROUNDOFF

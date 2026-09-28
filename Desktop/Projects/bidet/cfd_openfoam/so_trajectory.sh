@@ -10,7 +10,7 @@ source /usr/lib/openfoam/openfoam2606/etc/bashrc
 set -e
 HERE="$(cd "$(dirname "$0")" && pwd)"
 NPROC="$1"; shift
-TOTAL=2400
+TOTAL="${TOTAL:-2400}"  # Amendment 5: longer continuations for cases failing C1
 EVERY=400
 for TAG in "$@"; do
   SRC="$HERE/$TAG"

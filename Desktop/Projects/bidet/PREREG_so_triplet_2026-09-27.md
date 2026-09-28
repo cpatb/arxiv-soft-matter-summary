@@ -135,6 +135,26 @@ Cauchy) is superseded, since C1 starts from the same state over a longer window;
 S6 value already on screen (FO refine 1.5 continued: `C_P` 1.3821, printed by its
 launcher) is disclosed here. The SO refine-2.25 S6 run is stopped unfinished.
 
+## Amendment 5 (00:40 28 Sep; commit time authoritative): C1 caught a drifting case
+
+**What happened.** FO refine 1.5 — stopped by H1 at iteration 189 after its mapped start —
+was continued 2400 iterations (`convergence/`, grader) and is **still drifting**: `C_P`
+1.3808 → 1.4060 (+1.8 %), peak `tau_w` 394.8 → 417.3 (+5.7 %), `tau_w`(15 mm) 5.848 → 5.658
+(−3.3 %), still ~0.8 %/400 iterations on `C_P` at the end. It FAILS C1. (S6 would also have
+failed it, on `tau_w`(15 mm) 0.64 % and peak 1.12 %, while `C_P` alone moved 0.27 %.)
+**So a mapped start stopped on a residual is not converged, and every gate value would have
+been read off a transient.**
+
+**Operational changes, no bar moved.** (a) A case failing C1 is continued (`TOTAL=4800`
+env in `so_trajectory.sh`, chained as `<case>_traj_traj`), and C1 is applied to the end of
+the concatenated trajectory with the same 0.1 %/0.2 % bars. (b) S7 (refine 3.375, mapped
+from iteration 29 of refine 2.25) is stopped at iteration 563 to free its threads; it is
+reported NOT RUN unless restarted after 03:00. (c) Registered now, before any legacy
+trajectory exists: the cold-started refine-1 FO case (`case_Re10000_H6`, certified only by
+the original residual criterion) is continued 2400 iterations the same way (**L1**). If its
+gate quantities move by more than the C1 bars, every `C_P` in GRID_STUDY and in the
+manuscript carries an iterative error that the residual criterion did not see.
+
 ## What will NOT be done
 
 No bar is loosened after data. p outside [0.5, 2.5] is reported, not re-banded. If the
