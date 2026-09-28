@@ -1,0 +1,37 @@
+% DRAFT, NOT INCLUDED IN main.tex (2026-09-27 overnight). A candidate subsection for Paper A, placed after the
+% backbone results. Whether to add it is the author's call (PAPER_FRAMING_2026-09-27.md, call 2).
+% Every number is quoted from derivations/rattler_closure_2026-09-24.md (sections 3b, 4, 4d) and
+% out/rattler_shape_compare.txt, out/binary_contact_check.txt; before merging they must become macros
+% printed by extract_numbers.py like every other number in this paper.
+% Provenance caveat carried into the text: the exponent 2 was SELECTED from a sweep of forms on the isotropic set;
+% the clean out-of-sample test is the binary set, which the sweep never saw.
+
+\paragraph{Which grains rattle.}
+The rattler fraction's rise with $\CV$ has a simple size-resolved form.
+Suppose the number of load-bearing contacts on a grain of radius $a$ is Poisson-distributed with a mean proportional
+to its surface area, $\lambda(a)=Z\,a^2/\langle a^2\rangle$, where $Z$ is the mean contact number of all grains.
+A grain rattles when it has fewer than $k=\rattlerK$ contacts, so
+\begin{equation}
+  P(\text{rattler}\mid a)=e^{-\lambda(a)}\bigl[1+\lambda(a)\bigr],
+  \qquad
+  \fr=\bigl\langle e^{-\lambda(a)}[1+\lambda(a)]\bigr\rangle_{a},
+  \label{eq:rattler}
+\end{equation}
+with the average over the number distribution.
+The model has no continuous parameter. It is not iterated, unlike the rattler removal, and a Poisson count is wider
+than the real one, so its two leading biases have opposite signs.
+Since $\Zall=(1-\fr)\Znr$ and $\Znr$ is nearly flat, the total $\fr$ largely follows from $Z$. The content of
+Eq.~(\ref{eq:rattler}) is therefore \emph{which} grains rattle: the small ones, with a probability set by their area.
+
+Among power laws $\lambda\propto a^{p}$ with $p\in\{0,\tfrac12,1,2,3,4\}$, $p=2$ reproduces the total $\fr$ of all
+702 converged isotropic packs best (rms $0.016$, against $0.128$ for the size-blind $p=0$); that choice was made on
+this set.
+The test it never saw is size-resolved: in 135 binary packs (size ratio 1.25--5, $\mup=0.3$), Eq.~(\ref{eq:rattler})
+predicts the rattler fraction of each species separately to rms $0.017$ (small) and $0.018$ (large), where the
+size-blind count gives $0.133$ and $0.346$.
+It is a moderate-polydispersity law: for discrete distributions spanning a size ratio of 4 with three to five
+species it under-predicts rattling by about $0.09$, most for the species just above the smallest.
+
+So polydispersity does not restructure the backbone; it sorts grains into it by size.
+A grain's chance of being load-bearing is set by its surface area, and the distribution's width matters only through
+how much of the population sits at small $a$.

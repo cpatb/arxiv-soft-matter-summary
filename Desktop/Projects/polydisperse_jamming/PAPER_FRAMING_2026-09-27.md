@@ -24,11 +24,14 @@ fitted parameter. Above jamming, polydispersity removes grains from the backbone
 while the backbone's coordination and orientation stay family-independent.
 (`paper/main.tex` abstract; status: standing, refereed ×3.)
 
-**One addition worth its cost: rattling follows surface area.** Poisson contact counts with mean ∝ a² predict the rattler
-fraction with **zero fitted parameters**: rms 0.016 out of sample on 702 isotropic records, against 0.128 size-blind.
-The optimum is sharp at p = 2. Per class on 135 binaries it gives rms 0.017 / 0.018
-(`CLAIMS_SIGMA_GEOMETRY_2026-09-24.md` claim 5; standing, 3 referee passes). That is the *why* behind Paper A's elevenfold
-rattler rise, and it costs one panel (from G2) and two paragraphs. It is more general than anything else in the paper.
+**One addition worth its cost: rattling follows surface area.** Poisson contact counts with mean ∝ a² (no continuous
+parameter) give the rattler fraction to rms 0.016 on 702 isotropic records, against 0.128 size-blind. ⚠ The exponent
+p = 2 was SELECTED from a sweep of six forms on that same set, so the 702-record number is not out of sample, and since
+the law takes the measured Z as input while Z_nr is flat, the total f_r largely follows from Z anyway. The content, and
+the clean out-of-sample test, is SIZE-RESOLVED: per species on 135 binaries the sweep never saw, rms 0.017 / 0.018
+against 0.133 / 0.346 size-blind (`CLAIMS_SIGMA_GEOMETRY_2026-09-24.md` claim 5; `derivations/rattler_closure` §4d).
+That is the *why* behind Paper A's elevenfold rattler rise: polydispersity sorts grains into the backbone by surface
+area. Draft section: `paper/draft_rattler_section.tex` (not merged). Cost: one panel (from G2), two paragraphs.
 Scope it honestly: multi-class packs spanning ratio 4 do worse (rms 0.11–0.12, under-predicting by ~0.09).
 
 **Leave out of A:** the filling factor w in φ_J = Z/(Z + 2√3 w) as a law (its registered test R5 FAILED, 83 % against a
