@@ -1,0 +1,109 @@
+# How the polydispersity / particle-tuning work becomes papers (framing proposal, 2026-09-27)
+
+Written overnight while `lfsig2` runs. A proposal for the author, not a decision. Every number below is copied from
+the file named beside it; nothing here is new data. Status words: **standing** (graded, refereed), **scoped**
+(standing with a stated limit), **pending** (tonight), **withdrawn** (must not appear).
+
+## 0. Recommendation in one paragraph
+
+Two papers, with a possible third short one decided by tonight's σ\* result.
+**Paper A** is the packing paper already drafted (`paper/main.tex`): the shape of the size distribution, not its width,
+sets φ_J. It is nearly ready and should go out first, strengthened by one addition that explains its own rattler
+finding. **Paper B** is the paper the programme was built for: *for a drop driven past onset, every particle property
+acts through two packing ratios, x = φ/φ₀ and χ = φ_m/φ₀*. The DNS shows the jam-to-spread switch goes entirely through
+χ, and it gives experimentalists a hard warning: the footprint cannot tell a jammed drop from a thickened one.
+Paper B needs one bench anchor before submission. The σ\* work becomes either a section of B or a short letter (C).
+
+## 1. Paper A — packing (drafted, 6 pp RevTeX, three referee passes)
+
+**Claim.** At fixed number-mean size and fixed number CV, three PSD families (lognormal, uniform, bidisperse) shift φ_J by
+amounts that differ 3–5×. So width is not the control parameter. Two binaries matched in size ratio and number CV jam
+0.0635 apart (30× the protocol scatter), and a Furnas-type filling model fixed in advance predicts the pair without a
+fitted parameter. Above jamming, polydispersity removes grains from the backbone: the rattler fraction rises ~11×,
+while the backbone's coordination and orientation stay family-independent.
+(`paper/main.tex` abstract; status: standing, refereed ×3.)
+
+**One addition worth its cost: rattling follows surface area.** Poisson contact counts with mean ∝ a² predict the rattler
+fraction with **zero fitted parameters**: rms 0.016 out of sample on 702 isotropic records, against 0.128 size-blind.
+The optimum is sharp at p = 2. Per class on 135 binaries it gives rms 0.017 / 0.018
+(`CLAIMS_SIGMA_GEOMETRY_2026-09-24.md` claim 5; standing, 3 referee passes). That is the *why* behind Paper A's elevenfold
+rattler rise, and it costs one panel (from G2) and two paragraphs. It is more general than anything else in the paper.
+Scope it honestly: multi-class packs spanning ratio 4 do worse (rms 0.11–0.12, under-predicting by ~0.09).
+
+**Leave out of A:** the filling factor w in φ_J = Z/(Z + 2√3 w) as a law (its registered test R5 FAILED, 83 % against a
+90 % bar; it is a realistic-friction description only); the K-axis additivity saga; shape/facets.
+
+**Title options.** "The shape of the size distribution, not its width, sets random jamming of frictional spheres";
+"Polydisperse spheres jam by filling, not by width".
+**Venue.** PRE (or Soft Matter). **Blocking item:** the author line (`paper/main.tex:31`), a standing author call.
+
+## 2. Paper B — particle tuning of drop impact reduces to two packing ratios
+
+**The one-sentence claim.** Once an impact is past the thickening onset, size distribution, distribution shape,
+aggregation, friction and grain shape change a dense-suspension drop's fate through two packing ratios, x and χ.
+The onset stress σ\*, which carries size and surface potential, only decides *whether* the drop reaches that regime.
+
+### Proposed structure and the evidence under each section
+
+| § | content | key evidence | status |
+|---|---|---|---|
+| 1 | **Reduction.** Wyart–Cates is exactly covariant in (φ, φ₀, φ_m) → (x, χ, σ\*, δ, n); exact phase diagram: x < χ never jams, χ ≤ x < 1 is the shear-jamming window | `PROGRAMME_2026-09-22.md` §1; `derivations/thickening_type_2026-09-25.md` | standing (algebra) |
+| 2 | **The drop sees two classes, not three.** CST vs DST is invisible: over 20 drops, peak spread is strictly monotone in Θ = [(1−x)/(1−x/χ)]ⁿ with no jump at x_DST. Drops are either jammable (x ≥ χ) or stiffened by Θ | `PREREG_DSTTYPE_2026-09-26` RESULT (D4 cleanest; D1′ UNDETERMINED) | scoped (one closure, n = 2) |
+| 3 | **The knob atlas (DEM).** What each particle property does to χ, with sign: CV narrows the window slightly and lowers x (w 1.00 → 0.76, φ₀ +9.9 %); family shape moves x as much as CV; doublets widen it ×1.49 (χ 0.908 → 0.863, μ_p 0.3, on the ideal-mixing curve); elongation and concavity widen it; convex facets RAISE φ with no simulated narrowing; friction widens it (0.09 → 0.11) | `ANSWER_2026-09-23.md` §2; `REGIME_MAP_2026-09-26.md` §2; `grade_kmer.txt`; `FACET_RESULT_2026-09-27.md` | standing, with per-row scope |
+| 4 | **The DNS test (the heart).** At fixed weighed φ, CV 0 → 0.5 turns a drop that jams (J 0.29–0.91) into one that cannot, and it spreads 35–67 % further at peak. The window channel carries 99.5–101.8 % of the change and activation < 0.05 %. Doublets jam where singlets cannot (x 0.88), and χ alone reproduces it (J 0.0591 vs 0.0579) | `grade_cvmapE03.txt` (C2a′/C2b′/C3′ PASS); `grade_kmermap.txt` R1; `PREREG_KMERDECOMP` | standing; classes cap-robust (`kmermapE03` 18/18) |
+| 5 | **What the bench can and cannot read.** No DNS observable tested separates a jammed drop from a near-edge thickened one: peak spread, terminal footprint and apex recoil all read stiffness. The terminal footprint is sign-mixed (−8.2 … +14.4 %). The largest footprint cut sits where nothing can jam | `PREREG_CVMAP` C4/C2t′; `grade_kmermap.txt` (x 0.85, −31 % Rg) | standing negatives; this is the paper's most useful message to experimentalists |
+| 6 | **Onset.** σ\* carries size (∝ a^(m−2)) and potential (∝ κ); the dry-DEM chain gives CV ×0.768 through Zφ; the lubricated answer is tonight's `lfsig2`. Either way, §4 shows activation is negligible for a drop past onset (G_act ≈ 4–70 for the lab silica), and `kmerdecomp` E1 shows it grows as U₀ falls (1.8 % at U₀ 2, 2.8 % at U₀ 1): that is the scope boundary | `CLAIMS_SIGMA_GEOMETRY` 1–9; `kmerdecomp` Am. 1 | pending |
+| 7 | **Predictions.** (i) The collapse test: two suspensions matched in (x, χ, σ_imp/σ\*) but mismatched in size or PSD must impact identically (bench only; trivial in the DNS). (ii) Fractionated cornstarch has a wider window (lower χ) than Stöber silica at matched CV. (iii) Doublet counts at 0 and 100 mM salt decide whether the salt effect is screening or aggregation | `PROGRAMME` §3; card §3 | predictions |
+
+**What makes it a paper rather than a report.** The thesis is falsifiable (§7i), the reduction is exact, and the DNS
+isolates channels by construction, which no experiment can. §5 corrects a reading experimentalists routinely make:
+"it spread less, so it jammed."
+
+### Weaknesses a referee will find first, and the answer to each
+
+1. **No bench data.** This is the decisive weakness. The founding observation (CV at similar size → spreading) is the
+   author's verbal report and is *not on disk*. **Minimum fix: put that observation on disk as data (drops, PSDs,
+   φ), even a small set, and make it figure 1.** Better: the fractionated-cornstarch χ measurement.
+2. **The jammed state in the DNS is the viscosity cap** (EPS_MIN; J moves ×5.9 per decade of it). Answer: every claim
+   is a CLASS claim, and classes are cap-robust (`epssig`, `kmermapE03` 18/18). Plot classes, never J magnitudes.
+3. **One closure, n = 2, L9.** The L10 check passed (R1, F1). Varying n is a registered one-night campaign if needed.
+4. **Dry DEM → suspension transfer.** χ comes from frictional dry packs, and the lab φ 0.44 sits below every DEM window.
+   Answer: only ratios transfer, and they are stated as such. `lfsig2` is the first lubricated check of one transferred
+   quantity. The critique's call to calibrate μ_p against the lab rheometer is the real fix, and it needs rheometry the
+   project does not yet trust (`si_fit` withdrawn).
+5. **"Stress-controlled drop."** Rests on one informative pair (`jamwin` P2). It is stated as a hypothesis in the paper.
+
+**Leave out of B (withdrawn or superseded):** apex recoil as a jamming signature (refuted out of sample, C4 17/19);
+`kmerdrop` (fed the μ_m 3 *predicted* χ); the level-set facet pilot's "lower φ₀"; μ_p ≥ 0.6 clump numbers
+(interpenetration); "+81 % spread" (arrested state against a splash peak); the rate-driven jamwin amendment.
+
+**Title options.** "Particle tuning of dense-suspension drop impact reduces to two packing ratios";
+"Why polydispersity stops a shear-thickening drop from jamming".
+**Venue.** JFM or Phys. Rev. Fluids (a DNS + theory paper with bench predictions); Soft Matter if the knob atlas leads.
+
+## 3. Paper C (conditional) — the onset stress of polydisperse suspensions
+
+Decided by `lfsig2` (graded by ~03:00). The dry-DEM σ\* geometry (exact Love–Weber identity, configuration-model pairing,
+closed chain to 2 %) is solid and refereed, but on its own it is a dry-packing result about a quantity defined by
+lubricated rheology.
+- **If P1 = GEO** (lubricated σ\* falls ×0.77): the geometry transfers. That makes a clean short paper, "σ\* is contact
+  geometry", and a quantitative input to Paper B §6.
+- **If P1 = INERT or NEITHER, with M1–M3 passing:** the more interesting paper. The dry chain describes the *plateau*
+  network, while the onset is set by a size-selected sub-network whose geometric factor is CV-neutral. It is a
+  mechanism for why dry-DEM σ\* misleads, and it fits a letter.
+- **If NOT INFORMATIVE:** fold the geometry into Paper B §6 as a scoped section and do not write C.
+
+## 4. The two-paper picture as one programme
+
+A is the packing law (what φ₀ and φ_m do). B is the drop consequence (the window decides, the footprint cannot tell).
+C, if it exists, is the onset. The experimental Paper 1 (800 nm silica, salt → σ\*) sits on B's §6 axis: salt moves the
+onset, not the arrested state, which B predicts. Each cites the others, and none depends on an unpublished number from
+another.
+
+## 5. Calls only the author can make
+
+1. The author line for A (unchanged since 09-17).
+2. Whether to add the surface-area rattler law to A (recommended) or keep A as is and submit this week.
+3. What bench anchor B waits for: the founding CV observation on disk (cheapest), fractionated-cornstarch χ, or none
+   (submit as theory + DNS with predictions).
+4. Whether B leads with the DNS (JFM/PRFluids) or the knob atlas (Soft Matter).

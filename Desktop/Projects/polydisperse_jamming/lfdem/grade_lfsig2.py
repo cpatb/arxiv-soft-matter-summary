@@ -87,7 +87,7 @@ def load_cell(d: str, legacy: bool) -> dict | None:
         c["fcont"] = c["etac"] / c["eta"]
         c["overlap"] = float(-a[w, 15].min())
     else:
-        for key in ("eta", "zc", "etac", "etah", "etar", "fcont", "overlap"):
+        for key in ("eta", "zc", "etac", "etah", "etar", "fcont", "overlap", "eta_se", "zc_se"):
             c[key] = float("nan")
     c["complete"] = c["smax"] >= W1 - 0.05
     c["healthy"] = rc in (0, 124) and c["complete"] and c["overlap"] < MAX_OVERLAP
