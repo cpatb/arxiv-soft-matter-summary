@@ -63,6 +63,8 @@ only the post-processed fields), so H2 there is read on the 3000 field.
 
 ## 3. The registered scheme test (S1–S7)
 
+**FINAL, 28 Sep 06:30** (`convergence/so_triplet_grade.md`; SO refine 2.25 continued to 13731, `C_P` plateaued at 1.4952 then eased to 1.4936): **S1 PASS, `C_P` 1.4317 / 1.4682 / 1.4936, R = +0.697, p = 0.891; `n_t` monotone, p = 0.555; `tau_w`(15 mm) FAILS (R = +3.2). S3 INCOMPLETE: FO refine 2.25 at 13540 has `C_P` turned over at ~1.4655 (which puts the FO triplet at R ≈ 1.0, on the divergence boundary) but `tau_w`(15 mm) still moving 0.2 %/400.** The 04:05 grade below is kept as the first reading.
+
 **Graded 28 Sep 04:05 on C1-converged values** (`convergence/so_triplet_grade.md`):
 
 | family | quantity | refine 2.25 | 1.5 | 1 | R | p | verdict |
@@ -132,7 +134,11 @@ GRID_STUDY certified by `residualControl`, and read the gate quantities every 40
 
 | SO refine 1, `case_Re10000_H6_so_r1` (L1', met the criterion at 1948) | 1948 → 4348 | 1.4219 → **1.4317** (+0.69 %) | 1.9248 → 1.9284 | 5.831 → 5.803 | **flat** from ~3200 |
 
-`convergence/L1_legacy_r1_trajectory.txt`, `L2_legacy_r2_trajectory.txt`,
+| refine 4, `case_Re10000_H6_r4` (L4, met the criterion at 11552; the "divergence" member) | 11552 → 11794 only (491k cells) | 1.5809 → **1.5656 (−0.97 % in 242 it, still falling fast)** | 1.9338 → 1.9283 | 6.137 → 6.164 | **moving TOWARD the other grids** |
+
+L2 refine 2 continued to 12000 is now C1-converged: `C_P` **1.4472** (+3.9 % over GRID_STUDY), `tau_w`(15 mm) **5.769** (−7.6 %). With refine 1 at 1.3663 (converged), the midfine FO family on converged values reads 1.3663 → 1.4098 → 1.4472, **monotone** (R ≈ 0.86, p ≈ 0.43) — it was oscillatory on residual stops (refine 1.414's value is its 20000-iteration run, whose final fields were never written, so it is provisional). **The refine-4 value the published `C_P` divergence rests on falls ~1 % per 250 iterations; the divergence is at least partly an iterative artefact and cannot be graded until refine 4 is converged.**
+
+`convergence/L1_legacy_r1_trajectory.txt`, `L2_legacy_r2_trajectory.txt`, `L4_legacy_r4_trajectory.txt`,
 `L1p_so_r1_trajectory.txt`. On the two converged refine-1 cases the scheme effect (S5) is
 `C_P` 1.4317 vs 1.3663 = **+4.8 %**, against the registered S5's +5.2 % on the
 residual-stop values; both clear the 1 % bar.
