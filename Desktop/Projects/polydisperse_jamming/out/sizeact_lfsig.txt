@@ -33,7 +33,7 @@ sizeact -- POST HOC, descriptive: size-resolved activation in LF_DEM [lfsig], st
     CV 0.50 sigma   30.0: n 1  P(Q4)/P(Q1)    2.30  p  1.47  Zc  1.98
     CV 0.50 sigma  100.0: n 1  P(Q4)/P(Q1)    1.88  p  1.37  Zc  2.23
 
-  COLLAPSE of activation onto sigma * a^m (logit P vs ln sigma a^m, one line; rms residual, lower is better)
+  COLLAPSE of plateau-normalised activation P/P(100) onto sigma * a^m (logit vs ln sigma a^m, one line; rms, lower is better)
     pooled   n  29: best m 1.50 (rms 0.679, slope 1.61); rms at m 0 / 1 / 2 = 1.027 / 0.720 / 0.718
     CV 0.20  n  13: best m 1.05 (rms 0.557, slope 2.00); rms at m 0 / 1 / 2 = 0.655 / 0.557 / 0.629
     CV 0.50  n  16: best m 1.50 (rms 0.509, slope 1.46); rms at m 0 / 1 / 2 = 1.015 / 0.583 / 0.561

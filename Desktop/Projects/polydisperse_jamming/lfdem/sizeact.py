@@ -67,16 +67,17 @@ def cell(d: str) -> dict | None:
     kk = np.array([x["k"] for x in rows]); rr = np.array([x["rmean"] for x in rows])
     p = float(np.polyfit(np.log(rr), np.log(kk), 1)[0]) if np.all(kk > 0) else float("nan")
     return {"label": kv["LABEL"], "cv": float(kv["CV"]), "sig": float(kv["SIG"]), "seed": int(kv.get("SEED", 1)),
-            "nsnap": len(ks), "rows": rows, "p": p, "zc": float(kbar.mean())}
+            "nsnap": len(ks), "rows": rows, "p": p, "zc": float(kbar.mean()),
+            "ak": float((kbar * r).sum() / kbar.sum()) if kbar.sum() > 0 else float("nan")}
 
 
-def collapse(cells: list) -> None:
+def collapse(cells: list) -> dict:
     """Does a grain's activation depend on the stress only through sigma * a^m?  The Derjaguin argument: the load a
     stress sigma puts on a contact of grains of size a scales as sigma a^2, the threshold as R* ~ a, so load/threshold
     ~ sigma a (m = 1); m = 0 is size-blind, m = 2 would be load-without-threshold-scaling.  Points: one per (cell,
     quartile), abscissa ln(sigma * r_q^m), ordinate logit P (P clipped to [0.005, 0.995], points with P outside
     (0.02, 0.98) dropped since logit is uninformative there).  Collapse quality: rms residual about ONE least-squares
-    line (numpy.polyfit, degree 1) through all points; the m that minimises it is scanned on a grid (0 to 3, step 0.05)
+    line (numpy.polyfit, degree 1) through all points; the m that minimises it is scanned on a grid (-1 to 5, step 0.05)
     and also reported with the residual at m = 0, 1, 2.  Pooled over CVs and seeds, so a CV-independent m is part of
     what is being tested; per-CV scans are printed beside it."""
     # activation RELATIVE TO EACH QUARTILE'S OWN PLATEAU (sigma 100 of the same CV and seed): small grains rattle even on
@@ -93,7 +94,7 @@ def collapse(cells: list) -> None:
                 pts.append((c["cv"], c["sig"], x["rmean"], P))
     if len(pts) < 8:
         say("\n  collapse: too few points")
-        return
+        return {}
     arr = np.array(pts)
 
     def rms(m, sel):
@@ -104,8 +105,9 @@ def collapse(cells: list) -> None:
         coef = np.polyfit(X, Y, 1)
         return float(np.sqrt(np.mean((Y - np.polyval(coef, X)) ** 2))), float(coef[0])
 
-    say("\n  COLLAPSE of activation onto sigma * a^m (logit P vs ln sigma a^m, one line; rms residual, lower is better)")
+    say("\n  COLLAPSE of plateau-normalised activation P/P(100) onto sigma * a^m (logit vs ln sigma a^m, one line; rms, lower is better)")
     grid = np.round(np.arange(-1.0, 5.0001, 0.05), 2)
+    out = {}
     groups = [("pooled", np.ones(len(arr), bool))] + [(f"CV {cv:.2f}", arr[:, 0] == cv) for cv in sorted(set(arr[:, 0]))]
     for name, sel in groups:
         if sel.sum() < 6:
@@ -115,6 +117,50 @@ def collapse(cells: list) -> None:
         r0, r1, r2 = rms(0.0, sel)[0], rms(1.0, sel)[0], rms(2.0, sel)[0]
         say(f"    {name:8s} n {int(sel.sum()):3d}: best m {mb:4.2f} (rms {min(res):.3f}, slope {rms(mb, sel)[1]:.2f}); "
             f"rms at m 0 / 1 / 2 = {r0:.3f} / {r1:.3f} / {r2:.3f}")
+        out[name] = (mb, min(res), r0, r1)
+    return out
+
+
+def grade_s(cells: list, col: dict) -> None:
+    """Amendment 5, S1-S3 (registered before the lfsig2 dumps were read)."""
+    say("")
+    say("==== Amendment 5: S1-S3 ====")
+    need = ("pooled", "CV 0.20", "CV 0.50")
+    if not all(k in col for k in need):
+        say(f"  NOT GRADED (collapse groups present: {sorted(col)})")
+        return
+    s1 = (0.5 <= col["pooled"][0] <= 2.0) and all(col[k][2] >= 1.3 * col[k][1] for k in need)
+    say("  S1: pooled m in [0.5, 2.0] and rms(m 0) >= 1.3 x rms(best) on pooled, CV 0.2, CV 0.5: "
+        + "; ".join(f"{k} m {col[k][0]:.2f} ratio {col[k][2] / col[k][1]:.2f}" for k in need) + f" -> {'PASS' if s1 else 'FAIL'}")
+    s2 = all(col[k][3] <= 1.15 * col[k][1] for k in ("CV 0.20", "CV 0.50"))
+    say("  S2: rms(m 1) <= 1.15 x rms(best) on each CV: "
+        + "; ".join(f"{k} {col[k][3] / col[k][1]:.3f}" for k in ("CV 0.20", "CV 0.50")) + f" -> {'PASS' if s2 else 'FAIL'}")
+    # S3: the per-grain law's predicted sigma* ratio from the contact-weighted radius at each arm's sigma_half
+    import grade_lfsig2 as G
+    dirs = [x for x in sorted(glob.glob(os.path.join(OUT, "lfsig2", "c*"))) if ".killed_" not in x]
+    gc = {(c["cv"], c["seed"], c["sig"]): c for c in (G.load_cell(d, False) for d in dirs) if c and c["healthy"]}
+    by = {(c["cv"], c["seed"], c["sig"]): c for c in cells}
+    m = col["pooled"][0]
+    preds = []
+    for sd in (1, 2, 3):
+        vals = {}
+        for cv in (0.2, 0.5):
+            r = G.arm_readouts(gc, cv, sd, G.SIGMAS)
+            pts = sorted((s, by[(c, d, s)]["ak"]) for (c, d, s) in by
+                         if c == cv and d == sd and np.isfinite(by[(c, d, s)]["ak"]))
+            if not r["complete"] or not np.isfinite(r["shalf"]) or len(pts) < 2:
+                continue
+            xs = np.log([q[0] for q in pts]); ys = [q[1] for q in pts]
+            if not (xs[0] <= np.log(r["shalf"]) <= xs[-1]):
+                continue      # refuse to extrapolate (np.interp clamps)
+            vals[cv] = float(np.interp(np.log(r["shalf"]), xs, ys))
+        if len(vals) == 2:
+            preds.append((vals[0.2] / vals[0.5]) ** m)
+            say(f"  S3 seed {sd}: a_k at sigma_half CV 0.2 {vals[0.2]:.3f}, CV 0.5 {vals[0.5]:.3f} -> predicted R {preds[-1]:.3f} (m {m:.2f})")
+    if preds:
+        say(f"  S3: predicted R mean {np.mean(preds):.3f} over {len(preds)} seeds -- compare with P1's measured R and its 95 % band")
+    else:
+        say("  S3: NOT GRADED (no seed with both arms complete)")
 
 
 def main() -> int:
@@ -140,7 +186,9 @@ def main() -> int:
             ps = [c["p"] for c in g if np.isfinite(c["p"])]
             say(f"    CV {cv:4.2f} sigma {sig:6.1f}: n {len(g)}  P(Q4)/P(Q1) {np.mean(sel) if sel else float('nan'):7.2f}"
                 f"  p {np.mean(ps) if ps else float('nan'):5.2f}  Zc {np.mean([c['zc'] for c in g]):5.2f}")
-    collapse(cells)
+    col = collapse(cells)
+    if camp == "lfsig2":
+        grade_s(cells, col)
     outp = os.path.join(OUT, f"sizeact_{camp}.txt")
     with open(outp, "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")
