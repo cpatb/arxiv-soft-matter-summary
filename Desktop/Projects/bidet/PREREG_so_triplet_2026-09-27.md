@@ -155,6 +155,21 @@ the original residual criterion) is continued 2400 iterations the same way (**L1
 gate quantities move by more than the C1 bars, every `C_P` in GRID_STUDY and in the
 manuscript carries an iterative error that the residual criterion did not see.
 
+## L1 result (01:45 28 Sep) and L2 registered
+
+**L1:** the cold-started refine-1 FO case (`case_Re10000_H6`, the manuscript's grid, which
+met `residualControl` at iteration 2261) continued to 4661
+(`convergence/L1_legacy_r1_trajectory.txt`): `C_P` 1.3518 → 1.3663 (**+1.08 %**), `n_t`
+1.9023 → 1.9102 (+0.42 %), `tau_w`(15 mm) 5.866 → 5.792 (**−1.26 %**), peak 389.5 → 390.1;
+flat from ~3600 (last-800 window < 0.02 %). **The paper's own numbers carry ~1 % iterative
+error that the residual criterion did not see.**
+
+**L2 (registered now, run when threads allow):** the same continuation on the legacy
+refine-2 case (`case_Re10000_H6_r2_ext`, met the criterion at 5105). Reported with the same
+C1 bars. If refine 2 and refine 4 drift by different amounts, the `fine_conv` "divergence"
+(|R| = 4.59) is partly an iterative artefact and must be re-graded on converged values;
+refine 4 (491k cells) is out of reach tonight and is stated as such.
+
 ## What will NOT be done
 
 No bar is loosened after data. p outside [0.5, 2.5] is reported, not re-banded. If the
