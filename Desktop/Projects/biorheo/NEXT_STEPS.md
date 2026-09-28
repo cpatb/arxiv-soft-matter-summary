@@ -1504,7 +1504,7 @@ DONE/FAILED/CLOSED with the numbers exactly as items 1–28 are:
 | item | package | one line | status |
 |---|---|---|---|
 | 29 | D1 | retire dst_fit gate G4c with the reason (founder D5 taken); update `test_gate_0_1_dstfit_unchanged.py` expectation | **DONE 2026-09-28** — see below |
-| 30 | B3 | audit every external anchor against its source's FIT TABLE (read-only) | OPEN |
+| 30 | B3 | audit every external anchor against its source's FIT TABLE (read-only) | **IN PROGRESS 2026-09-28**: first pass written to `data/external_anchor_audit_2026-09-08.md` — the 5 named anchors graded (1 was-caption-now-fit-table, 2 fit-table, 1 no-fit-table, 1 UNVERIFIED: the mAb calibration slope); the repo-wide sweep and the two UNVERIFIED PDF checks (mAb calibration params; Carbopol three-component `k1`/`eta_bg`) remain. Resume there |
 | 31 | N1 | `biorheo` CLI (`fit` / `report` / `screen` / `export`), wheel, CI; byte-identical page from a client-shaped CSV | OPEN |
 | 32 | J1 | freeze φ_J = Z/(Z+2√3 w) as `polydisperse_jamming/phij_model.py` with a trained-domain guard; held-out seeds chosen before fitting | OPEN |
 | 33 | B5 | referee items 24, 25, 26 (read-only) | OPEN |
