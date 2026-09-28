@@ -291,24 +291,26 @@ critical load, Guy et al. 2020).
 | P1 sigma*_WC(0.5)/sigma*_WC(0.2) | R = **0.955**, paired se(ln R) 0.0024, 95 % band [0.945, 0.965] | **NEITHER** (GEO 0.768 and INERT 1.000 both excluded) |
 | P2 delta falls with CV | ratio **0.735**, 95 % band [0.623, 0.866], 3/3 seeds | **PASS**; the dry-DEM 0.869 is NOT consistent (4.4 se): lubricated broadening is STRONGER |
 | P3 contact share at sigma_half rises | x1.152 (1.154/1.144/1.158) | **PASS** 3/3 |
-| P5 CV 0.35 between | 2/3 seeds | PASS (descriptive) |
+| P5 CV 0.35 between | the CV 0.35 WC fit misses the registered residual bar on all 3 seeds (0.057 / 0.066 / 0.057 > 0.05), so its R1 is UNDEFINED | **NOT GRADED** (first printed as PASS 2/3; corrected after referee pass 1: the grader printed the flag but did not enforce it) |
 | X1 x-mismatch size | ln -0.0462 se 0.0058 (predicted -0.047) | confound **NOT closed**: P1 is CONDITIONAL on it |
 | Q1 sigma*_WC5(0.5)/sigma*_WC5(0) | R0 **0.890**, 95 % band [0.789, 1.003] | **INERT** (marginal; the 82 % band [0.842, 0.941] excludes both; 0.38 of the dry chain's log effect) |
 | M1 onset network size-selected | <aa>_c(3)/<aa>_c(100) 1.17-1.21 at CV 0.5 vs 1.03-1.06 at CV 0.2 | **PASS** 3/3 (stiffness caveat: none) |
 | M2 chain factor G: > 1 at sigma 3, < 0.90 at sigma >= 10 | G(0.5)/G(0.2) = 0.70-0.86 at sigma >= 10 on every seed | **PASS** 3/3 |
 | M3 G ratio at each arm's own onset | 0.943, band [0.920, 0.965] | **PASS** (CV-neutral within +-0.15) |
-| S1 / S2 per-grain collapse | S1 missed on CV 0.2 by rounding (1.299 vs 1.30); S2 fails at CV 0.5 | **FAIL / FAIL** |
+| S1 / S2 per-grain collapse | S1 missed on CV 0.2 narrowly (1.2997 against the 1.3 bar); S2 fails at CV 0.5 | **FAIL / FAIL** |
 | S4 Derjaguin vs constant force (grain level) | best m 1.10 / 1.70 / 1.65 at CV 0.2 / 0.35 / 0.5 | **MIXED** |
 | S3 per-grain law predicts R | 0.629 predicted vs 0.955 measured | does NOT explain the onset |
 
 **The P1 verdict rests on an error bar the data cannot support, and that is stated with it.** The paired se (0.0024) is
 ten times smaller than each fit's own parameter error (2-4 %); under the fit-propagated error (se 0.0265), the unpaired
 seed scatter (0.0208) or both in quadrature, R = 0.955 is **INERT** (95 % bands [0.852, 1.070], [0.873, 1.044]). The dry
-chain's 0.768 is excluded under EVERY error model, and also after the measured x-mismatch correction (bracket [0.913, 0.955]).
+chain's 0.768 is excluded under EVERY error model, and also after the x-mismatch correction: the MEASURED X1 shift gives the
+bracket [0.912, 0.955] (the argued a-priori bound printed beside P1 gives [0.913, 0.955]).
 These alternative error models were added at grading and are labelled POST HOC in the grader; the registered verdict is not
 changed.
 
-**The onset stress is readout-dependent at the +-15 % level, because its SHAPE changes.** Same cells: 9-rung sigma*_WC 0.955;
+**(Synthesis, added at grading; not a registered test.) The onset stress is readout-dependent from -19 % to +11 %
+(ratios 0.815 to 1.113), because its SHAPE changes.** Same cells: 9-rung sigma*_WC 0.955;
 sigma_half 0.960; absolute Z_c = 1 crossing 1.113; 5-rung sigma*_WC 0.892; x-matched 5-rung sigma*_WC 0.815; x-matched
 sigma_half 0.917. With delta falling 26 %, "where the onset is" depends on which point of a broader curve is called the
 onset. The robust statement is the one every readout shares: **polydispersity broadens the activation strongly (delta x0.735,
@@ -327,3 +329,8 @@ arm (Am. 7) is registered to decide it and is running.
 **For the drop.** Nothing here moves the DNS conclusion that the activation channel carries < 0.05 % of the CV effect
 (`cvmap` C3'); it sharpens it. The lubricated onset is nearly CV-blind, and the broadening (delta) is the only activation
 change of size, which the drop was shown insensitive to.
+
+*Referee pass 1 on this RESULT (2026-09-28 ~04:05): no FATAL; acted on all five findings — the registered R1 residual gate is
+now enforced in the grader (CV 0.35's fits fail it, so P5 is NOT GRADED and the 0.35 R1 contrasts are withdrawn; P1/P2/P3/Q1
+unchanged because CV 0, 0.2 and 0.5 pass it on every seed); the x-mismatch bracket is now the MEASURED one; the
+readout-dependence paragraph is tagged as a synthesis; its range is quoted as measured; the S1 miss is quoted unrounded.*

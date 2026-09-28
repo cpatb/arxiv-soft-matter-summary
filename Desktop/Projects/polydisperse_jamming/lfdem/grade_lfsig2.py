@@ -130,6 +130,11 @@ def arm_readouts(cells: dict, cv: float, seed: int, sigmas) -> dict:
         r["sstar"], r["delta"], r["resid"] = float(p[0]), float(p[1]), resid
         r["sstar_se"], r["delta_se"] = [float(x) for x in np.sqrt(np.diag(cov))]
         r["r1_ok"] = resid < 0.05
+        if not r["r1_ok"]:
+            # registered rule (prereg Readouts, R1): residual >= 0.05 makes the arm's R1 UNDEFINED. Enforced
+            # 2026-09-28 after referee pass 1 on the RESULT (it had been printed but not gated).
+            r["sstar_fit"], r["delta_fit"] = r["sstar"], r["delta"]
+            r["sstar"] = r["delta"] = float("nan")
     except Exception as e:  # noqa: BLE001
         r["sstar"] = r["delta"] = r["resid"] = float("nan"); r["r1_ok"] = False; r["fit_err"] = str(e)
     # R2: midpoint (requires monotone non-decreasing f)
@@ -239,6 +244,7 @@ def x_arm(cells: dict, arms: dict, con: dict) -> None:
                 lo, hi = math.log(rc_) - T_CRIT * seR, math.log(rc_) + T_CRIT * seR
                 margins.append(min(abs(mR - lo), abs(mR - hi)))
             margin = min(margins)
+            say(f"  MEASURED x-mismatch bracket on P1: R in [{math.exp(mR + m):.3f}, {math.exp(mR):.3f}] (raw R shifted by X1)")
             say(f"  X1 vs P1 margin: |X1| {abs(m):.4f} vs the raw ln R's distance to the nearest candidate boundary {margin:.4f} -> "
                 f"confound {'CLOSED' if abs(m) < margin else 'NOT closed: P1 verdict is CONDITIONAL on the x-mismatch'}")
         else:
@@ -426,8 +432,8 @@ def main() -> int:
             k = T_CRIT
             # stated confound: the LF-relative x mismatch
             dl = X_SENS[0.5] * X_MISMATCH  # the CV 0.5 arm sits ~0.025 higher in x_LF: its sigma_half is ~ +9 %/0.05 x that
-            say(f"  stated confound (x_LF mismatch {X_MISMATCH}, lfsig sensitivity {X_SENS[0.5] * 0.05:.2f}/0.05 x_m at CV 0.5): "
-                f"R bracket [{math.exp(m - dl):.3f}, {math.exp(m):.3f}] (verdict is on the raw R)"
+            say(f"  stated confound, ARGUED bound (x_LF mismatch {X_MISMATCH}, lfsig sensitivity {X_SENS[0.5] * 0.05:.2f}/0.05 x_m at CV 0.5): "
+                f"R bracket [{math.exp(m - dl):.3f}, {math.exp(m):.3f}] (verdict is on the raw R; the MEASURED bracket is in the X1 block)"
                 + ("" if (abs(m - dl - math.log(R_GEO)) <= k * se) == geo and (abs(m - dl) <= k * se) == ine
                    else "  ** the bracket straddles a candidate boundary **"))
 

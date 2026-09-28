@@ -89,9 +89,9 @@ healthy (registered rule: rc 0/124, strain >= 3.95, overlap < 0.05): 81; exclude
   0.20    1   3.200  0.068  1.436  0.055  0.030 1       1   4.190   3.314   0.622   2.33  0.025 0.152 0.314 0.540 0.752 0.818 0.877 0.963 1.000
   0.20    2   3.044  0.067  1.587  0.068  0.026 1       1   3.954   3.272   0.602   2.18  0.027 0.165 0.336 0.577 0.792 0.844 0.931 0.988 1.000
   0.20    3   3.062  0.070  1.519  0.065  0.029 1       1   3.947   3.231   0.610   2.31  0.028 0.162 0.328 0.583 0.770 0.857 0.891 0.956 1.000
-  0.35    1   3.074  0.105  1.367  0.080  0.057 0       1   3.867   3.340   0.632   2.29  0.029 0.167 0.318 0.609 0.713 0.803 0.882 0.957 1.000
-  0.35    2   3.142  0.139  1.117  0.072  0.066 0       1   3.972   3.396   0.680   2.79  0.029 0.173 0.325 0.578 0.652 0.765 0.806 0.905 1.000
-  0.35    3   2.947  0.119  1.257  0.081  0.057 0       1   3.799   3.289   0.645   2.64  0.034 0.191 0.343 0.612 0.724 0.763 0.868 0.961 1.000
+  0.35    1     nan  0.105    nan  0.080  0.057 0       1   3.867   3.340   0.632   2.29  0.029 0.167 0.318 0.609 0.713 0.803 0.882 0.957 1.000
+  0.35    2     nan  0.139    nan  0.072  0.066 0       1   3.972   3.396   0.680   2.79  0.029 0.173 0.325 0.578 0.652 0.765 0.806 0.905 1.000
+  0.35    3     nan  0.119    nan  0.081  0.057 0       1   3.799   3.289   0.645   2.64  0.034 0.191 0.343 0.612 0.724 0.763 0.868 0.961 1.000
   0.50    1   3.041  0.101  1.139  0.055  0.040 1       1   3.934   3.497   0.717   2.18  0.030 0.170 0.365 0.567 0.682 0.767 0.827 0.901 1.000
   0.50    2   2.910  0.119  1.120  0.066  0.039 1       1   3.814   3.803   0.688   3.05  0.049 0.193 0.385 0.579 0.691 0.739 0.829 0.966 1.000
   0.50    3   2.934  0.133  1.076  0.068  0.047 1       1   3.860   3.631   0.707   2.70  0.050 0.189 0.370 0.579 0.680 0.782 0.796 0.888 1.000
@@ -103,14 +103,14 @@ healthy (registered rule: rc 0/124, strain >= 3.95, overlap < 0.05): 81; exclude
   0.20->0.50 R3 sigma_Z1           : ratio 1.113  ln mean +0.1071 sd 0.0492 se 0.0284 t +3.77 (n 3; band [1.082, 1.145])  per seed: 1.055 1.163 1.124
   0.20->0.50 R4 fcont(sigma_half)  : ratio 1.152  ln mean +0.1413 sd 0.0061 se 0.0035 t +39.98 (n 3; band [1.148, 1.156])  per seed: 1.154 1.144 1.158
   0.20->0.50 R5 thickening         : ratio 1.153  ln mean +0.1425 sd 0.2031 se 0.1173 t +1.22 (n 3; band [1.026, 1.297])  per seed: 0.934 1.401 1.171
-  0.20->0.35 R1 sigma*_WC          : ratio 0.985  ln mean -0.0156 sd 0.0410 se 0.0237 t -0.66 (n 3; band [0.962, 1.008])  per seed: 0.961 1.032 0.962
-  0.20->0.35 R1 delta_WC           : ratio 0.822  ln mean -0.1964 sd 0.1509 se 0.0871 t -2.25 (n 3; band [0.753, 0.897])  per seed: 0.952 0.704 0.828
+  0.20->0.35 R1 sigma*_WC          : no complete pair
+  0.20->0.35 R1 delta_WC           : no complete pair
   0.20->0.35 R2 sigma_half         : ratio 0.963  ln mean -0.0379 sd 0.0424 se 0.0245 t -1.55 (n 3; band [0.940, 0.987])  per seed: 0.923 1.005 0.963
   0.20->0.35 R3 sigma_Z1           : ratio 1.021  ln mean +0.0211 sd 0.0150 se 0.0087 t +2.43 (n 3; band [1.012, 1.030])  per seed: 1.008 1.038 1.018
   0.20->0.35 R4 fcont(sigma_half)  : ratio 1.067  ln mean +0.0647 sd 0.0544 se 0.0314 t +2.06 (n 3; band [1.034, 1.101])  per seed: 1.016 1.131 1.056
   0.20->0.35 R5 thickening         : ratio 1.130  ln mean +0.1223 sd 0.1325 se 0.0765 t +1.60 (n 3; band [1.047, 1.220])  per seed: 0.984 1.281 1.145
-  0.35->0.50 R1 sigma*_WC          : ratio 0.970  ln mean -0.0306 sd 0.0400 se 0.0231 t -1.32 (n 3; band [0.948, 0.993])  per seed: 0.989 0.926 0.996
-  0.35->0.50 R1 delta_WC           : ratio 0.894  ln mean -0.1120 sd 0.1001 se 0.0578 t -1.94 (n 3; band [0.844, 0.947])  per seed: 0.833 1.003 0.856
+  0.35->0.50 R1 sigma*_WC          : no complete pair
+  0.35->0.50 R1 delta_WC           : no complete pair
   0.35->0.50 R2 sigma_half         : ratio 0.998  ln mean -0.0025 sd 0.0330 se 0.0191 t -0.13 (n 3; band [0.979, 1.017])  per seed: 1.017 0.960 1.016
   0.35->0.50 R3 sigma_Z1           : ratio 1.090  ln mean +0.0860 sd 0.0355 se 0.0205 t +4.20 (n 3; band [1.068, 1.112])  per seed: 1.047 1.120 1.104
   0.35->0.50 R4 fcont(sigma_half)  : ratio 1.080  ln mean +0.0766 sd 0.0593 se 0.0342 t +2.24 (n 3; band [1.043, 1.117])  per seed: 1.135 1.011 1.096
@@ -128,7 +128,7 @@ healthy (registered rule: rc 0/124, strain >= 3.95, overlap < 0.05): 81; exclude
   POST HOC error model [unpaired seed scatter]: se 0.0208, 95 % band [0.873, 1.044] -> INERT
   POST HOC error model [paired + fit, in quadrature]: se 0.0266, 95 % band [0.852, 1.071] -> INERT
   P1 verdict (registered, 95 %): NEITHER
-  stated confound (x_LF mismatch 0.025, lfsig sensitivity 0.09/0.05 x_m at CV 0.5): R bracket [0.913, 0.955] (verdict is on the raw R)
+  stated confound, ARGUED bound (x_LF mismatch 0.025, lfsig sensitivity 0.09/0.05 x_m at CV 0.5): R bracket [0.913, 0.955] (verdict is on the raw R; the MEASURED bracket is in the X1 block)
 
 ==== P2: delta_WC falls with CV (3/3 seeds paired, mean + k se < 0); dry-DEM reference 0.869 ====
   (the registered text says 'mean - 2 se < 0', which for a FALL is the wrong side: a fall is resolved when the UPPER
@@ -156,11 +156,7 @@ healthy (registered rule: rc 0/124, strain >= 3.95, overlap < 0.05): 81; exclude
   P4 verdict: PASS (10/10 identical, 0 differ) -- any DIFFER line above is a wiring fault
 
 ==== P5 (descriptive): sigma*_WC(0.35) between the 0.2 and 0.5 values, >= 2/3 seeds ====
-  seed 1: sigma* 3.200 / 3.074 / 3.041  between: True
-  seed 2: sigma* 3.044 / 3.142 / 2.910  between: False
-  seed 3: sigma* 3.062 / 2.947 / 2.934  between: True
-  R(0.35/0.2) = 0.985  (H_geo CV^2-interpolated 0.902, printed only)
-  P5: PASS (2/3 seeds between)
+  P5: NOT GRADED (0/0 seeds between)
 
 ==== P6 (for the record): the lfsig post-hoc readouts on 3-seed data ====
   R2 self-normalised sigma_half: ratio 0.960 band [0.949, 0.972] (lfsig single-seed: 0.956)
@@ -194,6 +190,7 @@ healthy (registered rule: rc 0/124, strain >= 3.95, overlap < 0.05): 81; exclude
   0.5 (5)     3    2.893   1.155  0.030   3.860
   0.5x        3    2.628   1.031  0.038   3.688
   X1: ln[R2(0.5x)/R2(0.5)] = -0.0462 se 0.0058 (ratio 0.955, band [0.949, 0.960]); predicted -0.047; per seed -0.056 -0.036 -0.046
+  MEASURED x-mismatch bracket on P1: R in [0.912, 0.955] (raw R shifted by X1)
   X1 vs P1 margin: |X1| 0.0462 vs the raw ln R's distance to the nearest candidate boundary 0.0359 -> confound NOT closed: P1 verdict is CONDITIONAL on the x-mismatch
   X2 5-rung R1 sigma*      : R(0.5x/0.2) 0.815 band [0.808, 0.821] (n 3)  vs registered pair on the same rungs R(0.5/0.2) 0.892 (n 3)
   X2 5-rung R2 sigma_half  : R(0.5x/0.2) 0.917 band [0.902, 0.932] (n 3)  vs registered pair on the same rungs R(0.5/0.2) 0.960 (n 3)
