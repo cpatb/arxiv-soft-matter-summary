@@ -29,7 +29,7 @@ clock is $\fullLoSi$--$\fullHiSi$ on $2\,\mu$m silica and $\fullLoPm$--$\fullHiP
 $1.4\,\mu$m PMMA. It is controlled by strain rather than time over a decade in rate, and
 on silica it \emph{falls} with rate, which a relaxation law with an added time term
 cannot produce. The minimum just after reversal lies at $\depthLoPm$--$\depthHiSi$ of the model's own
-frictionless floor, which is itself within $3\%$ of the lowest steady-state viscosity of
+frictionless floor, which is itself within $3\%$ of the lowest steady-state viscosity of  % 3%: numbers.tex floorSi/sweepMinSi = 1.028, floorPm/sweepMinPm = 1.010
 each sample. On the one record where contact stress is known directly, a simulation,
 the directly evaluated contact-stress fraction recovers $\ctlDiffPct\%$ faster than the
 inverted $f$. We argue that $\gamma_0$ is not a material constant of scalar Wyart--Cates
@@ -55,7 +55,7 @@ gave an exponential strain scale of $0.023$~\cite{Mari2015}, which Chacko \emph{
 adopt~\cite{Chacko2018}. The same paper defines $\gamma_0$ as ``of order the strain required
 to evolve from one steady-state to another (for instance on flow reversal)''.
 \citet{Richards2019} report $\gamma_0=O(10^{-1})$ from imposed-rate experiments.
-Corn-starch shear fronts give a start-up scale $\gamma^*\approx0.197$~\cite{Han2018}, and
+Corn-starch shear fronts give $\gamma^*\approx0.197$~\cite{Han2018}, a start-up scale in a different, multiplicative closure $g=1-e^{-\gamma/\gamma^*}$ rather than the constant of Eq.~(\ref{eq:relax}), and
 linear-stability work sweeps $0.05$--$0.5$~\cite{DarboisTexier2023}.
 Reversal recovery is known to take a strain ``of order unity''~\cite{Lin2015,NessSun2016}.
 Gillissen \emph{et al.}\ fitted the structural strain scale of a tensorial model to
@@ -96,7 +96,7 @@ the data and $n$. A relaxation $f=f_{ss}+(f_0-f_{ss})e^{-\gamma/\gamma_0}$ fitte
 amplitudes free is exactly invariant under affine maps of the ordinate, so $\gamma_0$ is
 independent of $\phi$, $\phi_0$ and $\phi_m$ jointly. We checked this at four triples far
 off the covariance ray, with $\phi/\phi_0$ from $0.32$ to $0.87$: the fitted clocks are
-bit-identical. Across $n=1.8$--$2.5$ they move by at most $1.8\%$. The clock therefore
+bit-identical. Across $n=1.8$--$2.5$ they move by at most $1.8\%$. The clock therefore  % 1.8%: scripts/gate_g11.py G11a-ii 'worst 1.80%'
 escapes the degeneracy that makes $\phi_m$ unidentifiable from one flow curve.
 
 \emph{Fit.} Each record is reduced to log-spaced bins, each holding the median and the
@@ -108,6 +108,8 @@ more than an order of magnitude depending only on its convergence tolerance
 fit-free landmark, $\gamma_{50}$: the strain from the minimum to half the plateau in $f$.
 Its definition does not depend on any fit window.
 
+\emph{Where the fit starts.} The minimum is a broad, noisy trough, so its position is uncertain by $\sim0.1$--$0.2$ in strain. A delay measured from it is ill-posed; our attempt to measure one failed its own synthetic controls (\texttt{scripts/probe\_rebuild\_lag.py}). Moving the start anywhere up to $\startShiftRange$ strain \emph{after} the minimum changes the fitted clock by at most $\startShiftWorst\times$ on every record. Starting \emph{before} the minimum brings in the still-falling viscosity, which Eq.~(\ref{eq:relax}) does not describe. There the fit is ill-posed: on silica at $5$\,s$^{-1}$ it has no interior optimum (\texttt{scripts/probe\_start\_sensitivity.py}).
+
 \section{Results}
 
 \emph{The reversal minimum lies below the model's frictionless floor.}
@@ -115,10 +117,10 @@ With $f\ge0$, WC bounds the viscosity from below by $(1-\phi/\phi_0)^{-n}$:
 $\floorSi$ for silica and $\floorPm$ for PMMA. Figure~\ref{fig:reversal}(a,b) shows
 the smoothed post-reversal minima at $\depthLoSi$--$\depthHiSi$ (silica,
 $\nDepthSi$ rates) and $\depthLoPm$--$\depthHiPm$ (PMMA, $\nDepthPm$ rates) of this floor.
-The fourth PMMA record ($\dot\gamma=0.05$\,s$^{-1}$) stays below the floor throughout. The floor is not an artefact of the fit. It lies within $3\%$
+The fourth PMMA record ($\dot\gamma=0.05$\,s$^{-1}$) stays below the floor throughout. The floor is not an artefact of the fit. It lies within $3\%$  % 3%: numbers.tex floorSi/sweepMinSi = 1.028, floorPm/sweepMinPm = 1.010
 of the lowest viscosity on each sample's own steady sweep ($\sweepMinSi$ and
-$\sweepMinPm$), so the model-free statement is this: after reversal the viscosity falls about
-30--45\% below anything the steady flow curve reaches. A scalar $f$ cannot represent
+$\sweepMinPm$), so the model-free statement is this: after reversal the viscosity falls
+$\dropLoPct$--$\dropHiPct\%$ below anything the steady flow curve reaches. A scalar $f$ cannot represent
 that state at any value: reversal removes more stress than the frictional contacts carry,
 consistent with the microstructural (fabric) contribution identified in
 Refs.~\cite{Blanc2011,NessSun2016,Gillissen2019}.
@@ -141,7 +143,7 @@ for silica, and $\gFiftySpreadPm\times$ and $\tFiftySpreadPm\times$ for PMMA [Fi
 
 \emph{The clock is of order one.} Figure~\ref{fig:clock}(a) collects the estimates. The fitted
 constant is $\fullLoSi$--$\fullHiSi$ (silica, $\nRatesSi$ rates) and $\fullLoPm$--$\fullHiPm$
-(PMMA, $\nRatesPm$ rates). Truncating the fit at $\gamma=3$ moves it by at most $1.37\times$.
+(PMMA, $\nRatesPm$ rates). Truncating the fit at $\gamma=3$ moves it by at most $1.37\times$.  % 1.37x: scripts/gate_g11.py G11d 'worst 1.371x'
 The landmark $\gamma_{50}$ is $\gFiftyLoSi$--$\gFiftyHiSi$ and $\gFiftyLoPm$--$\gFiftyHiPm$. Every estimate on
 both materials exceeds $\solverGammaZero$ by at least $\minOverSolver\times$, and exceeds the
 step-stress value $0.023$ by more than an order of magnitude. One PMMA record
@@ -152,14 +154,14 @@ has no state for it, so it cannot test the model. Its clock is still shown, in g
 $\fullFallSi\times$ across the four silica rates. In Eq.~(\ref{eq:relax}) the effective
 constant is $1/\gamma_{\rm eff}=1/\gamma_0+1/(\dot\gamma t_r)$, which can only \emph{rise}
 toward $\gamma_0$ with rate. No positive $t_r$ produces the silica trend; the straight-line
-fit returns $t_r<0$. On PMMA the clocks are not monotone in rate, so there the test
+fit returns $t_r<0$. The trend survives the start ambiguity only in part. Over after-minimum starts the fall is at least $\fallLowerSi\times$, and the clocks at $0.5$, $1$ and $2$\,s$^{-1}$ stay strictly ordered, but the $2$ and $5$\,s$^{-1}$ ranges overlap. On PMMA the clocks are not monotone in rate, so there the test
 cannot decide either way.
 
 \emph{The recovery is not a single exponential.} A two-component description beats one
 component decisively on the silica. Correcting for it reduces the rate trend from
-$1.90\times$ to $1.70\times$ but does not remove it
-(\texttt{scripts/probe\_two\_clock.py}). The decomposition itself is not robust to the fit window:
-the two fitted clocks changed by up to a factor of five between windows. Figure~\ref{fig:clock}(b) shows the
+$\twoClockMOne\times$ to $\twoClockMFour\times$ but does not remove it. These come from a joint fit on a finer binning, so its single-exponential value, $\twoClockMOne\times$, differs slightly from the $\fullFallSi\times$ above
+(\texttt{scripts/probe\_two\_clock.py}). The decomposition itself is not robust to the fit window: the two
+fitted clocks moved severalfold between windows (probe docstring), so we do not interpret them as two processes. Figure~\ref{fig:clock}(b) shows the
 underlying shape. The rise is slow, then fast, where Eq.~(\ref{eq:relax}) is steepest at its
 start.
 
@@ -182,7 +184,7 @@ $\gamma_0=\ctlDirect$ ($s$) and $\ctlInverted$ (inverted $f$), a $\ctlDiffPct\%$
 with non-overlapping intervals. The difference is identical at two packing triples
 chosen so far apart that the inverted $f$ leaves $[0,1]$ in opposite directions. So it is the
 inversion, not the gauge. WC's $f$ counts contacts, while $s$ is a fraction of stress, and nothing
-requires them to be affinely related. They are not ($R^2=0.88$ between them).
+requires them to be affinely related. They are not ($R^2=0.88$ between them).  % R2 0.88: scripts/probe_g11_direct_control.py 'affine to R2 = 0.8797'
 
 \section{Discussion}
 
