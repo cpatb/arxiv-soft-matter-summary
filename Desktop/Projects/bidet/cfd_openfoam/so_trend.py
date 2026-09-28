@@ -21,7 +21,9 @@ for d in sorted(glob.glob(os.path.expanduser("~/bidet_so/case*"))):
         for line in fh:
             if line.startswith("Time = "):
                 if it is not None and cur:
-                    hist.append((it, max(cur.values()), max(cur, key=cur.get)))
+                    # Amendment 2: Uz is round-off on the wedge; H1 excludes it
+                    nz = {k: v for k, v in cur.items() if k != "Uz"}
+                    hist.append((it, max(nz.values()), max(nz, key=nz.get)))
                 it, cur = int(float(line.split("=")[1])), {}
             else:
                 m = pat.search(line)

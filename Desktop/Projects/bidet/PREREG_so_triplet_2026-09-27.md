@@ -63,6 +63,45 @@ artefact of the start, the FO r=1.5 triplet would show it as a non-smooth jump, 
 reports either way. The cold-start runs are killed at ~iteration 100 and their partial
 output is discarded.
 
+## Amendment 2 (~23:15, before any gate quantity of a refine-1.5 or 2.25 case was computed)
+
+(Operational note, 23:20: FO refine 1.5 is also started by mapFieldsPar from
+`case_Re10000_H6`, on 2 ranks, instead of cold on the serial lane, whose driver was
+detached; SO refine 1.5 continues cold and serial and is finalised by hand.)
+
+**Finding that forces it.** Both refine-2.25 cases stalled with the worst initial residual
+~1e-3, always `Uz`, while every other field fell. `uz_magnitude.py` on the written fields:
+FO refine 2.25 at iteration 1000 has max|Uz| = 3.4e-13 m/s against max in-plane 9.0 m/s
+(ratio 3.7e-14); the old refine-1.414 case (`r1_ext`, the "broken" midfine grid of
+GRID_STUDY §3d) has max|Uz| = 3.9e-14. The converged cases have 2.1e-10 to 2.6e-10. `Uz` is
+the out-of-plane component on a one-cell wedge and is round-off everywhere; OpenFOAM
+normalises each component's residual by that component's own scale, so a round-off field
+returns an O(1e-3 to 1e-2) "residual" that no amount of iteration reduces. Whether a
+case's `Uz` happened to dip under 1e-5 (1.6e-6 to 4.9e-6 on the converged ones) is luck.
+`residualControl` on the vector U therefore cannot fire on some grids for a reason
+unrelated to the solution.
+
+**Health rule, replacing "meets residualControl":** a case is converged when (H1) every
+initial residual except `Uz` is below 1e-5 at the same iteration (the registered target,
+unchanged), and (H2) max|Uz| / max|U_inplane| < 1e-10 in the final field (the component
+is round-off, so excluding it hides nothing). Both are printed per case. Operationally a
+watcher (`so_watch.sh`) sets `stopAt writeNow` when H1 holds, since simpleFoam will not.
+The original criterion's verdict is reported beside it for every case.
+
+**S6 (Cauchy check on the gate quantities, registered 23:30 before any refine-1.5/2.25
+gate value was printed).** The mapped-start cases reached H1 within a few hundred
+iterations and then sat on a residual plateau (~5e-6), and a plateaued normalised residual
+does not prove the field has stopped moving. So each mapped-start case (FO/SO 2.25, FO 1.5)
+is CONTINUED 400 further iterations from its final state (`so_continue.sh`), and every
+gate quantity (`C_P`, `n_t`, `tau_w(15 mm)`, peak `tau_w`) must move by less than 0.5 %
+relative. A case that fails is NOT CONVERGED on the quantities and its family is graded
+INCOMPLETE; both values are printed. 0.5 % is set against the smallest grid step the gates
+must resolve (the refine-1 FO/SO difference in `n_t` was 1.2 %).
+
+**Consequence registered now, graded later:** under H1/H2 the refine-1.414 `midfine`
+triplet (§3d, "cannot run") may be gradeable after all. It is graded as a SEPARATE,
+first-order family and does not enter S1-S5.
+
 ## What will NOT be done
 
 No bar is loosened after data. p outside [0.5, 2.5] is reported, not re-banded. If the
