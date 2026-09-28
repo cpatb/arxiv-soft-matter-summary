@@ -189,7 +189,12 @@ requires them to be affinely related. They are not ($R^2=0.88$ between them).  %
 \emph{A second protocol on silica: start-up is abrupt, not a relaxation.}
 The deposit of \citet{Richards2019} contains constant-stress start-ups on a comparable
 material: $4\,\mu$m silica in glycerol--water at $\phi=0.574$, with 17 steps of 20\,s,
-each preceded by $\sim$14\,s at zero stress, and the same sample's steady curve. We
+each preceded by $\sim$14\,s at zero stress, and the same sample's steady curve. We take
+the solvent viscosity from the deposit's own ratio of absolute to relative viscosity
+(141\,mPa\,s, identical on every steady row; the paper quotes 151\,mPa\,s, so the deposit
+was presumably measured at a slightly different temperature; the clock depends on it only
+through $\eta_r^{-1/n}$).  % 141: scripts/probe_startup_clock.py 'eta_s = 141.00'
+We
 pre-registered the same fit (\texttt{PREREG\_startup\_clock\_2026-09-27.md}) and it
 \emph{failed}. Above the onset ($\sigma\ge\suOnset$\,Pa) the fitted constants span
 more than an order of magnitude across the steps, with $\chi^2_r$ up to $10^4$  % 0.027-0.885 (33x), chi2_r 73-11343: logs/probe_startup_clock.txt
@@ -198,7 +203,7 @@ exponential in strain does not describe these records, and the end-of-step visco
 on this protocol. Figure~\ref{fig:startup}(a) shows
 why. The viscosity does not relax. It stays near its low-stress value and then jumps
 abruptly at $\gamma_j=\suJamLo$--$\suJamHi$ on all
-$\suNAbove$ steps above onset. On $\suZeroCross$ of them the shear rate briefly reverses sign at $\gamma_j$. That is the rate ringing that gives Richards et al.'s paper its title~\cite{Richards2019}, a coupling of rheometer and sample, so those jumps are not a clean one-way material event. The fit-free reversal landmark $\gamma_{50}$ on Lin's
+$\suNAbove$ steps above onset. On $\suZeroCross$ of them the shear rate briefly reverses sign at $\gamma_j$. Richards et al.\ class this sample as showing no large shear-rate oscillations, and reserve their oscillations for other samples~\cite{Richards2019}. A brief rate reversal is still consistent with the coupling of rheometer inertia and contact formation that they identify, so those jumps are not certainly a one-way material event. The fit-free reversal landmark $\gamma_{50}$ on Lin's
 silica is at least $\reversalOverJam\times$ larger [Fig.~\ref{fig:startup}(b)]. The two
 records are different samples, and we cannot tell whether $\gamma_j$ is a material strain
 scale: over a $\suSigSpread\times$ range of stress it spreads $\suJamSpread\times$ in strain
@@ -235,7 +240,7 @@ protocol & system & strain scale \\
 step in stress & simulation & $0.023$~\cite{Mari2015} (used in~\cite{Chacko2018}) \\
 imposed rate & corn starch & $O(10^{-1})$~\cite{Richards2019} \\
 start-up (fronts) & corn starch & $\gamma^*\approx0.197$, other closure~\cite{Han2018} \\
-start-up, constant $\sigma$ & $4\,\mu$m silica & abrupt at $\gamma_j=\suJamLo$--$\suJamHi$ (this work) \\
+start-up, constant $\sigma$ & $4\,\mu$m silica & abrupt at $\gamma_j=\suJamLo$--$\suJamHi$ (this work; data of~\cite{Richards2019}) \\
 reversal & $2\,\mu$m silica & $\gamma_0=\fullLoSi$--$\fullHiSi$ (this work) \\
 reversal & $1.4\,\mu$m PMMA & $\gamma_0=\fullLoPm$--$\fullHiPm$ (this work) \\
 \end{tabular}
