@@ -105,6 +105,15 @@ lubricated rheology.
   mechanism for why dry-DEM σ\* misleads, and it fits a letter.
 - **If NOT INFORMATIVE:** fold the geometry into Paper B §6 as a scoped section and do not write C.
 
+⚠ **Prior art (found 2026-09-27, quote verified):** large-first activation in bidisperse suspensions is published —
+Guy et al., Soft Matter 16, 229 (2020), doi:10.1039/c9sm00041k, already in `paper/refs.bib`. Paper C must not present the
+mechanism as new. What it can own: (i) a continuous PSD swept in CV rather than bidisperse compositions; (ii) a
+Derjaguin (electrostatic) threshold rather than a size-independent critical load; and (iii) **the activation exponent**.
+Constant force gives σ_act ∝ a⁻² (Guy's ~16× split at size ratio 4), Derjaguin predicts ∝ a⁻¹. If `PREREG_LFSIG2`
+Am. 6 S4 returns DERJAGUIN, the letter's headline becomes "the size selectivity of shear-thickening activation is set by
+how the repulsion scales with size", which is directly relevant to the lab's charge-stabilised silica. If S4 is MIXED,
+Paper C shrinks to a section of B.
+
 ## 4. The two-paper picture as one programme
 
 A is the packing law (what φ₀ and φ_m do). B is the drop consequence (the window decides, the footprint cannot tell).

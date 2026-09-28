@@ -228,3 +228,23 @@ simpleFoam jobs. To finish all three seeds before morning, `run_cell2.sh` gained
 whose directory exists is skipped), deployed by rename so running cells kept their copy (tested on a finished and a running
 cell: both skipped, nothing touched), and a reverse-order helper (`lfdem/helper_lfsig2.sh`, P 5) is chained to start when the
 CV 0 arm finishes. Cells are deterministic, so which driver runs a cell cannot change its answer; P4 still checks that.
+
+## Amendment 6 (2026-09-27 ~23:20 CDT; lfsig2 interaction dumps still unread) -- prior art found; the exponent is what is testable
+
+A literature check (`LIT_SIGMA_CV_2026-09-27.md`; verified by me against arXiv:1901.02066v2) found that **large-first
+frictional activation in bidisperse suspensions is published**: Guy, Ness, Hermes, Sawiak, Sun & Poon, Soft Matter 16, 229
+(2020), doi:10.1039/c9sm00041k -- "frictional contacts first form amongst the large species", small particles "largely
+redundant for stress transmission". Amendment 5's size selectivity (S1) is therefore a CONFIRMATION in a continuous PSD,
+not a finding. Their contact model takes the critical load F* "independent of the size of the contacting particles", which
+puts a grain's activation stress at F*/a^2: **m = 2** in Amendment 5's notation (their sigma*_1 ~ 0.06 sigma_0 vs
+sigma*_2 ~ sigma_0 at size ratio 1/0.25 = 4 is a factor ~16 = 4^2). LF_DEM's repulsion here is Derjaguin-scaled (threshold
+~ R*), which predicts **m = 1**. The exponent is the discriminating, and new, quantity.
+
+- **S4 (registered).** On each of CV 0.2 and CV 0.5 separately, rms(m = 1) < rms(m = 2), and on the pooled set
+  rms(m = 2)/rms(m = 1) >= 1.15 (Derjaguin beats constant-force). Verdicts: DERJAGUIN (all three), CONSTANT-FORCE (m = 2
+  better on both CVs and pooled ratio <= 1/1.15), else MIXED.
+- **Prior information, stated honestly:** on the old lfsig seed-1 cells the same comparison gives rms(m 1)/rms(m 2) =
+  0.557/0.629 at CV 0.2 (m = 1 better) and 0.583/0.561 at CV 0.5 (m = 2 slightly better), best m 1.05 and 1.50. So a MIXED
+  outcome is live, and it is reported as such if it happens.
+- Claim 10 of `CLAIMS_SIGMA_GEOMETRY` is rescoped the same hour (Guy 2020 is prior art for the mechanism; the surviving
+  novelty is a continuous PSD, a Derjaguin threshold, and the exponent).

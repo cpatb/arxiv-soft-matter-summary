@@ -117,7 +117,7 @@ def collapse(cells: list) -> dict:
         r0, r1, r2 = rms(0.0, sel)[0], rms(1.0, sel)[0], rms(2.0, sel)[0]
         say(f"    {name:8s} n {int(sel.sum()):3d}: best m {mb:4.2f} (rms {min(res):.3f}, slope {rms(mb, sel)[1]:.2f}); "
             f"rms at m 0 / 1 / 2 = {r0:.3f} / {r1:.3f} / {r2:.3f}")
-        out[name] = (mb, min(res), r0, r1)
+        out[name] = (mb, min(res), r0, r1, r2)
     return out
 
 
@@ -135,6 +135,17 @@ def grade_s(cells: list, col: dict) -> None:
     s2 = all(col[k][3] <= 1.15 * col[k][1] for k in ("CV 0.20", "CV 0.50"))
     say("  S2: rms(m 1) <= 1.15 x rms(best) on each CV: "
         + "; ".join(f"{k} {col[k][3] / col[k][1]:.3f}" for k in ("CV 0.20", "CV 0.50")) + f" -> {'PASS' if s2 else 'FAIL'}")
+    # S4 (Amendment 6): Derjaguin m = 1 against the constant-force critical-load model m = 2 (Guy et al. 2020)
+    d1 = [col[k][3] < col[k][4] for k in ("CV 0.20", "CV 0.50")]
+    ratio = col["pooled"][4] / col["pooled"][3]
+    if all(d1) and ratio >= 1.15:
+        v4 = "DERJAGUIN"
+    elif not any(d1) and ratio <= 1 / 1.15:
+        v4 = "CONSTANT-FORCE"
+    else:
+        v4 = "MIXED"
+    say("  S4: rms(m 1) vs rms(m 2): " + "; ".join(f"{k} {col[k][3]:.3f} vs {col[k][4]:.3f}" for k in need)
+        + f"; pooled rms(2)/rms(1) = {ratio:.3f} -> {v4}")
     # S3: the per-grain law's predicted sigma* ratio from the contact-weighted radius at each arm's sigma_half
     import grade_lfsig2 as G
     dirs = [x for x in sorted(glob.glob(os.path.join(OUT, "lfsig2", "c*"))) if ".killed_" not in x]
