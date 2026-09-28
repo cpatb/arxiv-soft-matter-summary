@@ -34,9 +34,13 @@ Two traps in the file format, both handled in `fit_hb.py`:
 
 `fit_hb.py` fits `τ = τ_y + K γ̇ⁿ` to all 15 and writes `hb_fits_etd2020.csv`;
 `fig_etd2020_flowcurves.png` overlays the curves. Log-log axes, because the rate spans
-five decades and a linear axis would collapse the yield plateau onto zero. The fit
-reproduces the paper's published ranges (τ_y max 41.1 Pa at 0.5 wt%, k 3.4 to 15.9,
-n 0.40 to 0.53), so both the extraction and the paper check out.
+five decades and a linear axis would collapse the yield plateau onto zero. The 15 fits
+fall inside the paper's published ranges (τ_y max 41.1 Pa at 0.5 wt%, k 3.4 to 15.9,
+n 0.40 to 0.53) and reproduce its stated maximum. That is a range check, not a
+per-condition one: the paper publishes no table of the 15 fitted (τ_y, k, n), only the
+ranges in prose and heatmaps (Figs. A1, A2), so nothing stronger is possible without
+digitising a figure (checked against the Europe PMC full text, PMC12251366, 2026-09-28;
+`biorheo/data/external_anchor_audit_2026-09-08.md` row 6).
 
 The ladder, in Pa:
 

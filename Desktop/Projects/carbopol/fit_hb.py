@@ -86,7 +86,10 @@ assert np.all(a[:, 0] >= 0) and np.all(a[:, 1] > 0) and np.all((a[:, 2] > 0) & (
 print('\nchecks pass: tau_y %.2f-%.1f Pa, K %.2f-%.1f Pa.s^n, n %.2f-%.2f'
       % (a[:, 0].min(), a[:, 0].max(), a[:, 1].min(), a[:, 1].max(), a[:, 2].min(), a[:, 2].max()))
 print('paper reports tau_y max 41.1 Pa at 0.5 wt%, k 3.4-15.9, n 0.40-0.53 '
-      '(n excluding the sub-1 Pa 0.1 wt% samples) -- reproduced.')
+      '(n excluding the sub-1 Pa 0.1 wt% samples). The 15 fits fall inside those '
+      'published RANGES and reproduce the stated maximum; the paper publishes no '
+      'per-condition table (only heatmaps A1/A2), so a range check is the strongest '
+      'comparison it allows and it is not a pairwise one (biorheo B3 audit, 2026-09-28).')
 
 with io.open(os.path.join(HERE, 'hb_fits_etd2020.csv'), 'w', encoding='utf-8', newline='') as fh:
     w = csv.writer(fh)

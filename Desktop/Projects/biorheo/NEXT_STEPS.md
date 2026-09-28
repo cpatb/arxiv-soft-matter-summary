@@ -9,7 +9,7 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 576 passed, 11 deselected, 1 xfailed (2026-09-28; 575 measured at 308 s before the mAb pin test was added -- the 576 is arithmetic, re-measure and correct this line if it differs)
+python -m pytest -q -m "not slow"      # must print: 577 passed, 11 deselected, 1 xfailed (2026-09-28: 576 MEASURED at 374 s with the mAb pin test; +1 for the Carbopol range-check test added after that run -- re-measure if it differs)
 git -C C:\Users\compl log --oneline -3  # top should be the item-29 commit ("G4c retired") or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`

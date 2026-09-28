@@ -23,7 +23,11 @@ notes: >-
   to [0, 1.5 tau_min]; R2 = 0.99998. The rate is recovered as tau/eta at every point
   because the deposited rate column is rounded to two decimals. Smooth plates: slip is
   uncontrolled, so tau_y is a lower bound. Licence is non-commercial; this record is
-  for validation and demonstration only.
+  for validation and demonstration only. External check: the companion paper
+  (10.3390/ma18133164) publishes no per-condition fit table, only ranges (tau_y below
+  1 Pa at 0.1 wt% to above 41 Pa at 0.5 wt%, k 3.4-15.9, n 0.40-0.53) and heatmaps;
+  the 15 fits fall inside those ranges and reproduce the stated maximum, which is a
+  range check and not a per-condition one (external_anchor_audit_2026-09-08.md row 6).
 extra:
   carbomer_wt_pct: 0.7
   tea_uL_per_100g: 40

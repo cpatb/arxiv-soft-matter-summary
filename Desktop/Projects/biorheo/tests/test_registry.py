@@ -453,3 +453,21 @@ def test_the_gate_would_have_caught_the_old_inward_rounding():
             excluded.append(rid)
     # measured 2026-09-06: exactly 12 of 15. If this ever reads 0 the gate is inert.
     assert len(excluded) == 12, (len(excluded), excluded)
+
+
+def test_carbopol_records_say_their_external_check_is_a_range_check():
+    """B3 audit (item 30) row 6: the ETD2020 paper publishes no per-condition fit table,
+    so the only comparison the source allows is against its published RANGES. Every
+    Carbopol ETD2020 record must say so in its notes, and must not claim a per-condition
+    agreement it cannot have. Also pins the one per-condition number that IS checkable:
+    the paper's stated maximum (above 41 Pa at 0.5 wt%) is the 0.5 wt% / 50 uL record."""
+    recs = load_all(allow_network=False)
+    carbopol = {k: v for k, v in recs.items() if k.startswith("carbopol_etd2020_")}
+    assert len(carbopol) == 15, len(carbopol)
+    for rid, rec in sorted(carbopol.items()):
+        assert "no per-condition fit table" in rec.notes, rid
+        assert "range check" in rec.notes, rid
+        assert "reproduces the paper's fit" not in rec.notes, rid
+    top = carbopol["carbopol_etd2020_0p5wt_50uL"].parameters["tau_y"].si
+    assert top > 41.0, top
+    assert max(v.parameters["tau_y"].si for v in carbopol.values()) == top
