@@ -1,0 +1,20 @@
+band [2,20]  C_P: r0.5 1.3008  r1 1.3518  r1.414 1.4098  r2 1.3928  r4 1.5809
+              n_t: r0.5 1.8871  r1 1.9023  r1.414 1.9237  r2 1.8922  r4 1.9338
+     fine_conv C_P: R=+4.589 p=nan DIVERGING under refinement: |eps21/eps32
+     fine_conv n_t: R=-4.142 p=nan non-monotone in the grid (sign of eps32/
+band [2,12]  C_P: r0.5 1.1623  r1 1.2113  r1.414 1.2583  r2 1.2572  r4 1.3156
+              n_t: r0.5 1.8046  r1 1.8218  r1.414 1.8404  r2 1.8173  r4 1.7997
+     fine_conv C_P: R=+1.274 p=nan DIVERGING under refinement: |eps21/eps32
+     fine_conv n_t: R=+3.904 p=nan DIVERGING under refinement: |eps21/eps32
+band [2,8]  C_P: r0.5 1.0440  r1 1.0861  r1.414 1.1262  r2 1.1327  r4 1.1487
+              n_t: r0.5 1.7163  r1 1.7320  r1.414 1.7491  r2 1.7317  r4 1.6884
+     fine_conv C_P: R=+0.343 p=1.543 
+     fine_conv n_t: R=+142.442 p=nan DIVERGING under refinement: |eps21/eps32
+band [5,12]  C_P: r0.5 1.7408  r1 1.7969  r1.414 1.8719  r2 1.8176  r4 2.1851
+              n_t: r0.5 2.0029  r1 2.0170  r1.414 2.0372  r2 2.0001  r4 2.0497
+     fine_conv C_P: R=+17.767 p=nan DIVERGING under refinement: |eps21/eps32
+     fine_conv n_t: R=-2.942 p=nan non-monotone in the grid (sign of eps32/
+band [12,20]  C_P: r0.5 2.2027  r1 2.2066  r1.414 2.3515  r2 2.2353  r4 4.9977
+              n_t: r0.5 2.1021  r1 2.1040  r1.414 2.1334  r2 2.0861  r4 2.3908
+     fine_conv C_P: R=+96.360 p=nan DIVERGING under refinement: |eps21/eps32
+     fine_conv n_t: R=-17.002 p=nan non-monotone in the grid (sign of eps32/
