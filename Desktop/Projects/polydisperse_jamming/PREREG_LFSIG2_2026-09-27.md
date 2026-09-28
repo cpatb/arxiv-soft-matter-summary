@@ -178,3 +178,21 @@ those halves differ by, which is far below the 2.9 % shift being tested.
 - **Unresolved (referee minor 1), carried into the RESULT:** the Design section and params_base.txt call the stress unit
   F_R/a^2 while Erratum 1 argues F_R0/a. LF_DEM's pair force is F_R0 x R*, so at a = 1 the two coincide numerically; only the
   printed-not-graded R_d32 factor depends on the exponent.
+
+## Amendment 4 (2026-09-27 ~22:15 CDT; registered before any of its cells exist; lfsig2 cells so far read only for health and P4)
+
+A **monodisperse arm (CV 0)** gives the onset question its longest lever arm: the dry chain predicts
+sigma*(0.5)/sigma*(0) = **0.735** and sigma*(0.2)/sigma*(0) = 0.957 (`out/predict_cvmap.txt`, d10). Run set `lfsig2m`
+(`lfdem/run_cell2m.sh`, `launch_lfsig2m.sh`, `queue_lfsig2m.txt`), launched when the x-matched arm's five workers free up.
+- CV 0 at x_m 0.90: phi = 0.9 x 0.57535 = **0.51782**; seeds 1-3 (positions differ, radii identical); rungs {3, 4.5, 7, 10, 100};
+  otherwise identical to lfsig2. 15 cells.
+- **Readouts (like for like, five rungs):** 5-rung R1 (sigma*_WC, delta_WC) and R2 on the CV 0 arm, against the same 5-rung
+  refits of the CV 0.2 and 0.5 arms already printed by the Amendment 2 block.
+- **Q1 (registered).** R0 = sigma*_WC(0.5)/sigma*_WC(0), paired by seed index, 95 % (t_crit 4.303). Candidates: GEO 0.735,
+  INERT 1.000 (separation ln 0.308). Informative iff se(ln R0) < ln(1/0.735)/(2 x 4.303) = 0.0358. Verdict GEO / INERT /
+  NEITHER / NOT INFORMATIVE, as P1.
+- **Ordering confound (stated, and checked).** Monodisperse spheres can crystallise under shear near phi 0.5-0.6; an ordered
+  arm would not be the random reference the chain assumes. Check: the global bond-orientational order Q6 (Steinhardt;
+  neighbours within 1.2 x contact distance) on each cell's last configuration snapshot, against the same number on the CV 0.2
+  arm. If any CV 0 cell has Q6 > 0.3 (random packings sit near 0.03-0.05 for N = 500; fcc is 0.575), that cell is excluded
+  from Q1 and reported as ORDERED.

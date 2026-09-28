@@ -1,0 +1,15 @@
+bash ~/lfdem/run_cell2m.sh c00_x90_s4.5_r1 0.0 0.51782 4.5 0.3 1 4 > ~/lfdem/runs/lfsig2m_c00_x90_s4.5_r1.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s7_r1 0.0 0.51782 7 0.3 1 4 > ~/lfdem/runs/lfsig2m_c00_x90_s7_r1.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s3_r1 0.0 0.51782 3 0.3 1 4 > ~/lfdem/runs/lfsig2m_c00_x90_s3_r1.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s10_r1 0.0 0.51782 10 0.3 1 4 > ~/lfdem/runs/lfsig2m_c00_x90_s10_r1.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s100_r1 0.0 0.51782 100 0.3 1 4 > ~/lfdem/runs/lfsig2m_c00_x90_s100_r1.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s4.5_r2 0.0 0.51782 4.5 0.3 2 4 > ~/lfdem/runs/lfsig2m_c00_x90_s4.5_r2.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s7_r2 0.0 0.51782 7 0.3 2 4 > ~/lfdem/runs/lfsig2m_c00_x90_s7_r2.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s3_r2 0.0 0.51782 3 0.3 2 4 > ~/lfdem/runs/lfsig2m_c00_x90_s3_r2.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s10_r2 0.0 0.51782 10 0.3 2 4 > ~/lfdem/runs/lfsig2m_c00_x90_s10_r2.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s100_r2 0.0 0.51782 100 0.3 2 4 > ~/lfdem/runs/lfsig2m_c00_x90_s100_r2.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s4.5_r3 0.0 0.51782 4.5 0.3 3 4 > ~/lfdem/runs/lfsig2m_c00_x90_s4.5_r3.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s7_r3 0.0 0.51782 7 0.3 3 4 > ~/lfdem/runs/lfsig2m_c00_x90_s7_r3.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s3_r3 0.0 0.51782 3 0.3 3 4 > ~/lfdem/runs/lfsig2m_c00_x90_s3_r3.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s10_r3 0.0 0.51782 10 0.3 3 4 > ~/lfdem/runs/lfsig2m_c00_x90_s10_r3.out 2>&1
+bash ~/lfdem/run_cell2m.sh c00_x90_s100_r3 0.0 0.51782 100 0.3 3 4 > ~/lfdem/runs/lfsig2m_c00_x90_s100_r3.out 2>&1
