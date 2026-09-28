@@ -220,3 +220,11 @@ plateau normalisation exactly as in the file at this commit):**
 - **S3 (does it explain sigma*?, descriptive).** From each arm's measured contact-weighted radius a_k = sum(k a)/sum(k) at
   sigma_half, the per-grain law predicts sigma*(0.5)/sigma*(0.2) = (a_k(0.2)/a_k(0.5))^m_best. Printed beside the measured
   R (P1); agreement within the 95 % band would make the per-grain threshold the mechanism of whatever P1 finds.
+
+## Event (2026-09-27 ~23:10 CDT, execution only)
+
+Throughput check: 17 of 81 main cells done at 22:58, cells 26-75 min (mean ~45), the VM shared with another session's five
+simpleFoam jobs. To finish all three seeds before morning, `run_cell2.sh` gained an ATOMIC claim (mkdir without -p; a cell
+whose directory exists is skipped), deployed by rename so running cells kept their copy (tested on a finished and a running
+cell: both skipped, nothing touched), and a reverse-order helper (`lfdem/helper_lfsig2.sh`, P 5) is chained to start when the
+CV 0 arm finishes. Cells are deterministic, so which driver runs a cell cannot change its answer; P4 still checks that.

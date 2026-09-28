@@ -11,8 +11,15 @@ cd ~/pj && source scripts/env.sh >/dev/null 2>&1
 B=~/lfdem/LF_DEM/LF_DEM/LF_DEM
 SRC=/mnt/c/Users/compl/Desktop/Projects/polydisperse_jamming/lfdem
 W=~/lfdem/runs/lfsig2/$LABEL
-mkdir -p $W && cd $W || exit 1
-if [ -f DONE ]; then echo "$LABEL already done"; exit 0; fi
+mkdir -p ~/lfdem/runs/lfsig2
+# 2026-09-27 ~23:05 (execution-only change; the physics is untouched): an ATOMIC claim, so a second driver working the
+# same queue from the other end can never run a cell twice. mkdir without -p fails if the dir exists: then the cell is
+# done, running, or was killed (relaunch_lfsig2.sh handles the last case by moving the dir aside first).
+if ! mkdir $W 2>/dev/null; then
+  if [ -f $W/DONE ]; then echo "$LABEL already done"; else echo "$LABEL claimed by another driver or killed; skipped"; fi
+  exit 0
+fi
+cd $W || exit 1
 KN=$(python3 -c "print(int(max(1e4, 1000*$SIG)))")
 sed -e "s/MU/$MU/g" -e "s/KN/$KN/" -e "s/STRAIN/$STRAIN/" $SRC/params_base.txt | sed 's/\r$//' > params.txt
 sed -i 's/^out_data_interaction = false;/out_data_interaction = true;/' params.txt
