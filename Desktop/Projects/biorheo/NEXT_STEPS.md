@@ -1504,7 +1504,7 @@ DONE/FAILED/CLOSED with the numbers exactly as items 1–28 are:
 | item | package | one line | status |
 |---|---|---|---|
 | 29 | D1 | retire dst_fit gate G4c with the reason (founder D5 taken); update `test_gate_0_1_dstfit_unchanged.py` expectation | **DONE 2026-09-28** — see below |
-| 30 | B3 | audit every external anchor against its source's FIT TABLE (read-only) | **IN PROGRESS 2026-09-28**: first pass written to `data/external_anchor_audit_2026-09-08.md` — the 5 named anchors graded (1 was-caption-now-fit-table, 2 fit-table, 1 no-fit-table, 1 UNVERIFIED: the mAb calibration slope); the repo-wide sweep and the two UNVERIFIED PDF checks (mAb calibration params; Carbopol three-component `k1`/`eta_bg`) remain. Resume there |
+| 30 | B3 | audit every external anchor against its source's FIT TABLE (read-only) | **DONE 2026-09-28** — see below |
 | 31 | N1 | `biorheo` CLI (`fit` / `report` / `screen` / `export`), wheel, CI; byte-identical page from a client-shaped CSV | OPEN |
 | 32 | J1 | freeze φ_J = Z/(Z+2√3 w) as `polydisperse_jamming/phij_model.py` with a trained-domain guard; held-out seeds chosen before fitting | OPEN |
 | 33 | B5 | referee items 24, 25, 26 (read-only) | OPEN |
@@ -1551,6 +1551,29 @@ comment) still reads the OLD exit code — the edit was refused by the session's
 permission classifier, not by any rule; the new "What is new" section in the same file
 states the new exit code. One-line fix for the next session. No reviewer was run: no
 physics or numerics changed, and the diff is a gate's exit-code policy plus prose.
+
+#### 30 (B3). DONE 2026-09-28: every external comparison graded; three have NO fit table
+
+`data/external_anchor_audit_2026-09-08.md`, ten rows, read-only. Sources read this
+session: Prašnikar 2025 accepted PDF (Ljubljana repository, 13 pp), Vinutha 2024 arXiv v1
+full text, Biermann 2025 full text (Europe PMC `PMC12251366`); MDPI and Elsevier both
+refuse fetches. Verdicts: DMEM (item 23), Koponen and Horner are GRADED AGAINST A FIT
+TABLE; the Carbopol-PG shift factor compares a MEASURED solvent viscosity; the
+Carbopol-PG 8.9 Pa is CAPTION-ONLY (three-component `k1`, `eta_bg` unpublished) and was
+correctly never graded; the mAb calibration `η = a·e^(b·c)` is fitted in R with a CI band
+and **`a`, `b`, R² are printed nowhere**, so the 21.8 mg/mL doubling is unanchorable (prose
+points imply 0.03785 vs the back-solved 0.03131, 1.21×, on "~150" rounding — a note, not a
+grade); the 15 Carbopol ETD2020 records rest on the sibling `carbopol/fit_hb.py` range
+check ("τ_y max 41.1 at 0.5 wt%, k 3.4–15.9, n 0.40–0.53 — reproduced") and the paper has
+**no per-condition table**, only heatmaps A1/A2, so a range check is the ceiling; ISO 9626
+withdrawn; OpenFOAM anchors analytic. **One defect found outside the anchors**:
+`WORK_ORDERS_2026-09-26.md` N4.2 cites "the Funke 2016 glide bracket (doi:10.1002/jps.23945,
+1.3–1.5 N)" — the 1.3–1.5 N is the no-DOI trade article's glide (UNVERIFIED on the page),
+Funke publishes 3–9 N breakloose. **Before N4 runs, its owner must re-cite N4.2** (keep the
+number, fix the source, or re-register on Funke's breakloose which `results.json` also
+carries). Two one-sentence fixes ranked below it: the mAb page should say the authors'
+`b` is unpublished; the Carbopol records' `notes` should carry the range check and the
+sibling's "reproduced" should read "inside the published ranges". No number moved.
 
 
 ## What NOT to do
