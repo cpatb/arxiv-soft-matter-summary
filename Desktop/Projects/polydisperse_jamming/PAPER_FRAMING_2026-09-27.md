@@ -94,6 +94,14 @@ isolates channels by construction, which no experiment can. §5 corrects a readi
 
 ## 3. Paper C (conditional) — the onset stress of polydisperse suspensions
 
+**Update 2026-09-28 04:15 (`lfsig2` graded, referee pass 1 acted on).** The branch that happened: P1 = NEITHER on the
+registered paired error (R 0.955), INERT under fit-propagated error, the dry 0.768 excluded throughout; δ ×0.735; M1–M3 PASS.
+So the second branch below holds: the dry chain describes the plateau network, and the onset is set by a size-selected
+sub-network whose geometric factor is CV-neutral. Because large-first activation is Guy et al.'s, the letter's new content is
+(i) "polydispersity broadens activation, it does not move it" in a continuous PSD with an electrostatic threshold, and
+(ii) the size exponent, IF the binary arm (Am. 7) decides it. If B1 is not DERJAGUIN, (i) goes into Paper B §6 and there is
+no Paper C.
+
 Decided by `lfsig2` (graded by ~03:00). The dry-DEM σ\* geometry is refereed: the Love–Weber identity, configuration-model pairing
 and rattler law are standing; the closed chain to 2 % is PROVISIONAL (its mean-degree exponent 1.625 comes from two
 isotropic cells and is not universal: 1.45 at ratio ≤ 1.5, 2.4–2.9 at 4–5). But on its own it is a dry-packing result about a quantity defined by
