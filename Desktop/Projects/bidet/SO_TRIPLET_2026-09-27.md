@@ -100,6 +100,37 @@ a limit cycle, of amplitude ~0.5 % in `C_P`. By contrast the cold-started refine
    Amendment 5 continues the refine-1 case to find out. If it drifts, GRID_STUDY's
    iterative-convergence finding (§1 there) was itself incomplete.
 
+### 3b. 🔴 The legacy grids were not iteratively converged either (L1, L2)
+
+Registered in Amendment 5 before either ran: continue the legacy first-order grids that
+GRID_STUDY certified by `residualControl`, and read the gate quantities every 400 iterations.
+
+| case (GRID_STUDY status) | residual stop → last read | `C_P` | `n_t` | `tau_w`(15 mm) | state at the end |
+|---|---|---|---|---|---|
+| refine 1, `case_Re10000_H6` ("converged at 2261", the manuscript's grid) | 2261 → 4661 | 1.3518 → **1.3663** (+1.08 %) | 1.9023 → 1.9102 | 5.866 → **5.792** (−1.26 %) | **flat** from ~3600 |
+| refine 2, `r2_ext` ("converged at 5105") | 5105 → 7505 | 1.3928 → **1.4296** (+2.64 %) | 1.8922 → 1.9243 | 6.241 → **5.865** (−6.03 %) | **still moving** (~0.3 %/400 in `C_P`) |
+
+`convergence/L1_legacy_r1_trajectory.txt`, `L2_legacy_r2_trajectory.txt`.
+
+**This retracts GRID_STUDY §1's "the iterative-convergence finding stands, and it is the
+most solid thing here."** That finding moved the refine-2 grid from a capped state to a
+`residualControl` stop and called it converged; the residual stop is itself ~6 % short on
+`tau_w`(15 mm). Consequences, each now to be re-read:
+
+- **"`tau_w`(15 mm) is non-monotone in the grid"** (6.1374 / 6.2415 / 5.8658 on refine
+  4 / 2 / 1) rested on refine 2's 6.2415, which is already 5.865 and still falling;
+  converged refine 1 is 5.792. The non-monotonicity is not established.
+- **The `C_P` "divergence"** (1.3518 → 1.3928 → 1.5809, |R| = 4.59) now has refine 1 at
+  1.3663 (converged) and refine 2 at ≥ 1.4296 and rising; refine 4 (491k cells, certified
+  the same way) is unmeasured tonight. With the two coarser members moved, the ratio that
+  made it a divergence is no longer known.
+- **The manuscript's `C_P` = 1.3518 carries a +1.1 % iterative error**; the design `Q*`
+  moves with `C_P^-1.426`, i.e. about −1.5 %.
+
+The mechanism is the same as §3a: a normalised residual reaches 1e-5 while a slow mode in
+the wall-jet solution is still evolving. It shows up in `tau_w`(15 mm) and `C_P` (the
+wall-jet quantities) and hardly in peak `tau_w` (stagnation: 441.2 → 440.2).
+
 ## 4. Exploratory, post hoc: where refine 4 departs, and a model-form fact
 
 `convergence/explore_band_fo_ladder.txt`. **Not a registered gate; it re-reads the
