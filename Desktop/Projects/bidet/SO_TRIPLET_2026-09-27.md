@@ -89,6 +89,12 @@ continued (Amendment 5). The residuals sat below 1e-5 the whole time. Three cons
 2. **The drift is the size of the effects being measured.** The refine-1 SO/FO difference
    in `C_P` is 5.2 % and grid steps are 1–4 %; a 1.8 %-and-counting iterative drift is not
    small against either.
+**Continued to 7200 (`convergence/fo_r1p5_trajectory.txt`), it is not monotone:** `C_P`
+rises to 1.4267 at 4800 and then falls (1.4177 at 7200), `tau_w`(15 mm) bottoms at 5.652
+(3200) and climbs (5.759 at 7200), still ~0.1 %/400 at the end — a very slow mode, possibly
+a limit cycle, of amplitude ~0.5 % in `C_P`. By contrast the cold-started refine-1 FO case
+(L1) and SO refine 1.5 both go flat by ~3600 iterations. Not converged under C1.
+
 3. **The legacy grids were certified by the same residual criterion** (cold starts, which
    take longer to get there, so the error is likely smaller but is unmeasured). L1 in
    Amendment 5 continues the refine-1 case to find out. If it drifts, GRID_STUDY's
