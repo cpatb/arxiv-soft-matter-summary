@@ -259,3 +259,23 @@ beta 2.05 / 1.76 / 1.95 (not-yet-touching pairs, sigma <= 10) at CV 0.2 / 0.35 /
 rising grain-level m; and a PER-PAIR activation collapse (no neighbour multiplicity) cannot discriminate m = 1 from m = 2
 here -- rms 0.418 vs 0.404 pooled, a 3 % difference against the 15 % the registered S4 uses. The exponent question is
 therefore likely to end MIXED or NOT INFORMATIVE on this design; a wider size ratio (bidisperse 1:4) is what would separate it.
+
+## Amendment 7 (2026-09-28 ~00:30 CDT; registered before any of its cells exist) -- a binary arm that can decide the exponent
+
+The continuous-PSD exponent test (Am. 5/6) is likely to end MIXED because the pairs' reduced radii span too little (interim
+note). A BINARY suspension at size ratio 2 has three discrete pair types, R* = 0.5 (SS), 2/3 (SL), 1 (LL), and the two
+threshold laws predict activation stresses in the ratio sigma_half(SS)/sigma_half(LL) = **2** (Derjaguin: threshold ~ R*,
+load ~ sigma R*^2, the load exponent measured 1.8-2.1 in `out/forcesize_lfsig2.txt`) against **4** (size-independent
+critical load, Guy et al. 2020).
+- **Design.** Radii 1 and 2 (deterministic, 444 small + 56 large; small species 49.8 % of the solid volume), phi 0.55, mu 0.3,
+  N 500, stress ladder {1, 1.5, 2, 3, 4.5, 7, 10, 15, 100} sigma_0 (sigma_0 = F_R0/a_s^2, a_s = 1), strain 4, window [2, 4],
+  seeds 1-3 (positions only): 27 cells, run set `lfsig2bi` (`make_conf_bi.py`, `run_cell_bi.sh`, `launch_lfsig2bi.sh`),
+  launched when the main lfsig2 queue completes. phi 0.55 is a judgement (no measured phi_m for this binary; the readout
+  is a ratio between pair types inside one suspension, so it does not need a matched x).
+- **Readout and gate** exactly as coded in `lfdem/pairtype.py` at this commit: per pair type, the touching fraction of listed
+  pairs, normalised by its sigma-100 plateau; sigma_half by log-linear interpolation. **B1 (registered, 95 %):** ln ratio
+  SS/LL, INFORMATIVE iff se < (ln 4 - ln 2)/(2 x 4.303) = 0.0805; DERJAGUIN / CONSTANT-FORCE / BOTH / NEITHER as coded.
+  SL/LL (1.5 vs 2.25) printed as a consistency check.
+- **Why it matters.** Guy et al.'s mechanism (large pairs activate first) is prior art; its SIZE LAW is not tested for a
+  Derjaguin (electrostatic) repulsion, which is what the lab's silica has. A DERJAGUIN verdict halves the log-selectivity
+  relative to the constant-force picture and is the part of Paper C that would be new.
