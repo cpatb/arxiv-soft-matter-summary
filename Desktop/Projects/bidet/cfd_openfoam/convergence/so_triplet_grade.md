@@ -17,7 +17,27 @@
 
 ## C1 (Amendment 4): gate quantities against iteration, +2400 in steps of 400
 
-- **case_Re10000_H6_fo_r1p5** (7 writes, t = 400..2591): last-two max 1.191% (bar 0.1%), +1600->+2400 max 2.249% (bar 0.2%), Uz ratio 2.4e-11 -> NOT CONVERGED
+- **case_Re10000_H6** (7 writes, t = 2400..4661): last-two max 0.024% (bar 0.1%), +1600->+2400 max 0.056% (bar 0.2%), Uz ratio 2.8e-11 -> CONVERGED
+  | t | n_t | C_P | tau_at_15mm_Pa | tau_peak_Pa |
+  |---|---|---|---|---|
+  | 2400 | 1.9052 | 1.3564 | 5.8361 | 389.68 |
+  | 2800 | 1.9096 | 1.3643 | 5.7945 | 389.97 |
+  | 3200 | 1.9106 | 1.3665 | 5.787 | 390.09 |
+  | 3600 | 1.9105 | 1.3667 | 5.7885 | 390.13 |
+  | 4000 | 1.9104 | 1.3665 | 5.7903 | 390.14 |
+  | 4400 | 1.9103 | 1.3664 | 5.7914 | 390.15 |
+  | 4661 | 1.9102 | 1.3663 | 5.7917 | 390.15 |
+- **case_Re10000_H6_so_r1** (7 writes, t = 2000..4348): last-two max 0.015% (bar 0.1%), +1600->+2400 max 0.053% (bar 0.2%), Uz ratio 3.8e-11 -> CONVERGED
+  | t | n_t | C_P | tau_at_15mm_Pa | tau_peak_Pa |
+  |---|---|---|---|---|
+  | 2000 | 1.9258 | 1.4239 | 5.8219 | 475.7 |
+  | 2400 | 1.9292 | 1.4322 | 5.7919 | 475.88 |
+  | 2800 | 1.9292 | 1.4329 | 5.7941 | 475.95 |
+  | 3200 | 1.9287 | 1.4322 | 5.7994 | 475.96 |
+  | 3600 | 1.9285 | 1.4319 | 5.8017 | 475.96 |
+  | 4000 | 1.9285 | 1.4318 | 5.8023 | 475.96 |
+  | 4348 | 1.9284 | 1.4317 | 5.8025 | 475.96 |
+- **case_Re10000_H6_fo_r1p5** (19 writes, t = 400..7200): last-two max 0.117% (bar 0.1%), +1600->+2400 max 0.232% (bar 0.2%), Uz ratio 2.4e-11 -> NOT CONVERGED
   | t | n_t | C_P | tau_at_15mm_Pa | tau_peak_Pa |
   |---|---|---|---|---|
   | 400 | 1.9109 | 1.3808 | 5.848 | 394.8 |
@@ -27,7 +47,28 @@
   | 2000 | 1.9258 | 1.3944 | 5.6805 | 412.3 |
   | 2400 | 1.9291 | 1.4023 | 5.6634 | 415.92 |
   | 2591 | 1.9304 | 1.406 | 5.658 | 417.27 |
-- case_Re10000_H6_fo_r2p25: NOT GRADED (0 trajectory points)
+  | 2800 | 1.9317 | 1.4099 | 5.6541 | 418.35 |
+  | 3200 | 1.9334 | 1.4162 | 5.6518 | 419.87 |
+  | 3600 | 1.9343 | 1.4212 | 5.6554 | 420.85 |
+  | 4000 | 1.9344 | 1.4249 | 5.6634 | 421.33 |
+  | 4400 | 1.9339 | 1.4267 | 5.6745 | 421.59 |
+  | 4800 | 1.9327 | 1.4267 | 5.6887 | 421.76 |
+  | 5200 | 1.9311 | 1.4253 | 5.7057 | 421.85 |
+  | 5600 | 1.9295 | 1.4232 | 5.7226 | 421.9 |
+  | 6000 | 1.9282 | 1.4212 | 5.7365 | 421.91 |
+  | 6400 | 1.9273 | 1.4198 | 5.7461 | 421.91 |
+  | 6800 | 1.9267 | 1.4188 | 5.7527 | 421.93 |
+  | 7200 | 1.9261 | 1.4177 | 5.7594 | 421.97 |
+- **case_Re10000_H6_fo_r2p25** (7 writes, t = 1600..3690): last-two max 0.753% (bar 0.1%), +1600->+2400 max 1.296% (bar 0.2%), Uz ratio 1.6e-15 -> NOT CONVERGED
+  | t | n_t | C_P | tau_at_15mm_Pa | tau_peak_Pa |
+  |---|---|---|---|---|
+  | 1600 | 1.918 | 1.3994 | 5.8181 | 404.66 |
+  | 2000 | 1.9179 | 1.3924 | 5.8017 | 407.79 |
+  | 2400 | 1.9202 | 1.3914 | 5.7705 | 412.07 |
+  | 2800 | 1.9247 | 1.397 | 5.7242 | 415.55 |
+  | 3200 | 1.9286 | 1.403 | 5.686 | 417.84 |
+  | 3600 | 1.9314 | 1.4071 | 5.6607 | 420.43 |
+  | 3690 | 1.932 | 1.4079 | 5.6562 | 421.01 |
 - **case_Re10000_H6_so_r1p5** (7 writes, t = 3600..5792): last-two max 0.025% (bar 0.1%), +1600->+2400 max 0.139% (bar 0.2%), Uz ratio 3.6e-11 -> CONVERGED
   | t | n_t | C_P | tau_at_15mm_Pa | tau_peak_Pa |
   |---|---|---|---|---|
@@ -38,7 +79,7 @@
   | 5200 | 1.9377 | 1.4678 | 5.7987 | 485.93 |
   | 5600 | 1.9378 | 1.4682 | 5.7986 | 485.96 |
   | 5792 | 1.9377 | 1.4682 | 5.7994 | 485.96 |
-- **case_Re10000_H6_so_r2p25** (7 writes, t = 800..3165): last-two max 0.277% (bar 0.1%), +1600->+2400 max 0.430% (bar 0.2%), Uz ratio 3.0e-15 -> NOT CONVERGED
+- **case_Re10000_H6_so_r2p25** (19 writes, t = 800..7600): last-two max 0.047% (bar 0.1%), +1600->+2400 max 0.093% (bar 0.2%), Uz ratio 3.0e-15 -> CONVERGED
   | t | n_t | C_P | tau_at_15mm_Pa | tau_peak_Pa |
   |---|---|---|---|---|
   | 800 | 1.9376 | 1.474 | 5.8388 | 480.44 |
@@ -48,26 +89,47 @@
   | 2400 | 1.9428 | 1.4805 | 5.7787 | 484.2 |
   | 2800 | 1.9437 | 1.4823 | 5.7711 | 484.93 |
   | 3165 | 1.9442 | 1.4835 | 5.768 | 485.54 |
+  | 3200 | 1.9443 | 1.4836 | 5.7677 | 485.6 |
+  | 3600 | 1.9447 | 1.4846 | 5.7654 | 486.21 |
+  | 4000 | 1.945 | 1.4855 | 5.7641 | 486.75 |
+  | 4400 | 1.9453 | 1.4863 | 5.7629 | 487.24 |
+  | 4800 | 1.9455 | 1.487 | 5.7621 | 487.7 |
+  | 5200 | 1.9457 | 1.4878 | 5.7614 | 488.12 |
+  | 5600 | 1.9459 | 1.4886 | 5.7612 | 488.47 |
+  | 6000 | 1.9461 | 1.4893 | 5.7611 | 488.78 |
+  | 6400 | 1.9463 | 1.49 | 5.7613 | 489.04 |
+  | 6800 | 1.9464 | 1.4908 | 5.7616 | 489.27 |
+  | 7200 | 1.9466 | 1.4914 | 5.7621 | 489.46 |
+  | 7600 | 1.9467 | 1.4921 | 5.7627 | 489.62 |
 - case_Re10000_H6_so_r3p375: NOT GRADED (0 trajectory points)
 
 ## S6 (superseded by C1; reported only): +400 continuation of mapped-start cases
 
 - case_Re10000_H6_fo_r2p25: NOT GRADED (base or continuation missing/unhealthy)
-- case_Re10000_H6_so_r2p25: NOT GRADED (base or continuation missing/unhealthy)
+- case_Re10000_H6_so_r2p25: n_t 0.384%, C_P 1.076%, tau_at_15mm_Pa 0.998%, tau_peak_Pa 1.676% -> FAIL (bar 0.5%)
 - case_Re10000_H6_fo_r1p5: NOT GRADED (base or continuation missing/unhealthy)
 
 ## Triplets
 
-**so_r15: INCOMPLETE** -- missing/unhealthy ['case_Re10000_H6_so_r2p25'], C1 not converged ['case_Re10000_H6_so_r2p25']
+**so_r15** (case_Re10000_H6_so_r2p25, case_Re10000_H6_so_r1p5, case_Re10000_H6_so_r1), r21 = 1.5, r32 = 1.5
+
+| quantity | finest | middle | coarsest | R = eps21/eps32 | p | class |
+|---|---|---|---|---|---|---|
+| n_t | 1.9467 | 1.9377 | 1.9284 | +0.970 | 0.074 | monotone converging |
+| C_P | 1.4921 | 1.4682 | 1.4317 | +0.658 | 1.033 | monotone converging |
+| tau_at_15mm_Pa | 5.7627 | 5.7994 | 5.8025 | +11.811 | -- | DIVERGING |
+| tau_peak_Pa | 489.62 | 485.96 | 475.96 | +0.367 | 2.475 | monotone converging |
 
 **fo_r15: INCOMPLETE** -- missing/unhealthy ['case_Re10000_H6_fo_r2p25', 'case_Re10000_H6_fo_r1p5'], C1 not converged ['case_Re10000_H6_fo_r2p25', 'case_Re10000_H6_fo_r1p5']
 
-**so_r15_S7: INCOMPLETE** -- missing/unhealthy ['case_Re10000_H6_so_r3p375', 'case_Re10000_H6_so_r2p25'], C1 not converged ['case_Re10000_H6_so_r3p375', 'case_Re10000_H6_so_r2p25']
+**so_r15_S7: INCOMPLETE** -- missing/unhealthy ['case_Re10000_H6_so_r3p375'], C1 not converged ['case_Re10000_H6_so_r3p375']
 
 ## Gates
 
-- S1, S2: INCOMPLETE
+- **S1** SO C_P: R = +0.658, p = 1.033 -> PASS
+- **S2** SO n_t: R = +0.970 (monotone converging), p = 0.074 -> PASS
+- **S2** SO tau_at_15mm_Pa: R = +11.811 (DIVERGING), p = nan -> FAIL
 - S3: INCOMPLETE
 - S7: INCOMPLETE
 - **S4** FO refine 1.5 health: H1 PASS (worst non-Uz 9.86e-06); original residualControl NOT met
-- **S5** |dC_P|/C_P at refine 1, SO vs FO = 5.18% -> PASS (bar 1%)
+- **S5** |dC_P|/C_P at refine 1, SO vs FO = 4.79% -> PASS (bar 1%)
