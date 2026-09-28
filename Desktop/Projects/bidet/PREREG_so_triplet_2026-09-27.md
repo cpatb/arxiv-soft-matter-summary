@@ -179,6 +179,15 @@ continuation value.** FO refine 1 uses L1 (already C1-flat by ~3600). SO refine 
 the same continuation (**L1'**, `so_trajectory2.sh 1 case_Re10000_H6_so_r1`). S5 is
 re-evaluated on the two converged refine-1 values and printed beside the registered one.
 
+## L4 registered (05:15 28 Sep, before it runs)
+
+The VM freed at 05:12. **L4:** continue the legacy refine-4 FO case (`case_Re10000_H6_r4`,
+491k cells, met `residualControl` at 11552; the member the `C_P` "divergence" rests on) for
+as many iterations as fit before ~06:40, on 6 ranks, reading the gate quantities every 400.
+Reported as a trajectory; C1 applied; if it has not flattened, its drift rate is reported and
+the `fine_conv` re-grade remains INCOMPLETE. Also: the SO and FO refine-2.25 continuations are
+stopped with `writeNow` (progress preserved) and restarted on 6 ranks each.
+
 ## What will NOT be done
 
 No bar is loosened after data. p outside [0.5, 2.5] is reported, not re-banded. If the
