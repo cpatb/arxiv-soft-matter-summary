@@ -35,7 +35,9 @@ MAPPED = ("case_Re10000_H6_fo_r2p25", "case_Re10000_H6_so_r2p25", "case_Re10000_
 # Amendment 3: S7 family. Amendment 4: rule C1 for every refine > 1 case.
 FAMILIES["so_r15_S7"] = [("case_Re10000_H6_so_r3p375", 3.375), ("case_Re10000_H6_so_r2p25", 2.25),
                          ("case_Re10000_H6_so_r1p5", 1.5)]
-TRAJ = ("case_Re10000_H6_fo_r1p5", "case_Re10000_H6_fo_r2p25", "case_Re10000_H6_so_r1p5",
+# Amendment 6: refine-1 members are graded at their C1-converged continuation too
+TRAJ = ("case_Re10000_H6", "case_Re10000_H6_so_r1",
+        "case_Re10000_H6_fo_r1p5", "case_Re10000_H6_fo_r2p25", "case_Re10000_H6_so_r1p5",
         "case_Re10000_H6_so_r2p25", "case_Re10000_H6_so_r3p375")
 C1_LAST = 0.001   # last two writes
 C1_WIN = 0.002    # +1600 vs +2400
