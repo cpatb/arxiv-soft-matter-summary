@@ -25,7 +25,9 @@ for reading TRIOS exports.
 
 Version 0.1.0. Units N1 to N7 of the spec are done, plus G4, G5, G10, G11 and
 G12. **Thirteen gates: eight pass, five fail, and the five failures are the
-result rather than a blocker.**
+result rather than a blocker.** (One of the five, G4c, was RETIRED on 2026-09-26
+by founder decision D5 with its failing number kept on record — see "Gate G4, as
+run" below. `gate_g4.py` now exits 0 on G4a and G4b and reports G4c without gating it.)
 
 **What running them established, in three paragraphs.** Wyart-Cates has two
 halves and they do not fare the same.
@@ -71,7 +73,7 @@ scripts/gate_n4.py              N4 / G3 gate: the 2023 corn-starch series. FAILS
 scripts/gate_n5.py              N5 / G6 gate: does sharing rescue it? FAILS
 scripts/gate_n6.py              N6 / G7 gate: Richards et al.'s corn starch. FAILS harder
 scripts/gate_n7.py              N7 / G9 gate: were the error bars wrong? PASSES, and they were not
-scripts/gate_g4.py              G4 gate: Guy et al.'s PMMA. G4a and G4b pass, G4c FAILS
+scripts/gate_g4.py              G4 gate: Guy et al.'s PMMA. G4a and G4b pass; G4c FAILED 1 of 6 and is RETIRED (2026-09-26, reported not gated)
 scripts/gate_g5.py              G5 gate: refusal on data that cannot answer
 scripts/gate_g10.py             G10 gate: sigma* against a measured contact fraction. PASSES
 scripts/make_fig_phim_drift.py  the headline figure
@@ -91,7 +93,7 @@ python scripts/gate_n4.py          # 1  <- the result, not a regression
 python scripts/gate_n5.py          # 1  <- the result, not a regression
 python scripts/gate_n6.py          # 1  <- the result, not a regression
 python scripts/gate_n7.py          # 0  (~3 min; 100 profiles and 100 bootstraps)
-python scripts/gate_g4.py          # 1  <- G4a and G4b pass, G4c is the result
+python scripts/gate_g4.py          # 0  <- G4a and G4b pass; G4c (1 of 6) is printed, RETIRED 2026-09-26
 python scripts/gate_g5.py          # 0
 python scripts/gate_g10.py         # 0
 ```
@@ -694,6 +696,15 @@ non-swelling, density matched, two sizes 9.3x apart, and the paper's own
 | G4a | refit their deposited `eta_2(phi)` branch, recover `phi_m` within 0.02 | **PASS, +0.0003** |
 | G4b | Wyart-Cates on the d = 3770 nm flow curves, weighted-mean `phi_m` within 0.02 | **PASS, -0.0151** |
 | G4c | >= 4 of the admitted curves within 2 sigma of that mean | **FAIL, 1 of 6** |
+
+**G4c RETIRED 2026-09-26** (founder decision D5, `biofluids_venture/09_INSILICO_PLAN_2026-09-26.md`),
+its 1 of 6 kept verbatim above and still printed by the script. Reason: the rule it
+encodes — cross-curve consistency of `phi_m` — is not satisfiable in any material,
+because a single flow curve determines only `phi/phi_J` (N4, N6, this gate, and the
+exact gauge covariance in `(phi, phi_m, phi_0)`). It was added on top of the spec's
+pre-registered G4a/G4b ahead of its run (`PLAN_2026-08-29.md`) and tested the
+degeneracy rather than the fitter, which G4a shows is exact. The bar was not loosened;
+the gate was withdrawn with its failing number on record. `gate_g4.py` now exits 0.
 
 G4a is exact. Refitting `eta_r = A(1 - phi/phi_c)^-n` to their six deposited
 rows returns `phi_c = 0.5583 +/- 0.0054` and `n = 2.176 +/- 0.245` against their

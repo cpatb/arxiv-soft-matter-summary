@@ -9,8 +9,8 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 573 passed, 11 deselected, 1 xfailed
-git -C C:\Users\compl log --oneline -3  # top should be the item-27 commit or later
+python -m pytest -q -m "not slow"      # must print: 575 passed, 11 deselected, 1 xfailed (2026-09-28, 308 s)
+git -C C:\Users\compl log --oneline -3  # top should be the item-29 commit ("G4c retired") or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
 with `git add Desktop/Projects/biorheo && git -c core.safecrlf=false commit -m "..."`;
@@ -1493,6 +1493,65 @@ syringe lot.
 FLUID-INDEPENDENT. That assumption is what makes the ordering claims survive. If plunger
 friction depends on the fluid through the lubricant film, even the ordering is exposed and
 nothing here can tell.
+
+### 29–40. OPEN 2026-09-26: the in-silico work-order sheet — take them in wave order
+
+Founder decision 2026-09-26: **no bench, in silico only** (`../biofluids_venture/09_INSILICO_PLAN_2026-09-26.md`).
+Briefs, gates and `owns` sets are in **`WORK_ORDERS_2026-09-26.md`**; the still-open 09-08
+packages B1–B6 are folded in there. Take ONE per session, in this order, and mark it here
+DONE/FAILED/CLOSED with the numbers exactly as items 1–28 are:
+
+| item | package | one line | status |
+|---|---|---|---|
+| 29 | D1 | retire dst_fit gate G4c with the reason (founder D5 taken); update `test_gate_0_1_dstfit_unchanged.py` expectation | **DONE 2026-09-28** — see below |
+| 30 | B3 | audit every external anchor against its source's FIT TABLE (read-only) | OPEN |
+| 31 | N1 | `biorheo` CLI (`fit` / `report` / `screen` / `export`), wheel, CI; byte-identical page from a client-shaped CSV | OPEN |
+| 32 | J1 | freeze φ_J = Z/(Z+2√3 w) as `polydisperse_jamming/phij_model.py` with a trained-domain guard; held-out seeds chosen before fitting | OPEN |
+| 33 | B5 | referee items 24, 25, 26 (read-only) | OPEN |
+| 34 | B1 | per-cohort friction-repeatability budget `s*` on the deliverable page | OPEN |
+| 35 | B4 | omitted terms sized for the mAb cohort; reconcile the 3× Hagenbach vs end-correction disagreement | OPEN |
+| 36 | N2 | L5 credibility manifest (V&V 40) as code; wrap mAb study and the bidet grid study; every factor defaults MISSING | OPEN |
+| 37 | B2 | one licensable protein FLOW CURVE (or the figshare mucus deposit) as records — exclusive on `RECORD_IDS` | OPEN |
+| 38 | N4 | device terms as explicit inputs with sensitivities; Arrhenius input for the shift; existing pages byte-identical at zero | OPEN (after 34, 35) |
+| 39 | N3 | Fluent + COMSOL exporters with parse-back round trips and the regularisation-error curve | OPEN |
+| 40 | J2 | `biorheo.apps.jamming` formulation-risk page (after 31, 32) | OPEN |
+| 41 | L2 | capillary-rheometer analysis pipeline (Rabinowitsch, Bagley, Mooney with refusal, uncertainty budget) on the Koponen control | OPEN |
+| 42 | L1 | high-shear rig BOM from vendor list prices (research only) | OPEN |
+| then | B6, N5 (repeated), D2, J3 | see the sheet's wave 4 | OPEN |
+
+Rules that hold for all of them are in the sheet's header and in "Rules that are specific to
+this repo" above. Nothing on this list asks for a measurement; anything that would need one
+is an input with a sensitivity, never a default.
+
+#### 29 (D1). DONE 2026-09-28: G4c retired, its number kept, exit code pinned
+
+`dst_fit/scripts/gate_g4.py` was run BEFORE the edit (rc=1, 6 s, last lines
+`G4a PASS   G4b PASS   G4c FAIL` / `G4c: 1 of 6 within 2 sigma, needed 4`) and AFTER
+(rc=0, `G4a PASS   G4b PASS   G4c RETIRED (would have read FAIL)`, with
+`bar was 4 of 6; reads 1 of 6 within 2 sigma`). G4a (+0.0003) and G4b (-0.0151) are
+unchanged. The check is still computed and printed; only the exit code no longer depends
+on it. The bar constants (`G4_MIN_CONSISTENT = 4`, `G4_N_SIGMA = 2.0`, `G4_TOLERANCE =
+0.02`) are untouched and a static test asserts they stay so. Reason, recorded in the
+script docstring, `dst_fit/README.md` "Gate G4, as run" and `dst_fit/NEXT.md`: the rule
+G4c encodes (cross-curve consistency of `phi_m`) is not satisfiable in any material,
+because a flow curve determines only `phi/phi_J` (N4, N6, G4, exact gauge covariance);
+it was added on top of the pre-registered G4a/G4b ahead of its run and tested the
+degeneracy rather than the fitter. Founder decision D5, 2026-09-26.
+
+`tests/test_gate_0_1_dstfit_unchanged.py` gained two fast tests: a static one (the
+RETIRED marker is in the source AND the three bar constants are verbatim) and a dynamic
+one (runs the gate, ~6 s: rc 0, the retained "1 of 6 ... would have been FAIL" line
+present, "GATE G4 FAIL" absent). Both halves are needed: a later edit that made G4c pass
+by touching the data or the bar would fail the second; one that dropped the number would
+fail it too. The `README.md` "Status" sentence "eight pass, five fail" and the table
+row "FAIL, 1 of 6" are kept verbatim with a RETIRED note beside them.
+
+Not done: `dst_fit/NEXT.md` line 23 (the verify block's `# 1  <- ... G4c fails`
+comment) still reads the OLD exit code — the edit was refused by the session's
+permission classifier, not by any rule; the new "What is new" section in the same file
+states the new exit code. One-line fix for the next session. No reviewer was run: no
+physics or numerics changed, and the diff is a gate's exit-code policy plus prose.
+
 
 ## What NOT to do
 

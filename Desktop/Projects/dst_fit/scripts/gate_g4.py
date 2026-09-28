@@ -32,8 +32,20 @@ Pass conditions, fixed before the data was fit:
        same numbers, so a failure here is a failure of dst-fit, not of the data.
   G4b  Wyart-Cates fits to the d = 3770 nm flow curves give an inverse-variance
        weighted-mean phi_m within 0.02 of 0.558.
-  G4c  at least 4 of the admitted curves lie within 2 sigma of that weighted
-       mean. G3's rule verbatim, via the same function N4 and N6 call.
+  G4c  RETIRED 2026-09-26 (founder decision D5, `biofluids_venture/09_INSILICO_PLAN_2026-09-26.md`),
+       and it FAILED, 1 of 6, before being retired. It asked that at least 4 of
+       the admitted curves lie within 2 sigma of the G4b weighted mean -- G3's
+       rule verbatim, via the same function N4 and N6 call. It was added ahead of
+       its run, on top of the spec's pre-registered G4a/G4b (`PLAN_2026-08-29.md`),
+       and the package's own result is that the rule it encodes is not satisfiable
+       in ANY material: phi and phi_m enter Wyart-Cates only through phi/phi_J, so
+       a single flow curve pins the ratio and not phi_m (N4, N6, G4, and the exact
+       gauge covariance in (phi, phi_m, phi_0)). A gate that demands cross-curve
+       consistency of a quantity a flow curve cannot determine tests the
+       degeneracy, not the fitter, and G4a already shows the fitter is exact. The
+       check is still computed and printed below, so the 1 of 6 stays on the
+       record; it no longer sets the exit code. The bar (4 of n within 2 sigma)
+       was not loosened -- the gate was withdrawn with its failing number kept.
 
   Admission, fixed with the rest and applied in code rather than by eye: a curve
   enters G4b and G4c only if its measured stresses bracket the frictional
@@ -47,7 +59,7 @@ Pass conditions, fixed before the data was fit:
   curves fails the gate rather than lowering the bar.
 
 Run:  python scripts/gate_g4.py
-Exit code is 0 only if all three pass.
+Exit code is 0 only if G4a and G4b pass (G4c is retired and reported, not gated).
 """
 
 from __future__ import annotations
@@ -87,9 +99,14 @@ FIG1B = FIG1 / "Fig 1b" / "Fig1b.xlsx"
 FIG1C = FIG1 / "Fig 1c" / "Fig1c.xlsx"
 
 G4_TOLERANCE = 0.02
-G4_MIN_CONSISTENT = 4
+G4_MIN_CONSISTENT = 4  # G4c's bar, kept verbatim; G4c is RETIRED (see docstring)
 G4_N_SIGMA = 2.0
 MIN_BRANCH_POINTS = 4
+G4C_RETIRED_REASON = (
+    "G4c RETIRED 2026-09-26 (founder decision D5): cross-curve consistency of phi_m "
+    "is not satisfiable in any material because a single flow curve determines only "
+    "phi/phi_J (N4, N6, G4; exact gauge covariance). Reported, not gated."
+)
 
 # Particle diameters, nm. Used only for the sigma* ~ d^-2 observation.
 D_FIG1A, D_FIG1B = 404.0, 3770.0
@@ -221,14 +238,15 @@ def main() -> int:
 
     admitted = [r for r in rows_b if r["fit"] is not None and r["admitted"]]
     rejected = [r for r in rows_b if r["fit"] is not None and not r["admitted"]]
+    g4c_would_pass = None  # set only if the retired G4c check could be computed
     print(f"\n  admitted {len(admitted)} of {len(rows_b)}; "
           f"{len(rejected)} rejected for not bracketing the transition"
           + (": " + ", ".join(r["sweep"].sheet for r in rejected) if rejected else ""))
 
     if len(admitted) < G4_MIN_CONSISTENT:
-        print(f"\nG4b/G4c FAIL: only {len(admitted)} curves admitted, "
+        print(f"\nG4b FAIL: only {len(admitted)} curves admitted, "
               f"need {G4_MIN_CONSISTENT}")
-        failures.append(f"G4b/G4c: only {len(admitted)} admitted curves")
+        failures.append(f"G4b: only {len(admitted)} admitted curves")
     else:
         i = model.param_names.index("phi_m")
         vals = np.array([r["fit"].params[i] for r in admitted])
@@ -242,13 +260,13 @@ def main() -> int:
         if abs(d_b) > G4_TOLERANCE:
             failures.append(f"G4b: weighted-mean phi_m off the published value by {d_b:+.4f}")
 
-        print("\nG4c: phi_m " + check.report([r["sweep"].sheet for r in admitted]))
-        print(f"    need {G4_MIN_CONSISTENT} of {check.n_total}")
-        if not check.passes(G4_MIN_CONSISTENT):
-            failures.append(
-                f"G4c: {check.n_consistent} of {check.n_total} within "
-                f"{G4_N_SIGMA:.0f} sigma, needed {G4_MIN_CONSISTENT}"
-            )
+        print("\nG4c (RETIRED, reported not gated): phi_m "
+              + check.report([r["sweep"].sheet for r in admitted]))
+        print(f"    bar was {G4_MIN_CONSISTENT} of {check.n_total}; reads "
+              f"{check.n_consistent} of {check.n_total} within {G4_N_SIGMA:.0f} sigma, "
+              f"which would have been {'PASS' if check.passes(G4_MIN_CONSISTENT) else 'FAIL'}")
+        print(f"    {G4C_RETIRED_REASON}")
+        g4c_would_pass = check.passes(G4_MIN_CONSISTENT)
 
         # sensitivity to the one constant that was chosen rather than published
         print("\n    sensitivity of the weighted-mean phi_m to phi_0:")
@@ -372,18 +390,22 @@ def main() -> int:
     print("    can pre-register a steadiness criterion rather than inherit this one.")
 
     print()
-    verdicts = {"G4a": True, "G4b": True, "G4c": True}
+    verdicts = {"G4a": True, "G4b": True}
     for f in failures:
         verdicts[f.split(":")[0].split("/")[0]] = False
+    g4c_line = (
+        f"G4c RETIRED (would have read {'PASS' if g4c_would_pass else 'FAIL'})"
+        if g4c_would_pass is not None else "G4c RETIRED (not computed)"
+    )
     print("  " + "   ".join(
         f"{k} {'PASS' if v else 'FAIL'}" for k, v in sorted(verdicts.items())
-    ))
+    ) + "   " + g4c_line)
     if failures:
         print(f"GATE G4 FAIL ({len(failures)} problem(s)):")
         for f in failures:
             print("  " + f)
         return 1
-    print("GATE G4 PASS (G4a, G4b, G4c)")
+    print("GATE G4 PASS (G4a, G4b; G4c retired 2026-09-26, its number kept above)")
     return 0
 
 

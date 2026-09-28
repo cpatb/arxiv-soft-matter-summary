@@ -36,6 +36,17 @@ audit. `DATA_INVENTORY.md` says where to get them.
 
 ## What is new since yesterday
 
+### 2026-09-26/28: G4c retired (founder decision D5), number kept
+
+`PLAN_2026-08-29.md` asked whether G4c stands. Decided 2026-09-26
+(`biofluids_venture/09_INSILICO_PLAN_2026-09-26.md`, D5): retire it with the reason.
+`scripts/gate_g4.py` now exits 0 on G4a + G4b, still computes and prints G4c
+(1 of 6 within 2 sigma, bar 4 of 6) and labels it RETIRED. Reason recorded in the
+script's docstring and in `README.md` "Gate G4, as run": cross-curve consistency of
+`phi_m` is not satisfiable in any material because a flow curve determines only
+`phi/phi_J`. `biorheo/tests/test_gate_0_1_dstfit_unchanged.py` pins the new exit
+code and the retained 1 of 6. Done 2026-09-28 (biorheo item 29 / D1).
+
 ### G11: the strain clock, the one constant a flow curve cannot contain
 
 Full write-up in **`STRAIN_CLOCK_2026-08-28.md`**. In one paragraph: at steady
