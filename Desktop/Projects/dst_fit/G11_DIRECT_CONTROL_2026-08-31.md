@@ -80,7 +80,7 @@ strain unit, where the inversion is outside its own domain.
    evaluated contact fraction on a simulated record of the same protocol reads 41 %
    shorter."
 2. **The ordering survives; the margin does not.** G11's headline is that every one of 21
-   estimates exceeds the `gamma_0 = 0.2` the Basilisk solver borrows, by 2.7× to 8.2×.
+   estimates exceeds the `gamma_0 = 0.2` the Basilisk solver runs (attribution corrected 2026-09-27: Richards et al. 2019 used gamma_0 = O(0.1); 0.197 is Han et al. 2018's start-up scale; see PRIOR_ART_STRAIN_CLOCK_2026-09-27.md), by 2.7× to 8.2×.
    Carrying a 41 % downward systematic takes the bottom of that from 2.7× to **1.6×**.
    Still above one, so the ordering claim stands and the solver's 0.2 is still low — but
    the comfortable end of the margin is gone, and 1.6× is close enough that it should be

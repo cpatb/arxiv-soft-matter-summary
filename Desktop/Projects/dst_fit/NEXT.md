@@ -52,7 +52,7 @@ the same Wyart-Cates fit G10 validated gives `gamma_0`.
   It depends only on `n`, and by 1.8% over `n` = 1.8 to 2.5.
 - **The answer.** `gamma_0` = 0.54 to 1.59 on the 2 um silica and 0.71 to 1.64 on
   the 1.4 um PMMA, bracketed over three estimators. **Every one of 21 estimates
-  exceeds the 0.2 the Basilisk solver borrows from Richards' corn starch**, by
+  exceeds the 0.2 the Basilisk solver runs** (attribution corrected 2026-09-27: Richards et al. 2019 used gamma_0 = O(0.1); 0.197 is Han et al. 2018's start-up scale; see PRIOR_ART_STRAIN_CLOCK_2026-09-27.md), by
   2.7x to 8.2x. Quote the ordering, not a value.
 - **Wyart-Cates cannot reach the reversal dip.** The post-reversal minimum sits at
   0.56 to 0.74 of the model's own frictionless floor on every record, and Lin's

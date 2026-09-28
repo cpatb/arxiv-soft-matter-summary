@@ -15,7 +15,8 @@ validated turns them into ``gamma_0``.
 Why this is worth a gate rather than a script
 ---------------------------------------------
 The Basilisk drop-impact solver runs exactly this law, with ``gamma_0 ~ 0.2``
-borrowed from Richards' corn starch and ``t_r = 0.24 +/- 0.05 s`` bracketed from
+(close to Han et al. 2018's 0.197 start-up scale; Richards et al. 2019 used
+O(0.1) -- the earlier 'Richards' corn starch' attribution was wrong) and ``t_r = 0.24 +/- 0.05 s`` bracketed from
 flow-cessation studies on other systems. Its own status card calls both
 placeholders that "cannot be pinned without step-down rheometry", and its L9 row
 shows the observable is not flat in ``gamma_0``: peak ``jam_frac`` runs
@@ -168,8 +169,9 @@ N_TOL = 0.05
 TRUNCATION_TOL = 1.5  # G11d, factor
 TRUNCATE_AT = 3.0  # G11d, strain
 
-# What the Basilisk drop-impact solver currently runs, borrowed from Richards'
-# corn starch (and Han et al.'s 0.197 on a third system). The point of comparison:
+# What the Basilisk drop-impact solver currently runs. NOT Richards' value: Richards
+# et al. 2019 used gamma_0 = O(0.1); 0.2 matches Han et al. 2018's 0.197, a START-UP
+# scale in a different functional form (corrected 2026-09-27, PRIOR_ART_STRAIN_CLOCK). The point of comparison:
 # this gate exists to replace it with a number measured on the solver's own material.
 SOLVER_GAMMA_0 = 0.2
 
@@ -527,8 +529,9 @@ def main() -> int:
         print("\n  the number the solver needs, bracketed over every estimator above:")
         print(f"        gamma_0 = {min(allvals):.2f} to {max(allvals):.2f} strain units, "
               f"from {len(allvals)} estimates")
-        print(f"        the solver runs gamma_0 = {SOLVER_GAMMA_0}, borrowed from "
-              f"Richards' corn starch. Every estimate here is larger, by "
+        print(f"        the solver runs gamma_0 = {SOLVER_GAMMA_0}, taken from the "
+              f"corn-starch literature (Han et al. 2018's 0.197 start-up scale; Richards et al. "
+              f"2019 used O(0.1)). Every estimate here is larger, by "
               f"{min(allvals) / SOLVER_GAMMA_0:.1f}x to {max(allvals) / SOLVER_GAMMA_0:.1f}x.")
 
         # ---------------- observations ----------------

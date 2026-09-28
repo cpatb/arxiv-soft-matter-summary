@@ -274,7 +274,7 @@ materials' brackets overlap over 0.71 to 1.59. The claim to carry across is the
 ordering, not a single value: the strain clock on these suspensions is of order
 one strain unit, not two tenths.
 
-The solver's `gamma_0 = 0.2` is borrowed from Richards' corn starch, and the sim
+The solver's `gamma_0 = 0.2` ~~is borrowed from Richards' corn starch~~ (attribution corrected 2026-09-27: Richards et al. 2019 used gamma_0 = O(0.1); 0.197 is Han et al. 2018's start-up scale; see PRIOR_ART_STRAIN_CLOCK_2026-09-27.md), and the sim
 card's L9 row shows peak `jam_frac` = 0.912 / 0.997 / 0.671 at `gamma_0` =
 0.05 / 0.2 / 0.8. A measured value near 1 sits **off the end of that sweep**, so
 the sweep should be extended before anything is concluded from it. Corn starch
