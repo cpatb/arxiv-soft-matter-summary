@@ -1,0 +1,68 @@
+grade_lfsig2 -- PREREG_LFSIG2_2026-09-27.md   [registered campaign]
+cells with data: 0 of 81 registered
+  label              CVreal    a32 rc strain n_win           eta (se)          Zc (se)  fcont    ovlp ok
+healthy (registered rule: rc 0/124, strain >= 3.95, overlap < 0.05): 0; excluded: none
+
+==== per-arm readouts (R1 WC form sigma*, delta; R2 sigma_half; R3 sigma at Z_c = 1; R4 contact share at sigma_half; R5 eta(100)/eta(1)) ====
+    CV seed  sigma*   (se)  delta   (se)  resid R1ok mono  s_half    s_Z1 fc_half  thick  f(sigma) at the ladder
+  0.20    1  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+  0.20    2  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+  0.20    3  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+  0.35    1  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+  0.35    2  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+  0.35    3  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+  0.50    1  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+  0.50    2  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+  0.50    3  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+
+==== paired per-seed contrasts, ln(readout(CV_b)/readout(CV_a)); mean, sd, se = sd/sqrt(n), t (df n-1) ====
+  0.20->0.50 R1 sigma*_WC          : no complete pair
+  0.20->0.50 R1 delta_WC           : no complete pair
+  0.20->0.50 R2 sigma_half         : no complete pair
+  0.20->0.50 R3 sigma_Z1           : no complete pair
+  0.20->0.50 R4 fcont(sigma_half)  : no complete pair
+  0.20->0.50 R5 thickening         : no complete pair
+  0.20->0.35 R1 sigma*_WC          : no complete pair
+  0.20->0.35 R1 delta_WC           : no complete pair
+  0.20->0.35 R2 sigma_half         : no complete pair
+  0.20->0.35 R3 sigma_Z1           : no complete pair
+  0.20->0.35 R4 fcont(sigma_half)  : no complete pair
+  0.20->0.35 R5 thickening         : no complete pair
+  0.35->0.50 R1 sigma*_WC          : no complete pair
+  0.35->0.50 R1 delta_WC           : no complete pair
+  0.35->0.50 R2 sigma_half         : no complete pair
+  0.35->0.50 R3 sigma_Z1           : no complete pair
+  0.35->0.50 R4 fcont(sigma_half)  : no complete pair
+  0.35->0.50 R5 thickening         : no complete pair
+
+==== P1: R = sigma*_WC(0.5)/sigma*_WC(0.2); H_geo 0.768, H_inert 1.000 ====
+  P1: NOT GRADED (0/3 seed pairs complete)
+
+==== P2: delta_WC falls with CV (3/3 seeds paired, mean - 2 se < 0); dry-DEM reference 0.869 ====
+  P2: NOT GRADED (0/3)
+
+==== P3: contact share at sigma_half rises with CV, 0.2 -> 0.5, 3/3 seeds paired ====
+  P3: NOT GRADED (0/3)
+
+==== P4 wiring: seed-1 cells vs lfsig (bit-identity of every data row with strain <= 4) ====
+  c20_x90_s1: NOT GRADED (new cell missing, old file present)
+  c20_x90_s3: NOT GRADED (new cell missing, old file present)
+  c20_x90_s10: NOT GRADED (new cell missing, old file present)
+  c20_x90_s30: NOT GRADED (new cell missing, old file present)
+  c20_x90_s100: NOT GRADED (new cell missing, old file present)
+  c50_x90_s1: NOT GRADED (new cell missing, old file present)
+  c50_x90_s3: NOT GRADED (new cell missing, old file present)
+  c50_x90_s10: NOT GRADED (new cell missing, old file present)
+  c50_x90_s30: NOT GRADED (new cell missing, old file present)
+  c50_x90_s100: NOT GRADED (new cell missing, old file present)
+  P4 verdict: INCOMPLETE (0/10 identical, 0 differ) -- any DIFFER line above is a wiring fault
+
+==== P5 (descriptive): sigma*_WC(0.35) between the 0.2 and 0.5 values, >= 2/3 seeds ====
+  P5: NOT GRADED (0/0 seeds between)
+
+==== P6 (for the record): the lfsig post-hoc readouts on 3-seed data ====
+  R2 self-normalised sigma_half: no pair
+  R3 absolute Z_c = 1: no pair
+
+==== Amendment 2: x-matched CV 0.5 arm (phi 0.55643, five rungs) ====
+  no x-arm cells yet

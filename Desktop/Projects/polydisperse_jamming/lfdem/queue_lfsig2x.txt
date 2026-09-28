@@ -1,0 +1,15 @@
+bash ~/lfdem/run_cell2x.sh c50x_x85_s4.5_r1 0.5 0.55643 4.5 0.3 1 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s4.5_r1.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s7_r1 0.5 0.55643 7 0.3 1 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s7_r1.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s3_r1 0.5 0.55643 3 0.3 1 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s3_r1.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s10_r1 0.5 0.55643 10 0.3 1 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s10_r1.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s100_r1 0.5 0.55643 100 0.3 1 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s100_r1.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s4.5_r2 0.5 0.55643 4.5 0.3 2 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s4.5_r2.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s7_r2 0.5 0.55643 7 0.3 2 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s7_r2.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s3_r2 0.5 0.55643 3 0.3 2 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s3_r2.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s10_r2 0.5 0.55643 10 0.3 2 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s10_r2.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s100_r2 0.5 0.55643 100 0.3 2 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s100_r2.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s4.5_r3 0.5 0.55643 4.5 0.3 3 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s4.5_r3.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s7_r3 0.5 0.55643 7 0.3 3 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s7_r3.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s3_r3 0.5 0.55643 3 0.3 3 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s3_r3.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s10_r3 0.5 0.55643 10 0.3 3 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s10_r3.out 2>&1
+bash ~/lfdem/run_cell2x.sh c50x_x85_s100_r3 0.5 0.55643 100 0.3 3 4 > ~/lfdem/runs/lfsig2x_c50x_x85_s100_r3.out 2>&1

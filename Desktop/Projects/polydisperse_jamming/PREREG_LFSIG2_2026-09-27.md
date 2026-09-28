@@ -118,3 +118,43 @@ Derjaguin form) the stress unit is sigma_0 = F_R0/a and the fixed-Sauter reading
 FIRST power. The sampled, truncated configurations give a32 = 1.0589 / 1.4681 (factor 1.386), where
 `predict_cvmap.txt` used the analytic untruncated (1+CV^2)^2 for CV 0.5 vs 0 (1.558) -- a provenance difference to
 carry into the RESULT, not a grade. Printed only; no verdict depends on it.
+
+## Amendment 1 (2026-09-27 ~21:35 CDT; the queue is running, no lfsig2 cell has finished, none has been read) -- a MECHANISM prediction from the `lfsig` dumps
+
+`lfdem/mech_lfsig.py` on the eleven `lfsig` seed-1 x_m 0.90 cells with interaction dumps (`out/mech_lfsig.txt`) gives,
+for CV 0.5 / CV 0.2 at matched sigma: the chain's geometric factor G = (N_c/V)<a_i a_j>_c is **1.13 at sigma_0 3,
+0.84 at 10, 0.77 at 30, 0.85 at 100**, with <a_i a_j>_c 1.74x at sigma_0 3 falling to 1.50x at the plateau. So the dry
+chain's ~0.77 is reproduced on the FULLY ACTIVATED network (sigma >= 10) and not at the onset, where the polydisperse
+pack's first-activating contacts are large-large pairs. In a lubricated suspension the contact network is BUILT by the
+stress (N_c/V rises with sigma from 0), where the dry chain evaluates its factor on a network that exists at every stress.
+
+Registered for the lfsig2 dumps (3 seeds, 9 rungs; graded in `mech_lfsig.py lfsig2`, descriptive, not a P-gate):
+- **M1 (size-selective activation).** <a_i a_j>_c(sigma)/<a_i a_j>_c(100) at sigma_0 3 exceeds 1 on 3/3 seeds at CV 0.5,
+  and the excess at CV 0.5 is larger than at CV 0.2 on 3/3 seeds.
+- **M2 (the chain's factor is a function of sigma, not of the pack).** The CV 0.5/0.2 ratio of G is > 1.0 at sigma_0 3 and
+  < 0.90 at sigma_0 >= 10, on 3/3 seeds each.
+- **M3 (what the chain would have needed).** At each arm's own sigma_half (R2), G(0.5)/G(0.2) is within +-0.15 of 1.0
+  (i.e. the geometric factor does not carry the 0.768 at the onset). Reported with its seed band.
+If M1-M3 hold, the reading is: the dry chain's Z*phi mechanism is real but describes the plateau network, and the onset
+stress is set by a size-selected sub-network whose geometric factor is CV-neutral -- which is why sigma* barely moves
+(P1) while Z_c(100) falls x0.8 with CV. If they fail, the discrepancy is unexplained and is reported as such.
+
+## Amendment 2 (2026-09-27 ~21:45 CDT; no lfsig2 cell has finished or been read) -- the stated confound gets a MEASURED arm
+
+The "stated confound" section argues the x_LF mismatch (CV 0.5 arm ~0.025 closer to its own LF-DEM jamming point)
+moves R by at most ~4.5 % from the lfsig single-seed x-sensitivity. An argued bound is weaker than a measured one, so a
+fourth arm is added beside the running queue (second driver, P = 5; `lfdem/make_queue_lfsig2x.py`, `run_cell2x.sh`,
+`launch_lfsig2x.sh`, run set `lfsig2x`, 15 cells):
+- **CV 0.5 at the CV 0.2 arm's LF-relative x**: x_LF(0.2) = 0.52880/0.6258 = 0.84500 (lfsig P2 inversion, x_m 0.90
+  arms), phi_x = 0.84500 x 0.6585 = **0.55643** (registered arm 0.57300; Yade x_m 0.874). Seeds 1-3, rungs
+  {3, 4.5, 7, 10, 100} only (the crossing region plus the normalising plateau).
+- **Readouts on this arm**: R2 (sigma_half, 5-rung log-linear) and R1 refitted on the SAME five rungs for the 0.2, 0.5
+  and 0.5x arms (like for like; the 9-rung R1 stays the primary). Paired per seed as before.
+- **X1 (registered).** ln[R2(0.5x)/R2(0.5)] -- the confound's own size -- is reported with its seed band. Prediction from
+  the lfsig sensitivity: **-0.047 (ratio 0.954)**. The verdict of P1 stays on the raw 9-rung arms; X1 says whether the
+  raw R could be moved across a candidate boundary by the mismatch: if |X1| < the P1 margin to the nearest candidate
+  boundary, the confound is CLOSED; otherwise the P1 verdict is reported as CONDITIONAL on it.
+- **X2 (descriptive).** R on the x-matched pair, 5-rung R1 and R2, printed beside the registered R.
+The phi_m,LF values come from the lfsig inversion that failed its own two-phi consistency check for CV 0.2 (P2 NOT USABLE,
+0.6945/0.6810 for phi_0 -- the phi_m halves agreed, 0.6258/0.6254); the x-match is therefore approximate to the ~0.5 %
+those halves differ by, which is far below the 2.9 % shift being tested.

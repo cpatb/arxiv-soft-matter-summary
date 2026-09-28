@@ -33,6 +33,8 @@ import sys
 
 import numpy as np
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(os.path.dirname(HERE), "out")
 W0, W1 = 2.0, 4.0
@@ -85,7 +87,6 @@ def cell(d: str) -> dict | None:
         gap = s[:, 6]                      # dimensionless: 2 rr/(ai+aj) - 2
         h = gap * (ai + aj) / 2.0          # physical gap (negative for touching)
         fn = s[:, 11] + s[:, 15]           # spring + repulsion at the pair's separation
-        nx, nz = s[:, 3], s[:, 5]
         t = touching
         nc = int(t.sum())
         if nc == 0:
@@ -120,6 +121,63 @@ def cell(d: str) -> dict | None:
     return m
 
 
+def grade_m(cells: list) -> None:
+    """Amendment 1, M1-M3 (descriptive, registered before any lfsig2 cell was read). Needs every arm complete at
+    sigma_0 3, 10, 15, 30, 100 (M1, M2) and the grader's sigma_half (M3, imported from grade_lfsig2)."""
+    import grade_lfsig2 as G
+    say("")
+    say("==== Amendment 1: M1-M3 on the lfsig2 dumps (3 seeds) ====")
+    by = {(c["cv"], c["seed"], c["sig"]): c for c in cells}
+    seeds = (1, 2, 3)
+    # M1: <aa>_c(3)/<aa>_c(100) > 1 at CV 0.5 on 3/3; excess larger at CV 0.5 than at CV 0.2 on 3/3
+    m1a = m1b = n1 = 0
+    for sd in seeds:
+        if all((cv, sd, s) in by for cv in (0.2, 0.5) for s in (3.0, 100.0)):
+            n1 += 1
+            e5 = by[(0.5, sd, 3.0)]["aa"] / by[(0.5, sd, 100.0)]["aa"]
+            e2 = by[(0.2, sd, 3.0)]["aa"] / by[(0.2, sd, 100.0)]["aa"]
+            m1a += int(e5 > 1); m1b += int(e5 > e2)
+            say(f"  M1 seed {sd}: <aa>_c(3)/<aa>_c(100) CV 0.2 {e2:.3f}, CV 0.5 {e5:.3f}")
+    say(f"  M1: {'PASS' if n1 == 3 and m1a == 3 and m1b == 3 else 'NOT GRADED' if n1 < 3 else 'FAIL'} (excess > 1 at CV 0.5: {m1a}/{n1}; larger than CV 0.2: {m1b}/{n1})")
+    # M2: G ratio > 1 at sigma 3; < 0.90 at sigma >= 10, on 3/3 seeds each
+    say("  M2: G(0.5)/G(0.2) per seed at each sigma")
+    ok_lo = ok_hi = n2 = 0
+    for sd in seeds:
+        sigs = sorted({s for (cv, d, s) in by if d == sd and cv in (0.2, 0.5)})
+        row = []
+        for s in sigs:
+            if (0.2, sd, s) in by and (0.5, sd, s) in by:
+                row.append((s, by[(0.5, sd, s)]["G"] / by[(0.2, sd, s)]["G"]))
+        if not row:
+            continue
+        say(f"    seed {sd}: " + " ".join(f"{s:g}:{r:.3f}" for s, r in row))
+        d = dict(row)
+        if 3.0 in d and all(s in d for s in (10.0, 15.0, 30.0, 100.0)):
+            n2 += 1; ok_lo += int(d[3.0] > 1.0); ok_hi += int(all(d[s] < 0.90 for s in (10.0, 15.0, 30.0, 100.0)))
+    say(f"  M2: {'PASS' if n2 == 3 and ok_lo == 3 and ok_hi == 3 else 'NOT GRADED' if n2 < 3 else 'FAIL'} (> 1 at 3: {ok_lo}/{n2}; < 0.90 at every sigma >= 10: {ok_hi}/{n2})")
+    # M3: G ratio interpolated (ln G vs ln sigma) at each arm's own sigma_half, within +-0.15 of 1
+    import glob as _g
+    dirs = [x for x in sorted(_g.glob(os.path.join(OUT, "lfsig2", "c*"))) if ".killed_" not in x]
+    gc = {(c["cv"], c["seed"], c["sig"]): c for c in (G.load_cell(d, False) for d in dirs) if c and c["healthy"]}
+    vals = []
+    for sd in seeds:
+        r2 = G.arm_readouts(gc, 0.2, sd, G.SIGMAS); r5 = G.arm_readouts(gc, 0.5, sd, G.SIGMAS)
+        if not (r2["complete"] and r5["complete"] and np.isfinite(r2["shalf"]) and np.isfinite(r5["shalf"])):
+            continue
+        def g_at(cv, s0):
+            pts = sorted((s, by[(cv, sd, s)]["G"]) for (c, d, s) in by if c == cv and d == sd)
+            xs = np.log([p[0] for p in pts]); ys = np.log([p[1] for p in pts])
+            return float(np.exp(np.interp(np.log(s0), xs, ys)))
+        ratio = g_at(0.5, r5["shalf"]) / g_at(0.2, r2["shalf"])
+        vals.append(ratio)
+        say(f"  M3 seed {sd}: sigma_half 0.2 {r2['shalf']:.3f}, 0.5 {r5['shalf']:.3f}; G(0.5 at its half)/G(0.2 at its half) = {ratio:.3f}")
+    if len(vals) == 3:
+        v = np.array(vals); m, se = v.mean(), v.std(ddof=1) / np.sqrt(3)
+        say(f"  M3: mean {m:.3f} se {se:.3f} band [{m - se:.3f}, {m + se:.3f}]; within +-0.15 of 1: {'PASS' if abs(m - 1) <= 0.15 else 'FAIL'}")
+    else:
+        say(f"  M3: NOT GRADED ({len(vals)}/3 seeds)")
+
+
 def main() -> int:
     camp = sys.argv[1] if len(sys.argv) > 1 else "lfsig"
     say(f"mech_lfsig -- POST HOC, not registered: the chain's geometry vs the activation stress in LF_DEM [{camp}], snapshots strain [{W0}, {W1}]")
@@ -146,6 +204,8 @@ def main() -> int:
         rr = lambda k: c5[k] / c2[k]  # noqa: E731
         say(f"  {sig:5.1f} {sd:4d} {rr('zc'):6.3f} {rr('ncV'):6.3f} {rr('aa'):6.3f} {rr('G'):6.3f} {rr('g_mean'):6.3f} {rr('g_med'):6.3f} "
             f"{rr('sig_c'):6.3f} {c5['sig_c_lf'] / c5['sig_tot_lf'] / (c2['sig_c_lf'] / c2['sig_tot_lf']):6.3f} {rr('G') * rr('g_mean'):6.3f}")
+    if camp == "lfsig2":
+        grade_m(cells)
     outp = os.path.join(OUT, f"mech_{camp}.txt")
     with open(outp, "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")

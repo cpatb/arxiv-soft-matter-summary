@@ -184,6 +184,76 @@ def wiring_gate(cells2: dict) -> None:
     say(f"  P4 verdict: {verdict} ({n_ok}/{n_tot} identical, {n_diff} differ) -- any DIFFER line above is a wiring fault")
 
 
+SIGMAS_X = (3.0, 4.5, 7.0, 10.0, 100.0)
+X1_PRED = -0.047          # Amendment 2: predicted ln[R2(0.5x)/R2(0.5)] from the lfsig x-sensitivity
+
+
+def x_arm(cells: dict, arms: dict, con: dict) -> None:
+    """Amendment 2: the x-matched CV 0.5 arm (out/lfsig2x/, labels c50x_x85_s<sigma>_r<seed>, phi 0.55643).
+    X1 = paired ln[R2(0.5x)/R2(0.5)] (the confound's own size); X2 = R on the x-matched pair, 5-rung R1 and R2.
+    The registered 0.2 and 0.5 arms are refitted on the SAME five rungs for X2 (like for like)."""
+    say("\n==== Amendment 2: x-matched CV 0.5 arm (phi 0.55643, five rungs) ====")
+    dirs = [x for x in sorted(glob.glob(os.path.join(OUT, "lfsig2x", "c50x*"))) if ".killed_" not in x]
+    xc = [c for c in (load_cell(d, False) for d in dirs) if c]
+    if not xc:
+        say("  no x-arm cells yet")
+        return
+    say(f"  {'label':20s} rc {'strain':>6s} {'eta':>8s} {'Zc':>6s} {'fcont':>6s} {'ovlp':>7s} ok")
+    for c in sorted(xc, key=lambda c: (c["seed"], c["sig"])):
+        say(f"  {c['label']:20s} {c['rc']:2d} {c['smax']:6.2f} {fmt(c['eta'], 8)} {fmt(c['zc'], 6)} {fmt(c['fcont'], 6)} {fmt(c['overlap'], 7, 4)} {int(c['healthy'])}")
+    xcells = {(0.5, c["seed"], c["sig"]): c for c in xc if c["healthy"]}
+    xarms = {sd: arm_readouts(xcells, 0.5, sd, SIGMAS_X) for sd in SEEDS}
+    # the registered arms on the same five rungs
+    sub = {k: v for k, v in cells.items() if k[2] in SIGMAS_X}
+    a5 = {(cv, sd): arm_readouts(sub, cv, sd, SIGMAS_X) for cv in (0.2, 0.5) for sd in SEEDS}
+    say(f"  {'arm':8s} {'seed':>4s} {'sigma*5':>8s} {'delta5':>7s} {'resid':>6s} {'s_half':>7s}")
+    for sd in SEEDS:
+        for name, r in (("0.2 (5)", a5[(0.2, sd)]), ("0.5 (5)", a5[(0.5, sd)]), ("0.5x", xarms[sd])):
+            if r["complete"]:
+                say(f"  {name:8s} {sd:4d} {fmt(r['sstar'], 8)} {fmt(r['delta'], 7)} {fmt(r['resid'], 6)} {fmt(r['shalf'])}")
+            else:
+                say(f"  {name:8s} {sd:4d}  INCOMPLETE (missing {r['missing']})")
+    # X1: paired ln R2(0.5x)/R2(0.5), registered 0.5 arm's 9-rung sigma_half against the x arm's 5-rung one
+    # (both interpolate between the same bracketing rungs 3..10 when the crossing lies there, so like for like)
+    v = []
+    for sd in SEEDS:
+        a, b = arms.get((0.5, sd)), xarms[sd]
+        if a and a.get("complete") and b["complete"] and np.isfinite(a["shalf"]) and np.isfinite(b["shalf"]):
+            v.append(math.log(b["shalf"] / a["shalf"]))
+    if len(v) == 3:
+        v = np.array(v); m, se = float(v.mean()), float(v.std(ddof=1) / math.sqrt(3))
+        say(f"  X1: ln[R2(0.5x)/R2(0.5)] = {m:+.4f} se {se:.4f} (ratio {math.exp(m):.3f}, band [{math.exp(m - se):.3f}, {math.exp(m + se):.3f}]); "
+            f"predicted {X1_PRED:+.3f}; per seed " + " ".join(f"{x:+.3f}" for x in v))
+        p = con.get((0.2, 0.5, "sstar"), {"n": 0})
+        if p["n"] == 3 and p["se"] < SE_MAX:
+            mR, seR = p["mean"], p["se"]
+            # margin from the raw ln R to the nearest candidate boundary (ln R_cand +- 2 se)
+            margins = []
+            for rc_ in (R_GEO, R_INERT):
+                lo, hi = math.log(rc_) - 2 * seR, math.log(rc_) + 2 * seR
+                margins.append(min(abs(mR - lo), abs(mR - hi)))
+            margin = min(margins)
+            say(f"  X1 vs P1 margin: |X1| {abs(m):.4f} vs the raw ln R's distance to the nearest candidate boundary {margin:.4f} -> "
+                f"confound {'CLOSED' if abs(m) < margin else 'NOT closed: P1 verdict is CONDITIONAL on the x-mismatch'}")
+        else:
+            say("  X1 vs P1 margin: P1 not graded / not informative, nothing to close")
+    else:
+        say(f"  X1: NOT GRADED ({len(v)}/3 seeds)")
+    # X2: R on the x-matched pair, five rungs
+    for key, name in (("sstar", "5-rung R1 sigma*"), ("shalf", "5-rung R2 sigma_half")):
+        vals = [math.log(xarms[sd][key] / a5[(0.2, sd)][key]) for sd in SEEDS
+                if xarms[sd]["complete"] and a5[(0.2, sd)]["complete"] and np.isfinite(xarms[sd][key]) and np.isfinite(a5[(0.2, sd)][key])]
+        reg = [math.log(a5[(0.5, sd)][key] / a5[(0.2, sd)][key]) for sd in SEEDS
+               if a5[(0.5, sd)]["complete"] and a5[(0.2, sd)]["complete"] and np.isfinite(a5[(0.5, sd)][key]) and np.isfinite(a5[(0.2, sd)][key])]
+        if len(vals) >= 2 and len(reg) >= 2:
+            vx, vr = np.array(vals), np.array(reg)
+            say(f"  X2 {name:22s}: R(0.5x/0.2) {math.exp(vx.mean()):.3f} band [{math.exp(vx.mean() - vx.std(ddof=1) / math.sqrt(len(vx))):.3f}, "
+                f"{math.exp(vx.mean() + vx.std(ddof=1) / math.sqrt(len(vx))):.3f}] (n {len(vx)})  vs registered pair on the same rungs "
+                f"R(0.5/0.2) {math.exp(vr.mean()):.3f} (n {len(vr)})")
+        else:
+            say(f"  X2 {name:22s}: NOT GRADED ({len(vals)} x pairs, {len(reg)} registered pairs)")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-lfsig", action="store_true", help="run the readouts on out/lfsig (seed-1 legacy cells)")
@@ -322,6 +392,9 @@ def main() -> int:
             say(f"  {name}: ratio {math.exp(p['mean']):.3f} (n 1) (lfsig single-seed: {old})")
         else:
             say(f"  {name}: no pair")
+
+    if not legacy:
+        x_arm(cells, arms, con)
 
     outp = os.path.join(OUT, "grade_lfsig2_dry.txt" if legacy else "grade_lfsig2.txt")
     with open(outp, "w", encoding="utf-8", newline="\n") as fh:
