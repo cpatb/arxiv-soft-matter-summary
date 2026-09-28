@@ -84,6 +84,40 @@ def shalf(sig: np.ndarray, f: np.ndarray) -> float:
     return float("nan")
 
 
+def shalf_first(sig: np.ndarray, f: np.ndarray) -> float:
+    """POST HOC (added 2026-09-28 04:45, after seed 1 showed the LL series dipping by ~1 binomial s.e. AFTER it crossed):
+    the FIRST crossing of 1/2, log-linear, without the registered monotonicity requirement."""
+    for k in range(1, len(f)):
+        if f[k - 1] < 0.5 <= f[k]:
+            t = (0.5 - f[k - 1]) / (f[k] - f[k - 1])
+            return float(math.exp(math.log(sig[k - 1]) + t * (math.log(sig[k]) - math.log(sig[k - 1]))))
+    return float("nan")
+
+
+def post_hoc(by: dict) -> None:
+    say("\n  POST HOC (not registered): first-crossing sigma_half per type (no monotonicity requirement); binomial s.e. of the")
+    say("  plateau-normalised LL fraction shown so the size of the dips that void the registered readout can be judged")
+    vals = []
+    for sd in SEEDS:
+        if not all((sd, s) in by for s in SIGMAS):
+            continue
+        s = np.array(SIGMAS)
+        sh = {}
+        for key in ("SS", "SL", "LL"):
+            f = np.array([by[(sd, x)]["frac"][key] for x in SIGMAS])
+            sh[key] = shalf_first(s, f / f[-1])
+        n_ll = np.mean([by[(sd, x)]["tot"]["LL"] for x in SIGMAS])
+        f_ll = by[(sd, 100.0)]["frac"]["LL"]
+        se_ll = math.sqrt(f_ll * (1 - f_ll) / n_ll) / f_ll
+        say(f"    seed {sd}: SS {sh['SS']:.3f}  SL {sh['SL']:.3f}  LL {sh['LL']:.3f}  -> SS/LL {sh['SS'] / sh['LL']:.3f}, "
+            f"SL/LL {sh['SL'] / sh['LL']:.3f}  (LL pairs per dump ~{n_ll:.0f}, normalised binomial s.e. ~{se_ll:.3f})")
+        vals.append(math.log(sh["SS"] / sh["LL"]))
+    if len(vals) >= 2:
+        v = np.array(vals); m = float(v.mean()); se = float(v.std(ddof=1) / math.sqrt(len(v)))
+        say(f"    SS/LL first-crossing: ratio {math.exp(m):.3f}, ln se {se:.4f} (n {len(v)}); m_eff = ln ratio / ln 2 = {m / math.log(2):.2f} "
+            f"(Derjaguin 1, constant force 2)")
+
+
 def main() -> int:
     say("pairtype -- PREREG_LFSIG2 Amendment 7: per-pair-type activation in a binary suspension (ratio 2, x_small 0.5, phi 0.55)")
     dirs = sorted(glob.glob(os.path.join(OUT, "lfsig2bi", "bi_*")))
@@ -126,6 +160,7 @@ def main() -> int:
                 c = abs(m - pc) <= T_CRIT * se
                 v1 = "BOTH" if d and c else "DERJAGUIN" if d else "CONSTANT-FORCE" if c else "NEITHER"
                 say(f"  B1 (registered, 95 %): {v1}  (|m - ln2| = {abs(m - pd) / se:.1f} se, |m - ln4| = {abs(m - pc) / se:.1f} se)")
+    post_hoc(by)
     outp = os.path.join(OUT, "grade_lfsig2bi.txt")
     with open(outp, "w", encoding="utf-8", newline="\n") as fh:
         fh.write("\n".join(lines) + "\n")
