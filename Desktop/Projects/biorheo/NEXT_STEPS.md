@@ -9,7 +9,7 @@ reconstruct state from chat history. State lives in the Obsidian card
 
 ```
 cd C:\Users\compl\Desktop\Projects\biorheo
-python -m pytest -q -m "not slow"      # must print: 575 passed, 11 deselected, 1 xfailed (2026-09-28, 308 s)
+python -m pytest -q -m "not slow"      # must print: 576 passed, 11 deselected, 1 xfailed (2026-09-28; 575 measured at 308 s before the mAb pin test was added -- the 576 is arithmetic, re-measure and correct this line if it differs)
 git -C C:\Users\compl log --oneline -3  # top should be the item-29 commit ("G4c retired") or later
 ```
 If the count differs, find out why before adding work. Commit from `C:\Users\compl`
@@ -1574,6 +1574,16 @@ number, fix the source, or re-register on Funke's breakloose which `results.json
 carries). Two one-sentence fixes ranked below it: the mAb page should say the authors'
 `b` is unpublished; the Carbopol records' `notes` should carry the range check and the
 sibling's "reproduced" should read "inside the published ranges". No number moved.
+
+**Acted on the same day (commit `3f7798d`):** N4.2 got its marker plus Addendum A1 at the
+foot of `WORK_ORDERS_2026-09-26.md` (the pre-registration itself is not rewritten; N4's
+owner picks option (a) or (b) before running). The mAb page now carries the "no external
+check" paragraph; `results.json` differed only in its `git_head` stamp, and
+`test_the_page_says_the_calibration_exponent_is_unpublished` pins the sentence (52 tests
+in the three affected files passed, 472 s). **Still open from the audit:** the Carbopol
+records' `notes` range check (touches 15 generated YAMLs via `records_from_carbopol.py`
+— regenerate and confirm byte-identity elsewhere) and the sibling `carbopol/fit_hb.py`
+wording; neither is a biorheo package, both are one-line.
 
 
 ## What NOT to do
