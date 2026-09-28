@@ -441,23 +441,25 @@ functions
     return b
 
 
-def fvSchemes():
+def fvSchemes(turb_scheme="upwind"):
+    # turb_scheme: "upwind" (first order, the shipped 2026-07-25 default) or
+    # "limitedLinear 1" (second-order bounded TVD; PREREG_so_triplet_2026-09-27.md).
     b = head("dictionary", "fvSchemes")
-    b += """
-ddtSchemes      { default steadyState; }
-gradSchemes     { default Gauss linear; }
+    b += f"""
+ddtSchemes      {{ default steadyState; }}
+gradSchemes     {{ default Gauss linear; }}
 divSchemes
-{
+{{
     default         none;
     div(phi,U)      bounded Gauss linearUpwind grad(U);
-    div(phi,k)      bounded Gauss upwind;
-    div(phi,omega)  bounded Gauss upwind;
+    div(phi,k)      bounded Gauss {turb_scheme};
+    div(phi,omega)  bounded Gauss {turb_scheme};
     div((nuEff*dev2(T(grad(U))))) Gauss linear;
-}
-laplacianSchemes { default Gauss linear corrected; }
-interpolationSchemes { default linear; }
-snGradSchemes   { default corrected; }
-wallDist        { method meshWave; }
+}}
+laplacianSchemes {{ default Gauss linear corrected; }}
+interpolationSchemes {{ default linear; }}
+snGradSchemes   {{ default corrected; }}
+wallDist        {{ method meshWave; }}
 // ************************************************************************* //
 """
     return b
@@ -508,18 +510,33 @@ relaxationFactors
 
 
 def main():
-    Re = float(sys.argv[1])
-    Hd = float(sys.argv[2])
-    refine = float(sys.argv[3]) if len(sys.argv) > 3 else 1.0
-    Rdom_mm = float(sys.argv[4]) if len(sys.argv) > 4 else RDOM_DEFAULT * 1e3
+    # Flags (2026-09-27, PREREG_so_triplet): --scheme=fo|so selects the k/omega advection
+    # scheme AND switches to a non-truncating tag `case_Re.._H.._{fo|so}_r{refine}` (dots
+    # as 'p'), so these cases can never collide with the legacy `_r{int(refine)}` names.
+    # --end=N sets endTime. Without --scheme the legacy behaviour is byte-identical.
+    flags = {a.split("=", 1)[0]: (a.split("=", 1)[1] if "=" in a else "")
+             for a in sys.argv[1:] if a.startswith("--")}
+    pos = [a for a in sys.argv[1:] if not a.startswith("--")]
+    Re = float(pos[0])
+    Hd = float(pos[1])
+    refine = float(pos[2]) if len(pos) > 2 else 1.0
+    Rdom_mm = float(pos[3]) if len(pos) > 3 else RDOM_DEFAULT * 1e3
     V0 = V0_of_Re(Re)
     H, Rjet, Rdom = geom(Hd, Rdom_mm * 1e-3)
     k, omega = turb_inlet(V0)
-    endTime = 3000
+    endTime = int(flags.get("--end") or 3000)
+    scheme = flags.get("--scheme")
+    if scheme not in (None, "fo", "so"):
+        print(f"unknown --scheme={scheme}; use fo or so", file=sys.stderr)
+        return 1
+    turb_scheme = "limitedLinear 1" if scheme == "so" else "upwind"
 
     # A widened domain gets its own tag, so it can never overwrite the 2026-07-25
     # sweep the manuscript's numbers are read from.
-    tag = f"case_Re{int(Re)}_H{int(Hd)}" + ("" if refine == 1.0 else f"_r{int(refine)}")
+    if scheme is None:
+        tag = f"case_Re{int(Re)}_H{int(Hd)}" + ("" if refine == 1.0 else f"_r{int(refine)}")
+    else:
+        tag = f"case_Re{int(Re)}_H{int(Hd)}_{scheme}_r{refine:g}".replace(".", "p")
     if abs(Rdom - RDOM_DEFAULT) > 1e-12:
         tag += f"_R{int(round(Rdom_mm))}"
     case = os.path.join(os.path.dirname(os.path.abspath(__file__)), tag)
@@ -556,7 +573,7 @@ def main():
 
     write(os.path.join(case, "system", "blockMeshDict"), blockmesh(H, Rjet, Rdom, refine))
     write(os.path.join(case, "system", "controlDict"), controlDict(endTime))
-    write(os.path.join(case, "system", "fvSchemes"), fvSchemes())
+    write(os.path.join(case, "system", "fvSchemes"), fvSchemes(turb_scheme))
     write(os.path.join(case, "system", "fvSolution"), fvSolution())
     write(os.path.join(case, "constant", "transportProperties"), transportProperties())
     write(os.path.join(case, "constant", "turbulenceProperties"), turbulenceProperties())
@@ -569,6 +586,8 @@ def main():
     with open(os.path.join(case, "case_info.txt"), "w") as f:
         f.write(f"Re_d={Re}\nH_over_d={Hd}\nrefine={refine}\nV0={V0}\nH={H}\n"
                 f"Rjet={Rjet}\nRdom={Rdom}\nk_in={k}\nomega_in={omega}\nNU={NU}\nRHO={RHO}\nD={D}\n")
+        if scheme is not None:
+            f.write(f"turb_scheme={turb_scheme}\nendTime={endTime}\n")
     print(f"wrote {case}  (Re={Re:g}, H/d={Hd:g}, V0={V0:.4g} m/s, refine={refine:g})")
     return 0
 
