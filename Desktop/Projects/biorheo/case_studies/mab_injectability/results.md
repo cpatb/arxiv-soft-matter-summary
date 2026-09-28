@@ -56,6 +56,8 @@ Either more than one curve was used, or the column carries processing the Method
 
 What does survive is the **slope**: 0.03131 mL/mg on the main series and 0.032334 on the higher-concentration one, agreeing to 3.2 %. The scatter that sinks G25.1 is in the intercept. That slope is what makes the headline's mg/mL conversion possible.
 
+**That slope has no external check, and cannot have one from this source.** The paper fits the calibration curve `eta = a * exp(b * c)` over 110-200 mg/mL (Methods 2.2.4) by non-linear regression in R (2.2.7) and draws it with a 95 % confidence band (Fig. 1), but the fitted `a`, `b` and R-squared are printed nowhere in the accepted PDF or the deposited Table S1 (read 2026-09-28; `data/external_anchor_audit_2026-09-08.md` row 5). The authors' fitted exponent is therefore unpublished, and the doubling concentration quoted on this page is a number this study derived from the reduction column, not one the source reports.
+
 ## G25.7 — why these are NOT registry records, demonstrated rather than asserted
 
 Fitting a one-parameter Newtonian model to the single measured viscosity of `Arg_25` **FAILED**:

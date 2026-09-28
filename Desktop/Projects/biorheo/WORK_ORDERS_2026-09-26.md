@@ -72,7 +72,7 @@ Cite V&V 40-2018 and FDA's Nov-2023 guidance by title in docstrings; **no gradat
 
 Temperature: `constitutive/shift.py` already carries `a`; add an **Arrhenius input** `E_a_J_mol` (user-supplied, never looked up) → `a(T)`, and print the superposition residual beside it as item 21 does.
 
-**Pre-register**: N4.1 with all terms zero every existing page reproduces byte-for-byte (a test diff). N4.2 with the Funke 2016 glide bracket (doi:10.1002/jps.23945, 1.3–1.5 N) the mAb-vs-blood ratio prints 2.07–1.95× and the difference stays 1.70 N. N4.3 sensitivities sum to 1 in log space at every operating point tested (a homogeneity check that can fail).
+**Pre-register**: N4.1 with all terms zero every existing page reproduces byte-for-byte (a test diff). N4.2 with the Funke 2016 glide bracket (doi:10.1002/jps.23945, 1.3–1.5 N) the mAb-vs-blood ratio prints 2.07–1.95× and the difference stays 1.70 N. **[SOURCE MIS-ATTRIBUTED — see Addendum A1 at the foot of this file, 2026-09-28; the number stands, the citation does not.]** N4.3 sensitivities sum to 1 in log space at every operating point tested (a homogeneity check that can fail).
 
 **owns**: `src/biorheo/apps/injectability.py` (additive), `apps/report.py` (after B1 lands — coordinate: run B1 first), `constitutive/shift.py`, `tests/test_device_terms.py`.
 
@@ -181,3 +181,28 @@ From (pressure drop, flow rate, radius, length) series: apparent wall shear rate
 | **hold** | N6 | until N5 lands a viscoelastic biofluid record |
 
 **Session sizing**: one package per night. A package that will not fit a night is split at its numbered gates, never stretched.
+
+---
+
+# Addenda (corrections to pre-registrations above; the originals are not rewritten)
+
+## A1 — N4.2 cites the wrong source for its 1.3–1.5 N glide bracket (found by B3, 2026-09-28)
+
+N4.2 as written attributes "1.3–1.5 N glide" to Funke et al. 2016 (doi:10.1002/jps.23945).
+That is not where the number comes from. `case_studies/device_friction/results.json`
+(`glide_note`) and `data/injection_force_terms_lit_2026-09-08.md` §1 both record the glide
+bracket as **1.28–1.45 N from a *BioProcess International* trade article with no DOI,
+carried as UNVERIFIED**; Funke 2016 publishes **breakloose** (~3 N silicone-oil-free,
+~9 N siliconised), which `results.json` carries separately as `breakloose 3.0-9.0 N` with
+its own ratio 1.18–1.52×. Full row: `data/external_anchor_audit_2026-09-08.md` row 7.
+
+**What N4's owner must do before running N4.2**, choosing one and saying which:
+
+- (a) keep the bar's number (1.3–1.5 N → 2.07–1.95×, difference 1.70 N) and re-cite it as
+  "trade-article glide bracket, no DOI, UNVERIFIED (device_friction `glide_note`)"; or
+- (b) re-register N4.2 on Funke's breakloose 3–9 N, whose predicted ratio is the 1.18–1.52×
+  already printed on the device-friction page, and say the bar changed BEFORE any run.
+
+Neither option moves a number that has been computed; the defect is the label on the
+source. A bar graded later against "Funke 2016" would otherwise be graded against 3–9 N
+and fail for a reason with no physics in it.

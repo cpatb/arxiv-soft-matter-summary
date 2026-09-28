@@ -164,3 +164,15 @@ def test_the_page_says_what_it_does_not_say():
                      "Nothing that uses the source's `viscosity reduction` column",
                      "Nothing about shear-thinning at the needle wall"):
         assert required in md, required
+
+
+def test_the_page_says_the_calibration_exponent_is_unpublished():
+    """B3 (item 30) row 5: the source fits eta = a*exp(b*c) but never prints a, b or R2, so
+    the Mooney slope this page is built on has no external anchor. The page must say so,
+    and must not claim the slope 'reproduces' or 'agrees with' the authors' value."""
+    md = ART_MD.read_text(encoding="utf-8")
+    assert "That slope has no external check" in md
+    assert "printed nowhere" in md
+    for banned in ("reproduces the authors' exponent", "agrees with the published slope",
+                   "the published exponent"):
+        assert banned not in md, banned

@@ -494,6 +494,15 @@ def write_md(p) -> None:
       f"{100*g2['relative_difference']:.1f} %. The scatter that sinks G25.1 is in the "
       "intercept. That slope is what makes the headline's mg/mL conversion possible.")
     A("")
+    A("**That slope has no external check, and cannot have one from this source.** The "
+      "paper fits the calibration curve `eta = a * exp(b * c)` over 110-200 mg/mL "
+      "(Methods 2.2.4) by non-linear regression in R (2.2.7) and draws it with a 95 % "
+      "confidence band (Fig. 1), but the fitted `a`, `b` and R-squared are printed nowhere "
+      "in the accepted PDF or the deposited Table S1 (read 2026-09-28; "
+      "`data/external_anchor_audit_2026-09-08.md` row 5). The authors' fitted exponent is "
+      "therefore unpublished, and the doubling concentration quoted on this page is a "
+      "number this study derived from the reduction column, not one the source reports.")
+    A("")
     g7 = g["G25_7_these_cannot_be_registry_records"]
     A("## G25.7 — why these are NOT registry records, demonstrated rather than asserted")
     A("")
