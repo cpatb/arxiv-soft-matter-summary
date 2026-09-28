@@ -72,6 +72,28 @@ def jam_times():
     return np.array(out)
 
 
+def zero_crossings(tol=0.005):
+    """Above-onset steps whose RAW rate goes negative within `tol` strain of gamma_j.
+
+    Referee pass 3 (2026-09-28): on some steps gamma_j is where the rate reverses sign,
+    i.e. the ringing that Richards et al. 2019's title refers to, not a one-way jam.
+    Returns (n_crossing, n_above, list of stresses).
+    """
+    files = {int(re.match(r"(\d+)_", p.name).group(1)): p for p in P.D.glob("*_*.csv")}
+    rows, onset = jam_table()
+    hits, n = [], 0
+    for r in rows:
+        if not r["above"]:
+            continue
+        n += 1
+        k = [k for k, s, _ in P.step_files() if s == r["sigma"]][0]
+        g, gd, _, _ = P.load(files[k])
+        near = np.abs(g - r["gamma_j"]) < tol
+        if np.any(gd[near] < 0):
+            hits.append(r["sigma"])
+    return len(hits), n, hits
+
+
 def main() -> int:
     rows, onset = jam_table()
     for r in rows:

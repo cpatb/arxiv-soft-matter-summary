@@ -164,7 +164,10 @@ def main() -> None:
     m["suJamSpread"] = fmt(jt[:, 1].max() / jt[:, 1].min())
     m["suTjSpread"] = fmt(jt[:, 2].max() / jt[:, 2].min())
     m["suSigSpread"] = fmt(jt[:, 0].max() / jt[:, 0].min())
-    m["suJamAboveR"] = f"{sum(r['gamma_j'] > r['R'] for r in rows_j)}/{len(rows_j)}"
+    ab_j = [r for r in rows_j if r["above"]]  # referee pass 3: scope to above onset
+    m["suJamAboveR"] = f"{sum(r['gamma_j'] > r['R'] for r in ab_j)}/{len(ab_j)}"
+    nz, nab, _ = S4.zero_crossings()
+    m["suZeroCross"] = f"{nz}/{nab}"
     # fit-free landmark against fit-free landmark: smallest reversal gamma_50 on Lin silica
     # over the largest start-up jam strain on Richards silica (different samples)
     g50_si = [x["g50"] for x in cl["Fig_2b"] if x["included"]]
