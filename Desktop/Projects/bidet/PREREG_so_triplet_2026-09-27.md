@@ -49,6 +49,20 @@ Per family and per quantity (`C_P`, `n_t`, `tau_w(15 mm)`, peak `tau_w`), Celik 
 - Competing reading: the top-hat inlet's lip discontinuity or the stagnation region is the
   cause, in which case SO diverges too and S1 FAILS.
 
+## Amendment 1 (21:55, before any refine-2.25 case reached convergence; no gate value seen)
+
+Measured cost on the shared VM (load ~20/22): ~5 s per iteration for refine 2.25 on 2
+ranks, so a cold start (~6000 iterations, by analogy with refine 2's 5105) would not
+finish before ~06:00. Both refine-2.25 cases are therefore RESTARTED from a mapFields
+initialisation of the converged refine-1 case of the same scheme (FO from
+`case_Re10000_H6`, SO from `case_Re10000_H6_so_r1` once it converges). Only the initial
+condition changes; every gate reads the converged steady state, which a unique steady
+solution does not remember. Check that goes with it (S6, reported): the mapped-start FO
+refine-2.25 case is graded exactly as the others — if its converged `C_P` were an
+artefact of the start, the FO r=1.5 triplet would show it as a non-smooth jump, which S3
+reports either way. The cold-start runs are killed at ~iteration 100 and their partial
+output is discarded.
+
 ## What will NOT be done
 
 No bar is loosened after data. p outside [0.5, 2.5] is reported, not re-banded. If the

@@ -35,6 +35,17 @@ while [ $# -ge 2 ]; do
   echo "[$TAG] start $(date '+%F %T') nproc=$NPROC" | tee -a "$HOME/bidet_so/lane.log"
   blockMesh > log.blockMesh 2>&1
   checkMesh > log.checkMesh 2>&1 || true
+  # Amendment 1 (PREREG_so_triplet): MAPFROM=<converged coarser case dir> initialises
+  # the fields by mapFields instead of the uniform 0/ fields. Only the start point moves;
+  # the graded quantity is the converged steady state (residualControl 1e-5).
+  if [ -n "$MAPFROM" ]; then
+    echo "[$TAG] mapFields from $MAPFROM" | tee -a "$HOME/bidet_so/lane.log"
+    # mapFields (meshToMesh0) SEGFAULTS on this collapsed-axis wedge (2026-09-27, while
+    # "interpolating k"); mapFieldsPar (meshToMesh) maps it cleanly.
+    mapFieldsPar "$MAPFROM" -consistent -sourceTime latestTime > log.mapFields 2>&1
+    # post-processing fields carried over from the source are not initial conditions
+    rm -f 0/wallShearStress 0/yPlus
+  fi
   if [ "$NPROC" -gt 1 ]; then
     cat > system/decomposeParDict <<EOF
 FoamFile { version 2.0; format ascii; class dictionary; object decomposeParDict; }

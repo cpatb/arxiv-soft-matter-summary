@@ -135,6 +135,15 @@ FAMILIES = {
     # Fixing it is the cheapest open question in the study.
     "midfine": [("case_Re10000_H6_r2_ext", 2.0), ("case_Re10000_H6_r1_ext", 1.414),
                 ("case_Re10000_H6", 1.0)],
+    # PREREG_so_triplet_2026-09-27: r = 1.5 exactly, every block count an integer.
+    # `so_r15` = second-order (limitedLinear 1) k/omega advection; `fo_r15` = the shipped
+    # first-order upwind on the SAME grids, the S3 discriminator. The refine-2.25 members
+    # were started by mapFieldsPar from the converged refine-1 case of the same scheme
+    # (Amendment 1); the graded quantity is the converged state.
+    "so_r15": [("case_Re10000_H6_so_r2p25", 2.25), ("case_Re10000_H6_so_r1p5", 1.5),
+               ("case_Re10000_H6_so_r1", 1.0)],
+    "fo_r15": [("case_Re10000_H6_fo_r2p25", 2.25), ("case_Re10000_H6_fo_r1p5", 1.5),
+               ("case_Re10000_H6", 1.0)],
 }
 
 # (key in the fit_closure record, label)
