@@ -119,3 +119,7 @@ snapshot. N1 (node robustness): **FAIL** at ε 0.5 and 0.9 (§2). Nothing below 
 - **F6 ε 0.9: UNRESOLVED** (+0.018, se_eff 0.0085).
 - **Final INCOMPLETE by the health rule (cells hit the 300 000-iteration cap unconverged):** F6 ε 0.8 (seed 3) and ε 0.7
   (seed 2); F7/F8 at ε 0.5 (all three μ_p 0.1 seeds) and ε 0.9 (seed 2). The μ_p 0.1 edge therefore stays descriptive.
+- **Campaign closed (all cells ended; `out/grade_facet_final_2026-09-27.txt`):** 10 of the 12 μ_p 0.1 superball cells hit the
+  cap unconverged (only ε 0.7 s3 and ε 0.8 s1 converged: +0.039, +0.042 over their seeds' spheres). F7 and F8 are final
+  **INCOMPLETE** at every ε. Registered outcome of the whole campaign: F6 ε 0.5 RISE, F6 ε 0.9 UNRESOLVED, N1 FAIL,
+  everything else INCOMPLETE. Level-set grains at μ_p ≤ 0.1 cannot be brought to the stop rule at 1000 nodes.
