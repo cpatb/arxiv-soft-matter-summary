@@ -110,7 +110,12 @@ GRID_STUDY certified by `residualControl`, and read the gate quantities every 40
 | refine 1, `case_Re10000_H6` ("converged at 2261", the manuscript's grid) | 2261 → 4661 | 1.3518 → **1.3663** (+1.08 %) | 1.9023 → 1.9102 | 5.866 → **5.792** (−1.26 %) | **flat** from ~3600 |
 | refine 2, `r2_ext` ("converged at 5105") | 5105 → 7505 | 1.3928 → **1.4296** (+2.64 %) | 1.8922 → 1.9243 | 6.241 → **5.865** (−6.03 %) | **still moving** (~0.3 %/400 in `C_P`) |
 
-`convergence/L1_legacy_r1_trajectory.txt`, `L2_legacy_r2_trajectory.txt`.
+| SO refine 1, `case_Re10000_H6_so_r1` (L1', met the criterion at 1948) | 1948 → 4348 | 1.4219 → **1.4317** (+0.69 %) | 1.9248 → 1.9284 | 5.831 → 5.803 | **flat** from ~3200 |
+
+`convergence/L1_legacy_r1_trajectory.txt`, `L2_legacy_r2_trajectory.txt`,
+`L1p_so_r1_trajectory.txt`. On the two converged refine-1 cases the scheme effect (S5) is
+`C_P` 1.4317 vs 1.3663 = **+4.8 %**, against the registered S5's +5.2 % on the
+residual-stop values; both clear the 1 % bar.
 
 **This retracts GRID_STUDY §1's "the iterative-convergence finding stands, and it is the
 most solid thing here."** That finding moved the refine-2 grid from a capped state to a
