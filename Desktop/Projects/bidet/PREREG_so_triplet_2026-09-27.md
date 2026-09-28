@@ -113,6 +113,28 @@ the second SO triplet 3.375 / 2.25 / 1.5 is graded with the same classification.
 S1 passes and S7's triplet is not monotone-converging, S1's pass is reported as not
 robust to further refinement.
 
+## Amendment 4 (~23:45 27 Sep; git commit time is authoritative): convergence judged on the gate quantities themselves
+
+**Why.** H1 is not a convergence test for a mapped start: SO refine 3.375, mapped from
+2.25, met H1 at iteration 26, which cannot be a converged 350k-cell solution. A good
+initial guess makes the normalised residual small from the outset. (The original
+`residualControl` has the same weakness; it was only meaningful for cold starts, which
+needed thousands of iterations to reach it.) Meanwhile the cold SO refine-1.5 run has
+plateaued at 2.2e-5 and may never meet H1. S6's 400-iteration window can miss a slow drift.
+
+**Rule C1, replacing H1 as the health criterion for every refine > 1 case of both
+families and for S7** (refine 1 cases are cold-started and met the original criterion):
+each case is continued 2400 iterations from its current final state, writing every 400
+(`so_trajectory.sh`); the wall-shear sample is regenerated at each written time by
+`simpleFoam -postProcess` (verified to reproduce an in-run record to 4e-9 relative) and
+fitted by `fit_closure.py` with `FIT_TIME`. A case is converged when, for every gate
+quantity, the relative change between the last two writes is < 0.1 % and between the
++1600 and +2400 writes is < 0.2 %. The graded value is the +2400 one. H2 (Uz round-off)
+still applies. A case that fails C1 makes its family INCOMPLETE. S6 (400-iteration
+Cauchy) is superseded, since C1 starts from the same state over a longer window; the one
+S6 value already on screen (FO refine 1.5 continued: `C_P` 1.3821, printed by its
+launcher) is disclosed here. The SO refine-2.25 S6 run is stopped unfinished.
+
 ## What will NOT be done
 
 No bar is loosened after data. p outside [0.5, 2.5] is reported, not re-banded. If the

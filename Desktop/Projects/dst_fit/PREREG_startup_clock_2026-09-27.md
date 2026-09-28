@@ -34,7 +34,7 @@ steady curve: the lowest stress where steady eta_r exceeds 2x its low-stress pla
 - **P3 (sanity).** The final viscosity of each step agrees with the steady curve at that
   stress to within 30 % (the steady file's own replicate spread reaches ~20 %).
 
-## Addendum 1 (00:10, after P1-P3 were graded, before any recoil strain was computed)
+## Addendum 1 (~23:40; git commit da49f2e time is authoritative; after P1-P3 were graded, before any recoil strain was computed)
 
 Graded result, `logs/probe_startup_clock.txt`: **P1 FAIL** (above-onset clocks 0.027-0.885,
 chi2_r 73-11343, 2 fits at the grid edge; neighbouring stresses differ up to 30x -- a

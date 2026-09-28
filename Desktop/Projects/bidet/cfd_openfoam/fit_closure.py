@@ -39,6 +39,14 @@ def latest_raw(case, field):
     def t_of(p):
         try: return float(os.path.basename(os.path.dirname(p)))
         except ValueError: return -1
+    # FIT_TIME (2026-09-28, PREREG_so_triplet Amendment 4): read the sample at one given
+    # time instead of the latest, for a QoI-against-iteration trajectory. Unset = unchanged.
+    want = os.environ.get("FIT_TIME")
+    if want is not None:
+        hits = [p for p in pats if t_of(p) == float(want)]
+        if len(hits) != 1:
+            raise SystemExit(f"FIT_TIME={want}: {len(hits)} {field} samples at that time")
+        return hits[0]
     return sorted(pats, key=t_of)[-1]
 
 
@@ -111,7 +119,9 @@ def main():
 
     # write csv
     out = np.column_stack([r * 1e3, r_over_d, tau_Pa, LHS])
-    np.savetxt(os.path.join(case, "tau_w_r.csv"), out,
+    csv_name = ("tau_w_r.csv" if os.environ.get("FIT_TIME") is None
+                else f"tau_w_r_t{os.environ['FIT_TIME']}.csv")
+    np.savetxt(os.path.join(case, csv_name), out,
                header="r_mm,r_over_d,tau_w_Pa,phares_LHS", delimiter=",", comments="")
     print(json.dumps(summary))
 
