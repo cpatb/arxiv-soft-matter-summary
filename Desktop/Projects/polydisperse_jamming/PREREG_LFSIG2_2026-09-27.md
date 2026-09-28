@@ -279,3 +279,51 @@ critical load, Guy et al. 2020).
 - **Why it matters.** Guy et al.'s mechanism (large pairs activate first) is prior art; its SIZE LAW is not tested for a
   Derjaguin (electrostatic) repulsion, which is what the lab's silica has. A DERJAGUIN verdict halves the log-selectivity
   relative to the constant-force picture and is the part of Paper C that would be new.
+
+## RESULT (2026-09-28 ~04:05 CDT; `python lfdem/grade_lfsig2.py` -> `out/grade_lfsig2.txt`, `mech_lfsig.py lfsig2`, `sizeact.py lfsig2`, `forcesize.py lfsig2`, `q6_order.py`; figure `figures/L2_lfsig2_activation`)
+
+**Health and wiring.** 81/81 main cells healthy (rc 0, strain 4, overlap <= 0.02 of the mean radius), 15/15 x-matched, 15/15 CV 0. **P4 PASS:
+10/10 seed-1 cells reproduce `lfsig` bit-for-bit** (81 rows each). Q6 ordering: 96/96 random (<= 0.074; bar 0.3).
+
+**Registered verdicts.**
+| test | result | verdict |
+|---|---|---|
+| P1 sigma*_WC(0.5)/sigma*_WC(0.2) | R = **0.955**, paired se(ln R) 0.0024, 95 % band [0.945, 0.965] | **NEITHER** (GEO 0.768 and INERT 1.000 both excluded) |
+| P2 delta falls with CV | ratio **0.735**, 95 % band [0.623, 0.866], 3/3 seeds | **PASS**; the dry-DEM 0.869 is NOT consistent (4.4 se): lubricated broadening is STRONGER |
+| P3 contact share at sigma_half rises | x1.152 (1.154/1.144/1.158) | **PASS** 3/3 |
+| P5 CV 0.35 between | 2/3 seeds | PASS (descriptive) |
+| X1 x-mismatch size | ln -0.0462 se 0.0058 (predicted -0.047) | confound **NOT closed**: P1 is CONDITIONAL on it |
+| Q1 sigma*_WC5(0.5)/sigma*_WC5(0) | R0 **0.890**, 95 % band [0.789, 1.003] | **INERT** (marginal; the 82 % band [0.842, 0.941] excludes both; 0.38 of the dry chain's log effect) |
+| M1 onset network size-selected | <aa>_c(3)/<aa>_c(100) 1.17-1.21 at CV 0.5 vs 1.03-1.06 at CV 0.2 | **PASS** 3/3 (stiffness caveat: none) |
+| M2 chain factor G: > 1 at sigma 3, < 0.90 at sigma >= 10 | G(0.5)/G(0.2) = 0.70-0.86 at sigma >= 10 on every seed | **PASS** 3/3 |
+| M3 G ratio at each arm's own onset | 0.943, band [0.920, 0.965] | **PASS** (CV-neutral within +-0.15) |
+| S1 / S2 per-grain collapse | S1 missed on CV 0.2 by rounding (1.299 vs 1.30); S2 fails at CV 0.5 | **FAIL / FAIL** |
+| S4 Derjaguin vs constant force (grain level) | best m 1.10 / 1.70 / 1.65 at CV 0.2 / 0.35 / 0.5 | **MIXED** |
+| S3 per-grain law predicts R | 0.629 predicted vs 0.955 measured | does NOT explain the onset |
+
+**The P1 verdict rests on an error bar the data cannot support, and that is stated with it.** The paired se (0.0024) is
+ten times smaller than each fit's own parameter error (2-4 %); under the fit-propagated error (se 0.0265), the unpaired
+seed scatter (0.0208) or both in quadrature, R = 0.955 is **INERT** (95 % bands [0.852, 1.070], [0.873, 1.044]). The dry
+chain's 0.768 is excluded under EVERY error model, and also after the measured x-mismatch correction (bracket [0.913, 0.955]).
+These alternative error models were added at grading and are labelled POST HOC in the grader; the registered verdict is not
+changed.
+
+**The onset stress is readout-dependent at the +-15 % level, because its SHAPE changes.** Same cells: 9-rung sigma*_WC 0.955;
+sigma_half 0.960; absolute Z_c = 1 crossing 1.113; 5-rung sigma*_WC 0.892; x-matched 5-rung sigma*_WC 0.815; x-matched
+sigma_half 0.917. With delta falling 26 %, "where the onset is" depends on which point of a broader curve is called the
+onset. The robust statement is the one every readout shares: **polydispersity broadens the activation strongly (delta x0.735,
+t -8.1) and moves its midpoint little (sigma_half x0.96).**
+
+**Mechanism (registered M1-M3, all PASS).** The dry-DEM chain's factor G = (N_c/V)<a_i a_j>_c falls x0.70-0.86 with CV on the
+fully activated network, reproducing the dry ~0.77, but is CV-neutral (0.94) at each suspension's own onset, because the
+first network to activate is enriched in large pairs, and more so at high CV. **The dry chain is right about the plateau and
+wrong about the onset.** Prior art: large-first activation is Guy et al. 2020 (Am. 6); what is new here is that it makes the
+onset stress nearly CV-blind in a continuous PSD while the plateau network is not.
+
+**Not established.** The size exponent of per-grain or per-pair activation (Derjaguin m 1 vs constant force m 2): grain-level
+MIXED, pair-level undiscriminating (rms 0.454 vs 0.446), pair LOAD mean-field (beta 1.87-2.08 -> m ~ 0.9-1.1). The binary
+arm (Am. 7) is registered to decide it and is running.
+
+**For the drop.** Nothing here moves the DNS conclusion that the activation channel carries < 0.05 % of the CV effect
+(`cvmap` C3'); it sharpens it. The lubricated onset is nearly CV-blind, and the broadening (delta) is the only activation
+change of size, which the drop was shown insensitive to.

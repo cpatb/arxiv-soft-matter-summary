@@ -317,6 +317,10 @@ def cv0_arm(cells: dict) -> None:
     ine = abs(m) <= T_CRIT * se
     say(f"  95 % band [{math.exp(m - T_CRIT * se):.3f}, {math.exp(m + T_CRIT * se):.3f}] -> Q1 verdict: "
         + ("BOTH" if geo and ine else "GEO" if geo else "INERT" if ine else "NEITHER"))
+    g2, i2 = abs(m - math.log(R_GEO0)) <= 2 * se, abs(m) <= 2 * se
+    say(f"  descriptive (82 %, 2 se): band [{math.exp(m - 2 * se):.3f}, {math.exp(m + 2 * se):.3f}] -> "
+        + ("BOTH" if g2 and i2 else "GEO" if g2 else "INERT" if i2 else "NEITHER")
+        + f"; fraction of the dry chain's log effect: {m / math.log(R_GEO0):.2f}")
 
 
 def main() -> int:
@@ -402,6 +406,19 @@ def main() -> int:
                 say(f"    band [{math.exp(m - k * se):.3f}, {math.exp(m + k * se):.3f}] -> verdict {verdicts[name][2]}")
             else:
                 say("    no candidate graded at this level")
+        # POST HOC (added at grading, 2026-09-28 03:55; does NOT change the registered verdict): the paired se above is
+        # smaller than each fit's own parameter error, so two other error models are printed beside it (lesson 2026-09-19:
+        # a paired se below the measurement's own uncertainty is not an error bar).
+        a2 = [arms[(0.2, sd)] for sd in SEEDS]; a5 = [arms[(0.5, sd)] for sd in SEEDS]
+        fit_var = sum((x["sstar_se"] / x["sstar"]) ** 2 + (y["sstar_se"] / y["sstar"]) ** 2 for x, y in zip(a2, a5)) / 9.0
+        se_fit = math.sqrt(fit_var)
+        l2 = np.log([x["sstar"] for x in a2]); l5 = np.log([y["sstar"] for y in a5])
+        se_unp = math.sqrt(l2.var(ddof=1) / 3 + l5.var(ddof=1) / 3)
+        for name, s_ in (("fit-parameter error propagated", se_fit), ("unpaired seed scatter", se_unp),
+                         ("paired + fit, in quadrature", math.hypot(se, se_fit))):
+            g_, i_ = abs(m - math.log(R_GEO)) <= T_CRIT * s_, abs(m) <= T_CRIT * s_
+            say(f"  POST HOC error model [{name}]: se {s_:.4f}, 95 % band [{math.exp(m - T_CRIT * s_):.3f}, {math.exp(m + T_CRIT * s_):.3f}] -> "
+                + ("BOTH" if g_ and i_ else "GEO" if g_ else "INERT" if i_ else "NEITHER") + ("" if s_ < SE_MAX_95 else "  (G0 not met)"))
         reg = verdicts.get("t_crit 4.303 se (95 %, REGISTERED)")
         say(f"  P1 verdict (registered, 95 %): {reg[2] if reg else 'NOT INFORMATIVE'}")
         if reg:
