@@ -33,23 +33,34 @@ def main() -> int:
         kv = dict(re.findall(r"(\w+)=(\S+)", open(os.path.join(d, "META"), encoding="utf-8").read()))
         r = np.loadtxt(os.path.join(d, "conf.dat"), comments="#", ndmin=2)[:, 3]
         small = r < 1.5
-        FS, FL = [], []
+        FS, FL, GS, GL = [], [], [], []
         for strain, _q, s in snapshots(glob.glob(os.path.join(d, "int_*.dat"))[0]):
             if not (2.0 <= strain <= 4.0):
                 continue
             i, j = s[:, 0].astype(int), s[:, 1].astype(int)
             ns = small[i].astype(int) + small[j].astype(int)
-            f = s[:, 7] + s[:, 11] + s[:, 15]
+            f = s[:, 7] + s[:, 11] + s[:, 15]      # col 12 (contact normal) is exactly 0 for state 0; kept for clarity
             nt = (s[:, 2] < 1) & (f > 0)
             FS.extend(f[nt & (ns == 2)]); FL.extend(f[nt & (ns == 0)])
+            GS.extend(s[nt & (ns == 2), 6]); GL.extend(s[nt & (ns == 0), 6])
         ratio = float(np.mean(FL) / np.mean(FS))
-        rows.append((float(kv["SIG"]), int(kv["SEED"]), ratio, math.log(ratio) / math.log(2)))
+        # Referee pass 1 (2026-09-28): beta depends on which separations are averaged. Condition on the dimensionless gap:
+        # the bottom and top quartile of each pair type's own gap distribution (near-contact = the pairs about to activate).
+        FS, FL, GS, GL = map(np.asarray, (FS, FL, GS, GL))
+        qs, ql = np.quantile(GS, [0.25, 0.75]), np.quantile(GL, [0.25, 0.75])
+        near = math.log(FL[GL <= ql[0]].mean() / FS[GS <= qs[0]].mean()) / math.log(2)
+        far = math.log(FL[GL >= ql[1]].mean() / FS[GS >= qs[1]].mean()) / math.log(2)
+        rows.append((float(kv["SIG"]), int(kv["SEED"]), ratio, math.log(ratio) / math.log(2), near, far))
     for sig in sorted({x[0] for x in rows}):
         g = [x for x in rows if x[0] == sig]
         lines.append(f"  sigma {sig:5.1f}: LL/SS " + " ".join(f"{x[2]:.2f}" for x in g) + "   beta " + " ".join(f"{x[3]:.2f}" for x in g))
     b = np.array([x[3] for x in rows if x[0] <= 4.5])
     lines.append(f"  sigma <= 4.5 (the activation range): beta {b.mean():.3f} (sd {b.std(ddof=1):.3f}, n {b.size}) "
                  f"-> Derjaguin-predicted m = {b.mean() - 1:.3f}; constant-force-predicted m = {b.mean():.3f}")
+    bn = np.array([x[4] for x in rows if x[0] <= 4.5]); bf = np.array([x[5] for x in rows if x[0] <= 4.5])
+    lines.append(f"  gap-conditioned (sigma <= 4.5): NEAR-contact quartile beta {bn.mean():.3f} (sd {bn.std(ddof=1):.3f}) -> Derjaguin m "
+                 f"{bn.mean() - 1:.3f}; FAR quartile beta {bf.mean():.3f} (sd {bf.std(ddof=1):.3f}). The near-contact pairs are the "
+                 f"ones whose load decides activation; the pooled value depends on the lub_max_gap cutoff.")
     txt = "\n".join(lines) + "\n"
     print(txt)
     with open(os.path.join(OUT, "binload_lfsig2bi.txt"), "w", encoding="utf-8", newline="\n") as fh:

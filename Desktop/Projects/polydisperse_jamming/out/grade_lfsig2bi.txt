@@ -37,7 +37,7 @@ pairtype -- PREREG_LFSIG2 Amendment 7: per-pair-type activation in a binary susp
 
   POST HOC (not registered): first-crossing sigma_half per type (no monotonicity requirement); binomial s.e. of the
   plateau-normalised LL fraction shown so the size of the dips that void the registered readout can be judged
-    seed 1: SS 3.495  SL 3.270  LL 2.347  -> SS/LL 1.489, SL/LL 1.393  (LL pairs per dump ~319, normalised binomial s.e. ~0.082)
-    seed 2: SS 3.918  SL 3.833  LL 2.362  -> SS/LL 1.659, SL/LL 1.623  (LL pairs per dump ~303, normalised binomial s.e. ~0.078)
-    seed 3: SS 3.734  SL 3.838  LL 2.343  -> SS/LL 1.594, SL/LL 1.638  (LL pairs per dump ~297, normalised binomial s.e. ~0.088)
+    seed 1: SS 3.495  SL 3.270  LL 2.347  -> SS/LL 1.489, SL/LL 1.393  (LL pairs per dump ~106, normalised binomial s.e. ~0.142)
+    seed 2: SS 3.918  SL 3.833  LL 2.362  -> SS/LL 1.659, SL/LL 1.623  (LL pairs per dump ~101, normalised binomial s.e. ~0.135)
+    seed 3: SS 3.734  SL 3.838  LL 2.343  -> SS/LL 1.594, SL/LL 1.638  (LL pairs per dump ~99, normalised binomial s.e. ~0.153)
     SS/LL first-crossing: ratio 1.579, ln se 0.0315 (n 3); m_eff = ln ratio / ln 2 = 0.66 (Derjaguin 1, constant force 2)

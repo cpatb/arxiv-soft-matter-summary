@@ -59,9 +59,11 @@ def cell(d: str) -> dict | None:
     small = r < 1.5
     tot = {"SS": 0, "SL": 0, "LL": 0}
     hit = {"SS": 0, "SL": 0, "LL": 0}
+    nsnap = 0
     for strain, _rate, s in snapshots(ints[0]):
         if not (W0 <= strain <= W1):
             continue
+        nsnap += 1
         i, j = s[:, 0].astype(int), s[:, 1].astype(int)
         ns = small[i].astype(int) + small[j].astype(int)
         t = s[:, 2] >= 1
@@ -71,7 +73,7 @@ def cell(d: str) -> dict | None:
             hit[key] += int((m & t).sum())
     frac = {k: hit[k] / tot[k] if tot[k] else float("nan") for k in tot}
     return {"label": kv["LABEL"], "sig": float(kv["SIG"]), "seed": int(kv["SEED"]), "rc": rc, "healthy": healthy,
-            "overlap": overlap, "frac": frac, "tot": tot}
+            "overlap": overlap, "frac": frac, "tot": tot, "nsnap": nsnap}
 
 
 def shalf(sig: np.ndarray, f: np.ndarray) -> float:
@@ -106,7 +108,9 @@ def post_hoc(by: dict) -> None:
         for key in ("SS", "SL", "LL"):
             f = np.array([by[(sd, x)]["frac"][key] for x in SIGMAS])
             sh[key] = shalf_first(s, f / f[-1])
-        n_ll = np.mean([by[(sd, x)]["tot"]["LL"] for x in SIGMAS])
+        # per-DUMP count: tot is summed over the window's snapshots (referee pass 1). The s.e. treats one dump's pairs as
+        # independent draws; the snapshots re-sample largely the same 56 large grains, so pooling them would overstate n.
+        n_ll = np.mean([by[(sd, x)]["tot"]["LL"] / max(by[(sd, x)]["nsnap"], 1) for x in SIGMAS])
         f_ll = by[(sd, 100.0)]["frac"]["LL"]
         se_ll = math.sqrt(f_ll * (1 - f_ll) / n_ll) / f_ll
         say(f"    seed {sd}: SS {sh['SS']:.3f}  SL {sh['SL']:.3f}  LL {sh['LL']:.3f}  -> SS/LL {sh['SS'] / sh['LL']:.3f}, "

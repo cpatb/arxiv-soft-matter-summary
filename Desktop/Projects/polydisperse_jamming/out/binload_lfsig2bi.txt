@@ -9,3 +9,4 @@ binload -- POST HOC: LL/SS load on not-yet-touching compressive pairs in the bin
   sigma  15.0: LL/SS 4.72 3.65 4.09   beta 2.24 1.87 2.03
   sigma 100.0: LL/SS 3.44 4.80 3.11   beta 1.78 2.26 1.64
   sigma <= 4.5 (the activation range): beta 1.671 (sd 0.188, n 15) -> Derjaguin-predicted m = 0.671; constant-force-predicted m = 1.671
+  gap-conditioned (sigma <= 4.5): NEAR-contact quartile beta 1.639 (sd 0.239) -> Derjaguin m 0.639; FAR quartile beta 1.012 (sd 0.215). The near-contact pairs are the ones whose load decides activation; the pooled value depends on the lub_max_gap cutoff.

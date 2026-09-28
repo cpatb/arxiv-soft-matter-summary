@@ -339,12 +339,13 @@ readout-dependence paragraph is tagged as a synthesis; its range is quoted as me
 
 ## RESULT, Amendment 7 binary arm (2026-09-28 ~05:25 CDT; `python lfdem/pairtype.py` -> `out/grade_lfsig2bi.txt`; POST HOC `python lfdem/binload.py` -> `out/binload_lfsig2bi.txt`)
 
-**Health.** 27/27 cells rc 0, strain 4, overlap <= 0.008.
+**Health.** 27/27 cells rc 0, strain 4, overlap <= 0.0084.
 
 **Registered verdict B1: NOT GRADED.** The registered readout requires each pair type's plateau-normalised touching
-fraction to be monotone in sigma. The LL series (about 300 pairs per snapshot) dips after it has crossed 1/2 on all three
-seeds (and SL on seed 2) by amounts comparable to its binomial s.e. (~0.08 normalised), so sigma_half(LL) is UNDEFINED
-as registered on every seed. The bar is not changed.
+fraction to be monotone in sigma. The LL series (about 100 listed pairs per dump, 3 dumps in the window) overshoots its
+plateau after it has crossed 1/2 on all three seeds (to 1.044 at sigma 15, back to 1.000 at 100; and SL on seed 2), well
+inside a one-dump binomial s.e. of ~0.14 normalised, so sigma_half(LL) is UNDEFINED as registered on every seed. The bar is
+not changed.
 
 **POST HOC, labelled, not registered.** (1) First-crossing sigma_half (the same log-linear interpolation, without the
 monotonicity requirement; the dips all come after the crossing): SS/LL = **1.579**, ln se 0.0315, n 3 (1.489 / 1.659 / 1.594),
@@ -354,7 +355,11 @@ level: Derjaguin with mean-field load predicts 2 (m 1), a size-independent criti
 LL/SS is 2.6-4.1 (15 cells), i.e. the load-size exponent is **beta = 1.67** (sd 0.19), not the mean-field 2 (it was 1.9-2.1 in
 the lognormal packs). A Derjaguin threshold then predicts m = beta - 1 = **0.67**; the measured 0.66 matches. A constant
 critical load would predict m = beta = 1.67, excluded. This closure was computed AFTER the ratio was seen, on an observable
-(the pre-contact load) that does not involve activation.
+(the pre-contact load) that does not involve activation. **Sensitivity (referee pass 1):** beta depends on which separations
+are averaged. Conditioned on each pair type's own gap quartiles, the NEAR-contact quartile (the pairs about to activate) gives
+beta **1.64** (sd 0.24; Derjaguin m 0.64, inside the measured [0.46, 0.86]), the FAR quartile 1.01 (sd 0.22). The closure
+holds on the physically relevant population; the pooled 1.67 sits near it only because the listed-pair cutoff is
+lub_max_gap 0.5, and a wider cutoff would pull the pooled value toward 1.
 
 **Reading.** The per-pair activation is consistent with a Derjaguin (electrostatic, threshold ~ R*) contact law and not with
 the size-independent critical load of the constant-force picture; the size selectivity is weaker than naive because in this
@@ -362,3 +367,5 @@ binary the load grows slower than the pair area. Scope: one size ratio, one comp
 registered readout could not grade it, so this is a strong descriptive result, not a registered one. The next registered
 test should use a readout robust to post-crossing noise (first crossing, or a logistic fit per type) and more LL pairs
 (larger N or a higher large-grain volume fraction).
+
+*Referee pass 1 on the binary RESULT (2026-09-28 ~05:30): no FATAL; the registered verdict and its pre-data bar confirmed from git history; MATERIAL (beta depends on the gap population) acted on with a gap-conditioned beta in `binload.py` (near-contact 1.64 keeps the closure); MINOR per-dump label and s.e. corrected in `pairtype.py` (~100 LL pairs per dump, s.e. ~0.14); overlap bound quoted as 0.0084.*
