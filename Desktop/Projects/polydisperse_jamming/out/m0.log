@@ -1,0 +1,7 @@
+shape: N_cells_total=2 N_on_this_shard=2 N_already_done=0 shard=0/1 family=lognormal alphas=(1.0,) cvs=(0.0,) seeds=(99,) phats=(0.001,) N_grains=600 -> /home/cpb/pj/out/phase2_rcsmoke_m0_lognormal.jsonl
+Using python version: 3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]
+[logn] a=1.00 eps=0.000 dup=0.000 nraw=1934 phi_por=0.643154 cv=0.00 mu=0.00 phat_t=1.0e-03 N=600 s=99 -> phi=0.6432 phat=1.000e-03 Zall=6.447 rat(k2/3/4)=0.003/0.003/0.003 Znr(k2/3/4)=6.47/6.47/6.47 conv=True it=18281 20.4s
+  [1/2] elapsed 0.4 min
+[logn] a=1.00 eps=0.000 dup=0.000 nraw=1934 phi_por=0.643154 cv=0.00 mu=0.00 phat_t=1.0e-03 N=600 s=99 -> phi=0.6432 phat=1.000e-03 Zall=6.447 rat(k2/3/4)=0.003/0.003/0.003 Znr(k2/3/4)=6.47/6.47/6.47 conv=True it=18281 18.6s
+  [2/2] elapsed 0.7 min
+shape done in 0.7 min: N_run=2 N_skipped_already_done=0 N_failed=0

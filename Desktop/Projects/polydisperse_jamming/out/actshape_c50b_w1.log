@@ -1,0 +1,4 @@
+phase9: 6 cells total, 1 on shard 1/6, gamma_max=3.0, steps=960000, 0 already done -> /home/cpb/pj/out/phase9_actshape_c50b_shard01of06.jsonl
+Using python version: 3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]
+[shearP logn] cv=0.50 mu=0.00 p*=1.000e-04 K=0.15 phi0=0.550015 N=1000 s=2 -> phi_ss=0.685993 p_err=+6.2% held=False alpha=1.71(0.65dec) mu_M=0.220 Z=2.99 I=5.23e-03 steady=True(0.09/0.00) 2205.4s
+phase9 shard 1: ran 1 cells in 2207 s -> /home/cpb/pj/out/phase9_actshape_c50b_shard01of06.jsonl

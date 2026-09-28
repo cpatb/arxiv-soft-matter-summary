@@ -1,0 +1,33 @@
+# JAM_FHAT=1 (jam_frac, u_rms_jam threshold on fhat; default 0.5)
+# ============================================================
+# Wyart-Cates f-field drop impact | PARAMSET=FIT20260720+env preset=cs_fit
+#   tau_relax and tau_up are PLACEHOLDER in EVERY paramset (steady flow
+#   curves cannot set transient clocks) -- tag any tau-dependent result.
+# U0=4 We=800.0 phi=0.53601 phi0=0.62 phiM=0.56855 sigma*=300 Pa delta=1.3169
+# eta_s=0.003939 Pa.s tau_relax=0.02 s tau_up=0.5 tau_ic | eps_min=0.01 -> eta_max=2.74 code
+# sigma*_code=0.01562 eta_s_code=0.0002735 tau_relax_code=26.67 tmax=60.0 L9 box8
+# theta0=5 deg (substrate wettability; experiment reports 100-150 deg --
+#   the default 5 is inherited from power_law_drop.c and is NOT justified)
+# CLOCK=1  MEASURED strain law: dfhat/dt = -(gd/gamma0 + 1/t_r)(fhat - fss). gamma0 and t_r are measured (Richards PRL 123 038004; Han PRF 3 073301). TAU_RELAX/TAU_UP printed above are INERT and carried only for the tag.
+# DIL_COEFF=0 (Reynolds dilatancy: p_dil/rho U0^2 per unit code strain
+#   rate at phi_ref=0.49; perm_factor(phi)=1.589 here). 0 = term inert.
+# DIL_CEIL=0 (saturation of p_dil, in rho U0^2; <=0 = no ceiling.
+#   physical scales: bulk K_p*dphi/phi, boundary ~0.1*gamma/a -- see the
+#   DIL_CEIL block; the SMALLER one binds)
+# MU_MIX=arithmetic EPS_SOFT=0 FJMAX=0.001 (numeric knobs; the defaults
+#   arithmetic/0/1e-3 are byte-identical to the pre-2026-08-19
+#   binary, proved by cmp on the output series, not assumed)
+# MEASURE_NSAMP=240 -> measure_dt=0.25 (spread cadence; 240 is
+#   byte-identical to the pre-2026-08-29 binary.  A finer cadence
+#   sharpens the spread ONSET; it CANNOT add levels to the extremal,
+#   grid-quantized beta -- pair it with the SHAPE_MODE moments)
+# PROBE_MODE=0 A=0.001 omega=1 ncyc=8 nsamp=20 | NONLOC_ALPHA=0 fmin=0.9
+#   (probe off and alpha=0 are byte-identical to the pre-patch binary;
+#    omega* from this probe measures the solver response to a TYPED-IN
+#    clock -- tau_relax/tau_up stay PLACEHOLDER and bench-blocked)
+# DTFLOOR_FACT=1 (multiplier on the dt-collapse guard floor; the
+#   floor scales with LEVEL but not with CFL, so a CFL ladder needs
+#   DTFLOOR_FACT = CFL/CFL_baseline to stay de-confounded)
+# tag=WC_FIT20260720+env_cs_fit_U4.0_phi0.53601_ss300_tr0.02_e0.01_th5_L9_clk1_trr0.24
+# ============================================================
+# CFL requested=0.1 in force=0.1 (vof.h clamps to <=0.5; values above that are capped)

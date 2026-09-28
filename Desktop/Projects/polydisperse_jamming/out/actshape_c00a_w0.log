@@ -1,0 +1,15 @@
+phase9: 12 cells total, 12 on shard 0/1, gamma_max=3.0, steps=102000, 0 already done -> /home/cpb/pj/out/phase9_actshape_c00a.jsonl
+Using python version: 3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]
+[shearP logn] cv=0.00 mu=0.00 p*=3.000e-04 K=0.15 phi0=0.550000 N=1000 s=1 -> phi_ss=0.626721 p_err=+1.5% held=True alpha=7.76(3.26dec) mu_M=0.192 Z=5.42 I=6.84e-03 steady=True(0.01/0.00) 355.5s
+[shearP logn] cv=0.00 mu=0.00 p*=1.000e-03 K=0.15 phi0=0.550000 N=1000 s=1 -> phi_ss=0.635464 p_err=+1.0% held=True alpha=5.09(2.14dec) mu_M=0.162 Z=6.13 I=3.70e-03 steady=True(0.05/0.00) 386.6s
+[shearP logn] cv=0.00 mu=0.00 p*=3.000e-04 K=0.15 phi0=0.550000 N=1000 s=2 -> phi_ss=0.626270 p_err=+0.1% held=True alpha=6.58(2.99dec) mu_M=0.198 Z=5.53 I=6.80e-03 steady=True(0.04/0.00) 578.9s
+[shearP logn] cv=0.00 mu=0.00 p*=1.000e-03 K=0.15 phi0=0.550000 N=1000 s=2 -> phi_ss=0.635157 p_err=+1.1% held=True alpha=5.87(2.89dec) mu_M=0.159 Z=6.05 I=3.70e-03 steady=True(0.02/0.00) 719.8s
+[shearP logn] cv=0.00 mu=0.00 p*=3.000e-04 K=0.15 phi0=0.550000 N=1000 s=3 -> phi_ss=0.628056 p_err=+0.4% held=True alpha=5.08(1.64dec) mu_M=0.198 Z=5.59 I=6.78e-03 steady=True(0.03/0.00) 481.0s
+[shearP logn] cv=0.00 mu=0.00 p*=1.000e-03 K=0.15 phi0=0.550000 N=1000 s=3 -> phi_ss=0.635341 p_err=+1.3% held=True alpha=4.62(1.61dec) mu_M=0.158 Z=6.07 I=3.70e-03 steady=True(0.07/0.00) 352.2s
+[shearP logn] cv=0.00 mu=0.30 p*=3.000e-04 K=0.15 phi0=0.550000 N=1000 s=1 -> phi_ss=0.590731 p_err=+4.3% held=True alpha=3.33(1.14dec) mu_M=0.377 Z=4.58 I=6.94e-03 steady=True(0.04/0.00) 309.6s
+[shearP logn] cv=0.00 mu=0.30 p*=1.000e-03 K=0.15 phi0=0.550000 N=1000 s=1 -> phi_ss=0.593075 p_err=+4.6% held=True alpha=6.67(3.90dec) mu_M=0.367 Z=4.85 I=3.81e-03 steady=True(0.12/0.00) 296.6s
+[shearP logn] cv=0.00 mu=0.30 p*=3.000e-04 K=0.15 phi0=0.550000 N=1000 s=2 -> phi_ss=0.591375 p_err=+0.5% held=True alpha=9.59(4.18dec) mu_M=0.377 Z=4.40 I=6.77e-03 steady=True(0.04/0.00) 185.5s
+[shearP logn] cv=0.00 mu=0.30 p*=1.000e-03 K=0.15 phi0=0.550000 N=1000 s=2 -> phi_ss=0.595169 p_err=+1.2% held=True alpha=7.33(3.71dec) mu_M=0.373 Z=4.82 I=3.74e-03 steady=True(0.03/0.00) 151.8s
+[shearP logn] cv=0.00 mu=0.30 p*=3.000e-04 K=0.15 phi0=0.550000 N=1000 s=3 -> phi_ss=0.591617 p_err=+2.4% held=True alpha=7.63(3.60dec) mu_M=0.379 Z=4.48 I=6.88e-03 steady=True(0.06/0.00) 118.8s
+[shearP logn] cv=0.00 mu=0.30 p*=1.000e-03 K=0.15 phi0=0.550000 N=1000 s=3 -> phi_ss=0.596408 p_err=+4.4% held=True alpha=4.29(1.52dec) mu_M=0.371 Z=4.72 I=3.64e-03 steady=True(0.02/0.00) 103.3s
+phase9 shard 0: ran 12 cells in 4041 s -> /home/cpb/pj/out/phase9_actshape_c00a.jsonl

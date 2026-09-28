@@ -1,0 +1,4 @@
+{"label":"A_s30_d0.7","campaign":"jamwin_2026-09-22","binary_md5":"db413e87dd21","phi":"0.589",
+ "delta":"0.7","sigma_star":"30","jam_fhat_requested":"0.25","jam_fhat_banner":"0.25",
+ "banner":"# U0=2 We=200.0 phi=0.589 phi0=0.62 phiM=0.496 sigma*=30 Pa delta=0.7","rc":2,"wall_s":1893,"n_rows":6,"last_t_over_tau":0.125,
+ "finished":"2026-09-22T14:03:43-05:00"}

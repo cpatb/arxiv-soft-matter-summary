@@ -111,3 +111,11 @@ snapshot. N1 (node robustness): **FAIL** at ε 0.5 and 0.9 (§2). Nothing below 
 3. For the bench: a lower χ (wider window) for fractionated cornstarch than for Stöber silica at matched CV is now the
    direction BOTH shape mechanisms predict; the facet-specific signature the withdrawn pilot proposed (a lower
    frictionless φ₀) is withdrawn with it.
+
+## Addendum (2026-09-27 19:40 CDT, snapshot `out/grade_facet_snapshot_2026-09-27_1940.txt`)
+- **F6 ε 0.5: RISE (registered).** φ_m(μ_p 0.3) − sphere = +0.0460, se_eff 0.0033, positive on 3/3 seeds (+0.040, +0.048,
+  +0.051). Node-refinement caveat of §2 still applies (N1 FAIL); the smallest node-variant gap (+0.027) remains 2.5× the
+  sphere's converged noise densification.
+- **F6 ε 0.9: UNRESOLVED** (+0.018, se_eff 0.0085).
+- **Final INCOMPLETE by the health rule (cells hit the 300 000-iteration cap unconverged):** F6 ε 0.8 (seed 3) and ε 0.7
+  (seed 2); F7/F8 at ε 0.5 (all three μ_p 0.1 seeds) and ε 0.9 (seed 2). The μ_p 0.1 edge therefore stays descriptive.

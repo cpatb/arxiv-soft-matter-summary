@@ -1,0 +1,9 @@
+phase9: 6 cells total, 6 on shard 0/1, gamma_max=3.0, steps=204000, 0 already done -> /home/cpb/pj/out/phase9_actshape_c00b.jsonl
+Using python version: 3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]
+[shearP logn] cv=0.00 mu=0.00 p*=1.000e-04 K=0.15 phi0=0.550000 N=1000 s=1 -> phi_ss=0.624786 p_err=+1.0% held=True alpha=6.2(2.37dec) mu_M=0.207 Z=5.16 I=5.91e-03 steady=True(0.04/0.00) 689.6s
+[shearP logn] cv=0.00 mu=0.00 p*=1.000e-04 K=0.15 phi0=0.550000 N=1000 s=2 -> phi_ss=0.625365 p_err=+0.9% held=True alpha=5.09(1.53dec) mu_M=0.203 Z=5.07 I=5.91e-03 steady=True(0.05/0.00) 1159.6s
+[shearP logn] cv=0.00 mu=0.00 p*=1.000e-04 K=0.15 phi0=0.550000 N=1000 s=3 -> phi_ss=0.624560 p_err=+0.8% held=True alpha=6.16(2.81dec) mu_M=0.204 Z=4.97 I=5.90e-03 steady=True(0.02/0.00) 821.6s
+[shearP logn] cv=0.00 mu=0.30 p*=1.000e-04 K=0.15 phi0=0.550000 N=1000 s=1 -> phi_ss=0.590134 p_err=+0.4% held=True alpha=6.33(2.92dec) mu_M=0.383 Z=4.45 I=5.87e-03 steady=True(0.04/0.00) 568.8s
+[shearP logn] cv=0.00 mu=0.30 p*=1.000e-04 K=0.15 phi0=0.550000 N=1000 s=2 -> phi_ss=0.589331 p_err=+0.3% held=True alpha=5.89(2.62dec) mu_M=0.378 Z=4.52 I=5.89e-03 steady=True(0.14/0.00) 420.9s
+[shearP logn] cv=0.00 mu=0.30 p*=1.000e-04 K=0.15 phi0=0.550000 N=1000 s=3 -> phi_ss=0.590281 p_err=+0.4% held=True alpha=3.33(1.11dec) mu_M=0.379 Z=4.21 I=5.87e-03 steady=True(0.03/0.01) 256.7s
+phase9 shard 0: ran 6 cells in 3919 s -> /home/cpb/pj/out/phase9_actshape_c00b.jsonl
