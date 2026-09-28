@@ -96,7 +96,7 @@ def main() -> None:
     # silica 5 1/s the fit then has no interior optimum (scripts/probe_start_sensitivity.py,
     # logs/probe_start_sensitivity.txt). That is stated in the text, not hidden here.
     SHIFT = 0.2  # strain; covers the ~0.15 trough ambiguity probe_rebuild_lag found
-    worst, worst_strain = 1.0, 0.0
+    worst = 1.0
     lam_range = {}  # (panel, rate) -> (min, max) over after-minimum starts
     for panel, steady in G.PAIRS:
         d = rev[panel]
@@ -124,11 +124,10 @@ def main() -> None:
                 lams.append(lam)
                 r = max(lam / base, base / lam)
                 if r > worst:
-                    worst, worst_strain = r, gb[j] - gb[i0]
+                    worst = r
             lam_range[(panel, rate)] = (min(lams), max(lams))
     m["startShiftRange"] = fmt(SHIFT)
     m["startShiftWorst"] = fmt(worst)
-    m["startShiftStrain"] = fmt(worst_strain)
     # does the silica fall with rate survive the start ambiguity? lower bound on the fall
     # = smallest clock at the lowest rate over the largest at the highest rate
     si_rates = sorted(r for (p, r) in lam_range if p == "Fig_2b")
@@ -142,7 +141,10 @@ def main() -> None:
     print("silica after-min clock ranges:",
           {r: tuple(round(v, 3) for v in lam_range[("Fig_2b", r)]) for r in si_rates},
           "fully ordered:", ordered, "separated pairs:", sep)
-    m["fallOrderedSi"] = "all four" if ordered else "not all"
+    # main.tex (Results, "on silica the clock falls") states in PROSE that 0.5 > 1 > 2 stay
+    # ordered and 2 vs 5 overlap. Fail loudly if the data ever stops saying that.
+    assert sep == ["0.5/1", "1/2"] and not ordered, (
+        f"separated pairs now {sep}: rewrite the ordering sentence in main.tex")
 
     # --- referee findings 3/4: the two-component numbers, parsed from the probe's output
     out = subprocess.run([sys.executable, str(ROOT / "scripts" / "probe_two_clock.py")],
