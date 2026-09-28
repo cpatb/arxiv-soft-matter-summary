@@ -1,0 +1,33 @@
+% DRAFT for Paper B (PAPER_FRAMING_2026-09-27.md, section 6 "Onset"), written 2026-09-28 06:00; not part of any manuscript.
+% Every number is quoted from PREREG_LFSIG2_2026-09-27.md (RESULT blocks, refereed x2) and out/grade_lfsig2.txt,
+% out/mech_lfsig2.txt; before use each must become a macro printed by a script, as in paper/numbers.tex.
+% Registered vs post hoc is kept explicit in the text.
+
+\subsection{Polydispersity broadens the thickening onset but barely moves it}
+
+The drop simulations above take the onset stress $\sigma^*$ and the activation exponent $\delta$ as inputs. In dry frictional
+packings, a geometric chain built on the exact Love--Weber identity predicts that raising the size-distribution width from
+$\CV=0.2$ to $0.5$ at fixed number-mean radius lowers $\sigma^*$ by a factor $0.77$, through the contact density $Z\phi$.
+We tested that prediction in lubricated simulations (LF-DEM, electrostatic repulsion scaled by the reduced radius, Coulomb
+friction $\mu=0.3$, $N=500$, three paired configurations per width, nine stresses; pre-registered), where contacts form only
+once the stress overcomes the repulsion.
+
+The prediction fails. The Wyart--Cates activation fitted to the frictional contact number gives
+$\sigma^*(0.5)/\sigma^*(0.2)=0.955$, and the half-activation stress moves by the same amount ($0.96$). The dry-packing
+value $0.77$ is excluded under every error model we could construct; whether the small remaining shift is resolved depends
+on whether the seed pairing is allowed to cancel the fit uncertainty, and with the fit error included it is consistent with
+no shift at all. Against monodisperse spheres the ratio is $0.89$ ($95\,\%$ band $0.79$--$1.00$). What does change is the
+\emph{shape} of the activation: $\delta$ falls by a factor $0.735$ ($95\,\%$ band $0.62$--$0.87$), a larger broadening than
+the dry packings predict. Because the curve broadens, a single ``onset stress'' is itself readout-dependent at the level of
+$-19\,\%$ to $+11\,\%$, and we quote the midpoint.
+
+The dry chain is not wrong; it describes a different network. Its geometric factor $G=(N_c/V)\langle a_ia_j\rangle_c$ falls
+by $0.70$--$0.86$ with width once the network is fully activated, reproducing the dry $0.77$, but it is width-neutral
+($0.94$) at each suspension's own onset. The first contacts to form are enriched in large pairs, as Guy \emph{et al.} found
+for bidisperse suspensions with a size-independent contact threshold~\cite{guy2020testing}, and more so the wider the
+distribution. The size-selected onset network therefore carries the same geometric factor whatever the width, and the
+onset barely moves.
+
+For the drop this sharpens the conclusion of Sec.~\ref{sec:dns}: size polydispersity acts on an impacting drop through the
+jamming window $\chi$, not through its thickening onset. The only activation parameter it changes appreciably is $\delta$,
+and the drop simulations are insensitive to it at the impact stresses of interest.
