@@ -334,3 +334,5 @@ change of size, which the drop was shown insensitive to.
 now enforced in the grader (CV 0.35's fits fail it, so P5 is NOT GRADED and the 0.35 R1 contrasts are withdrawn; P1/P2/P3/Q1
 unchanged because CV 0, 0.2 and 0.5 pass it on every seed); the x-mismatch bracket is now the MEASURED one; the
 readout-dependence paragraph is tagged as a synthesis; its range is quoted as measured; the S1 miss is quoted unrounded.*
+
+*Referee pass 2 (2026-09-28 ~04:25): converged. All five fixes verified by re-running the graders (outputs byte-identical to the committed ones, figure md5 unchanged); no side effect of the R1 gate on P1-P4, Q1, X2, S3, M3 or the figure.*
