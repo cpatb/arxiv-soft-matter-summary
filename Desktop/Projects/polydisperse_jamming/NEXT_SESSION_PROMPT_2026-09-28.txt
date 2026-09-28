@@ -11,10 +11,12 @@ State (all registered unless marked; every number is printed by a script in lfde
   Q1 CV 0 -> 0.5: 0.890 INERT (marginal). P5 NOT GRADED (CV 0.35 fits fail the residual bar). Referee x2, converged.
 - Binary ratio-2 arm (Am. 7): registered B1 NOT GRADED (LL series non-monotone after crossing). POST HOC: first-crossing
   SS/LL 1.58 [1.38, 1.81] -> m_eff 0.66; the measured pre-contact load exponent beta = 1.67 predicts m = beta - 1 = 0.67 under a
-  Derjaguin threshold; constant force (m = beta = 1.67) excluded. Referee status: see the RESULT block.
+  Derjaguin threshold (near-contact beta 1.64 -> m 0.64; far-quartile beta 1.01); constant force excluded. Referee x2,
+  converged (a fresh-context pass 2 re-ran both scripts bit-identically).
 - Prior art: large-first activation is Guy et al., Soft Matter 16, 229 (2020); claim 10 rescoped; LIT_SIGMA_CV_2026-09-27.md.
 - Rattler a^2 law: the 702-record rms is in-sample for p = 2; the OOS evidence is per-species on 135 binaries.
-- Drafts for the author (not merged): paper/draft_rattler_section.tex; PAPER_FRAMING_2026-09-27.md (refereed x2).
+- Drafts for the author (not merged): paper/draft_rattler_section.tex (Paper A); paper/draftB_section6_onset.tex (Paper B
+  onset section from lfsig2); PAPER_FRAMING_2026-09-27.md (refereed x2).
 
 Next, in order:
 1. Author calls in PAPER_FRAMING §5 (author line for Paper A; rattler section; Paper B bench anchor; Paper B venue).
