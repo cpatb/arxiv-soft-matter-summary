@@ -260,6 +260,65 @@ def x_arm(cells: dict, arms: dict, con: dict) -> None:
             say(f"  X2 {name:22s}: NOT GRADED ({len(vals)} x pairs, {len(reg)} registered pairs)")
 
 
+R_GEO0 = 0.735                  # Am. 4: dry chain sigma*(0.5)/sigma*(0), d10 (predict_cvmap.txt)
+SE_MAX0 = math.log(1.0 / R_GEO0) / (2 * T_CRIT)
+Q6_BAR = 0.3
+
+
+def cv0_arm(cells: dict) -> None:
+    """Amendment 4: the monodisperse CV 0 arm (out/lfsig2m/, labels c00_x90_s<sigma>_r<seed>, phi 0.51782), five rungs.
+    Q1 = paired ln[sigma*_WC5(0.5)/sigma*_WC5(0)], 95 %, candidates GEO 0.735 and INERT 1.000; cells with Q6 > 0.3 at the
+    last snapshot are ORDERED and excluded (Q6 from lfdem/q6_order.py, the function with the fcc/random anchors)."""
+    import q6_order
+    from mech_lfsig import snapshots
+    say("\n==== Amendment 4: monodisperse CV 0 arm (phi 0.51782, five rungs), Q1 ====")
+    dirs = [x for x in sorted(glob.glob(os.path.join(OUT, "lfsig2m", "c00*"))) if ".killed_" not in x]
+    mc = [c for c in (load_cell(d, False) for d in dirs) if c]
+    if not mc:
+        say("  no CV 0 cells yet")
+        return
+    for c, d in zip(mc, dirs):
+        ints = glob.glob(os.path.join(d, "int_*.dat"))
+        c["q6"] = float("nan")
+        if ints:
+            last = None
+            for _st, _r, s in snapshots(ints[0]):
+                last = s
+            if last is not None:
+                c["q6"] = q6_order.q6(last[last[:, 6] < q6_order.GAP_MAX, 3:6])
+        c["ordered"] = bool(np.isfinite(c["q6"]) and c["q6"] > Q6_BAR)
+    say(f"  {'label':18s} rc {'strain':>6s} {'eta':>8s} {'Zc':>6s} {'ovlp':>7s} {'Q6':>6s} ok")
+    for c in sorted(mc, key=lambda c: (c["seed"], c["sig"])):
+        say(f"  {c['label']:18s} {c['rc']:2d} {c['smax']:6.2f} {fmt(c['eta'], 8)} {fmt(c['zc'], 6)} {fmt(c['overlap'], 7, 4)} "
+            f"{fmt(c['q6'], 6)} {int(c['healthy'] and not c['ordered'])}" + ("  ORDERED (excluded)" if c["ordered"] else ""))
+    m0 = {(0.0, c["seed"], c["sig"]): c for c in mc if c["healthy"] and not c["ordered"]}
+    sub = {k: v for k, v in cells.items() if k[2] in SIGMAS_X}
+    vals = []
+    for sd in SEEDS:
+        a0 = arm_readouts(m0, 0.0, sd, SIGMAS_X)
+        a5 = arm_readouts(sub, 0.5, sd, SIGMAS_X)
+        a2 = arm_readouts(sub, 0.2, sd, SIGMAS_X)
+        if a0["complete"]:
+            say(f"  seed {sd}: CV 0 sigma*5 {fmt(a0['sstar'])} delta5 {fmt(a0['delta'])} resid {fmt(a0['resid'])} s_half {fmt(a0['shalf'])}"
+                + (f" | CV 0.2 {fmt(a2['sstar'])} | CV 0.5 {fmt(a5['sstar'])}" if a5["complete"] and a2["complete"] else ""))
+        else:
+            say(f"  seed {sd}: CV 0 INCOMPLETE (missing {a0['missing']})")
+        if a0["complete"] and a5["complete"] and np.isfinite(a0["sstar"]) and np.isfinite(a5["sstar"]):
+            vals.append(math.log(a5["sstar"] / a0["sstar"]))
+    if len(vals) < 3:
+        say(f"  Q1: NOT GRADED ({len(vals)}/3 seed pairs)")
+        return
+    v = np.array(vals); m, se = float(v.mean()), float(v.std(ddof=1) / math.sqrt(3))
+    say(f"  Q1: R0 = sigma*_WC5(0.5)/sigma*_WC5(0) = {math.exp(m):.3f}, ln se {se:.4f}; per seed " + " ".join(f"{math.exp(x):.3f}" for x in v))
+    if se >= SE_MAX0:
+        say(f"  Q1 verdict (95 %): NOT INFORMATIVE (se {se:.4f} >= {SE_MAX0:.4f})")
+        return
+    geo = abs(m - math.log(R_GEO0)) <= T_CRIT * se
+    ine = abs(m) <= T_CRIT * se
+    say(f"  95 % band [{math.exp(m - T_CRIT * se):.3f}, {math.exp(m + T_CRIT * se):.3f}] -> Q1 verdict: "
+        + ("BOTH" if geo and ine else "GEO" if geo else "INERT" if ine else "NEITHER"))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-lfsig", action="store_true", help="run the readouts on out/lfsig (seed-1 legacy cells)")
@@ -415,6 +474,7 @@ def main() -> int:
 
     if not legacy:
         x_arm(cells, arms, con)
+        cv0_arm(cells)
 
     outp = os.path.join(OUT, "grade_lfsig2_dry.txt" if legacy else "grade_lfsig2.txt")
     with open(outp, "w", encoding="utf-8", newline="\n") as fh:
