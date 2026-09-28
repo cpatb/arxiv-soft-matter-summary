@@ -223,6 +223,25 @@ for scale.}
 \label{fig:startup}
 \end{figure}
 
+\begin{table*}
+\caption{The Wyart--Cates strain clock by protocol. Literature values as stated in the
+cited works (verified in \texttt{PRIOR\_ART\_STRAIN\_CLOCK\_2026-09-27.md}); ``this work''
+values from \texttt{make\_numbers.py}.}
+\label{tab:protocol}
+\begin{ruledtabular}
+\begin{tabular}{lll}
+protocol & system & strain scale \\
+\hline
+step in stress & simulation & $0.023$~\cite{Mari2015} (used in~\cite{Chacko2018}) \\
+imposed rate & corn starch & $O(10^{-1})$~\cite{Richards2019} \\
+start-up (fronts) & corn starch & $\gamma^*\approx0.197$, other closure~\cite{Han2018} \\
+start-up, constant $\sigma$ & $4\,\mu$m silica & abrupt at $\gamma_j=\suJamLo$--$\suJamHi$ (this work) \\
+reversal & $2\,\mu$m silica & $\gamma_0=\fullLoSi$--$\fullHiSi$ (this work) \\
+reversal & $1.4\,\mu$m PMMA & $\gamma_0=\fullLoPm$--$\fullHiPm$ (this work) \\
+\end{tabular}
+\end{ruledtabular}
+\end{table*}
+
 \section{Discussion}
 
 Three statements survive every estimator we tried.
@@ -234,7 +253,7 @@ Eq.~(\ref{eq:relax}) with a time term forbids.
 (iii) Reversal drives these suspensions below the model's frictionless floor. A scalar
 $f$ can describe the recovery only after that state has been left.
 
-Together these say that $\gamma_0$ is a property of a \emph{protocol and a definition},
+Together with Table~\ref{tab:protocol}, these say that $\gamma_0$ is a property of a \emph{protocol and a definition},
 not a material constant. Step, start-up and reversal probe different parts of the
 microstructure's response. A scalar $f$ cannot distinguish them. The same record gives
 clocks differing by $\ctlDiffPct\%$ depending on whether ``frictional fraction'' means a
