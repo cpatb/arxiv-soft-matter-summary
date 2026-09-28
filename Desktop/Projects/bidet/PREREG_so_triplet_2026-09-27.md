@@ -102,6 +102,17 @@ must resolve (the refine-1 FO/SO difference in `n_t` was 1.2 %).
 triplet (§3d, "cannot run") may be gradeable after all. It is graded as a SEPARATE,
 first-order family and does not enter S1-S5.
 
+## Amendment 3 (23:35, before any SO refine-1.5/2.25 gate value was printed): S7
+
+The first-order study's trouble appears only at its finest step (refine 2 → 4; the midfine
+family shows C_P merely wandering over refine 1–2), so a triplet ending at 2.25 could
+pass S1 without testing the regime that failed. **S7 (reported, not part of S1-S5):** SO
+refine 3.375 (nx 405, nrj 54, nro 810; r = 1.5 again, all integer), started by
+mapFieldsPar from SO refine 2.25, health H1/H2 and the S6 Cauchy continuation as above;
+the second SO triplet 3.375 / 2.25 / 1.5 is graded with the same classification. If
+S1 passes and S7's triplet is not monotone-converging, S1's pass is reported as not
+robust to further refinement.
+
 ## What will NOT be done
 
 No bar is loosened after data. p outside [0.5, 2.5] is reported, not re-banded. If the
