@@ -9,8 +9,9 @@ the file named beside it; nothing here is new data. Status words: **standing** (
 Two papers, with a possible third short one decided by tonight's σ\* result.
 **Paper A** is the packing paper already drafted (`paper/main.tex`): the shape of the size distribution, not its width,
 sets φ_J. It is nearly ready and should go out first, strengthened by one addition that explains its own rattler
-finding. **Paper B** is the paper the programme was built for: *for a drop driven past onset, every particle property
-acts through two packing ratios, x = φ/φ₀ and χ = φ_m/φ₀*. The DNS shows the jam-to-spread switch goes entirely through
+finding. **Paper B** is the paper the programme was built for: *for a drop driven past onset, the size distribution and aggregation act
+through two packing ratios, x = φ/φ₀ and χ = φ_m/φ₀* (drop-tested on those two axes; friction and shape are predicted
+by the same reduction from DEM χ but were never run through the drop solver). The DNS shows the jam-to-spread switch goes entirely through
 χ, and it gives experimentalists a hard warning: the footprint cannot tell a jammed drop from a thickened one.
 Paper B needs one bench anchor before submission. The σ\* work becomes either a section of B or a short letter (C).
 
@@ -39,9 +40,13 @@ Scope it honestly: multi-class packs spanning ratio 4 do worse (rms 0.11–0.12,
 
 ## 2. Paper B — particle tuning of drop impact reduces to two packing ratios
 
-**The one-sentence claim.** Once an impact is past the thickening onset, size distribution, distribution shape,
-aggregation, friction and grain shape change a dense-suspension drop's fate through two packing ratios, x and χ.
-The onset stress σ\*, which carries size and surface potential, only decides *whether* the drop reaches that regime.
+**The one-sentence claim.** Once an impact is past the thickening onset, the size distribution and one-primary
+aggregation change a dense-suspension drop's fate through two packing ratios, x and χ, with the activation channel
+carrying under 0.05 % (CV) and 0.08 % (doublets, U₀ 4). Those are the only two particle axes run through the drop solver.
+Friction, elongation, concavity and facets are shown to move χ in dry DEM, which makes them *predicted* by the reduction,
+not tested in the drop (`REGIME_MAP_2026-09-26.md`: "Whether friction, shape and potential also collapse onto (x, χ) in
+the drop was not tested directly"). The onset stress σ\*, which carries size and surface potential, decides *whether*
+the drop reaches that regime.
 
 ### Proposed structure and the evidence under each section
 
@@ -49,11 +54,11 @@ The onset stress σ\*, which carries size and surface potential, only decides *w
 |---|---|---|---|
 | 1 | **Reduction.** Wyart–Cates is exactly covariant in (φ, φ₀, φ_m) → (x, χ, σ\*, δ, n); exact phase diagram: x < χ never jams, χ ≤ x < 1 is the shear-jamming window | `PROGRAMME_2026-09-22.md` §1; `derivations/thickening_type_2026-09-25.md` | standing (algebra) |
 | 2 | **The drop sees two classes, not three.** CST vs DST is invisible: over 20 drops, peak spread is strictly monotone in Θ = [(1−x)/(1−x/χ)]ⁿ with no jump at x_DST. Drops are either jammable (x ≥ χ) or stiffened by Θ | `PREREG_DSTTYPE_2026-09-26` RESULT (D4 cleanest; D1′ UNDETERMINED) | scoped (one closure, n = 2) |
-| 3 | **The knob atlas (DEM).** What each particle property does to χ, with sign: CV narrows the window slightly and lowers x (w 1.00 → 0.76, φ₀ +9.9 %); family shape moves x as much as CV; doublets widen it ×1.49 (χ 0.908 → 0.863, μ_p 0.3, on the ideal-mixing curve); elongation and concavity widen it; convex facets RAISE φ with no simulated narrowing; friction widens it (0.09 → 0.11) | `ANSWER_2026-09-23.md` §2; `REGIME_MAP_2026-09-26.md` §2; `grade_kmer.txt`; `FACET_RESULT_2026-09-27.md` | standing, with per-row scope |
+| 3 | **The knob atlas (DEM).** What each particle property does to χ, with sign: CV narrows the window slightly and lowers x (w 1.00 → 0.76, φ₀ +9.9 %); family shape moves x as much as CV; doublets widen it ×1.49 (χ 0.908 → 0.863, μ_p 0.3, within ±0.005 of ideal mixing); elongation and concavity widen it; friction widens it (0.09 → 0.11); rolling resistance reproduces the doublet's φ_m by the opposite geometry (R3, R7 ρ 0.97), a friction–shape degeneracy worth one sentence. Convex facets RAISE φ with no simulated narrowing | `ANSWER_2026-09-23.md` §2; `REGIME_MAP_2026-09-26.md` §2; `grade_kmer.txt`; `grade_rollchi.txt`; `FACET_RESULT_2026-09-27.md` | CV, family, doublets, friction, rolling: standing. Facets: **descriptive only** (F6 one registered RISE at ε 0.5; F7/F8 INCOMPLETE; node check FAIL) |
 | 4 | **The DNS test (the heart).** At fixed weighed φ, CV 0 → 0.5 turns a drop that jams (J 0.29–0.91) into one that cannot, and it spreads 35–67 % further at peak. The window channel carries 99.5–101.8 % of the change and activation < 0.05 %. Doublets jam where singlets cannot (x 0.88), and χ alone reproduces it (J 0.0591 vs 0.0579) | `grade_cvmapE03.txt` (C2a′/C2b′/C3′ PASS); `grade_kmermap.txt` R1; `PREREG_KMERDECOMP` | standing; classes cap-robust (`kmermapE03` 18/18) |
 | 5 | **What the bench can and cannot read.** No DNS observable tested separates a jammed drop from a near-edge thickened one: peak spread, terminal footprint and apex recoil all read stiffness. The terminal footprint is sign-mixed (−8.2 … +14.4 %). The largest footprint cut sits where nothing can jam | `PREREG_CVMAP` C4/C2t′; `grade_kmermap.txt` (x 0.85, −31 % Rg) | standing negatives; this is the paper's most useful message to experimentalists |
-| 6 | **Onset.** σ\* carries size (∝ a^(m−2)) and potential (∝ κ); the dry-DEM chain gives CV ×0.768 through Zφ; the lubricated answer is tonight's `lfsig2`. Either way, §4 shows activation is negligible for a drop past onset (G_act ≈ 4–70 for the lab silica), and `kmerdecomp` E1 shows it grows as U₀ falls (1.8 % at U₀ 2, 2.8 % at U₀ 1): that is the scope boundary | `CLAIMS_SIGMA_GEOMETRY` 1–9; `kmerdecomp` Am. 1 | pending |
-| 7 | **Predictions.** (i) The collapse test: two suspensions matched in (x, χ, σ_imp/σ\*) but mismatched in size or PSD must impact identically (bench only; trivial in the DNS). (ii) Fractionated cornstarch has a wider window (lower χ) than Stöber silica at matched CV. (iii) Doublet counts at 0 and 100 mM salt decide whether the salt effect is screening or aggregation | `PROGRAMME` §3; card §3 | predictions |
+| 6 | **Onset.** σ\* carries size (∝ a^(m−2)) and potential (∝ κ); the dry-DEM chain gives CV ×0.768 through Zφ. The first lubricated check (`lfsig`, one configuration per arm) was already non-confirmatory: registered readout undefined, post hoc 0.96–1.17, never near 0.768. Tonight's `lfsig2` is the 3-seed redo with a mechanism test. Either way, §4 shows activation is negligible for a drop past onset (G_act ≈ 4–70 for the lab silica), and `kmerdecomp` E1 shows it grows as U₀ falls (1.8 % at U₀ 2, 2.8 % at U₀ 1): that is the scope boundary | `CLAIMS_SIGMA_GEOMETRY` 1–9; `kmerdecomp` Am. 1 | pending |
+| 7 | **Predictions.** (i) The collapse test: two suspensions matched in (x, χ, σ_imp/σ\*) but mismatched in size or PSD must impact identically (bench only; trivial in the DNS). ⚠ Not yet well-posed: the impact-stress gauge σ_imp must be named before it runs, because ρkU₀² and the deviatoric wall shear give opposite verdicts on saturation (`PROGRAMME` §3); design the pair so the verdict holds under both. (ii) Fractionated cornstarch has a wider window (lower χ) than Stöber silica at matched CV. (iii) Doublet counts at 0 and 100 mM salt decide whether the salt effect is screening or aggregation | `PROGRAMME` §3; card §3 | predictions |
 
 **What makes it a paper rather than a report.** The thesis is falsifiable (§7i), the reduction is exact, and the DNS
 isolates channels by construction, which no experiment can. §5 corrects a reading experimentalists routinely make:
@@ -68,10 +73,13 @@ isolates channels by construction, which no experiment can. §5 corrects a readi
    is a CLASS claim, and classes are cap-robust (`epssig`, `kmermapE03` 18/18). Plot classes, never J magnitudes.
 3. **One closure, n = 2, L9.** The L10 check passed (R1, F1). Varying n is a registered one-night campaign if needed.
 4. **Dry DEM → suspension transfer.** χ comes from frictional dry packs, and the lab φ 0.44 sits below every DEM window.
-   Answer: only ratios transfer, and they are stated as such. `lfsig2` is the first lubricated check of one transferred
-   quantity. The critique's call to calibrate μ_p against the lab rheometer is the real fix, and it needs rheometry the
+   Answer: only ratios transfer, and they are stated as such. One transferred quantity, σ\*(CV), has already been checked
+   lubricated once (`lfsig`) and did NOT reproduce the dry ratio; `lfsig2` is the redo. The critique's call to calibrate μ_p against the lab rheometer is the real fix, and it needs rheometry the
    project does not yet trust (`si_fit` withdrawn).
 5. **"Stress-controlled drop."** Rests on one informative pair (`jamwin` P2). It is stated as a hypothesis in the paper.
+6. **Only two particle axes were run through the drop.** CV and doublets. Friction and shape enter only through DEM χ.
+   Either scope the thesis to those two (as the claim above now does) or run a friction and an elongation arm through
+   the solver at matched χ before submission; that is a one-night, cvmap-sized campaign.
 
 **Leave out of B (withdrawn or superseded):** apex recoil as a jamming signature (refuted out of sample, C4 17/19);
 `kmerdrop` (fed the μ_m 3 *predicted* χ); the level-set facet pilot's "lower φ₀"; μ_p ≥ 0.6 clump numbers
@@ -83,8 +91,9 @@ isolates channels by construction, which no experiment can. §5 corrects a readi
 
 ## 3. Paper C (conditional) — the onset stress of polydisperse suspensions
 
-Decided by `lfsig2` (graded by ~03:00). The dry-DEM σ\* geometry (exact Love–Weber identity, configuration-model pairing,
-closed chain to 2 %) is solid and refereed, but on its own it is a dry-packing result about a quantity defined by
+Decided by `lfsig2` (graded by ~03:00). The dry-DEM σ\* geometry is refereed: the Love–Weber identity, configuration-model pairing
+and rattler law are standing; the closed chain to 2 % is PROVISIONAL (its mean-degree exponent 1.625 comes from two
+isotropic cells and is not universal: 1.45 at ratio ≤ 1.5, 2.4–2.9 at 4–5). But on its own it is a dry-packing result about a quantity defined by
 lubricated rheology.
 - **If P1 = GEO** (lubricated σ\* falls ×0.77): the geometry transfers. That makes a clean short paper, "σ\* is contact
   geometry", and a quantitative input to Paper B §6.
