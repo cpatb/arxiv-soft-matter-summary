@@ -102,6 +102,14 @@ sub-network whose geometric factor is CV-neutral. Because large-first activation
 (ii) the size exponent, IF the binary arm (Am. 7) decides it. If B1 is not DERJAGUIN, (i) goes into Paper B §6 and there is
 no Paper C.
 
+**Update 2026-09-28 05:40 (binary arm graded, referee pass 1 acted on).** B1 came back **NOT GRADED** (the registered
+monotone readout is voided by noise in the ~100-pair LL series), so by the rule above Paper C does not exist yet. The
+descriptive result is the most interesting of the night: per-pair activation m_eff 0.66, matched by the independently measured
+near-contact load exponent (β 1.64 → m = β − 1 = 0.64) under a Derjaguin threshold, with the constant-force picture of Guy et
+al. excluded. That is exactly what a short Paper C would claim, so the recommendation is: **run one registered binary campaign
+(noise-robust readout, more LL pairs, two size ratios, with m = β − 1 pre-registered as the prediction) before deciding on
+Paper C.** It is about one night of compute.
+
 Decided by `lfsig2` (graded by ~03:00). The dry-DEM σ\* geometry is refereed: the Love–Weber identity, configuration-model pairing
 and rattler law are standing; the closed chain to 2 % is PROVISIONAL (its mean-degree exponent 1.625 comes from two
 isotropic cells and is not universal: 1.45 at ratio ≤ 1.5, 2.4–2.9 at 4–5). But on its own it is a dry-packing result about a quantity defined by
