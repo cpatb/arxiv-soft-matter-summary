@@ -34,6 +34,27 @@ steady curve: the lowest stress where steady eta_r exceeds 2x its low-stress pla
 - **P3 (sanity).** The final viscosity of each step agrees with the steady curve at that
   stress to within 30 % (the steady file's own replicate spread reaches ~20 %).
 
+## Addendum 1 (00:10, after P1-P3 were graded, before any recoil strain was computed)
+
+Graded result, `logs/probe_startup_clock.txt`: **P1 FAIL** (above-onset clocks 0.027-0.885,
+chi2_r 73-11343, 2 fits at the grid edge; neighbouring stresses differ up to 30x -- a
+single strain exponential does not describe these records, so no clock is measured).
+P2 reported: medians 0.045 below vs 0.159 above onset. **P3 FAIL** at 3.0 and 9.5 Pa.
+
+Plotting the records (not a fit) shows why: above onset the rate COLLAPSES abruptly at a
+nearly stress-independent strain gamma ~0.07-0.09, and below onset eta rises around the same
+strain. The rest before each step recoils the sample by ~0.06. Hypothesis M (strain memory):
+the network re-forms once the restart has undone the recoil.
+
+- **P4 (fit-free).** Define gamma_j per step = the strain at the steepest fall of the rate
+  (max -d(rate)/d(gamma) on the raw record, gamma < 0.3), and R = |net strain of the
+  preceding Relax file| (final minus initial). M predicts gamma_j - R is small and
+  stress-independent: |gamma_j - R| < 0.03 on at least 80 % of above-onset steps, and
+  gamma_j tracks R across steps (Spearman rho > 0.5). Competing reading: gamma_j is a
+  constant (~0.08) unrelated to R, i.e. rho ~ 0 -- then the jam strain is a material
+  strain scale, not memory. Both are reported; the first step (0_Stress_1, no preceding
+  Relax) is excluded by construction.
+
 ## What this cannot do
 
 Different particle size (4 vs 2 um), phi and solvent from Lin's silica, so it is the same
