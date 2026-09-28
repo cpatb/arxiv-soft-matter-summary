@@ -1,0 +1,26 @@
+mech_lfsig -- POST HOC, not registered: the chain's geometry vs the activation stress in LF_DEM [lfsig], snapshots strain [2.0, 4.0]
+  identity check: sigma_c from the dump (normal + tangential, 6 pi) vs LF_DEM's Viscosity(contact) x rate at the nearest data row
+  columns: sig_c = tangential as written; (norm) = normal part only; (t+) = tangential read as the force on particle 1 -- the
+  (t+) column is the one that matches (0.88-1.02 on lfsig; the residual is the ~0.025-strain offset between dump and data row)
+  11 cells with interaction dumps in the window
+  label                sig sn     Zc    Nc/V  <aa>_c       G    <g>  g_med  g_q90   sig_c  (norm)    (t+) sig_cLF  ratio  fcont n_near  gnear gn_q90
+  c20_x90_s1           1.0  3  0.063  0.0037  1.2086  0.0045  2.329  2.020   3.58   0.060   0.065   0.070   0.082  0.851  0.082    647  0.941  1.785
+  c20_x90_s3           3.0  3  0.829  0.0488  1.1109  0.0541  4.765  4.011   8.71   0.915   1.170   1.425   1.552  0.918  0.517    655  1.633  4.137
+  c20_x90_s10         10.0  3  2.249  0.1324  1.0915  0.1445 11.183  8.128  22.92   4.159   5.675   7.192   7.692  0.935  0.769    431  1.240  6.126
+  c20_x90_s30         30.0  3  2.700  0.1589  1.0721  0.1704 31.340 21.919  69.32  11.829  16.717  21.605  23.945  0.902  0.798    358  3.026 18.859
+  c20_x90_s100       100.0  3  2.736  0.1610  1.0794  0.1738 110.978 78.301 246.55  44.521  59.825  75.128  83.579  0.899  0.836    353  9.589 59.639
+  c50_x90_s0.3         0.3  1  0.004  0.0002  0.7243  0.0001  1.470  1.470   1.47   0.002   0.001   0.001   0.001  0.789  0.005    164  0.649  1.168
+  c50_x90_s1           1.0  3  0.077  0.0032  2.3811  0.0076  2.792  2.441   4.48   0.094   0.116   0.138   0.181  0.761  0.181    425  0.970  1.907
+  c50_x90_s3           3.0  3  0.772  0.0316  1.9295  0.0613  5.386  4.179  10.17   1.363   1.617   1.871   1.849  1.012  0.616    486  1.160  2.753
+  c50_x90_s10         10.0  3  1.724  0.0705  1.7108  0.1208 14.505  8.683  33.19   5.454   6.988   8.521   8.406  1.014  0.841    394  0.912  3.354
+  c50_x90_s30         30.0  3  1.984  0.0812  1.6157  0.1309 35.383 21.545  82.64  17.468  21.598  25.728  25.317  1.016  0.844    376  0.803  6.947
+  c50_x90_s100       100.0  3  2.235  0.0914  1.6169  0.1478 97.904 57.036 236.62  43.397  57.838  72.279  82.409  0.877  0.824    362  7.258 35.643
+
+  CV 0.5 / CV 0.2 at matched (sigma, seed): the chain's factor G = (Nc/V)<aa>_c, the mean load per threshold <g>,
+  the contact stress sigma_c and the contact share fcont.  (chain, dry Yade: sigma* ratio 0.768 <=> G ratio at fixed C/q)
+    sig seed     Zc   Nc/V <aa>_c      G    <g>  g_med  sig_c  fcont  G*<g>
+    1.0    1  1.234  0.858  1.970  1.689  1.199  1.209  1.584  2.198  2.024
+    3.0    1  0.931  0.647  1.737  1.133  1.130  1.042  1.490  1.191  1.280
+   10.0    1  0.766  0.533  1.567  0.836  1.297  1.068  1.311  1.093  1.084
+   30.0    1  0.735  0.511  1.507  0.768  1.129  0.983  1.477  1.057  0.868
+  100.0    1  0.817  0.568  1.498  0.851  0.882  0.728  0.975  0.986  0.750
