@@ -67,6 +67,33 @@ only the post-processed fields), so H2 there is read on the 3000 field.
 (Amendment 4, QoI trajectory over +2400 iterations), because H1 turned out to be no test
 at all for a mapped start (refine 3.375 met it at iteration 26).
 
+### 3a. What C1 found first: a residual-certified case still drifting by percents
+
+FO refine 1.5, mapped from refine 1 and stopped when every non-`Uz` residual fell below
+1e-5 (iteration 189), continued 2400 iterations with the gate quantities read every 400:
+
+| iteration | `n_t` | `C_P` | `tau_w`(15 mm) | peak `tau_w` |
+|---|---|---|---|---|
+| 191 (the H1 stop) | 1.9089 | 1.3784 | 5.866 | 391.6 |
+| 400 | 1.9109 | 1.3808 | 5.848 | 394.8 |
+| 1200 | 1.9158 | 1.3771 | 5.764 | 402.9 |
+| 2000 | 1.9259 | 1.3944 | 5.681 | 412.3 |
+| 2591 | 1.9304 | 1.4060 | 5.658 | 417.3 |
+
+**Still moving at the end** (`C_P` ~0.8 % per 400 iterations): NOT CONVERGED under C1, and
+continued (Amendment 5). The residuals sat below 1e-5 the whole time. Three consequences:
+
+1. **Every value read at a residual stop after a mapped start is a transient.** The
+   registered S6 (+400, 0.5 %) would have failed this case on two of four quantities, so the
+   pre-registration was not blind to it, but `C_P` alone would have passed.
+2. **The drift is the size of the effects being measured.** The refine-1 SO/FO difference
+   in `C_P` is 5.2 % and grid steps are 1–4 %; a 1.8 %-and-counting iterative drift is not
+   small against either.
+3. **The legacy grids were certified by the same residual criterion** (cold starts, which
+   take longer to get there, so the error is likely smaller but is unmeasured). L1 in
+   Amendment 5 continues the refine-1 case to find out. If it drifts, GRID_STUDY's
+   iterative-convergence finding (§1 there) was itself incomplete.
+
 ## 4. Exploratory, post hoc: where refine 4 departs, and a model-form fact
 
 `convergence/explore_band_fo_ladder.txt`. **Not a registered gate; it re-reads the
