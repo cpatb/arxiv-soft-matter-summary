@@ -32,6 +32,32 @@ CAUCHY_TOL = 0.005  # S6
 S5_BAR = 0.01
 FAMILIES = {"so_r15": gci.FAMILIES["so_r15"], "fo_r15": gci.FAMILIES["fo_r15"]}
 MAPPED = ("case_Re10000_H6_fo_r2p25", "case_Re10000_H6_so_r2p25", "case_Re10000_H6_fo_r1p5")
+# Amendment 3: S7 family. Amendment 4: rule C1 for every refine > 1 case.
+FAMILIES["so_r15_S7"] = [("case_Re10000_H6_so_r3p375", 3.375), ("case_Re10000_H6_so_r2p25", 2.25),
+                         ("case_Re10000_H6_so_r1p5", 1.5)]
+TRAJ = ("case_Re10000_H6_fo_r1p5", "case_Re10000_H6_fo_r2p25", "case_Re10000_H6_so_r1p5",
+        "case_Re10000_H6_so_r2p25", "case_Re10000_H6_so_r3p375")
+C1_LAST = 0.001   # last two writes
+C1_WIN = 0.002    # +1600 vs +2400
+
+
+def trajectory(case):
+    """QoI at every written time of <case>_traj, via fit_closure.py with FIT_TIME."""
+    import json
+    import subprocess
+    d = os.path.join(HERE, case + "_traj")
+    if not os.path.isdir(d):
+        return None
+    pp = os.path.join(d, "postProcessing", "sampleWSS")
+    times = sorted((x for x in os.listdir(pp) if re.fullmatch(r"[0-9]+", x)), key=int) if os.path.isdir(pp) else []
+    out = []
+    for tm in times:
+        env = dict(os.environ, FIT_TIME=tm)
+        r = subprocess.run([sys.executable, os.path.join(HERE, "fit_closure.py"), case + "_traj"],
+                           capture_output=True, text=True, cwd=HERE, env=env)
+        if r.returncode == 0:
+            out.append((int(tm), json.loads(r.stdout.strip().splitlines()[-1])))
+    return out
 
 
 def last_residuals(case):
@@ -102,7 +128,35 @@ def main():
         if h["ok"]:
             rec[c] = gci.fit_record(c)
 
-    L.append("\n## S6: Cauchy continuation of the mapped-start cases (+400 iterations)\n")
+    L.append("\n## C1 (Amendment 4): gate quantities against iteration, +2400 in steps of 400\n")
+    c1 = {}
+    for c in TRAJ:
+        tr = trajectory(c)
+        if not tr or len(tr) < 5:
+            c1[c] = None
+            L.append(f"- {c}: NOT GRADED ({0 if not tr else len(tr)} trajectory points)")
+            rec.pop(c, None)
+            continue
+        h2, _ = uz_ratio(c + "_traj")
+        last, prev, win = tr[-1][1], tr[-2][1], tr[-3][1]
+        dl = {q: abs(last[q] - prev[q]) / abs(last[q]) for q in QOI}
+        dw = {q: abs(last[q] - win[q]) / abs(last[q]) for q in QOI}
+        ok = max(dl.values()) < C1_LAST and max(dw.values()) < C1_WIN and h2 < UZ_ROUNDOFF
+        c1[c] = ok
+        L.append(f"- **{c}** ({len(tr)} writes, t = {tr[0][0]}..{tr[-1][0]}): last-two max "
+                 f"{100 * max(dl.values()):.3f}% (bar {100 * C1_LAST:.1f}%), +1600->+2400 max "
+                 f"{100 * max(dw.values()):.3f}% (bar {100 * C1_WIN:.1f}%), Uz ratio {h2:.1e} -> "
+                 f"{'CONVERGED' if ok else 'NOT CONVERGED'}")
+        L.append("  | t | " + " | ".join(QOI) + " |")
+        L.append("  |---|" + "---|" * len(QOI))
+        for tm, rr in tr:
+            L.append(f"  | {tm} | " + " | ".join(f"{rr[q]:.5g}" for q in QOI) + " |")
+        if ok:
+            rec[c] = last  # graded value = the +2400 one
+        else:
+            rec.pop(c, None)
+
+    L.append("\n## S6 (superseded by C1; reported only): +400 continuation of mapped-start cases\n")
     s6 = {}
     for m in MAPPED:
         if m not in rec or m + "_cont" not in rec:
@@ -120,10 +174,10 @@ def main():
         names = [c for c, _ in members]
         refs = [r for _, r in members]
         missing = [c for c in names if c not in rec]
-        s6_bad = [c for c in names if c in s6 and s6[c] is not True]
+        s6_bad = [c for c in names if c in c1 and c1[c] is not True]  # C1 supersedes S6
         if missing or s6_bad:
             verdict[fam] = None
-            L.append(f"**{fam}: INCOMPLETE** -- missing/unhealthy {missing}, S6 not passed {s6_bad}\n")
+            L.append(f"**{fam}: INCOMPLETE** -- missing/unhealthy {missing}, C1 not converged {s6_bad}\n")
             continue
         r21, r32 = refs[0] / refs[1], refs[1] / refs[2]
         L.append(f"**{fam}** ({', '.join(names)}), r21 = {r21:g}, r32 = {r32:g}\n")
@@ -163,6 +217,13 @@ def main():
                     else "scheme contrast NOT INFORMATIVE (FO converges too)"))
     else:
         L.append("- S3: INCOMPLETE")
+    s7 = verdict.get("so_r15_S7")
+    if s7:
+        R7, p7, c7 = s7["C_P"]
+        L.append(f"- **S7** SO C_P on 3.375/2.25/1.5: R = {R7:+.3f} ({c7}), p = {p7:.3f}; "
+                 + ("robust to further refinement" if 0 < R7 < 1 else "S1's outcome is NOT robust to further refinement"))
+    else:
+        L.append("- S7: INCOMPLETE")
     for c in ("case_Re10000_H6_fo_r1p5",):
         h = hl.get(c)
         L.append("- **S4** FO refine 1.5 health: " + ("not run" if h is None else
