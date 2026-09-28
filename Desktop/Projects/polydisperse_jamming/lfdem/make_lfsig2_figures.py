@@ -58,6 +58,18 @@ def main() -> int:
         if pars:
             ss, dd = np.mean([p[0] for p in pars]), np.mean([p[1] for p in pars])
             ax[0].plot(sf, G.wc_form(sf, ss, dd), "-", color=COL[cv], lw=1.2, label=f"CV {cv}")
+    # Amendment 4 CV 0 arm (five rungs), same readout; ORDERED cells are not excluded here -- the grader prints Q6
+    m_dirs = [x for x in sorted(glob.glob(os.path.join(OUT, "lfsig2m", "c00*"))) if ".killed_" not in x]
+    m_cells = {(0.0, c["seed"], c["sig"]): c for c in (G.load_cell(d, False) for d in m_dirs) if c and c["healthy"]}
+    s5 = np.array(G.SIGMAS_X)
+    for sd in G.SEEDS:
+        r = G.arm_readouts(m_cells, 0.0, sd, G.SIGMAS_X)
+        if r["complete"]:
+            ax[0].plot(s5, r["f"], MK[sd], color="#7f7f7f", ms=4, mfc="none")
+            ax[1].plot(s5, r["eta"], MK[sd], color="#7f7f7f", ms=4, mfc="none")
+            ax[2].plot(s5, r["fcont"], MK[sd], color="#7f7f7f", ms=4, mfc="none")
+            for k, sig in enumerate(G.SIGMAS_X):
+                rows.append([0.0, sd, sig, r["f"][k], r["z"][k], r["eta"][k], r["fcont"][k]])
     for a in ax:
         a.set_xscale("log"); a.set_xlabel(r"$\sigma/\sigma_0$")
     ax[0].set_ylabel(r"$Z_c/Z_c(100)$"); ax[0].set_ylim(0, 1.05); ax[0].legend(frameon=False, fontsize=8)
