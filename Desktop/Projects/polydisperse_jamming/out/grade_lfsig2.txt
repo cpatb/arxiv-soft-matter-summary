@@ -1,70 +1,140 @@
 grade_lfsig2 -- PREREG_LFSIG2_2026-09-27.md   [registered campaign]
-cells with data: 0 of 81 registered
+cells with data: 38 of 81 registered
   label              CVreal    a32 rc strain n_win           eta (se)          Zc (se)  fcont    ovlp ok
-healthy (registered rule: rc 0/124, strain >= 3.95, overlap < 0.05): 0; excluded: none
+  c20_x90_s1_r1       0.184  1.059  0   4.00    41    17.620 (0.277)   0.069 (0.004)  0.095  0.0012 1
+  c20_x90_s2_r1       0.184  1.059  0   4.00    41    20.489 (0.563)   0.412 (0.016)  0.317  0.0016 1
+  c20_x90_s3_r1       0.184  1.059  0   4.00    41    23.412 (0.882)   0.849 (0.020)  0.489  0.0026 1
+  c20_x90_s4.5_r1     0.184  1.059  0   4.00    41    28.719 (0.297)   1.462 (0.020)  0.650  0.0034 1
+  c20_x90_s7_r1       0.184  1.059  0   4.00    41    34.079 (1.136)   2.038 (0.062)  0.742  0.0034 1
+  c20_x90_s10_r1      0.184  1.059  0   4.00    41    35.730 (1.517)   2.215 (0.030)  0.768  0.0050 1
+  c20_x90_s15_r1      0.184  1.059  0   4.00    41    35.238 (1.738)   2.375 (0.051)  0.775  0.0059 1
+  c20_x90_s30_r1      0.184  1.059  0   4.00    41    35.488 (0.615)   2.609 (0.043)  0.789  0.0047 1
+  c20_x90_s100_r1     0.184  1.059  0   4.00    41    41.027 (0.819)   2.708 (0.010)  0.810  0.0073 1
+  c20_x90_s3_r2       0.205  1.077 124   1.80     0       nan (  nan)     nan (  nan)    nan     nan 0
+  c20_x90_s4.5_r2     0.205  1.077 124   3.15    24    28.932 (0.797)   1.465 (0.049)  0.655  0.0029 0
+  c20_x90_s7_r2       0.205  1.077 124   2.55    12    30.407 (1.776)   1.953 (0.024)  0.722  0.0040 0
+  c20_x90_s10_r2      0.205  1.077 124   1.10     0       nan (  nan)     nan (  nan)    nan     nan 0
+  c35_x90_s1_r1       0.324  1.204  0   4.00    41    20.705 (0.549)   0.073 (0.000)  0.143  0.0014 1
+  c35_x90_s2_r1       0.324  1.204  0   4.00    41    24.377 (0.588)   0.422 (0.011)  0.396  0.0018 1
+  c35_x90_s3_r1       0.324  1.204  0   4.00    41    25.925 (1.126)   0.804 (0.015)  0.529  0.0020 1
+  c35_x90_s4.5_r1     0.324  1.204  0   4.00    41    34.384 (1.385)   1.542 (0.048)  0.693  0.0037 1
+  c35_x90_s7_r1       0.324  1.204  0   4.00    41    36.738 (0.688)   1.807 (0.041)  0.744  0.0046 1
+  c35_x90_s10_r1      0.324  1.204  0   4.00    41    45.483 (2.468)   2.034 (0.042)  0.800  0.0064 1
+  c35_x90_s15_r1      0.324  1.204  0   4.00    41    42.789 (2.186)   2.234 (0.052)  0.807  0.0061 1
+  c35_x90_s30_r1      0.324  1.204  0   4.00    41    43.280 (1.701)   2.424 (0.030)  0.816  0.0066 1
+  c35_x90_s100_r1     0.324  1.204  0   4.00    41    47.436 (4.289)   2.533 (0.028)  0.833  0.0092 1
+  c35_x90_s3_r2       0.364  1.268 124   2.65    14    30.464 (1.141)   0.795 (0.024)  0.589  0.0019 0
+  c35_x90_s4.5_r2     0.364  1.268  0   4.00    41    40.281 (1.880)   1.437 (0.051)  0.726  0.0037 1
+  c35_x90_s7_r2       0.364  1.268 124   3.45    30    41.811 (3.018)   1.628 (0.028)  0.766  0.0040 0
+  c35_x90_s10_r2      0.364  1.268 124   0.00     0       nan (  nan)     nan (  nan)    nan     nan 0
+  c50_x90_s1_r1       0.468  1.468  0   4.00    41    26.322 (1.539)   0.068 (0.003)  0.193  0.0010 1
+  c50_x90_s2_r1       0.468  1.468  0   4.00    41    30.121 (1.909)   0.386 (0.024)  0.457  0.0021 1
+  c50_x90_s3_r1       0.468  1.468  0   4.00    41    46.450 (7.468)   0.827 (0.065)  0.682  0.0030 1
+  c50_x90_s4.5_r1     0.468  1.468  0   4.00    41    46.324 (3.674)   1.284 (0.021)  0.735  0.0035 1
+  c50_x90_s7_r1       0.468  1.468  0   4.00    41    52.763 (3.150)   1.545 (0.014)  0.789  0.0044 1
+  c50_x90_s10_r1      0.468  1.468  0   4.00    41    69.176 (3.086)   1.738 (0.023)  0.850  0.0109 1
+  c50_x90_s15_r1      0.468  1.468  0   4.00    41    60.736 (2.710)   1.873 (0.054)  0.841  0.0137 1
+  c50_x90_s30_r1      0.468  1.468  0   4.00    41    62.672 (4.823)   2.041 (0.030)  0.852  0.0071 1
+  c50_x90_s100_r1     0.468  1.468  0   4.00    41    57.262 (2.724)   2.266 (0.025)  0.836  0.0080 1
+  c50_x90_s3_r2       0.525  1.608 124   1.70     0       nan (  nan)     nan (  nan)    nan     nan 0
+  c50_x90_s4.5_r2     0.525  1.608 124   1.95     0       nan (  nan)     nan (  nan)    nan     nan 0
+  c50_x90_s7_r2       0.525  1.608 124   1.35     0       nan (  nan)     nan (  nan)    nan     nan 0
+healthy (registered rule: rc 0/124, strain >= 3.95, overlap < 0.05): 28; excluded: ['c20_x90_s10_r2', 'c20_x90_s3_r2', 'c20_x90_s4.5_r2', 'c20_x90_s7_r2', 'c35_x90_s10_r2', 'c35_x90_s3_r2', 'c35_x90_s7_r2', 'c50_x90_s3_r2', 'c50_x90_s4.5_r2', 'c50_x90_s7_r2']
 
 ==== per-arm readouts (R1 WC form sigma*, delta; R2 sigma_half; R3 sigma at Z_c = 1; R4 contact share at sigma_half; R5 eta(100)/eta(1)) ====
     CV seed  sigma*   (se)  delta   (se)  resid R1ok mono  s_half    s_Z1 fc_half  thick  f(sigma) at the ladder
-  0.20    1  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+  0.20    1   3.200  0.068  1.436  0.055  0.030 1       1   4.190   3.314   0.622   2.33  0.025 0.152 0.314 0.540 0.752 0.818 0.877 0.963 1.000
   0.20    2  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
   0.20    3  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
-  0.35    1  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
-  0.35    2  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+  0.35    1   3.074  0.105  1.367  0.080  0.057 0       1   3.867   3.340   0.632   2.29  0.029 0.167 0.318 0.609 0.713 0.803 0.882 0.957 1.000
+  0.35    2  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 7.0, 10.0, 15.0, 30.0, 100.0]
   0.35    3  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
-  0.50    1  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
+  0.50    1   3.041  0.101  1.139  0.055  0.040 1       1   3.934   3.497   0.717   2.18  0.030 0.170 0.365 0.567 0.682 0.767 0.827 0.901 1.000
   0.50    2  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
   0.50    3  INCOMPLETE -- missing sigma [1.0, 2.0, 3.0, 4.5, 7.0, 10.0, 15.0, 30.0, 100.0]
 
 ==== paired per-seed contrasts, ln(readout(CV_b)/readout(CV_a)); mean, sd, se = sd/sqrt(n), t (df n-1) ====
-  0.20->0.50 R1 sigma*_WC          : no complete pair
-  0.20->0.50 R1 delta_WC           : no complete pair
-  0.20->0.50 R2 sigma_half         : no complete pair
-  0.20->0.50 R3 sigma_Z1           : no complete pair
-  0.20->0.50 R4 fcont(sigma_half)  : no complete pair
-  0.20->0.50 R5 thickening         : no complete pair
-  0.20->0.35 R1 sigma*_WC          : no complete pair
-  0.20->0.35 R1 delta_WC           : no complete pair
-  0.20->0.35 R2 sigma_half         : no complete pair
-  0.20->0.35 R3 sigma_Z1           : no complete pair
-  0.20->0.35 R4 fcont(sigma_half)  : no complete pair
-  0.20->0.35 R5 thickening         : no complete pair
-  0.35->0.50 R1 sigma*_WC          : no complete pair
-  0.35->0.50 R1 delta_WC           : no complete pair
-  0.35->0.50 R2 sigma_half         : no complete pair
-  0.35->0.50 R3 sigma_Z1           : no complete pair
-  0.35->0.50 R4 fcont(sigma_half)  : no complete pair
-  0.35->0.50 R5 thickening         : no complete pair
+  0.20->0.50 R1 sigma*_WC          : ratio 0.951  (n 1, no band)  per seed: 0.951
+  0.20->0.50 R1 delta_WC           : ratio 0.793  (n 1, no band)  per seed: 0.793
+  0.20->0.50 R2 sigma_half         : ratio 0.939  (n 1, no band)  per seed: 0.939
+  0.20->0.50 R3 sigma_Z1           : ratio 1.055  (n 1, no band)  per seed: 1.055
+  0.20->0.50 R4 fcont(sigma_half)  : ratio 1.154  (n 1, no band)  per seed: 1.154
+  0.20->0.50 R5 thickening         : ratio 0.934  (n 1, no band)  per seed: 0.934
+  0.20->0.35 R1 sigma*_WC          : ratio 0.961  (n 1, no band)  per seed: 0.961
+  0.20->0.35 R1 delta_WC           : ratio 0.952  (n 1, no band)  per seed: 0.952
+  0.20->0.35 R2 sigma_half         : ratio 0.923  (n 1, no band)  per seed: 0.923
+  0.20->0.35 R3 sigma_Z1           : ratio 1.008  (n 1, no band)  per seed: 1.008
+  0.20->0.35 R4 fcont(sigma_half)  : ratio 1.016  (n 1, no band)  per seed: 1.016
+  0.20->0.35 R5 thickening         : ratio 0.984  (n 1, no band)  per seed: 0.984
+  0.35->0.50 R1 sigma*_WC          : ratio 0.989  (n 1, no band)  per seed: 0.989
+  0.35->0.50 R1 delta_WC           : ratio 0.833  (n 1, no band)  per seed: 0.833
+  0.35->0.50 R2 sigma_half         : ratio 1.017  (n 1, no band)  per seed: 1.017
+  0.35->0.50 R3 sigma_Z1           : ratio 1.047  (n 1, no band)  per seed: 1.047
+  0.35->0.50 R4 fcont(sigma_half)  : ratio 1.135  (n 1, no band)  per seed: 1.135
+  0.35->0.50 R5 thickening         : ratio 0.950  (n 1, no band)  per seed: 0.950
+
+  convention: a32 (number-mean radius = 1) CV 0.2 1.0589, CV 0.5 1.4681; R_d32 = R_d10 x 1.387 (first power, sampled truncated a32; predict_cvmap used the analytic (1+CV^2)^2 = 1.558 for 0.5 vs 0)
 
 ==== P1: R = sigma*_WC(0.5)/sigma*_WC(0.2); H_geo 0.768, H_inert 1.000 ====
-  P1: NOT GRADED (0/3 seed pairs complete)
+  P1: NOT GRADED (1/3 seed pairs complete)
 
 ==== P2: delta_WC falls with CV (3/3 seeds paired, mean + k se < 0); dry-DEM reference 0.869 ====
   (the registered text says 'mean - 2 se < 0', which for a FALL is the wrong side: a fall is resolved when the UPPER
    end of the band is below 0. Amendment 3 fixes the side and the coverage; both readings are printed.)
-  P2: NOT GRADED (0/3)
+  P2: NOT GRADED (1/3)
 
 ==== P3: contact share at sigma_half rises with CV, 0.2 -> 0.5, 3/3 seeds paired ====
-  P3: NOT GRADED (0/3)
+  P3: NOT GRADED (1/3)
 
 ==== P4 wiring: seed-1 cells vs lfsig (bit-identity of every data row with strain <= 4) ====
-  c20_x90_s1: NOT GRADED (new cell missing, old file present)
-  c20_x90_s3: NOT GRADED (new cell missing, old file present)
-  c20_x90_s10: NOT GRADED (new cell missing, old file present)
-  c20_x90_s30: NOT GRADED (new cell missing, old file present)
-  c20_x90_s100: NOT GRADED (new cell missing, old file present)
-  c50_x90_s1: NOT GRADED (new cell missing, old file present)
-  c50_x90_s3: NOT GRADED (new cell missing, old file present)
-  c50_x90_s10: NOT GRADED (new cell missing, old file present)
-  c50_x90_s30: NOT GRADED (new cell missing, old file present)
-  c50_x90_s100: NOT GRADED (new cell missing, old file present)
-  P4 verdict: INCOMPLETE (0/10 identical, 0 differ) -- any DIFFER line above is a wiring fault
+  c20_x90_s1: rows old 81 new 81 compared 81: IDENTICAL
+  c20_x90_s3: rows old 81 new 81 compared 81: IDENTICAL
+  c20_x90_s10: rows old 81 new 81 compared 81: IDENTICAL
+  c20_x90_s30: rows old 81 new 81 compared 81: IDENTICAL
+  c20_x90_s100: rows old 81 new 81 compared 81: IDENTICAL
+  c50_x90_s1: rows old 81 new 81 compared 81: IDENTICAL
+  c50_x90_s3: rows old 81 new 81 compared 81: IDENTICAL
+  c50_x90_s10: rows old 81 new 81 compared 81: IDENTICAL
+  c50_x90_s30: rows old 81 new 81 compared 81: IDENTICAL
+  c50_x90_s100: rows old 81 new 81 compared 81: IDENTICAL
+  P4 verdict: PASS (10/10 identical, 0 differ) -- any DIFFER line above is a wiring fault
 
 ==== P5 (descriptive): sigma*_WC(0.35) between the 0.2 and 0.5 values, >= 2/3 seeds ====
-  P5: NOT GRADED (0/0 seeds between)
+  seed 1: sigma* 3.200 / 3.074 / 3.041  between: True
+  R(0.35/0.2) = 0.961  (H_geo CV^2-interpolated 0.902, printed only)
+  P5: NOT GRADED (1/1 seeds between)
 
 ==== P6 (for the record): the lfsig post-hoc readouts on 3-seed data ====
-  R2 self-normalised sigma_half: no pair
-  R3 absolute Z_c = 1: no pair
+  R2 self-normalised sigma_half: ratio 0.939 (n 1) (lfsig single-seed: 0.956)
+  R3 absolute Z_c = 1: ratio 1.055 (n 1) (lfsig single-seed: 1.107)
 
 ==== Amendment 2: x-matched CV 0.5 arm (phi 0.55643, five rungs) ====
-  no x-arm cells yet
+  label                rc strain      eta     Zc  fcont    ovlp ok
+  c50x_x85_s3_r1        0   4.00   34.243  0.821  0.653  0.0034 1
+  c50x_x85_s4.5_r1      0   4.00   41.100  1.172  0.735  0.0057 1
+  c50x_x85_s7_r1        0   4.00   41.617  1.396  0.770  0.0065 1
+  c50x_x85_s10_r1       0   4.00   43.634  1.551  0.797  0.0127 1
+  c50x_x85_s100_r1      0   4.00   49.442  2.014  0.834  0.0181 1
+  c50x_x85_s3_r2        0   4.00   33.009  0.819  0.648  0.0042 1
+  c50x_x85_s4.5_r2      0   4.00   39.586  1.052  0.740  0.0038 1
+  c50x_x85_s7_r2        0   4.00   41.847  1.284  0.776  0.0108 1
+  c50x_x85_s10_r2       0   4.00   45.531  1.453  0.804  0.0073 1
+  c50x_x85_s100_r2      0   4.00   50.384  1.871  0.840  0.0092 1
+  c50x_x85_s3_r3        0   4.00   31.161  0.803  0.637  0.0020 1
+  c50x_x85_s4.5_r3      0   4.00   40.625  1.210  0.745  0.0049 1
+  c50x_x85_s7_r3        0   4.00   46.412  1.427  0.800  0.0061 1
+  c50x_x85_s10_r3       0   4.00   49.589  1.494  0.819  0.0076 1
+  c50x_x85_s100_r3      0   4.00   53.474  2.021  0.846  0.0125 1
+  arm      seed  sigma*5  delta5  resid  s_half
+  0.2 (5)     1    3.286   1.551  0.019   4.190
+  0.5 (5)     1    2.932   1.136  0.026   3.934
+  0.5x        1    2.659   1.061  0.021   3.719
+  0.2 (5)     2  INCOMPLETE (missing [3.0, 4.5, 7.0, 10.0, 100.0])
+  0.5 (5)     2  INCOMPLETE (missing [3.0, 4.5, 7.0, 10.0, 100.0])
+  0.5x        2    2.539   0.997  0.025   3.677
+  0.2 (5)     3  INCOMPLETE (missing [3.0, 4.5, 7.0, 10.0, 100.0])
+  0.5 (5)     3  INCOMPLETE (missing [3.0, 4.5, 7.0, 10.0, 100.0])
+  0.5x        3    2.628   1.031  0.038   3.688
+  X1: NOT GRADED (1/3 seeds)
+  X2 5-rung R1 sigma*      : NOT GRADED (1 x pairs, 1 registered pairs)
+  X2 5-rung R2 sigma_half  : NOT GRADED (1 x pairs, 1 registered pairs)

@@ -248,3 +248,14 @@ sigma*_2 ~ sigma_0 at size ratio 1/0.25 = 4 is a factor ~16 = 4^2). LF_DEM's rep
   outcome is live, and it is reported as such if it happens.
 - Claim 10 of `CLAIMS_SIGMA_GEOMETRY` is rescoped the same hour (Guy 2020 is prior art for the mechanism; the surviving
   novelty is a continuous PSD, a Derjaguin threshold, and the exponent).
+
+## Interim note (2026-09-28 ~00:10 CDT; seed 1 complete, seeds 2-3 running; NOT a grade)
+
+Seed 1 alone (no verdicts are drawn from n = 1): R(sigma*_WC, 0.5/0.2) = 0.951; delta ratio 0.793; contact share at
+activation x1.154; x-matched arm moves sigma_half by ln -0.055 (predicted -0.047). Grain-level best m climbs with CV
+(1.10 / 1.35 / 1.70), S4 reads MIXED so far; S3's per-grain prediction (0.672) over-predicts the measured onset shift.
+POST HOC, labelled (`lfdem/forcesize.py` -> `out/forcesize_lfsig2.txt`): the pair LOAD scales mean-field, F ~ R*^beta with
+beta 2.05 / 1.76 / 1.95 (not-yet-touching pairs, sigma <= 10) at CV 0.2 / 0.35 / 0.5, so load routing does NOT explain the
+rising grain-level m; and a PER-PAIR activation collapse (no neighbour multiplicity) cannot discriminate m = 1 from m = 2
+here -- rms 0.418 vs 0.404 pooled, a 3 % difference against the 15 % the registered S4 uses. The exponent question is
+therefore likely to end MIXED or NOT INFORMATIVE on this design; a wider size ratio (bidisperse 1:4) is what would separate it.

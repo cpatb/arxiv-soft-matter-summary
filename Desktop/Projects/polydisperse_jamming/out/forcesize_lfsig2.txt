@@ -1,0 +1,46 @@
+forcesize -- POST HOC: load-size exponent beta (F ~ R*^beta, compressive pairs) in LF_DEM [lfsig2], strain [2.0, 4.0]
+  prediction under a Derjaguin threshold: activation exponent m = beta - 1 (mean field beta 2 -> m 1)
+  label               b_all b_touch b_notyet   n_all n_touch n_notyet
+  c20_x90_s1_r1        2.23    1.52     2.12     4471      47     4424
+  c20_x90_s2_r1        2.11    1.61     1.89     4201     334     3867
+  c20_x90_s3_r1        2.09    1.02     1.97     4169     622     3547
+  c20_x90_s4.5_r1      2.36    1.88     2.17     4081    1073     3008
+  c20_x90_s7_r1        2.39    1.79     2.18     4116    1493     2623
+  c20_x90_s10_r1       2.14    1.54     2.20     4024    1687     2337
+  c20_x90_s15_r1       2.36    1.99     1.88     4038    1740     2298
+  c20_x90_s30_r1       2.21    2.05     1.98     4105    2025     2080
+  c20_x90_s100_r1      2.28    2.08     1.77     4097    2052     2045
+  c20_x90_s4.5_r2      3.20    2.58     2.26     2670     680     1990
+  c20_x90_s7_r2        1.96    1.27     1.62     1357     504      853
+  c35_x90_s1_r1        2.10    0.29     2.10     4216      45     4171
+  c35_x90_s2_r1        2.24    1.72     1.93     4023     338     3685
+  c35_x90_s3_r1        1.88    1.25     1.55     3874     614     3260
+  c35_x90_s4.5_r1      1.91    1.26     1.71     3998    1248     2750
+  c35_x90_s7_r1        1.95    1.52     1.75     4004    1375     2629
+  c35_x90_s10_r1       2.00    1.44     1.91     3884    1544     2340
+  c35_x90_s15_r1       2.29    1.72     2.26     3947    1636     2311
+  c35_x90_s30_r1       2.00    1.81     1.87     3912    1885     2027
+  c35_x90_s100_r1      2.40    2.28     1.60     3836    1890     1946
+  c35_x90_s3_r2        2.12    1.23     1.81     1280     223     1057
+  c35_x90_s4.5_r2      2.09    1.54     1.66     3808    1083     2725
+  c35_x90_s7_r2        2.00    1.45     1.44     2491     857     1634
+  c50_x90_s1_r1        2.13    0.82     2.11     3834      58     3776
+  c50_x90_s2_r1        2.32    1.31     2.08     3683     275     3408
+  c50_x90_s3_r1        2.51    1.79     1.92     3624     579     3045
+  c50_x90_s4.5_r1      2.20    1.45     1.87     3551     899     2652
+  c50_x90_s7_r1        2.21    1.38     1.81     3655    1071     2584
+  c50_x90_s10_r1       2.15    1.45     1.90     3562    1293     2269
+  c50_x90_s15_r1       1.87    1.38     1.70     3520    1357     2163
+  c50_x90_s30_r1       2.26    1.91     1.93     3376    1488     1888
+  c50_x90_s100_r1      2.16    1.98     2.05     3527    1676     1851
+
+  per CV, cells below the plateau (sigma <= 10, where activation happens): mean beta and the implied m = beta - 1
+    CV 0.20: n  8 cells  beta(not-yet-touching) 2.05 -> m 1.05;  beta(all) 2.31 -> m 1.31
+    CV 0.35: n  9 cells  beta(not-yet-touching) 1.76 -> m 0.76;  beta(all) 2.03 -> m 1.03
+    CV 0.50: n  6 cells  beta(not-yet-touching) 1.95 -> m 0.95;  beta(all) 2.25 -> m 1.25
+
+  PER-PAIR activation collapse onto sigma R*^m (Derjaguin m 1, constant critical load m 2)
+    pooled   n 231: best m 2.00 (rms 0.404); rms at m 0 / 1 / 2 = 0.461 / 0.418 / 0.404
+    CV 0.20  n  80: best m 2.40 (rms 0.380); rms at m 0 / 1 / 2 = 0.411 / 0.391 / 0.381
+    CV 0.35  n  88: best m 2.30 (rms 0.384); rms at m 0 / 1 / 2 = 0.459 / 0.408 / 0.385
+    CV 0.50  n  63: best m 1.90 (rms 0.399); rms at m 0 / 1 / 2 = 0.496 / 0.423 / 0.399
