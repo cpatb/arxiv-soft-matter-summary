@@ -63,7 +63,27 @@ only the post-processed fields), so H2 there is read on the 3000 field.
 
 ## 3. The registered scheme test (S1–S7)
 
-*Pending — filled from `convergence/so_triplet_grade.md`.* Health is now judged by rule C1
+**Graded 28 Sep 04:05 on C1-converged values** (`convergence/so_triplet_grade.md`):
+
+| family | quantity | refine 2.25 | 1.5 | 1 | R | p | verdict |
+|---|---|---|---|---|---|---|---|
+| SO | `C_P` | 1.4921 | 1.4682 | 1.4317 | +0.658 | **1.033** | **S1 PASS** — monotone, in band |
+| SO | `n_t` | 1.9467 | 1.9377 | 1.9284 | +0.970 | 0.074 | S2 pass (monotone; p out of band) |
+| SO | `tau_w`(15 mm) | 5.7627 | 5.7994 | 5.8025 | +11.8 | – | **S2 FAIL** (diverging — but its coarse step is 0.05 %, near-degenerate) |
+| SO | peak `tau_w` | 489.62 | 485.96 | 475.96 | +0.367 | 2.475 | monotone, at the band edge |
+| FO | all | – | – | – | – | – | **INCOMPLETE**: FO 1.5 and 2.25 not C1-converged |
+
+- **S3 INCOMPLETE** — so the registered attribution ("the first-order scheme caused the
+  divergence") is **not licensed**, whatever S1 says.
+- **S5 PASS**: +4.79 % at refine 1 on converged values (+5.18 % on the residual stops).
+- **S7 NOT RUN** (stopped at iteration 563, Amendment 5).
+- ⚠ **S1 is fragile.** SO refine 2.25 passes C1 as registered (last windows 0.047 % /
+  0.093 %), but its `C_P` increments are not decaying (~0.07 % per 400 iterations, flat
+  since iteration 4000): a Cauchy bar passes a slow constant creep. If refine 2.25 settles
+  above `C_P` ≈ 1.505, R crosses 1 and S1 becomes a divergence; below ≈ 1.481, p leaves the
+  band. It was continued a further 4800 iterations to see whether the creep decays.
+
+Health is now judged by rule C1
 (Amendment 4, QoI trajectory over +2400 iterations), because H1 turned out to be no test
 at all for a mapped start (refine 3.375 met it at iteration 26).
 
@@ -211,4 +231,13 @@ r/d 20–25 moves outward with the boundary, it is (i).
 
 ## 5. What would settle the rest
 
-*Pending the SO grades.*
+1. **Converge before refining.** Every grid, legacy and new, must be continued until its
+   gate quantities stop moving (C1, and a check that increments DECAY, which C1 alone does
+   not test). Refine 2 (`r2_ext`) is still moving at 7505+; refine 4 (491k cells) has never
+   been checked and is the case the `C_P` "divergence" rests on — ~8 ranks for several hours.
+2. **Then re-grade `fine_conv`, `midfine` and `fo_r15` on converged values**, and only then
+   ask the scheme question (S3). Tonight's S1 pass is a statement about the SO family alone.
+3. **The manuscript**: `C_P` 1.3518 → 1.3663 at its own grid (+1.1 %, `Q*` ≈ −1.5 % via
+   `C_P^-1.426`); the domain-refit case (`R50`, residual stop at 2689) needs the same
+   continuation before its +14.3 % `Q*` shift is quoted.
+4. **The Poreh far-field law is an external check the paper can add now** (§4).
