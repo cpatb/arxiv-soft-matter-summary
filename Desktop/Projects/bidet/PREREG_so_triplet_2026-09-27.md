@@ -170,6 +170,15 @@ C1 bars. If refine 2 and refine 4 drift by different amounts, the `fine_conv` "d
 (|R| = 4.59) is partly an iterative artefact and must be re-graded on converged values;
 refine 4 (491k cells) is out of reach tonight and is stated as such.
 
+## Amendment 6 (03:05 28 Sep, before any S1-S5 value was computed on C1 values)
+
+L1 showed the refine-1 FO case drifting +1.08 % in `C_P` after its residual stop, so the
+Amendment-4 exemption for refine-1 cases ("cold-started and met the original criterion")
+was wrong. **Every family member, refine 1 included, is graded at its C1-converged
+continuation value.** FO refine 1 uses L1 (already C1-flat by ~3600). SO refine 1 gets
+the same continuation (**L1'**, `so_trajectory2.sh 1 case_Re10000_H6_so_r1`). S5 is
+re-evaluated on the two converged refine-1 values and printed beside the registered one.
+
 ## What will NOT be done
 
 No bar is loosened after data. p outside [0.5, 2.5] is reported, not re-banded. If the
