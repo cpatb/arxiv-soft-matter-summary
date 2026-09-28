@@ -100,9 +100,36 @@ while the inner band [2, 8] gives the only monotone `C_P` triplet in the study
 (refine 4/2/1: R = +0.34, p = 1.54, in band) — with `n_t` still diverging there, so this
 is not a rescue.
 
-**Candidate, untested:** an outflow-boundary effect that reaches inward only at high
-resolution. The R = 50 mm domain test (GB1) cleared the boundary at refine 1 only. The
-test is a refine-4 (or 3.375, S7) case on the 50 mm domain, or reading S7's outer band.
+**Two candidates for refine 4's outer band, and the literature does not pick.**
+(i) An outflow-boundary effect that reaches inward only at high resolution (the R = 50 mm
+domain test, GB1, cleared the boundary at refine 1 only). (ii) The finer grid is *closer*
+to the self-similar turbulent wall jet. `LIT_WALLJET_DECAY_2026-09-28.md` (DOIs resolved):
+the far-field law Phares et al. 2000 themselves adopt (their Eq. 2.37, from Poreh, Tsuei &
+Cermak 1967) is tau_w ∝ (r/H)^-2.3, i.e. **tau/(rho U0²) = 0.0367 (r/d)^-2.3** at
+Re_d = 1e4, H/d = 6, ~15 % on magnitude. So a local exponent rising outward toward ~2.3 is
+*expected*, and refine 4's 2.39 is nearer that asymptote than the other grids' 2.09–2.13.
+
+**An external magnitude anchor the paper does not yet use** (`convergence/explore_poreh_farfield.txt`),
+CFD / Poreh-law, median per r/d bin:
+
+| grid | 5–8 | 8–12 | 12–16 | 16–20 | 20–25 | 25–35 | 35–48 |
+|---|---|---|---|---|---|---|---|
+| refine 0.5 | 0.826 | 0.938 | 1.012 | 1.064 | 1.095 | – | – |
+| refine 1 | 0.827 | 0.934 | 1.007 | 1.058 | 1.097 | – | – |
+| refine 1.414 | 0.830 | 0.929 | 0.993 | 1.036 | 1.069 | – | – |
+| refine 2 | 0.863 | 0.982 | 1.070 | 1.130 | 1.165 | – | – |
+| refine 4 | 0.949 | 1.055 | 1.073 | 1.050 | 0.902 | – | – |
+| SO refine 1 | 0.828 | 0.931 | 1.002 | 1.050 | 1.088 | – | – |
+| R = 50 mm, refine 1 | 0.834 | 0.946 | 1.023 | 1.076 | 1.121 | 1.178 | 1.238 |
+
+On every grid the wall-jet shear is within 0.83–1.17 of the published law over r/d 5–25,
+mostly inside its ~15 %: **the first external check on the magnitude of the closure's
+wall-jet region.** Two cautions. The CFD decays more slowly than r^-2.3 on every grid
+except refine 4 (the ratio climbs outward, to 1.24 at r/d 35–48 on the wide domain), so the
+agreement is in magnitude over a band, not in exponent. And Poreh's own r/d range and
+Reynolds range are unverified (paper paywalled), so Re_d = 1e4 may lie outside it.
+Deciding (i) against (ii) needs refine ≥ 3 on the 50 mm domain: if the refine-4 bend at
+r/d 20–25 moves outward with the boundary, it is (i).
 
 ## 5. What would settle the rest
 
