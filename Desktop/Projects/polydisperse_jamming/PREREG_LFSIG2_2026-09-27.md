@@ -359,7 +359,12 @@ critical load would predict m = beta = 1.67, excluded. This closure was computed
 are averaged. Conditioned on each pair type's own gap quartiles, the NEAR-contact quartile (the pairs about to activate) gives
 beta **1.64** (sd 0.24; Derjaguin m 0.64, inside the measured [0.46, 0.86]), the FAR quartile 1.01 (sd 0.22). The closure
 holds on the physically relevant population; the pooled 1.67 sits near it only because the listed-pair cutoff is
-lub_max_gap 0.5, and a wider cutoff would pull the pooled value toward 1.
+lub_max_gap 0.5; a wider cutoff is PREDICTED (untested: no cell varies lub_max_gap) to pull the pooled value toward the
+far-quartile ~1.
+
+*Referee pass 2 (fresh context, 2026-09-28 ~06:05): no FATAL, no MATERIAL; all three pass-1 fixes verified by re-running both
+scripts (outputs bit-identical to the committed ones) and the registered B1 code and text confirmed byte-identical to the
+pre-launch commit 04c14a8. One MINOR acted on (the sentence above is now tagged as an untested prediction). Converged.*
 
 **Reading.** The per-pair activation is consistent with a Derjaguin (electrostatic, threshold ~ R*) contact law and not with
 the size-independent critical load of the constant-force picture; the size selectivity is weaker than naive because in this
