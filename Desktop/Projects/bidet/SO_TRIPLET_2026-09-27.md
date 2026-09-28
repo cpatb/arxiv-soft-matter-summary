@@ -127,6 +127,15 @@ most solid thing here."** That finding moved the refine-2 grid from a capped sta
 - **The manuscript's `C_P` = 1.3518 carries a +1.1 % iterative error**; the design `Q*`
   moves with `C_P^-1.426`, i.e. about −1.5 %.
 
+**Independently verified** (numerics-verifier, 28 Sep ~03:40, own reader of the raw
+`wallShearStress_*.raw` samples with no shared code): every number above reproduces
+exactly; the continuations are clean restarts (identical mesh by md5, byte-identical
+`fvSchemes`, relaxation factors and boundary conditions, start fields bit-identical to the
+base cases' final fields; only `residualControl` and I/O cadence differ); both bases
+genuinely logged "SIMPLE solution converged"; and every residual, `Uz` included, stayed
+below 1e-5 throughout the continuations. The drift is real iterative non-convergence under
+a criterion that was genuinely met, not an artefact of how it was continued.
+
 The mechanism is the same as §3a: a normalised residual reaches 1e-5 while a slow mode in
 the wall-jet solution is still evolving. It shows up in `tau_w`(15 mm) and `C_P` (the
 wall-jet quantities) and hardly in peak `tau_w` (stagnation: 441.2 → 440.2).
