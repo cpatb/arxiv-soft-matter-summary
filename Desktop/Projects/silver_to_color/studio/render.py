@@ -25,11 +25,16 @@ from . import timeline as tl
 from . import voice as vo
 from .episode import Episode, Short
 
-FPS = 24                      # delivery rate; the ~16 fps film is cadenced up by fps=24
+FPS = tl.FRAME_RATE           # delivery rate; the ~16 fps film is cadenced up by fps=24
 SR = 48000
 BG = "0x0b0b0b"
 LUFS = -14.0                  # YouTube's playback reference loudness
 TRUE_PEAK = -1.5
+# Deliver BT.709, tagged. The scale filter reads each input's own tag (the colour master
+# says BT.709, or SMPTE 170M for a master made before 2026-10-01) and converts; the grey
+# B&W master has neutral chroma, so its matrix cannot change a pixel.
+TO_709 = "scale=out_color_matrix=bt709:out_range=tv,format=yuv420p"
+TAGS_709 = ["-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709"]
 FONT_FILES = ["georgia.ttf", "georgiab.ttf", "georgiai.ttf", "georgiaz.ttf",
               "segoeui.ttf", "segoeuib.ttf"]
 
@@ -87,7 +92,7 @@ def _fit(canvas: Canvas, push: float, dur: float, pan: float) -> str:
                  f"y='ih/2-(ih/zoom/2)':d=1:s={fw}x{fh}:fps={FPS}")
     if not canvas.short:
         base += f",pad={canvas.w}:{canvas.h}:(ow-iw)/2:(oh-ih)/2:color={BG}"
-    return base + ",setsar=1,format=yuv420p"
+    return base + ",setsar=1," + TO_709
 
 
 def segment_cmd(ep: Episode, p: tl.Placed, canvas: Canvas, out: str) -> list[str]:
@@ -99,7 +104,7 @@ def segment_cmd(ep: Episode, p: tl.Placed, canvas: Canvas, out: str) -> list[str
         return ["-ss", f"{max(0.0, start):.4f}", "-t", f"{length:.4f}", "-i", str(path)]
 
     tail = ["-t", f"{dur:.4f}", "-an", "-c:v", "libx264", "-crf", "14", "-preset", "veryfast",
-            "-pix_fmt", "yuv420p", "-r", str(FPS), "-g", str(2 * FPS), out]
+            "-pix_fmt", "yuv420p", "-r", str(FPS), "-g", str(2 * FPS)] + TAGS_709 + [out]
 
     if c.mode == "card":
         # Background: the colour footage, slowed, blurred and darkened under the text.
@@ -115,7 +120,7 @@ def segment_cmd(ep: Episode, p: tl.Placed, canvas: Canvas, out: str) -> list[str
                  f"{_src('0:v', c.speed, dur)},{crop}[b];"
                  f"{_src('1:v', c.speed, dur)},{crop}[c];"
                  f"[bg][b]overlay=0:{STACK_TOP}[t];[t][c]overlay=0:{STACK_SEAM},"
-                 f"setsar=1,format=yuv420p[v]")
+                 f"setsar=1,{TO_709}[v]")
         return head + inp(ep.bw, p.film_at, span) + inp(ep.color, p.film_at, span) + [
             "-filter_complex", chain, "-map", "[v]"] + tail
 
@@ -131,22 +136,25 @@ def segment_cmd(ep: Episode, p: tl.Placed, canvas: Canvas, out: str) -> list[str
                  f"{_src('0:v', c.speed, dur)},scale={pw}:{ph}:flags=lanczos[b];"
                  f"{_src('1:v', c.speed, dur)},scale={pw}:{ph}:flags=lanczos[c];"
                  f"[bg][b]overlay=16:{y}[t];[t][c]overlay={canvas.w - pw - 16}:{y},"
-                 f"setsar=1,format=yuv420p[v]")
+                 f"setsar=1,{TO_709}[v]")
         return head + inp(ep.bw, p.film_at, span) + inp(ep.color, p.film_at, span) + [
             "-filter_complex", chain, "-map", "[v]"] + tail
 
     if c.mode == "wipe":
         # B&W plays, then colour sweeps across left to right while the film keeps
         # running. xfade consumes its second input from that input's own t=0, so the
-        # colour clip starts `offset` seconds of film later to stay on the same frame.
-        offset = min(1.2, dur * 0.2)
-        width = min(2.5, max(0.6, dur * 0.4))
-        a_len = (offset + width) * c.speed + 1.0
+        # colour stream is trimmed by `offset` AFTER both streams went through the same
+        # seek and the same fps cadence. Seeking the colour input separately to
+        # film_at + offset put the two cadences out of phase: 18-38 of 56 frames one
+        # source frame off in review (2026-10-01). Offsets are whole output frames.
+        offset = round(min(1.2, dur * 0.2) * FPS) / FPS
+        width = round(min(2.5, max(0.6, dur * 0.4)) * FPS) / FPS
         fit = _fit(canvas, 0, dur, c.pan)
-        chain = (f"{_src('0:v', c.speed, offset + width)},{fit},trim=0:{offset + width:.4f}[a];"
-                 f"{_src('1:v', c.speed, dur)},{fit}[b];"
-                 f"[a][b]xfade=transition=wiperight:duration={width:.4f}:offset={offset:.4f}[v]")
-        return head + inp(ep.bw, p.film_at, a_len) + inp(ep.color, p.film_at + offset * c.speed, span) + [
+        chain = (f"{_src('0:v', c.speed, dur)},{fit},trim=0:{offset + width:.6f}[a];"
+                 f"{_src('1:v', c.speed, dur)},trim=start={offset:.6f},"
+                 f"setpts=PTS-STARTPTS,{fit}[b];"
+                 f"[a][b]xfade=transition=wiperight:duration={width:.6f}:offset={offset:.6f}[v]")
+        return head + inp(ep.bw, p.film_at, span) + inp(ep.color, p.film_at, span) + [
             "-filter_complex", chain, "-map", "[v]"] + tail
 
     raise ValueError(f"unhandled mode {c.mode}")
@@ -206,9 +214,16 @@ def loudnorm(src: Path, dst: Path) -> dict:
     m = json.loads(re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", proc.stderr, re.S).group(0))
     second = (f"{target}:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
               f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:"
-              f"offset={m['target_offset']}:linear=true")
-    run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-af", second, "-ar", str(SR),
-         "-ac", "2", str(dst)])
+              f"offset={m['target_offset']}:linear=true:print_format=json")
+    proc = run(["ffmpeg", "-hide_banner", "-y", "-i", str(src), "-af", second, "-ar", str(SR),
+                "-ac", "2", str(dst)])
+    # loudnorm silently falls back to dynamic (pumping) mode when a linear gain would
+    # break the true-peak ceiling; say so instead of shipping it unannounced.
+    m2 = re.search(r"\{[^{}]*\"normalization_type\"[^{}]*\}", proc.stderr, re.S)
+    m["normalization_type"] = json.loads(m2.group(0))["normalization_type"] if m2 else "unknown"
+    if m["normalization_type"] != "linear":
+        print(f"WARN loudnorm used {m['normalization_type']} mode for {dst.name} "
+              f"(input {m['input_i']} LUFS, true peak {m['input_tp']} dBTP)")
     return m
 
 
@@ -261,7 +276,7 @@ def render_placed(ep: Episode, placed: list[tl.Placed], voices: dict, canvas: Ca
     final.parent.mkdir(parents=True, exist_ok=True)
     run(["ffmpeg", "-v", "error", "-y", "-i", "video.mp4", "-i", "audio.wav", "-vf", vf,
          "-map", "0:v", "-map", "1:a", "-t", f"{length:.3f}", "-c:v", "libx264", "-crf", "18",
-         "-preset", "medium", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k",
+         "-preset", "medium", "-pix_fmt", "yuv420p"] + TAGS_709 + ["-c:a", "aac", "-b:a", "192k",
          "-movflags", "+faststart", str(final.resolve())], cwd=workdir)
     (workdir / "render.json").write_text(json.dumps({
         "final": str(final), "length_s": round(length, 3), "canvas": canvas.__dict__,

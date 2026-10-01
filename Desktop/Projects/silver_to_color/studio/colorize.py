@@ -213,15 +213,29 @@ def read_gray(path, width: int, height: int, start_s: float | None = None,
         proc.wait()
 
 
+# YUV matrix for written video. swscale's RGB->YUV default is BT.601 and libx264 leaves
+# the stream untagged, while YouTube/HD players assume BT.709: reds and skin shift
+# (review 2026-10-01: pure red 200 -> Y 67, the 601 value). "bt601" exists only so a
+# run started under the old default can be resumed consistently and tagged honestly.
+MATRIX = "bt709"
+TAGS = {"bt709": ("bt709", "bt709", "bt709"), "bt601": ("smpte170m", "bt709", "bt709")}
+H273 = {"bt709": 1, "bt601": 6}
+
+
+def color_tags(matrix: str) -> list[str]:
+    cs, prim, trc = TAGS[matrix]
+    return ["-colorspace", cs, "-color_primaries", prim, "-color_trc", trc]
+
+
 def writer(path, width: int, height: int, fps: float, pix_fmt_in: str,
-           vf: str | None = None, crf: int = 12):
+           vf: str | None = None, crf: int = 12, matrix: str = MATRIX):
     cmd = ["ffmpeg", "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", pix_fmt_in,
            "-s", f"{width}x{height}", "-r", f"{fps:.6f}", "-i", "-"]
-    if vf:
-        cmd += ["-vf", vf]
+    conv = f"scale=out_color_matrix={matrix}:out_range=tv,format=yuv420p"
+    cmd += ["-vf", f"{vf},{conv}" if vf else conv]
     cmd += ["-c:v", "libx264", "-crf", str(crf), "-preset", "medium",
-            "-pix_fmt", "yuv420p", "-g", str(int(round(fps))), "-movflags", "+faststart",
-            str(path)]
+            "-pix_fmt", "yuv420p", "-g", str(int(round(fps)))] + color_tags(matrix) + [
+            "-movflags", "+faststart", str(path)]
     return subprocess.Popen(cmd, stdin=subprocess.PIPE)
 
 
@@ -495,11 +509,22 @@ def colorize(bw_master, out, colorizer: Colorizer | None = None, window: int = 5
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
     if manifest.get("source_frames") not in (None, n):
         raise RuntimeError(f"manifest is for {manifest['source_frames']} frames, master has {n}")
-    manifest.update(source=str(bw_master), source_frames=n, fps=fps, window=window,
-                    chunk_frames=chunk_frames)
-    manifest.setdefault("done", {})
     colorizer = colorizer or Colorizer()
-    manifest["backend"] = colorizer.backend
+    if manifest.get("done"):
+        # Resuming: every setting that changes pixels must match the finished chunks, or
+        # the master silently splices two different restorations. Manifests from before
+        # these keys existed were written as BT.601.
+        manifest.setdefault("matrix", "bt601")
+        want = {"window": window, "chunk_frames": chunk_frames,
+                "saturation": colorizer.saturation, "backend": colorizer.backend}
+        for key, val in want.items():
+            if key in manifest and manifest[key] != val:
+                raise RuntimeError(f"resume mismatch: {key} was {manifest[key]!r}, now {val!r}")
+    matrix = manifest.get("matrix", MATRIX)
+    manifest.update(source=str(bw_master), source_frames=n, fps=fps, window=window,
+                    chunk_frames=chunk_frames, saturation=colorizer.saturation,
+                    backend=colorizer.backend, matrix=matrix)
+    manifest.setdefault("done", {})
     n_chunks = (n + chunk_frames - 1) // chunk_frames
     t_start = time.time()
     done_now = 0
@@ -507,6 +532,8 @@ def colorize(bw_master, out, colorizer: Colorizer | None = None, window: int = 5
     for c in range(n_chunks):
         s, e = c * chunk_frames, min(n, (c + 1) * chunk_frames)
         if str(c) in manifest["done"] and _chunk_name(workdir, c).exists():
+            if manifest["done"][str(c)].get("first") != s:
+                raise RuntimeError(f"chunk {c} was made with a different chunk layout")
             continue
         lo, hi = max(0, s - half), min(n, e + half)
         # Seek a quarter frame early so rounding can never skip the first wanted frame.
@@ -521,7 +548,7 @@ def colorize(bw_master, out, colorizer: Colorizer | None = None, window: int = 5
                      for f in frames]
             flows = pair_flows(small, half)                     # ... CPU does flow meanwhile
             ab = pending.result()
-        proc = writer(_chunk_name(workdir, c), w, h, fps, "bgr24", crf=crf)
+        proc = writer(_chunk_name(workdir, c), w, h, fps, "bgr24", crf=crf, matrix=matrix)
 
         def finish(k):
             i = k - lo
@@ -549,7 +576,12 @@ def colorize(bw_master, out, colorizer: Colorizer | None = None, window: int = 5
     listing = workdir / "concat.txt"
     listing.write_text("".join(f"file '{p.resolve().as_posix()}'\n" for p in chunks), "utf-8")
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0",
-                    "-i", str(listing), "-c", "copy", "-movflags", "+faststart", str(out)],
+                    "-i", str(listing), "-c", "copy",
+                    # Stream copy ignores -colorspace; write the VUI in the bitstream.
+                    # H.273 codes: matrix 1 = BT.709, 6 = SMPTE 170M (601); prim/trc 1 = 709.
+                    "-bsf:v", f"h264_metadata=matrix_coefficients={H273[matrix]}:"
+                              "colour_primaries=1:transfer_characteristics=1",
+                    "-movflags", "+faststart", str(out)],
                    check=True)
     total = count_packets(out)
     if total != n:

@@ -75,6 +75,7 @@ def test_temporal_median_tracks_motion_like_reference():
 class FakeColorizer:
     """Chroma is a deterministic function of the frame, so misalignment shows."""
     backend = "fake"
+    saturation = 1.0
 
     def predict_ab(self, frames):
         out = []
@@ -97,9 +98,10 @@ def _make_clip(path, n=37, fps=16):
 
 @pytest.mark.skipif(subprocess.run(["ffmpeg", "-version"], capture_output=True).returncode,
                     reason="ffmpeg not available")
-def test_chunked_colorize_equals_single_chunk(tmp_path):
+@pytest.mark.parametrize("fps", [16, 15.873])   # prepare() can write a measured, non-snapped rate
+def test_chunked_colorize_equals_single_chunk(tmp_path, fps):
     src = tmp_path / "bw.mp4"
-    _make_clip(src)
+    _make_clip(src, fps=fps)
     one = C.colorize(src, tmp_path / "one.mp4", FakeColorizer(), chunk_frames=1000,
                      workdir=tmp_path / "w1", crf=0)
     many = C.colorize(src, tmp_path / "many.mp4", FakeColorizer(), chunk_frames=7,

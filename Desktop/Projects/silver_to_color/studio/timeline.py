@@ -5,10 +5,13 @@ No ffmpeg, no network, so all of it is unit-tested directly.
 
 from __future__ import annotations
 
+import math
 import re
 from dataclasses import dataclass, field
 
 from .episode import Cue
+
+FRAME_RATE = 24              # delivery frame rate; render.FPS reads this
 
 # Caption chunking. Full video: subtitle-style lines. Shorts: big 1-3 word bursts.
 FULL_MAX_CHARS = 42          # Netflix/BBC single-line guidance
@@ -47,6 +50,10 @@ def layout(cues: list[Cue], voice: dict[str, tuple[float, list[Word]]]) -> list[
     for c in cues:
         dur_v, words = voice.get(c.id, (0.0, []))
         dur = max(c.hold, (c.lead + dur_v + c.pad) if dur_v > 0 else 0.0)
+        # Whole output frames: each segment is cut with -t at FRAME_RATE, which rounds,
+        # and the rounding errors would random-walk picture away from the audio and
+        # captions placed at exact times (~0.1 s rms after 60 cues, per review).
+        dur = math.ceil(dur * FRAME_RATE - 1e-6) / FRAME_RATE
         if dur <= 0:
             raise ValueError(f"cue {c.id} has zero duration")
         film_at = cursor if c.at is None else c.at
