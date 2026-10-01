@@ -282,8 +282,11 @@ shorts:
         say: "In the spring of 1906, the Miles Brothers filmed a ride down Market Street, San Francisco, from the front of a cable car."
         at: 120
         facts: [F03, F17]
+      - id: s03h
+        say: "The film historian David Kiehn dates it to Saturday, April 14th, just after three in the afternoon. You can see people turn to stare at the camera as it goes by."
+        facts: [F17, F29]
       - id: s03b
-        say: "Days later, at 5:12 in the morning, the earthquake hit. The fire that followed burned for three days."
+        say: "Four days later, at 5:12 in the morning, the earthquake hit. The fire that followed burned for three days."
         facts: [F31, F35]
       - id: s03c
         say: "The brothers' studio, on Market Street, burned. Herbert Miles said they lost eighty thousand dollars, and they never rebuilt it."

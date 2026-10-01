@@ -206,12 +206,34 @@ def _write_wav(path: Path, pcm: np.ndarray):
         w.writeframes(pcm.tobytes())
 
 
-def loudnorm(src: Path, dst: Path) -> dict:
-    """EBU R128 two-pass (measure, then linear correction) to LUFS / TRUE_PEAK."""
-    target = f"loudnorm=I={LUFS}:TP={TRUE_PEAK}:LRA=11"
+def _measure(src: Path, target: str) -> dict:
     proc = run(["ffmpeg", "-hide_banner", "-i", str(src), "-af", target + ":print_format=json",
                 "-f", "null", "-"])
-    m = json.loads(re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", proc.stderr, re.S).group(0))
+    return json.loads(re.search(r"\{[^{}]*\"input_i\"[^{}]*\}", proc.stderr, re.S).group(0))
+
+
+def loudnorm(src: Path, dst: Path) -> dict:
+    """EBU R128 two-pass (measure, then linear correction) to LUFS / TRUE_PEAK.
+
+    Narration is peaky: measured on ep01's Shorts, -20 LUFS with -3 dBTP peaks, so the
+    +6 dB linear gain would put peaks at +3 dBTP and loudnorm drops to dynamic mode,
+    which pumps. Instead, peaks are first limited to exactly the headroom the gain needs
+    (alimiter, a look-ahead limiter: transparent on short consonant peaks), then the
+    linear pass runs.
+    """
+    target = f"loudnorm=I={LUFS}:TP={TRUE_PEAK}:LRA=11"
+    m = _measure(src, target)
+    for _ in range(3):
+        gain = LUFS - float(m["input_i"])
+        if float(m["input_tp"]) + gain <= TRUE_PEAK - 0.2:
+            break
+        ceiling_db = TRUE_PEAK - gain - 0.7          # 0.7 dB margin for inter-sample peaks
+        limited = src.with_name(src.stem + ".lim.wav")
+        run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-af",
+             f"alimiter=limit={10 ** (ceiling_db / 20):.5f}:attack=2:release=40:level=disabled",
+             str(limited)])
+        src = limited
+        m = _measure(src, target)
     second = (f"{target}:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
               f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:"
               f"offset={m['target_offset']}:linear=true:print_format=json")
