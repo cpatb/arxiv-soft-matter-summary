@@ -261,7 +261,7 @@ def ass_events(placed: list[Placed], width: int, height: int, theme: Theme, shor
         if p.cue.mode == "split" and not short:
             y = int(height * 0.16)
             ev.append(_event(p.start, p.end, "Label",
-                             rf"{{\fad(300,300)\pos({int(width * 0.03)},{y})}}THE 1906 PRINT", 1))
+                             rf"{{\fad(300,300)\pos({int(width * 0.03)},{y})}}AS SCANNED", 1))
             ev.append(_event(p.start, p.end, "Label",
                              rf"{{\fad(300,300)\pos({int(width * 0.51)},{y})}}RESTORED + COLORIZED", 1))
         if short and stack_rects and p.cue.mode != "card":

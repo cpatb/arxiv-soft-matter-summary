@@ -461,6 +461,17 @@ def masked_median(stack: np.ndarray, mask: np.ndarray) -> np.ndarray:
 
 # ----------------------------------------------------------------------------- colorize
 
+def count_packets(path) -> int:
+    """Frame count from the container's packets: no decoding, so seconds instead of the
+    ~20 min `-count_frames` spent decoding a 1.7 GB grainy master. Exact for the
+    intra/inter-coded streams written here (one packet per frame, no B-frame reorder
+    changes the count); test_chunked_colorize_equals_single_chunk cross-checks it."""
+    out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-count_packets",
+                          "-show_entries", "stream=nb_read_packets", "-of", "csv=p=0",
+                          str(path)], capture_output=True, text=True, check=True).stdout
+    return int(out.strip().split(",")[0])
+
+
 def _chunk_name(workdir: Path, index: int) -> Path:
     return workdir / f"chunk_{index:04d}.mp4"
 
@@ -478,7 +489,7 @@ def colorize(bw_master, out, colorizer: Colorizer | None = None, window: int = 5
     workdir.mkdir(parents=True, exist_ok=True)
     info = pl.probe_video(str(bw_master))
     fps, w, h = info.avg_frame_rate, info.width, info.height
-    n = pl.count_frames(bw_master)
+    n = count_packets(bw_master)
     half = window // 2
     manifest_path = workdir / "manifest.json"
     manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
@@ -522,7 +533,7 @@ def colorize(bw_master, out, colorizer: Colorizer | None = None, window: int = 5
         proc.stdin.close()
         if proc.wait() != 0:
             raise RuntimeError(f"ffmpeg failed on chunk {c}")
-        got = pl.count_frames(_chunk_name(workdir, c))
+        got = count_packets(_chunk_name(workdir, c))
         if got != e - s:
             raise RuntimeError(f"chunk {c}: wrote {got} frames, expected {e - s}")
         manifest["done"][str(c)] = {"frames": got, "first": s}
@@ -540,7 +551,7 @@ def colorize(bw_master, out, colorizer: Colorizer | None = None, window: int = 5
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0",
                     "-i", str(listing), "-c", "copy", "-movflags", "+faststart", str(out)],
                    check=True)
-    total = pl.count_frames(out)
+    total = count_packets(out)
     if total != n:
         raise RuntimeError(f"colour master has {total} frames, B&W master has {n}")
     manifest["output"] = str(out)

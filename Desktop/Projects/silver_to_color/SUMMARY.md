@@ -20,7 +20,16 @@ Ordered by impact x ease. Each links to the reasoning.
 
 ## What is in this folder
 
+**Start at `channel/PLAYBOOK.md`** (added 2026-10-01): the format, the per-episode commands,
+and the upload checklist. Episode 1 is scripted and renders on this laptop.
+
 ```
+channel/PLAYBOOK.md                 Format (full video + Shorts), pipeline commands, cadence
+channel/SLATE.md                    Next 10 films, vetted for scan quality and rights
+studio/                             python -m studio: YAML episode -> narrated full video,
+                                    Shorts, SRT, chapters, thumbnail; studio.colorize runs
+                                    DDColor on the Intel iGPU (no Kaggle needed)
+episodes/ep01_market_street/        FACTS.md (51 sourced facts), episode.yaml, restore.sh
 research/monetization.md            YPP policy, RPM evidence, six revenue streams, staged roadmap
 research/pipeline-optimization.md   Ranked changes with gain / cost / risk, and what to avoid
 research/workflow.md                End-to-end map, bottlenecks, tool reference
