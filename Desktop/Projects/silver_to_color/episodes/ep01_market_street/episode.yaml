@@ -1,0 +1,332 @@
+# Episode 1: A Trip Down Market Street (Miles Brothers, 1906)
+#
+# Every line that states a fact cites its ID in FACTS.md; `python -m studio lint` flags any
+# line with a number or superlative and no citation. Disputed facts are narrated with
+# their source named ("according to Kiehn") -- see FACTS.md section 8 for the myths this
+# script deliberately does not repeat (M02 "every building", M04 Bell & Howell, M05 car
+# counts, M07 "ten laps").
+#
+# Footage times are seconds into the restored masters, which keep the source's running
+# time (24 -> 16 fps decimation preserves duration). The ride proper runs ~27 s to ~11:40;
+# 0:00-0:27 are Internet Archive's own title cards and must not appear on screen.
+# A cue without `at` carries on from where the previous cue's footage ended, so most of
+# the full video plays the ride in order, under the narration.
+
+id: ep01_market_street
+title: "A Trip Down Market Street, 1906 — Restored, at True Speed, in Color"
+film:
+  bw: E:/silver_to_color/ep01/bw_master.mp4
+  color: E:/silver_to_color/ep01/color_master.mp4
+  credit: "Film: Miles Brothers, 1906 · Scan: Prelinger Archives / Internet Archive"
+voice:
+  engine: edge                 # scratch voice; your recordings/<cue id>.wav always win
+  name: en-US-AndrewNeural
+  rate: "-6%"
+  recordings: recordings
+output: E:/silver_to_color/ep01/renders
+facts: FACTS.md
+thumbnail: {at: 108, text: "Days Before the Fire"}
+description: >-
+  San Francisco's Market Street, filmed from the front of a cable car in the spring of
+  1906, days before the earthquake and fire. Restored from a 4K scan of an original print,
+  played at its true speed, and colorized, with the story of how the film was made, how a
+  historian worked out when it was shot, and what happened to the street.
+
+full:
+  cues:
+    # ---------------------------------------------------------------- cold open
+    - id: open01
+      say: "This is Market Street, San Francisco, in the spring of 1906. A movie camera is riding on the front of a cable car."
+      at: 100
+      mode: wipe
+      chapter: Cold open
+      facts: [F03, F17]
+    - id: open02
+      say: "Within days, an earthquake and a fire would destroy most of the downtown you're looking at. This film had already left town, on a train."
+      facts: [F38, F08]
+    - id: open03
+      say: "Today we're going to ride it again: restored, at its true speed, and in color. And we'll look at what's really on the screen, including a few things that usually get told wrong."
+      mode: split
+    - id: title
+      card: {title: "A Trip Down Market Street", subtitle: "San Francisco, 1906"}
+      at: 330
+      hold: 4.5
+
+    # ---------------------------------------------------------------- the ride
+    - id: ride01
+      say: "The film was made by the Miles Brothers, a San Francisco company run by four brothers: Harry, Herbert, Earl and Joe. According to the film historian David Kiehn, it was Harry who rode the cable car, cranking the camera by hand."
+      at: 27
+      chapter: The ride
+      lower_third: "Market Street, San Francisco"
+      facts: [F01, F02, F07]
+    - id: ride02
+      say: "The camera was rigged at Eighth Street, near the brothers' studio, and it points east, down Market Street, toward the Ferry Building on the bay. The ride covers about a mile and a half, at a little under ten miles an hour."
+      facts: [F03, F05]
+    - id: ride03
+      say: "They had tried this before, from an automobile, with the camera on a tripod. The cobblestones shook the picture to pieces. So at the end of March 1906, they asked United Railroads, which owned the line, for the use of a cable car. The company said yes."
+      facts: [F04]
+    - id: ride04
+      say: "How they had enough film to do this is its own story. In 1905, Harry had modified cameras to hold thousand-foot magazines, when most cameras held two hundred feet, to film a prize fight scheduled for forty-five rounds. It ended in the eighteenth. That left a lot of unused film."
+      facts: [F11]
+    - id: ride05
+      say: "The brothers advertised the film for Hale's Tours theaters, which were fitted out like a railroad coach to show scenic films. A ride down a city street fit right in."
+      facts: [F10]
+
+    # ---------------------------------------------------------------- dating
+    - id: date01
+      say: "For most of the last century, this film had the wrong date. It was catalogued as 1905, and the Library of Congress had it as September 1905."
+      chapter: A film without a date
+      facts: [F12]
+    - id: date02
+      say: "In 2010, the historian David Kiehn, of the Niles Essanay Silent Film Museum in Fremont, California, took another look. The first thing he noticed was water. There are puddles between the tracks."
+      facts: [F13, F14]
+    - id: date03
+      say: "San Francisco's newspapers from September 1905 showed no rain at all. In the spring of 1906, there was quite a lot of it."
+      facts: [F14]
+    - id: date04
+      say: "Then the license plates. California began issuing plates in 1905, so the cars can be traced. The highest number on screen, 5057, was a Knox automobile registered in February 1906. The film can't be older than that."
+      facts: [F15]
+    - id: date05
+      say: "Then an advertisement. On April 28th, 1906, ten days after the earthquake, the Miles Brothers advertised the film in a trade paper, the New York Clipper. They said it was made just one week before the destruction."
+      facts: [F16]
+    - id: date06
+      say: "Kiehn dates the film to Saturday, April 14th, 1906, just after three in the afternoon. Four days before the earthquake. Not everyone agrees: an engineer who measured the shadows in the film put it a few weeks earlier, in late March. Either way, this is San Francisco just before the fire."
+      facts: [F17, F18]
+
+    # ---------------------------------------------------------------- traffic
+    - id: traf01
+      say: "Now watch the traffic. Wagons, automobiles, streetcars and bicycles weave and dodge around each other, and the people on foot walk straight through it. Kiehn's description is that the pedestrians show no fear."
+      at: 214
+      chapter: The traffic
+      facts: [F42]
+    - id: traf02
+      say: "But look closely, and some of these cars look familiar."
+    - id: traf03
+      say: "This one is number 4867. You saw it at the start of this video. According to Kiehn, this car, driven by a chauffeur named Jay Anway, passes the camera six times."
+      at: 236
+      mode: color
+      push: 0.06
+      facts: [F24, F15]
+    - id: traf04
+      say: "Many of the automobiles drive past, circle around, and drive past again, so there are fewer cars here than it seems. The Library of Congress says the traffic was apparently staged, to make Market Street look like a prosperous, modern boulevard. Who arranged it isn't known."
+      facts: [F23, F25]
+    - id: traf05
+      say: "Cars were still a novelty. In 1906, there were about a hundred and six thousand automobiles in the whole United States, and about eleven thousand in California. Horse-drawn buggies, carts and wagons were still the everyday way to move."
+      facts: [F44, F45]
+    - id: traf06
+      say: "And the real danger on these streets wasn't the cars. In 1906, San Francisco's coroner recorded sixty-one deaths from streetcars, and seven from motor vehicles."
+      facts: [F43]
+
+    # ---------------------------------------------------------------- people
+    - id: ppl01
+      say: "People stare. A movie camera on the front of a cable car was something new, and you can see heads turn as it passes."
+      chapter: Who's watching
+      facts: [F29]
+    - id: ppl02
+      say: "The Library of Congress catalogue lists the small moments: a man crossing the street with a baby, a father with a son in a sailor suit, a street sweeper, a water wagon, a commuter raising a hand to stop the cable car."
+      facts: [F26]
+    - id: ppl03
+      say: ""
+      hold: 6
+
+    # ---------------------------------------------------------------- buildings
+    - id: bld01
+      say: "Up ahead, the tall domed tower is the Call Building, home of the San Francisco Call newspaper."
+      at: 96
+      chapter: The buildings
+      facts: [F20]
+    - id: bld02
+      say: "Further down is what the Library of Congress calls the great Palace Hotel: the long row of repeated bay windows. On the morning of the earthquake, the Palace was still standing. By late that afternoon, the fire had consumed it."
+      facts: [F20, F41]
+    - id: bld03
+      say: "The Call Building burned too, but its steel frame held. Remodeled, it still stands on Market Street today."
+      facts: [F40]
+
+    # ---------------------------------------------------------------- the quake
+    - id: quake01
+      say: "At 5:12 on the morning of Wednesday, April 18th, 1906, the San Andreas Fault ruptured along nearly three hundred miles. The shaking lasted less than a minute."
+      at: 420
+      mode: bw
+      chapter: Four days later
+      facts: [F31, F34, F33]
+    - id: quake02
+      say: "The fire that followed burned for three days, and did far more damage than the shaking. About four point seven square miles burned. More than twenty-eight thousand buildings were destroyed, and about two hundred and twenty-five thousand people, in a city of about four hundred thousand, lost their homes."
+      mode: bw
+      facts: [F35, F36]
+    - id: quake03
+      say: "The official death count at the time was under five hundred. Later research, led by the city archivist Gladys Hansen, puts it at more than three thousand."
+      mode: bw
+      facts: [F37]
+    - id: quake04
+      say: "The Miles Brothers' studio, on this same street, burned. Herbert Miles said they lost eighty thousand dollars, and they never rebuilt it. But the film was already gone: it was on a train, headed for the company's office back east."
+      mode: wipe
+      facts: [F09, F08]
+
+    # ---------------------------------------------------------------- the end of the line
+    - id: end01
+      say: "Now the Ferry Building comes into view, at the foot of Market Street. It survived the earthquake, and Navy fireboats defended it from the fire."
+      at: 600
+      chapter: The end of the line
+      facts: [F39]
+    - id: end02
+      say: "The clock on its tower reads seventeen minutes past three."
+      facts: [F19]
+    - id: end03
+      say: ""
+      hold: 8
+    - id: end04
+      say: "At the end of the line, the cable car turns around on a turntable, and the camera keeps running. Newsboys wave at it, just for a few frames."
+      at: 655
+      facts: [F03, F27]
+    - id: end05
+      say: ""
+      hold: 6
+    - id: end06
+      say: "And the last thing the camera holds on is the Ferry Building's cornerstone. It reads: Erected 1896 by the Board of the State Harbor Commission."
+      at: 684
+      facts: [F21]
+
+    # ---------------------------------------------------------------- about the restoration
+    - id: rest01
+      say: "A note on what you've been watching. This is a 2018 scan of a thirty-five millimeter print held by Prelinger Archives in San Francisco, thought to be an original 1906 print. It was scanned at sixteen frames per second, and the file was padded out to twenty-four by repeating frames."
+      at: 300
+      mode: split
+      chapter: About this restoration
+      facts: [F48]
+    - id: rest02
+      say: "We took the repeated frames back out, so the film plays at its true speed, and we evened out the flicker."
+      mode: split
+    - id: rest03
+      say: "The color is an estimate. A neural network added it, frame by frame. The original is black and white, so treat the colors as an interpretation, not a record."
+      mode: split
+    - id: rest04
+      say: "In 2010, the Library of Congress added this film to the National Film Registry."
+      mode: color
+      facts: [F46]
+    - id: outro01
+      say: "The sources for everything in this video are in the description. Thanks for riding along."
+      at: 560
+      mode: wipe
+    - id: endcard
+      card: {title: "Silver to Color", subtitle: "old film, restored and explained"}
+      at: 640
+      hold: 6
+
+shorts:
+  - id: s01_loop
+    title: "The 1906 traffic jam was a loop"
+    hook: "This 1906 traffic jam is a loop"
+    layout: stack
+    cues:
+      - id: s01a
+        say: "This was filmed in San Francisco in 1906, days before the earthquake. And the traffic isn't what it looks like."
+        at: 96
+        facts: [F17]
+      - id: s01b
+        say: "Watch this car. License plate 4867."
+        at: 104
+        facts: [F24]
+      - id: s01c
+        say: "Now skip ahead about two minutes. Same car. Same plate."
+        at: 236
+        facts: [F24]
+      - id: s01d
+        say: "According to film historian David Kiehn, car 4867, driven by a chauffeur named Jay Anway, passes the camera six times. Many of the cars in this film drive by, circle around, and drive by again."
+        facts: [F24, F23]
+      - id: s01e
+        say: "The Library of Congress says the traffic was apparently staged, to make Market Street look like a prosperous, modern boulevard."
+        facts: [F25]
+      - id: s01f
+        say: "The plates also helped date the film. California began issuing plates in 1905, and the highest number on screen was issued in February 1906."
+        facts: [F15]
+      - id: s01g
+        say: "Days later, most of downtown burned. The full ride, restored and explained, is on the channel."
+        facts: [F38]
+
+  - id: s02_puddles
+    title: "How puddles re-dated a famous film"
+    hook: "Puddles re-dated this film"
+    layout: crop
+    cues:
+      - id: s02a
+        say: "For most of the twentieth century, this film was catalogued as 1905."
+        at: 40
+        facts: [F12]
+      - id: s02b
+        say: "Then, in 2010, film historian David Kiehn noticed something in it. Water. Puddles, between the tracks."
+        mode: wipe
+        facts: [F13, F14]
+      - id: s02c
+        say: "San Francisco's newspapers from September 1905 showed no rain at all. The spring of 1906 was wet."
+        facts: [F14]
+      - id: s02d
+        say: "The license plates agreed. California began issuing them in 1905, and the highest number in the film, 5057, was registered in February 1906."
+        facts: [F15]
+      - id: s02e
+        say: "And an ad from ten days after the earthquake said the film was made just one week before the destruction."
+        facts: [F16]
+      - id: s02f
+        say: "Kiehn's date: Saturday, April 14th, 1906. Four days before the earthquake and fire that destroyed most of downtown San Francisco."
+        mode: wipe
+        facts: [F17, F38]
+      - id: s02g
+        say: "Not everyone agrees on the exact day. An engineer who measured the shadows in the film argued for late March. But nobody thinks it's 1905 anymore."
+        facts: [F18, F12]
+
+  - id: s03_train
+    title: "The film that escaped the 1906 fire"
+    hook: "This film escaped the 1906 fire"
+    layout: stack
+    cues:
+      - id: s03a
+        say: "In the spring of 1906, the Miles Brothers filmed a ride down Market Street, San Francisco, from the front of a cable car."
+        at: 120
+        facts: [F03, F17]
+      - id: s03b
+        say: "Days later, at 5:12 in the morning, the earthquake hit. The fire that followed burned for three days."
+        facts: [F31, F35]
+      - id: s03c
+        say: "The brothers' studio, on Market Street, burned. Herbert Miles said they lost eighty thousand dollars, and they never rebuilt it."
+        facts: [F09]
+      - id: s03d
+        say: "But the film wasn't there. It was already on a train, headed for their office on the East Coast."
+        facts: [F08]
+      - id: s03e
+        say: "Ten days after the earthquake, they were advertising it."
+        facts: [F16]
+      - id: s03f
+        say: "The fault had ruptured along nearly three hundred miles. More than twenty-eight thousand buildings were destroyed, and about two hundred and twenty-five thousand people lost their homes."
+        mode: bw
+        facts: [F34, F36]
+      - id: s03g
+        say: "That train is why we can still ride down Market Street in 1906."
+        mode: wipe
+        facts: [F08, F17]
+
+  - id: s04_fight
+    title: "This film exists because of a boxing match"
+    hook: "Leftover film from a prize fight"
+    layout: crop
+    cues:
+      - id: s04a
+        say: "This film exists because of a boxing match."
+        at: 150
+      - id: s04b
+        say: "In 1905, Harry Miles modified cameras to hold thousand-foot magazines of film. Most cameras then held two hundred feet."
+        facts: [F11]
+      - id: s04c
+        say: "The fight, Nelson against Britt, was scheduled for forty-five rounds. Nelson won by knockout in the eighteenth. Less than half the film got used."
+        facts: [F11]
+      - id: s04d
+        say: "So the brothers looked for something else to film. First, a trip down Mount Tamalpais. Then this: Market Street, from the front of a cable car, in 1906."
+        mode: wipe
+        facts: [F11, F17]
+      - id: s04e
+        say: "They'd first tried it from an automobile, but the cobblestones shook the picture apart. So they asked the railway company for a cable car, and Harry cranked the camera by hand, about a mile and a half down Market Street."
+        facts: [F04, F02, F05]
+      - id: s04g
+        say: "They sold it to Hale's Tours theaters, which were fitted out like a railroad coach to show scenic films."
+        facts: [F10]
+      - id: s04f
+        say: "Days later, most of downtown San Francisco burned."
+        facts: [F38]

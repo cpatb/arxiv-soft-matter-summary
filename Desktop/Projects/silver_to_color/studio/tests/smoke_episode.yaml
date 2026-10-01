@@ -1,0 +1,51 @@
+# Smoke-test episode on the 20 s dev excerpt. Not channel content.
+id: smoke
+title: Smoke test
+film:
+  bw: E:/silver_to_color/dev/bw20.mp4
+  color: E:/silver_to_color/dev/color20.mp4
+  credit: "Scan: Prelinger Archives / Internet Archive"
+voice: {engine: edge, name: en-US-AndrewNeural, rate: "-4%"}
+output: E:/silver_to_color/dev/renders
+thumbnail: {at: 8, text: "Market Street 1906"}
+full:
+  cues:
+    - id: sm_card
+      card: {title: "Silver to Color", subtitle: "smoke test"}
+      at: 2
+      hold: 3
+      chapter: Title
+    - id: sm_wipe
+      say: "This is the wipe. Black and white gives way to color, left to right."
+      at: 1
+      mode: wipe
+      chapter: Wipe
+      lower_third: "Market Street, San Francisco"
+    - id: sm_split
+      say: "And this is the split screen, the print on the left, the restoration on the right."
+      at: 6
+      mode: split
+      chapter: Split
+    - id: sm_push
+      say: "A slow push in on the color footage."
+      at: 10
+      mode: color
+      push: 0.08
+shorts:
+  - id: smk_stack
+    title: Stack layout
+    hook: "Stack layout test"
+    layout: stack
+    cues:
+      - id: smk_s1
+        say: "Top is the original print. Bottom is the restoration, colorized on a laptop."
+        at: 3
+  - id: smk_crop
+    title: Crop layout
+    hook: "Crop layout test"
+    layout: crop
+    cues:
+      - id: smk_c1
+        say: "Cropped to vertical, with a wipe from black and white into color."
+        at: 2
+        mode: wipe
